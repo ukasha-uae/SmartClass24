@@ -267,7 +267,8 @@ const ReadAloud: React.FC<ReadAloudProps> = ({ textId }) => {
     setIsPaused(false);
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (isReading) {
       pauseReading();
     } else {
@@ -280,7 +281,7 @@ const ReadAloud: React.FC<ReadAloudProps> = ({ textId }) => {
   }
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
        <Button onClick={handleButtonClick} variant="outline" size="icon" className="h-8 w-8">
         {isReading ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
       </Button>

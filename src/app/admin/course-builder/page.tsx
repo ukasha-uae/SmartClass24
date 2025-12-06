@@ -1,20 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { generateLessonCode, generateLessonSummary, validateLessonData } from '@/lib/code-generator';
 import LessonEditor from '@/components/admin/LessonEditor';
 import QuestionBuilder from '@/components/admin/QuestionBuilder';
-import type { Lesson, Quiz } from '@/lib/types';
-import { Copy, CheckCircle, AlertCircle, Code, FileText, Save, Eye } from 'lucide-react';
+import type { Lesson, Quiz, Topic } from '@/lib/types';
+import { Copy, CheckCircle, AlertCircle, Code, FileText, Save, Eye, FolderOpen, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { subjects } from '@/lib/jhs-data';
 
 export default function CourseBuilderPage() {
   const [activeTab, setActiveTab] = useState('editor');
+  const [availableLessons, setAvailableLessons] = useState<Array<{id: string, title: string, subject: string, topic: string}>>([]);
+  const [selectedLessonId, setSelectedLessonId] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [lesson, setLesson] = useState<Partial<Lesson>>({
     id: '',
     slug: '',
@@ -34,6 +39,26 @@ export default function CourseBuilderPage() {
   const [summary, setSummary] = useState('');
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { toast } = useToast();
+
+  // Load available lessons on mount
+  useEffect(() => {
+    const lessons: Array<{id: string, title: string, subject: string, topic: string}> = [];
+    subjects.forEach(subject => {
+      subject.curriculum.forEach(curriculumLevel => {
+        curriculumLevel.topics.forEach((topic: Topic) => {
+          topic.lessons.forEach((lesson: Lesson) => {
+            lessons.push({
+              id: lesson.id,
+              title: lesson.title,
+              subject: subject.name,
+              topic: topic.title
+            });
+          });
+        });
+      });
+    });
+    setAvailableLessons(lessons);
+  }, []);
 
   const updateActivitiesQuestions = (questions: Quiz[]) => {
     setLesson({
@@ -80,6 +105,35 @@ export default function CourseBuilderPage() {
       title: 'Code Generated Successfully',
       description: 'Your TypeScript code is ready to copy'
     });
+  };
+
+  const loadExistingLesson = (lessonId: string) => {
+    if (!lessonId) return;
+
+    let foundLesson: Lesson | null = null;
+    
+    for (const subject of subjects) {
+      for (const curriculumLevel of subject.curriculum) {
+        for (const topic of curriculumLevel.topics) {
+          const lesson = topic.lessons.find((l: Lesson) => l.id === lessonId);
+          if (lesson) {
+            foundLesson = lesson;
+            break;
+          }
+        }
+        if (foundLesson) break;
+      }
+      if (foundLesson) break;
+    }
+
+    if (foundLesson) {
+      setLesson(foundLesson);
+      setSelectedLessonId(lessonId);
+      toast({
+        title: 'Lesson Loaded',
+        description: `Loaded: ${foundLesson.title}`
+      });
+    }
   };
 
   const loadSampleData = () => {
@@ -155,12 +209,49 @@ export default function CourseBuilderPage() {
     });
   };
 
+  const handleSaveToFile = async () => {
+    if (!generatedCode) {
+      toast({
+        title: 'No Code Generated',
+        description: 'Generate code first before saving',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/save-lesson', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          lessonCode: generatedCode,
+          lessonId: lesson.id 
+        })
+      });
+
+      if (response.ok) {
+        toast({
+          title: 'Saved!',
+          description: 'Lesson saved to jhs-data.ts'
+        });
+      } else {
+        throw new Error('Save failed');
+      }
+    } catch (error) {
+      toast({
+        title: 'Auto-save not available',
+        description: 'Copy the code and paste manually into jhs-data.ts',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const handleCopyCode = async () => {
     try {
       await navigator.clipboard.writeText(generatedCode);
       toast({
         title: 'Copied!',
-        description: 'Code copied to clipboard'
+        description: 'Code copied to clipboard. Paste into jhs-data.ts at the lesson location.'
       });
     } catch (error) {
       toast({
@@ -171,6 +262,16 @@ export default function CourseBuilderPage() {
     }
   };
 
+  // Filter lessons based on search query
+  const filteredLessons = availableLessons.filter(lesson => {
+    const query = searchQuery.toLowerCase();
+    return (
+      lesson.title.toLowerCase().includes(query) ||
+      lesson.subject.toLowerCase().includes(query) ||
+      lesson.topic.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
       <div className="mb-6">
@@ -180,10 +281,49 @@ export default function CourseBuilderPage() {
         </p>
       </div>
 
-      <div className="mb-4 flex gap-2">
-        <Button onClick={loadSampleData} variant="outline">
+      <div className="mb-4 flex flex-wrap gap-2 items-center">
+        <div className="flex-1 max-w-md">
+          <Select value={selectedLessonId} onValueChange={loadExistingLesson}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Load existing lesson..." />
+            </SelectTrigger>
+            <SelectContent className="max-h-[400px]">
+              <div className="p-2 sticky top-0 bg-background border-b">
+                <input
+                  type="text"
+                  placeholder="Search lessons..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-ring"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+              {filteredLessons.length === 0 ? (
+                <div className="p-4 text-sm text-muted-foreground text-center">
+                  No lessons found
+                </div>
+              ) : (
+                filteredLessons.map(lesson => (
+                  <SelectItem key={lesson.id} value={lesson.id}>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{lesson.title}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {lesson.subject} → {lesson.topic}
+                      </span>
+                    </div>
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
+        </div>
+        <Button onClick={() => { setLesson({ id: '', slug: '', title: '', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'exercises', questions: [] }, pastQuestions: [], endOfLessonQuiz: [], summary: '' }); setSelectedLessonId(''); }} variant="outline" size="sm">
+          <RefreshCw className="mr-2 h-4 w-4" />
+          New Lesson
+        </Button>
+        <Button onClick={loadSampleData} variant="outline" size="sm">
           <FileText className="mr-2 h-4 w-4" />
-          Load Sample Data
+          Sample Data
         </Button>
         <Button onClick={handleGenerateCode} variant="default">
           <Code className="mr-2 h-4 w-4" />
@@ -300,14 +440,16 @@ export default function CourseBuilderPage() {
                       Generated TypeScript Code
                     </span>
                     {generatedCode && (
-                      <Button onClick={handleCopyCode} variant="outline" size="sm">
-                        <Copy className="mr-2 h-4 w-4" />
-                        Copy
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button onClick={handleCopyCode} variant="outline" size="sm">
+                          <Copy className="mr-2 h-4 w-4" />
+                          Copy Code
+                        </Button>
+                      </div>
                     )}
                   </CardTitle>
                   <CardDescription>
-                    Copy this code and paste it into your jhs-data.ts file
+                    Copy this code and paste it into jhs-data.ts
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -330,14 +472,23 @@ export default function CourseBuilderPage() {
                 <Alert>
                   <CheckCircle className="h-4 w-4" />
                   <AlertDescription>
-                    <strong>Next Steps:</strong>
-                    <ol className="mt-2 list-decimal list-inside space-y-1">
-                      <li>Copy the generated code above</li>
-                      <li>Open <code className="bg-muted px-1 rounded">src/lib/jhs-data.ts</code></li>
-                      <li>Find the appropriate location in the lessons array</li>
-                      <li>Paste the code</li>
-                      <li>Save and restart the dev server</li>
+                    <strong>How to Update jhs-data.ts:</strong>
+                    <ol className="mt-2 list-decimal list-inside space-y-2 text-sm">
+                      <li>Click <strong>"Copy Code"</strong> button above</li>
+                      <li>Open <code className="bg-muted px-1 py-0.5 rounded text-xs">src/lib/jhs-data.ts</code></li>
+                      <li>
+                        <strong>For NEW lessons:</strong> Navigate to the appropriate subject → curriculum level → topic, 
+                        and add the code to the <code className="bg-muted px-1 rounded text-xs">lessons: []</code> array
+                      </li>
+                      <li>
+                        <strong>For EDITING:</strong> Use Ctrl+F to search for <code className="bg-muted px-1 rounded text-xs">id: '{lesson.id}'</code>, 
+                        select the entire lesson object (from opening brace to closing brace + comma), and replace with the new code
+                      </li>
+                      <li>Save the file - changes will appear immediately (hot reload)</li>
                     </ol>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      💡 <strong>Tip:</strong> Each lesson object starts with <code className="bg-muted px-1 rounded">{'{'}</code> and ends with <code className="bg-muted px-1 rounded">{'},'}</code>
+                    </p>
                   </AlertDescription>
                 </Alert>
               )}

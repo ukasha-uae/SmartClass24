@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Plus, Trash2 } from 'lucide-react';
 import MediaUploader from './MediaUploader';
+import RichTextEditor from './RichTextEditor';
 import type { Lesson, Media } from '@/lib/types';
 
 type LessonEditorProps = {
@@ -157,15 +158,12 @@ export default function LessonEditor({ lesson, onChange }: LessonEditorProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Textarea
-              value={lesson.introduction || ''}
-              onChange={(e) => updateField('introduction', e.target.value)}
-              placeholder="Introduce the lesson topic. You can paste content from Word or Google Docs here..."
-              rows={6}
+            <RichTextEditor
+              content={lesson.introduction || ''}
+              onChange={(content) => updateField('introduction', content)}
+              placeholder="Introduce the lesson topic. Use the toolbar to format text..."
+              label="Introduction Text"
             />
-            <p className="text-xs text-muted-foreground mt-2">
-              Tip: You can paste formatted text from Word/Google Docs directly
-            </p>
           </div>
           <div>
             <MediaUploader
@@ -218,12 +216,11 @@ export default function LessonEditor({ lesson, onChange }: LessonEditorProps) {
                     />
                   </div>
                   <div>
-                    <Label>Content</Label>
-                    <Textarea
-                      value={concept.content}
-                      onChange={(e) => updateKeyConcept(index, 'content', e.target.value)}
+                    <RichTextEditor
+                      content={concept.content}
+                      onChange={(content) => updateKeyConcept(index, 'content', content)}
                       placeholder="Detailed explanation of the concept..."
-                      rows={6}
+                      label="Content"
                     />
                   </div>
                   <div>
@@ -308,11 +305,11 @@ export default function LessonEditor({ lesson, onChange }: LessonEditorProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Textarea
-              value={lesson.summary || ''}
-              onChange={(e) => updateField('summary', e.target.value)}
+            <RichTextEditor
+              content={lesson.summary || ''}
+              onChange={(content) => updateField('summary', content)}
               placeholder="Summarize the key points of the lesson..."
-              rows={6}
+              label="Summary Text"
             />
           </div>
           <div>

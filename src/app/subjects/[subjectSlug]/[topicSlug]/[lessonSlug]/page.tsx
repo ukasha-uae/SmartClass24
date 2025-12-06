@@ -172,11 +172,20 @@ export default function LessonPage() {
                 Key Concepts
               </h2>
               <div className="space-y-4">
-                {lesson.keyConcepts.map((concept, i) => (
-                  <ConceptCard key={i} title={concept.title} icon="brain">
-                    <MarkdownRenderer content={concept.content} />
-                  </ConceptCard>
-                ))}
+                {lesson.keyConcepts.map((concept, i) => {
+                  const conceptId = `${lesson.id}-concept-${i}`;
+                  return (
+                    <div key={i} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-semibold text-lg">{concept.title}</h3>
+                        <ReadAloud textId={conceptId} />
+                      </div>
+                      <ConceptCard title="" icon="brain">
+                        <MarkdownRenderer id={conceptId} content={concept.content} />
+                      </ConceptCard>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -230,10 +239,11 @@ export default function LessonPage() {
 
             {lesson.pastQuestions && lesson.pastQuestions.length > 0 && (
                 <Card className="bg-primary text-primary-foreground">
-                    <CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>BECE Past Questions</CardTitle>
+                        <ReadAloud textId={`${lesson.id}-pastquestions`} />
                     </CardHeader>
-                    <CardContent>
+                    <CardContent id={`${lesson.id}-pastquestions`}>
                         {lesson.pastQuestions.map((pq, i) => (
                             <div key={i} className="mb-4">
                                 <p className="font-semibold">{pq.question}</p>
