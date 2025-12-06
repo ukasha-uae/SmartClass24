@@ -104,13 +104,26 @@ export interface EndOfLessonQuizQuestion {
   reason?: string;
 }
 
+// Media support for lessons
+export interface Media {
+  type: 'image' | 'video' | 'youtube' | 'file';
+  url: string;
+  caption?: string;
+  fileName?: string;
+}
+
 export interface Lesson {
   id: string;
   slug: string;
   title: string;
   objectives: string[];
   introduction: string;
-  keyConcepts: { title: string; content: string }[];
+  introductionMedia?: Media;
+  keyConcepts: { 
+    title: string; 
+    content: string;
+    media?: Media;
+  }[];
   activities: { type: string; questions: any[] } | { title: string; instruction: string; content: string; }[] | { type: string; exercises: any[] };
   pastQuestions: { 
     question: string; 
@@ -121,6 +134,7 @@ export interface Lesson {
     explanation?: string;
   }[];
   summary: string;
+  summaryMedia?: Media;
   endOfLessonQuiz?: Quiz[];
   defaultQuizStyle?: QuizStyle;
 }
