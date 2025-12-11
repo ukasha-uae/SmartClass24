@@ -12,8 +12,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 import { useCollection, useFirebase } from '@/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import type { Topic, Lesson } from '@/lib/types';
@@ -209,6 +210,14 @@ export default function SubjectPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
+      {/* Back to Subjects Button */}
+      <Link href={`/subjects/${levelParam}`}>
+        <Button variant="ghost" className="mb-4 -ml-2">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Subjects
+        </Button>
+      </Link>
+
       <div className="flex items-center space-x-4 mb-8">
         {(subjectInfo as any).icon ? (
           <subjectInfo.icon className="h-12 w-12 text-primary" />
