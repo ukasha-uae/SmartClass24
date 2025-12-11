@@ -28,11 +28,11 @@ The study of number types helps us organize and classify numbers based on their 
 In this lesson, you will learn about the main types of numbers: natural numbers (counting numbers), whole numbers, integers (positive and negative numbers), rational numbers (fractions and decimals), irrational numbers (like π and √2), and real numbers. This knowledge is foundational for algebra, calculus, and advanced mathematics, and it is essential for your WASSCE examinations.
 
 Understanding number types will help you:
-- Choose appropriate numbers for calculations
-- Understand why some operations work and others don't
-- Solve mathematical problems correctly
-- Apply mathematics to real-world situations
-- Build a strong foundation for higher mathematics`,
+• Choose appropriate numbers for calculations
+• Understand why some operations work and others don't
+• Solve mathematical problems correctly
+• Apply mathematics to real-world situations
+• Build a strong foundation for higher mathematics`,
 
     keyConcepts: [
       {
@@ -44,18 +44,18 @@ Understanding number types will help you:
 **Set Notation:** ℕ = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...}
 
 **Properties:**
-- Start from 1 and go to infinity (∞)
-- No negative numbers
-- No fractions or decimals
-- No zero (in traditional definition)
-- Used for counting discrete objects
+• Start from 1 and go to infinity (∞)
+• No negative numbers
+• No fractions or decimals
+• No zero (in traditional definition)
+• Used for counting discrete objects
 
 **Real-World Examples in Ghana:**
-- Counting oranges at the market: 1, 2, 3, 4, 5 oranges
-- Number of students in a class: 40 students
-- Number of cedi notes: 5 notes of GH₵20
-- Number of days in a week: 7 days
-- Counting tro-tro passengers
+• Counting oranges at the market: 1, 2, 3, 4, 5 oranges
+• Number of students in a class: 40 students
+• Number of cedi notes: 5 notes of GH₵20
+• Number of days in a week: 7 days
+• Counting tro-tro passengers
 
 **Why Called "Natural":**
 These numbers occur naturally when counting physical objects. You cannot have -2 oranges or 3.5 people!
@@ -71,30 +71,30 @@ These numbers occur naturally when counting physical objects. You cannot have -2
 **Set Notation:** 𝕎 = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, ...}
 
 **Properties:**
-- Includes zero (0)
-- All positive counting numbers
-- No negative numbers
-- No fractions or decimals
-- Cannot be broken into parts
+• Includes zero (0)
+• All positive counting numbers
+• No negative numbers
+• No fractions or decimals
+• Cannot be broken into parts
 
 **Difference from Natural Numbers:**
-- Natural numbers: 1, 2, 3, 4, 5, ...
-- Whole numbers: 0, 1, 2, 3, 4, 5, ...
-- The ONLY difference is the inclusion of ZERO
+• Natural numbers: 1, 2, 3, 4, 5, ...
+• Whole numbers: 0, 1, 2, 3, 4, 5, ...
+• The ONLY difference is the inclusion of ZERO
 
 **Real-World Examples:**
-- Temperature cannot go below absolute zero (0 Kelvin)
-- Bank account with zero balance: GH₵0.00
-- Number of goals scored in a match: 0, 1, 2, 3 goals
-- Empty basket has 0 mangoes
-- Starting point on a number line
+• Temperature cannot go below absolute zero (0 Kelvin)
+• Bank account with zero balance: GH₵0.00
+• Number of goals scored in a match: 0, 1, 2, 3 goals
+• Empty basket has 0 mangoes
+• Starting point on a number line
 
 **Why Include Zero?**
 Zero is essential in mathematics:
-- Represents "nothing" or "absence"
-- Placeholder in our decimal system (e.g., 101, 1001)
-- Origin point for measurements
-- Essential for algebra and calculus
+• Represents "nothing" or "absence"
+• Placeholder in our decimal system (e.g., 101, 1001)
+• Origin point for measurements
+• Essential for algebra and calculus
 
 **Visual Representation:**
 \`\`\`
@@ -116,42 +116,42 @@ The whole numbers include everything in natural numbers PLUS zero.`
 **Set Notation:** ℤ = {..., -3, -2, -1, 0, 1, 2, 3, ...}
 
 **Components:**
-- **Negative integers:** -1, -2, -3, -4, ...
-- **Zero:** 0
-- **Positive integers:** 1, 2, 3, 4, ... (same as natural numbers)
+• **Negative integers:** -1, -2, -3, -4, ...
+• **Zero:** 0
+• **Positive integers:** 1, 2, 3, 4, ... (same as natural numbers)
 
 **Properties:**
-- Extend infinitely in both directions (positive and negative)
-- Include zero
-- No fractions or decimals
-- Can be positive, negative, or zero
-- Closed under addition, subtraction, and multiplication
+• Extend infinitely in both directions (positive and negative)
+• Include zero
+• No fractions or decimals
+• Can be positive, negative, or zero
+• Closed under addition, subtraction, and multiplication
 
 **Real-World Examples in Ghana:**
 1. **Temperature:**
-   - 30°C (positive integer - hot day)
-   - 0°C (freezing point of water)
-   - -5°C (not common in Ghana, but possible in mountains)
+   • 30°C (positive integer - hot day)
+   • 0°C (freezing point of water)
+   • -5°C (not common in Ghana, but possible in mountains)
 
 2. **Altitude/Depth:**
-   - Mount Afadja: +885 meters (above sea level)
-   - Sea level: 0 meters
-   - Ocean floor: -200 meters (below sea level)
+   • Mount Afadja: +885 meters (above sea level)
+   • Sea level: 0 meters
+   • Ocean floor: -200 meters (below sea level)
 
 3. **Finance:**
-   - Profit: +GH₵500 (positive)
-   - Break-even: GH₵0
-   - Loss/Debt: -GH₵300 (negative)
+   • Profit: +GH₵500 (positive)
+   • Break-even: GH₵0
+   • Loss/Debt: -GH₵300 (negative)
 
 4. **Directions:**
-   - 5 steps forward: +5
-   - Starting point: 0
-   - 3 steps backward: -3
+   • 5 steps forward: +5
+   • Starting point: 0
+   • 3 steps backward: -3
 
 5. **Time:**
-   - 2 hours after noon: +2 (2:00 PM)
-   - Noon: 0
-   - 2 hours before noon: -2 (10:00 AM)
+   • 2 hours after noon: +2 (2:00 PM)
+   • Noon: 0
+   • 2 hours before noon: -2 (10:00 AM)
 
 **Number Line Representation:**
 \`\`\`
@@ -160,9 +160,9 @@ Negative ← Zero → Positive
 \`\`\`
 
 **Important Rules:**
-- Adding a negative is the same as subtracting: 5 + (-3) = 5 - 3 = 2
-- Subtracting a negative is the same as adding: 5 - (-3) = 5 + 3 = 8
-- Two negatives make a positive when multiplying: (-2) × (-3) = 6`
+• Adding a negative is the same as subtracting: 5 + (-3) = 5 - 3 = 2
+• Subtracting a negative is the same as adding: 5 - (-3) = 5 + 3 = 8
+• Two negatives make a positive when multiplying: (-2) × (-3) = 6`
       },
       {
         title: '4. Rational Numbers',
@@ -174,63 +174,63 @@ Negative ← Zero → Positive
 
 **Forms of Rational Numbers:**
 1. **Proper Fractions:** Numerator < Denominator
-   - Examples: 1/2, 3/4, 5/8
+   • Examples: 1/2, 3/4, 5/8
 
 2. **Improper Fractions:** Numerator ≥ Denominator
-   - Examples: 5/3, 7/2, 9/4
+   • Examples: 5/3, 7/2, 9/4
 
 3. **Mixed Numbers:** Whole number + fraction
-   - Examples: 2¹/₂, 3³/₄, 5²/₃
+   • Examples: 2¹/₂, 3³/₄, 5²/₃
 
 4. **Terminating Decimals:** End after a finite number of digits
-   - Examples: 0.5, 0.75, 2.25, 3.125
+   • Examples: 0.5, 0.75, 2.25, 3.125
 
 5. **Recurring Decimals:** Repeat forever in a pattern
-   - Examples: 0.333... (0.3̄), 0.666... (0.6̄), 0.142857142857... (0.1̄42857̄)
+   • Examples: 0.333... (0.3̄), 0.666... (0.6̄), 0.142857142857... (0.1̄42857̄)
 
 6. **Integers:** Can be written as fraction with denominator 1
-   - Examples: 5 = 5/1, -3 = -3/1, 0 = 0/1
+   • Examples: 5 = 5/1, -3 = -3/1, 0 = 0/1
 
 **Real-World Examples in Ghana:**
 1. **Market Measurements:**
-   - ¹/₂ kilogram of rice
-   - ²/₃ meter of fabric
-   - 1³/₄ bunches of plantain
+   • ¹/₂ kilogram of rice
+   • ²/₃ meter of fabric
+   • 1³/₄ bunches of plantain
 
 2. **Money:**
-   - GH₵2.50 = 5/2 cedis = 2¹/₂ cedis
-   - 50 pesewas = 0.50 cedis = ¹/₂ cedi
+   • GH₵2.50 = 5/2 cedis = 2¹/₂ cedis
+   • 50 pesewas = 0.50 cedis = ¹/₂ cedi
 
 3. **Cooking:**
-   - 1¹/₂ cups of flour
-   - ³/₄ spoon of salt
-   - 2.5 liters of water
+   • 1¹/₂ cups of flour
+   • ³/₄ spoon of salt
+   • 2.5 liters of water
 
 4. **Time:**
-   - 1.5 hours = 1³/₀ hours = 90 minutes
-   - 0.25 hours = ¹/₄ hour = 15 minutes
+   • 1.5 hours = 1³/₀ hours = 90 minutes
+   • 0.25 hours = ¹/₄ hour = 15 minutes
 
 5. **Percentages:**
-   - 50% = 0.5 = ¹/₂
-   - 75% = 0.75 = ³/₄
-   - 33.3% = 0.333... = ¹/₃
+   • 50% = 0.5 = ¹/₂
+   • 75% = 0.75 = ³/₄
+   • 33.3% = 0.333... = ¹/₃
 
 **Key Properties:**
-- **Dense:** Between any two rational numbers, there's always another rational number
-- **Closed under +, −, ×, ÷:** Result is always rational (except division by zero)
-- Can be positive, negative, or zero
-- Can be converted between fraction and decimal form
+• **Dense:** Between any two rational numbers, there's always another rational number
+• **Closed under +, −, ×, ÷:** Result is always rational (except division by zero)
+• Can be positive, negative, or zero
+• Can be converted between fraction and decimal form
 
 **Converting Fractions to Decimals:**
 Divide numerator by denominator:
-- 1/2 = 1 ÷ 2 = 0.5 (terminating)
-- 1/3 = 1 ÷ 3 = 0.333... (recurring)
-- 3/4 = 3 ÷ 4 = 0.75 (terminating)
+• 1/2 = 1 ÷ 2 = 0.5 (terminating)
+• 1/3 = 1 ÷ 3 = 0.333... (recurring)
+• 3/4 = 3 ÷ 4 = 0.75 (terminating)
 
 **Converting Decimals to Fractions:**
-- 0.5 = 5/10 = 1/2
-- 0.75 = 75/100 = 3/4
-- 0.333... = 1/3`
+• 0.5 = 5/10 = 1/2
+• 0.75 = 75/100 = 3/4
+• 0.333... = 1/3`
       },
       {
         title: '5. Irrational Numbers',
@@ -239,80 +239,80 @@ Divide numerator by denominator:
 **Definition:** An irrational number cannot be written as p/q where p and q are integers.
 
 **Characteristics:**
-- **Non-terminating:** Decimal never ends
-- **Non-repeating:** No pattern repeats
-- Cannot be expressed as a fraction of integers
-- Infinite non-repeating decimal expansion
+• **Non-terminating:** Decimal never ends
+• **Non-repeating:** No pattern repeats
+• Cannot be expressed as a fraction of integers
+• Infinite non-repeating decimal expansion
 
 **Common Irrational Numbers:**
 
 1. **π (Pi):**
-   - π ≈ 3.14159265358979323846...
-   - Ratio of circle's circumference to diameter
-   - Used in circle calculations
-   - Example: Circumference = 2πr
+   • π ≈ 3.14159265358979323846...
+   • Ratio of circle's circumference to diameter
+   • Used in circle calculations
+   • Example: Circumference = 2πr
 
 2. **√2 (Square Root of 2):**
-   - √2 ≈ 1.41421356237309504880...
-   - Length of diagonal of a square with side 1
-   - Cannot be simplified to a fraction
+   • √2 ≈ 1.41421356237309504880...
+   • Length of diagonal of a square with side 1
+   • Cannot be simplified to a fraction
 
 3. **√3, √5, √7, √11, √13...:**
-   - Square roots of non-perfect squares
-   - All are irrational
-   - √3 ≈ 1.732050808...
-   - √5 ≈ 2.236067977...
+   • Square roots of non-perfect squares
+   • All are irrational
+   • √3 ≈ 1.732050808...
+   • √5 ≈ 2.236067977...
 
 4. **e (Euler's Number):**
-   - e ≈ 2.71828182845904523536...
-   - Important in calculus and growth calculations
-   - Base of natural logarithm
+   • e ≈ 2.71828182845904523536...
+   • Important in calculus and growth calculations
+   • Base of natural logarithm
 
 5. **φ (Golden Ratio):**
-   - φ ≈ 1.61803398874989484820...
-   - Found in nature, art, and architecture
-   - Ratio in Fibonacci sequence
+   • φ ≈ 1.61803398874989484820...
+   • Found in nature, art, and architecture
+   • Ratio in Fibonacci sequence
 
 **Real-World Applications in Ghana:**
 
 1. **Construction:**
-   - Calculating diagonal bracing in buildings
-   - Circular structures (π for circumference and area)
-   - Example: Building a circular well, you need π to calculate materials
+   • Calculating diagonal bracing in buildings
+   • Circular structures (π for circumference and area)
+   • Example: Building a circular well, you need π to calculate materials
 
 2. **Land Surveying:**
-   - Calculating distances involving right triangles
-   - Using Pythagoras' theorem: c = √(a² + b²)
+   • Calculating distances involving right triangles
+   • Using Pythagoras' theorem: c = √(a² + b²)
 
 3. **Engineering:**
-   - Designing circular roads, roundabouts
-   - Calculating volumes of cylindrical water tanks
+   • Designing circular roads, roundabouts
+   • Calculating volumes of cylindrical water tanks
 
 **Why Are They Important?**
-- Represent exact values (π is more accurate than 3.14 or 22/7)
-- Essential in geometry, trigonometry, calculus
-- Occur naturally in mathematics and physics
-- Required for precise scientific calculations
+• Represent exact values (π is more accurate than 3.14 or 22/7)
+• Essential in geometry, trigonometry, calculus
+• Occur naturally in mathematics and physics
+• Required for precise scientific calculations
 
 **Common Misconception:**
-- 22/7 is NOT equal to π (it's a rational approximation)
-- 22/7 ≈ 3.142857142857... (repeating)
-- π ≈ 3.141592653589793... (non-repeating)
-- Difference seems small but matters in precision work
+• 22/7 is NOT equal to π (it's a rational approximation)
+• 22/7 ≈ 3.142857142857... (repeating)
+• π ≈ 3.141592653589793... (non-repeating)
+• Difference seems small but matters in precision work
 
 **Proof that √2 is Irrational:**
 This is a famous proof by contradiction. Assume √2 = p/q (in lowest terms). Then:
-- 2 = p²/q²
-- 2q² = p²
-- This means p² is even, so p is even
-- Let p = 2k
-- Then 2q² = (2k)² = 4k²
-- So q² = 2k²
-- This means q is also even
-- But if both p and q are even, they have a common factor of 2
-- This contradicts our assumption that p/q is in lowest terms
-- Therefore, √2 cannot be written as a fraction
-- Hence, √2 is irrational`
+• 2 = p²/q²
+• 2q² = p²
+• This means p² is even, so p is even
+• Let p = 2k
+• Then 2q² = (2k)² = 4k²
+• So q² = 2k²
+• This means q is also even
+• But if both p and q are even, they have a common factor of 2
+• This contradicts our assumption that p/q is in lowest terms
+• Therefore, √2 cannot be written as a fraction
+• Hence, √2 is irrational`
       },
       {
         title: '6. Real Numbers',
@@ -362,23 +362,23 @@ Natural ⊂ Whole ⊂ Integers ⊂ Rational ⊂ Real
 4. **Density:** Between any two real numbers, there's another real number
 
 **Operations with Real Numbers:**
-- **Addition:** Always closed (sum is always real)
-- **Subtraction:** Always closed
-- **Multiplication:** Always closed
-- **Division:** Closed except division by zero
+• **Addition:** Always closed (sum is always real)
+• **Subtraction:** Always closed
+• **Multiplication:** Always closed
+• **Division:** Closed except division by zero
 
 **Real-World Significance:**
 Real numbers can represent:
-- **Measurements:** Height (1.75m), weight (65.5kg), time (2.5 hours)
-- **Money:** GH₵50.75, $100.00
-- **Temperature:** 28.5°C, -5°C
-- **Distances:** 125.3 km
-- **Scientific data:** 9.8 m/s² (acceleration due to gravity)
+• **Measurements:** Height (1.75m), weight (65.5kg), time (2.5 hours)
+• **Money:** GH₵50.75, $100.00
+• **Temperature:** 28.5°C, -5°C
+• **Distances:** 125.3 km
+• **Scientific data:** 9.8 m/s² (acceleration due to gravity)
 
 **Non-Real Numbers:**
 Some numbers are NOT real:
-- **Imaginary numbers:** √(-1) = i
-- **Complex numbers:** 3 + 4i
+• **Imaginary numbers:** √(-1) = i
+• **Complex numbers:** 3 + 4i
 These involve the square root of negative numbers and are studied in advanced mathematics.
 
 **Classification Exercise:**
@@ -423,13 +423,13 @@ Classify each number:
 \`\`\`
 
 **Set Relationships:**
-- ℕ ⊂ 𝕎 (Natural numbers are a subset of whole numbers)
-- 𝕎 ⊂ ℤ (Whole numbers are a subset of integers)
-- ℤ ⊂ ℚ (Integers are a subset of rational numbers)
-- ℚ ⊂ ℝ (Rational numbers are a subset of real numbers)
-- Irrational ⊂ ℝ (Irrational numbers are a subset of real numbers)
-- ℚ ∩ Irrational = ∅ (No number is both rational and irrational)
-- ℚ ∪ Irrational = ℝ (Union of rational and irrational gives all real numbers)
+• ℕ ⊂ 𝕎 (Natural numbers are a subset of whole numbers)
+• 𝕎 ⊂ ℤ (Whole numbers are a subset of integers)
+• ℤ ⊂ ℚ (Integers are a subset of rational numbers)
+• ℚ ⊂ ℝ (Rational numbers are a subset of real numbers)
+• Irrational ⊂ ℝ (Irrational numbers are a subset of real numbers)
+• ℚ ∩ Irrational = ∅ (No number is both rational and irrational)
+• ℚ ∪ Irrational = ℝ (Union of rational and irrational gives all real numbers)
 
 **Examples of Classification:**
 
@@ -588,11 +588,11 @@ Classify each number:
     introduction: `Fractions, decimals, and percentages are three different ways of expressing the same concept: parts of a whole. In Ghana, we use these daily - from calculating market prices and discounts to measuring ingredients in cooking, sharing resources, and understanding financial transactions.
 
 Understanding the relationship between these three forms is essential for:
-- **Commerce:** Calculating discounts (20% off), profit margins, VAT (15%)
-- **Cooking:** Following recipes (1½ cups, 0.5 liters)
-- **Finance:** Understanding interest rates, savings, loans
-- **Measurements:** Converting between units (0.5 meters = ½ meter = 50%)
-- **WASSCE Exam:** Many questions test conversion and calculation skills
+• **Commerce:** Calculating discounts (20% off), profit margins, VAT (15%)
+• **Cooking:** Following recipes (1½ cups, 0.5 liters)
+• **Finance:** Understanding interest rates, savings, loans
+• **Measurements:** Converting between units (0.5 meters = ½ meter = 50%)
+• **WASSCE Exam:** Many questions test conversion and calculation skills
 
 This lesson will teach you how to seamlessly convert between fractions, decimals, and percentages, and how to perform calculations with each. You'll learn practical techniques that will help you in everyday life and excel in your examinations.`,
 
@@ -602,58 +602,58 @@ This lesson will teach you how to seamlessly convert between fractions, decimals
         content: `A fraction represents a part of a whole. It consists of a numerator (top number) and denominator (bottom number).
 
 **Fraction Notation:** a/b where:
-- a = numerator (number of parts we have)
-- b = denominator (total number of equal parts)
+• a = numerator (number of parts we have)
+• b = denominator (total number of equal parts)
 
 **Types of Fractions:**
 
 1. **Proper Fraction:** Numerator < Denominator
-   - Examples: 1/2, 3/4, 5/8, 7/10
-   - Value is less than 1
-   - Ghana example: 3/4 of a loaf of bread
+   • Examples: 1/2, 3/4, 5/8, 7/10
+   • Value is less than 1
+   • Ghana example: 3/4 of a loaf of bread
 
 2. **Improper Fraction:** Numerator ≥ Denominator
-   - Examples: 5/3, 7/4, 9/2, 11/5
-   - Value is greater than or equal to 1
-   - Can be converted to mixed numbers
+   • Examples: 5/3, 7/4, 9/2, 11/5
+   • Value is greater than or equal to 1
+   • Can be converted to mixed numbers
 
 3. **Mixed Number:** Whole number + proper fraction
-   - Examples: 1½, 2¾, 3⅖
-   - Represents more than one whole
-   - Ghana example: 2½ bunches of plantain
+   • Examples: 1½, 2¾, 3⅖
+   • Represents more than one whole
+   • Ghana example: 2½ bunches of plantain
 
 **Converting Between Improper Fractions and Mixed Numbers:**
 
 Improper → Mixed:
-- 7/3 = 7 ÷ 3 = 2 remainder 1 = 2⅓
+• 7/3 = 7 ÷ 3 = 2 remainder 1 = 2⅓
 
 Mixed → Improper:
-- 2⅓ = (2 × 3 + 1)/3 = 7/3
+• 2⅓ = (2 × 3 + 1)/3 = 7/3
 
 **Equivalent Fractions:**
 Fractions that represent the same value:
-- 1/2 = 2/4 = 3/6 = 4/8 = 5/10
-- Multiply or divide numerator and denominator by the same number
+• 1/2 = 2/4 = 3/6 = 4/8 = 5/10
+• Multiply or divide numerator and denominator by the same number
 
 **Simplifying Fractions:**
 Reduce to lowest terms by dividing by the GCF (Greatest Common Factor):
-- 12/16 = (12÷4)/(16÷4) = 3/4
-- 15/25 = (15÷5)/(25÷5) = 3/5
+• 12/16 = (12÷4)/(16÷4) = 3/4
+• 15/25 = (15÷5)/(25÷5) = 3/5
 
 **Real-World Ghana Examples:**
-- Market: "Give me 3/4 kg of tomatoes"
-- Money: "I have 2/5 of the money I need"
-- Time: "The journey took 1½ hours"
-- Sharing: "Divide 5 oranges among 3 children = 5/3 = 1⅔ oranges each"`
+• Market: "Give me 3/4 kg of tomatoes"
+• Money: "I have 2/5 of the money I need"
+• Time: "The journey took 1½ hours"
+• Sharing: "Divide 5 oranges among 3 children = 5/3 = 1⅔ oranges each"`
       },
       {
         title: '2. Operations with Fractions',
         content: `**Addition and Subtraction:**
 
 Same Denominator:
-- Add/subtract numerators, keep denominator
-- 2/7 + 3/7 = 5/7
-- 5/9 - 2/9 = 3/9 = 1/3
+• Add/subtract numerators, keep denominator
+• 2/7 + 3/7 = 5/7
+• 5/9 - 2/9 = 3/9 = 1/3
 
 Different Denominators:
 1. Find LCD (Lowest Common Denominator)
@@ -661,43 +661,43 @@ Different Denominators:
 3. Add/subtract numerators
 
 Example: 1/2 + 1/3
-- LCD = 6
-- 1/2 = 3/6, 1/3 = 2/6
-- 3/6 + 2/6 = 5/6
+• LCD = 6
+• 1/2 = 3/6, 1/3 = 2/6
+• 3/6 + 2/6 = 5/6
 
 **Multiplication:**
-- Multiply numerators together
-- Multiply denominators together
-- Simplify if possible
+• Multiply numerators together
+• Multiply denominators together
+• Simplify if possible
 
 Examples:
-- 2/3 × 3/4 = 6/12 = 1/2
-- 1/2 × 4/5 = 4/10 = 2/5
+• 2/3 × 3/4 = 6/12 = 1/2
+• 1/2 × 4/5 = 4/10 = 2/5
 
 Shortcut (Cancel before multiplying):
-- 2/3 × 3/8 = (2×3)/(3×8) = 2/8 = 1/4
-- Can cancel the 3s first: 2/3 × 3/8 = 2/8 = 1/4
+• 2/3 × 3/8 = (2×3)/(3×8) = 2/8 = 1/4
+• Can cancel the 3s first: 2/3 × 3/8 = 2/8 = 1/4
 
 **Division:**
-- Keep first fraction
-- Change ÷ to ×
-- Flip second fraction (reciprocal)
-- Multiply
+• Keep first fraction
+• Change ÷ to ×
+• Flip second fraction (reciprocal)
+• Multiply
 
 Rule: a/b ÷ c/d = a/b × d/c
 
 Examples:
-- 2/3 ÷ 1/2 = 2/3 × 2/1 = 4/3 = 1⅓
-- 3/4 ÷ 2/5 = 3/4 × 5/2 = 15/8 = 1⅞
+• 2/3 ÷ 1/2 = 2/3 × 2/1 = 4/3 = 1⅓
+• 3/4 ÷ 2/5 = 3/4 × 5/2 = 15/8 = 1⅞
 
 **Mixed Number Operations:**
 Convert to improper fractions first:
-- 2½ + 1¾ = 5/2 + 7/4 = 10/4 + 7/4 = 17/4 = 4¼
+• 2½ + 1¾ = 5/2 + 7/4 = 10/4 + 7/4 = 17/4 = 4¼
 
 **Ghana Market Example:**
 "If 1 bunch of plantain costs GH₵15, what is the cost of 2¾ bunches?"
-- Cost = 15 × 2¾ = 15 × 11/4 = 165/4 = 41.25
-- Answer: GH₵41.25`
+• Cost = 15 × 2¾ = 15 × 11/4 = 165/4 = 41.25
+• Answer: GH₵41.25`
       },
       {
         title: '3. Understanding Decimals',
@@ -717,24 +717,24 @@ Example: 45.678
 **Types of Decimals:**
 
 1. **Terminating Decimals:** End after finite digits
-   - 0.5, 0.75, 2.25, 3.125
-   - All can be written as fractions
+   • 0.5, 0.75, 2.25, 3.125
+   • All can be written as fractions
 
 2. **Recurring Decimals:** Repeat forever
-   - 0.333... = 0.3̄ (repeating 3)
-   - 0.666... = 0.6̄ (repeating 6)
-   - 0.142857142857... = 0.1̄42857̄
+   • 0.333... = 0.3̄ (repeating 3)
+   • 0.666... = 0.6̄ (repeating 6)
+   • 0.142857142857... = 0.1̄42857̄
 
 **Reading Decimals:**
-- 0.5 = "zero point five" or "five tenths"
-- 2.75 = "two point seven five" or "two and seventy-five hundredths"
-- 0.125 = "zero point one two five" or "one hundred twenty-five thousandths"
+• 0.5 = "zero point five" or "five tenths"
+• 2.75 = "two point seven five" or "two and seventy-five hundredths"
+• 0.125 = "zero point one two five" or "one hundred twenty-five thousandths"
 
 **Decimal Operations:**
 
 Addition/Subtraction:
-- Align decimal points vertically
-- Add/subtract as normal
+• Align decimal points vertically
+• Add/subtract as normal
 
 Example:
 \`\`\`
@@ -745,9 +745,9 @@ Example:
 \`\`\`
 
 Multiplication:
-- Multiply as whole numbers
-- Count total decimal places
-- Place decimal point in answer
+• Multiply as whole numbers
+• Count total decimal places
+• Place decimal point in answer
 
 Example: 2.5 × 3.2
 \`\`\`
@@ -757,9 +757,9 @@ Answer: 8.00 = 8.0
 \`\`\`
 
 Division:
-- Move decimal point in divisor to make it whole
-- Move decimal point in dividend same number of places
-- Divide normally
+• Move decimal point in divisor to make it whole
+• Move decimal point in dividend same number of places
+• Divide normally
 
 Example: 12.5 ÷ 2.5
 \`\`\`
@@ -767,9 +767,9 @@ Example: 12.5 ÷ 2.5
 \`\`\`
 
 **Ghana Currency Example:**
-- GH₵50.75 = 50 cedis and 75 pesewas
-- GH₵50.75 + GH₵23.50 = GH₵74.25
-- GH₵100.00 - GH₵45.25 = GH₵54.75`
+• GH₵50.75 = 50 cedis and 75 pesewas
+• GH₵50.75 + GH₵23.50 = GH₵74.25
+• GH₵100.00 - GH₵45.25 = GH₵54.75`
       },
       {
         title: '4. Converting Between Fractions and Decimals',
@@ -777,28 +777,28 @@ Example: 12.5 ÷ 2.5
 Divide numerator by denominator
 
 Examples:
-- 1/2 = 1 ÷ 2 = 0.5
-- 3/4 = 3 ÷ 4 = 0.75
-- 1/3 = 1 ÷ 3 = 0.333... = 0.3̄
-- 2/5 = 2 ÷ 5 = 0.4
-- 7/8 = 7 ÷ 8 = 0.875
+• 1/2 = 1 ÷ 2 = 0.5
+• 3/4 = 3 ÷ 4 = 0.75
+• 1/3 = 1 ÷ 3 = 0.333... = 0.3̄
+• 2/5 = 2 ÷ 5 = 0.4
+• 7/8 = 7 ÷ 8 = 0.875
 
 **Decimal → Fraction:**
 
 Method 1: Use place value
-- 0.5 = 5/10 = 1/2
-- 0.75 = 75/100 = 3/4
-- 0.125 = 125/1000 = 1/8
+• 0.5 = 5/10 = 1/2
+• 0.75 = 75/100 = 3/4
+• 0.125 = 125/1000 = 1/8
 
 Method 2: Count decimal places
-- 1 decimal place → denominator 10
-- 2 decimal places → denominator 100
-- 3 decimal places → denominator 1000
+• 1 decimal place → denominator 10
+• 2 decimal places → denominator 100
+• 3 decimal places → denominator 1000
 
 Examples:
-- 0.6 = 6/10 = 3/5
-- 0.25 = 25/100 = 1/4
-- 0.375 = 375/1000 = 3/8
+• 0.6 = 6/10 = 3/5
+• 0.25 = 25/100 = 1/4
+• 0.375 = 375/1000 = 3/8
 
 **Recurring Decimals → Fractions:**
 
@@ -818,65 +818,65 @@ Let x = 0.1666...
 x = 15/90 = 1/6
 
 **Common Conversions to Memorize:**
-- 1/2 = 0.5 = 50%
-- 1/3 = 0.3̄ = 33.3%
-- 1/4 = 0.25 = 25%
-- 1/5 = 0.2 = 20%
-- 1/8 = 0.125 = 12.5%
-- 1/10 = 0.1 = 10%
-- 3/4 = 0.75 = 75%
-- 2/3 = 0.6̄ = 66.7%`
+• 1/2 = 0.5 = 50%
+• 1/3 = 0.3̄ = 33.3%
+• 1/4 = 0.25 = 25%
+• 1/5 = 0.2 = 20%
+• 1/8 = 0.125 = 12.5%
+• 1/10 = 0.1 = 10%
+• 3/4 = 0.75 = 75%
+• 2/3 = 0.6̄ = 66.7%`
       },
       {
         title: '5. Understanding Percentages',
         content: `Percentage means "per hundred" or "out of 100". The symbol % represents /100.
 
 **Basic Concept:**
-- 50% = 50/100 = 0.5 = 1/2
-- 75% = 75/100 = 0.75 = 3/4
-- 100% = 100/100 = 1 (the whole)
-- 200% = 200/100 = 2 (twice the whole)
+• 50% = 50/100 = 0.5 = 1/2
+• 75% = 75/100 = 0.75 = 3/4
+• 100% = 100/100 = 1 (the whole)
+• 200% = 200/100 = 2 (twice the whole)
 
 **Percentage → Fraction:**
 Write over 100 and simplify
-- 25% = 25/100 = 1/4
-- 60% = 60/100 = 3/5
-- 80% = 80/100 = 4/5
+• 25% = 25/100 = 1/4
+• 60% = 60/100 = 3/5
+• 80% = 80/100 = 4/5
 
 **Percentage → Decimal:**
 Divide by 100 (move decimal point 2 places left)
-- 35% = 35 ÷ 100 = 0.35
-- 7% = 7 ÷ 100 = 0.07
-- 125% = 125 ÷ 100 = 1.25
+• 35% = 35 ÷ 100 = 0.35
+• 7% = 7 ÷ 100 = 0.07
+• 125% = 125 ÷ 100 = 1.25
 
 **Fraction → Percentage:**
 Multiply by 100
-- 1/2 = 0.5 × 100 = 50%
-- 3/4 = 0.75 × 100 = 75%
-- 2/5 = 0.4 × 100 = 40%
+• 1/2 = 0.5 × 100 = 50%
+• 3/4 = 0.75 × 100 = 75%
+• 2/5 = 0.4 × 100 = 40%
 
 **Decimal → Percentage:**
 Multiply by 100 (move decimal point 2 places right)
-- 0.45 = 45%
-- 0.08 = 8%
-- 1.5 = 150%
+• 0.45 = 45%
+• 0.08 = 8%
+• 1.5 = 150%
 
 **Finding a Percentage of a Number:**
 
 Method 1: Convert to decimal and multiply
-- Find 20% of 500
-- 20% = 0.2
-- 0.2 × 500 = 100
+• Find 20% of 500
+• 20% = 0.2
+• 0.2 × 500 = 100
 
 Method 2: Use fraction
-- Find 25% of 80
-- 25% = 1/4
-- 1/4 × 80 = 20
+• Find 25% of 80
+• 25% = 1/4
+• 1/4 × 80 = 20
 
 Method 3: Find 1% first, then multiply
-- Find 15% of 200
-- 1% of 200 = 2
-- 15% = 15 × 2 = 30
+• Find 15% of 200
+• 1% of 200 = 2
+• 15% = 15 × 2 = 30
 
 **Ghana Examples:**
 1. **VAT:** 15% of GH₵100 = 0.15 × 100 = GH₵15
@@ -894,54 +894,54 @@ Or: Increase = Original × (Percentage/100)
     New Value = Original + Increase
 
 Example: A shirt costing GH₵80 increases by 25%. Find new price.
-- Method 1: 80 × 1.25 = GH₵100
-- Method 2: Increase = 80 × 0.25 = 20; New = 80 + 20 = GH₵100
+• Method 1: 80 × 1.25 = GH₵100
+• Method 2: Increase = 80 × 0.25 = 20; New = 80 + 20 = GH₵100
 
 **Percentage Decrease:**
 
 Formula: New Value = Original Value × (1 - Percentage/100)
 
 Example: A phone costing GH₵1200 has 15% discount. Find sale price.
-- 1200 × 0.85 = GH₵1020
-- Or: Discount = 1200 × 0.15 = 180; New = 1200 - 180 = 1020
+• 1200 × 0.85 = GH₵1020
+• Or: Discount = 1200 × 0.15 = 180; New = 1200 - 180 = 1020
 
 **Finding Percentage Change:**
 
 Formula: Percentage Change = (Difference/Original) × 100
 
 Increase Example:
-- Price rose from GH₵200 to GH₵250
-- Change = 250 - 200 = 50
-- Percentage = (50/200) × 100 = 25% increase
+• Price rose from GH₵200 to GH₵250
+• Change = 250 - 200 = 50
+• Percentage = (50/200) × 100 = 25% increase
 
 Decrease Example:
-- Price fell from GH₵300 to GH₵240
-- Change = 300 - 240 = 60
-- Percentage = (60/300) × 100 = 20% decrease
+• Price fell from GH₵300 to GH₵240
+• Change = 300 - 240 = 60
+• Percentage = (60/300) × 100 = 20% decrease
 
 **Ghana Market Examples:**
 
 1. **Inflation:**
-   - Last year: Bag of rice = GH₵200
-   - This year: Bag of rice = GH₵230
-   - Increase = 30; Percentage = (30/200) × 100 = 15%
+   • Last year: Bag of rice = GH₵200
+   • This year: Bag of rice = GH₵230
+   • Increase = 30; Percentage = (30/200) × 100 = 15%
 
 2. **Sale:**
-   - Original: GH₵150
-   - 30% off: 150 × 0.70 = GH₵105
+   • Original: GH₵150
+   • 30% off: 150 × 0.70 = GH₵105
 
 3. **Profit:**
-   - Cost: GH₵500
-   - Selling price: GH₵650
-   - Profit = 150; Percentage = (150/500) × 100 = 30%
+   • Cost: GH₵500
+   • Selling price: GH₵650
+   • Profit = 150; Percentage = (150/500) × 100 = 30%
 
 **Multiple Percentage Changes:**
 A 20% increase followed by 20% decrease ≠ original value!
 
 Example: Start with GH₵100
-- After 20% increase: 100 × 1.2 = GH₵120
-- After 20% decrease: 120 × 0.8 = GH₵96
-- Final value is less than original!`
+• After 20% increase: 100 × 1.2 = GH₵120
+• After 20% decrease: 120 × 0.8 = GH₵96
+• Final value is less than original!`
       },
       {
         title: '7. Quick Conversion Table and Tips',
@@ -968,30 +968,30 @@ Example: Start with GH₵100
 **Quick Mental Math Tips:**
 
 1. **Finding 10%:** Divide by 10 (move decimal left)
-   - 10% of 450 = 45
+   • 10% of 450 = 45
 
 2. **Finding 5%:** Find 10%, then half it
-   - 5% of 200 = 10% (20) ÷ 2 = 10
+   • 5% of 200 = 10% (20) ÷ 2 = 10
 
 3. **Finding 1%:** Divide by 100
-   - 1% of 3000 = 30
+   • 1% of 3000 = 30
 
 4. **Finding 50%:** Divide by 2
-   - 50% of 86 = 43
+   • 50% of 86 = 43
 
 5. **Finding 25%:** Divide by 4
-   - 25% of 120 = 30
+   • 25% of 120 = 30
 
 6. **Finding 75%:** Find 25% and multiply by 3
-   - 75% of 80 = 25% (20) × 3 = 60
+   • 75% of 80 = 25% (20) × 3 = 60
 
 **WASSCE Exam Tips:**
-- Always simplify fractions to lowest terms
-- Show working for conversions
-- Use calculator wisely (check if allowed)
-- Verify answers make sense
-- Know common percentages (VAT 15%, bank rates)
-- Practice converting quickly between all three forms`
+• Always simplify fractions to lowest terms
+• Show working for conversions
+• Use calculator wisely (check if allowed)
+• Verify answers make sense
+• Know common percentages (VAT 15%, bank rates)
+• Practice converting quickly between all three forms`
       }
     ],
     activities: {
@@ -1128,17 +1128,17 @@ Example: Start with GH₵100
     introduction: `Sets are collections of distinct objects or elements. Set theory is fundamental to mathematics and has practical applications in everyday life, from organizing data to solving logical problems.
 
 In Ghana, we use set concepts daily:
-- **Schools:** Grouping students (set of JHS students, set of SHS students)
-- **Markets:** Categories of goods (set of fruits, set of vegetables)
-- **Technology:** Database organization, search filters
-- **Statistics:** Organizing and analyzing data
-- **Planning:** Event attendance, voter registration
+• **Schools:** Grouping students (set of JHS students, set of SHS students)
+• **Markets:** Categories of goods (set of fruits, set of vegetables)
+• **Technology:** Database organization, search filters
+• **Statistics:** Organizing and analyzing data
+• **Planning:** Event attendance, voter registration
 
 Understanding sets helps you:
-- Organize information logically
-- Solve complex counting and probability problems
-- Analyze relationships between groups
-- Prepare for WASSCE questions on sets (very common!)
+• Organize information logically
+• Solve complex counting and probability problems
+• Analyze relationships between groups
+• Prepare for WASSCE questions on sets (very common!)
 
 Venn diagrams provide a visual way to represent sets and their relationships. Named after British mathematician John Venn, these diagrams use circles to show how sets overlap and interact. This lesson will teach you set notation, operations, and how to use Venn diagrams to solve problems efficiently.`,
 
@@ -1150,52 +1150,52 @@ Venn diagrams provide a visual way to represent sets and their relationships. Na
 **Well-defined** means we can clearly determine whether an object belongs to the set or not.
 
 **Set Notation:**
-- Sets are usually denoted by capital letters: A, B, C, X, Y, Z
-- Elements are listed in braces { }
-- Elements are denoted by lowercase letters: a, b, c, x, y, z
+• Sets are usually denoted by capital letters: A, B, C, X, Y, Z
+• Elements are listed in braces { }
+• Elements are denoted by lowercase letters: a, b, c, x, y, z
 
 Examples:
-- A = {1, 2, 3, 4, 5}
-- B = {Monday, Tuesday, Wednesday}
-- C = {Accra, Kumasi, Takoradi, Tamale}
+• A = {1, 2, 3, 4, 5}
+• B = {Monday, Tuesday, Wednesday}
+• C = {Accra, Kumasi, Takoradi, Tamale}
 
 **Membership:**
-- ∈ means "is an element of" or "belongs to"
-- ∉ means "is not an element of"
+• ∈ means "is an element of" or "belongs to"
+• ∉ means "is not an element of"
 
 Examples:
-- 3 ∈ A (3 is an element of set A)
-- 6 ∉ A (6 is not an element of set A)
-- Accra ∈ C (Accra is in set C)
-- Lagos ∉ C (Lagos is not in set C)
+• 3 ∈ A (3 is an element of set A)
+• 6 ∉ A (6 is not an element of set A)
+• Accra ∈ C (Accra is in set C)
+• Lagos ∉ C (Lagos is not in set C)
 
 **Ways to Describe Sets:**
 
 1. **Listing Method (Roster Method):**
    List all elements between braces
-   - A = {1, 2, 3, 4, 5}
-   - B = {a, e, i, o, u}
+   • A = {1, 2, 3, 4, 5}
+   • B = {a, e, i, o, u}
 
 2. **Set-Builder Notation:**
    Describe the rule for membership
-   - A = {x | x is a natural number less than 6}
-   - B = {x | x is a vowel in the English alphabet}
-   - Read as: "the set of all x such that..."
+   • A = {x | x is a natural number less than 6}
+   • B = {x | x is a vowel in the English alphabet}
+   • Read as: "the set of all x such that..."
 
 3. **Word Description:**
    Describe in words
-   - A is the set of natural numbers from 1 to 5
-   - B is the set of vowels
+   • A is the set of natural numbers from 1 to 5
+   • B is the set of vowels
 
 **Ghana Examples:**
-- G = {Greater Accra, Ashanti, Central, Western, Eastern, Volta, ...} (Regions of Ghana)
-- F = {GH₵1, GH₵2, GH₵5, GH₵10, GH₵20, GH₵50, GH₵100, GH₵200} (Ghanaian banknotes)
-- S = {English, Mathematics, Science, Social Studies} (Core subjects)
+• G = {Greater Accra, Ashanti, Central, Western, Eastern, Volta, ...} (Regions of Ghana)
+• F = {GH₵1, GH₵2, GH₵5, GH₵10, GH₵20, GH₵50, GH₵100, GH₵200} (Ghanaian banknotes)
+• S = {English, Mathematics, Science, Social Studies} (Core subjects)
 
 **Cardinality:**
 The number of elements in a set, denoted by n(A) or |A|
-- If A = {1, 2, 3, 4, 5}, then n(A) = 5
-- If B = {a, e, i, o, u}, then n(B) = 5`
+• If A = {1, 2, 3, 4, 5}, then n(A) = 5
+• If B = {a, e, i, o, u}, then n(B) = 5`
       },
       {
         title: '2. Types of Sets',
@@ -1203,17 +1203,17 @@ The number of elements in a set, denoted by n(A) or |A|
 Has a countable number of elements
 
 Examples:
-- A = {1, 2, 3, 4, 5} → n(A) = 5
-- B = {days of the week} → n(B) = 7
-- C = {months in a year} → n(C) = 12
+• A = {1, 2, 3, 4, 5} → n(A) = 5
+• B = {days of the week} → n(B) = 7
+• C = {months in a year} → n(C) = 12
 
 **2. Infinite Set:**
 Has unlimited (uncountable) elements
 
 Examples:
-- ℕ = {1, 2, 3, 4, 5, ...} (natural numbers)
-- ℤ = {..., -2, -1, 0, 1, 2, ...} (integers)
-- Even numbers = {2, 4, 6, 8, ...}
+• ℕ = {1, 2, 3, 4, 5, ...} (natural numbers)
+• ℤ = {..., -2, -1, 0, 1, 2, ...} (integers)
+• Even numbers = {2, 4, 6, 8, ...}
 
 Notation: Use ... (ellipsis) to show pattern continues
 
@@ -1222,9 +1222,9 @@ Contains no elements
 Symbols: ∅ or { }
 
 Examples:
-- Set of months with 32 days = ∅
-- {x | x is a student who is 200 years old} = ∅
-- {x | x² = -1, x is real} = ∅
+• Set of months with 32 days = ∅
+• {x | x is a student who is 200 years old} = ∅
+• {x | x² = -1, x is real} = ∅
 
 Important: n(∅) = 0
 
@@ -1232,25 +1232,25 @@ Important: n(∅) = 0
 Contains exactly one element
 
 Examples:
-- {0}
-- {Accra} (if only considering capital cities of Ghana)
-- {x | x + 5 = 8} = {3}
+• {0}
+• {Accra} (if only considering capital cities of Ghana)
+• {x | x + 5 = 8} = {3}
 
 **5. Equal Sets:**
 Have exactly the same elements
 A = B if every element of A is in B and vice versa
 
 Examples:
-- {1, 2, 3} = {3, 2, 1} (order doesn't matter)
-- {a, b, c} = {a, a, b, c} (repetition doesn't matter)
+• {1, 2, 3} = {3, 2, 1} (order doesn't matter)
+• {a, b, c} = {a, a, b, c} (repetition doesn't matter)
 
 **6. Equivalent Sets:**
 Have the same number of elements (same cardinality)
 Sets don't need to be equal, just same size
 
 Examples:
-- A = {1, 2, 3} and B = {a, b, c}
-- n(A) = n(B) = 3, so A ~ B (equivalent)
+• A = {1, 2, 3} and B = {a, b, c}
+• n(A) = n(B) = 3, so A ~ B (equivalent)
 
 **7. Universal Set:**
 Contains all elements under consideration
@@ -1258,28 +1258,28 @@ Denoted by U or ξ (xi)
 
 Example:
 If discussing students:
-- U = {all students in school}
-- A = {Form 1 students}
-- B = {Form 2 students}
+• U = {all students in school}
+• A = {Form 1 students}
+• B = {Form 2 students}
 
 **8. Subset:**
 A is a subset of B (A ⊆ B) if every element of A is also in B
 
 Examples:
-- {1, 2} ⊆ {1, 2, 3, 4}
-- {vowels} ⊆ {letters of alphabet}
+• {1, 2} ⊆ {1, 2, 3, 4}
+• {vowels} ⊆ {letters of alphabet}
 
 Properties:
-- Every set is a subset of itself: A ⊆ A
-- Empty set is subset of every set: ∅ ⊆ A
-- If A ⊆ B and B ⊆ A, then A = B
+• Every set is a subset of itself: A ⊆ A
+• Empty set is subset of every set: ∅ ⊆ A
+• If A ⊆ B and B ⊆ A, then A = B
 
 **Proper Subset:**
 A ⊂ B means A is subset of B but A ≠ B
 
 Example:
-- {1, 2} ⊂ {1, 2, 3} (proper subset)
-- {1, 2, 3} ⊆ {1, 2, 3} (subset but not proper)`
+• {1, 2} ⊂ {1, 2, 3} (proper subset)
+• {1, 2, 3} ⊆ {1, 2, 3} (subset but not proper)`
       },
       {
         title: '3. Set Operations - Union',
@@ -1323,14 +1323,14 @@ Shaded region = A ∪ B
 n(A ∪ B) = n(A) + n(B) - n(A ∩ B)
 
 Example:
-- n(A) = 20, n(B) = 15, n(A ∩ B) = 5
-- n(A ∪ B) = 20 + 15 - 5 = 30
+• n(A) = 20, n(B) = 15, n(A ∩ B) = 5
+• n(A ∪ B) = 20 + 15 - 5 = 30
 
 **Ghana Example:**
-- A = {students who study French} → n(A) = 25
-- B = {students who study Spanish} → n(B) = 30
-- Both languages: n(A ∩ B) = 10
-- Total studying at least one language = 25 + 30 - 10 = 45`
+• A = {students who study French} → n(A) = 25
+• B = {students who study Spanish} → n(B) = 30
+• Both languages: n(A ∩ B) = 10
+• Total studying at least one language = 25 + 30 - 10 = 45`
       },
       {
         title: '4. Set Operations - Intersection',
@@ -1375,9 +1375,9 @@ Sets with no common elements
 If A ∩ B = ∅, then A and B are disjoint
 
 Example:
-- A = {odd numbers}
-- B = {even numbers}
-- A ∩ B = ∅ (disjoint)
+• A = {odd numbers}
+• B = {even numbers}
+• A ∩ B = ∅ (disjoint)
 
 **Ghana Example:**
 A = {students who scored A in Math} = 40 students
@@ -1385,10 +1385,10 @@ B = {students who scored A in Science} = 35 students
 A ∩ B = {students who scored A in both} = 15 students
 
 This means:
-- Only Math A: 40 - 15 = 25
-- Only Science A: 35 - 15 = 20
-- Both subjects A: 15
-- At least one A: 25 + 20 + 15 = 60
+• Only Math A: 40 - 15 = 25
+• Only Science A: 35 - 15 = 20
+• Both subjects A: 15
+• At least one A: 25 + 20 + 15 = 60
 
 **Distributive Laws:**
 1. A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)
@@ -1404,9 +1404,9 @@ The complement of set A is the set of all elements in the universal set U that a
 **Definition:** A' = {x | x ∈ U and x ∉ A}
 
 **Example:**
-- U = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-- A = {2, 4, 6, 8, 10} (even numbers)
-- A' = {1, 3, 5, 7, 9} (odd numbers)
+• U = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+• A = {2, 4, 6, 8, 10} (even numbers)
+• A' = {1, 3, 5, 7, 9} (odd numbers)
 
 **Venn Diagram:**
 \`\`\`venn
@@ -1448,9 +1448,9 @@ Elements in A but NOT in B
 **Important:** A - B ≠ B - A (not commutative)
 
 Example:
-- A = {1, 2, 3, 4}, B = {3, 4, 5, 6}
-- A - B = {1, 2}
-- B - A = {5, 6}
+• A = {1, 2, 3, 4}, B = {3, 4, 5, 6}
+• A - B = {1, 2}
+• B - A = {5, 6}
 
 **Relationship:**
 A - B = A ∩ B'
@@ -1488,10 +1488,10 @@ A ∩ B = {passed both subjects}`
 
 **Worked Example:**
 In a class of 40 students:
-- 25 study French (F)
-- 20 study Spanish (S)
-- 8 study both languages
-- How many study neither?
+• 25 study French (F)
+• 20 study Spanish (S)
+• 8 study both languages
+• How many study neither?
 
 **Step 1: Draw Venn diagram**
 \`\`\`venn
@@ -1503,23 +1503,23 @@ In a class of 40 students:
 \`\`\`
 
 **Step 2: Fill in known values**
-- Both (F ∩ S) = 8
+• Both (F ∩ S) = 8
 
 **Step 3: Calculate "only" regions**
-- Only F = 25 - 8 = 17
-- Only S = 20 - 8 = 12
+• Only F = 25 - 8 = 17
+• Only S = 20 - 8 = 12
 
 **Step 4: Calculate total in circles**
-- In F or S = 17 + 8 + 12 = 37
+• In F or S = 17 + 8 + 12 = 37
 
 **Step 5: Calculate neither**
-- Neither = 40 - 37 = 3
+• Neither = 40 - 37 = 3
 
 **Answer:**
-- Only French: 17 students
-- Only Spanish: 12 students
-- Both: 8 students
-- Neither: 3 students
+• Only French: 17 students
+• Only Spanish: 12 students
+• Both: 8 students
+• Neither: 3 students
 
 **Verification:**
 17 + 12 + 8 + 3 = 40 ✓
@@ -1554,14 +1554,14 @@ n(U) = n(F only) + n(S only) + n(F ∩ S) + n(neither)
 
 **Worked Example:**
 In a school of 100 students:
-- 60 play football (F)
-- 50 play basketball (B)
-- 30 play volleyball (V)
-- 20 play both F and B
-- 15 play both F and V
-- 10 play both B and V
-- 5 play all three sports
-- How many play none?
+• 60 play football (F)
+• 50 play basketball (B)
+• 30 play volleyball (V)
+• 20 play both F and B
+• 15 play both F and V
+• 10 play both B and V
+• 5 play all three sports
+• How many play none?
 
 **Solution Steps:**
 
@@ -1569,14 +1569,14 @@ In a school of 100 students:
 A ∩ B ∩ C = 5
 
 **Step 2: Calculate "only two" regions**
-- F ∩ B only = 20 - 5 = 15
-- F ∩ V only = 15 - 5 = 10
-- B ∩ V only = 10 - 5 = 5
+• F ∩ B only = 20 - 5 = 15
+• F ∩ V only = 15 - 5 = 10
+• B ∩ V only = 10 - 5 = 5
 
 **Step 3: Calculate "only one" regions**
-- Only F = 60 - (15 + 5 + 10) = 30
-- Only B = 50 - (15 + 5 + 5) = 25
-- Only V = 30 - (10 + 5 + 5) = 10
+• Only F = 60 - (15 + 5 + 10) = 30
+• Only B = 50 - (15 + 5 + 5) = 25
+• Only V = 30 - (10 + 5 + 5) = 10
 
 **Step 4: Calculate total in circles**
 Total = 30 + 25 + 10 + 15 + 10 + 5 + 5 = 100
@@ -1588,7 +1588,7 @@ None = 100 - 100 = 0
 
 **Cardinality Formula (3 sets):**
 n(A ∪ B ∪ C) = n(A) + n(B) + n(C) 
-              - n(A ∩ B) - n(A ∩ C) - n(B ∩ C) 
+              • n(A ∩ B) - n(A ∩ C) - n(B ∩ C) 
               + n(A ∩ B ∩ C)
 
 **Ghana WASSCE Tip:**
@@ -1606,31 +1606,31 @@ iii) Neither subject
 
 **Step 1: Define Your Sets**
 First, write down what you know using set notation.
-- $n(U) = 50$ (Total students)
-- $n(E) = 30$ (Economics)
-- $n(G) = 25$ (Geography)
-- $n(E \\cap G) = 10$ (Both)
+• $n(U) = 50$ (Total students)
+• $n(E) = 30$ (Economics)
+• $n(G) = 25$ (Geography)
+• $n(E \\cap G) = 10$ (Both)
 
 **Step 2: Draw the Diagram & Fill the Center**
 Draw two overlapping circles. **Always fill the intersection first.**
-- Place **10** in the middle where the circles overlap.
+• Place **10** in the middle where the circles overlap.
 
 **Step 3: Calculate "Only" Regions**
 The circle for Economics ($E$) must add up to 30. We already have 10 in it.
-- **Economics Only:** $30 - 10 = 20$
+• **Economics Only:** $30 - 10 = 20$
   *(Write 20 in the left part of circle E)*
 
 The circle for Geography ($G$) must add up to 25. We already have 10 in it.
-- **Geography Only:** $25 - 10 = 15$
+• **Geography Only:** $25 - 10 = 15$
   *(Write 15 in the right part of circle G)*
 
 **Step 4: Calculate "Neither"**
 Add up everything inside the circles:
-- Total in circles = (E only) + (G only) + (Both)
-- Total = $20 + 15 + 10 = 45$
+• Total in circles = (E only) + (G only) + (Both)
+• Total = $20 + 15 + 10 = 45$
 
 The total class size is 50. The remainder are those who offer neither.
-- **Neither:** $50 - 45 = 5$
+• **Neither:** $50 - 45 = 5$
   *(Write 5 outside the circles)*
 
 **Final Visual Solution:**
@@ -1654,37 +1654,37 @@ iii) Neither subject = **5**`
 
 **Problem:**
 In a survey of 60 people:
-- 25 read Daily Graphic (G)
-- 26 read Ghanaian Times (T)
-- 26 read Daily Guide (D)
-- 9 read both G and T
-- 11 read both G and D
-- 8 read both T and D
-- 8 read all three newspapers.
+• 25 read Daily Graphic (G)
+• 26 read Ghanaian Times (T)
+• 26 read Daily Guide (D)
+• 9 read both G and T
+• 11 read both G and D
+• 8 read both T and D
+• 8 read all three newspapers.
 Find the number of people who read **exactly one** newspaper.
 
 **Step 1: The Golden Rule - Start from the Center**
 Find the number for "all three" and put it in the very center.
-- $n(G \\cap T \\cap D) = 8$
+• $n(G \\cap T \\cap D) = 8$
 
 **Step 2: Fill the "Petals" (Intersections of Two)**
 The problem says "9 read both G and T". This includes the 8 who read all three.
-- **G and T only:** $9 - 8 = 1$
-- **G and D only:** $11 - 8 = 3$
-- **T and D only:** $8 - 8 = 0$
+• **G and T only:** $9 - 8 = 1$
+• **G and D only:** $11 - 8 = 3$
+• **T and D only:** $8 - 8 = 0$
 
 *Check your diagram: Do the intersections add up to the given numbers? (e.g., $1 + 8 = 9$ for G and T). Yes.*
 
 **Step 3: Fill the "Outer Leaves" (Only One)**
 Now, look at the whole circle for Daily Graphic (G). It must total 25.
 Subtract the three numbers already inside circle G (the center and two petals).
-- **Graphic Only:** $25 - (1 + 3 + 8) = 25 - 12 = 13$
+• **Graphic Only:** $25 - (1 + 3 + 8) = 25 - 12 = 13$
 
 Do the same for Times (T). Total is 26.
-- **Times Only:** $26 - (1 + 0 + 8) = 26 - 9 = 17$
+• **Times Only:** $26 - (1 + 0 + 8) = 26 - 9 = 17$
 
 Do the same for Guide (D). Total is 26.
-- **Guide Only:** $26 - (3 + 0 + 8) = 26 - 11 = 15$
+• **Guide Only:** $26 - (3 + 0 + 8) = 26 - 11 = 15$
 
 **Step 4: The Final Diagram**
 
@@ -1700,8 +1700,8 @@ Do the same for Guide (D). Total is 26.
 **Step 5: Answer the Specific Question**
 The question asks for "exactly one newspaper".
 Add the "Only" regions:
-- Answer = (Graphic Only) + (Times Only) + (Guide Only)
-- Answer = $13 + 17 + 15 = 45$ people.`
+• Answer = (Graphic Only) + (Times Only) + (Guide Only)
+• Answer = $13 + 17 + 15 = 45$ people.`
       }
     ],
     activities: {
@@ -1846,10 +1846,10 @@ Add the "Only" regions:
     introduction: `Algebra is the language of mathematics. While arithmetic deals with specific numbers (like 5 + 3 = 8), algebra uses letters to represent unknown values or variables, allowing us to solve general problems and create formulas that work in many situations.
 
 In Ghana, we use algebraic thinking daily without realizing it:
-- **Market calculations:** If one orange costs x cedis, then 5 oranges cost 5x cedis
-- **Mobile data:** If 1GB costs GH₵5, then n GB costs 5n cedis
-- **Construction:** If a room needs 4 bags of cement per square meter, and the area is A m², you need 4A bags
-- **Transportation:** If fuel costs c cedis per liter and you buy g liters, total cost is cg cedis
+• **Market calculations:** If one orange costs x cedis, then 5 oranges cost 5x cedis
+• **Mobile data:** If 1GB costs GH₵5, then n GB costs 5n cedis
+• **Construction:** If a room needs 4 bags of cement per square meter, and the area is A m², you need 4A bags
+• **Transportation:** If fuel costs c cedis per liter and you buy g liters, total cost is cg cedis
 
 Algebraic expressions are the foundation for solving equations, understanding functions, and tackling complex real-world problems. This lesson will teach you how to read, write, simplify, expand, and factorize algebraic expressions - essential skills for WASSCE success and advanced mathematics.
 
@@ -1863,141 +1863,141 @@ Understanding algebra opens doors to careers in engineering, computer science, e
 **Components of Algebraic Expressions:**
 
 1. **Variables (Letters):**
-   - Represent unknown or changing values
-   - Common variables: x, y, z, a, b, c, n, m
-   - Examples: x, 2y, 5a, −3b
+   • Represent unknown or changing values
+   • Common variables: x, y, z, a, b, c, n, m
+   • Examples: x, 2y, 5a, −3b
 
 2. **Constants (Numbers):**
-   - Fixed values that don't change
-   - Examples: 5, −3, 7, 0.5, π
+   • Fixed values that don't change
+   • Examples: 5, −3, 7, 0.5, π
 
 3. **Coefficients:**
-   - Numbers multiplied by variables
-   - In 5x, the coefficient is 5
-   - In −3y, the coefficient is −3
-   - If no number shown, coefficient is 1: x means 1x
+   • Numbers multiplied by variables
+   • In 5x, the coefficient is 5
+   • In −3y, the coefficient is −3
+   • If no number shown, coefficient is 1: x means 1x
 
 4. **Terms:**
-   - Parts of an expression separated by + or − signs
-   - Examples:
-     - 3x + 5y − 2 has **three terms**: 3x, 5y, and −2
-     - 7a − 4b + 9 has **three terms**: 7a, −4b, and 9
-     - 2x² + 5x − 3 has **three terms**: 2x², 5x, and −3
+   • Parts of an expression separated by + or − signs
+   • Examples:
+     • 3x + 5y − 2 has **three terms**: 3x, 5y, and −2
+     • 7a − 4b + 9 has **three terms**: 7a, −4b, and 9
+     • 2x² + 5x − 3 has **three terms**: 2x², 5x, and −3
 
 5. **Operators:**
-   - Symbols showing operations: +, −, ×, ÷
-   - Multiplication often implied: 5x means 5 × x
-   - Division written as fractions: x/2 means x ÷ 2
+   • Symbols showing operations: +, −, ×, ÷
+   • Multiplication often implied: 5x means 5 × x
+   • Division written as fractions: x/2 means x ÷ 2
 
 **Examples Breakdown:**
 
 **Expression: 4x + 7**
-- Terms: 4x and 7
-- Variable: x
-- Coefficient of x: 4
-- Constant: 7
+• Terms: 4x and 7
+• Variable: x
+• Coefficient of x: 4
+• Constant: 7
 
 **Expression: 3a − 5b + 2**
-- Terms: 3a, −5b, and 2
-- Variables: a and b
-- Coefficient of a: 3
-- Coefficient of b: −5
-- Constant: 2
+• Terms: 3a, −5b, and 2
+• Variables: a and b
+• Coefficient of a: 3
+• Coefficient of b: −5
+• Constant: 2
 
 **Expression: 2x² + 5x − 8**
-- Terms: 2x², 5x, and −8
-- Variable: x
-- Coefficient of x²: 2
-- Coefficient of x: 5
-- Constant: −8
+• Terms: 2x², 5x, and −8
+• Variable: x
+• Coefficient of x²: 2
+• Coefficient of x: 5
+• Constant: −8
 
 **Ghana Example:**
 If bananas cost b cedis per bunch and plantains cost p cedis per bunch:
-- Buying 3 bunches of bananas costs: **3b cedis**
-- Buying 2 bunches of plantains costs: **2p cedis**
-- Total cost: **3b + 2p cedis** (algebraic expression)
+• Buying 3 bunches of bananas costs: **3b cedis**
+• Buying 2 bunches of plantains costs: **2p cedis**
+• Total cost: **3b + 2p cedis** (algebraic expression)
 
 **Important Notes:**
-- 5x means 5 × x (multiplication sign often omitted)
-- x means 1x (coefficient is 1 when not shown)
-- −x means −1x (coefficient is −1)
-- xy means x × y (both are variables)
-- Terms are separated by + or − signs, NOT by × or ÷`
+• 5x means 5 × x (multiplication sign often omitted)
+• x means 1x (coefficient is 1 when not shown)
+• −x means −1x (coefficient is −1)
+• xy means x × y (both are variables)
+• Terms are separated by + or − signs, NOT by × or ÷`
       },
       {
         title: '2. Like Terms vs Unlike Terms',
         content: `Understanding the difference between like and unlike terms is crucial for simplifying expressions.
 
 **Like Terms:**
-- Have the **same variable(s)** raised to the **same power**
-- Only coefficients can be different
-- Can be combined (added or subtracted)
+• Have the **same variable(s)** raised to the **same power**
+• Only coefficients can be different
+• Can be combined (added or subtracted)
 
 **Examples of Like Terms:**
 
 **Set 1:** 5x, 3x, −2x, 8x
-- All have variable x
-- All have same power (x¹)
-- Can combine: 5x + 3x = 8x
+• All have variable x
+• All have same power (x¹)
+• Can combine: 5x + 3x = 8x
 
 **Set 2:** 4y², 7y², −3y², y²
-- All have variable y²
-- All have same power (2)
-- Can combine: 4y² + 7y² = 11y²
+• All have variable y²
+• All have same power (2)
+• Can combine: 4y² + 7y² = 11y²
 
 **Set 3:** 2ab, 5ab, −ab, 3ab
-- All have variables a and b
-- Can combine: 2ab + 5ab = 7ab
+• All have variables a and b
+• Can combine: 2ab + 5ab = 7ab
 
 **Unlike Terms:**
-- Have **different variables** OR **different powers**
-- Cannot be combined
-- Must remain separate in the expression
+• Have **different variables** OR **different powers**
+• Cannot be combined
+• Must remain separate in the expression
 
 **Examples of Unlike Terms:**
 
 **Cannot combine:**
-- 3x and 5y (different variables)
-- 2x and 4x² (different powers)
-- 5a and 3b (different variables)
-- xy and x²y (different powers of x)
+• 3x and 5y (different variables)
+• 2x and 4x² (different powers)
+• 5a and 3b (different variables)
+• xy and x²y (different powers of x)
 
 **Key Recognition Rules:**
 
 1. **Same variable, same power = LIKE**
-   - 7m and 3m → LIKE ✓
-   - Can combine: 7m + 3m = 10m
+   • 7m and 3m → LIKE ✓
+   • Can combine: 7m + 3m = 10m
 
 2. **Different variables = UNLIKE**
-   - 5x and 3y → UNLIKE ✗
-   - Cannot combine: 5x + 3y stays as is
+   • 5x and 3y → UNLIKE ✗
+   • Cannot combine: 5x + 3y stays as is
 
 3. **Same variable, different powers = UNLIKE**
-   - 4x and 2x² → UNLIKE ✗
-   - Cannot combine: 4x + 2x² stays as is
+   • 4x and 2x² → UNLIKE ✗
+   • Cannot combine: 4x + 2x² stays as is
 
 4. **Constants are always like terms**
-   - 5, 7, −3, 10 → LIKE ✓
-   - Can combine: 5 + 7 − 3 = 9
+   • 5, 7, −3, 10 → LIKE ✓
+   • Can combine: 5 + 7 − 3 = 9
 
 **Practice Identification:**
 
 **Expression: 5x + 3y − 2x + 4y + 7**
 
 Like terms groups:
-- 5x and −2x (both have x)
-- 3y and 4y (both have y)
-- 7 (constant, stands alone)
+• 5x and −2x (both have x)
+• 3y and 4y (both have y)
+• 7 (constant, stands alone)
 
 Result after combining:
-- (5x − 2x) + (3y + 4y) + 7
-- 3x + 7y + 7
+• (5x − 2x) + (3y + 4y) + 7
+• 3x + 7y + 7
 
 **Ghana Market Example:**
-- 3 apples + 5 oranges + 2 apples + 4 oranges
-- Group like items: (3 apples + 2 apples) + (5 oranges + 4 oranges)
-- Result: 5 apples + 9 oranges
-- Algebraically: 3a + 5o + 2a + 4o = 5a + 9o
+• 3 apples + 5 oranges + 2 apples + 4 oranges
+• Group like items: (3 apples + 2 apples) + (5 oranges + 4 oranges)
+• Result: 5 apples + 9 oranges
+• Algebraically: 3a + 5o + 2a + 4o = 5a + 9o
 
 **Common Mistakes to Avoid:**
 ❌ 2x + 3x = 5x² (WRONG - don't change the power)
@@ -2025,9 +2025,9 @@ Result after combining:
 Simplify: 7x + 3x − 2x
 
 Solution:
-- All terms have x (like terms)
-- Combine coefficients: 7 + 3 − 2 = 8
-- Answer: **8x**
+• All terms have x (like terms)
+• Combine coefficients: 7 + 3 − 2 = 8
+• Answer: **8x**
 
 **Example 2: Multiple Variables**
 
@@ -2035,12 +2035,12 @@ Simplify: 5a + 3b − 2a + 7b
 
 Solution:
 Step 1: Group like terms
-- a terms: 5a, −2a
-- b terms: 3b, 7b
+• a terms: 5a, −2a
+• b terms: 3b, 7b
 
 Step 2: Combine each group
-- 5a − 2a = 3a
-- 3b + 7b = 10b
+• 5a − 2a = 3a
+• 3b + 7b = 10b
 
 Answer: **3a + 10b**
 
@@ -2050,12 +2050,12 @@ Simplify: 4x + 9 − 2x + 5 + 3x
 
 Solution:
 Step 1: Group like terms
-- x terms: 4x, −2x, 3x
-- Constants: 9, 5
+• x terms: 4x, −2x, 3x
+• Constants: 9, 5
 
 Step 2: Combine
-- 4x − 2x + 3x = 5x
-- 9 + 5 = 14
+• 4x − 2x + 3x = 5x
+• 9 + 5 = 14
 
 Answer: **5x + 14**
 
@@ -2065,14 +2065,14 @@ Simplify: 3x² + 5x + 2x² − 3x + 7
 
 Solution:
 Step 1: Group like terms
-- x² terms: 3x², 2x²
-- x terms: 5x, −3x
-- Constant: 7
+• x² terms: 3x², 2x²
+• x terms: 5x, −3x
+• Constant: 7
 
 Step 2: Combine
-- 3x² + 2x² = 5x²
-- 5x − 3x = 2x
-- 7 stays as is
+• 3x² + 2x² = 5x²
+• 5x − 3x = 2x
+• 7 stays as is
 
 Answer: **5x² + 2x + 7**
 
@@ -2081,9 +2081,9 @@ Answer: **5x² + 2x + 7**
 Simplify: 6y − 4y − 2y + 8y
 
 Solution:
-- All have y (like terms)
-- Combine: 6 − 4 − 2 + 8 = 8
-- Answer: **8y**
+• All have y (like terms)
+• Combine: 6 − 4 − 2 + 8 = 8
+• Answer: **8y**
 
 **Example 6: Complex Expression**
 
@@ -2091,34 +2091,34 @@ Simplify: 5m + 3n − 2m + 4p + 7n − p + 6
 
 Solution:
 Step 1: Group
-- m terms: 5m, −2m
-- n terms: 3n, 7n
-- p terms: 4p, −p
-- Constant: 6
+• m terms: 5m, −2m
+• n terms: 3n, 7n
+• p terms: 4p, −p
+• Constant: 6
 
 Step 2: Combine
-- 5m − 2m = 3m
-- 3n + 7n = 10n
-- 4p − p = 3p
-- 6 stays
+• 5m − 2m = 3m
+• 3n + 7n = 10n
+• 4p − p = 3p
+• 6 stays
 
 Answer: **3m + 10n + 3p + 6**
 
 **Ghana Shopping Example:**
 
 Problem: Kofi buys items at the market
-- 5 oranges at x cedis each: 5x
-- 3 more oranges: 3x
-- 4 apples at y cedis each: 4y
-- 2 more apples: 2y
-- Transportation: 8 cedis
+• 5 oranges at x cedis each: 5x
+• 3 more oranges: 3x
+• 4 apples at y cedis each: 4y
+• 2 more apples: 2y
+• Transportation: 8 cedis
 
 Total cost expression: 5x + 3x + 4y + 2y + 8
 
 Simplify:
-- Orange terms: 5x + 3x = 8x
-- Apple terms: 4y + 2y = 6y
-- Constant: 8
+• Orange terms: 5x + 3x = 8x
+• Apple terms: 4y + 2y = 6y
+• Constant: 8
 
 Simplified: **8x + 6y + 8**
 
@@ -2144,47 +2144,47 @@ This means: multiply a by b, then multiply a by c
 Expand: 3(x + 5)
 
 Solution:
-- Multiply 3 by everything inside
-- 3 × x = 3x
-- 3 × 5 = 15
-- Answer: **3x + 15**
+• Multiply 3 by everything inside
+• 3 × x = 3x
+• 3 × 5 = 15
+• Answer: **3x + 15**
 
 **Example 2: With Subtraction**
 
 Expand: 5(2x − 3)
 
 Solution:
-- 5 × 2x = 10x
-- 5 × (−3) = −15
-- Answer: **10x − 15**
+• 5 × 2x = 10x
+• 5 × (−3) = −15
+• Answer: **10x − 15**
 
 **Example 3: Negative Outside**
 
 Expand: −2(x + 7)
 
 Solution:
-- −2 × x = −2x
-- −2 × 7 = −14
-- Answer: **−2x − 14**
+• −2 × x = −2x
+• −2 × 7 = −14
+• Answer: **−2x − 14**
 
 **Example 4: Variable Outside**
 
 Expand: x(x + 4)
 
 Solution:
-- x × x = x²
-- x × 4 = 4x
-- Answer: **x² + 4x**
+• x × x = x²
+• x × 4 = 4x
+• Answer: **x² + 4x**
 
 **Example 5: Two Terms Outside**
 
 Expand: (x + 3)(x + 5)
 
 Solution (FOIL method):
-- **F**irst: x × x = x²
-- **O**uter: x × 5 = 5x
-- **I**nner: 3 × x = 3x
-- **L**ast: 3 × 5 = 15
+• **F**irst: x × x = x²
+• **O**uter: x × 5 = 5x
+• **I**nner: 3 × x = 3x
+• **L**ast: 3 × 5 = 15
 
 Combine like terms: x² + 5x + 3x + 15
 Answer: **x² + 8x + 15**
@@ -2194,10 +2194,10 @@ Answer: **x² + 8x + 15**
 Expand: (x + 4)(x − 4)
 
 Solution:
-- F: x × x = x²
-- O: x × (−4) = −4x
-- I: 4 × x = 4x
-- L: 4 × (−4) = −16
+• F: x × x = x²
+• O: x × (−4) = −4x
+• I: 4 × x = 4x
+• L: 4 × (−4) = −16
 
 Combine: x² − 4x + 4x − 16
 Answer: **x² − 16**
@@ -2211,10 +2211,10 @@ Expand: (x + 3)²
 This means: (x + 3)(x + 3)
 
 Solution:
-- F: x × x = x²
-- O: x × 3 = 3x
-- I: 3 × x = 3x
-- L: 3 × 3 = 9
+• F: x × x = x²
+• O: x × 3 = 3x
+• I: 3 × x = 3x
+• L: 3 × 3 = 9
 
 Combine: x² + 3x + 3x + 9
 Answer: **x² + 6x + 9**
@@ -2222,14 +2222,14 @@ Answer: **x² + 6x + 9**
 **Important Patterns to Remember:**
 
 1. **Single bracket:**
-   - a(b + c) = ab + ac
+   • a(b + c) = ab + ac
 
 2. **Difference of squares:**
-   - (a + b)(a − b) = a² − b²
+   • (a + b)(a − b) = a² − b²
 
 3. **Perfect square:**
-   - (a + b)² = a² + 2ab + b²
-   - (a − b)² = a² − 2ab + b²
+   • (a + b)² = a² + 2ab + b²
+   • (a − b)² = a² − 2ab + b²
 
 **Ghana Example:**
 
@@ -2240,10 +2240,10 @@ Area = Length × Width
 Area = (x + 5)(x + 3)
 
 Expand:
-- x × x = x²
-- x × 3 = 3x
-- 5 × x = 5x
-- 5 × 3 = 15
+• x × x = x²
+• x × 3 = 3x
+• 5 × x = 5x
+• 5 × 3 = 15
 
 Area = x² + 3x + 5x + 15
 Area = **x² + 8x + 15 square meters**
@@ -2263,9 +2263,9 @@ Area = **x² + 8x + 15 square meters**
 A factor is a number or expression that divides evenly into another.
 
 Examples:
-- 12 = 2 × 6 (2 and 6 are factors)
-- 15 = 3 × 5 (3 and 5 are factors)
-- 6x = 2 × 3x (2 is a factor)
+• 12 = 2 × 6 (2 and 6 are factors)
+• 15 = 3 × 5 (3 and 5 are factors)
+• 6x = 2 × 3x (2 is a factor)
 
 **Method: Find the Highest Common Factor (HCF)**
 
@@ -2352,8 +2352,8 @@ Answer: **(x + 5)(x − 5)**
 Factorize: x² + 7x + 12
 
 Find two numbers that:
-- Multiply to give 12
-- Add to give 7
+• Multiply to give 12
+• Add to give 7
 
 Numbers: 3 and 4 (3 × 4 = 12, 3 + 4 = 7)
 
@@ -2364,16 +2364,16 @@ Verify: (x + 3)(x + 4) = x² + 4x + 3x + 12 = x² + 7x + 12 ✓
 **Special Patterns:**
 
 1. **Difference of squares:**
-   - a² − b² = (a + b)(a − b)
-   - Example: x² − 9 = (x + 3)(x − 3)
+   • a² − b² = (a + b)(a − b)
+   • Example: x² − 9 = (x + 3)(x − 3)
 
 2. **Perfect square trinomial:**
-   - a² + 2ab + b² = (a + b)²
-   - Example: x² + 6x + 9 = (x + 3)²
+   • a² + 2ab + b² = (a + b)²
+   • Example: x² + 6x + 9 = (x + 3)²
 
 3. **Perfect square trinomial (negative):**
-   - a² − 2ab + b² = (a − b)²
-   - Example: x² − 8x + 16 = (x − 4)²
+   • a² − 2ab + b² = (a − b)²
+   • Example: x² − 8x + 16 = (x − 4)²
 
 **Ghana Example:**
 
@@ -2387,11 +2387,11 @@ This means: Profit = 10 × (2x + 3)
 Or: For every item sold, there's a base profit structure.
 
 **Why Factorize?**
-- Simplifies complex expressions
-- Solves equations (when expression = 0)
-- Cancels terms in fractions
-- Reveals patterns and relationships
-- Essential for WASSCE algebra questions`
+• Simplifies complex expressions
+• Solves equations (when expression = 0)
+• Cancels terms in fractions
+• Reveals patterns and relationships
+• Essential for WASSCE algebra questions`
       },
       {
         title: '6. Substitution - Evaluating Algebraic Expressions',
@@ -2409,72 +2409,72 @@ Or: For every item sold, there's a base profit structure.
 Evaluate 3x + 5 when x = 4
 
 Solution:
-- Write: 3x + 5
-- Substitute: 3(4) + 5
-- Calculate: 12 + 5
-- Answer: **17**
+• Write: 3x + 5
+• Substitute: 3(4) + 5
+• Calculate: 12 + 5
+• Answer: **17**
 
 **Example 2: Multiple Variables**
 
 Evaluate 2a + 3b when a = 5 and b = 2
 
 Solution:
-- Write: 2a + 3b
-- Substitute: 2(5) + 3(2)
-- Calculate: 10 + 6
-- Answer: **16**
+• Write: 2a + 3b
+• Substitute: 2(5) + 3(2)
+• Calculate: 10 + 6
+• Answer: **16**
 
 **Example 3: With Powers**
 
 Evaluate x² + 5x when x = 3
 
 Solution:
-- Write: x² + 5x
-- Substitute: (3)² + 5(3)
-- Calculate: 9 + 15
-- Answer: **24**
+• Write: x² + 5x
+• Substitute: (3)² + 5(3)
+• Calculate: 9 + 15
+• Answer: **24**
 
 **Example 4: Negative Values**
 
 Evaluate 4x − 7 when x = −2
 
 Solution:
-- Write: 4x − 7
-- Substitute: 4(−2) − 7
-- Calculate: −8 − 7
-- Answer: **−15**
+• Write: 4x − 7
+• Substitute: 4(−2) − 7
+• Calculate: −8 − 7
+• Answer: **−15**
 
 **Example 5: Fraction Substitution**
 
 Evaluate (x + y)/2 when x = 8 and y = 6
 
 Solution:
-- Write: (x + y)/2
-- Substitute: (8 + 6)/2
-- Calculate: 14/2
-- Answer: **7**
+• Write: (x + y)/2
+• Substitute: (8 + 6)/2
+• Calculate: 14/2
+• Answer: **7**
 
 **Example 6: Complex Expression**
 
 Evaluate 3x² − 2x + 5 when x = 4
 
 Solution:
-- Write: 3x² − 2x + 5
-- Substitute: 3(4)² − 2(4) + 5
-- Calculate: 3(16) − 8 + 5
-- Calculate: 48 − 8 + 5
-- Answer: **45**
+• Write: 3x² − 2x + 5
+• Substitute: 3(4)² − 2(4) + 5
+• Calculate: 3(16) − 8 + 5
+• Calculate: 48 − 8 + 5
+• Answer: **45**
 
 **Example 7: Multiple Variables with Powers**
 
 Evaluate 2a²b when a = 3 and b = 4
 
 Solution:
-- Write: 2a²b
-- Substitute: 2(3)²(4)
-- Calculate: 2(9)(4)
-- Calculate: 18 × 4
-- Answer: **72**
+• Write: 2a²b
+• Substitute: 2(3)²(4)
+• Calculate: 2(9)(4)
+• Calculate: 18 × 4
+• Answer: **72**
 
 **Ghana Real-World Examples:**
 
@@ -2484,9 +2484,9 @@ Formula: Cost = 5n + 10 (where n = number of GB)
 Find cost for 8GB
 
 Solution:
-- Substitute: 5(8) + 10
-- Calculate: 40 + 10
-- Answer: **GH₵50**
+• Substitute: 5(8) + 10
+• Calculate: 40 + 10
+• Answer: **GH₵50**
 
 **Example B: Taxi Fare**
 
@@ -2494,9 +2494,9 @@ Formula: Fare = 3d + 8 (where d = distance in km)
 Find fare for 12 km
 
 Solution:
-- Substitute: 3(12) + 8
-- Calculate: 36 + 8
-- Answer: **GH₵44**
+• Substitute: 3(12) + 8
+• Calculate: 36 + 8
+• Answer: **GH₵44**
 
 **Example C: Market Profit**
 
@@ -2504,29 +2504,29 @@ Formula: Profit = 50x − 200 (where x = items sold)
 Find profit when 15 items sold
 
 Solution:
-- Substitute: 50(15) − 200
-- Calculate: 750 − 200
-- Answer: **GH₵550 profit**
+• Substitute: 50(15) − 200
+• Calculate: 750 − 200
+• Answer: **GH₵550 profit**
 
 **Important Reminders:**
 
 1. **Always use brackets** when substituting:
-   - Right: 3(−2) = −6
-   - Wrong: 3−2 = 1
+   • Right: 3(−2) = −6
+   • Wrong: 3−2 = 1
 
 2. **Square negative numbers carefully:**
-   - (−3)² = (−3)(−3) = 9
-   - −3² = −(3 × 3) = −9 (negative outside)
+   • (−3)² = (−3)(−3) = 9
+   • −3² = −(3 × 3) = −9 (negative outside)
 
 3. **Follow BODMAS:**
-   - Brackets first
-   - Orders (powers) second
-   - Division/Multiplication (left to right)
-   - Addition/Subtraction (left to right)
+   • Brackets first
+   • Orders (powers) second
+   • Division/Multiplication (left to right)
+   • Addition/Subtraction (left to right)
 
 4. **Check your signs:**
-   - Negative × Positive = Negative
-   - Negative × Negative = Positive
+   • Negative × Positive = Negative
+   • Negative × Negative = Positive
 
 **Common Mistakes:**
 
@@ -2538,10 +2538,10 @@ Solution:
 
 **WASSCE Tip:**
 Substitution questions often test:
-- Negative number handling
-- Order of operations (BODMAS)
-- Powers and indices
-- Fraction arithmetic
+• Negative number handling
+• Order of operations (BODMAS)
+• Powers and indices
+• Fraction arithmetic
 
 Practice with different values including negatives, fractions, and zero!`
       },
@@ -2552,23 +2552,23 @@ Practice with different values including negatives, fractions, and zero!`
 **Translation Keywords:**
 
 **Addition (+):**
-- sum, total, plus, more than, increased by, added to
-- Example: "5 more than x" → x + 5
+• sum, total, plus, more than, increased by, added to
+• Example: "5 more than x" → x + 5
 
 **Subtraction (−):**
-- difference, minus, less than, decreased by, reduced by, subtracted from
-- Example: "8 less than y" → y − 8
-- **CAREFUL:** "8 less than y" means y − 8, NOT 8 − y
+• difference, minus, less than, decreased by, reduced by, subtracted from
+• Example: "8 less than y" → y − 8
+• **CAREFUL:** "8 less than y" means y − 8, NOT 8 − y
 
 **Multiplication (×):**
-- product, times, multiplied by, of, twice, double, triple
-- Example: "three times a number" → 3x
-- Example: "product of a and b" → ab
+• product, times, multiplied by, of, twice, double, triple
+• Example: "three times a number" → 3x
+• Example: "product of a and b" → ab
 
 **Division (÷):**
-- quotient, divided by, per, ratio, half, third
-- Example: "x divided by 5" → x/5
-- Example: "half of y" → y/2
+• quotient, divided by, per, ratio, half, third
+• Example: "x divided by 5" → x/5
+• Example: "half of y" → y/2
 
 **Pattern Recognition:**
 
@@ -2582,46 +2582,46 @@ Practice with different values including negatives, fractions, and zero!`
 "Five more than twice a number"
 
 Solution:
-- "A number" = x
-- "Twice a number" = 2x
-- "Five more than" = + 5
-- Answer: **2x + 5**
+• "A number" = x
+• "Twice a number" = 2x
+• "Five more than" = + 5
+• Answer: **2x + 5**
 
 **Example 2: Multiple Operations**
 
 "The sum of three times x and four"
 
 Solution:
-- "Three times x" = 3x
-- "Sum of ... and four" = ... + 4
-- Answer: **3x + 4**
+• "Three times x" = 3x
+• "Sum of ... and four" = ... + 4
+• Answer: **3x + 4**
 
 **Example 3: Subtraction Order**
 
 "Seven less than a number"
 
 Solution:
-- "A number" = x
-- "Seven less than" = −7 from the number
-- Answer: **x − 7**
+• "A number" = x
+• "Seven less than" = −7 from the number
+• Answer: **x − 7**
 
 **Example 4: Product and Sum**
 
 "The product of x and y, increased by 10"
 
 Solution:
-- "Product of x and y" = xy
-- "Increased by 10" = +10
-- Answer: **xy + 10**
+• "Product of x and y" = xy
+• "Increased by 10" = +10
+• Answer: **xy + 10**
 
 **Example 5: Consecutive Numbers**
 
 "Two consecutive numbers"
 
 Solution:
-- First number: x
-- Second number (next integer): x + 1
-- Expression: **x and (x + 1)**
+• First number: x
+• Second number (next integer): x + 1
+• Expression: **x and (x + 1)**
 
 For three consecutive: x, x + 1, x + 2
 
@@ -2632,76 +2632,76 @@ For three consecutive: x, x + 1, x + 2
 "Kofi buys oranges at 2 cedis each and apples at 3 cedis each. He buys x oranges and y apples. Write an expression for total cost."
 
 Solution:
-- Oranges cost: 2x
-- Apples cost: 3y
-- Total: **2x + 3y cedis**
+• Oranges cost: 2x
+• Apples cost: 3y
+• Total: **2x + 3y cedis**
 
 **Problem 2: Age Problem**
 
 "Ama is 5 years older than her brother. If her brother is x years old, how old is Ama?"
 
 Solution:
-- Brother's age: x
-- Ama is 5 years older: x + 5
-- Answer: **x + 5 years**
+• Brother's age: x
+• Ama is 5 years older: x + 5
+• Answer: **x + 5 years**
 
 **Problem 3: Perimeter**
 
 "A rectangle has length l meters and width w meters. Write an expression for the perimeter."
 
 Solution:
-- Perimeter = 2 × length + 2 × width
-- Answer: **2l + 2w meters**
-- Or factorized: **2(l + w) meters**
+• Perimeter = 2 × length + 2 × width
+• Answer: **2l + 2w meters**
+• Or factorized: **2(l + w) meters**
 
 **Problem 4: Sharing Money**
 
 "GH₵x is shared equally among 5 people. How much does each person get?"
 
 Solution:
-- Total money: x
-- Number of people: 5
-- Share per person: x ÷ 5
-- Answer: **x/5 cedis**
+• Total money: x
+• Number of people: 5
+• Share per person: x ÷ 5
+• Answer: **x/5 cedis**
 
 **Problem 5: Discount**
 
 "A dress costs d cedis. There's a 20 cedi discount. What's the new price?"
 
 Solution:
-- Original price: d
-- Discount: −20
-- Answer: **d − 20 cedis**
+• Original price: d
+• Discount: −20
+• Answer: **d − 20 cedis**
 
 **Problem 6: Percentage Increase**
 
 "A price increases by x%. If original price is 100 cedis, what's new price?"
 
 Solution:
-- Original: 100
-- Increase: (x/100) × 100 = x
-- New price: 100 + x
-- Answer: **100 + x cedis**
+• Original: 100
+• Increase: (x/100) × 100 = x
+• New price: 100 + x
+• Answer: **100 + x cedis**
 
 **Problem 7: Transport Cost**
 
 "A taxi charges 5 cedis base fare plus 2 cedis per kilometer. Write cost for d kilometers."
 
 Solution:
-- Base fare: 5
-- Per km charge: 2d
-- Total: 5 + 2d
-- Answer: **5 + 2d cedis**
+• Base fare: 5
+• Per km charge: 2d
+• Total: 5 + 2d
+• Answer: **5 + 2d cedis**
 
 **Problem 8: Number Patterns**
 
 "Three consecutive even numbers"
 
 Solution:
-- First even number: 2x (or n if already even)
-- Second: 2x + 2
-- Third: 2x + 4
-- Answer: **2x, 2x + 2, 2x + 4**
+• First even number: 2x (or n if already even)
+• Second: 2x + 2
+• Third: 2x + 4
+• Answer: **2x, 2x + 2, 2x + 4**
 
 **Problem 9: Area and Perimeter**
 
@@ -2720,9 +2720,9 @@ Answer: **Perimeter: 4s, Area: s²**
 "A solution contains x liters of water and y liters of juice. What fraction is juice?"
 
 Solution:
-- Total liquid: x + y
-- Juice amount: y
-- Fraction: y/(x + y)
+• Total liquid: x + y
+• Juice amount: y
+• Fraction: y/(x + y)
 
 Answer: **y/(x + y)**
 
@@ -2880,17 +2880,17 @@ Answer: **y/(x + y)**
     introduction: `An equation is a mathematical statement showing that two expressions are equal, using the = sign. Solving an equation means finding the value of the unknown variable that makes the equation true.
 
 Equations are everywhere in daily life:
-- **Shopping:** If 5 items cost GH₵100, what's the cost per item? (5x = 100)
-- **Transport:** A taxi charges GH₵8 base fare plus GH₵2 per km. For GH₵24, how far can you go? (8 + 2x = 24)
-- **Mobile data:** If 3GB plus GH₵10 airtime costs GH₵40, what's the cost per GB? (3x + 10 = 40)
-- **Time management:** If you study x hours daily and want 20 hours per week, how many hours daily? (7x = 20)
+• **Shopping:** If 5 items cost GH₵100, what's the cost per item? (5x = 100)
+• **Transport:** A taxi charges GH₵8 base fare plus GH₵2 per km. For GH₵24, how far can you go? (8 + 2x = 24)
+• **Mobile data:** If 3GB plus GH₵10 airtime costs GH₵40, what's the cost per GB? (3x + 10 = 40)
+• **Time management:** If you study x hours daily and want 20 hours per week, how many hours daily? (7x = 20)
 
 Inequalities show relationships where one side is greater than or less than the other, using symbols: > (greater than), < (less than), ≥ (greater than or equal to), ≤ (less than or equal to).
 
 Real-world inequality examples:
-- **Budget:** Total spending must be less than GH₵500 → x < 500
-- **Age requirements:** Must be at least 16 years to get a license → x ≥ 16
-- **Speed limits:** Cannot exceed 50 km/h in town → x ≤ 50
+• **Budget:** Total spending must be less than GH₵500 → x < 500
+• **Age requirements:** Must be at least 16 years to get a license → x ≥ 16
+• **Speed limits:** Cannot exceed 50 km/h in town → x ≤ 50
 
 Mastering equations and inequalities is crucial for WASSCE success and for solving practical problems in science, engineering, economics, and everyday decision-making.`,
 
@@ -2908,28 +2908,28 @@ Mastering equations and inequalities is crucial for WASSCE success and for solvi
 
 **Example:** 2x + 3 = 11
 
-- LHS: 2x + 3
-- RHS: 11
-- Variable: x
-- Solution: x = 4 (because 2(4) + 3 = 8 + 3 = 11 ✓)
+• LHS: 2x + 3
+• RHS: 11
+• Variable: x
+• Solution: x = 4 (because 2(4) + 3 = 8 + 3 = 11 ✓)
 
 **Types of Equations:**
 
 **1. Simple Equations (one operation)**
-- x + 5 = 12
-- 3x = 15
-- x/4 = 3
-- x − 7 = 10
+• x + 5 = 12
+• 3x = 15
+• x/4 = 3
+• x − 7 = 10
 
 **2. Two-Step Equations**
-- 2x + 5 = 13
-- 3x − 7 = 14
-- x/2 + 3 = 10
+• 2x + 5 = 13
+• 3x − 7 = 14
+• x/2 + 3 = 10
 
 **3. Multi-Step Equations**
-- 4(x + 3) = 20
-- 5x + 2 = 3x + 10
-- (x + 5)/2 = 7
+• 4(x + 3) = 20
+• 5x + 2 = 3x + 10
+• (x + 5)/2 = 7
 
 **The Golden Rule of Equations:**
 **"Whatever you do to one side, you must do to the other side"**
@@ -2954,26 +2954,26 @@ This lesson will teach you systematic methods to solve such equations.`
         content: `**Strategy:** Use inverse (opposite) operations to isolate the variable.
 
 **Inverse Operations:**
-- Addition ↔ Subtraction
-- Multiplication ↔ Division
+• Addition ↔ Subtraction
+• Multiplication ↔ Division
 
 **Type 1: Addition Equations (x + a = b)**
 
 **Example 1:** x + 7 = 15
 
 Solution:
-- Subtract 7 from both sides
-- x + 7 − 7 = 15 − 7
-- x = 8
+• Subtract 7 from both sides
+• x + 7 − 7 = 15 − 7
+• x = 8
 
 Check: 8 + 7 = 15 ✓
 
 **Example 2:** x + 12 = 5
 
 Solution:
-- Subtract 12 from both sides
-- x + 12 − 12 = 5 − 12
-- x = −7
+• Subtract 12 from both sides
+• x + 12 − 12 = 5 − 12
+• x = −7
 
 Check: −7 + 12 = 5 ✓
 
@@ -2982,18 +2982,18 @@ Check: −7 + 12 = 5 ✓
 **Example 3:** x − 9 = 4
 
 Solution:
-- Add 9 to both sides
-- x − 9 + 9 = 4 + 9
-- x = 13
+• Add 9 to both sides
+• x − 9 + 9 = 4 + 9
+• x = 13
 
 Check: 13 − 9 = 4 ✓
 
 **Example 4:** x − 5 = −2
 
 Solution:
-- Add 5 to both sides
-- x − 5 + 5 = −2 + 5
-- x = 3
+• Add 5 to both sides
+• x − 5 + 5 = −2 + 5
+• x = 3
 
 Check: 3 − 5 = −2 ✓
 
@@ -3002,18 +3002,18 @@ Check: 3 − 5 = −2 ✓
 **Example 5:** 4x = 20
 
 Solution:
-- Divide both sides by 4
-- 4x ÷ 4 = 20 ÷ 4
-- x = 5
+• Divide both sides by 4
+• 4x ÷ 4 = 20 ÷ 4
+• x = 5
 
 Check: 4(5) = 20 ✓
 
 **Example 6:** −3x = 12
 
 Solution:
-- Divide both sides by −3
-- −3x ÷ (−3) = 12 ÷ (−3)
-- x = −4
+• Divide both sides by −3
+• −3x ÷ (−3) = 12 ÷ (−3)
+• x = −4
 
 Check: −3(−4) = 12 ✓
 
@@ -3022,18 +3022,18 @@ Check: −3(−4) = 12 ✓
 **Example 7:** x/5 = 3
 
 Solution:
-- Multiply both sides by 5
-- (x/5) × 5 = 3 × 5
-- x = 15
+• Multiply both sides by 5
+• (x/5) × 5 = 3 × 5
+• x = 15
 
 Check: 15/5 = 3 ✓
 
 **Example 8:** x/2 = −6
 
 Solution:
-- Multiply both sides by 2
-- (x/2) × 2 = −6 × 2
-- x = −12
+• Multiply both sides by 2
+• (x/2) × 2 = −6 × 2
+• x = −12
 
 Check: −12/2 = −6 ✓
 
@@ -3059,10 +3059,10 @@ Solution: x = 60 ÷ 12 = 5
 Answer: 5 friends
 
 **Quick Reference:**
-- To solve x + a = b → Subtract a
-- To solve x − a = b → Add a
-- To solve ax = b → Divide by a
-- To solve x/a = b → Multiply by a`
+• To solve x + a = b → Subtract a
+• To solve x − a = b → Add a
+• To solve ax = b → Divide by a
+• To solve x/a = b → Multiply by a`
       },
       {
         title: '3. Solving Two-Step Linear Equations',
@@ -3078,12 +3078,12 @@ Answer: 5 friends
 
 Solution:
 Step 1: Subtract 5 from both sides
-- 2x + 5 − 5 = 13 − 5
-- 2x = 8
+• 2x + 5 − 5 = 13 − 5
+• 2x = 8
 
 Step 2: Divide both sides by 2
-- 2x ÷ 2 = 8 ÷ 2
-- x = 4
+• 2x ÷ 2 = 8 ÷ 2
+• x = 4
 
 Check: 2(4) + 5 = 8 + 5 = 13 ✓
 
@@ -3091,12 +3091,12 @@ Check: 2(4) + 5 = 8 + 5 = 13 ✓
 
 Solution:
 Step 1: Add 7 to both sides
-- 3x − 7 + 7 = 14 + 7
-- 3x = 21
+• 3x − 7 + 7 = 14 + 7
+• 3x = 21
 
 Step 2: Divide both sides by 3
-- 3x ÷ 3 = 21 ÷ 3
-- x = 7
+• 3x ÷ 3 = 21 ÷ 3
+• x = 7
 
 Check: 3(7) − 7 = 21 − 7 = 14 ✓
 
@@ -3104,12 +3104,12 @@ Check: 3(7) − 7 = 21 − 7 = 14 ✓
 
 Solution:
 Step 1: Subtract 3 from both sides
-- x/4 + 3 − 3 = 10 − 3
-- x/4 = 7
+• x/4 + 3 − 3 = 10 − 3
+• x/4 = 7
 
 Step 2: Multiply both sides by 4
-- (x/4) × 4 = 7 × 4
-- x = 28
+• (x/4) × 4 = 7 × 4
+• x = 28
 
 Check: 28/4 + 3 = 7 + 3 = 10 ✓
 
@@ -3117,12 +3117,12 @@ Check: 28/4 + 3 = 7 + 3 = 10 ✓
 
 Solution:
 Step 1: Subtract 8 from both sides
-- 5x + 8 − 8 = −12 − 8
-- 5x = −20
+• 5x + 8 − 8 = −12 − 8
+• 5x = −20
 
 Step 2: Divide both sides by 5
-- 5x ÷ 5 = −20 ÷ 5
-- x = −4
+• 5x ÷ 5 = −20 ÷ 5
+• x = −4
 
 Check: 5(−4) + 8 = −20 + 8 = −12 ✓
 
@@ -3130,12 +3130,12 @@ Check: 5(−4) + 8 = −20 + 8 = −12 ✓
 
 Solution:
 Step 1: Subtract 6 from both sides
-- −2x + 6 − 6 = 14 − 6
-- −2x = 8
+• −2x + 6 − 6 = 14 − 6
+• −2x = 8
 
 Step 2: Divide both sides by −2
-- −2x ÷ (−2) = 8 ÷ (−2)
-- x = −4
+• −2x ÷ (−2) = 8 ÷ (−2)
+• x = −4
 
 Check: −2(−4) + 6 = 8 + 6 = 14 ✓
 
@@ -3143,12 +3143,12 @@ Check: −2(−4) + 6 = 8 + 6 = 14 ✓
 
 Solution:
 Step 1: Multiply both sides by 5
-- [(x − 3)/5] × 5 = 2 × 5
-- x − 3 = 10
+• [(x − 3)/5] × 5 = 2 × 5
+• x − 3 = 10
 
 Step 2: Add 3 to both sides
-- x − 3 + 3 = 10 + 3
-- x = 13
+• x − 3 + 3 = 10 + 3
+• x = 13
 
 Check: (13 − 3)/5 = 10/5 = 2 ✓
 
@@ -3177,8 +3177,8 @@ Answer: The number is 7
 
 **Memory Tip:**
 Think **REVERSE** - undo operations in opposite order
-- If equation is "multiply then add", you "subtract then divide"
-- If equation is "add then multiply", you "divide then subtract"`
+• If equation is "multiply then add", you "subtract then divide"
+• If equation is "add then multiply", you "divide then subtract"`
       },
       {
         title: '4. Equations with Variables on Both Sides',
@@ -3193,11 +3193,11 @@ Think **REVERSE** - undo operations in opposite order
 
 Solution:
 Step 1: Subtract 3x from both sides
-- 5x − 3x = 3x + 10 − 3x
-- 2x = 10
+• 5x − 3x = 3x + 10 − 3x
+• 2x = 10
 
 Step 2: Divide both sides by 2
-- x = 5
+• x = 5
 
 Check: LHS: 5(5) = 25, RHS: 3(5) + 10 = 15 + 10 = 25 ✓
 
@@ -3205,14 +3205,14 @@ Check: LHS: 5(5) = 25, RHS: 3(5) + 10 = 15 + 10 = 25 ✓
 
 Solution:
 Step 1: Subtract 3x from both sides
-- 7x − 3x − 4 = 3x − 3x + 12
-- 4x − 4 = 12
+• 7x − 3x − 4 = 3x − 3x + 12
+• 4x − 4 = 12
 
 Step 2: Add 4 to both sides
-- 4x = 16
+• 4x = 16
 
 Step 3: Divide by 4
-- x = 4
+• x = 4
 
 Check: LHS: 7(4) − 4 = 24, RHS: 3(4) + 12 = 24 ✓
 
@@ -3220,11 +3220,11 @@ Check: LHS: 7(4) − 4 = 24, RHS: 3(4) + 12 = 24 ✓
 
 Solution:
 Step 1: Subtract 2x from both sides
-- 2x − 2x + 15 = 5x − 2x
-- 15 = 3x
+• 2x − 2x + 15 = 5x − 2x
+• 15 = 3x
 
 Step 2: Divide by 3
-- x = 5
+• x = 5
 
 Check: LHS: 2(5) + 15 = 25, RHS: 5(5) = 25 ✓
 
@@ -3232,14 +3232,14 @@ Check: LHS: 2(5) + 15 = 25, RHS: 5(5) = 25 ✓
 
 Solution:
 Step 1: Subtract 2x from both sides
-- 6x − 2x − 7 = 2x − 2x + 9
-- 4x − 7 = 9
+• 6x − 2x − 7 = 2x − 2x + 9
+• 4x − 7 = 9
 
 Step 2: Add 7 to both sides
-- 4x = 16
+• 4x = 16
 
 Step 3: Divide by 4
-- x = 4
+• x = 4
 
 Check: LHS: 6(4) − 7 = 17, RHS: 2(4) + 9 = 17 ✓
 
@@ -3247,13 +3247,13 @@ Check: LHS: 6(4) − 7 = 17, RHS: 2(4) + 9 = 17 ✓
 
 Solution:
 Step 1: Subtract 3x from both sides
-- 5x + 5 = 30
+• 5x + 5 = 30
 
 Step 2: Subtract 5 from both sides
-- 5x = 25
+• 5x = 25
 
 Step 3: Divide by 5
-- x = 5
+• x = 5
 
 Check: LHS: 8(5) + 5 = 45, RHS: 3(5) + 30 = 45 ✓
 
@@ -3263,13 +3263,13 @@ Solve: 3(x + 2) = 2x + 10
 
 Solution:
 Step 1: Expand bracket
-- 3x + 6 = 2x + 10
+• 3x + 6 = 2x + 10
 
 Step 2: Subtract 2x from both sides
-- x + 6 = 10
+• x + 6 = 10
 
 Step 3: Subtract 6 from both sides
-- x = 4
+• x = 4
 
 Check: LHS: 3(4 + 2) = 18, RHS: 2(4) + 10 = 18 ✓
 
@@ -3279,13 +3279,13 @@ Solve: 10 − 2x = 3x + 5
 
 Solution:
 Step 1: Add 2x to both sides
-- 10 = 5x + 5
+• 10 = 5x + 5
 
 Step 2: Subtract 5 from both sides
-- 5 = 5x
+• 5 = 5x
 
 Step 3: Divide by 5
-- x = 1
+• x = 1
 
 Check: LHS: 10 − 2(1) = 8, RHS: 3(1) + 5 = 8 ✓
 
@@ -3294,24 +3294,24 @@ Check: LHS: 10 − 2(1) = 8, RHS: 3(1) + 5 = 8 ✓
 **Problem:** A printing shop charges GH₵50 setup fee plus GH₵2 per page. Another shop charges GH₵5 per page with no setup fee. For how many pages will both shops charge the same?
 
 Equation:
-- Shop A: 50 + 2x
-- Shop B: 5x
-- Equal cost: 50 + 2x = 5x
+• Shop A: 50 + 2x
+• Shop B: 5x
+• Equal cost: 50 + 2x = 5x
 
 Solution:
 Step 1: Subtract 2x from both sides
-- 50 = 3x
+• 50 = 3x
 
 Step 2: Divide by 3
-- x = 50/3 = 16.67 pages
+• x = 50/3 = 16.67 pages
 
 Answer: About 17 pages (for practical purposes)
 
 **Pro Tip:**
 When choosing which side to collect variables:
-- Choose the side with the larger coefficient to avoid negative results
-- Example: In 7x = 3x + 10, collect on left (7x > 3x)
-- Example: In 2x + 5 = 8x, collect on right (8x > 2x)`
+• Choose the side with the larger coefficient to avoid negative results
+• Example: In 7x = 3x + 10, collect on left (7x > 3x)
+• Example: In 2x + 5 = 8x, collect on right (8x > 2x)`
       },
       {
         title: '5. Solving Equations with Fractions and Decimals',
@@ -3324,12 +3324,12 @@ When choosing which side to collect variables:
 Solution:
 Step 1: Find LCD of 3 and 6 → LCD = 6
 Step 2: Multiply entire equation by 6
-- 6(x/3) + 6(x/6) = 6(5)
-- 2x + x = 30
-- 3x = 30
+• 6(x/3) + 6(x/6) = 6(5)
+• 2x + x = 30
+• 3x = 30
 
 Step 3: Divide by 3
-- x = 10
+• x = 10
 
 Check: 10/3 + 10/6 = 3.33 + 1.67 = 5 ✓
 
@@ -3338,13 +3338,13 @@ Check: 10/3 + 10/6 = 3.33 + 1.67 = 5 ✓
 Solution:
 Step 1: LCD of 2 and 4 → LCD = 4
 Step 2: Multiply by 4
-- 4[(x + 3)/2] = 4[(x − 1)/4]
-- 2(x + 3) = x − 1
-- 2x + 6 = x − 1
+• 4[(x + 3)/2] = 4[(x − 1)/4]
+• 2(x + 3) = x − 1
+• 2x + 6 = x − 1
 
 Step 3: Solve
-- 2x − x = −1 − 6
-- x = −7
+• 2x − x = −1 − 6
+• x = −7
 
 Check: (−7 + 3)/2 = −2, (−7 − 1)/4 = −2 ✓
 
@@ -3353,14 +3353,14 @@ Check: (−7 + 3)/2 = −2, (−7 − 1)/4 = −2 ✓
 Solution:
 Step 1: LCD of 2 and 3 → LCD = 6
 Step 2: Multiply by 6
-- 6[(2x − 1)/3] + 6(1) = 6[(x + 2)/2]
-- 2(2x − 1) + 6 = 3(x + 2)
-- 4x − 2 + 6 = 3x + 6
-- 4x + 4 = 3x + 6
+• 6[(2x − 1)/3] + 6(1) = 6[(x + 2)/2]
+• 2(2x − 1) + 6 = 3(x + 2)
+• 4x − 2 + 6 = 3x + 6
+• 4x + 4 = 3x + 6
 
 Step 3: Solve
-- 4x − 3x = 6 − 4
-- x = 2
+• 4x − 3x = 6 − 4
+• x = 2
 
 Check: (2(2) − 1)/3 + 1 = 3/3 + 1 = 2, (2 + 2)/2 = 2 ✓
 
@@ -3369,9 +3369,9 @@ Check: (2(2) − 1)/3 + 1 = 3/3 + 1 = 2, (2 + 2)/2 = 2 ✓
 **Example 4:** 0.5x + 2 = 8
 
 Solution (treat decimal as number):
-- 0.5x = 8 − 2
-- 0.5x = 6
-- x = 6 ÷ 0.5 = 12
+• 0.5x = 8 − 2
+• 0.5x = 6
+• x = 6 ÷ 0.5 = 12
 
 Check: 0.5(12) + 2 = 6 + 2 = 8 ✓
 
@@ -3379,10 +3379,10 @@ Check: 0.5(12) + 2 = 6 + 2 = 8 ✓
 
 Solution:
 Step 1: Add 0.5
-- 0.2x = 2.0
+• 0.2x = 2.0
 
 Step 2: Divide by 0.2
-- x = 2.0 ÷ 0.2 = 10
+• x = 2.0 ÷ 0.2 = 10
 
 Check: 0.2(10) − 0.5 = 2 − 0.5 = 1.5 ✓
 
@@ -3392,9 +3392,9 @@ Check: 0.2(10) − 0.5 = 2 − 0.5 = 1.5 ✓
 
 Convert 0.25 to fraction: 0.25 = 1/4
 
-- (1/4)x + 1 = 3
-- (1/4)x = 2
-- x = 2 × 4 = 8
+• (1/4)x + 1 = 3
+• (1/4)x = 2
+• x = 2 × 4 = 8
 
 Check: 0.25(8) + 1 = 2 + 1 = 3 ✓
 
@@ -3408,11 +3408,11 @@ Equation: x − x/3 − x/4 = 50
 
 Solution:
 Step 1: Find LCD (12)
-- 12x − 4x − 3x = 600
-- 5x = 600
+• 12x − 4x − 3x = 600
+• 5x = 600
 
 Step 2: Solve
-- x = 120
+• x = 120
 
 Answer: GH₵120
 
@@ -3435,10 +3435,10 @@ Check: 120 − 40 − 30 = 50 ✓
         content: `Inequalities show relationships using <, >, ≤, or ≥ symbols. Solving is similar to equations with ONE KEY DIFFERENCE.
 
 **Inequality Symbols:**
-- < means "less than"
-- > means "greater than"
-- ≤ means "less than or equal to"
-- ≥ means "greater than or equal to"
+• < means "less than"
+• > means "greater than"
+• ≤ means "less than or equal to"
+• ≥ means "greater than or equal to"
 
 **GOLDEN RULE:**
 When multiplying or dividing by a **negative number**, **FLIP** the inequality sign!
@@ -3446,8 +3446,8 @@ When multiplying or dividing by a **negative number**, **FLIP** the inequality s
 **Example 1:** x + 5 > 12
 
 Solution:
-- Subtract 5 from both sides
-- x > 7
+• Subtract 5 from both sides
+• x > 7
 
 Meaning: x is any number greater than 7
 
@@ -3463,8 +3463,8 @@ Open circle at 7 (not included), arrow right
 **Example 2:** 3x ≤ 15
 
 Solution:
-- Divide both sides by 3
-- x ≤ 5
+• Divide both sides by 3
+• x ≤ 5
 
 Meaning: x can be 5 or any number less than 5
 
@@ -3481,10 +3481,10 @@ Closed circle at 5 (included), arrow left
 
 Solution:
 Step 1: Subtract 3
-- 2x < 8
+• 2x < 8
 
 Step 2: Divide by 2
-- x < 4
+• x < 4
 
 Meaning: x is less than 4
 
@@ -3492,10 +3492,10 @@ Meaning: x is less than 4
 
 Solution:
 Step 1: Add 7
-- 5x ≥ 20
+• 5x ≥ 20
 
 Step 2: Divide by 5
-- x ≥ 4
+• x ≥ 4
 
 Meaning: x is 4 or greater
 
@@ -3504,24 +3504,24 @@ Meaning: x is 4 or greater
 Solve: −2x < 10
 
 Solution:
-- Divide by −2 (FLIP the sign!)
-- x > −5
+• Divide by −2 (FLIP the sign!)
+• x > −5
 
 Meaning: x is greater than −5
 
 **Why flip?** Consider: −2(6) = −12 and −2(4) = −8
-- If −2x < 10 and we try x = 6: −12 < 10 ✓ (true)
-- After dividing: x > −5, and 6 > −5 ✓ (true)
-- Without flipping: x < −5, but 6 is NOT < −5 (contradiction!)
+• If −2x < 10 and we try x = 6: −12 < 10 ✓ (true)
+• After dividing: x > −5, and 6 > −5 ✓ (true)
+• Without flipping: x < −5, but 6 is NOT < −5 (contradiction!)
 
 **Example 6:** −3x + 5 ≥ 14
 
 Solution:
 Step 1: Subtract 5
-- −3x ≥ 9
+• −3x ≥ 9
 
 Step 2: Divide by −3 (FLIP!)
-- x ≤ −3
+• x ≤ −3
 
 Meaning: x is −3 or less
 
@@ -3531,13 +3531,13 @@ Solve: 5x − 3 < 2x + 9
 
 Solution:
 Step 1: Subtract 2x
-- 3x − 3 < 9
+• 3x − 3 < 9
 
 Step 2: Add 3
-- 3x < 12
+• 3x < 12
 
 Step 3: Divide by 3
-- x < 4
+• x < 4
 
 Meaning: x is less than 4
 
@@ -3547,8 +3547,8 @@ Meaning: x is less than 4
 
 Solution:
 Subtract 2 from all parts:
-- 3 − 2 < x + 2 − 2 < 10 − 2
-- 1 < x < 9
+• 3 − 2 < x + 2 − 2 < 10 − 2
+• 1 < x < 9
 
 Meaning: x is between 1 and 9 (exclusive)
 
@@ -3556,10 +3556,10 @@ Meaning: x is between 1 and 9 (exclusive)
 
 Solution:
 Step 1: Add 1 to all parts
-- −4 ≤ 2x ≤ 8
+• −4 ≤ 2x ≤ 8
 
 Step 2: Divide all parts by 2
-- −2 ≤ x ≤ 4
+• −2 ≤ x ≤ 4
 
 Meaning: x is between −2 and 4 (inclusive)
 
@@ -3583,15 +3583,15 @@ Answer: Maximum 11 items
 
 Inequality: (65 + 72 + x)/3 ≥ 70
 Solution:
-- 137 + x ≥ 210
-- x ≥ 73
+• 137 + x ≥ 210
+• x ≥ 73
 
 Answer: Minimum 73 on third test
 
 **Graphing Inequalities:**
-- Open circle ○ for < or > (not included)
-- Closed circle ● for ≤ or ≥ (included)
-- Arrow points in direction of solution
+• Open circle ○ for < or > (not included)
+• Closed circle ● for ≤ or ≥ (included)
+• Arrow points in direction of solution
 
 **Summary of Rules:**
 1. Solve like equations (add, subtract, multiply, divide)
@@ -3616,134 +3616,134 @@ Answer: Minimum 73 on third test
 **Problem 1:** A number increased by 7 equals 23. Find the number.
 
 Solution:
-- Let x = the number
-- Equation: x + 7 = 23
-- Solve: x = 16
-- Check: 16 + 7 = 23 ✓
+• Let x = the number
+• Equation: x + 7 = 23
+• Solve: x = 16
+• Check: 16 + 7 = 23 ✓
 
 **Problem 2:** Three times a number, minus 5, equals 19. Find the number.
 
 Solution:
-- Let x = the number
-- Equation: 3x − 5 = 19
-- Solve: 3x = 24, x = 8
-- Check: 3(8) − 5 = 19 ✓
+• Let x = the number
+• Equation: 3x − 5 = 19
+• Solve: 3x = 24, x = 8
+• Check: 3(8) − 5 = 19 ✓
 
 **Category 2: Age Problems**
 
 **Problem 3:** Ama is 5 years older than Kofi. Their total age is 35. Find their ages.
 
 Solution:
-- Let x = Kofi's age
-- Then x + 5 = Ama's age
-- Equation: x + (x + 5) = 35
-- Solve: 2x + 5 = 35, 2x = 30, x = 15
-- Kofi: 15 years, Ama: 20 years
-- Check: 15 + 20 = 35 ✓
+• Let x = Kofi's age
+• Then x + 5 = Ama's age
+• Equation: x + (x + 5) = 35
+• Solve: 2x + 5 = 35, 2x = 30, x = 15
+• Kofi: 15 years, Ama: 20 years
+• Check: 15 + 20 = 35 ✓
 
 **Problem 4:** A father is 3 times as old as his son. In 12 years, he'll be twice as old. Find current ages.
 
 Solution:
-- Let x = son's current age
-- Then 3x = father's current age
-- In 12 years: son = x + 12, father = 3x + 12
-- Equation: 3x + 12 = 2(x + 12)
-- Solve: 3x + 12 = 2x + 24, x = 12
-- Son: 12 years, Father: 36 years
-- Check: 36 + 12 = 48, 12 + 12 = 24, 48 = 2(24) ✓
+• Let x = son's current age
+• Then 3x = father's current age
+• In 12 years: son = x + 12, father = 3x + 12
+• Equation: 3x + 12 = 2(x + 12)
+• Solve: 3x + 12 = 2x + 24, x = 12
+• Son: 12 years, Father: 36 years
+• Check: 36 + 12 = 48, 12 + 12 = 24, 48 = 2(24) ✓
 
 **Category 3: Money/Shopping Problems**
 
 **Problem 5:** Pencils cost GH₵3 each and pens cost GH₵5 each. You buy 10 items total for GH₵38. How many of each?
 
 Solution:
-- Let x = number of pencils
-- Then 10 − x = number of pens
-- Equation: 3x + 5(10 − x) = 38
-- Solve: 3x + 50 − 5x = 38
-- −2x = −12, x = 6
-- Pencils: 6, Pens: 4
-- Check: 3(6) + 5(4) = 18 + 20 = 38 ✓
+• Let x = number of pencils
+• Then 10 − x = number of pens
+• Equation: 3x + 5(10 − x) = 38
+• Solve: 3x + 50 − 5x = 38
+• −2x = −12, x = 6
+• Pencils: 6, Pens: 4
+• Check: 3(6) + 5(4) = 18 + 20 = 38 ✓
 
 **Problem 6:** A trader marks up goods by 40%. Selling price is GH₵280. Find cost price.
 
 Solution:
-- Let x = cost price
-- Markup = 40% of x = 0.4x
-- Equation: x + 0.4x = 280
-- Solve: 1.4x = 280, x = 200
-- Cost price: GH₵200
-- Check: 200 + 80 = 280 ✓
+• Let x = cost price
+• Markup = 40% of x = 0.4x
+• Equation: x + 0.4x = 280
+• Solve: 1.4x = 280, x = 200
+• Cost price: GH₵200
+• Check: 200 + 80 = 280 ✓
 
 **Category 4: Distance/Speed/Time**
 
 **Problem 7:** A car travels at 80 km/h. How long to cover 240 km?
 
 Solution:
-- Let t = time in hours
-- Formula: Distance = Speed × Time
-- Equation: 240 = 80t
-- Solve: t = 240/80 = 3
-- Answer: 3 hours
+• Let t = time in hours
+• Formula: Distance = Speed × Time
+• Equation: 240 = 80t
+• Solve: t = 240/80 = 3
+• Answer: 3 hours
 
 **Problem 8:** Two cities are 450 km apart. A bus leaves at 60 km/h. A car leaves 1 hour later at 90 km/h. When does car overtake bus?
 
 Solution:
-- Let t = time car travels
-- Bus travels for (t + 1) hours
-- When they meet, distances are equal:
-- Equation: 90t = 60(t + 1)
-- Solve: 90t = 60t + 60, 30t = 60, t = 2
-- Car overtakes after 2 hours
+• Let t = time car travels
+• Bus travels for (t + 1) hours
+• When they meet, distances are equal:
+• Equation: 90t = 60(t + 1)
+• Solve: 90t = 60t + 60, 30t = 60, t = 2
+• Car overtakes after 2 hours
 
 **Category 5: Work Problems**
 
 **Problem 9:** Pipe A fills a tank in 6 hours, Pipe B in 4 hours. Together, how long?
 
 Solution:
-- Let t = time together
-- Pipe A rate: 1/6 tank per hour
-- Pipe B rate: 1/4 tank per hour
-- Equation: t/6 + t/4 = 1
-- LCD = 12: 2t + 3t = 12, 5t = 12, t = 2.4
-- Answer: 2.4 hours (2 hours 24 minutes)
+• Let t = time together
+• Pipe A rate: 1/6 tank per hour
+• Pipe B rate: 1/4 tank per hour
+• Equation: t/6 + t/4 = 1
+• LCD = 12: 2t + 3t = 12, 5t = 12, t = 2.4
+• Answer: 2.4 hours (2 hours 24 minutes)
 
 **Category 6: Mixture Problems**
 
 **Problem 10:** Mix 20% sugar solution with 50% sugar solution to get 30% solution. Need 60 liters of 30%. How much of each?
 
 Solution:
-- Let x = liters of 20% solution
-- Then 60 − x = liters of 50% solution
-- Equation: 0.2x + 0.5(60 − x) = 0.3(60)
-- Solve: 0.2x + 30 − 0.5x = 18
-- −0.3x = −12, x = 40
-- 20% solution: 40 liters, 50% solution: 20 liters
+• Let x = liters of 20% solution
+• Then 60 − x = liters of 50% solution
+• Equation: 0.2x + 0.5(60 − x) = 0.3(60)
+• Solve: 0.2x + 30 − 0.5x = 18
+• −0.3x = −12, x = 40
+• 20% solution: 40 liters, 50% solution: 20 liters
 
 **Category 7: Consecutive Numbers**
 
 **Problem 11:** Sum of three consecutive integers is 48. Find the numbers.
 
 Solution:
-- Let x = first integer
-- Then x + 1 = second, x + 2 = third
-- Equation: x + (x + 1) + (x + 2) = 48
-- Solve: 3x + 3 = 48, 3x = 45, x = 15
-- Numbers: 15, 16, 17
-- Check: 15 + 16 + 17 = 48 ✓
+• Let x = first integer
+• Then x + 1 = second, x + 2 = third
+• Equation: x + (x + 1) + (x + 2) = 48
+• Solve: 3x + 3 = 48, 3x = 45, x = 15
+• Numbers: 15, 16, 17
+• Check: 15 + 16 + 17 = 48 ✓
 
 **Category 8: Perimeter/Area**
 
 **Problem 12:** Rectangle length is 3 cm more than width. Perimeter is 34 cm. Find dimensions.
 
 Solution:
-- Let w = width
-- Then w + 3 = length
-- Perimeter = 2(length + width)
-- Equation: 2[(w + 3) + w] = 34
-- Solve: 2[2w + 3] = 34, 4w + 6 = 34, 4w = 28, w = 7
-- Width: 7 cm, Length: 10 cm
-- Check: 2(7 + 10) = 34 ✓
+• Let w = width
+• Then w + 3 = length
+• Perimeter = 2(length + width)
+• Equation: 2[(w + 3) + w] = 34
+• Solve: 2[2w + 3] = 34, 4w + 6 = 34, 4w = 28, w = 7
+• Width: 7 cm, Length: 10 cm
+• Check: 2(7 + 10) = 34 ✓
 
 **WASSCE Strategy:**
 1. **Draw diagrams** when helpful
@@ -3753,14 +3753,14 @@ Solution:
 5. **Show all work** for partial credit
 
 **Common Keywords:**
-- "is" or "equals" → =
-- "more than" or "increased by" → +
-- "less than" or "decreased by" → −
-- "times" or "product of" → ×
-- "divided by" or "quotient of" → ÷
-- "total" or "sum" → +
-- "difference" → −
-- "of" (with percent or fraction) → ×`
+• "is" or "equals" → =
+• "more than" or "increased by" → +
+• "less than" or "decreased by" → −
+• "times" or "product of" → ×
+• "divided by" or "quotient of" → ÷
+• "total" or "sum" → +
+• "difference" → −
+• "of" (with percent or fraction) → ×`
       }
     ],
     activities: {
@@ -3897,11 +3897,11 @@ Solution:
     introduction: `Directed numbers are numbers that have both size (magnitude) and direction (positive or negative). They extend our number system beyond zero to include negative values.
 
 Think of directed numbers in everyday life in Ghana:
-- **Temperature:** 30°C is hot (positive), but a freezer might be -5°C (negative).
-- **Business:** Profit is positive (+GH₵500), while Loss is negative (-GH₵200).
-- **Elevation:** Mountain Afadjato is above sea level (+885m), while a submarine is below sea level (-100m).
-- **Banking:** A credit balance is positive, while a debt or overdraft is negative.
-- **Elevators:** Ground floor is 0, floors up are +1, +2, basement floors are -1, -2.
+• **Temperature:** 30°C is hot (positive), but a freezer might be -5°C (negative).
+• **Business:** Profit is positive (+GH₵500), while Loss is negative (-GH₵200).
+• **Elevation:** Mountain Afadjato is above sea level (+885m), while a submarine is below sea level (-100m).
+• **Banking:** A credit balance is positive, while a debt or overdraft is negative.
+• **Elevators:** Ground floor is 0, floors up are +1, +2, basement floors are -1, -2.
 
 The **Number Line** is a visual tool where zero is the center. Positive numbers are to the right (increasing), and negative numbers are to the left (decreasing).
 
@@ -3917,24 +3917,24 @@ Mastering directed numbers is fundamental for Algebra, Science, and higher mathe
 \`\`\`
 
 **Key Features:**
-- **Zero (0):** The origin. Neither positive nor negative.
-- **Positive Numbers:** To the right of zero (+1, +2, +3...). Often written without the + sign.
-- **Negative Numbers:** To the left of zero (-1, -2, -3...). Must have the - sign.
-- **Opposites:** Numbers same distance from zero but opposite sides (e.g., -3 and 3).
+• **Zero (0):** The origin. Neither positive nor negative.
+• **Positive Numbers:** To the right of zero (+1, +2, +3...). Often written without the + sign.
+• **Negative Numbers:** To the left of zero (-1, -2, -3...). Must have the - sign.
+• **Opposites:** Numbers same distance from zero but opposite sides (e.g., -3 and 3).
 
 **Ordering Numbers:**
-- Numbers get **larger** as you move **RIGHT**.
-- Numbers get **smaller** as you move **LEFT**.
+• Numbers get **larger** as you move **RIGHT**.
+• Numbers get **smaller** as you move **LEFT**.
 
 **Comparisons:**
-- 5 > 2 (5 is to the right of 2)
-- -2 > -5 (-2 is to the right of -5)
-- -10 < 0 (-10 is to the left of 0)
-- -1 < 1 (-1 is to the left of 1)
+• 5 > 2 (5 is to the right of 2)
+• -2 > -5 (-2 is to the right of -5)
+• -10 < 0 (-10 is to the left of 0)
+• -1 < 1 (-1 is to the left of 1)
 
 **Note:** With negative numbers, the one that "looks" bigger is actually smaller.
-- -100 is smaller than -1
-- -50 is smaller than -20
+• -100 is smaller than -1
+• -50 is smaller than -20
 
 **Example:** Arrange -5, 3, 0, -2, 7 in ascending order (smallest to largest).
 Solution: -5, -2, 0, 3, 7`
@@ -3949,31 +3949,31 @@ Solution: -5, -2, 0, 3, 7`
 3. **Add Negative:** Move LEFT.
 
 **Case 1: Positive + Positive**
-- 3 + 2 = 5
-- Start at 3, move 2 steps right → 5
+• 3 + 2 = 5
+• Start at 3, move 2 steps right → 5
 
 **Case 2: Negative + Positive**
-- -4 + 3 = -1
-- Start at -4, move 3 steps right → -1
-- Think: "I owe GH₵4, I pay GH₵3, I still owe GH₵1"
+• -4 + 3 = -1
+• Start at -4, move 3 steps right → -1
+• Think: "I owe GH₵4, I pay GH₵3, I still owe GH₵1"
 
 **Case 3: Positive + Negative**
-- 5 + (-2) is same as 5 - 2
-- Start at 5, move 2 steps left → 3
-- Rule: **Plus followed by Minus becomes Minus (+ - → -)**
+• 5 + (-2) is same as 5 - 2
+• Start at 5, move 2 steps left → 3
+• Rule: **Plus followed by Minus becomes Minus (+ - → -)**
 
 **Case 4: Negative + Negative**
-- -3 + (-2) is same as -3 - 2
-- Start at -3, move 2 steps left → -5
-- Think: "I owe GH₵3, I borrow GH₵2 more, total debt GH₵5"
+• -3 + (-2) is same as -3 - 2
+• Start at -3, move 2 steps left → -5
+• Think: "I owe GH₵3, I borrow GH₵2 more, total debt GH₵5"
 
 **Summary Rule for Addition:**
-- Same signs: Add the numbers, keep the sign.
-  - (+3) + (+4) = +7
-  - (-3) + (-4) = -7
-- Different signs: Subtract smaller from larger, keep sign of the larger number.
-  - (-7) + 3 → 7-3=4, larger is negative → -4
-  - 7 + (-3) → 7-3=4, larger is positive → 4`
+• Same signs: Add the numbers, keep the sign.
+  • (+3) + (+4) = +7
+  • (-3) + (-4) = -7
+• Different signs: Subtract smaller from larger, keep sign of the larger number.
+  • (-7) + 3 → 7-3=4, larger is negative → -4
+  • 7 + (-3) → 7-3=4, larger is positive → 4`
       },
       {
         title: '3. Subtraction of Directed Numbers',
@@ -3984,34 +3984,34 @@ Solution: -5, -2, 0, 3, 7`
 2. **Subtract Negative:** Move RIGHT.
 
 **The Double Negative Rule:**
-- Subtracting a negative is the same as ADDING.
-- **Minus followed by Minus becomes Plus (- - → +)**
-- Think: "Taking away a debt is like gaining money."
+• Subtracting a negative is the same as ADDING.
+• **Minus followed by Minus becomes Plus (- - → +)**
+• Think: "Taking away a debt is like gaining money."
 
 **Examples:**
 
 **1. Positive - Positive**
-- 5 - 3 = 2 (Move 3 left from 5)
-- 3 - 5 = -2 (Move 5 left from 3)
+• 5 - 3 = 2 (Move 3 left from 5)
+• 3 - 5 = -2 (Move 5 left from 3)
 
 **2. Negative - Positive**
-- -3 - 2 = -5
-- Start at -3, move 2 left → -5
-- Think: "Temperature is -3°, drops 2° more → -5°"
+• -3 - 2 = -5
+• Start at -3, move 2 left → -5
+• Think: "Temperature is -3°, drops 2° more → -5°"
 
 **3. Positive - Negative (The Switch)**
-- 5 - (-2) becomes 5 + 2 = 7
-- Start at 5, move 2 RIGHT → 7
+• 5 - (-2) becomes 5 + 2 = 7
+• Start at 5, move 2 RIGHT → 7
 
 **4. Negative - Negative (The Switch)**
-- -5 - (-3) becomes -5 + 3
-- Start at -5, move 3 RIGHT → -2
-- -2 - (-5) becomes -2 + 5 = 3
+• -5 - (-3) becomes -5 + 3
+• Start at -5, move 3 RIGHT → -2
+• -2 - (-5) becomes -2 + 5 = 3
 
 **Ghana Market Analogy:**
-- If you have a debt of GH₵10 (-10) and the shopkeeper cancels (subtracts) GH₵4 of the debt (-4).
-- Calculation: -10 - (-4) = -10 + 4 = -6.
-- You now owe only GH₵6.`
+• If you have a debt of GH₵10 (-10) and the shopkeeper cancels (subtracts) GH₵4 of the debt (-4).
+• Calculation: -10 - (-4) = -10 + 4 = -6.
+• You now owe only GH₵6.`
       },
       {
         title: '4. Multiplication of Directed Numbers',
@@ -4024,38 +4024,38 @@ Solution: -5, -2, 0, 3, 7`
 4. **Negative × Positive = Negative** (- × + = -)
 
 **Memory Aid:**
-- Same signs give **POSITIVE**
-- Different signs give **NEGATIVE**
-- "Friend of my friend is my friend" (+ × + = +)
-- "Enemy of my enemy is my friend" (- × - = +)
-- "Friend of my enemy is my enemy" (+ × - = -)
+• Same signs give **POSITIVE**
+• Different signs give **NEGATIVE**
+• "Friend of my friend is my friend" (+ × + = +)
+• "Enemy of my enemy is my friend" (- × - = +)
+• "Friend of my enemy is my enemy" (+ × - = -)
 
 **Examples:**
-- 5 × 4 = 20
-- (-5) × (-4) = 20
-- 5 × (-4) = -20
-- (-5) × 4 = -20
+• 5 × 4 = 20
+• (-5) × (-4) = 20
+• 5 × (-4) = -20
+• (-5) × 4 = -20
 
 **Multiple Numbers:**
 Count the number of negative signs:
-- **Even** number of negatives → Answer is **Positive**
-- **Odd** number of negatives → Answer is **Negative**
+• **Even** number of negatives → Answer is **Positive**
+• **Odd** number of negatives → Answer is **Negative**
 
 **Examples:**
-- (-2) × (-3) × (-4)
-  - (-2) × (-3) = +6
-  - (+6) × (-4) = -24
-  - (3 negatives → Odd → Negative)
+• (-2) × (-3) × (-4)
+  • (-2) × (-3) = +6
+  • (+6) × (-4) = -24
+  • (3 negatives → Odd → Negative)
 
-- (-2) × (-3) × (-4) × (-1)
-  - (-24) × (-1) = +24
-  - (4 negatives → Even → Positive)
+• (-2) × (-3) × (-4) × (-1)
+  • (-24) × (-1) = +24
+  • (4 negatives → Even → Positive)
 
 **Powers:**
-- (-3)² = (-3) × (-3) = 9
-- (-3)³ = (-3) × (-3) × (-3) = -27
-- (-2)⁴ = 16 (Even power → Positive)
-- (-2)⁵ = -32 (Odd power → Negative)`
+• (-3)² = (-3) × (-3) = 9
+• (-3)³ = (-3) × (-3) × (-3) = -27
+• (-2)⁴ = 16 (Even power → Positive)
+• (-2)⁵ = -32 (Odd power → Negative)`
       },
       {
         title: '5. Division of Directed Numbers',
@@ -4068,27 +4068,27 @@ Count the number of negative signs:
 4. **Negative ÷ Positive = Negative** (- ÷ + = -)
 
 **Examples:**
-- 20 ÷ 5 = 4
-- (-20) ÷ (-5) = 4
-- 20 ÷ (-5) = -4
-- (-20) ÷ 5 = -4
+• 20 ÷ 5 = 4
+• (-20) ÷ (-5) = 4
+• 20 ÷ (-5) = -4
+• (-20) ÷ 5 = -4
 
 **Fractions:**
 A negative sign can be placed on top, bottom, or in front. They all mean the same thing.
-- $\\frac{-12}{3} = -4$
-- $\\frac{12}{-3} = -4$
-- $-\\frac{12}{3} = -4$
+• $\\frac{-12}{3} = -4$
+• $\\frac{12}{-3} = -4$
+• $-\\frac{12}{3} = -4$
 
 **Note:**
-- $\\frac{-12}{-3} = 4$ (Negatives cancel out)
+• $\\frac{-12}{-3} = 4$ (Negatives cancel out)
 
 **Combined Operations:**
 Simplify numerator and denominator separately first.
 
 Example: $\\frac{-4 + (-8)}{-2 \\times 3}$
-- Numerator: -4 - 8 = -12
-- Denominator: -2 × 3 = -6
-- Result: $\\frac{-12}{-6} = 2$`
+• Numerator: -4 - 8 = -12
+• Denominator: -2 × 3 = -6
+• Result: $\\frac{-12}{-6} = 2$`
       },
       {
         title: '6. Absolute Value (Modulus)',
@@ -4097,35 +4097,35 @@ Example: $\\frac{-4 + (-8)}{-2 \\times 3}$
 **Symbol:** Two vertical bars |x|
 
 **Definition:**
-- If x is positive, |x| = x
-- If x is negative, |x| = positive version of x
-- |0| = 0
+• If x is positive, |x| = x
+• If x is negative, |x| = positive version of x
+• |0| = 0
 
 **Examples:**
-- |5| = 5
-- |-5| = 5
-- |-12.5| = 12.5
-- |100| = 100
+• |5| = 5
+• |-5| = 5
+• |-12.5| = 12.5
+• |100| = 100
 
 **Operations with Absolute Value:**
 Treat absolute value bars like brackets. Evaluate what's inside first.
 
 **Example 1:** |-3 + 7|
-- Inside: -3 + 7 = 4
-- |4| = 4
+• Inside: -3 + 7 = 4
+• |4| = 4
 
 **Example 2:** |-3| + |7|
-- |-3| = 3
-- |7| = 7
-- 3 + 7 = 10
+• |-3| = 3
+• |7| = 7
+• 3 + 7 = 10
 
 **Example 3:** |5 - 12|
-- Inside: 5 - 12 = -7
-- |-7| = 7
+• Inside: 5 - 12 = -7
+• |-7| = 7
 
 **Example 4:** 3|-4| - 2|3|
-- 3(4) - 2(3)
-- 12 - 6 = 6
+• 3(4) - 2(3)
+• 12 - 6 = 6
 
 **Real-world meaning:**
 If you walk 5km North (+5) or 5km South (-5), the distance walked is the same: |+5| = |-5| = 5km.`
@@ -4142,35 +4142,35 @@ If you walk 5km North (+5) or 5km South (-5), the distance walked is the same: |
 6. **S**ubtraction
 
 **Example 1:** -3 + 4 × (-2)
-- Multiplication first: 4 × (-2) = -8
-- Then Addition: -3 + (-8)
-- -3 - 8 = -11
+• Multiplication first: 4 × (-2) = -8
+• Then Addition: -3 + (-8)
+• -3 - 8 = -11
 
 **Example 2:** 12 ÷ (-3) - (-2)²
-- Orders first: (-2)² = 4
-- Expression: 12 ÷ (-3) - 4
-- Division next: 12 ÷ (-3) = -4
-- Expression: -4 - 4
-- Subtraction: -8
+• Orders first: (-2)² = 4
+• Expression: 12 ÷ (-3) - 4
+• Division next: 12 ÷ (-3) = -4
+• Expression: -4 - 4
+• Subtraction: -8
 
 **Example 3:** -5(2 - 8) + 10
-- Brackets first: (2 - 8) = -6
-- Expression: -5(-6) + 10
-- Multiplication: -5 × -6 = 30
-- Addition: 30 + 10 = 40
+• Brackets first: (2 - 8) = -6
+• Expression: -5(-6) + 10
+• Multiplication: -5 × -6 = 30
+• Addition: 30 + 10 = 40
 
 **Example 4:** $\\frac{6 - (-4) \\times 2}{-1 - 1}$
-- Numerator:
-  - Multiply first: (-4) × 2 = -8
-  - Then subtract: 6 - (-8) = 6 + 8 = 14
-- Denominator:
-  - -1 - 1 = -2
-- Divide: 14 ÷ (-2) = -7
+• Numerator:
+  • Multiply first: (-4) × 2 = -8
+  • Then subtract: 6 - (-8) = 6 + 8 = 14
+• Denominator:
+  • -1 - 1 = -2
+• Divide: 14 ÷ (-2) = -7
 
 **Common Mistake:**
-- In -3 + 4 × (-2), do NOT add -3 + 4 first.
-- Wrong: (1) × (-2) = -2
-- Correct: -3 + (-8) = -11`
+• In -3 + 4 × (-2), do NOT add -3 + 4 first.
+• Wrong: (1) × (-2) = -2
+• Correct: -3 + (-8) = -11`
       }
     ],
     activities: {
@@ -4308,10 +4308,10 @@ If you walk 5km North (+5) or 5km South (-5), the distance walked is the same: |
     introduction: `In real life, we don't always need exact numbers. Sometimes, an approximate value is good enough or even better because it's easier to remember and work with.
 
 **Why Approximation Matters:**
-- **Money:** If a car costs GH₵149,950, we say "about GH₵150,000".
-- **Population:** Ghana's population is "about 33 million" (not exactly 33,475,870).
-- **Science:** The distance to the sun is "about 150 million km".
-- **Shopping:** Estimating your total bill before you get to the cashier to ensure you have enough money.
+• **Money:** If a car costs GH₵149,950, we say "about GH₵150,000".
+• **Population:** Ghana's population is "about 33 million" (not exactly 33,475,870).
+• **Science:** The distance to the sun is "about 150 million km".
+• **Shopping:** Estimating your total bill before you get to the cashier to ensure you have enough money.
 
 **Approximation** is finding a value that is close enough to the right answer.
 **Estimation** is making a rough calculation to check if an answer makes sense.
@@ -4329,54 +4329,54 @@ This lesson covers the rules for rounding numbers, using significant figures, an
 
 **Rounding to Nearest Whole Number:**
 Look at the first decimal digit (tenths).
-- 4.3 → 4 (3 is < 5)
-- 4.8 → 5 (8 is ≥ 5)
-- 12.5 → 13 (5 is ≥ 5)
+• 4.3 → 4 (3 is < 5)
+• 4.8 → 5 (8 is ≥ 5)
+• 12.5 → 13 (5 is ≥ 5)
 
 **Rounding to Nearest 10, 100, 1000:**
 
 **Example 1: Round 3,487**
-- Nearest 10: Target is 8 (tens). Next is 7 (≥5). Round up 8 to 9.
-  - Answer: **3,490**
-- Nearest 100: Target is 4 (hundreds). Next is 8 (≥5). Round up 4 to 5.
-  - Answer: **3,500**
-- Nearest 1000: Target is 3 (thousands). Next is 4 (<5). Keep 3.
-  - Answer: **3,000**
+• Nearest 10: Target is 8 (tens). Next is 7 (≥5). Round up 8 to 9.
+  • Answer: **3,490**
+• Nearest 100: Target is 4 (hundreds). Next is 8 (≥5). Round up 4 to 5.
+  • Answer: **3,500**
+• Nearest 1000: Target is 3 (thousands). Next is 4 (<5). Keep 3.
+  • Answer: **3,000**
 
 **Example 2: Round 29,501**
-- Nearest 1000: Target is 9. Next is 5 (round up). 9 becomes 10, so carry over.
-  - Answer: **30,000**`
+• Nearest 1000: Target is 9. Next is 5 (round up). 9 becomes 10, so carry over.
+  • Answer: **30,000**`
       },
       {
         title: '2. Decimal Places (d.p.)',
         content: `Decimal places count digits **after** the decimal point.
 
 **Rule:**
-- Count the specified number of digits after the point.
-- Look at the next digit to decide whether to round up or stay.
-- Drop all digits after the rounded position.
+• Count the specified number of digits after the point.
+• Look at the next digit to decide whether to round up or stay.
+• Drop all digits after the rounded position.
 
 **Example: Round 12.4738**
 
 **1 decimal place (1 d.p.):**
-- Target: 4. Next: 7 (Round up).
-- 4 becomes 5.
-- Answer: **12.5**
+• Target: 4. Next: 7 (Round up).
+• 4 becomes 5.
+• Answer: **12.5**
 
 **2 decimal places (2 d.p.):**
-- Target: 7. Next: 3 (Stay).
-- Answer: **12.47**
+• Target: 7. Next: 3 (Stay).
+• Answer: **12.47**
 
 **3 decimal places (3 d.p.):**
-- Target: 3. Next: 8 (Round up).
-- Answer: **12.474**
+• Target: 3. Next: 8 (Round up).
+• Answer: **12.474**
 
 **Special Case: Rounding up a 9**
 Round **3.197** to 2 d.p.
-- Target: 9. Next: 7 (Round up).
-- 9 becomes 10. Write 0, carry 1 to the left.
-- 1 becomes 2.
-- Answer: **3.20** (The 0 is important to show it's 2 d.p.)`
+• Target: 9. Next: 7 (Round up).
+• 9 becomes 10. Write 0, carry 1 to the left.
+• 1 becomes 2.
+• Answer: **3.20** (The 0 is important to show it's 2 d.p.)`
       },
       {
         title: '3. Significant Figures (s.f.)',
@@ -4390,68 +4390,68 @@ Round **3.197** to 2 d.p.
 5. Trailing zeros in a whole number are usually NOT significant unless specified (ambiguous).
 
 **Examples of Counting:**
-- 345 (3 s.f.)
-- 0.00345 (3 s.f. - start counting at 3)
-- 30045 (5 s.f. - zeros in middle count)
-- 3.450 (4 s.f. - zero at end of decimal counts)
+• 345 (3 s.f.)
+• 0.00345 (3 s.f. - start counting at 3)
+• 30045 (5 s.f. - zeros in middle count)
+• 3.450 (4 s.f. - zero at end of decimal counts)
 
 **Rounding to Significant Figures:**
 Start counting from the first non-zero digit.
 
 **Example 1: Round 0.004582 to 2 s.f.**
-- 1st s.f. is 4. 2nd s.f. is 5.
-- Next digit is 8 (Round up).
-- 5 becomes 6.
-- Answer: **0.0046**
+• 1st s.f. is 4. 2nd s.f. is 5.
+• Next digit is 8 (Round up).
+• 5 becomes 6.
+• Answer: **0.0046**
 
 **Example 2: Round 54,789 to 2 s.f.**
-- 1st s.f. is 5. 2nd s.f. is 4.
-- Next digit is 7 (Round up).
-- 4 becomes 5.
-- Fill remaining places with zeros.
-- Answer: **55,000**
+• 1st s.f. is 5. 2nd s.f. is 4.
+• Next digit is 7 (Round up).
+• 4 becomes 5.
+• Fill remaining places with zeros.
+• Answer: **55,000**
 
 **Example 3: Round 0.03049 to 2 s.f.**
-- 1st s.f. is 3. 2nd s.f. is 0.
-- Next digit is 4 (Stay).
-- Answer: **0.030**`
+• 1st s.f. is 3. 2nd s.f. is 0.
+• Next digit is 4 (Stay).
+• Answer: **0.030**`
       },
       {
         title: '4. Standard Form (Scientific Notation)',
         content: `Standard form is a way to write very large or very small numbers concisely.
 
 **Format:** $A \\times 10^n$
-- **A** is a number between 1 and 10 ($1 \\le A < 10$).
-- **n** is an integer (positive or negative).
+• **A** is a number between 1 and 10 ($1 \\le A < 10$).
+• **n** is an integer (positive or negative).
 
 **Converting Large Numbers (n is positive):**
 Move the decimal point to the left until one digit remains before it. Count the jumps.
 
 **Example 1: 45,000**
-- Move point 4 places left: 4.5
-- Answer: $4.5 \\times 10^4$
+• Move point 4 places left: 4.5
+• Answer: $4.5 \\times 10^4$
 
 **Example 2: 3,450,000**
-- Move point 6 places left: 3.45
-- Answer: $3.45 \\times 10^6$
+• Move point 6 places left: 3.45
+• Answer: $3.45 \\times 10^6$
 
 **Converting Small Numbers (n is negative):**
 Move the decimal point to the right until one non-zero digit is before it. Count the jumps as negative.
 
 **Example 3: 0.00056**
-- Move point 4 places right: 5.6
-- Answer: $5.6 \\times 10^{-4}$
+• Move point 4 places right: 5.6
+• Answer: $5.6 \\times 10^{-4}$
 
 **Example 4: 0.000000789**
-- Move point 7 places right: 7.89
-- Answer: $7.89 \\times 10^{-7}$
+• Move point 7 places right: 7.89
+• Answer: $7.89 \\times 10^{-7}$
 
 **Converting Back to Ordinary Numbers:**
-- Positive power: Move point right.
-- Negative power: Move point left.
+• Positive power: Move point right.
+• Negative power: Move point left.
 
-- $3.2 \\times 10^3 = 3,200$
-- $1.5 \\times 10^{-2} = 0.015$`
+• $3.2 \\times 10^3 = 3,200$
+• $1.5 \\times 10^{-2} = 0.015$`
       },
       {
         title: '5. Operations with Standard Form',
@@ -4459,32 +4459,32 @@ Move the decimal point to the right until one non-zero digit is before it. Count
 Multiply the numbers (A) and ADD the powers (n). Adjust if necessary.
 
 **Example:** $(2 \\times 10^3) \\times (4 \\times 10^5)$
-- Numbers: $2 \\times 4 = 8$
-- Powers: $10^{3+5} = 10^8$
-- Answer: $8 \\times 10^8$
+• Numbers: $2 \\times 4 = 8$
+• Powers: $10^{3+5} = 10^8$
+• Answer: $8 \\times 10^8$
 
 **Example (Adjustment needed):** $(5 \\times 10^4) \\times (6 \\times 10^3)$
-- Numbers: $5 \\times 6 = 30$
-- Powers: $10^{4+3} = 10^7$
-- Result: $30 \\times 10^7$
-- Adjust 30 to 3.0 (move left 1, add 1 to power)
-- Answer: $3.0 \\times 10^8$
+• Numbers: $5 \\times 6 = 30$
+• Powers: $10^{4+3} = 10^7$
+• Result: $30 \\times 10^7$
+• Adjust 30 to 3.0 (move left 1, add 1 to power)
+• Answer: $3.0 \\times 10^8$
 
 **Division:**
 Divide the numbers (A) and SUBTRACT the powers (n).
 
 **Example:** $(8 \\times 10^6) \\div (2 \\times 10^2)$
-- Numbers: $8 \\div 2 = 4$
-- Powers: $10^{6-2} = 10^4$
-- Answer: $4 \\times 10^4$
+• Numbers: $8 \\div 2 = 4$
+• Powers: $10^{6-2} = 10^4$
+• Answer: $4 \\times 10^4$
 
 **Addition/Subtraction:**
 Powers MUST be the same. Convert one to match the other.
 
 **Example:** $3 \\times 10^4 + 2 \\times 10^3$
-- Convert $2 \\times 10^3$ to $0.2 \\times 10^4$
-- Add: $(3 + 0.2) \\times 10^4$
-- Answer: $3.2 \\times 10^4$`
+• Convert $2 \\times 10^3$ to $0.2 \\times 10^4$
+• Add: $(3 + 0.2) \\times 10^4$
+• Answer: $3.2 \\times 10^4$`
       },
       {
         title: '6. Estimation Strategies',
@@ -4493,24 +4493,24 @@ Powers MUST be the same. Convert one to match the other.
 **Strategy:** Round each number to **1 significant figure** before calculating.
 
 **Example 1: Estimate $48 \\times 5.2$**
-- Round 48 → 50
-- Round 5.2 → 5
-- Estimate: $50 \\times 5 = 250$
-- (Exact answer is 249.6, so estimate is very close)
+• Round 48 → 50
+• Round 5.2 → 5
+• Estimate: $50 \\times 5 = 250$
+• (Exact answer is 249.6, so estimate is very close)
 
 **Example 2: Estimate $\\frac{304 \\times 19.5}{0.48}$**
-- Round 304 → 300
-- Round 19.5 → 20
-- Round 0.48 → 0.5
-- Calculation: $\\frac{300 \\times 20}{0.5} = \\frac{6000}{0.5}$
-- Dividing by 0.5 is same as multiplying by 2.
-- Estimate: 12,000
+• Round 304 → 300
+• Round 19.5 → 20
+• Round 0.48 → 0.5
+• Calculation: $\\frac{300 \\times 20}{0.5} = \\frac{6000}{0.5}$
+• Dividing by 0.5 is same as multiplying by 2.
+• Estimate: 12,000
 
 **Example 3: Estimate cost of 28 items at GH₵4.95 each**
-- Round 28 → 30
-- Round 4.95 → 5
-- Estimate: $30 \\times 5 = 150$
-- Answer: About GH₵150`
+• Round 28 → 30
+• Round 4.95 → 5
+• Estimate: $30 \\times 5 = 150$
+• Answer: About GH₵150`
       },
       {
         title: '7. Percentage Error',
@@ -4651,16 +4651,16 @@ A student measured a desk as 1.2m. The actual length is 1.25m. Calculate the per
     introduction: `Factors and multiples are the building blocks of arithmetic. They help us break down numbers, simplify fractions, and solve scheduling problems.
 
 **Key Definitions:**
-- **Factor:** A number that divides another number exactly (no remainder).
-  - Factors of 12: 1, 2, 3, 4, 6, 12.
-- **Multiple:** A number obtained by multiplying a number by an integer.
-  - Multiples of 3: 3, 6, 9, 12, 15...
-- **Prime Number:** A number with exactly two factors: 1 and itself (e.g., 2, 3, 5, 7, 11).
-  - Note: 1 is NOT a prime number.
+• **Factor:** A number that divides another number exactly (no remainder).
+  • Factors of 12: 1, 2, 3, 4, 6, 12.
+• **Multiple:** A number obtained by multiplying a number by an integer.
+  • Multiples of 3: 3, 6, 9, 12, 15...
+• **Prime Number:** A number with exactly two factors: 1 and itself (e.g., 2, 3, 5, 7, 11).
+  • Note: 1 is NOT a prime number.
 
 **Real-Life Applications:**
-- **HCF:** Tiling a floor with the largest possible square tiles; dividing items into equal gift bags.
-- **LCM:** Determining when two events will happen at the same time (e.g., two bells ringing together, traffic lights synchronizing).
+• **HCF:** Tiling a floor with the largest possible square tiles; dividing items into equal gift bags.
+• **LCM:** Determining when two events will happen at the same time (e.g., two bells ringing together, traffic lights synchronizing).
 
 This lesson covers the essential techniques for finding HCF and LCM and using divisibility rules to work faster.`,
     keyConcepts: [
@@ -4678,16 +4678,16 @@ Example: Find prime factors of 60.
 
 **Method: Repeated Division**
 Divide by smallest primes (2, 3, 5...) until you reach 1.
-- $60 \\div 2 = 30$
-- $30 \\div 2 = 15$
-- $15 \\div 3 = 5$
-- $5 \\div 5 = 1$
-- Result: $2 \\times 2 \\times 3 \\times 5 = 2^2 \\times 3 \\times 5$
+• $60 \\div 2 = 30$
+• $30 \\div 2 = 15$
+• $15 \\div 3 = 5$
+• $5 \\div 5 = 1$
+• Result: $2 \\times 2 \\times 3 \\times 5 = 2^2 \\times 3 \\times 5$
 
 **Example 2: Prime factors of 72**
-- $72 = 8 \\times 9$
-- $8 = 2^3$, $9 = 3^2$
-- Result: $2^3 \\times 3^2$`
+• $72 = 8 \\times 9$
+• $8 = 2^3$, $9 = 3^2$
+• Result: $2^3 \\times 3^2$`
       },
       {
         title: '2. Highest Common Factor (HCF)',
@@ -4695,30 +4695,30 @@ Divide by smallest primes (2, 3, 5...) until you reach 1.
 
 **Method 1: Listing Factors**
 Find HCF of 12 and 18.
-- Factors of 12: 1, 2, 3, 4, **6**, 12
-- Factors of 18: 1, 2, 3, **6**, 9, 18
-- Common Factors: 1, 2, 3, 6
-- Highest: **6**
+• Factors of 12: 1, 2, 3, 4, **6**, 12
+• Factors of 18: 1, 2, 3, **6**, 9, 18
+• Common Factors: 1, 2, 3, 6
+• Highest: **6**
 
 **Method 2: Prime Factorization (Best for large numbers)**
 1. Write numbers as product of primes.
 2. Select the **lowest power** of each **common prime**.
 
 Example: HCF of 60 and 72
-- $60 = 2^2 \\times 3^1 \\times 5^1$
-- $72 = 2^3 \\times 3^2$
-- Common primes: 2 and 3.
-- Lowest power of 2: $2^2$
-- Lowest power of 3: $3^1$
-- HCF = $2^2 \\times 3^1 = 4 \\times 3 = 12$
+• $60 = 2^2 \\times 3^1 \\times 5^1$
+• $72 = 2^3 \\times 3^2$
+• Common primes: 2 and 3.
+• Lowest power of 2: $2^2$
+• Lowest power of 3: $3^1$
+• HCF = $2^2 \\times 3^1 = 4 \\times 3 = 12$
 
 **Method 3: Repeated Division (Venn Diagram approach)**
 Divide both numbers by common primes until no common factor remains.
-- 2 | 60, 72
-- 2 | 30, 36
-- 3 | 15, 18
--   | 5,  6  (No common factor)
-- HCF = $2 \\times 2 \\times 3 = 12$`
+• 2 | 60, 72
+• 2 | 30, 36
+• 3 | 15, 18
+•   | 5,  6  (No common factor)
+• HCF = $2 \\times 2 \\times 3 = 12$`
       },
       {
         title: '3. Least Common Multiple (LCM)',
@@ -4726,22 +4726,22 @@ Divide both numbers by common primes until no common factor remains.
 
 **Method 1: Listing Multiples**
 Find LCM of 4 and 6.
-- Multiples of 4: 4, 8, **12**, 16, 20, 24...
-- Multiples of 6: 6, **12**, 18, 24...
-- Lowest Common: **12**
+• Multiples of 4: 4, 8, **12**, 16, 20, 24...
+• Multiples of 6: 6, **12**, 18, 24...
+• Lowest Common: **12**
 
 **Method 2: Prime Factorization**
 1. Write numbers as product of primes.
 2. Select the **highest power** of **every prime** present.
 
 Example: LCM of 60 and 72
-- $60 = 2^2 \\times 3^1 \\times 5^1$
-- $72 = 2^3 \\times 3^2$
-- Primes involved: 2, 3, 5
-- Highest power of 2: $2^3$
-- Highest power of 3: $3^2$
-- Highest power of 5: $5^1$
-- LCM = $2^3 \\times 3^2 \\times 5^1 = 8 \\times 9 \\times 5 = 360$
+• $60 = 2^2 \\times 3^1 \\times 5^1$
+• $72 = 2^3 \\times 3^2$
+• Primes involved: 2, 3, 5
+• Highest power of 2: $2^3$
+• Highest power of 3: $3^2$
+• Highest power of 5: $5^1$
+• LCM = $2^3 \\times 3^2 \\times 5^1 = 8 \\times 9 \\times 5 = 360$
 
 **Relationship between HCF and LCM:**
 For two numbers a and b:
@@ -4754,22 +4754,22 @@ $12 \\times 360 = 4320$ (Correct!)`
         title: '4. Divisibility Rules',
         content: `These rules help check if a number is divisible by another without doing long division.
 
-- **Divisible by 2:** Last digit is even (0, 2, 4, 6, 8).
-  - e.g., 3,45**6** (Yes)
-- **Divisible by 3:** Sum of digits is divisible by 3.
-  - e.g., 123 → 1+2+3=6 (Yes)
-- **Divisible by 4:** Last two digits form a number divisible by 4.
-  - e.g., 7**24** (24÷4=6, Yes)
-- **Divisible by 5:** Last digit is 0 or 5.
-  - e.g., 13**5** (Yes)
-- **Divisible by 6:** Divisible by BOTH 2 and 3.
-  - e.g., 132 (Even? Yes. Sum=6? Yes. → Yes)
-- **Divisible by 8:** Last three digits divisible by 8.
-  - e.g., 1**800** (Yes)
-- **Divisible by 9:** Sum of digits is divisible by 9.
-  - e.g., 729 → 7+2+9=18 (Yes)
-- **Divisible by 10:** Last digit is 0.
-  - e.g., 54**0** (Yes)`
+• **Divisible by 2:** Last digit is even (0, 2, 4, 6, 8).
+  • e.g., 3,45**6** (Yes)
+• **Divisible by 3:** Sum of digits is divisible by 3.
+  • e.g., 123 → 1+2+3=6 (Yes)
+• **Divisible by 4:** Last two digits form a number divisible by 4.
+  • e.g., 7**24** (24÷4=6, Yes)
+• **Divisible by 5:** Last digit is 0 or 5.
+  • e.g., 13**5** (Yes)
+• **Divisible by 6:** Divisible by BOTH 2 and 3.
+  • e.g., 132 (Even? Yes. Sum=6? Yes. → Yes)
+• **Divisible by 8:** Last three digits divisible by 8.
+  • e.g., 1**800** (Yes)
+• **Divisible by 9:** Sum of digits is divisible by 9.
+  • e.g., 729 → 7+2+9=18 (Yes)
+• **Divisible by 10:** Last digit is 0.
+  • e.g., 54**0** (Yes)`
       },
       {
         title: '5. Real-Life Problems: HCF',
@@ -4780,13 +4780,13 @@ A carpenter has two planks of wood, 240cm and 300cm long. He wants to cut them i
 
 **Solution:**
 Find HCF of 240 and 300.
-- $240 = 24 \\times 10 = (3 \\times 8) \\times (2 \\times 5) = 3 \\times 2^3 \\times 2 \\times 5 = 2^4 \\times 3 \\times 5$
-- $300 = 3 \\times 100 = 3 \\times 10^2 = 3 \\times (2 \\times 5)^2 = 3 \\times 2^2 \\times 5^2 = 2^2 \\times 3 \\times 5^2$
+• $240 = 24 \\times 10 = (3 \\times 8) \\times (2 \\times 5) = 3 \\times 2^3 \\times 2 \\times 5 = 2^4 \\times 3 \\times 5$
+• $300 = 3 \\times 100 = 3 \\times 10^2 = 3 \\times (2 \\times 5)^2 = 3 \\times 2^2 \\times 5^2 = 2^2 \\times 3 \\times 5^2$
 
 Common primes with lowest powers:
-- $2^2$ (from $2^4, 2^2$)
-- $3^1$ (from $3^1, 3^1$)
-- $5^1$ (from $5^1, 5^2$)
+• $2^2$ (from $2^4, 2^2$)
+• $3^1$ (from $3^1, 3^1$)
+• $5^1$ (from $5^1, 5^2$)
 
 HCF = $4 \\times 3 \\times 5 = 60$
 
@@ -4801,14 +4801,14 @@ Three bells ring at intervals of 12 minutes, 15 minutes, and 20 minutes respecti
 
 **Solution:**
 Find LCM of 12, 15, 20.
-- $12 = 2^2 \\times 3$
-- $15 = 3 \\times 5$
-- $20 = 2^2 \\times 5$
+• $12 = 2^2 \\times 3$
+• $15 = 3 \\times 5$
+• $20 = 2^2 \\times 5$
 
 Highest powers of all primes:
-- $2^2$ (4)
-- $3^1$ (3)
-- $5^1$ (5)
+• $2^2$ (4)
+• $3^1$ (3)
+• $5^1$ (5)
 
 LCM = $4 \\times 3 \\times 5 = 60$ minutes.
 
@@ -4818,25 +4818,25 @@ Time = 8:00 am + 1 hour = **9:00 am**.`
       {
         title: '7. Perfect Squares and Square Roots',
         content: `A **Perfect Square** is a number whose square root is an integer.
-- Examples: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100...
+• Examples: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100...
 
 **Using Prime Factors for Roots:**
 To find the square root of a number, halve the powers of its prime factors.
 
 **Example: Find $\\sqrt{144}$**
-- $144 = 12 \\times 12 = (2^2 \\times 3) \\times (2^2 \\times 3) = 2^4 \\times 3^2$
-- $\\sqrt{144} = \\sqrt{2^4 \\times 3^2}$
-- Halve the powers: $2^2 \\times 3^1$
-- Calculate: $4 \\times 3 = 12$
+• $144 = 12 \\times 12 = (2^2 \\times 3) \\times (2^2 \\times 3) = 2^4 \\times 3^2$
+• $\\sqrt{144} = \\sqrt{2^4 \\times 3^2}$
+• Halve the powers: $2^2 \\times 3^1$
+• Calculate: $4 \\times 3 = 12$
 
 **Example: Find $\\sqrt{324}$**
-- $324 = 2^2 \\times 3^4$
-- $\\sqrt{324} = 2^1 \\times 3^2 = 2 \\times 9 = 18$
+• $324 = 2^2 \\times 3^4$
+• $\\sqrt{324} = 2^1 \\times 3^2 = 2 \\times 9 = 18$
 
 **Cube Roots:**
 Divide powers by 3.
-- $216 = 2^3 \\times 3^3$
-- $\\sqrt[3]{216} = 2^1 \\times 3^1 = 6$`
+• $216 = 2^3 \\times 3^3$
+• $\\sqrt[3]{216} = 2^1 \\times 3^1 = 6$`
       }
     ],
     activities: {
@@ -4960,10 +4960,10 @@ Divide powers by 3.
     introduction: `Geometry (from Greek "geo" = earth, "metron" = measure) is the branch of mathematics that deals with shapes, sizes, and properties of space. It is the foundation of architecture, engineering, art, and navigation.
 
 **Why Study Lines and Angles?**
-- **Construction:** Every building stands because of precise angles (90° for walls, specific angles for roofs).
-- **Design:** From fashion to graphic design, angles create visual harmony.
-- **Navigation:** Pilots and sailors use bearings (angles) to find their way.
-- **Sports:** A footballer calculates the angle to shoot a goal; a snooker player calculates the angle of impact.
+• **Construction:** Every building stands because of precise angles (90° for walls, specific angles for roofs).
+• **Design:** From fashion to graphic design, angles create visual harmony.
+• **Navigation:** Pilots and sailors use bearings (angles) to find their way.
+• **Sports:** A footballer calculates the angle to shoot a goal; a snooker player calculates the angle of impact.
 
 In this lesson, we will start from the very basics—points and lines—and build up to solving complex problems involving parallel lines. These concepts are tested in **every single WASSCE Core Maths paper**, often in the compulsory section. Mastering them is non-negotiable!`,
     keyConcepts: [
@@ -4993,10 +4993,10 @@ In this lesson, we will start from the very basics—points and lines—and buil
 6. **Full Rotation (Perigon):** Exactly 360°. A complete circle.
 
 **Visual Guide:**
-- Acute: V shape
-- Right: L shape
-- Obtuse: Wide opening
-- Straight: Flat line`
+• Acute: V shape
+• Right: L shape
+• Obtuse: Wide opening
+• Straight: Flat line`
       },
       {
         title: '3. Angle Pairs and Relationships',
@@ -5004,67 +5004,67 @@ In this lesson, we will start from the very basics—points and lines—and buil
 
 **1. Complementary Angles:**
 Two angles that add up to **90°**.
-- Example: 30° and 60° are complementary.
-- If angle $x$ is complementary to 40°, then $x = 90 - 40 = 50°$.
+• Example: 30° and 60° are complementary.
+• If angle $x$ is complementary to 40°, then $x = 90 - 40 = 50°$.
 
 **2. Supplementary Angles:**
 Two angles that add up to **180°**.
-- Example: 110° and 70° are supplementary.
-- If angle $y$ is supplementary to 120°, then $y = 180 - 120 = 60°$.
+• Example: 110° and 70° are supplementary.
+• If angle $y$ is supplementary to 120°, then $y = 180 - 120 = 60°$.
 
 **3. Adjacent Angles:**
 Angles that share a common vertex and a common side, but do not overlap. They are "neighbors".
 
 **4. Vertically Opposite Angles:**
 When two lines intersect (cross), the angles opposite each other are **EQUAL**.
-- They form an X shape.
-- If top angle is 50°, bottom is 50°.
-- If left angle is 130°, right is 130°.`
+• They form an X shape.
+• If top angle is 50°, bottom is 50°.
+• If left angle is 130°, right is 130°.`
       },
       {
         title: '4. Angles on a Line and at a Point',
         content: `**Theorem 1: Angles on a Straight Line**
 The sum of angles on a straight line is **180°**.
-- If a straight line is split into two angles $a$ and $b$, then $a + b = 180°$.
-- If split into three angles $a, b, c$, then $a + b + c = 180°$.
+• If a straight line is split into two angles $a$ and $b$, then $a + b = 180°$.
+• If split into three angles $a, b, c$, then $a + b + c = 180°$.
 
 **Example:** Find $x$ if angles on a line are $2x, 3x, 4x$.
-- $2x + 3x + 4x = 180$
-- $9x = 180$
-- $x = 20°$
+• $2x + 3x + 4x = 180$
+• $9x = 180$
+• $x = 20°$
 
 **Theorem 2: Angles at a Point**
 The sum of angles around a single point (making a full circle) is **360°**.
-- $a + b + c + d = 360°$.
+• $a + b + c + d = 360°$.
 
 **Example:** Find $y$ if angles at a point are 90°, 120°, $y$.
-- $90 + 120 + y = 360$
-- $210 + y = 360$
-- $y = 360 - 210 = 150°$`
+• $90 + 120 + y = 360$
+• $210 + y = 360$
+• $y = 360 - 210 = 150°$`
       },
       {
         title: '5. Parallel Lines and Transversals',
         content: `A **transversal** is a line that crosses two or more parallel lines. This creates special angle pairs with powerful properties.
 
 **1. Corresponding Angles (F-Shape):**
-- Angles in the same position at each intersection.
-- They are **EQUAL**.
-- Look for an **F** shape (can be backward or upside down).
+• Angles in the same position at each intersection.
+• They are **EQUAL**.
+• Look for an **F** shape (can be backward or upside down).
 
 **2. Alternate Angles (Z-Shape):**
-- Angles on opposite sides of the transversal and between the parallel lines.
-- They are **EQUAL**.
-- Look for a **Z** shape.
+• Angles on opposite sides of the transversal and between the parallel lines.
+• They are **EQUAL**.
+• Look for a **Z** shape.
 
 **3. Interior (Co-interior) Angles (C-Shape):**
-- Angles on the same side of the transversal and between the parallel lines.
-- They **ADD UP TO 180°** (Supplementary).
-- Look for a **C** or **U** shape.
+• Angles on the same side of the transversal and between the parallel lines.
+• They **ADD UP TO 180°** (Supplementary).
+• Look for a **C** or **U** shape.
 
 **Summary:**
-- **F** angles are Equal.
-- **Z** angles are Equal.
-- **C** angles sum to 180°.`
+• **F** angles are Equal.
+• **Z** angles are Equal.
+• **C** angles sum to 180°.`
       },
       {
         title: '6. Solving Geometric Problems',
@@ -5072,8 +5072,8 @@ The sum of angles around a single point (making a full circle) is **360°**.
 
 1. **Identify the Rules:** Look for straight lines (180°), full circles (360°), X-shapes (vertically opposite), and parallel lines (F, Z, C shapes).
 2. **Show Your Work:** In WASSCE Section B, you must state the reason for each step.
-   - e.g., "$x = 50°$ (Alt. angles)"
-   - e.g., "$y + 120 = 180$ (Int. angles)"
+   • e.g., "$x = 50°$ (Alt. angles)"
+   • e.g., "$y + 120 = 180$ (Int. angles)"
 3. **Don't Trust the Diagram:** Diagrams are often "not drawn to scale". Rely on the numbers and markings (arrows for parallel, squares for 90°), not what it looks like.
 4. **Algebra in Geometry:** Often you'll get equations like $2x + 10$ and $3x - 20$. Set up the equation based on the relationship (are they equal? do they sum to 180?) and solve for $x$.`
       }
@@ -5259,12 +5259,12 @@ In this lesson, we will explore the "DNA" of these shapes—their side lengths a
         title: '2. Angle Properties of Triangles',
         content: `**Theorem 1: Sum of Interior Angles**
 The angles inside ANY triangle add up to **180°**.
-- $a + b + c = 180°$
+• $a + b + c = 180°$
 
 **Theorem 2: Exterior Angle Theorem**
 The exterior angle of a triangle is equal to the sum of the two **interior opposite** angles.
-- Ext. Angle = Int. Opp. 1 + Int. Opp. 2
-- This is often faster than finding the third angle first.
+• Ext. Angle = Int. Opp. 1 + Int. Opp. 2
+• This is often faster than finding the third angle first.
 
 **Example:**
 If interior opposite angles are 50° and 60°, the exterior angle is $50 + 60 = 110°$.`
@@ -5274,8 +5274,8 @@ If interior opposite angles are 50° and 60°, the exterior angle is $50 + 60 = 
         content: `For **Right-Angled Triangles** only.
 
 **Formula:** $a^2 + b^2 = c^2$
-- $c$ is the **Hypotenuse** (longest side, opposite 90°).
-- $a$ and $b$ are the other two sides.
+• $c$ is the **Hypotenuse** (longest side, opposite 90°).
+• $a$ and $b$ are the other two sides.
 
 \`\`\`geometry
 {
@@ -5287,17 +5287,17 @@ If interior opposite angles are 50° and 60°, the exterior angle is $50 + 60 = 
 \`\`\`
 
 **Common Pythagorean Triples (Memorize these!):**
-- 3, 4, 5 ($3^2 + 4^2 = 9 + 16 = 25 = 5^2$)
-- 5, 12, 13
-- 8, 15, 17
-- 7, 24, 25
+• 3, 4, 5 ($3^2 + 4^2 = 9 + 16 = 25 = 5^2$)
+• 5, 12, 13
+• 8, 15, 17
+• 7, 24, 25
 
 **Application:**
 Find the missing side $x$ if hypotenuse is 10 and one side is 6.
-- $x^2 + 6^2 = 10^2$
-- $x^2 + 36 = 100$
-- $x^2 = 64$
-- $x = 8$`
+• $x^2 + 6^2 = 10^2$
+• $x^2 + 36 = 100$
+• $x^2 = 64$
+• $x = 8$`
       },
       {
         title: '4. Properties of Quadrilaterals',
@@ -5306,9 +5306,9 @@ Find the missing side $x$ if hypotenuse is 10 and one side is 6.
 **Special Quadrilaterals:**
 
 1. **Square:**
-   - All sides equal.
-   - All angles 90°.
-   - Diagonals bisect at 90° and are equal.
+   • All sides equal.
+   • All angles 90°.
+   • Diagonals bisect at 90° and are equal.
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5318,9 +5318,9 @@ Find the missing side $x$ if hypotenuse is 10 and one side is 6.
 \`\`\`
 
 2. **Rectangle:**
-   - Opposite sides equal and parallel.
-   - All angles 90°.
-   - Diagonals are equal and bisect each other.
+   • Opposite sides equal and parallel.
+   • All angles 90°.
+   • Diagonals are equal and bisect each other.
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5330,9 +5330,9 @@ Find the missing side $x$ if hypotenuse is 10 and one side is 6.
 \`\`\`
 
 3. **Parallelogram:**
-   - Opposite sides equal and parallel.
-   - Opposite angles equal.
-   - Diagonals bisect each other (but not equal).
+   • Opposite sides equal and parallel.
+   • Opposite angles equal.
+   • Diagonals bisect each other (but not equal).
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5342,9 +5342,9 @@ Find the missing side $x$ if hypotenuse is 10 and one side is 6.
 \`\`\`
 
 4. **Rhombus:**
-   - All sides equal.
-   - Opposite angles equal.
-   - Diagonals bisect at 90° (but not equal).
+   • All sides equal.
+   • Opposite angles equal.
+   • Diagonals bisect at 90° (but not equal).
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5354,7 +5354,7 @@ Find the missing side $x$ if hypotenuse is 10 and one side is 6.
 \`\`\`
 
 5. **Trapezium:**
-   - One pair of parallel sides.
+   • One pair of parallel sides.
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5364,9 +5364,9 @@ Find the missing side $x$ if hypotenuse is 10 and one side is 6.
 \`\`\`
 
 6. **Kite:**
-   - Two pairs of adjacent equal sides.
-   - Diagonals cross at 90°.
-   - One diagonal bisects the other.
+   • Two pairs of adjacent equal sides.
+   • Diagonals cross at 90°.
+   • One diagonal bisects the other.
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5399,8 +5399,8 @@ Triangles are similar if they have the same shape but different sizes (one is an
 
 **Example:**
 Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest side is 6. Find the other sides.
-- Ratio = $6/3 = 2$.
-- Other sides = $4 \times 2 = 8$ and $5 \times 2 = 10$.`
+• Ratio = $6/3 = 2$.
+• Other sides = $4 \times 2 = 8$ and $5 \times 2 = 10$.`
       },
       {
         title: '6. Mensuration: Area and Perimeter',
@@ -5410,8 +5410,8 @@ Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest 
 **Key Formulas (Memorize these!):**
 
 1. **Triangle:**
-   - Area = $\frac{1}{2} \times base \times height$
-   - Area = $\sqrt{s(s-a)(s-b)(s-c)}$ (Heron's Formula, where $s = \frac{a+b+c}{2}$)
+   • Area = $\frac{1}{2} \times base \times height$
+   • Area = $\sqrt{s(s-a)(s-b)(s-c)}$ (Heron's Formula, where $s = \frac{a+b+c}{2}$)
 \`\`\`geometry
 {
   "type": "triangle",
@@ -5422,8 +5422,8 @@ Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest 
 \`\`\`
 
 2. **Rectangle:**
-   - Area = $length \times width$
-   - Perimeter = $2(l + w)$
+   • Area = $length \times width$
+   • Perimeter = $2(l + w)$
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5433,8 +5433,8 @@ Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest 
 \`\`\`
 
 3. **Square:**
-   - Area = $side \times side$ ($l^2$)
-   - Perimeter = $4l$
+   • Area = $side \times side$ ($l^2$)
+   • Perimeter = $4l$
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5444,7 +5444,7 @@ Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest 
 \`\`\`
 
 4. **Parallelogram:**
-   - Area = $base \times perpendicular\ height$
+   • Area = $base \times perpendicular\ height$
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5455,8 +5455,8 @@ Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest 
 \`\`\`
 
 5. **Trapezium:**
-   - Area = $\frac{1}{2}(a + b)h$
-   - ($a$ and $b$ are parallel sides, $h$ is perpendicular height)
+   • Area = $\frac{1}{2}(a + b)h$
+   • ($a$ and $b$ are parallel sides, $h$ is perpendicular height)
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5467,8 +5467,8 @@ Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest 
 \`\`\`
 
 6. **Rhombus / Kite:**
-   - Area = $\frac{1}{2} \times d_1 \times d_2$
-   - ($d_1$ and $d_2$ are the lengths of the diagonals)
+   • Area = $\frac{1}{2} \times d_1 \times d_2$
+   • ($d_1$ and $d_2$ are the lengths of the diagonals)
 \`\`\`geometry
 {
   "type": "quadrilateral",
@@ -5479,8 +5479,8 @@ Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest 
 \`\`\`
 
 7. **Circle:**
-   - Area = $\pi r^2$
-   - Circumference = $2\pi r$
+   • Area = $\pi r^2$
+   • Circumference = $2\pi r$
 \`\`\`geometry
 {
   "type": "circle",
@@ -5496,12 +5496,12 @@ Triangle ABC has sides 3, 4, 5. Triangle PQR is similar to ABC and its shortest 
 
 **Sum of Interior Angles:**
 Formula: $(n - 2) \\times 180°$
-- where $n$ is number of sides.
+• where $n$ is number of sides.
 
 **Examples:**
-- Triangle (n=3): $(3-2) \\times 180 = 180°$
-- Quadrilateral (n=4): $(4-2) \\times 180 = 360°$
-- Pentagon (n=5): $(5-2) \\times 180 = 540°$
+• Triangle (n=3): $(3-2) \\times 180 = 180°$
+• Quadrilateral (n=4): $(4-2) \\times 180 = 360°$
+• Pentagon (n=5): $(5-2) \\times 180 = 540°$
 \`\`\`geometry
 {
   "type": "polygon",
@@ -5510,7 +5510,7 @@ Formula: $(n - 2) \\times 180°$
 }
 \`\`\`
 
-- Hexagon (n=6): $(6-2) \\times 180 = 720°$
+• Hexagon (n=6): $(6-2) \\times 180 = 720°$
 \`\`\`geometry
 {
   "type": "polygon",
@@ -5523,9 +5523,9 @@ Formula: $(n - 2) \\times 180°$
 The sum of exterior angles of ANY convex polygon is always **360°**.
 
 **Regular Polygons:**
-- All sides equal, all angles equal.
-- Each Ext. Angle = $360° / n$
-- Each Int. Angle = $180° - \text{Ext. Angle}$`
+• All sides equal, all angles equal.
+• Each Ext. Angle = $360° / n$
+• Each Int. Angle = $180° - \text{Ext. Angle}$`
       }
     ],
     activities: {
@@ -5668,9 +5668,9 @@ The sum of exterior angles of ANY convex polygon is always **360°**.
 In the WASSCE Core Math exam, Construction is often a full question in Section B. It tests your ability to follow instructions precisely and understand the geometric rules that govern shapes.
 
 **Why is this important?**
-- **Engineering & Architecture:** Blueprints and designs rely on the principles of geometric construction.
-- **Navigation:** Understanding loci is essential for plotting courses and boundaries.
-- **Exam Strategy:** Construction questions are "mechanical" - if you follow the steps and are neat, you can get full marks easily.
+• **Engineering & Architecture:** Blueprints and designs rely on the principles of geometric construction.
+• **Navigation:** Understanding loci is essential for plotting courses and boundaries.
+• **Exam Strategy:** Construction questions are "mechanical" - if you follow the steps and are neat, you can get full marks easily.
 
 In this lesson, we will master the fundamental skills: bisecting lines and angles, constructing specific angles, and understanding the "Locus" of points.`,
     keyConcepts: [
@@ -5682,9 +5682,9 @@ In this lesson, we will master the fundamental skills: bisecting lines and angle
 3.  **Pencil:** Use a hard pencil (2H or H) for construction lines (faint) and a softer pencil (HB) for outlines (bold).
 
 **The Golden Rules:**
-- **Never erase your construction arcs.** Examiners look for these "working lines" to give you marks.
-- **Be precise.** A difference of 1mm or 1° can lose you marks.
-- **Label clearly.** Mark points with capital letters (A, B, C) as instructed.`
+• **Never erase your construction arcs.** Examiners look for these "working lines" to give you marks.
+• **Be precise.** A difference of 1mm or 1° can lose you marks.
+• **Label clearly.** Mark points with capital letters (A, B, C) as instructed.`
       },
       {
         title: '2. Basic Bisectors',
@@ -5729,10 +5729,10 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
         content: `You must be able to construct these angles without a protractor.
 
 **1. 60° Angle:**
-- Draw a line. Mark point A.
-- With needle on A, draw a large arc.
-- With the *same radius*, place needle where the arc crosses the line and cut the arc.
-- Join A to this cut point. The angle is 60°.
+• Draw a line. Mark point A.
+• With needle on A, draw a large arc.
+• With the *same radius*, place needle where the arc crosses the line and cut the arc.
+• Join A to this cut point. The angle is 60°.
 
 \`\`\`geometry
 {
@@ -5742,8 +5742,8 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
 \`\`\`
 
 **2. 90° Angle:**
-- Construct a perpendicular bisector on a straight line (180°).
-- Alternatively, draw a semi-circle, and bisect the 180° angle.
+• Construct a perpendicular bisector on a straight line (180°).
+• Alternatively, draw a semi-circle, and bisect the 180° angle.
 
 \`\`\`geometry
 {
@@ -5753,11 +5753,11 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
 \`\`\`
 
 **3. Derived Angles:**
-- **30°:** Bisect a 60° angle.
-- **45°:** Bisect a 90° angle.
-- **75°:** Construct 90° and 60° at the same point. Bisect the 30° gap between them (60 + 15 = 75).
-- **105°:** 90° + 15° (Bisect the gap between 90° and 120°).
-- **135°:** 90° + 45°.`
+• **30°:** Bisect a 60° angle.
+• **45°:** Bisect a 90° angle.
+• **75°:** Construct 90° and 60° at the same point. Bisect the 30° gap between them (60 + 15 = 75).
+• **105°:** 90° + 15° (Bisect the gap between 90° and 120°).
+• **135°:** 90° + 45°.`
       },
       {
         title: '4. Constructing Triangles',
@@ -5809,8 +5809,8 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
         content: `A **Locus** (plural: Loci) is the path traced by a point moving according to a specific rule. In WASSCE, you must know these four standard loci:
 
 **Locus 1: Fixed distance from a fixed point**
-- *Rule:* A point P moves so it is always r cm from point O.
-- *Result:* A **Circle** with center O and radius r.
+• *Rule:* A point P moves so it is always r cm from point O.
+• *Result:* A **Circle** with center O and radius r.
 
 \`\`\`geometry
 {
@@ -5821,8 +5821,8 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
 \`\`\`
 
 **Locus 2: Equidistant from two fixed points**
-- *Rule:* A point P moves so it is equidistant from points A and B (PA = PB).
-- *Result:* The **Perpendicular Bisector** of the line joining A and B.
+• *Rule:* A point P moves so it is equidistant from points A and B (PA = PB).
+• *Result:* The **Perpendicular Bisector** of the line joining A and B.
 
 \`\`\`geometry
 {
@@ -5833,8 +5833,8 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
 \`\`\`
 
 **Locus 3: Equidistant from two intersecting lines**
-- *Rule:* A point P moves so it is equidistant from lines AB and AC.
-- *Result:* The **Angle Bisector** of angle BAC.
+• *Rule:* A point P moves so it is equidistant from lines AB and AC.
+• *Result:* The **Angle Bisector** of angle BAC.
 
 \`\`\`geometry
 {
@@ -5845,8 +5845,8 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
 \`\`\`
 
 **Locus 4: Fixed distance from a straight line**
-- *Rule:* A point P moves so it is always d cm from a line AB.
-- *Result:* A pair of **Parallel Lines** on either side of AB, at distance d.
+• *Rule:* A point P moves so it is always d cm from a line AB.
+• *Result:* A pair of **Parallel Lines** on either side of AB, at distance d.
 
 \`\`\`geometry
 {
@@ -5864,16 +5864,16 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
 "Find a point P that is equidistant from A and B, AND 5cm from C."
 
 **Step 1: Translate conditions into Loci**
-- "Equidistant from A and B" $\rightarrow$ **Perpendicular Bisector** of AB.
-- "5cm from C" $\rightarrow$ **Circle** with center C and radius 5cm.
+• "Equidistant from A and B" $\rightarrow$ **Perpendicular Bisector** of AB.
+• "5cm from C" $\rightarrow$ **Circle** with center C and radius 5cm.
 
 **Step 2: Construct both**
-- Draw the perpendicular bisector.
-- Draw the circle.
+• Draw the perpendicular bisector.
+• Draw the circle.
 
 **Step 3: Find Intersection**
-- The points where the line and circle cross are the possible positions of P.
-- There may be 0, 1, or 2 solutions.`
+• The points where the line and circle cross are the possible positions of P.
+• There may be 0, 1, or 2 solutions.`
       }
     ],
     activities: {
@@ -5974,9 +5974,9 @@ This line cuts an angle exactly in half. It is the **Locus of points equidistant
     introduction: `Statistics is the science of collecting, organizing, analyzing, and interpreting data. In our modern world, data is everywhere - from election results in Ghana to the performance of the Black Stars, and even the prices of goods in Makola market.
 
 **Why is this important?**
-- **Decision Making:** Governments use census data to plan for schools and hospitals.
-- **Business:** Companies use sales data to know what products customers like.
-- **Research:** Scientists use data to test new medicines.
+• **Decision Making:** Governments use census data to plan for schools and hospitals.
+• **Business:** Companies use sales data to know what products customers like.
+• **Research:** Scientists use data to test new medicines.
 
 In this lesson, you will learn the first steps of statistics: how to gather data correctly and how to present it in clear, visual ways like charts and graphs. This is a guaranteed topic in WASSCE Core Maths!`,
     keyConcepts: [
@@ -5986,17 +5986,17 @@ In this lesson, you will learn the first steps of statistics: how to gather data
 
 **A. Source of Data:**
 1. **Primary Data:** Data collected by YOU for a specific purpose.
-   - *Examples:* Measuring heights of your classmates, conducting a survey in your school.
-   - *Pros:* Accurate, specific. *Cons:* Time-consuming, expensive.
+   • *Examples:* Measuring heights of your classmates, conducting a survey in your school.
+   • *Pros:* Accurate, specific. *Cons:* Time-consuming, expensive.
 2. **Secondary Data:** Data collected by SOMEONE ELSE that you use.
-   - *Examples:* Census reports from Ghana Statistical Service, weather records from the internet.
-   - *Pros:* Cheap, fast. *Cons:* May be outdated or not exactly what you need.
+   • *Examples:* Census reports from Ghana Statistical Service, weather records from the internet.
+   • *Pros:* Cheap, fast. *Cons:* May be outdated or not exactly what you need.
 
 **B. Nature of Data (Quantitative):**
 1. **Discrete Data:** Data that is **COUNTED**. It can only take specific values (whole numbers).
-   - *Examples:* Number of students in a class (can't have 2.5 students), shoe size, number of cars.
+   • *Examples:* Number of students in a class (can't have 2.5 students), shoe size, number of cars.
 2. **Continuous Data:** Data that is **MEASURED**. It can take ANY value within a range.
-   - *Examples:* Height (1.75m), Weight (60.5kg), Time (10.4 seconds), Temperature.`
+   • *Examples:* Height (1.75m), Weight (60.5kg), Time (10.4 seconds), Temperature.`
       },
       {
         title: '2. Frequency Distribution Tables',
@@ -6042,9 +6042,9 @@ Used when there is a lot of data or a wide range. We group values into **Class I
 }
 \`\`\`
 
-- **Class Interval:** The range (e.g., 10-19).
-- **Lower Class Limit:** The smallest number (10).
-- **Upper Class Limit:** The largest number (19).`
+• **Class Interval:** The range (e.g., 10-19).
+• **Lower Class Limit:** The smallest number (10).
+• **Upper Class Limit:** The largest number (19).`
       },
       {
         title: '3. Pie Charts',
@@ -6054,16 +6054,16 @@ Used when there is a lot of data or a wide range. We group values into **Class I
 $\\text{Angle} = \\frac{\\text{Frequency}}{\\text{Total Frequency}} \\times 360°$
 
 **Example: Favorite Food of 60 Students**
-- Fufu: 20 students
-- Banku: 15 students
-- Rice: 15 students
-- Kenkey: 10 students
+• Fufu: 20 students
+• Banku: 15 students
+• Rice: 15 students
+• Kenkey: 10 students
 
 **Calculations:**
-- Fufu: $\\frac{20}{60} \\times 360° = 120°$
-- Banku: $\\frac{15}{60} \\times 360° = 90°$
-- Rice: $\\frac{15}{60} \\times 360° = 90°$
-- Kenkey: $\\frac{10}{60} \\times 360° = 60°$
+• Fufu: $\\frac{20}{60} \\times 360° = 120°$
+• Banku: $\\frac{15}{60} \\times 360° = 90°$
+• Rice: $\\frac{15}{60} \\times 360° = 90°$
+• Kenkey: $\\frac{10}{60} \\times 360° = 60°$
 
 \`\`\`geometry
 {
@@ -6086,9 +6086,9 @@ $\\text{Angle} = \\frac{\\text{Frequency}}{\\text{Total Frequency}} \\times 360�
       {
         title: '4. Bar Charts vs. Histograms',
         content: `**Bar Chart:**
-- Used for **Discrete** or **Categorical** data (e.g., Days of the week, Types of fruit).
-- Bars have **GAPS** between them.
-- Height of bar = Frequency.
+• Used for **Discrete** or **Categorical** data (e.g., Days of the week, Types of fruit).
+• Bars have **GAPS** between them.
+• Height of bar = Frequency.
 
 *Example: Cars Sold per Day*
 \`\`\`geometry
@@ -6105,9 +6105,9 @@ $\\text{Angle} = \\frac{\\text{Frequency}}{\\text{Total Frequency}} \\times 360�
 \`\`\`
 
 **Histogram:**
-- Used for **Continuous Grouped** data (e.g., Height, Weight).
-- Bars have **NO GAPS** between them (they touch).
-- Area of bar represents frequency (but if class widths are equal, height represents frequency).
+• Used for **Continuous Grouped** data (e.g., Height, Weight).
+• Bars have **NO GAPS** between them (they touch).
+• Area of bar represents frequency (but if class widths are equal, height represents frequency).
 
 *Example: Heights of Students (cm)*
 \`\`\`geometry
@@ -6127,8 +6127,8 @@ $\\text{Angle} = \\frac{\\text{Frequency}}{\\text{Total Frequency}} \\times 360�
         content: `A Stem-and-Leaf plot organizes data while keeping the actual values visible. It looks like a bar chart on its side.
 
 **Structure:**
-- **Stem:** The leading digit(s) (e.g., tens place).
-- **Leaf:** The last digit (e.g., units place).
+• **Stem:** The leading digit(s) (e.g., tens place).
+• **Leaf:** The last digit (e.g., units place).
 
 *Example Data:* 32, 35, 41, 46, 46, 50
 **Plot:**
@@ -6145,8 +6145,8 @@ $\\text{Angle} = \\frac{\\text{Frequency}}{\\text{Total Frequency}} \\times 360�
 *Key:* 3 | 2 means 32.
 
 **Advantages:**
-- Shows the shape of the distribution.
-- Retains the original data values (unlike a histogram).`
+• Shows the shape of the distribution.
+• Retains the original data values (unlike a histogram).`
       },
       {
         title: '6. WASSCE Past Questions',
@@ -6172,17 +6172,17 @@ The table below shows the distribution of marks of 40 students in a test.
 **Solution:**
 
 **(a) Sector Angle for Mark "3"**
-- Total Frequency = 40 (Given)
-- Frequency for Mark "3" = 12
-- Formula: $\\text{Angle} = \\frac{\\text{Frequency}}{\\text{Total Frequency}} \\times 360^\\circ$
-- Calculation: $\\frac{12}{40} \\times 360^\\circ = 12 \\times 9^\\circ = 108^\\circ$
+• Total Frequency = 40 (Given)
+• Frequency for Mark "3" = 12
+• Formula: $\\text{Angle} = \\frac{\\text{Frequency}}{\\text{Total Frequency}} \\times 360^\\circ$
+• Calculation: $\\frac{12}{40} \\times 360^\\circ = 12 \\times 9^\\circ = 108^\\circ$
 
 **(b) Percentage of students scoring 4 or 5**
-- Students scoring 4 = 10
-- Students scoring 5 = 7
-- Total students scoring 4 or 5 = $10 + 7 = 17$
-- Percentage = $\\frac{17}{40} \\times 100\\%$
-- Calculation: $17 \\times 2.5\\% = 42.5\\%$`
+• Students scoring 4 = 10
+• Students scoring 5 = 7
+• Total students scoring 4 or 5 = $10 + 7 = 17$
+• Percentage = $\\frac{17}{40} \\times 100\\%$
+• Calculation: $17 \\times 2.5\\% = 42.5\\%$`
       }
     ],
     activities: {
@@ -6291,17 +6291,17 @@ The table below shows the distribution of marks of 40 students in a test.
     introduction: `Probability is the mathematics of chance. It helps us measure how likely it is that something will happen.
 
 **Think about it:**
-- Will it rain today?
-- What are the chances of winning the lottery?
-- If I toss a coin, will it be Heads or Tails?
+• Will it rain today?
+• What are the chances of winning the lottery?
+• If I toss a coin, will it be Heads or Tails?
 
 In Ghana, we use probability all the time without thinking about it. When a trotro driver decides to wait for more passengers, he is calculating the probability of getting a full load quickly!
 
 **The Golden Rule:**
 Probability is always a number between **0** and **1**.
-- **0** means Impossible (It will never happen).
-- **1** means Certain (It will definitely happen).
-- **0.5** (or 1/2) means Evens (50-50 chance).
+• **0** means Impossible (It will never happen).
+• **1** means Certain (It will definitely happen).
+• **0.5** (or 1/2) means Evens (50-50 chance).
 
 In this lesson, we will learn how to calculate these numbers exactly, so you can make better predictions.`,
     keyConcepts: [
@@ -6312,16 +6312,16 @@ In this lesson, we will learn how to calculate these numbers exactly, so you can
 $$P(\\text{Event}) = \\frac{\\text{Number of favorable outcomes}}{\\text{Total number of possible outcomes}}$$
 
 **Example 1: Tossing a Coin**
-- Possible outcomes: Heads, Tails (2 total).
-- Favorable outcome (getting Heads): 1.
-- $P(\\text{Heads}) = \\frac{1}{2}$ or $0.5$.
+• Possible outcomes: Heads, Tails (2 total).
+• Favorable outcome (getting Heads): 1.
+• $P(\\text{Heads}) = \\frac{1}{2}$ or $0.5$.
 
 **Example 2: Rolling a Die**
-- Possible outcomes: 1, 2, 3, 4, 5, 6 (6 total).
-- Favorable outcome (rolling a 5): 1.
-- $P(5) = \\frac{1}{6}$.
-- Favorable outcome (rolling an even number: 2, 4, 6): 3.
-- $P(\\text{Even}) = \\frac{3}{6} = \\frac{1}{2}$.
+• Possible outcomes: 1, 2, 3, 4, 5, 6 (6 total).
+• Favorable outcome (rolling a 5): 1.
+• $P(5) = \\frac{1}{6}$.
+• Favorable outcome (rolling an even number: 2, 4, 6): 3.
+• $P(\\text{Even}) = \\frac{3}{6} = \\frac{1}{2}$.
 
 **Visualizing Probability:**
 Imagine a spinner with 4 equal sections:
@@ -6349,9 +6349,9 @@ If events A and B are mutually exclusive:
 $$P(A \\text{ or } B) = P(A) + P(B)$$
 
 *Example:* In a bag of 10 balls, 3 are Red, 5 are Blue, 2 are Green.
-- $P(\\text{Red}) = \\frac{3}{10}$
-- $P(\\text{Green}) = \\frac{2}{10}$
-- Probability of picking Red **OR** Green:
+• $P(\\text{Red}) = \\frac{3}{10}$
+• $P(\\text{Green}) = \\frac{2}{10}$
+• Probability of picking Red **OR** Green:
   $$P(\\text{Red or Green}) = \\frac{3}{10} + \\frac{2}{10} = \\frac{5}{10} = \\frac{1}{2}$$`
       },
       {
@@ -6364,24 +6364,24 @@ If events A and B are independent:
 $$P(A \\text{ and } B) = P(A) \\times P(B)$$
 
 *Example:* You toss a coin and roll a die. What is the probability of getting **Heads** AND a **6**?
-- $P(\\text{Heads}) = \\frac{1}{2}$
-- $P(6) = \\frac{1}{6}$
-- $P(\\text{Heads and } 6) = \\frac{1}{2} \\times \\frac{1}{6} = \\frac{1}{12}$`
+• $P(\\text{Heads}) = \\frac{1}{2}$
+• $P(6) = \\frac{1}{6}$
+• $P(\\text{Heads and } 6) = \\frac{1}{2} \\times \\frac{1}{6} = \\frac{1}{12}$`
       },
       {
         title: '4. Tree Diagrams',
         content: `A Tree Diagram is a drawing that helps you list all possible outcomes of two or more events. It is very useful for "with replacement" and "without replacement" problems.
 
 **Structure:**
-- Branches represent the possible outcomes.
-- Write the probability on each branch.
-- Multiply along the branches to get the probability of that path (AND).
-- Add the final probabilities of different paths to get the total probability (OR).
+• Branches represent the possible outcomes.
+• Write the probability on each branch.
+• Multiply along the branches to get the probability of that path (AND).
+• Add the final probabilities of different paths to get the total probability (OR).
 
 *Example:* A bag has 3 Red and 2 Blue balls. You pick two balls **with replacement** (you put the first one back).
-- **First Pick:** Red (3/5), Blue (2/5).
-- **Second Pick:** Red (3/5), Blue (2/5) (Probabilities stay the same).
-- $P(\\text{Red, Red}) = \\frac{3}{5} \\times \\frac{3}{5} = \\frac{9}{25}$.
+• **First Pick:** Red (3/5), Blue (2/5).
+• **Second Pick:** Red (3/5), Blue (2/5) (Probabilities stay the same).
+• $P(\\text{Red, Red}) = \\frac{3}{5} \\times \\frac{3}{5} = \\frac{9}{25}$.
 
 \`\`\`geometry
 {
