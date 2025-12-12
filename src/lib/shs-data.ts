@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import React from 'react'; // Import React
 import { coreMathSHS1Lessons } from './shs-lessons-data';
 import { coreMathSHS2Lessons } from './shs2-lessons-data';
+import { coreMathSHS3Lessons } from './shs3-lessons-data';
 import type { Lesson } from './types';
 
 export interface Topic {
@@ -1295,7 +1296,7 @@ export const getSHSSubjectBySlug = (slug: string): Subject | null => {
 export const getSHSLesson = (subjectSlug: string, topicSlug: string, lessonSlug: string): Lesson | null => {
   // Currently only Core Mathematics has detailed lessons
   if (subjectSlug === 'core-mathematics') {
-    const allLessons = [...coreMathSHS1Lessons, ...coreMathSHS2Lessons];
+    const allLessons = [...coreMathSHS1Lessons, ...coreMathSHS2Lessons, ...coreMathSHS3Lessons];
     // For SHS, topicSlug and lessonSlug are often the same, try matching either
     return allLessons.find(lesson =>  
       lesson.slug === lessonSlug || lesson.slug === topicSlug

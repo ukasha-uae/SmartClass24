@@ -119,7 +119,7 @@ export default function PastQuestionsPage() {
               Comprehensive database of {allPastQuestions.length} {educationLevel === 'JHS' ? 'BECE' : 'WASSCE'} past questions
             </p>
           </div>
-          <CampusSelector onLevelChange={setEducationLevel} defaultLevel={educationLevel} />
+          <CampusSelector onLevelChange={(level: 'Primary' | 'JHS' | 'SHS') => setEducationLevel(level as 'JHS' | 'SHS')} defaultLevel={educationLevel} />
         </div>
       </div>
 

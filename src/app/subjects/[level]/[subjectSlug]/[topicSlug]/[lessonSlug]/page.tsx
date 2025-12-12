@@ -452,9 +452,10 @@ export default function LessonPage() {
                           <AccordionTrigger className="text-left flex-1">
                             <span className="font-semibold">{concept.title}</span>
                           </AccordionTrigger>
-                          <div className="pr-4">
+                          {/* Temporarily disabled - Use interactive animations with intelligent voice teacher */}
+                          {/* <div className="pr-4">
                             <ReadAloud textId={conceptId} />
-                          </div>
+                          </div> */}
                         </div>
                         <AccordionContent>
                           <div className="pt-2">
@@ -508,7 +509,8 @@ export default function LessonPage() {
                     <FileText className="h-5 w-5 text-primary" />
                     Summary
                   </h3>
-                  <ReadAloud textId={summaryId} />
+                  {/* Temporarily disabled - Use interactive animations with intelligent voice teacher */}
+                  {/* <ReadAloud textId={summaryId} /> */}
                 </div>
                 <LessonVisual type="summary" icon="fileText">
                   <MarkdownRenderer id={summaryId} content={lesson.summary} />
@@ -523,7 +525,8 @@ export default function LessonPage() {
                           <Award className="h-5 w-5" />
                           {educationLevel === 'SHS' ? 'WASSCE Past Questions' : educationLevel === 'JHS' ? 'BECE Past Questions' : 'Past Questions'}
                         </CardTitle>
-                        <ReadAloud textId={`${lesson.id}-pastquestions`} />
+                        {/* Temporarily disabled - Use interactive animations with intelligent voice teacher */}
+                        {/* <ReadAloud textId={`${lesson.id}-pastquestions`} /> */}
                     </CardHeader>
                     <CardContent id={`${lesson.id}-pastquestions`} className="text-foreground">
                         {lesson.pastQuestions.map((pq: any, i: number) => (

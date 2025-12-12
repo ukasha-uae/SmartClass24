@@ -155,7 +155,25 @@ const ReadAloud: React.FC<ReadAloudProps> = ({ textId }) => {
 
     // Process text only if it hasn't been processed yet
     if (element.dataset.processed !== 'true') {
-        const text = element.textContent || "";
+        // Clone the element to work with it
+        const clonedElement = element.cloneNode(true) as HTMLElement;
+        
+        // Remove elements marked to skip TTS (animations, interactive components)
+        const skipElements = clonedElement.querySelectorAll('[data-skip-tts="true"]');
+        skipElements.forEach(el => el.remove());
+        
+        // Remove animation blocks, code blocks with JSON
+        const codeBlocks = clonedElement.querySelectorAll('pre, code');
+        codeBlocks.forEach(block => {
+          const text = block.textContent || '';
+          // Remove if it looks like JSON or animation config
+          if (text.includes('"type"') || text.includes('```animation') || 
+              text.startsWith('{') || text.includes('"a":') || text.includes('"b":')) {
+            block.remove();
+          }
+        });
+        
+        const text = clonedElement.textContent || "";
         sentencesRef.current = text.match(/[^.!?]+[.!?\s]*|[^.!?]+$/g) || [text];
         sentencesRef.current = sentencesRef.current.filter(s => s.trim().length > 0);
 
