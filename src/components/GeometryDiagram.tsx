@@ -6,8 +6,43 @@ interface TreeNode {
   children?: TreeNode[];
 }
 
+interface SetBox {
+  name: string;
+  color: string;
+  stroke: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+}
+
+interface Annotation {
+  text: string;
+  x: number;
+  y: number;
+  color?: string;
+}
+
+interface Shape {
+  type: 'polygon' | 'line' | 'circle';
+  points?: Array<[number, number]>; // For polygon vertices [(x1,y1), (x2,y2), ...]
+  color?: string;
+  fillColor?: string;
+  strokeWidth?: number;
+  label?: string;
+  dashed?: boolean;
+  x1?: number; // For line
+  y1?: number;
+  x2?: number;
+  y2?: number;
+  cx?: number; // For circle
+  cy?: number;
+  r?: number;
+}
+
 interface GeometryDiagramProps {
-  type: 'triangle' | 'quadrilateral' | 'polygon' | 'circle' | 'construction' | 'custom' | 'pie-chart' | 'bar-chart' | 'histogram' | 'stem-and-leaf' | 'table' | 'tree-diagram';
+  type: 'triangle' | 'quadrilateral' | 'polygon' | 'circle' | 'construction' | 'custom' | 'pie-chart' | 'bar-chart' | 'histogram' | 'stem-and-leaf' | 'table' | 'tree-diagram' | 'nested-sets';
   variant?: string; // e.g., 'equilateral', 'right', 'square'
   labels?: Record<string, string>; // e.g., { "A": "Top", "B": "Left" }
   sideLabels?: Record<string, string>; // e.g., { "AB": "5cm" }
@@ -20,6 +55,9 @@ interface GeometryDiagramProps {
   data?: Array<{ label: string; value: number; color?: string; leaves?: number[] }>;
   tableData?: { headers: string[]; rows: string[][] };
   treeData?: TreeNode;
+  sets?: SetBox[];
+  annotations?: Annotation[];
+  shapes?: Shape[]; // For custom transformation diagrams
 }
 
 export default function GeometryDiagram(props: GeometryDiagramProps) {
@@ -719,7 +757,7 @@ export default function GeometryDiagram(props: GeometryDiagramProps) {
         y={startY}
         width={tableWidth}
         height={rowHeight}
-        fill="#f3f4f6"
+        className="fill-gray-100 dark:fill-gray-800"
       />
     );
 
@@ -732,7 +770,8 @@ export default function GeometryDiagram(props: GeometryDiagramProps) {
           y={startY + rowHeight / 2}
           textAnchor="middle"
           dominantBaseline="middle"
-          className="font-bold fill-current text-sm"
+          className="font-bold fill-gray-900 dark:fill-gray-100 text-xs"
+          style={{ fontSize: '11px' }}
         >
           {header}
         </text>
@@ -752,6 +791,7 @@ export default function GeometryDiagram(props: GeometryDiagramProps) {
             textAnchor="middle"
             dominantBaseline="middle"
             className="fill-current text-sm"
+            style={{ fontSize: '12px' }}
           >
             {cell}
           </text>
@@ -946,6 +986,325 @@ export default function GeometryDiagram(props: GeometryDiagramProps) {
     };
     
     drawTree(layoutRoot, root);
+  }
+
+  if (props.type === 'nested-sets' && props.sets) {
+    // Render nested rectangles representing number sets hierarchy
+    props.sets.forEach((set, index) => {
+      shapes.push(
+        <rect
+          key={`set-${index}`}
+          x={set.x}
+          y={set.y}
+          width={set.width}
+          height={set.height}
+          fill={set.color}
+          stroke={set.stroke}
+          strokeWidth="3"
+          rx="10"
+          className="opacity-90"
+        />
+      );
+
+      // Set name at top
+      textLabels.push(
+        <text
+          key={`set-name-${index}`}
+          x={set.x + 15}
+          y={set.y + 25}
+          className="fill-current text-base font-bold"
+        >
+          {set.name}
+        </text>
+      );
+
+      // Set description/label
+      if (set.label) {
+        textLabels.push(
+          <text
+            key={`set-label-${index}`}
+            x={set.x + 15}
+            y={set.y + 45}
+            className="fill-current text-xs opacity-70"
+          >
+            {set.label}
+          </text>
+        );
+      }
+    });
+
+    // Add annotations (for irrational numbers text, etc.)
+    if (props.annotations) {
+      props.annotations.forEach((annotation, index) => {
+        textLabels.push(
+          <text
+            key={`annotation-${index}`}
+            x={annotation.x}
+            y={annotation.y}
+            className="fill-current text-sm font-medium"
+            style={{ fill: annotation.color || 'currentColor' }}
+          >
+            {annotation.text}
+          </text>
+        );
+      });
+    }
+  }
+
+  // Handle custom type diagrams with annotations (for transformation geometry)
+  if (props.type === 'custom') {
+    // Draw coordinate axes (X and Y axis like graph paper)
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const gridSize = 20; // Grid spacing
+    
+    // Draw vertical grid lines
+    for (let x = 0; x <= width; x += gridSize) {
+      shapes.push(
+        <line
+          key={`grid-v-${x}`}
+          x1={x}
+          y1={0}
+          x2={x}
+          y2={height}
+          stroke="currentColor"
+          strokeWidth="0.5"
+          className="text-gray-300 dark:text-gray-700"
+          opacity="0.3"
+        />
+      );
+    }
+    
+    // Draw horizontal grid lines
+    for (let y = 0; y <= height; y += gridSize) {
+      shapes.push(
+        <line
+          key={`grid-h-${y}`}
+          x1={0}
+          y1={y}
+          x2={width}
+          y2={y}
+          stroke="currentColor"
+          strokeWidth="0.5"
+          className="text-gray-300 dark:text-gray-700"
+          opacity="0.3"
+        />
+      );
+    }
+    
+    // Draw X-axis (horizontal)
+    shapes.push(
+      <line
+        key="x-axis"
+        x1={0}
+        y1={centerY}
+        x2={width}
+        y2={centerY}
+        stroke="currentColor"
+        strokeWidth="2"
+        className="text-gray-700 dark:text-gray-300"
+      />
+    );
+    
+    // Draw Y-axis (vertical)
+    shapes.push(
+      <line
+        key="y-axis"
+        x1={centerX}
+        y1={0}
+        x2={centerX}
+        y2={height}
+        stroke="currentColor"
+        strokeWidth="2"
+        className="text-gray-700 dark:text-gray-300"
+      />
+    );
+    
+    // Add arrow heads for axes
+    shapes.push(
+      <polygon
+        key="x-arrow"
+        points={`${width - 5},${centerY - 5} ${width},${centerY} ${width - 5},${centerY + 5}`}
+        fill="currentColor"
+        className="text-gray-700 dark:text-gray-300"
+      />
+    );
+    shapes.push(
+      <polygon
+        key="y-arrow"
+        points={`${centerX - 5},5 ${centerX},0 ${centerX + 5},5`}
+        fill="currentColor"
+        className="text-gray-700 dark:text-gray-300"
+      />
+    );
+    
+    // Add axis labels
+    textLabels.push(
+      <text
+        key="x-label"
+        x={width - 15}
+        y={centerY - 10}
+        className="fill-current text-sm font-bold"
+      >
+        x
+      </text>
+    );
+    textLabels.push(
+      <text
+        key="y-label"
+        x={centerX + 10}
+        y={15}
+        className="fill-current text-sm font-bold"
+      >
+        y
+      </text>
+    );
+    
+    // Add origin label
+    textLabels.push(
+      <text
+        key="origin"
+        x={centerX - 15}
+        y={centerY + 15}
+        className="fill-current text-xs"
+      >
+        O
+      </text>
+    );
+    
+    // Add coordinate numbers on axes
+    const numMarks = 5;
+    for (let i = -numMarks; i <= numMarks; i++) {
+      if (i !== 0) {
+        // X-axis marks
+        const xPos = centerX + (i * gridSize * 2);
+        shapes.push(
+          <line
+            key={`x-tick-${i}`}
+            x1={xPos}
+            y1={centerY - 4}
+            x2={xPos}
+            y2={centerY + 4}
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-gray-700 dark:text-gray-300"
+          />
+        );
+        textLabels.push(
+          <text
+            key={`x-num-${i}`}
+            x={xPos}
+            y={centerY + 18}
+            textAnchor="middle"
+            className="fill-current text-xs"
+          >
+            {i * 2}
+          </text>
+        );
+        
+        // Y-axis marks
+        const yPos = centerY - (i * gridSize * 2);
+        shapes.push(
+          <line
+            key={`y-tick-${i}`}
+            x1={centerX - 4}
+            y1={yPos}
+            x2={centerX + 4}
+            y2={yPos}
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="text-gray-700 dark:text-gray-300"
+          />
+        );
+        textLabels.push(
+          <text
+            key={`y-num-${i}`}
+            x={centerX - 18}
+            y={yPos + 4}
+            textAnchor="middle"
+            className="fill-current text-xs"
+          >
+            {i * 2}
+          </text>
+        );
+      }
+    }
+    
+    // Draw custom shapes (triangles, lines, etc. for transformations)
+    if (props.shapes) {
+      props.shapes.forEach((shape, index) => {
+        if (shape.type === 'polygon' && shape.points) {
+          const pointsStr = shape.points.map(([x, y]) => `${x},${y}`).join(' ');
+          shapes.push(
+            <polygon
+              key={`shape-poly-${index}`}
+              points={pointsStr}
+              fill={shape.fillColor || 'none'}
+              stroke={shape.color || 'currentColor'}
+              strokeWidth={shape.strokeWidth || 2}
+              strokeDasharray={shape.dashed ? '5,5' : 'none'}
+              opacity={shape.fillColor ? 0.3 : 1}
+            />
+          );
+          
+          // Draw vertices as dots
+          shape.points.forEach((point, pIndex) => {
+            shapes.push(
+              <circle
+                key={`shape-vertex-${index}-${pIndex}`}
+                cx={point[0]}
+                cy={point[1]}
+                r={3}
+                fill={shape.color || 'currentColor'}
+              />
+            );
+          });
+        } else if (shape.type === 'line' && shape.x1 !== undefined && shape.y1 !== undefined && shape.x2 !== undefined && shape.y2 !== undefined) {
+          shapes.push(
+            <line
+              key={`shape-line-${index}`}
+              x1={shape.x1}
+              y1={shape.y1}
+              x2={shape.x2}
+              y2={shape.y2}
+              stroke={shape.color || 'currentColor'}
+              strokeWidth={shape.strokeWidth || 2}
+              strokeDasharray={shape.dashed ? '5,5' : 'none'}
+            />
+          );
+        } else if (shape.type === 'circle' && shape.cx !== undefined && shape.cy !== undefined && shape.r !== undefined) {
+          shapes.push(
+            <circle
+              key={`shape-circle-${index}`}
+              cx={shape.cx}
+              cy={shape.cy}
+              r={shape.r}
+              fill={shape.fillColor || 'none'}
+              stroke={shape.color || 'currentColor'}
+              strokeWidth={shape.strokeWidth || 2}
+              strokeDasharray={shape.dashed ? '5,5' : 'none'}
+            />
+          );
+        }
+      });
+    }
+    
+    // Add custom annotations (points, labels, etc.)
+    if (props.annotations) {
+      props.annotations.forEach((annotation, index) => {
+        textLabels.push(
+          <text
+            key={`custom-annotation-${index}`}
+            x={annotation.x}
+            y={annotation.y}
+            className="fill-current text-sm font-medium"
+            style={{ fill: annotation.color || 'currentColor' }}
+          >
+            {annotation.text}
+          </text>
+        );
+      });
+    }
   }
 
   return (
