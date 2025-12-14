@@ -4,6 +4,7 @@ import React from 'react'; // Import React
 import { coreMathSHS1Lessons } from './shs-lessons-data';
 import { coreMathSHS2Lessons } from './shs2-lessons-data';
 import { coreMathSHS3Lessons } from './shs3-lessons-data';
+import { integratedScienceSHS1Lessons } from './integrated-science-shs1-lessons-data';
 import type { Lesson } from './types';
 
 export interface Topic {
@@ -84,18 +85,41 @@ const getFullCoreMathematicsTopics = (): Topic[] => {
     
     // SHS 3
     { id: "cm_shs3_alg_1", name: "Quadratic Equations", slug: "shs3-quadratic-equations", gradeLevel: "SHS 3 - Strand 2: Algebra" },
-    { id: "cm_shs3_alg_2", name: "Sequences and Series", slug: "shs3-sequences-series", gradeLevel: "SHS 3 - Strand 2: Algebra" },
-    { id: "cm_shs3_alg_3", name: "Functions and Relations", slug: "shs3-functions-relations", gradeLevel: "SHS 3 - Strand 2: Algebra" },
-    { id: "cm_shs3_alg_4", name: "Linear Programming", slug: "shs3-linear-programming", gradeLevel: "SHS 3 - Strand 2: Algebra" },
-    { id: "cm_shs3_alg_5", name: "Matrices and Determinants (Intro)", slug: "shs3-matrices-determinants-intro", gradeLevel: "SHS 3 - Strand 2: Algebra" },
+    { id: "cm_shs3_alg_2", name: "Factorization", slug: "shs3-factorization", gradeLevel: "SHS 3 - Strand 2: Algebra" },
+    { id: "cm_shs3_alg_3", name: "Completing the Square", slug: "shs3-completing-the-square", gradeLevel: "SHS 3 - Strand 2: Algebra" },
+    { id: "cm_shs3_alg_4", name: "Quadratic Formula", slug: "shs3-quadratic-formula", gradeLevel: "SHS 3 - Strand 2: Algebra" },
+    { id: "cm_shs3_alg_5", name: "Sequences and Series", slug: "shs3-sequences-series", gradeLevel: "SHS 3 - Strand 2: Algebra" },
+    { id: "cm_shs3_alg_6", name: "Functions and Relations", slug: "shs3-functions-relations", gradeLevel: "SHS 3 - Strand 2: Algebra" },
+    { id: "cm_shs3_alg_7", name: "Linear Programming", slug: "shs3-linear-programming", gradeLevel: "SHS 3 - Strand 2: Algebra" },
+    { id: "cm_shs3_alg_8", name: "Matrices and Determinants", slug: "shs3-matrices-determinants", gradeLevel: "SHS 3 - Strand 2: Algebra" },
     
-    { id: "cm_shs3_geo_1", name: "Bearings and Scale Drawing", slug: "shs3-bearings-scale-drawing", gradeLevel: "SHS 3 - Strand 3: Geometry and Measurement" },
-    { id: "cm_shs3_geo_2", name: "Sine and Cosine Rules", slug: "shs3-sine-cosine-rules", gradeLevel: "SHS 3 - Strand 3: Geometry and Measurement" },
+    { id: "cm_shs3_geo_1", name: "Circle Theorems I", slug: "shs3-circle-theorems-1", gradeLevel: "SHS 3 - Strand 3: Geometry" },
+    { id: "cm_shs3_geo_2", name: "Circle Theorems II", slug: "shs3-circle-theorems-2", gradeLevel: "SHS 3 - Strand 3: Geometry" },
+    { id: "cm_shs3_geo_3", name: "Polygons and Angles", slug: "shs3-polygons-angles", gradeLevel: "SHS 3 - Strand 3: Geometry" },
+    { id: "cm_shs3_geo_4", name: "Similarity and Congruence", slug: "shs3-similarity-congruence", gradeLevel: "SHS 3 - Strand 3: Geometry" },
+    { id: "cm_shs3_geo_5", name: "Geometric Constructions", slug: "shs3-geometric-constructions", gradeLevel: "SHS 3 - Strand 3: Geometry" },
+    { id: "cm_shs3_geo_6", name: "Coordinate Geometry", slug: "shs3-coordinate-geometry", gradeLevel: "SHS 3 - Strand 3: Geometry" },
     
-    { id: "cm_shs3_data_1", name: "Cumulative Frequency & Box Plots", slug: "shs3-cumulative-frequency-box-plots", gradeLevel: "SHS 3 - Strand 4: Data Handling" },
+    // Strand 4: Trigonometry (Phase 4 - Carousel Mode)
+    { id: "cm_shs3_trig_1", name: "Trigonometric Ratios", slug: "shs3-trigonometric-ratios", gradeLevel: "SHS 3 - Strand 4: Trigonometry" },
+    { id: "cm_shs3_trig_2", name: "Trigonometric Identities", slug: "shs3-trigonometric-identities", gradeLevel: "SHS 3 - Strand 4: Trigonometry" },
+    { id: "cm_shs3_trig_3", name: "Graphs of Trigonometric Functions", slug: "shs3-trig-graphs", gradeLevel: "SHS 3 - Strand 4: Trigonometry" },
+    { id: "cm_shs3_trig_4", name: "Trigonometric Equations", slug: "shs3-trigonometric-equations", gradeLevel: "SHS 3 - Strand 4: Trigonometry" },
+    { id: "cm_shs3_trig_5", name: "Applications of Trigonometry", slug: "shs3-applications-of-trigonometry", gradeLevel: "SHS 3 - Strand 4: Trigonometry" },
     
-    { id: "cm_shs3_prob_1", name: "Structured Problem-Solving", slug: "shs3-problem-solving-strategies", gradeLevel: "SHS 3 - Strand 5: Problem Solving" },
-    { id: "cm_shs3_prob_2", name: "Integrated WASSCE Revision", slug: "shs3-wassce-revision", gradeLevel: "SHS 3 - Strand 5: Problem Solving" },
+    // Strand 5: Statistics & Probability (Phase 5 - Carousel Mode)
+    { id: "cm_shs3_stats_1", name: "Measures of Central Tendency", slug: "shs3-measures-of-central-tendency", gradeLevel: "SHS 3 - Strand 5: Statistics & Probability" },
+    { id: "cm_shs3_stats_2", name: "Measures of Dispersion", slug: "shs3-measures-of-dispersion", gradeLevel: "SHS 3 - Strand 5: Statistics & Probability" },
+    { id: "cm_shs3_stats_3", name: "Probability Fundamentals", slug: "shs3-probability-fundamentals", gradeLevel: "SHS 3 - Strand 5: Statistics & Probability" },
+    { id: "cm_shs3_stats_4", name: "Probability Distributions", slug: "shs3-probability-distributions", gradeLevel: "SHS 3 - Strand 5: Statistics & Probability" },
+    
+    { id: "cm_shs3_geo_7", name: "Bearings and Scale Drawing", slug: "shs3-bearings-scale-drawing", gradeLevel: "SHS 3 - Strand 6: Geometry II" },
+    { id: "cm_shs3_geo_8", name: "Sine and Cosine Rules", slug: "shs3-sine-cosine-rules", gradeLevel: "SHS 3 - Strand 5: Geometry II" },
+    
+    { id: "cm_shs3_data_1", name: "Cumulative Frequency & Box Plots", slug: "shs3-cumulative-frequency-box-plots", gradeLevel: "SHS 3 - Strand 6: Data Handling" },
+    
+    { id: "cm_shs3_prob_1", name: "Structured Problem-Solving", slug: "shs3-problem-solving-strategies", gradeLevel: "SHS 3 - Strand 7: Problem Solving" },
+    { id: "cm_shs3_prob_2", name: "Integrated WASSCE Revision", slug: "shs3-wassce-revision", gradeLevel: "SHS 3 - Strand 7: Problem Solving" },
   ];
   return coursesData;
 };
@@ -1294,15 +1318,79 @@ export const getSHSSubjectBySlug = (slug: string): Subject | null => {
 
 // Helper function to get SHS lesson by subject, topic, and lesson slug
 export const getSHSLesson = (subjectSlug: string, topicSlug: string, lessonSlug: string): Lesson | null => {
-  // Currently only Core Mathematics has detailed lessons
+  // Core Mathematics lessons
   if (subjectSlug === 'core-mathematics') {
     const allLessons = [...coreMathSHS1Lessons, ...coreMathSHS2Lessons, ...coreMathSHS3Lessons];
-    // For SHS, topicSlug and lessonSlug are often the same, try matching either
-    return allLessons.find(lesson =>  
-      lesson.slug === lessonSlug || lesson.slug === topicSlug
-    ) || null;
+
+    // Helper to strip shs1-, shs2-, shs3- prefix
+    const stripPrefix = (slug: string) => slug.replace(/^shs[123]-/, '');
+    const strippedTopicSlug = stripPrefix(topicSlug);
+    const strippedLessonSlug = stripPrefix(lessonSlug);
+
+    // 1. Try exact match first
+    let match = allLessons.find(lesson => 
+      lesson.slug === lessonSlug || 
+      lesson.slug === topicSlug
+    );
+    if (match) return match;
+
+    // 2. Try with shs3- prefix (for lessons like 'shs3-quadratic-equations')
+    match = allLessons.find(lesson =>
+      lesson.slug === `shs3-${lessonSlug}` ||
+      lesson.slug === `shs3-${topicSlug}` ||
+      lesson.slug === `shs2-${lessonSlug}` ||
+      lesson.slug === `shs2-${topicSlug}` ||
+      lesson.slug === `shs1-${lessonSlug}` ||
+      lesson.slug === `shs1-${topicSlug}`
+    );
+    if (match) return match;
+
+    // 3. Try stripped versions (for topics like 'shs3-factorization' matching lesson 'factorization')
+    match = allLessons.find(lesson =>
+      lesson.slug === strippedLessonSlug ||
+      lesson.slug === strippedTopicSlug
+    );
+    if (match) return match;
+
+    return null;
   }
   
-  // For other subjects, return null (will use placeholder content)
+  // Integrated Science lessons
+  if (subjectSlug === 'integrated-science') {
+    const allLessons = [...integratedScienceSHS1Lessons];
+
+    // Helper to strip shs1-, shs2-, shs3- prefix
+    const stripPrefix = (slug: string) => slug.replace(/^shs[123]-/, '');
+    const strippedTopicSlug = stripPrefix(topicSlug);
+    const strippedLessonSlug = stripPrefix(lessonSlug);
+
+    // 1. Try exact match first
+    let match = allLessons.find(lesson => 
+      lesson.slug === lessonSlug || 
+      lesson.slug === topicSlug
+    );
+    if (match) return match;
+
+    // 2. Try with shs prefix (for lessons like 'is-shs1-chem-1')
+    match = allLessons.find(lesson =>
+      lesson.slug === `is-shs1-${lessonSlug}` ||
+      lesson.slug === `is-shs1-${topicSlug}` ||
+      lesson.slug === `is-shs2-${lessonSlug}` ||
+      lesson.slug === `is-shs2-${topicSlug}` ||
+      lesson.slug === `is-shs3-${lessonSlug}` ||
+      lesson.slug === `is-shs3-${topicSlug}`
+    );
+    if (match) return match;
+
+    // 3. Try stripped versions
+    match = allLessons.find(lesson =>
+      lesson.slug === strippedLessonSlug ||
+      lesson.slug === strippedTopicSlug
+    );
+    if (match) return match;
+
+    return null;
+  }
+  
   return null;
 };

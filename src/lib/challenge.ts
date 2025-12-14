@@ -444,16 +444,17 @@ export const submitChallengeAnswers = (
   userId: string,
   answers: PlayerAnswer[],
   totalTimeOverride?: number
-): void => {
+): Challenge | null => {
   const challenges = getAllChallenges();
   const challengeIndex = challenges.findIndex(c => c.id === challengeId);
   
-  if (challengeIndex === -1) return;
+  if (challengeIndex === -1) return null;
   
   const challenge = challenges[challengeIndex];
+  
   const opponentIndex = challenge.opponents.findIndex(o => o.userId === userId);
   
-  if (opponentIndex === -1 && challenge.creatorId !== userId) return;
+  if (opponentIndex === -1 && challenge.creatorId !== userId) return null;
   
   // Calculate score
   const score = answers.reduce((sum, a) => sum + a.points, 0);
@@ -510,15 +511,23 @@ export const submitChallengeAnswers = (
   }
   
   // Check if all players finished
-  const allFinished = challenge.opponents.every(o => o.status === 'finished') &&
-    (challenge.creatorId === userId || challenge.results.some(r => r.userId === challenge.creatorId));
+  const creatorFinished = challenge.results.some(r => r.userId === challenge.creatorId);
+  const allOpponentsFinished = challenge.opponents.length === 0 || challenge.opponents.every(o => o.status === 'finished');
+  const allFinished = creatorFinished && allOpponentsFinished;
+  
+  // CRITICAL: Save challenge to localStorage FIRST before calling completeChallenge
+  challenges[challengeIndex] = challenge;
+  localStorage.setItem('challenges', JSON.stringify(challenges));
   
   if (allFinished && challenge.status !== 'completed') {
     completeChallenge(challenge);
+    // Get the freshly saved challenge after completeChallenge
+    const freshChallenges = getAllChallenges();
+    return freshChallenges.find(c => c.id === challengeId) || challenge;
   }
   
-  challenges[challengeIndex] = challenge;
-  localStorage.setItem('challenges', JSON.stringify(challenges));
+  // Return the updated challenge
+  return challenges[challengeIndex];
 };
 
 export const completeChallenge = (challenge: Challenge): void => {
@@ -577,6 +586,14 @@ export const completeChallenge = (challenge: Challenge): void => {
   challenge.status = 'completed';
   challenge.completedAt = new Date().toISOString();
   challenge.winner = challenge.results[0].userId;
+  
+  // CRITICAL: Save the updated challenge back to localStorage
+  const challenges = getAllChallenges();
+  const challengeIndex = challenges.findIndex(c => c.id === challenge.id);
+  if (challengeIndex > -1) {
+    challenges[challengeIndex] = challenge;
+    localStorage.setItem('challenges', JSON.stringify(challenges));
+  }
 };
 
 const calculateRatingChange = (player: GameResult, allResults: GameResult[]): number => {

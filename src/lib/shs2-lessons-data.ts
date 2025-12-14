@@ -4600,7 +4600,598 @@ $$\\text{Area} = \\frac{1}{2}ab\\sin C$$
 Master trigonometry—it's fundamental for SHS mathematics, physics, and engineering. Every WASSCE paper includes multiple trigonometry questions!`
   },
 
-  // Lesson 8: Transformation Geometry
+  // Lesson 8: Circle Geometry
+  {
+    id: 'cm_shs2_geo_3',
+    slug: 'shs2-circle-geometry',
+    title: 'Circle Geometry',
+    objectives: [
+      'Identify and name parts of a circle (radius, diameter, chord, arc, sector, segment)',
+      'Understand and apply the relationship between radius and diameter',
+      'Calculate circumference using C = 2πr or C = πd',
+      'Calculate area of a circle using A = πr²',
+      'Find arc length using the formula l = (θ/360°) × 2πr',
+      'Calculate area of a sector using A = (θ/360°) × πr²',
+      'Find area of segments by subtracting triangle from sector',
+      'Apply circle properties to solve real-world problems',
+      'Understand and apply basic circle theorems',
+      'Solve WASSCE-style circle geometry problems'
+    ],
+    introduction: `**Circle Geometry** is the study of circles, their properties, and measurements. Circles are among the most important shapes in mathematics and appear everywhere in our world!
+
+**Why Study Circle Geometry?**
+
+**1. Engineering & Construction:**
+• Wheels, gears, and pulleys
+• Pipes, tanks, and tunnels
+• Arches and domes in architecture
+• Road curves and roundabouts
+
+**2. Science & Technology:**
+• Orbits of planets and satellites
+• Lenses and mirrors (optics)
+• Circular motion in physics
+• Clock faces and dials
+
+**3. Everyday Life:**
+• Pizza slices and pie portions
+• Athletic tracks and fields
+• Coins and circular objects
+• Tires and bicycle wheels
+
+**Key Parts of a Circle:**
+
+| Part | Definition |
+|------|------------|
+| **Center** | The fixed point equidistant from all points on the circle |
+| **Radius (r)** | Distance from center to any point on the circle |
+| **Diameter (d)** | Distance across the circle through the center (d = 2r) |
+| **Circumference** | The perimeter (distance around) the circle |
+| **Chord** | A line segment joining two points on the circle |
+| **Arc** | A portion of the circumference |
+| **Sector** | A "pizza slice" region bounded by two radii and an arc |
+| **Segment** | Region between a chord and its arc |
+
+**WASSCE Connection:**
+Circle geometry questions appear in every WASSCE paper! You'll calculate circumferences, areas, arc lengths, and sector areas. Master these formulas and you'll score well!`,
+    keyConcepts: [
+      {
+        title: '1. Basic Circle Measurements',
+        content: `Understanding the fundamental measurements of a circle.
+
+**The Constant π (Pi):**
+
+Pi is the ratio of a circle's circumference to its diameter:
+$$\\pi = \\frac{\\text{Circumference}}{\\text{Diameter}} \\approx 3.14159...$$
+
+For calculations, use:
+• π ≈ 3.14 or 3.142 (decimals)
+• π ≈ 22/7 (fraction - often specified in WASSCE)
+
+---
+
+**Circumference (Perimeter):**
+
+The distance around the circle:
+$$C = 2\\pi r \\quad \\text{or} \\quad C = \\pi d$$
+
+**Example 1:** Find the circumference of a circle with radius 7 cm. (Use π = 22/7)
+
+$$C = 2\\pi r = 2 \\times \\frac{22}{7} \\times 7 = 44 \\text{ cm}$$
+
+**Example 2:** A circular track has diameter 100 m. Find its circumference. (Use π = 3.14)
+
+$$C = \\pi d = 3.14 \\times 100 = 314 \\text{ m}$$
+
+---
+
+**Area of a Circle:**
+
+$$A = \\pi r^2$$
+
+**Example 3:** Find the area of a circle with radius 14 cm. (Use π = 22/7)
+
+$$A = \\pi r^2 = \\frac{22}{7} \\times 14^2 = \\frac{22}{7} \\times 196 = 616 \\text{ cm}^2$$
+
+**Example 4:** A circular garden has diameter 10 m. Find its area. (Use π = 3.14)
+
+Radius = 10 ÷ 2 = 5 m
+$$A = \\pi r^2 = 3.14 \\times 5^2 = 3.14 \\times 25 = 78.5 \\text{ m}^2$$
+
+---
+
+**Finding Radius from Circumference or Area:**
+
+From circumference: $$r = \\frac{C}{2\\pi}$$
+
+From area: $$r = \\sqrt{\\frac{A}{\\pi}}$$`
+      },
+      {
+        title: '2. Arc Length',
+        content: `An **arc** is a portion of the circumference. The **arc length** depends on the angle at the center.
+
+**Arc Length Formula:**
+
+$$l = \\frac{\\theta}{360°} \\times 2\\pi r$$
+
+Or equivalently:
+$$l = \\frac{\\theta}{360°} \\times \\pi d$$
+
+Where:
+• l = arc length
+• θ = angle at center (in degrees)
+• r = radius
+
+---
+
+**Understanding the Formula:**
+
+The fraction θ/360° tells us what portion of the full circle we have.
+• If θ = 90°, we have 90/360 = 1/4 of the circle
+• If θ = 180°, we have 180/360 = 1/2 of the circle
+• If θ = 60°, we have 60/360 = 1/6 of the circle
+
+---
+
+**Example 1:** Find the arc length of a sector with radius 21 cm and angle 60°. (Use π = 22/7)
+
+$$l = \\frac{60°}{360°} \\times 2\\pi r$$
+
+$$l = \\frac{1}{6} \\times 2 \\times \\frac{22}{7} \\times 21$$
+
+$$l = \\frac{1}{6} \\times \\frac{44 \\times 21}{7}$$
+
+$$l = \\frac{1}{6} \\times 44 \\times 3 = \\frac{132}{6} = 22 \\text{ cm}$$
+
+---
+
+**Example 2:** The minute hand of a clock is 10 cm long. How far does its tip travel in 20 minutes? (Use π = 3.14)
+
+In 20 minutes, the minute hand moves through:
+$$\\theta = \\frac{20}{60} \\times 360° = 120°$$
+
+$$l = \\frac{120°}{360°} \\times 2 \\times 3.14 \\times 10$$
+
+$$l = \\frac{1}{3} \\times 62.8 = 20.93 \\text{ cm}$$
+
+---
+
+**Finding Angle from Arc Length:**
+
+$$\\theta = \\frac{l \\times 360°}{2\\pi r}$$`
+      },
+      {
+        title: '3. Area of a Sector',
+        content: `A **sector** is the region bounded by two radii and an arc (like a pizza slice).
+
+**Sector Area Formula:**
+
+$$A_{\\text{sector}} = \\frac{\\theta}{360°} \\times \\pi r^2$$
+
+Where:
+• θ = angle at center (in degrees)
+• r = radius
+
+---
+
+**Example 1:** Find the area of a sector with radius 14 cm and angle 90°. (Use π = 22/7)
+
+$$A = \\frac{90°}{360°} \\times \\pi r^2$$
+
+$$A = \\frac{1}{4} \\times \\frac{22}{7} \\times 14^2$$
+
+$$A = \\frac{1}{4} \\times \\frac{22}{7} \\times 196$$
+
+$$A = \\frac{1}{4} \\times 616 = 154 \\text{ cm}^2$$
+
+---
+
+**Example 2:** A lawn sprinkler waters a sector of angle 72° with radius 5 m. Find the area watered. (Use π = 3.14)
+
+$$A = \\frac{72°}{360°} \\times \\pi r^2$$
+
+$$A = \\frac{72}{360} \\times 3.14 \\times 25$$
+
+$$A = \\frac{1}{5} \\times 78.5 = 15.7 \\text{ m}^2$$
+
+---
+
+**Perimeter of a Sector:**
+
+The perimeter includes two radii plus the arc:
+
+$$P_{\\text{sector}} = 2r + l = 2r + \\frac{\\theta}{360°} \\times 2\\pi r$$
+
+**Example 3:** Find the perimeter of a sector with radius 7 cm and angle 120°. (Use π = 22/7)
+
+Arc length: $$l = \\frac{120°}{360°} \\times 2 \\times \\frac{22}{7} \\times 7 = \\frac{1}{3} \\times 44 = \\frac{44}{3} \\text{ cm}$$
+
+Perimeter: $$P = 2(7) + \\frac{44}{3} = 14 + 14.67 = 28.67 \\text{ cm}$$`
+      },
+      {
+        title: '4. Area of a Segment',
+        content: `A **segment** is the region between a chord and its arc. There are minor segments (smaller) and major segments (larger).
+
+**Segment Area Formula:**
+
+$$A_{\\text{segment}} = A_{\\text{sector}} - A_{\\text{triangle}}$$
+
+For a segment with central angle θ:
+
+$$A_{\\text{segment}} = \\frac{\\theta}{360°} \\times \\pi r^2 - \\frac{1}{2}r^2\\sin\\theta$$
+
+---
+
+**Step-by-Step Method:**
+
+1. Find the area of the sector
+2. Find the area of the triangle (formed by two radii and the chord)
+3. Subtract: Segment = Sector - Triangle
+
+---
+
+**Example:** Find the area of a segment in a circle of radius 10 cm, where the central angle is 90°. (Use π = 3.14)
+
+**Step 1: Area of Sector**
+$$A_{\\text{sector}} = \\frac{90°}{360°} \\times 3.14 \\times 10^2 = \\frac{1}{4} \\times 314 = 78.5 \\text{ cm}^2$$
+
+**Step 2: Area of Triangle**
+Since θ = 90°, the triangle is a right triangle with legs = radii = 10 cm
+$$A_{\\text{triangle}} = \\frac{1}{2} \\times 10 \\times 10 = 50 \\text{ cm}^2$$
+
+**Step 3: Area of Segment**
+$$A_{\\text{segment}} = 78.5 - 50 = 28.5 \\text{ cm}^2$$
+
+---
+
+**Special Case: When θ = 60°**
+
+The triangle formed is equilateral (all sides = radius)
+$$A_{\\text{triangle}} = \\frac{\\sqrt{3}}{4} r^2$$
+
+**When θ = 90°**
+$$A_{\\text{triangle}} = \\frac{1}{2}r^2$$ (right triangle)
+
+**When θ = 120°**
+$$A_{\\text{triangle}} = \\frac{\\sqrt{3}}{4}r^2$$ (same as 60° case)`
+      },
+      {
+        title: '5. Basic Circle Theorems',
+        content: `Important properties and theorems about circles that help solve problems.
+
+**Theorem 1: Angle in a Semicircle**
+
+An angle inscribed in a semicircle (standing on the diameter) is always 90°.
+
+If AB is a diameter and C is any point on the circle, then angle ACB = 90°.
+
+---
+
+**Theorem 2: Equal Chords**
+
+Equal chords are equidistant from the center.
+Conversely, chords equidistant from the center are equal.
+
+---
+
+**Theorem 3: Perpendicular from Center to Chord**
+
+A perpendicular from the center of a circle to a chord bisects the chord.
+
+This is useful for finding chord lengths!
+
+**Example:** A chord is 24 cm long in a circle of radius 13 cm. Find the distance from the center to the chord.
+
+The perpendicular bisects the chord, so half-chord = 12 cm.
+Using Pythagoras: d² + 12² = 13²
+d² = 169 - 144 = 25
+d = 5 cm
+
+---
+
+**Theorem 4: Tangent Properties**
+
+• A tangent to a circle is perpendicular to the radius at the point of contact.
+• Tangents from an external point to a circle are equal in length.
+
+---
+
+**Annulus (Ring):**
+
+The region between two concentric circles:
+$$A_{\\text{annulus}} = \\pi R^2 - \\pi r^2 = \\pi(R^2 - r^2)$$
+
+Where R = outer radius, r = inner radius
+
+**Example:** Find the area of a ring with outer radius 10 cm and inner radius 6 cm.
+$$A = \\pi(10^2 - 6^2) = \\pi(100 - 36) = 64\\pi \\approx 201.1 \\text{ cm}^2$$`
+      }
+    ],
+    summary: `## Circle Formulas Summary
+
+**Basic Measurements:**
+| Formula | Purpose |
+|---------|---------|
+| C = 2πr = πd | Circumference |
+| A = πr² | Area of circle |
+| d = 2r | Diameter-radius relation |
+
+---
+
+**Arc and Sector:**
+
+| Formula | Purpose |
+|---------|---------|
+| $l = \\frac{\\theta}{360°} \\times 2\\pi r$ | Arc length |
+| $A = \\frac{\\theta}{360°} \\times \\pi r^2$ | Sector area |
+| $P = 2r + l$ | Sector perimeter |
+
+---
+
+**Segment:**
+
+$$A_{\\text{segment}} = A_{\\text{sector}} - A_{\\text{triangle}}$$
+
+---
+
+**Key Theorems:**
+1. Angle in semicircle = 90°
+2. Perpendicular from center bisects chord
+3. Tangent ⊥ radius at contact point
+4. Equal tangents from external point
+
+---
+
+**WASSCE Tips:**
+✓ Always note which π value to use (22/7 or 3.14)
+✓ Show all working steps clearly
+✓ Draw diagrams for complex problems
+✓ Check if answer asks for exact form (leave as π) or decimal
+✓ Include units in final answer
+✓ Double-check radius vs diameter`,
+    pastQuestions: [
+      {
+        year: 'WASSCE 2022',
+        question: 'A sector of a circle of radius 21 cm has an angle of 120° at the center. Calculate: (a) the arc length (b) the perimeter of the sector (c) the area of the sector. [Take π = 22/7]',
+        solution: `**Given:** r = 21 cm, θ = 120°, π = 22/7
+
+---
+
+**(a) Arc Length:**
+
+$$l = \\frac{\\theta}{360°} \\times 2\\pi r$$
+
+$$l = \\frac{120°}{360°} \\times 2 \\times \\frac{22}{7} \\times 21$$
+
+$$l = \\frac{1}{3} \\times 2 \\times \\frac{22}{7} \\times 21$$
+
+$$l = \\frac{1}{3} \\times 2 \\times 22 \\times 3$$
+
+$$l = \\frac{1}{3} \\times 132 = 44 \\text{ cm}$$
+
+---
+
+**(b) Perimeter of Sector:**
+
+$$P = 2r + l$$
+$$P = 2(21) + 44$$
+$$P = 42 + 44 = 86 \\text{ cm}$$
+
+---
+
+**(c) Area of Sector:**
+
+$$A = \\frac{\\theta}{360°} \\times \\pi r^2$$
+
+$$A = \\frac{120°}{360°} \\times \\frac{22}{7} \\times 21^2$$
+
+$$A = \\frac{1}{3} \\times \\frac{22}{7} \\times 441$$
+
+$$A = \\frac{1}{3} \\times \\frac{22 \\times 441}{7}$$
+
+$$A = \\frac{1}{3} \\times 22 \\times 63$$
+
+$$A = \\frac{1}{3} \\times 1386 = 462 \\text{ cm}^2$$`
+      },
+      {
+        year: 'WASSCE 2021',
+        question: 'The circumference of a circular track is 440 m. Calculate: (a) the diameter of the track (b) the area of the track. [Take π = 22/7]',
+        solution: `**Given:** C = 440 m, π = 22/7
+
+---
+
+**(a) Finding the Diameter:**
+
+Using C = πd:
+$$440 = \\frac{22}{7} \\times d$$
+
+$$d = 440 \\times \\frac{7}{22}$$
+
+$$d = \\frac{440 \\times 7}{22}$$
+
+$$d = \\frac{3080}{22} = 140 \\text{ m}$$
+
+---
+
+**(b) Finding the Area:**
+
+First find radius: r = d ÷ 2 = 140 ÷ 2 = 70 m
+
+$$A = \\pi r^2$$
+
+$$A = \\frac{22}{7} \\times 70^2$$
+
+$$A = \\frac{22}{7} \\times 4900$$
+
+$$A = 22 \\times 700$$
+
+$$A = 15,400 \\text{ m}^2$$`
+      },
+      {
+        year: 'WASSCE 2020',
+        question: 'A chord of length 24 cm is drawn in a circle of radius 13 cm. Calculate the distance of the chord from the center of the circle.',
+        solution: `**Given:** Chord length = 24 cm, Radius = 13 cm
+
+---
+
+**Diagram Setup:**
+
+Let O be the center, AB be the chord, and M be the midpoint of AB.
+The perpendicular from the center to a chord bisects the chord.
+
+So AM = MB = 24 ÷ 2 = 12 cm
+
+---
+
+**Using Pythagoras Theorem:**
+
+In right triangle OMA:
+- OA = radius = 13 cm (hypotenuse)
+- AM = 12 cm (one leg)
+- OM = d = distance from center (other leg)
+
+$$OA^2 = OM^2 + AM^2$$
+
+$$13^2 = d^2 + 12^2$$
+
+$$169 = d^2 + 144$$
+
+$$d^2 = 169 - 144 = 25$$
+
+$$d = \\sqrt{25} = 5 \\text{ cm}$$
+
+---
+
+**Answer: The distance from the center to the chord is 5 cm.**`
+      },
+      {
+        year: 'WASSCE 2019',
+        question: 'The area of a sector of a circle is 154 cm² and its angle is 90°. Calculate: (a) the radius of the circle (b) the arc length of the sector. [Take π = 22/7]',
+        solution: `**Given:** Area of sector = 154 cm², θ = 90°, π = 22/7
+
+---
+
+**(a) Finding the Radius:**
+
+Using the sector area formula:
+$$A = \\frac{\\theta}{360°} \\times \\pi r^2$$
+
+$$154 = \\frac{90°}{360°} \\times \\frac{22}{7} \\times r^2$$
+
+$$154 = \\frac{1}{4} \\times \\frac{22}{7} \\times r^2$$
+
+$$154 = \\frac{22}{28} \\times r^2$$
+
+$$154 = \\frac{11}{14} \\times r^2$$
+
+$$r^2 = 154 \\times \\frac{14}{11}$$
+
+$$r^2 = \\frac{154 \\times 14}{11} = \\frac{2156}{11} = 196$$
+
+$$r = \\sqrt{196} = 14 \\text{ cm}$$
+
+---
+
+**(b) Finding the Arc Length:**
+
+$$l = \\frac{\\theta}{360°} \\times 2\\pi r$$
+
+$$l = \\frac{90°}{360°} \\times 2 \\times \\frac{22}{7} \\times 14$$
+
+$$l = \\frac{1}{4} \\times 2 \\times \\frac{22}{7} \\times 14$$
+
+$$l = \\frac{1}{4} \\times 2 \\times 22 \\times 2$$
+
+$$l = \\frac{1}{4} \\times 88 = 22 \\text{ cm}$$`
+      }
+    ],
+    activities: {
+      type: 'exercises',
+      exercises: [
+        {
+          type: 'mcq',
+          question: 'The formula for the circumference of a circle is:',
+          options: ['C = πr²', 'C = 2πr', 'C = πr', 'C = 2r'],
+          answer: 'C = 2πr',
+          explanation: 'Circumference = 2πr or πd. The formula πr² gives the area, not circumference.'
+        },
+        {
+          type: 'mcq',
+          question: 'A sector has angle 60° at the center. What fraction of the circle is this sector?',
+          options: ['1/3', '1/4', '1/5', '1/6'],
+          answer: '1/6',
+          explanation: '60°/360° = 1/6. The sector is one-sixth of the complete circle.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which formula gives the area of a sector?',
+          options: ['θ/360° × 2πr', 'θ/360° × πr²', 'θ/180° × πr²', 'θ/360° × πr'],
+          answer: 'θ/360° × πr²',
+          explanation: 'Sector area is the fraction (θ/360°) of the full circle area (πr²).'
+        }
+      ]
+    },
+    endOfLessonQuiz: [
+      {
+        type: 'mcq',
+        question: 'A circle has radius 7 cm. Its area is: (π = 22/7)',
+        options: ['44 cm²', '154 cm²', '308 cm²', '22 cm²'],
+        answer: '154 cm²',
+        explanation: 'A = πr² = (22/7) × 49 = 22 × 7 = 154 cm².'
+      },
+      {
+        type: 'mcq',
+        question: 'The circumference of a circle is 88 cm. Its radius is: (π = 22/7)',
+        options: ['7 cm', '14 cm', '21 cm', '28 cm'],
+        answer: '14 cm',
+        explanation: 'C = 2πr, so r = C/(2π) = 88 × 7/(2 × 22) = 616/44 = 14 cm.'
+      },
+      {
+        type: 'mcq',
+        question: 'A sector of angle 72° in a circle is what fraction of the whole circle?',
+        options: ['1/3', '1/4', '1/5', '1/6'],
+        answer: '1/5',
+        explanation: '72°/360° = 72/360 = 1/5.'
+      },
+      {
+        type: 'mcq',
+        question: 'An arc subtends an angle of 90° at the center of a circle of radius 14 cm. The arc length is: (π = 22/7)',
+        options: ['11 cm', '22 cm', '33 cm', '44 cm'],
+        answer: '22 cm',
+        explanation: 'l = (90/360) × 2 × (22/7) × 14 = (1/4) × 88 = 22 cm.'
+      },
+      {
+        type: 'mcq',
+        question: 'The diameter of a circle is 28 cm. Its circumference is: (π = 22/7)',
+        options: ['44 cm', '66 cm', '88 cm', '176 cm'],
+        answer: '88 cm',
+        explanation: 'C = πd = (22/7) × 28 = 22 × 4 = 88 cm.'
+      },
+      {
+        type: 'mcq',
+        question: 'A chord is 16 cm long in a circle of radius 10 cm. Its distance from the center is:',
+        options: ['4 cm', '6 cm', '8 cm', '12 cm'],
+        answer: '6 cm',
+        explanation: 'Half-chord = 8 cm. Using Pythagoras: d² = 10² - 8² = 100 - 64 = 36. d = 6 cm.'
+      },
+      {
+        type: 'mcq',
+        question: 'The area of a sector with radius 21 cm and angle 60° is: (π = 22/7)',
+        options: ['77 cm²', '154 cm²', '231 cm²', '462 cm²'],
+        answer: '231 cm²',
+        explanation: 'A = (60/360) × (22/7) × 21² = (1/6) × (22/7) × 441 = (1/6) × 1386 = 231 cm².'
+      },
+      {
+        type: 'mcq',
+        question: 'An angle inscribed in a semicircle is always:',
+        options: ['45°', '60°', '90°', '180°'],
+        answer: '90°',
+        explanation: 'This is a fundamental circle theorem: any angle inscribed in a semicircle is a right angle (90°).'
+      }
+    ]
+  },
+
+  // Lesson 9: Transformation Geometry
   {
     id: 'cm_shs2_geo_4',
     slug: 'shs2-transformation-geometry',

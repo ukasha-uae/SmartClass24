@@ -29,6 +29,9 @@ import {
   WordProblemSolverAnimation,
   SumProductRootsAnimation
 } from './QuadraticAnimations';
+import {
+  ParticleArrangementAnimation
+} from './MatterAnimations';
 import { 
   translationSteps, 
   translationFrames, 
@@ -59,6 +62,17 @@ export default function MarkdownRenderer({ content, id, className }: MarkdownRen
   return (
     <div id={id} className={`space-y-4 text-base leading-relaxed ${className || ''}`}>
       {paragraphs.map((paragraph, pIndex) => {
+        // Check for HTML table blocks
+        if (paragraph.trim().startsWith('<table') || paragraph.trim().startsWith('<div') || paragraph.trim().startsWith('<h4')) {
+          return (
+            <div 
+              key={pIndex} 
+              className="my-4"
+              dangerouslySetInnerHTML={{ __html: paragraph }} 
+            />
+          );
+        }
+
         // Check for Venn Diagram code block
         if (paragraph.trim().startsWith('```venn')) {
           try {
@@ -318,6 +332,13 @@ export default function MarkdownRenderer({ content, id, className }: MarkdownRen
                         b={props.b || 7}
                         c={props.c || 12}
                       />
+                    </div>
+                  );
+                
+                case 'particlearrangementanimation':
+                  return (
+                    <div key={pIndex} className="my-6" data-skip-tts="true">
+                      <ParticleArrangementAnimation />
                     </div>
                   );
                 

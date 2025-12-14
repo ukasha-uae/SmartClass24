@@ -8,6 +8,16 @@ Smartclass24 is a Next.js 16 App Router application that provides personalized l
 
 To get started, take a look at src/app/page.tsx.
 
+## 📚 For Contributors & AI Agents
+
+**IMPORTANT**: Before making changes to carousel lessons, read these documents:
+
+- **[Carousel Implementation Guide](docs/CAROUSEL_LESSONS_GUIDE.md)** - Official patterns and antipatterns
+- **[Migration Tracker](docs/CAROUSEL_MIGRATION_TRACKER.md)** - Progress tracking and next steps
+- **[Migration Strategy](docs/CAROUSEL_MIGRATION_STRATEGY.md)** - Overall migration plan
+
+These documents define the established patterns to ensure consistency across all carousel lessons.
+
 ## End-of-Lesson Quiz Persistence
 
 Completed lesson quizzes will now be saved to Firestore for authenticated users under `users/{uid}/quizAttempts`.

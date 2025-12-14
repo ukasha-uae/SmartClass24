@@ -3,7 +3,7 @@
 
 import { getSubjectBySlug } from '@/lib/jhs-data';
 import { getPrimarySubjectBySlug } from '@/lib/primary-data';
-import { getSHSSubjectBySlug } from '@/lib/shs-data';
+import { getSHSSubjectBySlug, getSHSLesson } from '@/lib/shs-data';
 import { notFound, useParams } from 'next/navigation';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
@@ -108,21 +108,26 @@ export default function SubjectPage() {
         };
 
         // Group topics by grade level
-        // For SHS, each topic is treated as a single lesson
+        // For SHS, check if there's a detailed lesson that matches this topic
         (subjectInfo as any).topics?.forEach((topic: any) => {
           // Extract SHS level from gradeLevel field (e.g., "SHS 1 - Algebra" -> "SHS 1")
           const gradeLevelMatch = topic.gradeLevel?.match(/SHS\s+(1|2|3)/);
           const level = gradeLevelMatch ? `SHS ${gradeLevelMatch[1]}` : 'SHS 1';
           
           if (shsData[level]) {
+            // Try to get the detailed lesson from shs-lessons-data.ts
+            // The topic slug might be "shs3-factorization" but the lesson slug is "factorization"
+            const detailedLesson = getSHSLesson(subjectSlug, topic.slug, topic.slug);
+            const lessonSlug = detailedLesson ? detailedLesson.slug : topic.slug;
+            
             shsData[level].push({
               id: topic.id,
               slug: topic.slug,
               title: topic.name,
               name: topic.name,
               lessons: [{
-                id: topic.id,
-                slug: topic.slug,
+                id: detailedLesson?.id || topic.id,
+                slug: lessonSlug, // Use the actual lesson slug
                 title: topic.name,
                 description: `Learn about ${topic.name}`
               }]

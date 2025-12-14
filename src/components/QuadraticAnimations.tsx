@@ -62,7 +62,7 @@ export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: Factoriza
 
   const { speak, stop, isSpeaking, isSupported } = useSpeechSynthesis({
     text: narrationText[step] || '',
-    autoPlay: autoNarrate,
+    autoPlay: false, // Don't auto-play on mount, we'll control it manually
     rate: 0.9,
   });
 
@@ -72,15 +72,43 @@ export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: Factoriza
     }
   }, [step]);
 
+  // Auto-narrate when step changes (if autoNarrate is enabled)
+  useEffect(() => {
+    if (autoNarrate) {
+      // Small delay to ensure state is settled
+      const timer = setTimeout(() => {
+        speak();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [step, autoNarrate, speak]);
+
   const handleNext = () => {
-    if (step < totalSteps) setStep(step + 1);
+    if (step < totalSteps) {
+      stop(); // Stop current narration before moving
+      setStep(step + 1);
+    }
   };
 
   const handlePrevious = () => {
-    if (step > 0) setStep(step - 1);
+    if (step > 0) {
+      stop(); // Stop current narration before moving
+      setStep(step - 1);
+    }
+  };
+
+  const toggleNarration = () => {
+    if (isSpeaking) {
+      stop();
+      setAutoNarrate(false);
+    } else {
+      setAutoNarrate(true);
+      speak();
+    }
   };
 
   const handleReset = () => {
+    stop(); // Stop narration on reset
     setStep(0);
   };
 
@@ -96,7 +124,7 @@ export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: Factoriza
             {isSupported && (
               <Button 
                 size="sm" 
-                onClick={isSpeaking ? stop : speak} 
+                onClick={toggleNarration} 
                 variant={isSpeaking ? "default" : "outline"}
                 className="flex-1 sm:flex-none"
               >

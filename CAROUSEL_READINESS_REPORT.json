@@ -1,0 +1,102 @@
+{
+  "total": 5,
+  "carouselReady": 0,
+  "needsWork": 5,
+  "lessons": [
+    {
+      "path": "\\src\\content\\chem-shs1-intro-nature-scope.json",
+      "title": "Nature and Scope of Chemistry",
+      "level": "Unknown",
+      "subject": "Unknown",
+      "validation": {
+        "isValid": false,
+        "carouselReady": false,
+        "errors": [
+          "No learning objectives defined",
+          "No content sections defined"
+        ],
+        "warnings": [
+          "No past questions available"
+        ],
+        "recommendations": [],
+        "slideCount": 0
+      }
+    },
+    {
+      "path": "\\src\\content\\chem-shs1-intro-scientific-methods-safety.json",
+      "title": "Scientific Methods & Safety",
+      "level": "Unknown",
+      "subject": "Unknown",
+      "validation": {
+        "isValid": false,
+        "carouselReady": false,
+        "errors": [
+          "No learning objectives defined",
+          "No content sections defined"
+        ],
+        "warnings": [
+          "No past questions available"
+        ],
+        "recommendations": [],
+        "slideCount": 0
+      }
+    },
+    {
+      "path": "\\src\\content\\ict-intro-programming.json",
+      "title": "Introduction to Programming",
+      "level": "Unknown",
+      "subject": "Information and Communication Technology (ICT)",
+      "validation": {
+        "isValid": false,
+        "carouselReady": false,
+        "errors": [
+          "No learning objectives defined",
+          "No content sections defined"
+        ],
+        "warnings": [
+          "No past questions available"
+        ],
+        "recommendations": [],
+        "slideCount": 0
+      }
+    },
+    {
+      "path": "\\src\\content\\ict-web-dev-basics.json",
+      "title": "Web Development Basics",
+      "level": "Unknown",
+      "subject": "Information and Communication Technology (ICT)",
+      "validation": {
+        "isValid": false,
+        "carouselReady": false,
+        "errors": [
+          "No learning objectives defined",
+          "No content sections defined"
+        ],
+        "warnings": [
+          "No past questions available"
+        ],
+        "recommendations": [],
+        "slideCount": 0
+      }
+    },
+    {
+      "path": "\\src\\content\\shs1-types-of-numbers.json",
+      "title": "Types of Numbers",
+      "level": "Unknown",
+      "subject": "Core Mathematics",
+      "validation": {
+        "isValid": false,
+        "carouselReady": false,
+        "errors": [
+          "No learning objectives defined",
+          "No content sections defined"
+        ],
+        "warnings": [
+          "No past questions available"
+        ],
+        "recommendations": [],
+        "slideCount": 0
+      }
+    }
+  ]
+}

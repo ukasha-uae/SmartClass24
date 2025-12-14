@@ -258,6 +258,91 @@ export default function LessonPage() {
 4. **Interactive for Details** - Use `interactive` prop for extra information students can explore
 5. **Mobile Friendly** - All components are responsive and touch-friendly
 
+---
+
+## 📊 Table Formatting Standards
+
+### ❌ NEVER Use Markdown Tables
+```markdown
+| Column | Column |
+|--------|--------|
+| Data   | Data   |
+```
+Markdown tables render as plain dashed text - not user-friendly!
+
+### ✅ ALWAYS Use Styled HTML Tables
+
+All tables in lesson content MUST use proper HTML with inline styles:
+
+```html
+<h4 style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #1f2937; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">📊 TABLE TITLE</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #fffbeb; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<thead>
+<tr style="background: #fef3c7;">
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #f59e0b; font-weight: 600;">Column 1</th>
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #f59e0b; font-weight: 600;">Column 2</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #fcd34d;">
+<td style="padding: 0.75rem; font-weight: 600;">Row 1</td>
+<td style="padding: 0.75rem;">Value 1</td>
+</tr>
+<tr style="border-bottom: 1px solid #fcd34d; background: #fef9e7;">
+<td style="padding: 0.75rem; font-weight: 600;">Row 2</td>
+<td style="padding: 0.75rem;">Value 2</td>
+</tr>
+</tbody>
+</table>
+```
+
+### 🎨 Table Color Themes
+
+| Theme | Use For | Header Gradient | Background |
+|-------|---------|-----------------|------------|
+| **Yellow** | Energy, Primary | `#fbbf24 → #f59e0b` | `#fffbeb` |
+| **Blue** | Water, Processes | `#60a5fa → #3b82f6` | `#eff6ff` |
+| **Purple** | Major items | `#a78bfa → #8b5cf6` | `#f5f3ff` |
+| **Orange** | Trace, Minor | `#fb923c → #f97316` | `#fff7ed` |
+| **Green** | Ghana context | Card style | `#dcfce7` |
+| **Red** | Warnings | Card style | `#fee2e2` |
+
+### 📦 Info Card Templates
+
+**Ghana Context (Green):**
+```html
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #22c55e; margin: 1.5rem 0;">
+<h4 style="color: #166534; margin: 0 0 1rem 0; font-weight: 600;">🇬🇭 TITLE</h4>
+Content here...
+</div>
+```
+
+**Warning (Red):**
+```html
+<div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #ef4444; margin: 1.5rem 0;">
+<h4 style="color: #991b1b; margin: 0 0 1rem 0; font-weight: 600;">⚠️ WARNING</h4>
+Content here...
+</div>
+```
+
+**Highlight (Blue):**
+```html
+<div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; border-left: 4px solid #0ea5e9;">
+Important content here...
+</div>
+```
+
+### ✅ Table Best Practices
+
+1. **Alternating row colors** - Use light background on even rows
+2. **Bold first column** - Usually the item name
+3. **Color-code warnings** - Red/orange for deficiencies
+4. **Emojis in headers** - Visual appeal (🧈💧🔷🔸⚠️🇬🇭)
+5. **Rounded corners** - Modern look with border-radius
+6. **Proper spacing** - margin-bottom: 1.5rem between tables
+
+---
+
 ## Performance Note
 
 All animations use Framer Motion and are optimized for performance. They only animate when visible on screen.

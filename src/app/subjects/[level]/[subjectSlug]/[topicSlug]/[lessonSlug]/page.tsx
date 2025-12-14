@@ -5,6 +5,9 @@ import { getSubjectBySlug } from '@/lib/jhs-data';
 import { getPrimarySubjectBySlug } from '@/lib/primary-data';
 import { getSHSSubjectBySlug, getSHSLesson } from '@/lib/shs-data';
 import { notFound, useParams } from 'next/navigation';
+import { isCarouselEnabled } from '@/lib/featureFlags';
+import { validateLessonForCarousel } from '@/lib/lessonValidator';
+import { trackCarouselUsage, trackCarouselError, trackFeatureFlagStatus } from '@/lib/analytics';
 
 type EducationLevel = 'Primary' | 'JHS' | 'SHS';
 import {
@@ -29,6 +32,71 @@ import type { Lesson } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useEffect, useState, useMemo } from 'react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
+import { QuadraticEquationsIntro } from '@/components/QuadraticEquationsIntro';
+import FactorizationIntro from '@/components/intros/FactorizationIntro';
+import CompletingSquareIntro from '@/components/intros/CompletingSquareIntro';
+import QuadraticFormulaIntro from '@/components/intros/QuadraticFormulaIntro';
+import SequencesSeriesIntro from '@/components/intros/SequencesSeriesIntro';
+import FunctionsRelationsIntro from '@/components/intros/FunctionsRelationsIntro';
+import LinearProgrammingIntro from '@/components/intros/LinearProgrammingIntro';
+import MatricesDeterminantsIntro from '@/components/intros/MatricesDeterminantsIntro';
+import CircleTheorems1Intro from '@/components/intros/CircleTheorems1Intro';
+import CircleTheorems2Intro from '@/components/intros/CircleTheorems2Intro';
+import PolygonsAnglesIntro from '@/components/intros/PolygonsAnglesIntro';
+import SimilarityCongruenceIntro from '@/components/intros/SimilarityCongruenceIntro';
+import GeometricConstructionsIntro from '@/components/intros/GeometricConstructionsIntro';
+import CoordinateGeometryIntro from '@/components/intros/CoordinateGeometryIntro';
+import TrigonometricRatiosIntro from '@/components/intros/TrigonometricRatiosIntro';
+import TrigonometricIdentitiesIntro from '@/components/intros/TrigonometricIdentitiesIntro';
+import TrigGraphsIntro from '@/components/intros/TrigGraphsIntro';
+import TrigonometricEquationsIntro from '@/components/intros/TrigonometricEquationsIntro';
+import ApplicationsOfTrigonometryIntro from '@/components/intros/ApplicationsOfTrigonometryIntro';
+import MeasuresOfCentralTendencyIntro from '@/components/intros/MeasuresOfCentralTendencyIntro';
+import MeasuresOfDispersionIntro from '@/components/intros/MeasuresOfDispersionIntro';
+import ProbabilityFundamentalsIntro from '@/components/intros/ProbabilityFundamentalsIntro';
+import ProbabilityDistributionsIntro from '@/components/intros/ProbabilityDistributionsIntro';
+import SineCosineRulesIntro from '@/components/intros/SineCosineRulesIntro';
+import BearingsScaleDrawingIntro from '@/components/intros/BearingsScaleDrawingIntro';
+import CumulativeFrequencyBoxPlotsIntro from '@/components/intros/CumulativeFrequencyBoxPlotsIntro';
+import StructuredProblemSolvingIntro from '@/components/intros/StructuredProblemSolvingIntro';
+import IntegratedWASSCERevisionIntro from '@/components/intros/IntegratedWASSCERevisionIntro';
+// SHS2 Intro Components
+import NumberBasesIntro from '@/components/intros/NumberBasesIntro';
+import BinaryOperationsIntro from '@/components/intros/BinaryOperationsIntro';
+import AlgebraicFactorizationIntro from '@/components/intros/AlgebraicFactorizationIntro';
+import SimultaneousLinearEquationsIntro from '@/components/intros/SimultaneousLinearEquationsIntro';
+import VariationIntro from '@/components/intros/VariationIntro';
+import MensurationIntro from '@/components/intros/MensurationIntro';
+import TrigonometryRatiosIntro from '@/components/intros/TrigonometryRatiosIntro';
+import CircleGeometryIntro from '@/components/intros/CircleGeometryIntro';
+import TransformationGeometryIntro from '@/components/intros/TransformationGeometryIntro';
+import StatisticsMeasuresIntro from '@/components/intros/StatisticsMeasuresIntro';
+import ProbabilityCombinedIntro from '@/components/intros/ProbabilityCombinedIntro';
+// SHS1 Intro Components
+import TypesOfNumbersIntro from '@/components/intros/TypesOfNumbersIntro';
+import FractionsDecimalsPercentagesIntro from '@/components/intros/FractionsDecimalsPercentagesIntro';
+import SetsVennDiagramsIntro from '@/components/intros/SetsVennDiagramsIntro';
+import AlgebraicExpressionsIntro from '@/components/intros/AlgebraicExpressionsIntro';
+import LinearEquationsInequalitiesIntro from '@/components/intros/LinearEquationsInequalitiesIntro';
+import DirectedNumbersIntro from '@/components/intros/DirectedNumbersIntro';
+import ApproximationEstimationIntro from '@/components/intros/ApproximationEstimationIntro';
+import FactorsMultiplesIntro from '@/components/intros/FactorsMultiplesIntro';
+import GeometryLinesAnglesIntro from '@/components/intros/GeometryLinesAnglesIntro';
+import GeometryTrianglesQuadrilateralsIntro from '@/components/intros/GeometryTrianglesQuadrilateralsIntro';
+import GeometryConstructionsLociIntro from '@/components/intros/GeometryConstructionsLociIntro';
+import DataCollectionPresentationIntro from '@/components/intros/DataCollectionPresentationIntro';
+import IntroductionToProbabilityIntro from '@/components/intros/IntroductionToProbabilityIntro';
+import LogicalReasoningIntro from '@/components/intros/LogicalReasoningIntro';
+import BusinessMathematicsIntro from '@/components/intros/BusinessMathematicsIntro';
+// Integrated Science Intro Components
+import NatureAndScopeOfChemistryIntro from '@/components/intros/NatureAndScopeOfChemistryIntro';
+import ScientificMethodsAndSafetyIntro from '@/components/intros/ScientificMethodsAndSafetyIntro';
+import StatesAndChangesOfMatterIntro from '@/components/intros/shs/integrated-science/StatesAndChangesOfMatterIntro';
+import CellStructureFunctionIntro from '@/components/intros/shs/integrated-science/CellStructureFunctionIntro';
+import CellDivisionIntro from '@/components/intros/shs/integrated-science/CellDivisionIntro';
+import RocksTypesFormationIntro from '@/components/intros/shs/integrated-science/RocksTypesFormationIntro';
+import NutritionBalancedDietIntro from '@/components/intros/shs/integrated-science/NutritionBalancedDietIntro';
+import { CarouselLesson } from '@/components/CarouselLesson';
 import { 
   addBookmark, 
   removeBookmark, 
@@ -67,6 +135,10 @@ export default function LessonPage() {
   const [newChecklistItem, setNewChecklistItem] = useState('');
   const [educationLevel, setEducationLevel] = useState<EducationLevel | null>(null);
   const [isLevelLoading, setIsLevelLoading] = useState(true);
+  const [useCarouselMode, setUseCarouselMode] = useState(false);
+  const [carouselEligible, setCarouselEligible] = useState(false);
+  const [validationResult, setValidationResult] = useState<any>(null);
+  const [hasCheckedAutostart, setHasCheckedAutostart] = useState(false);
 
   // Detect education level from localStorage
   useEffect(() => {
@@ -102,8 +174,22 @@ export default function LessonPage() {
     // SHS subjects have topics array directly (similar to Primary)
     localTopic = (subjectInfo as any).topics?.find((t: any) => t.slug === topicSlug);
     
+    // Debug: Log the parameters
+    console.log('SHS Lesson Loading:', { subjectSlug, topicSlug, lessonSlug, localTopic });
+    
     // Try to get detailed lesson from shs-lessons-data.ts
     const detailedLesson = getSHSLesson(subjectSlug, topicSlug, lessonSlug);
+    
+    console.log('Detailed lesson from getSHSLesson:', detailedLesson);
+    if (detailedLesson) {
+      console.log('Lesson has activities?', !!detailedLesson.activities);
+      const activities = detailedLesson.activities as any;
+      if (activities && !Array.isArray(activities)) {
+        console.log('Activities type:', activities.type);
+        console.log('Activities has questions?', !!activities.questions);
+        console.log('Questions count:', activities.questions?.length || 0);
+      }
+    }
     
     if (detailedLesson) {
       // Use the detailed lesson from shs-lessons-data.ts
@@ -184,6 +270,98 @@ export default function LessonPage() {
     
     return baseLesson;
   }, [localLesson, firestoreLesson, educationLevel, localTopic?.name, subjectInfo?.name]);
+
+  // Check carousel eligibility using feature flags
+  useEffect(() => {
+    if (lesson && level && subjectSlug && topicSlug && lessonSlug) {
+      // Check if carousel is enabled for this lesson
+      const eligible = isCarouselEnabled(
+        level,
+        subjectSlug,
+        topicSlug,
+        lessonSlug
+      );
+      
+      console.log('🎠 CAROUSEL CHECK:', {
+        level,
+        subjectSlug,
+        topicSlug,
+        lessonSlug,
+        eligible
+      });
+      
+      setCarouselEligible(eligible);
+      
+      // Validate lesson structure if eligible
+      if (eligible) {
+        try {
+          const validation = validateLessonForCarousel(lesson);
+          setValidationResult(validation);
+          
+          console.log('✅ CAROUSEL VALIDATION:', {
+            isValid: validation.isValid,
+            errors: validation.errors,
+            warnings: validation.warnings,
+            slideCount: validation.slideCount
+          });
+          
+          // Track feature flag status
+          trackFeatureFlagStatus('carousel_mode', eligible, {
+            level,
+            subject: subjectSlug,
+            topic: topicSlug,
+            lesson: lessonSlug,
+            validation: validation.isValid,
+          });
+          
+          // Log validation results in development
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Carousel Eligibility:', eligible);
+            console.log('Lesson Validation:', validation);
+            console.log('Lesson data:', lesson);
+          }
+          
+          // Track validation errors only if there are actual errors with content
+          if (!validation.isValid && validation.errors.length > 0) {
+            const errorMessage = validation.errors.join(', ').trim();
+            if (errorMessage) {
+              trackCarouselError({
+                lessonSlug: lessonSlug || 'unknown',
+                error: errorMessage,
+                errorType: 'validation',
+                context: 'Lesson structure validation failed',
+                timestamp: Date.now(),
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error during carousel validation:', error);
+        }
+      }
+    }
+  }, [lesson, level, subjectSlug, topicSlug, lessonSlug]);
+
+  // Autostart carousel mode if enabled in feature flags
+  useEffect(() => {
+    if (carouselEligible && validationResult?.isValid && !hasCheckedAutostart) {
+      // Import FEATURE_FLAGS to check autostart
+      import('@/lib/featureFlags').then(({ FEATURE_FLAGS }) => {
+        if (FEATURE_FLAGS.CAROUSEL_MODE.autostart) {
+          console.log('🚀 AUTO-STARTING CAROUSEL MODE');
+          setUseCarouselMode(true);
+        }
+        setHasCheckedAutostart(true);
+      });
+    }
+  }, [carouselEligible, validationResult, hasCheckedAutostart]);
+
+  // Debug: Log lesson slug
+  useEffect(() => {
+    if (lesson) {
+      console.log('Current lesson slug:', lesson.slug);
+      console.log('Should show carousel button:', lesson.slug === 'shs3-quadratic-equations');
+    }
+  }, [lesson]);
 
   // Memoize the localQuizzes to prevent infinite loops
   const localQuizzes = useMemo(() => {
@@ -362,15 +540,192 @@ export default function LessonPage() {
 
   return (
     <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      <Link
-        href={`/subjects/${level}/${subjectSlug}`}
-        className="inline-flex items-center text-primary mb-4 hover:underline"
-      >
-        <ArrowLeft className="h-4 w-4 mr-2" />
-        Back to {subjectInfo.name}
-      </Link>
-      <div className="relative">
-        <FloatingIcon icon="lightbulb" position="tr" size="lg" />
+      {/* Use Carousel Mode if eligible and enabled */}
+      {carouselEligible && validationResult?.isValid && useCarouselMode ? (
+        <CarouselLesson
+          lesson={lesson}
+          subjectSlug={subjectSlug}
+          topicSlug={topicSlug}
+          lessonSlug={lessonSlug}
+          educationLevel={educationLevel}
+          localQuizzes={localQuizzes}
+          introComponent={
+            // SHS3 Algebra (Phase 1)
+            lessonSlug === 'quadratic-equations' || lessonSlug === 'shs3-quadratic-equations' ? (
+              <QuadraticEquationsIntro />
+            ) : lessonSlug === 'factorization' ? (
+              <FactorizationIntro />
+            ) : lessonSlug === 'completing-the-square' ? (
+              <CompletingSquareIntro />
+            ) : lessonSlug === 'quadratic-formula' ? (
+              <QuadraticFormulaIntro />
+            ) : // SHS3 Algebra (Phase 2)
+            lessonSlug === 'sequences-series' ? (
+              <SequencesSeriesIntro />
+            ) : lessonSlug === 'functions-relations' ? (
+              <FunctionsRelationsIntro />
+            ) : lessonSlug === 'linear-programming' ? (
+              <LinearProgrammingIntro />
+            ) : lessonSlug === 'matrices-determinants' ? (
+              <MatricesDeterminantsIntro />
+            ) : // SHS3 Geometry (Phase 3)
+            lessonSlug === 'circle-theorems-1' ? (
+              <CircleTheorems1Intro />
+            ) : lessonSlug === 'circle-theorems-2' ? (
+              <CircleTheorems2Intro />
+            ) : lessonSlug === 'polygons-angles' ? (
+              <PolygonsAnglesIntro />
+            ) : lessonSlug === 'similarity-congruence' ? (
+              <SimilarityCongruenceIntro />
+            ) : lessonSlug === 'geometric-constructions' ? (
+              <GeometricConstructionsIntro />
+            ) : lessonSlug === 'coordinate-geometry' ? (
+              <CoordinateGeometryIntro />
+            ) : // SHS3 Trigonometry (Phase 4)
+            lessonSlug === 'trigonometric-ratios' ? (
+              <TrigonometricRatiosIntro />
+            ) : lessonSlug === 'trigonometric-identities' ? (
+              <TrigonometricIdentitiesIntro />
+            ) : lessonSlug === 'trig-graphs' ? (
+              <TrigGraphsIntro />
+            ) : lessonSlug === 'trigonometric-equations' ? (
+              <TrigonometricEquationsIntro />
+            ) : lessonSlug === 'applications-of-trigonometry' ? (
+              <ApplicationsOfTrigonometryIntro />
+            ) : // SHS3 Statistics & Probability (Phase 5)
+            lessonSlug === 'measures-of-central-tendency' ? (
+              <MeasuresOfCentralTendencyIntro />
+            ) : lessonSlug === 'measures-of-dispersion' ? (
+              <MeasuresOfDispersionIntro />
+            ) : lessonSlug === 'probability-fundamentals' ? (
+              <ProbabilityFundamentalsIntro />
+            ) : lessonSlug === 'probability-distributions' ? (
+              <ProbabilityDistributionsIntro />
+            ) : // SHS3 Geometry II
+            lessonSlug === 'sine-cosine-rules' ? (
+              <SineCosineRulesIntro />
+            ) : lessonSlug === 'shs3-bearings-scale-drawing' ? (
+              <BearingsScaleDrawingIntro />
+            ) : // SHS3 Data Handling
+            lessonSlug === 'shs3-cumulative-frequency-box-plots' ? (
+              <CumulativeFrequencyBoxPlotsIntro />
+            ) : // SHS3 Problem Solving
+            lessonSlug === 'shs3-problem-solving-strategies' ? (
+              <StructuredProblemSolvingIntro />
+            ) : lessonSlug === 'shs3-wassce-revision' ? (
+              <IntegratedWASSCERevisionIntro />
+            ) : // SHS2 Lessons
+            lessonSlug === 'shs2-number-bases' ? (
+              <NumberBasesIntro />
+            ) : lessonSlug === 'shs2-binary-operations' ? (
+              <BinaryOperationsIntro />
+            ) : lessonSlug === 'shs2-algebraic-factorization' ? (
+              <AlgebraicFactorizationIntro />
+            ) : lessonSlug === 'shs2-simultaneous-linear-equations' ? (
+              <SimultaneousLinearEquationsIntro />
+            ) : lessonSlug === 'shs2-variation' ? (
+              <VariationIntro />
+            ) : lessonSlug === 'shs2-mensuration' ? (
+              <MensurationIntro />
+            ) : lessonSlug === 'shs2-trigonometry-ratios' ? (
+              <TrigonometryRatiosIntro />
+            ) : lessonSlug === 'shs2-circle-geometry' ? (
+              <CircleGeometryIntro />
+            ) : lessonSlug === 'shs2-transformation-geometry' ? (
+              <TransformationGeometryIntro />
+            ) : lessonSlug === 'shs2-statistics-measures' ? (
+              <StatisticsMeasuresIntro />
+            ) : lessonSlug === 'shs2-probability-combined' ? (
+              <ProbabilityCombinedIntro />
+            ) : // SHS1 Lessons
+            lessonSlug === 'shs1-types-of-numbers' ? (
+              <TypesOfNumbersIntro />
+            ) : lessonSlug === 'shs1-fractions-decimals-percentages' ? (
+              <FractionsDecimalsPercentagesIntro />
+            ) : lessonSlug === 'sets-venn-diagrams' ? (
+              <SetsVennDiagramsIntro />
+            ) : lessonSlug === 'cm-algebraic-expressions' ? (
+              <AlgebraicExpressionsIntro />
+            ) : lessonSlug === 'shs1-linear-equations-inequalities' ? (
+              <LinearEquationsInequalitiesIntro />
+            ) : lessonSlug === 'shs1-directed-numbers' ? (
+              <DirectedNumbersIntro />
+            ) : lessonSlug === 'shs1-approximation-estimation' ? (
+              <ApproximationEstimationIntro />
+            ) : lessonSlug === 'shs1-factors-multiples' ? (
+              <FactorsMultiplesIntro />
+            ) : lessonSlug === 'shs1-geometry-lines-angles' ? (
+              <GeometryLinesAnglesIntro />
+            ) : lessonSlug === 'shs1-geometry-triangles-quadrilaterals' ? (
+              <GeometryTrianglesQuadrilateralsIntro />
+            ) : lessonSlug === 'shs1-geometry-constructions-loci' ? (
+              <GeometryConstructionsLociIntro />
+            ) : lessonSlug === 'shs1-data-collection-presentation' ? (
+              <DataCollectionPresentationIntro />
+            ) : lessonSlug === 'shs1-introduction-to-probability' ? (
+              <IntroductionToProbabilityIntro />
+            ) : lessonSlug === 'shs1-logical-reasoning' ? (
+              <LogicalReasoningIntro />
+            ) : lessonSlug === 'shs1-business-mathematics' ? (
+              <BusinessMathematicsIntro />
+            ) : // Integrated Science Intros
+            lessonSlug === 'chem-shs1-intro-nature-scope' ? (
+              <NatureAndScopeOfChemistryIntro />
+            ) : lessonSlug === 'chem-shs1-intro-scientific-methods-safety' ? (
+              <ScientificMethodsAndSafetyIntro />
+            ) : lessonSlug === 'is-dm-matter-states-properties' ? (
+              <StatesAndChangesOfMatterIntro />
+            ) : lessonSlug === 'is-dm-cells-structure-function' ? (
+              <CellStructureFunctionIntro />
+            ) : lessonSlug === 'is-dm-cells-cell-division' ? (
+              <CellDivisionIntro />
+            ) : lessonSlug === 'is-dm-rocks-soil-types-formation' ? (
+              <RocksTypesFormationIntro />
+            ) : lessonSlug === 'is-dm-nutrition-balanced-diet' ? (
+              <NutritionBalancedDietIntro />
+            ) : (
+              // Fallback - should not reach here if all intros are properly mapped
+              null
+            )
+          }
+          onExit={() => setUseCarouselMode(false)}
+        />
+      ) : (
+        <>
+          <Link
+            href={`/subjects/${level}/${subjectSlug}`}
+            className="inline-flex items-center text-primary mb-4 hover:underline"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to {subjectInfo.name}
+          </Link>
+
+          {/* Add Carousel Mode Toggle if eligible */}
+          {carouselEligible && validationResult?.isValid && (
+            <div className="mb-4 md:mb-6">
+              <Card className="border-2 border-violet-300 dark:border-violet-700 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30">
+                <CardContent className="p-3 md:p-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 md:gap-4">
+                    <div className="flex-1">
+                      <h3 className="font-bold text-base md:text-lg mb-1">🎯 Try Bite-Sized Learning Mode</h3>
+                      <p className="text-xs md:text-sm text-muted-foreground">
+                        One concept at a time with Next/Previous navigation
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => setUseCarouselMode(true)}
+                      className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 h-10 md:h-auto"
+                    >
+                      Start Carousel Mode
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          <div className="relative">
+            <FloatingIcon icon="lightbulb" position="tr" size="lg" />
         <FloatingIcon icon="brain" position="br" size="md" />
         <div className="flex items-start justify-between gap-4 mb-2">
           <h1 className="text-4xl font-bold font-headline">{lesson.title}</h1>
@@ -417,6 +772,76 @@ export default function LessonPage() {
                 ))}
               </ul>
             </LessonVisual>
+          )}
+
+          {/* Intelligent Voice Introduction for eligible carousel lessons */}
+          {carouselEligible && (
+            <>
+              {(lessonSlug === 'quadratic-equations' || lessonSlug === 'shs3-quadratic-equations') && <QuadraticEquationsIntro />}
+              {lessonSlug === 'factorization' && <FactorizationIntro />}
+              {lessonSlug === 'completing-the-square' && <CompletingSquareIntro />}
+              {lessonSlug === 'quadratic-formula' && <QuadraticFormulaIntro />}
+              {lessonSlug === 'sequences-series' && <SequencesSeriesIntro />}
+              {lessonSlug === 'functions-relations' && <FunctionsRelationsIntro />}
+              {lessonSlug === 'linear-programming' && <LinearProgrammingIntro />}
+              {lessonSlug === 'matrices-determinants' && <MatricesDeterminantsIntro />}
+              {lessonSlug === 'circle-theorems-1' && <CircleTheorems1Intro />}
+              {lessonSlug === 'circle-theorems-2' && <CircleTheorems2Intro />}
+              {lessonSlug === 'polygons-angles' && <PolygonsAnglesIntro />}
+              {lessonSlug === 'similarity-congruence' && <SimilarityCongruenceIntro />}
+              {lessonSlug === 'geometric-constructions' && <GeometricConstructionsIntro />}
+              {lessonSlug === 'coordinate-geometry' && <CoordinateGeometryIntro />}
+              {lessonSlug === 'trigonometric-ratios' && <TrigonometricRatiosIntro />}
+              {lessonSlug === 'trigonometric-identities' && <TrigonometricIdentitiesIntro />}
+              {lessonSlug === 'trig-graphs' && <TrigGraphsIntro />}
+              {lessonSlug === 'trigonometric-equations' && <TrigonometricEquationsIntro />}
+              {lessonSlug === 'applications-of-trigonometry' && <ApplicationsOfTrigonometryIntro />}
+              {lessonSlug === 'measures-of-central-tendency' && <MeasuresOfCentralTendencyIntro />}
+              {lessonSlug === 'measures-of-dispersion' && <MeasuresOfDispersionIntro />}
+              {lessonSlug === 'probability-fundamentals' && <ProbabilityFundamentalsIntro />}
+              {lessonSlug === 'probability-distributions' && <ProbabilityDistributionsIntro />}
+              {lessonSlug === 'sine-cosine-rules' && <SineCosineRulesIntro />}
+              {lessonSlug === 'shs3-bearings-scale-drawing' && <BearingsScaleDrawingIntro />}
+              {lessonSlug === 'shs3-cumulative-frequency-box-plots' && <CumulativeFrequencyBoxPlotsIntro />}
+              {lessonSlug === 'shs3-problem-solving-strategies' && <StructuredProblemSolvingIntro />}
+              {lessonSlug === 'shs3-wassce-revision' && <IntegratedWASSCERevisionIntro />}
+              {/* SHS2 Lessons */}
+              {lessonSlug === 'shs2-number-bases' && <NumberBasesIntro />}
+              {lessonSlug === 'shs2-binary-operations' && <BinaryOperationsIntro />}
+              {lessonSlug === 'shs2-algebraic-factorization' && <AlgebraicFactorizationIntro />}
+              {lessonSlug === 'shs2-simultaneous-linear-equations' && <SimultaneousLinearEquationsIntro />}
+              {lessonSlug === 'shs2-variation' && <VariationIntro />}
+              {lessonSlug === 'shs2-mensuration' && <MensurationIntro />}
+              {lessonSlug === 'shs2-trigonometry-ratios' && <TrigonometryRatiosIntro />}
+              {lessonSlug === 'shs2-circle-geometry' && <CircleGeometryIntro />}
+              {lessonSlug === 'shs2-transformation-geometry' && <TransformationGeometryIntro />}
+              {lessonSlug === 'shs2-statistics-measures' && <StatisticsMeasuresIntro />}
+              {lessonSlug === 'shs2-probability-combined' && <ProbabilityCombinedIntro />}
+              {/* SHS1 Lessons */}
+              {lessonSlug === 'shs1-types-of-numbers' && <TypesOfNumbersIntro />}
+              {lessonSlug === 'shs1-fractions-decimals-percentages' && <FractionsDecimalsPercentagesIntro />}
+              {lessonSlug === 'sets-venn-diagrams' && <SetsVennDiagramsIntro />}
+              {lessonSlug === 'cm-algebraic-expressions' && <AlgebraicExpressionsIntro />}
+              {lessonSlug === 'shs1-linear-equations-inequalities' && <LinearEquationsInequalitiesIntro />}
+              {lessonSlug === 'shs1-directed-numbers' && <DirectedNumbersIntro />}
+              {lessonSlug === 'shs1-approximation-estimation' && <ApproximationEstimationIntro />}
+              {lessonSlug === 'shs1-factors-multiples' && <FactorsMultiplesIntro />}
+              {lessonSlug === 'shs1-geometry-lines-angles' && <GeometryLinesAnglesIntro />}
+              {lessonSlug === 'shs1-geometry-triangles-quadrilaterals' && <GeometryTrianglesQuadrilateralsIntro />}
+              {lessonSlug === 'shs1-geometry-constructions-loci' && <GeometryConstructionsLociIntro />}
+              {lessonSlug === 'shs1-data-collection-presentation' && <DataCollectionPresentationIntro />}
+              {lessonSlug === 'shs1-introduction-to-probability' && <IntroductionToProbabilityIntro />}
+              {lessonSlug === 'shs1-logical-reasoning' && <LogicalReasoningIntro />}
+              {lessonSlug === 'shs1-business-mathematics' && <BusinessMathematicsIntro />}
+              {/* Integrated Science Lessons */}
+              {lessonSlug === 'chem-shs1-intro-nature-scope' && <NatureAndScopeOfChemistryIntro />}
+              {lessonSlug === 'chem-shs1-intro-scientific-methods-safety' && <ScientificMethodsAndSafetyIntro />}
+              {lessonSlug === 'is-dm-matter-states-properties' && <StatesAndChangesOfMatterIntro />}
+              {lessonSlug === 'is-dm-cells-structure-function' && <CellStructureFunctionIntro />}
+              {lessonSlug === 'is-dm-cells-cell-division' && <CellDivisionIntro />}
+              {lessonSlug === 'is-dm-rocks-soil-types-formation' && <RocksTypesFormationIntro />}
+              {lessonSlug === 'is-dm-nutrition-balanced-diet' && <NutritionBalancedDietIntro />}
+            </>
           )}
 
           {lesson.introduction && (
@@ -674,8 +1099,10 @@ export default function LessonPage() {
                 )}
               </CardContent>
             </Card>
+          </div>
         </div>
-      </div>
+      </>
+      )}
     </div>
   );
 }

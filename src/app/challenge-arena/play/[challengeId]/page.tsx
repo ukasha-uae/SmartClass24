@@ -1,4 +1,5 @@
 'use client';
+// Enhanced after-game experience for all Arena modes
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -11,7 +12,9 @@ import {
   Clock, Trophy, Target, Zap, CheckCircle2, 
   XCircle, Award, TrendingUp, TrendingDown,
   ChevronRight, Home, RotateCcw, BrainCircuit, Users,
-  Volume2, VolumeX
+  Volume2, VolumeX, Flame, Star, Sparkles, Medal,
+  BookOpen, Lightbulb, TrendingDownIcon, BarChart3,
+  Share2, Download, Camera
 } from 'lucide-react';
 import Link from 'next/link';
 import confetti from 'canvas-confetti';
@@ -44,6 +47,7 @@ export default function QuizBattlePage() {
   const [gamePhase, setGamePhase] = useState<'loading' | 'waiting' | 'playing' | 'results'>('loading');
   const [results, setResults] = useState<any>(null);
   const [startTime] = useState(Date.now());
+  const [showDetailedStats, setShowDetailedStats] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -113,11 +117,13 @@ export default function QuizBattlePage() {
       setSelectedAnswer(null);
       setTimeLeft(120);
     } else {
-      // Submit all answers and complete challenge
-      finishChallenge({
-        ...userAnswers,
-        [currentQuestion.id]: answer
-      });
+      // Last question - add a small delay before showing results
+      setTimeout(() => {
+        finishChallenge({
+          ...userAnswers,
+          [currentQuestion.id]: answer
+        });
+      }, 1500); // Give time to see the last answer feedback
     }
   };
 
@@ -140,11 +146,9 @@ export default function QuizBattlePage() {
     // Calculate total time taken
     const totalTimeTaken = Date.now() - startTime;
 
-    // Submit answers with total time override
-    submitChallengeAnswers(challengeId, user.uid, playerAnswers, totalTimeTaken);
-
-    // Fetch updated challenge to get results
-    const updatedChallenge = getChallenge(challengeId);
+    // Submit answers and get updated challenge directly
+    const updatedChallenge = submitChallengeAnswers(challengeId, user.uid, playerAnswers, totalTimeTaken);
+    
     if (updatedChallenge && updatedChallenge.results) {
       setResults(updatedChallenge.results);
       
@@ -257,110 +261,528 @@ export default function QuizBattlePage() {
     const isWin = myResult?.rank === 1;
     const isPodium = myResult?.rank <= 3;
     const isPractice = challenge.type === 'practice';
+    const isBossBattle = challenge.type === 'boss';
+    const isSchoolBattle = challenge.type === 'school';
+    const isQuickMatch = challenge.type === 'quick';
+    const isTournament = challenge.type === 'tournament';
+
+    // Calculate performance metrics
+    const accuracy = Math.round((myResult?.correctAnswers / challenge.questions.length) * 100);
+    const totalTimeSeconds = myResult?.totalTime ? Math.round(myResult.totalTime / 1000) : 0;
+    const avgTimePerQuestion = Math.round(totalTimeSeconds / challenge.questions.length);
+    
+    // Generate motivational message and performance grade based on challenge type
+    const getPerformanceInsight = () => {
+      const baseInsight = {
+        grade: '',
+        color: '',
+        textColor: '',
+        message: '',
+        emoji: '',
+        tip: ''
+      };
+
+      // Determine grade based on accuracy
+      if (accuracy >= 90) {
+        baseInsight.grade = 'S';
+        baseInsight.color = 'from-yellow-400 to-orange-500';
+        baseInsight.textColor = 'text-yellow-500';
+        baseInsight.emoji = "🏆";
+      } else if (accuracy >= 80) {
+        baseInsight.grade = 'A';
+        baseInsight.color = 'from-green-400 to-emerald-500';
+        baseInsight.textColor = 'text-green-500';
+        baseInsight.emoji = "⭐";
+      } else if (accuracy >= 70) {
+        baseInsight.grade = 'B';
+        baseInsight.color = 'from-blue-400 to-cyan-500';
+        baseInsight.textColor = 'text-blue-500';
+        baseInsight.emoji = "👍";
+      } else if (accuracy >= 60) {
+        baseInsight.grade = 'C';
+        baseInsight.color = 'from-purple-400 to-pink-500';
+        baseInsight.textColor = 'text-purple-500';
+        baseInsight.emoji = "💡";
+      } else {
+        baseInsight.grade = 'D';
+        baseInsight.color = 'from-gray-400 to-gray-500';
+        baseInsight.textColor = 'text-gray-500';
+        baseInsight.emoji = "🎯";
+      }
+
+      // Customize message and tip based on challenge type
+      if (isBossBattle) {
+        if (isWin) {
+          baseInsight.message = accuracy >= 90 ? "Flawless victory! The boss didn't stand a chance! 👑" : "Victory! You've defeated the AI boss! 🎮";
+          baseInsight.tip = "Try a harder boss to test your limits!";
+        } else {
+          baseInsight.message = accuracy >= 70 ? "Close fight! The boss was tough but you held your ground! 💪" : "The boss proved challenging. Study and return stronger! 🔥";
+          baseInsight.tip = "Review the answers and challenge this boss again!";
+        }
+      } else if (isSchoolBattle) {
+        if (isWin) {
+          baseInsight.message = `Your school reigns supreme! ${player?.school} pride! 🏫`;
+          baseInsight.tip = "Keep defending your school's honor in more battles!";
+        } else {
+          baseInsight.message = accuracy >= 70 ? "Honorable performance for your school! 🎓" : "Every battle makes your school stronger! Keep fighting! 💙";
+          baseInsight.tip = "Practice more to bring glory to your school!";
+        }
+      } else if (isQuickMatch) {
+        if (isWin) {
+          baseInsight.message = accuracy >= 90 ? "Dominant victory! You're unstoppable! ⚡" : "You crushed it! Well played! 🎯";
+          baseInsight.tip = "Your skills are sharp! Try a harder difficulty!";
+        } else {
+          baseInsight.message = accuracy >= 70 ? "Good fight! You're climbing the ranks! 📈" : "Keep practicing, you'll win the next one! 🌟";
+          baseInsight.tip = "Learn from strong opponents to improve faster!";
+        }
+      } else if (isTournament) {
+        if (isWin) {
+          baseInsight.message = "🏆 TOURNAMENT CHAMPION! Legendary performance! 👑";
+          baseInsight.tip = "You're a competitive genius! Join more tournaments!";
+        } else if (isPodium) {
+          baseInsight.message = `Top ${myResult?.rank}! You're among the elite! 🥇`;
+          baseInsight.tip = "So close to the top! Keep pushing!";
+        } else {
+          baseInsight.message = accuracy >= 70 ? "Solid tournament showing! 🎖️" : "Tournament experience gained! Learn and grow! 📚";
+          baseInsight.tip = "Tournament pressure builds champions!";
+        }
+      } else if (isPractice) {
+        if (accuracy >= 90) {
+          baseInsight.message = "Outstanding! You're mastering this subject! 🌟";
+          baseInsight.tip = "Challenge yourself with harder difficulty next time!";
+        } else if (accuracy >= 80) {
+          baseInsight.message = "Excellent work! You're on fire! 🔥";
+          baseInsight.tip = "Keep up this pace and you'll be a top performer!";
+        } else if (accuracy >= 70) {
+          baseInsight.message = "Great effort! You're improving steadily! 💪";
+          baseInsight.tip = "Review the questions you missed to level up!";
+        } else if (accuracy >= 60) {
+          baseInsight.message = "Good try! Practice makes perfect! 📚";
+          baseInsight.tip = "Focus on understanding concepts, not just memorizing!";
+        } else {
+          baseInsight.message = "Keep going! Every expert was once a beginner! 🌱";
+          baseInsight.tip = "Try the easy difficulty and build your confidence!";
+        }
+      }
+
+      return baseInsight;
+    };
+
+    const performance = getPerformanceInsight();
+
+    // Calculate streak (mock for now - you'd track this in the player profile)
+    const mockStreak = Math.floor(Math.random() * 7) + 1;
+
+    // Get specific challenge type display name
+    const getChallengeTypeName = () => {
+      if (isBossBattle) return 'Boss Battle';
+      if (isSchoolBattle) return 'School Battle';
+      if (isQuickMatch) return 'Quick Match';
+      if (isTournament) return 'Tournament';
+      if (isPractice) return 'Practice Session';
+      return 'Challenge';
+    };
 
     return (
       <div className="container mx-auto p-3 sm:p-6 pb-20">
-        <div className="max-w-3xl mx-auto">
-          {/* Results Header */}
-          <Card className={`mb-6 ${
-            isPractice ? 'bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900' :
-            isWin ? 'bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-950 dark:to-yellow-900' :
-            isPodium ? 'bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900' :
-            'bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900'
+        <div className="max-w-4xl mx-auto">
+          {/* Epic Results Header with Performance Grade */}
+          <Card className={`mb-6 overflow-hidden border-2 ${
+            isBossBattle ? 'border-purple-400 shadow-purple-200 shadow-xl' :
+            isSchoolBattle ? 'border-blue-400 shadow-blue-200 shadow-xl' :
+            isTournament ? 'border-pink-400 shadow-pink-200 shadow-xl' :
+            isPractice ? 'border-orange-400 shadow-orange-200 shadow-xl' :
+            isWin ? 'border-yellow-400 shadow-yellow-200 shadow-xl' :
+            isPodium ? 'border-green-400 shadow-green-200 shadow-xl' :
+            'border-gray-400'
           }`}>
-            <CardContent className="p-6 sm:p-8 text-center">
-              {isPractice ? (
-                <>
-                  <BrainCircuit className="h-20 w-20 text-orange-500 mx-auto mb-4" />
-                  <h1 className="text-3xl sm:text-4xl font-bold mb-2">Practice Complete!</h1>
-                  <p className="text-lg text-muted-foreground">Great job sharpening your skills.</p>
-                </>
-              ) : isWin ? (
-                <>
-                  <Trophy className="h-20 w-20 text-yellow-500 mx-auto mb-4" />
-                  <h1 className="text-3xl sm:text-4xl font-bold mb-2">Victory!</h1>
-                  <p className="text-lg text-muted-foreground">You won the challenge!</p>
-                </>
-              ) : isPodium ? (
-                <>
-                  <Award className="h-20 w-20 text-blue-500 mx-auto mb-4" />
-                  <h1 className="text-3xl sm:text-4xl font-bold mb-2">Nice Work!</h1>
-                  <p className="text-lg text-muted-foreground">Rank #{myResult?.rank}</p>
-                </>
-              ) : (
-                <>
-                  <Target className="h-20 w-20 text-gray-500 mx-auto mb-4" />
-                  <h1 className="text-3xl sm:text-4xl font-bold mb-2">Challenge Complete</h1>
-                  <p className="text-lg text-muted-foreground">Rank #{myResult?.rank}</p>
-                </>
-              )}
+            <div className={`h-2 bg-gradient-to-r ${performance.color}`} />
+            <CardContent className="p-6 sm:p-8 text-center relative overflow-hidden">
+              {/* Animated background elements */}
+              <div className="absolute inset-0 opacity-5">
+                <div className="absolute top-10 left-10 text-6xl animate-pulse">✨</div>
+                <div className="absolute top-20 right-20 text-5xl animate-bounce">⭐</div>
+                <div className="absolute bottom-10 left-20 text-4xl animate-pulse">🎯</div>
+                <div className="absolute bottom-20 right-10 text-6xl animate-bounce">💫</div>
+              </div>
 
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <div className="text-center">
-                  <p className="text-3xl font-bold">{myResult?.score}</p>
-                  <p className="text-sm text-muted-foreground">Points</p>
+              {/* Main content */}
+              <div className="relative z-10">
+                {/* Challenge Type Badge */}
+                <Badge variant="outline" className="mb-3">
+                  {getChallengeTypeName()}
+                </Badge>
+
+                {/* Performance Grade Badge */}
+                <div className="mb-4 flex justify-center">
+                  <div className={`relative w-24 h-24 rounded-full bg-gradient-to-br ${performance.color} flex items-center justify-center shadow-lg animate-pulse`}>
+                    <div className="text-5xl font-black text-white">{performance.grade}</div>
+                  </div>
                 </div>
-                
-                {!isPractice && (
+
+                {/* Dynamic Title based on challenge type and result */}
+                {isBossBattle ? (
                   <>
-                    <div className="h-12 w-px bg-border" />
-                    <div className="text-center">
-                      <p className={`text-3xl font-bold ${
-                        ratingChange > 0 ? 'text-green-600' :
-                        ratingChange < 0 ? 'text-red-600' : ''
-                      }`}>
-                        {ratingChange > 0 ? '+' : ''}{ratingChange}
-                      </p>
-                      <p className="text-sm text-muted-foreground">Rating</p>
-                    </div>
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
+                      {isWin ? (
+                        <>
+                          <Trophy className="h-10 w-10 text-yellow-500 animate-bounce" />
+                          Boss Defeated!
+                        </>
+                      ) : (
+                        <>
+                          <Target className="h-10 w-10 text-purple-500" />
+                          Battle Complete
+                        </>
+                      )}
+                    </h1>
+                    <p className="text-lg text-muted-foreground mb-2">{performance.message}</p>
+                  </>
+                ) : isSchoolBattle ? (
+                  <>
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
+                      {isWin ? (
+                        <>
+                          🏫 School Victory!
+                        </>
+                      ) : (
+                        <>
+                          🎓 Honorable Fight
+                        </>
+                      )}
+                    </h1>
+                    <p className="text-lg text-muted-foreground mb-2">{performance.message}</p>
+                    <p className="text-sm text-muted-foreground">Representing {player?.school}</p>
+                  </>
+                ) : isTournament ? (
+                  <>
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
+                      {isWin ? (
+                        <>
+                          <Trophy className="h-10 w-10 text-yellow-500 animate-bounce" />
+                          Tournament Champion!
+                        </>
+                      ) : isPodium ? (
+                        <>
+                          <Medal className="h-10 w-10 text-blue-500" />
+                          Podium Finish!
+                        </>
+                      ) : (
+                        <>
+                          <Star className="h-10 w-10 text-purple-500" />
+                          Tournament Complete
+                        </>
+                      )}
+                    </h1>
+                    <p className="text-lg text-muted-foreground mb-2">{performance.message}</p>
+                  </>
+                ) : isQuickMatch ? (
+                  <>
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
+                      {isWin ? (
+                        <>
+                          <Zap className="h-10 w-10 text-yellow-500 animate-bounce" />
+                          Victory!
+                        </>
+                      ) : isPodium ? (
+                        <>
+                          <Award className="h-10 w-10 text-blue-500" />
+                          Nice Work!
+                        </>
+                      ) : (
+                        <>
+                          <Target className="h-10 w-10 text-gray-500" />
+                          Match Complete
+                        </>
+                      )}
+                    </h1>
+                    <p className="text-lg text-muted-foreground mb-2">{performance.message}</p>
+                    <p className="text-sm text-muted-foreground">Rank #{myResult?.rank}</p>
+                  </>
+                ) : isPractice ? (
+                  <>
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-2 flex items-center justify-center gap-2">
+                      <span className="text-4xl">{performance.emoji}</span>
+                      Practice Complete!
+                    </h1>
+                    <p className="text-lg text-muted-foreground mb-2">{performance.message}</p>
+                  </>
+                ) : (
+                  <>
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-2">Challenge Complete</h1>
+                    <p className="text-lg text-muted-foreground mb-2">{performance.message}</p>
                   </>
                 )}
 
-                <div className="h-12 w-px bg-border" />
-                <div className="text-center">
-                  <p className="text-3xl font-bold">{myResult?.correctAnswers}/{challenge.questions.length}</p>
-                  <p className="text-sm text-muted-foreground">Correct</p>
+                {/* Pro Tip */}
+                <div className="mt-4 p-3 bg-primary/10 rounded-lg border-l-4 border-primary">
+                  <div className="flex items-start gap-2">
+                    <Lightbulb className="h-5 w-5 text-primary mt-0.5" />
+                    <div className="text-left">
+                      <p className="text-sm font-semibold text-primary">Pro Tip</p>
+                      <p className="text-sm text-muted-foreground">{performance.tip}</p>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Main Stats Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+                  <div className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/20">
+                    <Trophy className="h-6 w-6 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold">{myResult?.score}</p>
+                    <p className="text-xs text-muted-foreground">Points</p>
+                  </div>
+                  
+                  <div className="p-4 bg-gradient-to-br from-green-500/10 to-green-500/5 rounded-xl border border-green-500/20">
+                    <Target className="h-6 w-6 text-green-500 mx-auto mb-2" />
+                    <p className="text-2xl font-bold">{accuracy}%</p>
+                    <p className="text-xs text-muted-foreground">Accuracy</p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-xl border border-blue-500/20">
+                    <Clock className="h-6 w-6 text-blue-500 mx-auto mb-2" />
+                    <p className="text-2xl font-bold">{avgTimePerQuestion}s</p>
+                    <p className="text-xs text-muted-foreground">Avg/Question</p>
+                  </div>
+
+                  <div className="p-4 bg-gradient-to-br from-orange-500/10 to-orange-500/5 rounded-xl border border-orange-500/20">
+                    <Flame className="h-6 w-6 text-orange-500 mx-auto mb-2" />
+                    <p className="text-2xl font-bold">{mockStreak}</p>
+                    <p className="text-xs text-muted-foreground">Day Streak</p>
+                  </div>
+                </div>
+
+                {/* Rating change for competitive modes */}
+                {!isPractice && (
+                  <div className="mt-6 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl border border-purple-500/20">
+                    <div className="flex items-center justify-center gap-3">
+                      <BarChart3 className="h-6 w-6 text-purple-500" />
+                      <div>
+                        <p className="text-sm text-muted-foreground">Rating Change</p>
+                        <p className={`text-3xl font-bold ${
+                          ratingChange > 0 ? 'text-green-600' :
+                          ratingChange < 0 ? 'text-red-600' : 'text-gray-600'
+                        }`}>
+                          {ratingChange > 0 ? '+' : ''}{ratingChange}
+                        </p>
+                      </div>
+                      <div className="text-left">
+                        <p className="text-sm text-muted-foreground">New Rating</p>
+                        <p className="text-xl font-bold">{player?.rating || 1000}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
 
-          {/* Leaderboard or Performance Summary */}
-          {!isPractice ? (
+          {/* Detailed Performance Breakdown */}
+          {isPractice && (
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4">Leaderboard</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5 text-primary" />
+                    Performance Breakdown
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDetailedStats(!showDetailedStats)}
+                  >
+                    {showDetailedStats ? 'Hide' : 'Show'} Details
+                  </Button>
+                </div>
+
+                {/* Quick Stats */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="p-4 bg-muted rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                      <span className="text-sm font-medium">Correct</span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{myResult?.correctAnswers}</p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <XCircle className="h-5 w-5 text-red-500" />
+                      <span className="text-sm font-medium">Incorrect</span>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">{challenge.questions.length - myResult?.correctAnswers}</p>
+                  </div>
+                </div>
+
+                {/* Progress Bars */}
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-muted-foreground">Accuracy</span>
+                      <span className="font-semibold">{accuracy}%</span>
+                    </div>
+                    <div className="h-3 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-1000 ${
+                          accuracy >= 80 ? 'bg-green-500' : accuracy >= 60 ? 'bg-blue-500' : 'bg-orange-500'
+                        }`}
+                        style={{ width: `${accuracy}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-muted-foreground">Speed</span>
+                      <span className="font-semibold">{avgTimePerQuestion}s per question</span>
+                    </div>
+                    <div className="h-3 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full rounded-full transition-all duration-1000 ${
+                          avgTimePerQuestion <= 20 ? 'bg-purple-500' : avgTimePerQuestion <= 40 ? 'bg-blue-500' : 'bg-orange-500'
+                        }`}
+                        style={{ width: `${Math.min((60 - avgTimePerQuestion) * 2, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-muted-foreground">Total Time</span>
+                      <span className="font-semibold">{totalTimeSeconds}s</span>
+                    </div>
+                    <div className="h-3 bg-muted rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-1000"
+                        style={{ width: `${Math.min((totalTimeSeconds / (challenge.questions.length * 60)) * 100, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Detailed Stats (Expandable) */}
+                {showDetailedStats && (
+                  <div className="mt-6 pt-6 border-t space-y-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                      <div className="text-center p-3 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground">Subject</p>
+                        <p className="font-semibold mt-1">{challenge.subject}</p>
+                      </div>
+                      <div className="text-center p-3 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground">Difficulty</p>
+                        <p className="font-semibold mt-1 capitalize">{challenge.difficulty}</p>
+                      </div>
+                      <div className="text-center p-3 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground">Questions</p>
+                        <p className="font-semibold mt-1">{challenge.questions.length}</p>
+                      </div>
+                    </div>
+
+                    {/* Performance Badges */}
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {accuracy === 100 && (
+                        <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white">
+                          🎯 Perfect Score
+                        </Badge>
+                      )}
+                      {avgTimePerQuestion <= 15 && (
+                        <Badge className="bg-gradient-to-r from-purple-400 to-pink-500 text-white">
+                          ⚡ Speed Demon
+                        </Badge>
+                      )}
+                      {accuracy >= 90 && (
+                        <Badge className="bg-gradient-to-r from-green-400 to-emerald-500 text-white">
+                          🌟 Expert
+                        </Badge>
+                      )}
+                      {mockStreak >= 5 && (
+                        <Badge className="bg-gradient-to-r from-orange-400 to-red-500 text-white">
+                          🔥 On Fire
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Leaderboard for competitive modes */}
+          {!isPractice && (
+            <Card className="mb-6">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <Trophy className="h-5 w-5 text-yellow-500" />
+                  {isSchoolBattle ? 'School Rankings' : isTournament ? 'Tournament Standings' : 'Leaderboard'}
+                </h2>
+                
+                {/* Special message for school battles */}
+                {isSchoolBattle && (
+                  <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <p className="text-sm text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                      <span>🏫</span>
+                      <span>This battle counts toward your school's overall ranking!</span>
+                    </p>
+                  </div>
+                )}
+
+                {/* Boss Battle special display */}
+                {isBossBattle && (
+                  <div className="mb-4 p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <div className="flex items-center gap-3">
+                      <div className="text-3xl">🤖</div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-purple-900 dark:text-purple-100">
+                          {isWin ? 'AI Boss Defeated!' : 'Boss Survived!'}
+                        </p>
+                        <p className="text-sm text-purple-700 dark:text-purple-300">
+                          {isWin 
+                            ? `You've proven your superiority over the AI! XP Earned: +${challenge.questions.length * 10}` 
+                            : `The AI was strong, but you gained valuable experience. Try again!`}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-3">
                   {uniqueResults.map((result: any, idx: number) => (
                     <div
                       key={result.userId}
-                      className={`flex items-center gap-3 p-3 rounded-lg ${
-                        result.userId === user?.uid ? 'bg-primary/10 border-2 border-primary' : 'bg-muted'
+                      className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
+                        result.userId === user?.uid 
+                          ? 'bg-primary/10 border-2 border-primary shadow-lg scale-105' 
+                          : 'bg-muted hover:bg-muted/80'
                       }`}
                     >
                       <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold ${
-                        result.rank === 1 ? 'bg-yellow-100 text-yellow-600' :
-                        result.rank === 2 ? 'bg-gray-100 text-gray-600' :
-                        result.rank === 3 ? 'bg-orange-100 text-orange-600' :
-                        'bg-background'
+                        result.rank === 1 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-white shadow-lg' :
+                        result.rank === 2 ? 'bg-gradient-to-br from-gray-300 to-gray-500 text-white shadow-md' :
+                        result.rank === 3 ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-md' :
+                        'bg-background border-2 border-border'
                       }`}>
-                        {result.rank}
+                        {result.rank === 1 && '🥇'}
+                        {result.rank === 2 && '🥈'}
+                        {result.rank === 3 && '🥉'}
+                        {result.rank > 3 && result.rank}
                       </div>
                       <Avatar className="h-10 w-10">
                         <AvatarFallback>
-                          {challenge.type === 'school' 
+                          {isSchoolBattle 
                             ? result.school.substring(0, 2).toUpperCase()
                             : result.userName.split(' ').map((n: string) => n[0]).join('')}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
                         <div className="font-semibold flex items-center">
-                          {challenge.type === 'school' ? result.school : result.userName}
+                          {isSchoolBattle ? result.school : result.userName}
                           {result.userId === user?.uid && (
                             <Badge variant="secondary" className="ml-2">You</Badge>
                           )}
+                          {isBossBattle && result.userId !== user?.uid && (
+                            <Badge variant="outline" className="ml-2 border-purple-500 text-purple-500">AI</Badge>
+                          )}
                         </div>
-                        {challenge.type === 'school' && (
+                        {isSchoolBattle && (
                            <p className="text-xs text-muted-foreground">Represented by {result.userName}</p>
                         )}
                         <p className="text-sm text-muted-foreground">
@@ -369,55 +791,179 @@ export default function QuizBattlePage() {
                       </div>
                       <div className="text-right">
                         <p className="text-lg font-bold">{result.score}</p>
-                        <p className={`text-sm ${
-                          result.ratingChange > 0 ? 'text-green-600' :
-                          result.ratingChange < 0 ? 'text-red-600' : 'text-muted-foreground'
-                        }`}>
-                          {result.ratingChange > 0 ? <TrendingUp className="h-3 w-3 inline" /> : <TrendingDown className="h-3 w-3 inline" />}
-                          {result.ratingChange > 0 ? '+' : ''}{result.ratingChange}
-                        </p>
+                        {!isBossBattle && (
+                          <p className={`text-sm flex items-center gap-1 ${
+                            result.ratingChange > 0 ? 'text-green-600' :
+                            result.ratingChange < 0 ? 'text-red-600' : 'text-muted-foreground'
+                          }`}>
+                            {result.ratingChange > 0 ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                            {result.ratingChange > 0 ? '+' : ''}{result.ratingChange}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
-          ) : (
-            <Card className="mb-6">
-              <CardContent className="p-6">
-                <h2 className="text-xl font-bold mb-4">Performance Summary</h2>
-                <div className="flex items-center gap-4 p-4 bg-muted rounded-lg">
-                    <div className="p-3 bg-background rounded-full">
-                      <Clock className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Time Taken</p>
-                      <p className="text-xl font-bold">{myResult?.totalTime ? Math.round(myResult.totalTime / 1000) : 0}s</p>
-                    </div>
-                    <div className="ml-auto text-right">
-                      <p className="text-sm text-muted-foreground">Accuracy</p>
-                      <p className="text-xl font-bold">{Math.round((myResult?.correctAnswers / challenge.questions.length) * 100)}%</p>
-                    </div>
-                </div>
-              </CardContent>
-            </Card>
           )}
 
-          {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Link href="/challenge-arena" className="flex-1">
-              <Button variant="outline" className="w-full">
+          {/* Quick Actions with Share */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+            <Link href="/challenge-arena" className="w-full">
+              <Button variant="outline" className="w-full h-12">
                 <Home className="h-4 w-4 mr-2" />
                 Back to Arena
               </Button>
             </Link>
-            <Link href={isPractice ? "/challenge-arena/practice" : "/challenge-arena/quick-match"} className="flex-1">
-              <Button className="w-full">
+            <Link href={
+              isPractice ? "/challenge-arena/practice" :
+              isBossBattle ? "/challenge-arena/boss-battle" :
+              isSchoolBattle ? "/challenge-arena/school-battle" :
+              isTournament ? "/challenge-arena/tournaments" :
+              "/challenge-arena/quick-match"
+            } className="w-full">
+              <Button className="w-full h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70">
                 <RotateCcw className="h-4 w-4 mr-2" />
-                {isPractice ? "Practice Again" : "Play Again"}
+                {isPractice ? "Practice Again" :
+                 isBossBattle ? (isWin ? "Next Boss" : "Rematch") :
+                 isSchoolBattle ? "Defend Again" :
+                 isTournament ? "View Tournaments" :
+                 "Play Again"}
               </Button>
             </Link>
           </div>
+
+          {/* Share Results Card - Enhanced for different types */}
+          <Card className="border-dashed">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Share2 className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm">
+                      {isSchoolBattle ? "Share School Victory!" :
+                       isBossBattle ? "Share Boss Victory!" :
+                       isTournament ? "Share Tournament Result!" :
+                       "Share Your Results"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {isSchoolBattle ? "Show your school pride!" :
+                       isBossBattle ? "Brag about defeating the AI!" :
+                       isTournament ? "Show off your ranking!" :
+                       "Let others know about your progress!"}
+                    </p>
+                  </div>
+                </div>
+                <Button size="sm" variant="secondary">
+                  Share
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Smart Recommendations based on performance and challenge type */}
+          {!isTournament && (
+            <Card className="mt-4 bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="h-5 w-5 text-primary mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm mb-1">
+                      {accuracy >= 80 ? "🚀 Ready for a Challenge?" : "💪 Keep Building Your Skills!"}
+                    </p>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      {isPractice && accuracy >= 80 && "You're ready for competitive play!"}
+                      {isPractice && accuracy < 80 && "Practice more to improve your accuracy!"}
+                      {isBossBattle && isWin && "Try a harder AI boss for bigger rewards!"}
+                      {isBossBattle && !isWin && "Keep practicing to defeat this boss!"}
+                      {isSchoolBattle && "Your school needs more champions like you!"}
+                      {isQuickMatch && accuracy >= 80 && "Try a Boss Battle or Tournament next!"}
+                      {isQuickMatch && accuracy < 80 && "Practice mode can help you improve!"}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {isPractice && accuracy >= 80 && (
+                        <>
+                          <Link href="/challenge-arena/quick-match">
+                            <Button size="sm" variant="outline" className="h-8 text-xs">
+                              <Zap className="h-3 w-3 mr-1" />
+                              Quick Match
+                            </Button>
+                          </Link>
+                          <Link href="/challenge-arena/boss-battle">
+                            <Button size="sm" variant="outline" className="h-8 text-xs">
+                              <BrainCircuit className="h-3 w-3 mr-1" />
+                              Boss Battle
+                            </Button>
+                          </Link>
+                        </>
+                      )}
+                      {isPractice && accuracy < 80 && (
+                        <Link href="/challenge-arena/practice">
+                          <Button size="sm" variant="outline" className="h-8 text-xs">
+                            <RotateCcw className="h-3 w-3 mr-1" />
+                            Practice Again
+                          </Button>
+                        </Link>
+                      )}
+                      {isBossBattle && (
+                        <>
+                          {isWin && (
+                            <Link href="/challenge-arena/boss-battle">
+                              <Button size="sm" variant="outline" className="h-8 text-xs">
+                                <Target className="h-3 w-3 mr-1" />
+                                Harder Boss
+                              </Button>
+                            </Link>
+                          )}
+                          <Link href="/challenge-arena/tournaments">
+                            <Button size="sm" variant="outline" className="h-8 text-xs">
+                              <Trophy className="h-3 w-3 mr-1" />
+                              Join Tournament
+                            </Button>
+                          </Link>
+                        </>
+                      )}
+                      {isSchoolBattle && (
+                        <>
+                          <Link href="/challenge-arena/school-battle">
+                            <Button size="sm" variant="outline" className="h-8 text-xs">
+                              <Award className="h-3 w-3 mr-1" />
+                              Another Battle
+                            </Button>
+                          </Link>
+                          <Link href="/challenge-arena/practice">
+                            <Button size="sm" variant="outline" className="h-8 text-xs">
+                              <BookOpen className="h-3 w-3 mr-1" />
+                              Practice
+                            </Button>
+                          </Link>
+                        </>
+                      )}
+                      {isQuickMatch && (
+                        <>
+                          <Link href="/challenge-arena/boss-battle">
+                            <Button size="sm" variant="outline" className="h-8 text-xs">
+                              <BrainCircuit className="h-3 w-3 mr-1" />
+                              Boss Battle
+                            </Button>
+                          </Link>
+                          <Link href="/challenge-arena/tournaments">
+                            <Button size="sm" variant="outline" className="h-8 text-xs">
+                              <Trophy className="h-3 w-3 mr-1" />
+                              Tournament
+                            </Button>
+                          </Link>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     );

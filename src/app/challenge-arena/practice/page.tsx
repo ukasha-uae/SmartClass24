@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { createChallenge } from '@/lib/challenge';
 import { useToast } from '@/hooks/use-toast';
+import { useFirebase } from '@/firebase/provider';
 
 const SUBJECTS = [
   { id: 'math', name: 'Mathematics', icon: Calculator, color: 'text-blue-500' },
@@ -33,6 +34,7 @@ const DIFFICULTIES = [
 export default function PracticeModePage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useFirebase();
   const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -41,15 +43,17 @@ export default function PracticeModePage() {
   });
 
   const handleStartPractice = async () => {
+    if (!user) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please sign in to start practice.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     setLoading(true);
     try {
-      // Mock current user
-      const currentUser = {
-        id: 'user-1',
-        name: 'Kwame Asante',
-        school: 'Accra Community School'
-      };
-
       const questionCount = formData.difficulty === 'easy' ? 5 : formData.difficulty === 'medium' ? 10 : 15;
       // No strict time limit for practice, but we set a generous one
       const timeLimit = 300; // 5 minutes per question effectively
@@ -63,9 +67,9 @@ export default function PracticeModePage() {
         difficulty: formData.difficulty as any,
         questionCount,
         timeLimit,
-        creatorId: currentUser.id,
-        creatorName: currentUser.name,
-        creatorSchool: currentUser.school,
+        creatorId: user.uid,
+        creatorName: user.displayName || user.email || 'Player',
+        creatorSchool: 'Practice Mode',
         opponents: [], // No opponents
         maxPlayers: 1,
       });
