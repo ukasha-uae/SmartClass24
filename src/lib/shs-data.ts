@@ -163,6 +163,7 @@ const getFullIntegratedScienceTopics = (): Topic[] => [
   { id: "is-dm-nutrition-balanced-diet", name: "Nutrition and Balanced Diet", slug: "is-dm-nutrition-balanced-diet", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Life Processes" },
   { id: "is-dm-digestion-process", name: "Digestion and the Human Digestive System", slug: "is-dm-digestion-process", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Life Processes" },
   { id: "is-dm-respiration-aerobic-anaerobic", name: "Respiration: Aerobic and Anaerobic", slug: "is-dm-respiration-aerobic-anaerobic", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Life Processes" },
+  { id: "is-dm-photosynthesis-process", name: "Photosynthesis: Making Food from Sunlight", slug: "is-dm-photosynthesis-process", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Life Processes" },
 
   // Unit 3: Measurement
   { id: "is-measurement-units-instruments", name: "Units and Instruments", slug: "is-measurement-units-instruments", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Measurement" },

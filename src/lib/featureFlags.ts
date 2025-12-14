@@ -79,6 +79,7 @@ export const FEATURE_FLAGS = {
       'is-dm-nutrition-balanced-diet',
       'is-dm-digestion-process',
       'is-dm-respiration-aerobic-anaerobic',
+      'is-dm-photosynthesis-process',
     ], // Support multiple topic formats
     lessons: [
       'quadratic-equations',
@@ -148,7 +149,8 @@ export const FEATURE_FLAGS = {
       'is-dm-nutrition-balanced-diet', // Nutrition and Balanced Diet
       'is-dm-digestion-process', // Digestion and Digestive System
       'is-dm-respiration-aerobic-anaerobic', // Respiration: Aerobic and Anaerobic
-    ], // SHS3 (29) + SHS2 (11) + SHS1 (15) + Science (9) = 64 lessons total
+      'is-dm-photosynthesis-process', // Photosynthesis: Making Food from Sunlight
+    ], // SHS3 (29) + SHS2 (11) + SHS1 (15) + Science (10) = 65 lessons total
   },
 };
 

@@ -8965,5 +8965,651 @@ Oxygen debt is the extra oxygen needed after exercise to:
       }
     ],
     summary: "Respiration is the process by which cells break down glucose to release energy for life processes. There are two types: Aerobic respiration requires oxygen and produces carbon dioxide, water, and lots of energy (38 ATP): Glucose + O₂ → CO₂ + H₂O + Energy. It occurs in mitochondria. Anaerobic respiration doesn't need oxygen and produces less energy (2 ATP). In animals, it produces lactic acid (causing muscle fatigue). In yeast and plants, it produces ethanol and CO₂ (fermentation - used in making kenkey, bread, and palm wine). During intense exercise, muscles switch to anaerobic respiration when oxygen supply can't keep up, creating an oxygen debt that must be repaid by continued heavy breathing afterward. Regular exercise improves the body's ability to deliver oxygen to muscles."
+  },
+
+  // ===================================
+  // PHOTOSYNTHESIS - Life Processes
+  // ===================================
+  {
+    id: 'is-dm-photosynthesis-process',
+    slug: 'is-dm-photosynthesis-process',
+    title: 'Photosynthesis: Making Food from Sunlight',
+    objectives: [
+      'Define photosynthesis and state its importance',
+      'Identify the raw materials and products of photosynthesis',
+      'Write and balance the equation for photosynthesis',
+      'Describe the structure and role of chloroplasts and chlorophyll',
+      'Explain the light and dark reactions of photosynthesis',
+      'Describe factors affecting the rate of photosynthesis',
+      'Explain the importance of photosynthesis to life on Earth',
+      'Relate photosynthesis to agriculture in Ghana'
+    ],
+    introduction: `Every plant you see - from the cocoa trees that give us chocolate, to the cassava in your mother's farm, to the great mahogany trees in our forests - is performing an incredible miracle every single day. They're making food from thin air and sunlight!
+
+Photosynthesis is the process by which green plants use sunlight energy to convert carbon dioxide and water into glucose (food) and oxygen. This single process is responsible for:
+🌿 All the food we eat (directly or indirectly)
+🌿 All the oxygen we breathe
+🌿 Removing CO₂ from the atmosphere
+🌿 The foundation of all food chains
+
+In Ghana, photosynthesis powers our entire agricultural economy - cocoa, oil palm, cassava, maize, plantain, and all crops depend on this process. Understanding photosynthesis helps farmers maximize crop yields and explains why plants need sunlight, water, and good soil.`,
+
+    keyConcepts: [
+      {
+        title: '1. What is Photosynthesis?',
+        content: `**Definition:** Photosynthesis is the process by which green plants and some other organisms use sunlight energy to convert carbon dioxide (CO₂) and water (H₂O) into glucose (C₆H₁₂O₆) and oxygen (O₂).
+
+**Breaking Down the Word:**
+- **Photo** = Light (from Greek "phos")
+- **Synthesis** = Making/Building
+
+So photosynthesis literally means "**making with light**" - plants use light to make food!
+
+**The Simple Story:**
+Plants take in **water** from the soil through their roots, **carbon dioxide** from the air through tiny pores called stomata, and capture **sunlight** using chlorophyll (green pigment). They combine these to make **glucose** (sugar/food) and release **oxygen** as a byproduct.
+
+**The Word Equation:**
+<div style="background: linear-gradient(135deg, #d4edda, #c3e6cb); padding: 15px; border-radius: 10px; text-align: center; margin: 10px 0; border: 2px solid #28a745;">
+<strong style="font-size: 1.1em;">Carbon dioxide + Water → Glucose + Oxygen</strong><br>
+<span style="font-size: 0.9em; color: #155724;">(in the presence of chlorophyll and sunlight)</span>
+</div>
+
+**The Balanced Chemical Equation:**
+<div style="background: linear-gradient(135deg, #e2e3f3, #d4d5f3); padding: 15px; border-radius: 10px; text-align: center; margin: 10px 0; border: 2px solid #5a5fcf;">
+<strong style="font-size: 1.2em;">6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</strong><br>
+<span style="font-size: 0.85em;">(with light energy and chlorophyll)</span>
+</div>
+
+**What This Means:**
+- 6 molecules of carbon dioxide + 6 molecules of water
+- Produces 1 molecule of glucose + 6 molecules of oxygen
+- Energy comes from sunlight
+- Chlorophyll is the catalyst (not used up)`
+      },
+      {
+        title: '2. Where Does Photosynthesis Occur?',
+        content: `Photosynthesis takes place primarily in the **leaves** of plants, specifically in cell organelles called **chloroplasts**.
+
+**The Leaf - Nature's Food Factory:**
+Leaves are perfectly designed for photosynthesis:
+- **Flat shape** - Large surface area to absorb maximum sunlight
+- **Thin structure** - Short distance for gases to diffuse
+- **Green color** - Contains chlorophyll to capture light
+- **Stomata** - Tiny pores for gas exchange (CO₂ in, O₂ out)
+- **Veins** - Transport water in and glucose out
+
+**Chloroplasts - The Photosynthesis Powerhouse:**
+<table style="width:100%; border-collapse: collapse; margin: 10px 0;">
+<tr style="background: #28a745; color: white;">
+<th style="padding: 10px; border: 1px solid #1e7e34;">Structure</th>
+<th style="padding: 10px; border: 1px solid #1e7e34;">Function</th>
+</tr>
+<tr style="background: #d4edda;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Outer membrane</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Protective boundary</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Inner membrane</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Controls what enters/exits</td>
+</tr>
+<tr style="background: #d4edda;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Thylakoids</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Disc-shaped structures containing chlorophyll; site of light reactions</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Grana</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Stacks of thylakoids</td>
+</tr>
+<tr style="background: #d4edda;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Stroma</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Fluid-filled space; site of dark reactions (Calvin cycle)</td>
+</tr>
+</table>
+
+**Chlorophyll - The Green Pigment:**
+- Absorbs red and blue light wavelengths
+- Reflects green light (why plants appear green!)
+- Main types: **Chlorophyll a** (blue-green) and **Chlorophyll b** (yellow-green)
+- Located in the thylakoid membranes`
+      },
+      {
+        title: '3. The Two Stages of Photosynthesis',
+        content: `Photosynthesis occurs in **two main stages**, each happening in different parts of the chloroplast:
+
+**STAGE 1: Light-Dependent Reactions (Light Reactions)**
+<div style="background: #fff3cd; padding: 12px; border-radius: 8px; border-left: 4px solid #ffc107; margin: 10px 0;">
+📍 <strong>Location:</strong> Thylakoid membranes<br>
+⚡ <strong>Requires:</strong> Light energy, water<br>
+📤 <strong>Produces:</strong> ATP (energy), NADPH, Oxygen (O₂)
+</div>
+
+**What Happens:**
+1. Chlorophyll absorbs light energy
+2. Light energy splits water molecules (photolysis): **2H₂O → 4H⁺ + 4e⁻ + O₂**
+3. **Oxygen is released** as a byproduct (this is what we breathe!)
+4. Energy is stored in ATP and NADPH molecules
+5. These energy carriers move to the stroma for Stage 2
+
+**STAGE 2: Light-Independent Reactions (Dark Reactions/Calvin Cycle)**
+<div style="background: #d1ecf1; padding: 12px; border-radius: 8px; border-left: 4px solid #17a2b8; margin: 10px 0;">
+📍 <strong>Location:</strong> Stroma<br>
+⚡ <strong>Requires:</strong> CO₂, ATP, NADPH from Stage 1<br>
+📤 <strong>Produces:</strong> Glucose (C₆H₁₂O₆)
+</div>
+
+**What Happens (Calvin Cycle):**
+1. CO₂ from air enters the leaf through stomata
+2. CO₂ combines with a 5-carbon compound (RuBP)
+3. Using ATP and NADPH energy, glucose is built
+4. RuBP is regenerated to continue the cycle
+
+**Note:** "Dark reactions" doesn't mean they happen at night! They just don't directly need light - but they use products from light reactions, so they only occur when the plant has been in light.`
+      },
+      {
+        title: '4. Raw Materials and Products',
+        content: `**RAW MATERIALS (Inputs):**
+
+<table style="width:100%; border-collapse: collapse; margin: 10px 0;">
+<tr style="background: #007bff; color: white;">
+<th style="padding: 10px; border: 1px solid #0056b3;">Raw Material</th>
+<th style="padding: 10px; border: 1px solid #0056b3;">Source</th>
+<th style="padding: 10px; border: 1px solid #0056b3;">How It Enters</th>
+</tr>
+<tr style="background: #cce5ff;">
+<td style="padding: 8px; border: 1px solid #b8daff;"><strong>Carbon dioxide (CO₂)</strong></td>
+<td style="padding: 8px; border: 1px solid #b8daff;">Air (0.04%)</td>
+<td style="padding: 8px; border: 1px solid #b8daff;">Through stomata by diffusion</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #b8daff;"><strong>Water (H₂O)</strong></td>
+<td style="padding: 8px; border: 1px solid #b8daff;">Soil</td>
+<td style="padding: 8px; border: 1px solid #b8daff;">Absorbed by roots, transported through xylem</td>
+</tr>
+<tr style="background: #cce5ff;">
+<td style="padding: 8px; border: 1px solid #b8daff;"><strong>Light energy</strong></td>
+<td style="padding: 8px; border: 1px solid #b8daff;">Sun</td>
+<td style="padding: 8px; border: 1px solid #b8daff;">Absorbed by chlorophyll in leaves</td>
+</tr>
+</table>
+
+**PRODUCTS (Outputs):**
+
+<table style="width:100%; border-collapse: collapse; margin: 10px 0;">
+<tr style="background: #28a745; color: white;">
+<th style="padding: 10px; border: 1px solid #1e7e34;">Product</th>
+<th style="padding: 10px; border: 1px solid #1e7e34;">What Happens to It</th>
+</tr>
+<tr style="background: #d4edda;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Glucose (C₆H₁₂O₆)</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">
+• Used immediately for respiration (energy)<br>
+• Converted to starch for storage<br>
+• Converted to cellulose for cell walls<br>
+• Used to make proteins, fats, vitamins
+</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Oxygen (O₂)</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">
+• Released through stomata into atmosphere<br>
+• Essential for respiration in all living things<br>
+• Some used by plant for its own respiration
+</td>
+</tr>
+</table>
+
+**What Plants Do With Glucose:**
+1. **Respiration** - Immediate energy release
+2. **Starch** - Storage in leaves, stems, roots (cassava, yam)
+3. **Cellulose** - Building cell walls (wood, fiber)
+4. **Sucrose** - Transport sugar through phloem
+5. **Proteins** - Combined with nitrates from soil
+6. **Oils/Fats** - Energy storage (palm oil, groundnuts)`
+      },
+      {
+        title: '5. Factors Affecting Photosynthesis Rate',
+        content: `Several environmental factors affect how fast plants can photosynthesize. Understanding these is crucial for Ghanaian agriculture!
+
+**1. LIGHT INTENSITY** ☀️
+<div style="background: #fff3cd; padding: 10px; border-radius: 8px; margin: 8px 0;">
+<strong>Effect:</strong> More light → faster photosynthesis (up to a point)<br>
+<strong>Why:</strong> Light provides energy for the light reactions<br>
+<strong>Limit:</strong> At very high intensity, rate plateaus (other factors become limiting)<br>
+<strong>Ghana context:</strong> Savanna farmers may get more sunlight than forest zone farmers
+</div>
+
+**2. CARBON DIOXIDE CONCENTRATION** 🌫️
+<div style="background: #d1ecf1; padding: 10px; border-radius: 8px; margin: 8px 0;">
+<strong>Effect:</strong> More CO₂ → faster photosynthesis (up to a point)<br>
+<strong>Why:</strong> CO₂ is a raw material needed for making glucose<br>
+<strong>Limit:</strong> At about 0.1%, rate plateaus<br>
+<strong>Application:</strong> Greenhouses often pump in extra CO₂ to boost growth
+</div>
+
+**3. TEMPERATURE** 🌡️
+<div style="background: #d4edda; padding: 10px; border-radius: 8px; margin: 8px 0;">
+<strong>Effect:</strong> Warmer → faster (up to optimum), then decreases<br>
+<strong>Why:</strong> Enzymes work faster at higher temperatures, but denature above ~40°C<br>
+<strong>Optimum:</strong> Usually 25-35°C for most plants<br>
+<strong>Ghana context:</strong> Most Ghanaian crops thrive in our warm climate (25-30°C average)
+</div>
+
+**4. WATER AVAILABILITY** 💧
+<div style="background: #cce5ff; padding: 10px; border-radius: 8px; margin: 8px 0;">
+<strong>Effect:</strong> Too little water → photosynthesis slows/stops<br>
+<strong>Why:</strong> Water is a raw material; drought causes stomata to close<br>
+<strong>Ghana context:</strong> Dry season irrigation is crucial in the Northern regions
+</div>
+
+**5. CHLOROPHYLL AMOUNT** 🌿
+<div style="background: #e2e3f3; padding: 10px; border-radius: 8px; margin: 8px 0;">
+<strong>Effect:</strong> More chlorophyll → more light absorbed → faster rate<br>
+<strong>Why:</strong> Yellow/pale leaves (chlorosis) can't photosynthesize well<br>
+<strong>Cause of chlorosis:</strong> Nutrient deficiency (especially nitrogen, magnesium, iron)
+</div>
+
+**The Limiting Factor Concept:**
+At any moment, the factor in **shortest supply** limits the rate - this is the **limiting factor**. In Ghana:
+- **Dry season:** Water is usually limiting
+- **Harmattan:** Low humidity and dust reduce light
+- **Rainy season:** Light may be limiting on cloudy days`
+      },
+      {
+        title: '6. Importance of Photosynthesis',
+        content: `Photosynthesis is arguably the most important biological process on Earth!
+
+**1. FOOD PRODUCTION** 🍚
+- **ALL food** ultimately comes from photosynthesis
+- Plants make glucose → we eat plants directly (vegetables, fruits, grains)
+- Animals eat plants → we eat animals
+- No photosynthesis = no food chain!
+
+**2. OXYGEN PRODUCTION** 🌬️
+- Produces ALL the oxygen in Earth's atmosphere
+- Before photosynthesis evolved, Earth had almost no oxygen!
+- Maintains the 21% oxygen level we need to breathe
+- One large tree produces enough oxygen for 4 people daily
+
+**3. CARBON DIOXIDE REMOVAL** 🌍
+- Removes CO₂ from the atmosphere
+- Helps regulate global climate
+- Forests act as "carbon sinks"
+- Deforestation increases global warming
+
+**4. ENERGY STORAGE** ⚡
+- Converts solar energy into chemical energy (glucose)
+- Fossil fuels (coal, oil, gas) are ancient photosynthesis products
+- Biomass and biofuels come from recent photosynthesis
+
+**Photosynthesis in Ghana's Economy:**
+<table style="width:100%; border-collapse: collapse; margin: 10px 0;">
+<tr style="background: #28a745; color: white;">
+<th style="padding: 10px; border: 1px solid #1e7e34;">Crop</th>
+<th style="padding: 10px; border: 1px solid #1e7e34;">Product</th>
+<th style="padding: 10px; border: 1px solid #1e7e34;">Economic Value</th>
+</tr>
+<tr style="background: #d4edda;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Cocoa</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Beans → Chocolate</td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Ghana's top export crop</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Oil palm</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Palm oil, palm kernel oil</td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Food, soap, biofuel</td>
+</tr>
+<tr style="background: #d4edda;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Cassava</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Starch stored in roots</td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Staple food (gari, fufu)</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Maize</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Starch in seeds</td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Staple food (kenkey, banku)</td>
+</tr>
+<tr style="background: #d4edda;">
+<td style="padding: 8px; border: 1px solid #c3e6cb;"><strong>Timber trees</strong></td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Wood (cellulose)</td>
+<td style="padding: 8px; border: 1px solid #c3e6cb;">Construction, furniture, export</td>
+</tr>
+</table>`
+      },
+      {
+        title: '7. Photosynthesis vs Respiration',
+        content: `Photosynthesis and respiration are **opposite but complementary** processes:
+
+<table style="width:100%; border-collapse: collapse; margin: 10px 0;">
+<tr style="background: linear-gradient(90deg, #28a745, #007bff); color: white;">
+<th style="padding: 10px; border: 1px solid #1e7e34;">Feature</th>
+<th style="padding: 10px; border: 1px solid #1e7e34; background: #28a745;">Photosynthesis</th>
+<th style="padding: 10px; border: 1px solid #0056b3; background: #007bff;">Respiration</th>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Purpose</strong></td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #d4edda;">Makes food (glucose)</td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #cce5ff;">Releases energy from food</td>
+</tr>
+<tr>
+<td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Equation</strong></td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #d4edda;">6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #cce5ff;">C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Reactants</strong></td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #d4edda;">CO₂, H₂O, light</td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #cce5ff;">Glucose, O₂</td>
+</tr>
+<tr>
+<td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Products</strong></td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #d4edda;">Glucose, O₂</td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #cce5ff;">CO₂, H₂O, ATP (energy)</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Energy</strong></td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #d4edda;">Absorbed (from light)</td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #cce5ff;">Released (as ATP)</td>
+</tr>
+<tr>
+<td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Location</strong></td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #d4edda;">Chloroplasts</td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #cce5ff;">Mitochondria (& cytoplasm)</td>
+</tr>
+<tr style="background: #f8f9fa;">
+<td style="padding: 8px; border: 1px solid #dee2e6;"><strong>When</strong></td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #d4edda;">Only in light</td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #cce5ff;">All the time (24/7)</td>
+</tr>
+<tr>
+<td style="padding: 8px; border: 1px solid #dee2e6;"><strong>Organisms</strong></td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #d4edda;">Plants, algae, some bacteria</td>
+<td style="padding: 8px; border: 1px solid #dee2e6; background: #cce5ff;">All living organisms</td>
+</tr>
+</table>
+
+**The Beautiful Balance:**
+- During the **day**: Plants photosynthesize MORE than they respire → net oxygen release
+- At **night**: Plants only respire → take in oxygen, release CO₂
+- **Overall**: Healthy plants produce much more oxygen than they consume
+
+**Compensation Point:**
+The light level where photosynthesis rate = respiration rate
+- Below this: Plant loses more glucose than it makes
+- Above this: Plant gains glucose (net growth)
+
+**In a Forest:**
+- Day: Forest releases oxygen (photosynthesis > respiration)
+- Night: Forest releases CO₂ (only respiration)
+- Overall: Forest is a net oxygen producer and carbon sink`
+      },
+      {
+        title: '8. Testing for Photosynthesis',
+        content: `Scientists test for photosynthesis by testing for its **product** - starch (stored glucose).
+
+**THE STARCH TEST (Iodine Test)**
+
+**Why starch?** Glucose is quickly converted to starch for storage. If starch is present, photosynthesis has occurred.
+
+**Procedure:**
+<div style="background: #e9ecef; padding: 12px; border-radius: 8px; margin: 10px 0;">
+<strong>Step 1:</strong> Destarch the plant (keep in dark for 24-48 hours)<br>
+<strong>Step 2:</strong> Expose part of leaf to light (cover part with foil)<br>
+<strong>Step 3:</strong> Boil leaf in water (stops reactions, softens leaf)<br>
+<strong>Step 4:</strong> Boil in ethanol (removes chlorophyll - makes leaf white)<br>
+<strong>Step 5:</strong> Wash in water (softens leaf)<br>
+<strong>Step 6:</strong> Add iodine solution<br>
+<strong>Result:</strong> Blue-black = starch present = photosynthesis occurred
+</div>
+
+**Classic Experiments:**
+
+**1. Testing if LIGHT is needed:**
+- Cover part of leaf with foil
+- Result: Covered part → brown (no starch), uncovered → blue-black (starch)
+- Conclusion: Light is necessary for photosynthesis
+
+**2. Testing if CO₂ is needed:**
+- Place plant in CO₂-free air (using soda lime or NaOH)
+- Result: No starch produced
+- Conclusion: CO₂ is necessary for photosynthesis
+
+**3. Testing if CHLOROPHYLL is needed:**
+- Use variegated leaf (green and white parts)
+- Result: Green parts → blue-black, white parts → brown
+- Conclusion: Chlorophyll is necessary for photosynthesis
+
+**4. Testing OXYGEN release:**
+- Collect gas from water plant (Elodea/pond weed)
+- Test with glowing splint
+- Result: Splint relights = oxygen present
+- More bubbles in bright light = faster photosynthesis
+
+**Safety Note:** Ethanol is flammable! Use water bath, not direct flame.`
+      }
+    ],
+
+    activities: {
+      type: 'exercises',
+      questions: [
+        {
+          type: 'mcq',
+          question: 'What is the correct word equation for photosynthesis?',
+          options: [
+            'Glucose + Oxygen → Carbon dioxide + Water + Energy',
+            'Carbon dioxide + Water → Glucose + Oxygen',
+            'Glucose + Water → Carbon dioxide + Oxygen',
+            'Carbon dioxide + Oxygen → Glucose + Water'
+          ],
+          answer: 'Carbon dioxide + Water → Glucose + Oxygen',
+          explanation: 'Photosynthesis combines carbon dioxide and water (using light energy and chlorophyll) to produce glucose and oxygen. This is the opposite of respiration.'
+        },
+        {
+          type: 'mcq',
+          question: 'Where in the leaf cell does photosynthesis take place?',
+          options: ['Mitochondria', 'Nucleus', 'Chloroplasts', 'Cell wall'],
+          answer: 'Chloroplasts',
+          explanation: 'Chloroplasts contain chlorophyll, the green pigment that absorbs light energy. The light reactions occur in thylakoids and the Calvin cycle occurs in the stroma.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which gas is released as a byproduct of photosynthesis?',
+          options: ['Carbon dioxide', 'Nitrogen', 'Oxygen', 'Hydrogen'],
+          answer: 'Oxygen',
+          explanation: 'Oxygen is released when water molecules are split during the light reactions. This oxygen diffuses out through stomata and is essential for all aerobic organisms.'
+        },
+        {
+          type: 'mcq',
+          question: 'A farmer notices his maize plants have yellow leaves. Which factor affecting photosynthesis might be the problem?',
+          options: [
+            'Too much sunlight',
+            'Lack of chlorophyll (nutrient deficiency)',
+            'Too much water',
+            'Excess carbon dioxide'
+          ],
+          answer: 'Lack of chlorophyll (nutrient deficiency)',
+          explanation: 'Yellow leaves (chlorosis) indicate a lack of chlorophyll, usually caused by nitrogen, magnesium, or iron deficiency. Without enough chlorophyll, plants cannot absorb sufficient light for photosynthesis.'
+        },
+        {
+          type: 'mcq',
+          question: 'In the balanced equation 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂, light energy is absorbed by the green pigment called:',
+          options: ['Stroma', 'Chlorophyll', 'Glucose', 'Thylakoid'],
+          answer: 'Chlorophyll',
+          explanation: 'Chlorophyll is the green pigment in chloroplasts that absorbs light energy (especially red and blue wavelengths) and uses it to drive the photosynthesis reactions.'
+        }
+      ]
+    },
+
+    pastQuestions: [
+      {
+        question: '(WASSCE 2019) State THREE differences between photosynthesis and respiration.',
+        solution: `**Three Differences Between Photosynthesis and Respiration:**
+
+| Photosynthesis | Respiration |
+|----------------|-------------|
+| 1. **Occurs only in light** | Occurs all the time (day and night) |
+| 2. **Takes in CO₂, releases O₂** | Takes in O₂, releases CO₂ |
+| 3. **Stores/absorbs energy** | Releases energy |
+| 4. **Occurs in chloroplasts** | Occurs in mitochondria |
+| 5. **Only in green plants/autotrophs** | In all living organisms |
+| 6. **Builds glucose (anabolic)** | Breaks down glucose (catabolic) |
+
+*Any three differences with clear contrast would earn full marks.*`
+      },
+      {
+        question: '(WASSCE 2018) (a) Define photosynthesis. (b) State TWO factors that affect the rate of photosynthesis. (c) Explain how ONE of these factors affects the rate.',
+        solution: `**(a) Definition of Photosynthesis:**
+Photosynthesis is the process by which green plants use light energy to convert carbon dioxide and water into glucose (food) and oxygen, in the presence of chlorophyll.
+
+**(b) Two Factors Affecting Rate of Photosynthesis:**
+1. Light intensity
+2. Carbon dioxide concentration
+3. Temperature
+4. Water availability
+5. Chlorophyll concentration
+*(Any two)*
+
+**(c) Explanation of ONE Factor:**
+
+**Light Intensity:**
+- As light intensity increases, the rate of photosynthesis increases
+- This is because light provides the energy needed for the light-dependent reactions
+- More light energy means more water molecules can be split and more ATP/NADPH produced
+- However, at very high light intensities, the rate levels off because other factors (like CO₂) become limiting
+- At this point, all the chlorophyll molecules are working at maximum capacity`
+      },
+      {
+        question: '(WASSCE 2017) Describe an experiment to show that light is necessary for photosynthesis.',
+        solution: `**Experiment: Testing if Light is Necessary for Photosynthesis**
+
+**Materials:** Potted plant, black paper/aluminum foil, paper clips, iodine solution, ethanol, water bath, white tile
+
+**Procedure:**
+1. **Destarch the plant:** Keep the potted plant in complete darkness for 48 hours to use up all stored starch
+
+2. **Set up the experiment:**
+   - Select a healthy leaf still attached to the plant
+   - Cover part of the leaf with black paper on both sides, secured with paper clips
+   - Leave the plant in bright light for 6-8 hours
+
+3. **Test for starch:**
+   - Remove the leaf and trace an outline showing covered and uncovered areas
+   - Boil the leaf in water for 2 minutes (stops chemical reactions)
+   - Place in hot ethanol (using water bath) until leaf becomes white (removes chlorophyll)
+   - Wash in water to soften
+   - Spread leaf on white tile and add iodine solution
+
+**Expected Results:**
+- Uncovered part: Turns **blue-black** (starch present)
+- Covered part: Remains **brown/yellow** (no starch)
+
+**Conclusion:**
+The part of the leaf exposed to light produced starch (through photosynthesis), while the covered part did not. This proves that **light is necessary for photosynthesis**.
+
+**Precautions:**
+- Destarch plant completely before experiment
+- Use water bath for ethanol (flammable)
+- Cover leaf completely to prevent light reaching it`
+      }
+    ],
+
+    endOfLessonQuiz: [
+      {
+        type: 'mcq',
+        question: 'What is the chemical formula for glucose, the main product of photosynthesis?',
+        options: ['CO₂', 'H₂O', 'C₆H₁₂O₆', 'O₂'],
+        answer: 'C₆H₁₂O₆',
+        explanation: 'Glucose (C₆H₁₂O₆) is a simple sugar with 6 carbon atoms, 12 hydrogen atoms, and 6 oxygen atoms. It is the primary product of photosynthesis and the main energy source for cells.'
+      },
+      {
+        type: 'mcq',
+        question: 'Why do plants appear green?',
+        options: [
+          'They absorb green light',
+          'They reflect green light',
+          'They produce green oxygen',
+          'They store green starch'
+        ],
+        answer: 'They reflect green light',
+        explanation: 'Chlorophyll absorbs red and blue light wavelengths for photosynthesis but reflects green light. This reflected green light is what our eyes see, making plants appear green.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which part of the chloroplast is the site of light-dependent reactions?',
+        options: ['Stroma', 'Outer membrane', 'Thylakoid membranes', 'Matrix'],
+        answer: 'Thylakoid membranes',
+        explanation: 'The light-dependent reactions occur in the thylakoid membranes (organized into stacks called grana), where chlorophyll is located. The stroma is where the Calvin cycle (light-independent reactions) occurs.'
+      },
+      {
+        type: 'mcq',
+        question: 'During the dry season in Northern Ghana, what is most likely the limiting factor for photosynthesis?',
+        options: ['Light intensity', 'Temperature', 'Water availability', 'Carbon dioxide'],
+        answer: 'Water availability',
+        explanation: 'During Ghana\'s dry season, water becomes scarce. Plants close their stomata to conserve water, which also limits CO₂ intake. Water shortage is typically the main limiting factor in this period.'
+      },
+      {
+        type: 'mcq',
+        question: 'A cassava farmer wants to increase yield. Based on photosynthesis knowledge, which advice is BEST?',
+        options: [
+          'Plant in complete shade',
+          'Ensure adequate water, sunlight, and soil nutrients',
+          'Harvest leaves frequently',
+          'Add more oxygen to the soil'
+        ],
+        answer: 'Ensure adequate water, sunlight, and soil nutrients',
+        explanation: 'For maximum photosynthesis and yield, plants need adequate light (energy source), water (raw material), and nutrients (especially nitrogen for chlorophyll, and others for converting glucose to other compounds).'
+      },
+      {
+        type: 'mcq',
+        question: 'What happens to the oxygen produced during photosynthesis?',
+        options: [
+          'It is stored in the roots',
+          'It is converted to glucose',
+          'It is released through stomata into the air',
+          'It is used to make chlorophyll'
+        ],
+        answer: 'It is released through stomata into the air',
+        explanation: 'Oxygen is a byproduct of photosynthesis, produced when water molecules are split. It diffuses out of the leaf through stomata into the atmosphere, where it is used by organisms for respiration.'
+      },
+      {
+        type: 'mcq',
+        question: 'In the iodine test for photosynthesis, what color indicates the presence of starch?',
+        options: ['Brown', 'Yellow', 'Blue-black', 'Green'],
+        answer: 'Blue-black',
+        explanation: 'Iodine solution is brown/yellow-brown. When it comes into contact with starch, it turns blue-black. This color change indicates that photosynthesis has occurred and glucose has been converted to starch.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which Ghanaian crop stores the products of photosynthesis mainly in its roots?',
+        options: ['Cocoa', 'Maize', 'Cassava', 'Oil palm'],
+        answer: 'Cassava',
+        explanation: 'Cassava stores starch (from photosynthesis) primarily in its tuberous roots. This is why cassava tubers are so rich in carbohydrates and are a staple food in Ghana (used to make gari, fufu, etc.).'
+      },
+      {
+        type: 'mcq',
+        question: 'Why is photosynthesis important for addressing climate change?',
+        options: [
+          'It releases carbon dioxide into the atmosphere',
+          'It removes carbon dioxide from the atmosphere',
+          'It produces carbon dioxide for factories',
+          'It increases global temperatures'
+        ],
+        answer: 'It removes carbon dioxide from the atmosphere',
+        explanation: 'Photosynthesis absorbs CO₂ (a greenhouse gas) from the atmosphere and converts it into glucose. This is why forests are called "carbon sinks" and why protecting and planting trees helps combat climate change.'
+      },
+      {
+        type: 'mcq',
+        question: 'At night, what process(es) occur in plants?',
+        options: [
+          'Only photosynthesis',
+          'Only respiration',
+          'Both photosynthesis and respiration',
+          'Neither photosynthesis nor respiration'
+        ],
+        answer: 'Only respiration',
+        explanation: 'Photosynthesis requires light, so it stops at night. However, respiration continues 24 hours a day in all living cells. At night, plants only respire, taking in oxygen and releasing carbon dioxide.'
+      }
+    ],
+
+    summary: "Photosynthesis is the process by which green plants use light energy to convert carbon dioxide and water into glucose and oxygen: 6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂. It occurs in chloroplasts, which contain the green pigment chlorophyll. The process has two stages: light-dependent reactions (in thylakoids) produce ATP, NADPH, and oxygen; light-independent reactions (Calvin cycle in stroma) use these to make glucose. Factors affecting photosynthesis rate include light intensity, CO₂ concentration, temperature, water availability, and chlorophyll amount. The factor in shortest supply is the limiting factor. Photosynthesis is vital because it produces all food (directly or indirectly), all atmospheric oxygen, removes CO₂ (combating climate change), and powers Ghana's agricultural economy (cocoa, cassava, oil palm, maize). It is the opposite of respiration: photosynthesis stores energy and makes glucose, while respiration releases energy and breaks down glucose. We can test for photosynthesis using the iodine test for starch."
   }
 ];

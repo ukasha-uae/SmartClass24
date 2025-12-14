@@ -10,10 +10,10 @@
 
 ### Overall Statistics
 - **Total Lessons Planned**: ~800-1000
-- **Migrated**: 8
+- **Migrated**: 10
 - **In Progress**: 0
-- **Remaining**: ~792-992
-- **Progress**: ~0.8-1.0%
+- **Remaining**: ~790-990
+- **Progress**: ~1.0-1.25%
 
 ---
 
@@ -24,11 +24,12 @@
 **Goal**: Establish pattern and migrate pilot lessons
 
 ### Completed Infrastructure
-- [x] **CarouselLesson Component** - Main carousel renderer
+- [x] **CarouselLesson Component** - Main carousel renderer with immersive mobile mode
 - [x] **IntelligentLessonIntro Component** - Voice-narrated intros
 - [x] **Feature Flag System** - Granular control with autostart
 - [x] **Lesson Validation** - Ensures carousel-ready content
 - [x] **Documentation** - Implementation guide created
+- [x] **Mobile UX** - Sololearn-inspired immersive mode (nav arrows in header)
 
 ### Completed Lessons
 
@@ -38,7 +39,7 @@
 | Nature and Scope of Chemistry | `chem-shs1-intro-nature-scope` | `NatureAndScopeOfChemistryIntro.tsx` | ✅ GOLD STANDARD | Dec 2025 |
 | Scientific Methods & Safety | `chem-shs1-intro-scientific-methods-safety` | `ScientificMethodsSafetyIntro.tsx` | ✅ Complete | Dec 14, 2025 |
 
-#### Integrated Science (SHS1) - 7 lessons
+#### Integrated Science (SHS1) - 8 lessons
 | Lesson | Slug | Intro Component | Status | Date |
 |--------|------|-----------------|--------|------|
 | States and Changes of Matter | `is-dm-matter-states-properties` | `StatesAndChangesOfMatterIntro.tsx` | ✅ Complete | Dec 14, 2025 |
@@ -48,6 +49,7 @@
 | Nutrition and Balanced Diet | `is-dm-nutrition-balanced-diet` | `NutritionBalancedDietIntro.tsx` | ✅ Complete | Dec 14, 2025 |
 | Digestion and Digestive System | `is-dm-digestion-process` | `DigestionIntro.tsx` | ✅ Complete | Dec 14, 2025 |
 | Respiration: Aerobic & Anaerobic | `is-dm-respiration-aerobic-anaerobic` | `RespirationIntro.tsx` | ✅ Complete | Dec 14, 2025 |
+| Photosynthesis: Making Food from Sunlight | `is-dm-photosynthesis-process` | `PhotosynthesisIntro.tsx` | ✅ Complete | Dec 14, 2025 |
 
 ### Key Learnings
 1. ✅ **DO NOT** add `carouselTeachingMethod` property - uses standard lesson structure
@@ -71,7 +73,7 @@
 - [x] **Nutrition** - `is-dm-nutrition-balanced-diet` ✅ COMPLETE (Dec 14, 2025)
 - [x] **Digestion** - `is-dm-digestion-process` ✅ COMPLETE (Dec 14, 2025)
 - [x] **Respiration** - `is-dm-respiration-aerobic-anaerobic` ✅ COMPLETE (Dec 14, 2025)
-- [ ] **Photosynthesis** - `is-photosynthesis-process`
+- [x] **Photosynthesis** - `is-dm-photosynthesis-process` ✅ COMPLETE (Dec 14, 2025)
 - [ ] **Genetics** - `is-genetics-inheritance`
 
 #### Priority 2: Physics Topics
