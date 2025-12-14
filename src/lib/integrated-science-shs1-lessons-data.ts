@@ -8224,5 +8224,746 @@ Starch → Maltose (amylase) → Glucose (maltase) → Absorbed`
       }
     ],
     summary: "Digestion is the breakdown of large food molecules into smaller, absorbable molecules. It involves mechanical digestion (physical breakdown by chewing and churning) and chemical digestion (breakdown by enzymes). Food travels through the alimentary canal: mouth → oesophagus → stomach → small intestine → large intestine → rectum → anus. Key enzymes include amylase (starch → maltose), pepsin and trypsin (proteins → peptides → amino acids), and lipase (fats → fatty acids + glycerol). The small intestine is the main site of digestion and absorption, with villi and microvilli providing enormous surface area. The liver produces bile for fat emulsification, and the pancreas produces multiple digestive enzymes. The large intestine absorbs water and forms faeces. A healthy digestive system requires a balanced diet with adequate fiber and water."
+  },
+
+  // ============================================================
+  // LESSON 9: Respiration (Aerobic and Anaerobic)
+  // ============================================================
+  {
+    id: 'is-dm-respiration-aerobic-anaerobic',
+    slug: 'is-dm-respiration-aerobic-anaerobic',
+    title: 'Respiration: Aerobic and Anaerobic',
+    objectives: [
+      'Define respiration and explain its importance to living organisms',
+      'Distinguish between breathing and cellular respiration',
+      'Describe the process of aerobic respiration and write the word equation',
+      'Describe the process of anaerobic respiration in animals and plants',
+      'Compare aerobic and anaerobic respiration',
+      'Explain the concept of oxygen debt',
+      'Relate respiration to everyday activities and health'
+    ],
+    introduction: `Every second of your life, trillions of cells in your body are working to release energy from the food you eat. This process is called respiration - and it's happening right now as you read this!
+
+Without respiration, you couldn't walk to school, think, grow, or even keep your heart beating. Respiration is the process that converts the glucose from your waakye into the energy your body needs for every single activity.
+
+But did you know there are two types of respiration? When you're sitting quietly, your cells use oxygen to release lots of energy (aerobic respiration). But when you sprint to catch a trotro, your muscles may run short of oxygen and switch to a different method (anaerobic respiration). Let's explore both!`,
+    keyConcepts: [
+      {
+        title: '1. What is Respiration?',
+        content: `**UNDERSTANDING RESPIRATION**
+
+**Definition:** Respiration is the process by which living cells break down glucose to release energy for life processes.
+
+**IMPORTANT:** Respiration is NOT the same as breathing!
+
+<h4 style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">⚠️ COMMON CONFUSION: Breathing vs Respiration</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #fef2f2; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<thead>
+<tr style="background: #fee2e2;">
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ef4444; font-weight: 600;">Breathing (Ventilation)</th>
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ef4444; font-weight: 600;">Respiration (Cellular)</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #fca5a5;">
+<td style="padding: 0.75rem;">Physical process</td>
+<td style="padding: 0.75rem;">Chemical process</td>
+</tr>
+<tr style="border-bottom: 1px solid #fca5a5; background: #fee2e2;">
+<td style="padding: 0.75rem;">Happens in lungs</td>
+<td style="padding: 0.75rem;">Happens in every cell (mitochondria)</td>
+</tr>
+<tr style="border-bottom: 1px solid #fca5a5;">
+<td style="padding: 0.75rem;">Moves air in and out</td>
+<td style="padding: 0.75rem;">Breaks down glucose</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem;">Provides oxygen for respiration</td>
+<td style="padding: 0.75rem;">Releases energy from food</td>
+</tr>
+</tbody>
+</table>
+
+**Why Do We Need Respiration?**
+
+Energy released from respiration is used for:
+• **Muscle contraction** - Walking, running, heart beating
+• **Active transport** - Moving substances across cell membranes
+• **Cell division** - Growth and repair
+• **Protein synthesis** - Building new proteins
+• **Maintaining body temperature** - Keeping warm (37°C)
+• **Nerve impulse transmission** - Thinking, sensing
+
+**Where Does Respiration Occur?**
+
+Respiration mainly occurs in the **mitochondria** - the "powerhouses" of the cell. Most cells have hundreds of mitochondria!
+
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #22c55e; margin: 1.5rem 0;">
+<h4 style="color: #166534; margin: 0 0 0.5rem 0; font-weight: 600;">💡 Think About It!</h4>
+<p style="margin: 0;">Which cells do you think have the most mitochondria? Muscle cells and liver cells - because they need the most energy!</p>
+</div>`
+      },
+      {
+        title: '2. Aerobic Respiration',
+        content: `**AEROBIC RESPIRATION - With Oxygen**
+
+Aerobic means "with air" (specifically, with oxygen). This is the main type of respiration in most organisms.
+
+**THE WORD EQUATION:**
+
+<div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; border: 2px solid #3b82f6;">
+<p style="font-size: 1.2rem; font-weight: 600; color: #1e40af; margin: 0;">
+Glucose + Oxygen → Carbon Dioxide + Water + <span style="color: #dc2626;">ENERGY</span>
+</p>
+<p style="font-size: 0.9rem; color: #1e40af; margin: 0.5rem 0 0 0;">
+C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy (ATP)
+</p>
+</div>
+
+**Breaking Down the Equation:**
+
+<h4 style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">📥 INPUTS (Reactants)</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #ecfdf5; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<tbody>
+<tr style="border-bottom: 1px solid #a7f3d0;">
+<td style="padding: 0.75rem; font-weight: 600; width: 30%;">Glucose (C₆H₁₂O₆)</td>
+<td style="padding: 0.75rem;">From digested food (carbohydrates) - your fufu, rice, banku!</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem; font-weight: 600;">Oxygen (O₂)</td>
+<td style="padding: 0.75rem;">From breathing - carried by red blood cells to every cell</td>
+</tr>
+</tbody>
+</table>
+
+<h4 style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">📤 OUTPUTS (Products)</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #fffbeb; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<tbody>
+<tr style="border-bottom: 1px solid #fcd34d;">
+<td style="padding: 0.75rem; font-weight: 600; width: 30%;">Carbon Dioxide (CO₂)</td>
+<td style="padding: 0.75rem;">Waste gas - breathed out through lungs</td>
+</tr>
+<tr style="border-bottom: 1px solid #fcd34d; background: #fef9e7;">
+<td style="padding: 0.75rem; font-weight: 600;">Water (H₂O)</td>
+<td style="padding: 0.75rem;">Waste - lost in breath, sweat, urine</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem; font-weight: 600;">Energy (ATP)</td>
+<td style="padding: 0.75rem;"><strong>38 ATP molecules</strong> per glucose - lots of energy!</td>
+</tr>
+</tbody>
+</table>
+
+**Key Features of Aerobic Respiration:**
+• Requires oxygen (must breathe!)
+• Occurs in mitochondria
+• Releases **large amounts of energy** (38 ATP per glucose)
+• Produces CO₂ and H₂O as waste
+• Main respiration type at rest and moderate activity
+
+<div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; border-left: 4px solid #0ea5e9;">
+<strong>🇬🇭 Real Life Example:</strong> When you're sitting in class or walking slowly, your muscles get enough oxygen from breathing. Aerobic respiration provides all the energy you need efficiently!
+</div>`
+      },
+      {
+        title: '3. Anaerobic Respiration in Animals',
+        content: `**ANAEROBIC RESPIRATION - Without Oxygen**
+
+Anaerobic means "without air" (without oxygen). This happens when cells can't get enough oxygen.
+
+**WHEN DOES ANAEROBIC RESPIRATION OCCUR?**
+
+• During intense exercise (sprinting, heavy lifting)
+• When oxygen supply can't keep up with demand
+• In muscle cells that are working very hard
+
+**THE WORD EQUATION (Animals/Humans):**
+
+<div style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; border: 2px solid #ec4899;">
+<p style="font-size: 1.2rem; font-weight: 600; color: #be185d; margin: 0;">
+Glucose → Lactic Acid + <span style="color: #dc2626;">Energy (small)</span>
+</p>
+<p style="font-size: 0.9rem; color: #be185d; margin: 0.5rem 0 0 0;">
+C₆H₁₂O₆ → 2C₃H₆O₃ + Energy (2 ATP)
+</p>
+</div>
+
+**What is Lactic Acid?**
+
+Lactic acid is a waste product of anaerobic respiration that:
+• Builds up in muscles during intense exercise
+• Causes muscle fatigue and "burning" sensation
+• Makes muscles feel tired and heavy
+• Must be broken down later (when oxygen is available)
+
+<h4 style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">🏃 THE OXYGEN DEBT</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #f5f3ff; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<tbody>
+<tr style="border-bottom: 1px solid #c4b5fd;">
+<td style="padding: 0.75rem; font-weight: 600; width: 30%;">What is it?</td>
+<td style="padding: 0.75rem;">The extra oxygen needed after exercise to break down lactic acid</td>
+</tr>
+<tr style="border-bottom: 1px solid #c4b5fd; background: #ede9fe;">
+<td style="padding: 0.75rem; font-weight: 600;">Why do we pant?</td>
+<td style="padding: 0.75rem;">To take in extra oxygen to "repay" the debt</td>
+</tr>
+<tr style="border-bottom: 1px solid #c4b5fd;">
+<td style="padding: 0.75rem; font-weight: 600;">What happens to lactic acid?</td>
+<td style="padding: 0.75rem;">Carried to liver → converted back to glucose or broken down</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem; font-weight: 600;">Recovery time</td>
+<td style="padding: 0.75rem;">A few minutes to several hours depending on intensity</td>
+</tr>
+</tbody>
+</table>
+
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #22c55e; margin: 1.5rem 0;">
+<h4 style="color: #166534; margin: 0 0 0.5rem 0; font-weight: 600;">🇬🇭 Ghana Sports Example</h4>
+<p style="margin: 0;">When Asamoah Gyan sprinted to score a goal, his leg muscles used anaerobic respiration! That's why footballers breathe heavily and rest after intense plays - they're repaying their oxygen debt!</p>
+</div>`
+      },
+      {
+        title: '4. Anaerobic Respiration in Plants and Microorganisms',
+        content: `**ANAEROBIC RESPIRATION IN PLANTS & YEAST**
+
+Plants and yeast (fungi) also perform anaerobic respiration, but they produce different products!
+
+**THE WORD EQUATION (Plants/Yeast):**
+
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0; text-align: center; border: 2px solid #f59e0b;">
+<p style="font-size: 1.2rem; font-weight: 600; color: #92400e; margin: 0;">
+Glucose → Ethanol + Carbon Dioxide + <span style="color: #dc2626;">Energy</span>
+</p>
+<p style="font-size: 0.9rem; color: #92400e; margin: 0.5rem 0 0 0;">
+C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂ + Energy (2 ATP)
+</p>
+</div>
+
+**This process is called FERMENTATION!**
+
+<h4 style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">🍞 USES OF FERMENTATION</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #fffbeb; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<thead>
+<tr style="background: #fef3c7;">
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #f59e0b; font-weight: 600;">Product</th>
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #f59e0b; font-weight: 600;">How Fermentation Helps</th>
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #f59e0b; font-weight: 600;">Ghana Example</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #fcd34d;">
+<td style="padding: 0.75rem; font-weight: 600;">Bread</td>
+<td style="padding: 0.75rem;">CO₂ makes dough rise (bubbles)</td>
+<td style="padding: 0.75rem;">Sugar bread, tea bread</td>
+</tr>
+<tr style="border-bottom: 1px solid #fcd34d; background: #fef9e7;">
+<td style="padding: 0.75rem; font-weight: 600;">Palm Wine</td>
+<td style="padding: 0.75rem;">Yeast ferments palm sap → alcohol</td>
+<td style="padding: 0.75rem;">Traditional palm wine tapping</td>
+</tr>
+<tr style="border-bottom: 1px solid #fcd34d;">
+<td style="padding: 0.75rem; font-weight: 600;">Pito</td>
+<td style="padding: 0.75rem;">Fermented millet/sorghum drink</td>
+<td style="padding: 0.75rem;">Northern Ghana traditional drink</td>
+</tr>
+<tr style="border-bottom: 1px solid #fcd34d; background: #fef9e7;">
+<td style="padding: 0.75rem; font-weight: 600;">Kenkey/Banku</td>
+<td style="padding: 0.75rem;">Fermented corn dough (sour taste)</td>
+<td style="padding: 0.75rem;">Ga kenkey, Fante kenkey</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem; font-weight: 600;">Gari</td>
+<td style="padding: 0.75rem;">Fermented cassava (removes toxins!)</td>
+<td style="padding: 0.75rem;">Staple food across Ghana</td>
+</tr>
+</tbody>
+</table>
+
+**Why Fermentation is Important in Ghana:**
+• **Food preservation** - Fermented foods last longer
+• **Improved nutrition** - Fermentation can increase nutrients
+• **Safety** - Removes toxins (e.g., cyanide in cassava → gari)
+• **Taste** - Creates unique sour/tangy flavors we love!
+
+<div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #ef4444; margin: 1.5rem 0;">
+<h4 style="color: #991b1b; margin: 0 0 0.5rem 0; font-weight: 600;">⚠️ Important Difference!</h4>
+<p style="margin: 0;"><strong>Animals:</strong> Glucose → Lactic acid + Energy<br/>
+<strong>Plants/Yeast:</strong> Glucose → Ethanol + CO₂ + Energy<br/>
+Both produce only 2 ATP (much less than aerobic!)</p>
+</div>`
+      },
+      {
+        title: '5. Comparing Aerobic and Anaerobic Respiration',
+        content: `**AEROBIC vs ANAEROBIC RESPIRATION**
+
+<h4 style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">📊 COMPLETE COMPARISON TABLE</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; background: #eff6ff; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<thead>
+<tr style="background: #dbeafe;">
+<th style="padding: 0.6rem; text-align: left; border-bottom: 2px solid #3b82f6; font-weight: 600;">Feature</th>
+<th style="padding: 0.6rem; text-align: left; border-bottom: 2px solid #3b82f6; font-weight: 600;">Aerobic</th>
+<th style="padding: 0.6rem; text-align: left; border-bottom: 2px solid #3b82f6; font-weight: 600;">Anaerobic (Animals)</th>
+<th style="padding: 0.6rem; text-align: left; border-bottom: 2px solid #3b82f6; font-weight: 600;">Anaerobic (Yeast)</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #93c5fd;">
+<td style="padding: 0.6rem; font-weight: 600;">Oxygen needed?</td>
+<td style="padding: 0.6rem;">✅ Yes</td>
+<td style="padding: 0.6rem;">❌ No</td>
+<td style="padding: 0.6rem;">❌ No</td>
+</tr>
+<tr style="border-bottom: 1px solid #93c5fd; background: #dbeafe;">
+<td style="padding: 0.6rem; font-weight: 600;">Products</td>
+<td style="padding: 0.6rem;">CO₂ + H₂O</td>
+<td style="padding: 0.6rem;">Lactic acid</td>
+<td style="padding: 0.6rem;">Ethanol + CO₂</td>
+</tr>
+<tr style="border-bottom: 1px solid #93c5fd;">
+<td style="padding: 0.6rem; font-weight: 600;">Energy (ATP)</td>
+<td style="padding: 0.6rem;"><strong>38 ATP</strong> ⚡⚡⚡</td>
+<td style="padding: 0.6rem;">2 ATP ⚡</td>
+<td style="padding: 0.6rem;">2 ATP ⚡</td>
+</tr>
+<tr style="border-bottom: 1px solid #93c5fd; background: #dbeafe;">
+<td style="padding: 0.6rem; font-weight: 600;">Location</td>
+<td style="padding: 0.6rem;">Mitochondria</td>
+<td style="padding: 0.6rem;">Cytoplasm</td>
+<td style="padding: 0.6rem;">Cytoplasm</td>
+</tr>
+<tr style="border-bottom: 1px solid #93c5fd;">
+<td style="padding: 0.6rem; font-weight: 600;">Glucose breakdown</td>
+<td style="padding: 0.6rem;">Complete</td>
+<td style="padding: 0.6rem;">Incomplete</td>
+<td style="padding: 0.6rem;">Incomplete</td>
+</tr>
+<tr style="border-bottom: 1px solid #93c5fd; background: #dbeafe;">
+<td style="padding: 0.6rem; font-weight: 600;">When used?</td>
+<td style="padding: 0.6rem;">Rest, normal activity</td>
+<td style="padding: 0.6rem;">Intense exercise</td>
+<td style="padding: 0.6rem;">No oxygen available</td>
+</tr>
+<tr>
+<td style="padding: 0.6rem; font-weight: 600;">Efficiency</td>
+<td style="padding: 0.6rem;">Very efficient</td>
+<td style="padding: 0.6rem;">Less efficient</td>
+<td style="padding: 0.6rem;">Less efficient</td>
+</tr>
+</tbody>
+</table>
+
+**Why is Aerobic Respiration More Efficient?**
+
+• Glucose is **completely broken down** to CO₂ and H₂O
+• All the energy in glucose is released
+• **38 ATP** vs only **2 ATP** (19 times more energy!)
+
+**Why Do We Still Need Anaerobic Respiration?**
+
+• Provides quick energy when oxygen is limited
+• Essential for short bursts of intense activity
+• Muscles can keep working even when oxygen supply is low
+• Gives time for breathing/blood flow to catch up
+
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #22c55e; margin: 1.5rem 0;">
+<h4 style="color: #166534; margin: 0 0 0.5rem 0; font-weight: 600;">🏃 Sports Application</h4>
+<p style="margin: 0;"><strong>Marathon runner:</strong> Mainly aerobic (steady pace, lots of oxygen)<br/>
+<strong>100m sprinter:</strong> Mainly anaerobic (explosive, little time to breathe)<br/>
+<strong>Football player:</strong> Both! (Walking = aerobic, sprinting = anaerobic)</p>
+</div>`
+      },
+      {
+        title: '6. The Respiratory System and Gas Exchange',
+        content: `**HOW BREATHING SUPPORTS RESPIRATION**
+
+While respiration happens in cells, breathing (ventilation) provides the oxygen and removes the carbon dioxide.
+
+<h4 style="background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">🫁 THE RESPIRATORY SYSTEM</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #fdf2f8; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<thead>
+<tr style="background: #fce7f3;">
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ec4899; font-weight: 600;">Structure</th>
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #ec4899; font-weight: 600;">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #f9a8d4;">
+<td style="padding: 0.75rem; font-weight: 600;">Nose/Mouth</td>
+<td style="padding: 0.75rem;">Air enters; nose filters, warms, and moistens air</td>
+</tr>
+<tr style="border-bottom: 1px solid #f9a8d4; background: #fce7f3;">
+<td style="padding: 0.75rem; font-weight: 600;">Trachea (Windpipe)</td>
+<td style="padding: 0.75rem;">Carries air to lungs; lined with cilia and mucus</td>
+</tr>
+<tr style="border-bottom: 1px solid #f9a8d4;">
+<td style="padding: 0.75rem; font-weight: 600;">Bronchi</td>
+<td style="padding: 0.75rem;">Two branches leading to each lung</td>
+</tr>
+<tr style="border-bottom: 1px solid #f9a8d4; background: #fce7f3;">
+<td style="padding: 0.75rem; font-weight: 600;">Bronchioles</td>
+<td style="padding: 0.75rem;">Smaller branches inside lungs</td>
+</tr>
+<tr style="border-bottom: 1px solid #f9a8d4;">
+<td style="padding: 0.75rem; font-weight: 600;">Alveoli</td>
+<td style="padding: 0.75rem;"><strong>Gas exchange happens here!</strong> Tiny air sacs with thin walls</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem; font-weight: 600;">Diaphragm</td>
+<td style="padding: 0.75rem;">Muscle that controls breathing movements</td>
+</tr>
+</tbody>
+</table>
+
+**GAS EXCHANGE IN THE ALVEOLI:**
+
+• Alveoli are surrounded by tiny blood vessels (capillaries)
+• **Oxygen** diffuses from alveoli → blood (high to low concentration)
+• **Carbon dioxide** diffuses from blood → alveoli (high to low concentration)
+• Blood then carries oxygen to all body cells
+
+**Adaptations of Alveoli for Gas Exchange:**
+• **Large surface area** - millions of alveoli (about 70m²!)
+• **Very thin walls** - one cell thick for quick diffusion
+• **Moist lining** - gases dissolve before diffusing
+• **Rich blood supply** - maintains concentration gradient
+
+<div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #ef4444; margin: 1.5rem 0;">
+<h4 style="color: #991b1b; margin: 0 0 0.5rem 0; font-weight: 600;">⚠️ Health Warning: Smoking</h4>
+<p style="margin: 0;">Smoking damages alveoli, reducing surface area for gas exchange. This means less oxygen reaches cells, causing tiredness and breathlessness. Tar coats alveoli, making gas exchange even harder. Don't smoke!</p>
+</div>`
+      },
+      {
+        title: '7. Respiration and Exercise',
+        content: `**HOW EXERCISE AFFECTS RESPIRATION**
+
+When you exercise, your body needs more energy. Let's see how respiration changes!
+
+<h4 style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">📈 CHANGES DURING EXERCISE</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #ecfdf5; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<thead>
+<tr style="background: #d1fae5;">
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981; font-weight: 600;">Body Response</th>
+<th style="padding: 0.75rem; text-align: left; border-bottom: 2px solid #10b981; font-weight: 600;">Why It Happens</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #a7f3d0;">
+<td style="padding: 0.75rem; font-weight: 600;">Breathing rate increases</td>
+<td style="padding: 0.75rem;">To get more oxygen into blood and remove more CO₂</td>
+</tr>
+<tr style="border-bottom: 1px solid #a7f3d0; background: #d1fae5;">
+<td style="padding: 0.75rem; font-weight: 600;">Breathing depth increases</td>
+<td style="padding: 0.75rem;">To take in larger volumes of air</td>
+</tr>
+<tr style="border-bottom: 1px solid #a7f3d0;">
+<td style="padding: 0.75rem; font-weight: 600;">Heart rate increases</td>
+<td style="padding: 0.75rem;">To pump blood faster to muscles</td>
+</tr>
+<tr style="border-bottom: 1px solid #a7f3d0; background: #d1fae5;">
+<td style="padding: 0.75rem; font-weight: 600;">You start sweating</td>
+<td style="padding: 0.75rem;">To cool down (respiration releases heat)</td>
+</tr>
+<tr>
+<td style="padding: 0.75rem; font-weight: 600;">Muscles may feel tired/burn</td>
+<td style="padding: 0.75rem;">Lactic acid building up (anaerobic respiration)</td>
+</tr>
+</tbody>
+</table>
+
+**SEQUENCE OF EVENTS:**
+
+<div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 12px; padding: 1.25rem; margin: 1.5rem 0; border-left: 4px solid #f59e0b;">
+<p style="margin: 0.5rem 0;"><strong>1.</strong> Muscles need more energy → more glucose and oxygen needed</p>
+<p style="margin: 0.5rem 0;"><strong>2.</strong> Brain signals heart to beat faster → more blood flow</p>
+<p style="margin: 0.5rem 0;"><strong>3.</strong> Brain signals lungs to breathe faster → more oxygen in</p>
+<p style="margin: 0.5rem 0;"><strong>4.</strong> If oxygen can't keep up → anaerobic respiration starts</p>
+<p style="margin: 0.5rem 0;"><strong>5.</strong> Lactic acid builds up → muscles fatigue</p>
+<p style="margin: 0;"><strong>6.</strong> After exercise → heavy breathing to repay oxygen debt</p>
+</div>
+
+**RECOVERY AFTER EXERCISE:**
+
+• Continue breathing heavily to take in extra oxygen
+• Lactic acid transported to liver
+• Liver converts lactic acid back to glucose (or breaks it down)
+• Heart rate gradually returns to normal
+• Body temperature returns to normal
+
+<div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #22c55e; margin: 1.5rem 0;">
+<h4 style="color: #166534; margin: 0 0 0.5rem 0; font-weight: 600;">💪 Fitness Tip</h4>
+<p style="margin: 0;">Regular exercise improves your body's ability to deliver oxygen to muscles! Fit people can exercise longer before switching to anaerobic respiration, and they recover faster. Keep active!</p>
+</div>`
+      },
+      {
+        title: '8. Summary: The Big Picture',
+        content: `**RESPIRATION SUMMARY**
+
+<h4 style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; padding: 0.75rem 1rem; border-radius: 8px 8px 0 0; margin: 1.5rem 0 0 0; font-weight: 600;">📝 KEY EQUATIONS TO REMEMBER</h4>
+<table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; background: #eef2ff; border-radius: 0 0 8px 8px; overflow: hidden; margin-bottom: 1.5rem;">
+<tbody>
+<tr style="border-bottom: 2px solid #a5b4fc;">
+<td style="padding: 1rem; font-weight: 600; background: #e0e7ff;">Aerobic</td>
+<td style="padding: 1rem; background: #e0e7ff;">Glucose + Oxygen → Carbon Dioxide + Water + <strong>38 ATP</strong></td>
+</tr>
+<tr style="border-bottom: 2px solid #a5b4fc;">
+<td style="padding: 1rem; font-weight: 600;">Anaerobic (Animals)</td>
+<td style="padding: 1rem;">Glucose → Lactic Acid + <strong>2 ATP</strong></td>
+</tr>
+<tr>
+<td style="padding: 1rem; font-weight: 600; background: #e0e7ff;">Anaerobic (Yeast)</td>
+<td style="padding: 1rem; background: #e0e7ff;">Glucose → Ethanol + Carbon Dioxide + <strong>2 ATP</strong></td>
+</tr>
+</tbody>
+</table>
+
+**REMEMBER THESE KEY POINTS:**
+
+✅ Respiration happens in ALL living cells, ALL the time
+
+✅ Respiration ≠ Breathing (respiration is in cells, breathing is in lungs)
+
+✅ Aerobic respiration needs oxygen and releases 38 ATP
+
+✅ Anaerobic respiration doesn't need oxygen but only releases 2 ATP
+
+✅ Animals produce lactic acid; yeast produces ethanol + CO₂
+
+✅ Oxygen debt = extra oxygen needed to break down lactic acid
+
+✅ Exercise increases breathing rate, heart rate, and body temperature
+
+<div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border-radius: 12px; padding: 1.25rem; margin: 1rem 0; border-left: 4px solid #0ea5e9;">
+<strong>🇬🇭 Ghana Connections:</strong>
+<ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
+<li><strong>Fermentation</strong> - Kenkey, banku, gari, palm wine, pito all use anaerobic respiration!</li>
+<li><strong>Sports</strong> - Black Stars players use both aerobic and anaerobic respiration during matches</li>
+<li><strong>Bread making</strong> - CO₂ from yeast fermentation makes bread rise</li>
+</ul>
+</div>
+
+<div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 12px; padding: 1.25rem; border-left: 4px solid #ef4444; margin: 1.5rem 0;">
+<h4 style="color: #991b1b; margin: 0 0 0.5rem 0; font-weight: 600;">🎯 Exam Tips</h4>
+<p style="margin: 0;">• Always specify WHERE respiration occurs (mitochondria for aerobic, cytoplasm for anaerobic)<br/>
+• Don't confuse breathing with respiration!<br/>
+• Remember the products: aerobic makes CO₂ + H₂O, anaerobic makes lactic acid OR ethanol + CO₂<br/>
+• Know why aerobic is more efficient (complete breakdown, more ATP)</p>
+</div>`
+      }
+    ],
+    activities: {
+      type: 'exercises',
+      questions: [
+        {
+          type: 'mcq',
+          question: 'What is the main difference between breathing and respiration?',
+          options: [
+            'Breathing releases energy, respiration does not',
+            'Breathing is a physical process in lungs, respiration is a chemical process in cells',
+            'Breathing happens only at night, respiration happens only during the day',
+            'There is no difference - they are the same thing'
+          ],
+          answer: 'Breathing is a physical process in lungs, respiration is a chemical process in cells',
+          explanation: 'Breathing (ventilation) is the physical movement of air in and out of lungs. Respiration is the chemical breakdown of glucose in cells to release energy.'
+        },
+        {
+          type: 'mcq',
+          question: 'What are the products of aerobic respiration?',
+          options: [
+            'Lactic acid and energy',
+            'Ethanol and carbon dioxide',
+            'Carbon dioxide, water, and energy',
+            'Glucose and oxygen'
+          ],
+          answer: 'Carbon dioxide, water, and energy',
+          explanation: 'Aerobic respiration: Glucose + Oxygen → Carbon dioxide + Water + Energy (38 ATP)'
+        },
+        {
+          type: 'mcq',
+          question: 'Where in the cell does aerobic respiration mainly occur?',
+          options: ['Nucleus', 'Cell membrane', 'Mitochondria', 'Cytoplasm'],
+          answer: 'Mitochondria',
+          explanation: 'Mitochondria are called the "powerhouses" of the cell because this is where aerobic respiration occurs and most ATP is produced.'
+        },
+        {
+          type: 'mcq',
+          question: 'What causes the "burning" feeling in muscles during intense exercise?',
+          options: [
+            'Too much oxygen',
+            'Lactic acid build-up',
+            'Carbon dioxide',
+            'Glucose shortage'
+          ],
+          answer: 'Lactic acid build-up',
+          explanation: 'During intense exercise, muscles switch to anaerobic respiration which produces lactic acid. This acid builds up and causes the burning sensation and fatigue.'
+        },
+        {
+          type: 'truefalse',
+          statement: 'Anaerobic respiration produces more energy (ATP) than aerobic respiration.',
+          answer: 'false',
+          reason: 'Aerobic respiration produces 38 ATP per glucose molecule, while anaerobic produces only 2 ATP. Aerobic is much more efficient!'
+        },
+        {
+          type: 'mcq',
+          question: 'What is produced when yeast respires anaerobically?',
+          options: [
+            'Lactic acid and energy',
+            'Ethanol, carbon dioxide, and energy',
+            'Oxygen and water',
+            'Glucose and carbon dioxide'
+          ],
+          answer: 'Ethanol, carbon dioxide, and energy',
+          explanation: 'In yeast and plants, anaerobic respiration (fermentation) produces ethanol and carbon dioxide. This is used in bread making (CO₂ makes bread rise) and alcohol production.'
+        }
+      ]
+    },
+    pastQuestions: [
+      {
+        year: '2022',
+        question: 'Compare aerobic and anaerobic respiration under the following headings: (a) Oxygen requirement (b) Products (c) Energy released (d) Location in cell',
+        solution: `**Comparison of Aerobic and Anaerobic Respiration:**
+
+**(a) Oxygen Requirement:**
+• **Aerobic:** Requires oxygen (O₂)
+• **Anaerobic:** Does NOT require oxygen
+
+**(b) Products:**
+• **Aerobic:** Carbon dioxide (CO₂) + Water (H₂O)
+• **Anaerobic (animals):** Lactic acid
+• **Anaerobic (yeast/plants):** Ethanol + Carbon dioxide
+
+**(c) Energy Released:**
+• **Aerobic:** Large amount - 38 ATP per glucose (complete breakdown)
+• **Anaerobic:** Small amount - 2 ATP per glucose (incomplete breakdown)
+
+**(d) Location in Cell:**
+• **Aerobic:** Mitochondria
+• **Anaerobic:** Cytoplasm`
+      },
+      {
+        year: '2021',
+        question: 'Explain what happens during oxygen debt and how the body recovers after vigorous exercise.',
+        solution: `**Oxygen Debt and Recovery After Exercise:**
+
+**What is Oxygen Debt?**
+Oxygen debt is the extra oxygen needed after exercise to:
+• Break down lactic acid that accumulated during anaerobic respiration
+• Restore oxygen reserves in muscles and blood
+
+**What Causes It?**
+• During intense exercise, muscles need energy faster than oxygen can be supplied
+• Muscles switch to anaerobic respiration
+• Lactic acid builds up in muscles
+
+**How the Body Recovers:**
+
+**1. Continued Heavy Breathing:**
+• Breathing rate stays high after exercise
+• Takes in extra oxygen to "repay" the debt
+
+**2. Removal of Lactic Acid:**
+• Lactic acid is transported to the liver
+• Liver converts lactic acid back to glucose (using oxygen)
+• Some lactic acid is broken down completely
+
+**3. Restoration of Normal State:**
+• Heart rate gradually decreases
+• Body temperature returns to normal
+• Oxygen levels in blood restored`
+      }
+    ],
+    endOfLessonQuiz: [
+      {
+        type: 'mcq',
+        question: 'What is the correct word equation for aerobic respiration?',
+        options: [
+          'Glucose → Lactic acid + Energy',
+          'Glucose + Oxygen → Carbon dioxide + Water + Energy',
+          'Glucose → Ethanol + Carbon dioxide + Energy',
+          'Carbon dioxide + Water → Glucose + Oxygen'
+        ],
+        answer: 'Glucose + Oxygen → Carbon dioxide + Water + Energy',
+        explanation: 'Aerobic respiration requires oxygen and completely breaks down glucose to produce CO₂, H₂O, and lots of energy (38 ATP).'
+      },
+      {
+        type: 'mcq',
+        question: 'Which type of respiration releases more energy?',
+        options: ['Anaerobic', 'Aerobic', 'Both release the same', 'Neither releases energy'],
+        answer: 'Aerobic',
+        explanation: 'Aerobic respiration releases 38 ATP per glucose molecule, while anaerobic releases only 2 ATP. This is because aerobic completely breaks down glucose.'
+      },
+      {
+        type: 'mcq',
+        question: 'In which part of the cell does anaerobic respiration occur?',
+        options: ['Mitochondria', 'Nucleus', 'Cytoplasm', 'Cell membrane'],
+        answer: 'Cytoplasm',
+        explanation: 'Anaerobic respiration occurs in the cytoplasm, while aerobic respiration occurs in the mitochondria.'
+      },
+      {
+        type: 'mcq',
+        question: 'What is the product of anaerobic respiration in humans?',
+        options: ['Ethanol', 'Carbon dioxide only', 'Lactic acid', 'Oxygen'],
+        answer: 'Lactic acid',
+        explanation: 'In humans and animals, anaerobic respiration produces lactic acid. In yeast and plants, it produces ethanol and CO₂.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which Ghanaian food is made using fermentation (anaerobic respiration)?',
+        options: ['Jollof rice', 'Fufu', 'Kenkey', 'Groundnut soup'],
+        answer: 'Kenkey',
+        explanation: 'Kenkey is made from fermented corn dough. The fermentation process uses anaerobic respiration by microorganisms, giving kenkey its sour taste.'
+      },
+      {
+        type: 'mcq',
+        question: 'Why do you breathe heavily after running?',
+        options: [
+          'To cool down your body',
+          'To repay oxygen debt and remove lactic acid',
+          'To produce more glucose',
+          'To increase carbon dioxide'
+        ],
+        answer: 'To repay oxygen debt and remove lactic acid',
+        explanation: 'Heavy breathing after exercise takes in extra oxygen to break down the lactic acid that accumulated during anaerobic respiration - this is called repaying the oxygen debt.'
+      },
+      {
+        type: 'mcq',
+        question: 'What makes bread rise during baking?',
+        options: [
+          'Oxygen from aerobic respiration',
+          'Carbon dioxide from yeast fermentation',
+          'Lactic acid from bacteria',
+          'Water vapor from heating'
+        ],
+        answer: 'Carbon dioxide from yeast fermentation',
+        explanation: 'Yeast performs anaerobic respiration (fermentation), producing CO₂ gas. This gas creates bubbles in the dough, making bread rise.'
+      },
+      {
+        type: 'mcq',
+        question: 'How many ATP molecules are produced from one glucose in aerobic respiration?',
+        options: ['2', '4', '18', '38'],
+        answer: '38',
+        explanation: 'Aerobic respiration produces approximately 38 ATP molecules per glucose, compared to only 2 ATP from anaerobic respiration.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which structures in the lungs are adapted for gas exchange?',
+        options: ['Bronchi', 'Trachea', 'Alveoli', 'Diaphragm'],
+        answer: 'Alveoli',
+        explanation: 'Alveoli are tiny air sacs with thin walls and rich blood supply, perfectly adapted for gas exchange (oxygen in, carbon dioxide out).'
+      },
+      {
+        type: 'mcq',
+        question: 'A marathon runner mainly uses which type of respiration?',
+        options: [
+          'Only anaerobic respiration',
+          'Only fermentation',
+          'Mainly aerobic respiration',
+          'No respiration - just breathing'
+        ],
+        answer: 'Mainly aerobic respiration',
+        explanation: 'Marathon runners maintain a steady pace that allows enough oxygen supply, so they mainly use aerobic respiration. Sprinters, who need quick bursts of energy, use more anaerobic respiration.'
+      }
+    ],
+    summary: "Respiration is the process by which cells break down glucose to release energy for life processes. There are two types: Aerobic respiration requires oxygen and produces carbon dioxide, water, and lots of energy (38 ATP): Glucose + O₂ → CO₂ + H₂O + Energy. It occurs in mitochondria. Anaerobic respiration doesn't need oxygen and produces less energy (2 ATP). In animals, it produces lactic acid (causing muscle fatigue). In yeast and plants, it produces ethanol and CO₂ (fermentation - used in making kenkey, bread, and palm wine). During intense exercise, muscles switch to anaerobic respiration when oxygen supply can't keep up, creating an oxygen debt that must be repaid by continued heavy breathing afterward. Regular exercise improves the body's ability to deliver oxygen to muscles."
   }
 ];

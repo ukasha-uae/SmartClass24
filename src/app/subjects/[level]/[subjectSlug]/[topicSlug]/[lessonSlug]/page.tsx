@@ -97,6 +97,7 @@ import CellDivisionIntro from '@/components/intros/shs/integrated-science/CellDi
 import RocksTypesFormationIntro from '@/components/intros/shs/integrated-science/RocksTypesFormationIntro';
 import NutritionBalancedDietIntro from '@/components/intros/shs/integrated-science/NutritionBalancedDietIntro';
 import DigestionIntro from '@/components/intros/shs/integrated-science/DigestionIntro';
+import RespirationIntro from '@/components/intros/shs/integrated-science/RespirationIntro';
 import { CarouselLesson } from '@/components/CarouselLesson';
 import { 
   addBookmark, 
@@ -686,6 +687,8 @@ export default function LessonPage() {
               <NutritionBalancedDietIntro />
             ) : lessonSlug === 'is-dm-digestion-process' ? (
               <DigestionIntro />
+            ) : lessonSlug === 'is-dm-respiration-aerobic-anaerobic' ? (
+              <RespirationIntro />
             ) : (
               // Fallback - should not reach here if all intros are properly mapped
               null
@@ -845,6 +848,7 @@ export default function LessonPage() {
               {lessonSlug === 'is-dm-rocks-soil-types-formation' && <RocksTypesFormationIntro />}
               {lessonSlug === 'is-dm-nutrition-balanced-diet' && <NutritionBalancedDietIntro />}
               {lessonSlug === 'is-dm-digestion-process' && <DigestionIntro />}
+              {lessonSlug === 'is-dm-respiration-aerobic-anaerobic' && <RespirationIntro />}
             </>
           )}
 

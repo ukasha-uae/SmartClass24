@@ -38,7 +38,7 @@
 | Nature and Scope of Chemistry | `chem-shs1-intro-nature-scope` | `NatureAndScopeOfChemistryIntro.tsx` | ✅ GOLD STANDARD | Dec 2025 |
 | Scientific Methods & Safety | `chem-shs1-intro-scientific-methods-safety` | `ScientificMethodsSafetyIntro.tsx` | ✅ Complete | Dec 14, 2025 |
 
-#### Integrated Science (SHS1) - 6 lessons
+#### Integrated Science (SHS1) - 7 lessons
 | Lesson | Slug | Intro Component | Status | Date |
 |--------|------|-----------------|--------|------|
 | States and Changes of Matter | `is-dm-matter-states-properties` | `StatesAndChangesOfMatterIntro.tsx` | ✅ Complete | Dec 14, 2025 |
@@ -47,6 +47,7 @@
 | Rocks Types and Formation | `is-rocks-types-formation` | `RocksTypesFormationIntro.tsx` | ✅ Complete | Dec 14, 2025 |
 | Nutrition and Balanced Diet | `is-dm-nutrition-balanced-diet` | `NutritionBalancedDietIntro.tsx` | ✅ Complete | Dec 14, 2025 |
 | Digestion and Digestive System | `is-dm-digestion-process` | `DigestionIntro.tsx` | ✅ Complete | Dec 14, 2025 |
+| Respiration: Aerobic & Anaerobic | `is-dm-respiration-aerobic-anaerobic` | `RespirationIntro.tsx` | ✅ Complete | Dec 14, 2025 |
 
 ### Key Learnings
 1. ✅ **DO NOT** add `carouselTeachingMethod` property - uses standard lesson structure
@@ -69,7 +70,7 @@
 #### Priority 1: Core Biology Topics
 - [x] **Nutrition** - `is-dm-nutrition-balanced-diet` ✅ COMPLETE (Dec 14, 2025)
 - [x] **Digestion** - `is-dm-digestion-process` ✅ COMPLETE (Dec 14, 2025)
-- [ ] **Respiration** - `is-respiration-aerobic-anaerobic`
+- [x] **Respiration** - `is-dm-respiration-aerobic-anaerobic` ✅ COMPLETE (Dec 14, 2025)
 - [ ] **Photosynthesis** - `is-photosynthesis-process`
 - [ ] **Genetics** - `is-genetics-inheritance`
 

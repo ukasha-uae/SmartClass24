@@ -78,6 +78,7 @@ export const FEATURE_FLAGS = {
       'is-dm-rocks-soil-types-formation',
       'is-dm-nutrition-balanced-diet',
       'is-dm-digestion-process',
+      'is-dm-respiration-aerobic-anaerobic',
     ], // Support multiple topic formats
     lessons: [
       'quadratic-equations',
@@ -146,7 +147,8 @@ export const FEATURE_FLAGS = {
       'is-dm-rocks-soil-types-formation', // Types and Formation of Rocks
       'is-dm-nutrition-balanced-diet', // Nutrition and Balanced Diet
       'is-dm-digestion-process', // Digestion and Digestive System
-    ], // SHS3 (29) + SHS2 (11) + SHS1 (15) + Science (8) = 63 lessons total
+      'is-dm-respiration-aerobic-anaerobic', // Respiration: Aerobic and Anaerobic
+    ], // SHS3 (29) + SHS2 (11) + SHS1 (15) + Science (9) = 64 lessons total
   },
 };
 

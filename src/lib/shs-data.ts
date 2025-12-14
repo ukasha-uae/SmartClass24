@@ -159,7 +159,12 @@ const getFullIntegratedScienceTopics = (): Topic[] => [
   { id: "is-dm-rocks-soil-composition", name: "Soil Composition and Importance", slug: "is-dm-rocks-soil-composition", progressValue: 0, gradeLevel: "SHS 1 - Unit 1: Diversity of Matter" },
   { id: "is-diversity-matter-shs1", name: "Elements, Compounds & Mixtures", slug: "is-diversity-matter-shs1", progressValue: 0, gradeLevel: "SHS 1 - Unit 1: Diversity of Matter" },
 
-  // Unit 2: Measurement
+  // Unit 2: Life Processes
+  { id: "is-dm-nutrition-balanced-diet", name: "Nutrition and Balanced Diet", slug: "is-dm-nutrition-balanced-diet", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Life Processes" },
+  { id: "is-dm-digestion-process", name: "Digestion and the Human Digestive System", slug: "is-dm-digestion-process", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Life Processes" },
+  { id: "is-dm-respiration-aerobic-anaerobic", name: "Respiration: Aerobic and Anaerobic", slug: "is-dm-respiration-aerobic-anaerobic", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Life Processes" },
+
+  // Unit 3: Measurement
   { id: "is-measurement-units-instruments", name: "Units and Instruments", slug: "is-measurement-units-instruments", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Measurement" },
   { id: "is-accuracy-precision-measurement", name: "Accuracy and Precision in Measurement", slug: "is-accuracy-precision-measurement", progressValue: 0, gradeLevel: "SHS 1 - Unit 2: Measurement" },
 
