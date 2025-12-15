@@ -111,6 +111,13 @@ import SoilCompositionIntro from '@/components/intros/shs/integrated-science/Soi
 import ElementsCompoundsIntro from '@/components/intros/shs/integrated-science/ElementsCompoundsIntro';
 import UnitsInstrumentsIntro from '@/components/intros/shs/integrated-science/UnitsInstrumentsIntro';
 import AccuracyPrecisionIntro from '@/components/intros/shs/integrated-science/AccuracyPrecisionIntro';
+import LifeCyclesPlantsAnimalsIntro from '@/components/intros/shs/integrated-science/LifeCyclesPlantsAnimalsIntro';
+import LifeCyclesHumanDevelopmentIntro from '@/components/intros/shs/integrated-science/LifeCyclesHumanDevelopmentIntro';
+import NutrientCyclesNitrogenCarbonIntro from '@/components/intros/shs/integrated-science/NutrientCyclesNitrogenCarbonIntro';
+import WaterCycleIntro from '@/components/intros/shs/integrated-science/WaterCycleIntro';
+import ReproductionAsexualSexualIntro from '@/components/intros/shs/integrated-science/ReproductionAsexualSexualIntro';
+import ReproductionFertilizationDevelopmentIntro from '@/components/intros/shs/integrated-science/ReproductionFertilizationDevelopmentIntro';
+import ElectricityMagnetismConceptsIntro from '@/components/lesson-intros/integrated-science/shs2/ElectricityMagnetismConceptsIntro';
 import { CarouselLesson } from '@/components/CarouselLesson';
 import { 
   addBookmark, 
@@ -731,6 +738,20 @@ export default function LessonPage() {
               <UnitsInstrumentsIntro />
             ) : lessonSlug === 'is-accuracy-precision-measurement' ? (
               <AccuracyPrecisionIntro />
+            ) : lessonSlug === 'is-cy-life-cycles-plants-animals' ? (
+              <LifeCyclesPlantsAnimalsIntro />
+            ) : lessonSlug === 'is-cy-life-cycles-human-development' ? (
+              <LifeCyclesHumanDevelopmentIntro />
+            ) : lessonSlug === 'is-cy-nutrient-cycles-nitrogen-carbon' ? (
+              <NutrientCyclesNitrogenCarbonIntro />
+            ) : lessonSlug === 'is-cy-nutrient-cycles-water' ? (
+              <WaterCycleIntro />
+            ) : lessonSlug === 'is-cy-reproduction-asexual-sexual' ? (
+              <ReproductionAsexualSexualIntro />
+            ) : lessonSlug === 'is-cy-reproduction-fertilization-development' ? (
+              <ReproductionFertilizationDevelopmentIntro />
+            ) : lessonSlug === 'is-em-electricity-magnetism-concepts' ? (
+              <ElectricityMagnetismConceptsIntro />
             ) : (
               // Fallback - should not reach here if all intros are properly mapped
               null

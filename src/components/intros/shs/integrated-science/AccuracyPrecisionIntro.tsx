@@ -242,17 +242,17 @@ export default function AccuracyPrecisionIntro({ onComplete, className }: Accura
       </div>
 
       <div className="absolute top-4 left-4 right-16 flex gap-1 pointer-events-none">{scenes.map((_, index) => (<div key={index} className={`h-1 flex-1 rounded-full transition-all ${index <= currentScene ? 'bg-white' : 'bg-white/30'}`} />))}</div>
-      <Button onClick={(e) => { e.stopPropagation(); handleSkipIntro(); }} variant="ghost" className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white rounded-full px-3 py-1 text-sm z-50">Skip Intro <X className="ml-1 h-4 w-4" /></Button>
+      <Button onClick={(e) => { e.stopPropagation(); handleSkipIntro(); }} variant="ghost" size="sm" className="absolute top-4 right-4 text-white hover:!text-white bg-transparent hover:!bg-white/20 active:!bg-white/30 rounded-full px-3 py-1 text-sm z-50">Skip Intro <X className="ml-1 h-4 w-4" /></Button>
 
       <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between z-50">
         <div className="flex gap-2">
-          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); togglePlayPause(); }} className="bg-white/20 hover:bg-white/30 text-white rounded-full">{isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</Button>
-          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleMute(); }} className="bg-white/20 hover:bg-white/30 text-white rounded-full">{isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}</Button>
+          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); togglePlayPause(); }} className="text-white hover:!text-white bg-transparent hover:!bg-white/20 active:!bg-white/30 rounded-full">{isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</Button>
+          <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); toggleMute(); }} className="text-white hover:!text-white bg-transparent hover:!bg-white/20 active:!bg-white/30 rounded-full">{isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}</Button>
         </div>
         <div className="flex items-center gap-2">
-          <Button onClick={(e) => { e.stopPropagation(); handlePrev(); }} disabled={currentScene === 0} className="bg-white/20 hover:bg-white/30 text-white rounded-full px-3 disabled:opacity-40"><SkipBack className="mr-1 h-4 w-4" /> Prev</Button>
+          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); handlePrev(); }} disabled={currentScene === 0} className="text-white hover:!text-white bg-transparent hover:!bg-white/20 active:!bg-white/30 rounded-full px-3 disabled:opacity-40"><SkipBack className="mr-1 h-4 w-4" /> Prev</Button>
           <span className="text-white/80 text-sm min-w-[50px] text-center">{currentScene + 1} / {scenes.length}</span>
-          <Button onClick={(e) => { e.stopPropagation(); handleNext(); }} className="bg-white/20 hover:bg-white/30 text-white rounded-full px-3">{currentScene < scenes.length - 1 ? (<>Next <SkipForward className="ml-1 h-4 w-4" /></>) : (<>Start Learning <ChevronRight className="ml-1 h-4 w-4" /></>)}</Button>
+          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); handleNext(); }} className="text-white hover:!text-white bg-transparent hover:!bg-white/20 active:!bg-white/30 rounded-full px-3">{currentScene < scenes.length - 1 ? (<>Next <SkipForward className="ml-1 h-4 w-4" /></>) : (<>Start Learning <ChevronRight className="ml-1 h-4 w-4" /></>)}</Button>
         </div>
       </div>
 

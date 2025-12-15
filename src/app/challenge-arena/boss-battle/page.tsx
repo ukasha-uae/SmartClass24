@@ -5,9 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { 
-  Swords, Zap, Trophy, BrainCircuit, ArrowLeft, Star
+  Swords, BrainCircuit, ArrowLeft, ArrowRight, Star, CheckCircle2, Trophy
 } from 'lucide-react';
 import {
   Select,
@@ -19,198 +18,259 @@ import {
 import {
   AI_BOSSES,
   createBossChallenge,
-  AIBoss
+  AIBoss,
+  getPlayerProfile,
+  createOrUpdatePlayer
 } from '@/lib/challenge';
+import type { Player } from '@/lib/challenge';
 import { useFirebase } from '@/firebase/provider';
+import { useToast } from '@/hooks/use-toast';
 
 export default function BossBattlePage() {
   const router = useRouter();
   const { user } = useFirebase();
+  const { toast } = useToast();
   
+  const [step, setStep] = useState(1);
   const [selectedBoss, setSelectedBoss] = useState<AIBoss | null>(null);
   const [subject, setSubject] = useState('');
   const [isStarting, setIsStarting] = useState(false);
 
-  // Get subjects based on user's education level from localStorage
   const getSubjectsForLevel = () => {
     if (typeof window !== 'undefined') {
       const savedLevel = localStorage.getItem('userEducationLevel');
       if (savedLevel === 'SHS') {
-        return [
-          'Core Mathematics',
-          'English Language',
-          'Integrated Science',
-          'Social Studies',
-        ];
+        return ['Core Mathematics', 'English Language', 'Integrated Science', 'Social Studies'];
       }
     }
-    return [
-      'Mathematics',
-      'English Language',
-      'Integrated Science',
-      'Social Studies',
-      'Religious & Moral Education',
-      'Creative Arts',
-      'French',
-      'Ghanaian Language',
-      'ICT',
-    ];
+    return ['Mathematics', 'English Language', 'Integrated Science', 'Social Studies', 'ICT'];
   };
 
   const subjects = getSubjectsForLevel();
   
-  // Set default subject on mount
   if (!subject && subjects.length > 0) {
     setSubject(subjects[0]);
   }
 
   const handleStartBattle = () => {
-    if (!selectedBoss || !user) return;
+    if (!selectedBoss) {
+      toast({ title: 'Select a Boss', description: 'Please select an AI opponent first.', variant: 'destructive' });
+      return;
+    }
+    
+    if (!user) {
+      toast({ title: 'Sign In Required', description: 'Please sign in to start a battle.', variant: 'destructive' });
+      return;
+    }
     
     setIsStarting(true);
     
-    // Create the challenge
+    // Ensure player profile exists
+    let player = getPlayerProfile(user.uid);
+    if (!player) {
+      // Create a player profile if it doesn't exist
+      player = createOrUpdatePlayer({
+        userId: user.uid, 
+        userName: user.displayName || user.email || 'Player',
+        school: 'My School',
+        level: 'JHS'
+      });
+    }
+    
     const challenge = createBossChallenge(user.uid, selectedBoss.id, subject);
     
     if (challenge) {
-      // Redirect to play
+      toast({ title: 'Battle Started!', description: `You are battling ${selectedBoss.name}!` });
       router.push(`/challenge-arena/play/${challenge.id}`);
     } else {
+      toast({ title: 'Error', description: 'Failed to create battle. Please try again.', variant: 'destructive' });
       setIsStarting(false);
     }
   };
 
+  const canProceed = () => {
+    if (step === 1) return !!selectedBoss;
+    if (step === 2) return !!subject;
+    return true;
+  };
+
+  const nextStep = () => {
+    if (step < 2) setStep(step + 1);
+    else handleStartBattle();
+  };
+
   return (
-    <div className="container mx-auto p-3 sm:p-6 pb-20">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-2 mb-6">
-          <Button variant="ghost" size="icon" onClick={() => router.push('/challenge-arena')}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <BrainCircuit className="h-8 w-8 text-purple-500" />
-              AI Boss Battles
-            </h1>
-            <p className="text-muted-foreground">Challenge intelligent opponents to test your skills</p>
-          </div>
+    <div className="container mx-auto p-4 md:p-6 max-w-2xl">
+      {/* Header with Progress */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <BrainCircuit className="h-6 w-6 text-purple-500" />
+            AI Boss Battle
+          </h1>
+          <span className="text-sm text-muted-foreground">Step {step} of 2</span>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Boss Selection */}
-          <div className="md:col-span-2 space-y-4">
-            <h2 className="text-xl font-semibold">Select Your Opponent</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {AI_BOSSES.map((boss) => (
-                <Card 
-                  key={boss.id}
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    selectedBoss?.id === boss.id 
-                      ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/20 ring-2 ring-purple-500 ring-offset-2' 
-                      : 'hover:border-purple-200'
-                  }`}
-                  onClick={() => setSelectedBoss(boss)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="text-4xl bg-background rounded-full p-2 shadow-sm">
-                        {boss.avatar}
-                      </div>
-                      <Badge variant={
-                        boss.difficulty === 'easy' ? 'secondary' :
-                        boss.difficulty === 'medium' ? 'default' :
-                        boss.difficulty === 'hard' ? 'destructive' : 'outline'
-                      } className={boss.difficulty === 'insane' ? 'border-purple-500 text-purple-500' : ''}>
-                        {boss.difficulty.toUpperCase()}
-                      </Badge>
-                    </div>
-                    <h3 className="font-bold text-lg">{boss.name}</h3>
-                    <p className="text-sm text-purple-600 dark:text-purple-400 font-medium mb-1">{boss.title}</p>
-                    <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
-                      {boss.description}
-                    </p>
-                    <div className="flex items-center gap-1 text-xs font-medium text-yellow-600 dark:text-yellow-500">
-                      <Star className="h-3 w-3 fill-current" />
-                      Reward: {boss.xpReward} XP
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Battle Setup */}
-          <div className="space-y-6">
-            <Card className="sticky top-6">
-              <CardHeader>
-                <CardTitle>Battle Setup</CardTitle>
-                <CardDescription>Configure your match</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Subject</label>
-                  <Select value={subject} onValueChange={setSubject}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select subject" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subjects.map(s => (
-                        <SelectItem key={s} value={s}>{s}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {selectedBoss ? (
-                  <div className="p-4 bg-muted rounded-lg space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">{selectedBoss.avatar}</div>
-                      <div>
-                        <p className="font-bold text-sm">VS {selectedBoss.name}</p>
-                        <p className="text-xs text-muted-foreground">{selectedBoss.title}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-1 text-xs text-muted-foreground">
-                      <div className="flex justify-between">
-                        <span>Difficulty:</span>
-                        <span className="font-medium capitalize">{selectedBoss.difficulty}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Accuracy:</span>
-                        <span className="font-medium">{selectedBoss.accuracy * 100}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Win Reward:</span>
-                        <span className="font-medium text-yellow-600">{selectedBoss.xpReward} XP</span>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-8 text-center border-2 border-dashed rounded-lg text-muted-foreground text-sm">
-                    Select an opponent to see details
-                  </div>
-                )}
-
-                <Button 
-                  className="w-full bg-purple-600 hover:bg-purple-700" 
-                  size="lg"
-                  disabled={!selectedBoss || isStarting}
-                  onClick={handleStartBattle}
-                >
-                  {isStarting ? (
-                    <>Starting...</>
-                  ) : (
-                    <>
-                      <Swords className="h-4 w-4 mr-2" />
-                      Start Battle
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+        
+        {/* Progress Bar */}
+        <div className="flex gap-2">
+          {[1, 2].map((s) => (
+            <div 
+              key={s} 
+              className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? 'bg-purple-500' : 'bg-muted'}`}
+            />
+          ))}
         </div>
       </div>
+
+      <Card className="overflow-hidden">
+        {/* Step 1: Boss Selection */}
+        {step === 1 && (
+          <div className="animate-in fade-in duration-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Choose Opponent</CardTitle>
+              <CardDescription>Select an AI boss to battle</CardDescription>
+            </CardHeader>
+            <CardContent className="pb-4">
+              <div className="grid grid-cols-1 gap-3 max-h-80 overflow-y-auto pr-1">
+                {AI_BOSSES.map((boss) => (
+                  <button
+                    key={boss.id}
+                    className={`flex items-center gap-3 p-3 rounded-xl border-2 text-left transition-all ${
+                      selectedBoss?.id === boss.id 
+                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/20' 
+                        : 'border-transparent bg-muted/50 hover:bg-muted'
+                    }`}
+                    onClick={() => setSelectedBoss(boss)}
+                  >
+                    <div className="text-3xl shrink-0">{boss.avatar}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-sm">{boss.name}</span>
+                        <Badge 
+                          variant={boss.difficulty === 'easy' ? 'secondary' : boss.difficulty === 'medium' ? 'default' : 'destructive'} 
+                          className={`text-[10px] px-1.5 py-0 ${boss.difficulty === 'insane' ? 'border-purple-500 text-purple-500 bg-transparent' : ''}`}
+                        >
+                          {boss.difficulty.toUpperCase()}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-purple-600 dark:text-purple-400">{boss.title}</p>
+                      <div className="flex items-center gap-1 text-xs text-yellow-600 mt-1">
+                        <Star className="h-3 w-3 fill-current" />
+                        {boss.xpReward} XP
+                      </div>
+                    </div>
+                    {selectedBoss?.id === boss.id && (
+                      <CheckCircle2 className="h-5 w-5 text-purple-500 shrink-0" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </div>
+        )}
+
+        {/* Step 2: Subject & Confirmation */}
+        {step === 2 && selectedBoss && (
+          <div className="animate-in fade-in duration-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Battle Settings</CardTitle>
+              <CardDescription>Choose subject and confirm</CardDescription>
+            </CardHeader>
+            <CardContent className="pb-4 space-y-4">
+              {/* Subject Select */}
+              <div className="space-y-2">
+                <label className="text-xs text-muted-foreground">Subject</label>
+                <Select value={subject} onValueChange={setSubject}>
+                  <SelectTrigger className="h-10">
+                    <SelectValue placeholder="Select subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subjects.map(s => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Battle Summary */}
+              <div className="bg-purple-50 dark:bg-purple-950/20 rounded-xl p-4 space-y-3">
+                <div className="flex items-center gap-3 pb-3 border-b border-purple-200 dark:border-purple-800">
+                  <div className="text-3xl">{selectedBoss.avatar}</div>
+                  <div>
+                    <p className="font-bold">VS {selectedBoss.name}</p>
+                    <p className="text-xs text-purple-600 dark:text-purple-400">{selectedBoss.title}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-muted-foreground text-xs">Difficulty</span>
+                    <p className="font-medium capitalize">{selectedBoss.difficulty}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">AI Accuracy</span>
+                    <p className="font-medium">{selectedBoss.accuracy * 100}%</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">Questions</span>
+                    <p className="font-medium">10</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">Win Reward</span>
+                    <p className="font-medium text-yellow-600 flex items-center gap-1">
+                      <Trophy className="h-3 w-3" /> {selectedBoss.xpReward} XP
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </div>
+        )}
+
+        {/* Navigation Footer */}
+        <div className="border-t px-4 py-3 flex items-center justify-between bg-muted/30">
+          {step === 1 ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push('/challenge-arena')}
+              className="gap-1"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setStep(step - 1)}
+              className="gap-1"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+          )}
+          
+          <Button
+            size="sm"
+            onClick={nextStep}
+            disabled={!canProceed() || isStarting}
+            className="gap-1 bg-purple-600 hover:bg-purple-700"
+          >
+            {isStarting ? 'Starting...' : step === 2 ? 'Start Battle' : 'Next'}
+            {!isStarting && step < 2 && <ArrowRight className="h-4 w-4" />}
+            {!isStarting && step === 2 && <Swords className="h-4 w-4" />}
+          </Button>
+        </div>
+      </Card>
+
+      {/* Summary Preview (always visible) */}
+      {selectedBoss && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <span className="bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-1 rounded-full">{selectedBoss.name}</span>
+          <span className="bg-muted px-2 py-1 rounded-full capitalize">{selectedBoss.difficulty}</span>
+          {subject && <span className="bg-muted px-2 py-1 rounded-full">{subject}</span>}
+        </div>
+      )}
     </div>
   );
 }

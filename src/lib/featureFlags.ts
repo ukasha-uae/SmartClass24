@@ -92,6 +92,14 @@ export const FEATURE_FLAGS = {
       'is-diversity-matter-shs1',
       'is-measurement-units-instruments',
       'is-accuracy-precision-measurement',
+      // SHS2 Integrated Science Topics
+      'is-cy-life-cycles-plants-animals',
+      'is-cy-life-cycles-human-development',
+      'is-cy-nutrient-cycles-nitrogen-carbon',
+      'is-cy-nutrient-cycles-water',
+      'is-cy-reproduction-asexual-sexual',
+      'is-cy-reproduction-fertilization-development',
+      'is-em-electricity-magnetism-concepts',
     ], // Support multiple topic formats
     lessons: [
       'quadratic-equations',
@@ -174,7 +182,15 @@ export const FEATURE_FLAGS = {
       'is-diversity-matter-shs1', // Elements, Compounds & Mixtures
       'is-measurement-units-instruments', // Units and Instruments (Measurement)
       'is-accuracy-precision-measurement', // Accuracy and Precision in Measurement
-    ], // SHS3 (29) + SHS2 (11) + SHS1 (16) + Science (21) = 77 lessons total
+      // Integrated Science Lessons (SHS2)
+      'is-cy-life-cycles-plants-animals', // Life Cycles: Plants and Animals
+      'is-cy-life-cycles-human-development', // Life Cycles: Human Development
+      'is-cy-nutrient-cycles-nitrogen-carbon', // Nutrient Cycles: Nitrogen and Carbon
+      'is-cy-nutrient-cycles-water', // Nutrient Cycles: Water Cycle
+      'is-cy-reproduction-asexual-sexual', // Reproduction: Asexual and Sexual
+      'is-cy-reproduction-fertilization-development', // Reproduction: Fertilization and Development
+      'is-em-electricity-magnetism-concepts', // Electricity and Magnetism: Concepts
+    ], // SHS3 (29) + SHS2 (12) + SHS1 (16) + Science SHS1 (22) + Science SHS2 (7) = 86 lessons total
   },
 };
 

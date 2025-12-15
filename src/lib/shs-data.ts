@@ -5,6 +5,7 @@ import { coreMathSHS1Lessons } from './shs-lessons-data';
 import { coreMathSHS2Lessons } from './shs2-lessons-data';
 import { coreMathSHS3Lessons } from './shs3-lessons-data';
 import { integratedScienceSHS1Lessons } from './integrated-science-shs1-lessons-data';
+import { integratedScienceSHS2Lessons } from './integrated-science-shs2-lessons-data';
 import type { Lesson } from './types';
 
 export interface Topic {
@@ -193,7 +194,7 @@ const getFullIntegratedScienceTopics = (): Topic[] => [
   { id: "is-cy-reproduction-fertilization-development", name: "Reproduction: Fertilization and Development", slug: "is-cy-reproduction-fertilization-development", progressValue: 0, gradeLevel: "SHS 2 - Unit 6: Cycles" },
 
   // Unit 7: Energy (Continued)
-  { id: "is-en-electricity-magnetism-concepts-applications", name: "Electricity and Magnetism: Concepts & Applications", slug: "is-en-electricity-magnetism-concepts-applications", progressValue: 0, gradeLevel: "SHS 2 - Unit 7: Energy (Continued)" },
+  { id: "is-em-electricity-magnetism-concepts", name: "Electricity and Magnetism: Concepts", slug: "is-em-electricity-magnetism-concepts", progressValue: 0, gradeLevel: "SHS 2 - Unit 7: Energy (Continued)" },
   { id: "is-en-electricity-magnetism-simple-circuits", name: "Electricity and Magnetism: Simple Circuits", slug: "is-en-electricity-magnetism-simple-circuits", progressValue: 0, gradeLevel: "SHS 2 - Unit 7: Energy (Continued)" },
   { id: "is-en-work-machines-force-work-power", name: "Work and Machines: Force, Work, Power", slug: "is-en-work-machines-force-work-power", progressValue: 0, gradeLevel: "SHS 2 - Unit 7: Energy (Continued)" },
   { id: "is-en-work-machines-simple-machines-uses", name: "Work and Machines: Simple Machines & Uses", slug: "is-en-work-machines-simple-machines-uses", progressValue: 0, gradeLevel: "SHS 2 - Unit 7: Energy (Continued)" },
@@ -1365,7 +1366,7 @@ export const getSHSLesson = (subjectSlug: string, topicSlug: string, lessonSlug:
   
   // Integrated Science lessons
   if (subjectSlug === 'integrated-science') {
-    const allLessons = [...integratedScienceSHS1Lessons];
+    const allLessons = [...integratedScienceSHS1Lessons, ...integratedScienceSHS2Lessons];
 
     // Helper to strip shs1-, shs2-, shs3- prefix
     const stripPrefix = (slug: string) => slug.replace(/^shs[123]-/, '');

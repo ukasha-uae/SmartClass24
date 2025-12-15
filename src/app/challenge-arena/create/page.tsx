@@ -19,22 +19,24 @@ import {
   Clock,
   Trophy,
   Search,
-  CheckCircle2
+  CheckCircle2,
+  ArrowRight,
+  ArrowLeft
 } from 'lucide-react';
 import { createChallenge, Challenge, getAllPlayers, Player } from '@/lib/challenge';
 import { useToast } from '@/hooks/use-toast';
 
 const SUBJECTS = [
-  { id: 'math', name: 'Mathematics', icon: Calculator, color: 'text-blue-500' },
-  { id: 'english', name: 'English Language', icon: BookOpen, color: 'text-green-500' },
-  { id: 'science', name: 'Integrated Science', icon: FlaskConical, color: 'text-orange-500' },
-  { id: 'social', name: 'Social Studies', icon: Globe, color: 'text-purple-500' },
+  { id: 'math', name: 'Maths', icon: Calculator, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+  { id: 'english', name: 'English', icon: BookOpen, color: 'text-green-500', bg: 'bg-green-500/10' },
+  { id: 'science', name: 'Science', icon: FlaskConical, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+  { id: 'social', name: 'Social Studies', icon: Globe, color: 'text-purple-500', bg: 'bg-purple-500/10' },
 ];
 
 const DIFFICULTIES = [
-  { id: 'easy', name: 'Easy', description: 'Basic concepts, 5 questions' },
-  { id: 'medium', name: 'Medium', description: 'Standard level, 10 questions' },
-  { id: 'hard', name: 'Hard', description: 'Advanced problems, 15 questions' },
+  { id: 'easy', name: 'Easy', questions: 5, color: 'text-green-500' },
+  { id: 'medium', name: 'Medium', questions: 10, color: 'text-yellow-500' },
+  { id: 'hard', name: 'Hard', questions: 15, color: 'text-red-500' },
 ];
 
 export default function CreateChallengePage() {
@@ -54,7 +56,6 @@ export default function CreateChallengePage() {
 
   useEffect(() => {
     const allPlayers = getAllPlayers();
-    // Filter out current user (mocked as user-1)
     setFriends(allPlayers.filter(p => p.userId !== 'user-1'));
   }, []);
 
@@ -63,43 +64,20 @@ export default function CreateChallengePage() {
     friend.school.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const selectedFriend = friends.find(f => f.userId === formData.opponentId);
+
   const handleCreate = async () => {
     setLoading(true);
     try {
-      // Mock current user
-      const currentUser = {
-        id: 'user-1',
-        name: 'Kwame Asante',
-        school: 'Accra Community School'
-      };
-
+      const currentUser = { id: 'user-1', name: 'Kwame Asante', school: 'Accra Community School' };
       const questionCount = formData.difficulty === 'easy' ? 5 : formData.difficulty === 'medium' ? 10 : 15;
       const timeLimit = formData.difficulty === 'easy' ? 30 : formData.difficulty === 'medium' ? 45 : 60;
-
-      // If quick match, we'd find a random opponent, but for now we'll just create it
-      // If friend match, we'd need an opponent selector.
       
       let opponents: any[] = [];
-      
-      if (formData.type === 'friend') {
-        if (!formData.opponentId) {
-          toast({
-            title: 'Select an Opponent',
-            description: 'Please select a friend to challenge.',
-            variant: 'destructive',
-          });
-          setLoading(false);
-          return;
-        }
-        
-        const selectedFriend = friends.find(f => f.userId === formData.opponentId);
-        if (selectedFriend) {
-          opponents = [{
-            userId: selectedFriend.userId,
-            userName: selectedFriend.userName,
-            school: selectedFriend.school,
-            status: 'invited' as const
-          }];
+      if (formData.type === 'friend' && formData.opponentId) {
+        const friend = friends.find(f => f.userId === formData.opponentId);
+        if (friend) {
+          opponents = [{ userId: friend.userId, userName: friend.userName, school: friend.school, status: 'invited' as const }];
         }
       }
 
@@ -117,196 +95,270 @@ export default function CreateChallengePage() {
         maxPlayers: 2,
       });
 
-      toast({
-        title: 'Challenge Created!',
-        description: 'Get ready to battle!',
-      });
-
+      toast({ title: 'Challenge Created!', description: 'Get ready to battle!' });
       router.push(`/challenge-arena/play/${challenge.id}`);
     } catch (error) {
-      console.error(error);
-      toast({
-        title: 'Error',
-        description: 'Failed to create challenge',
-        variant: 'destructive',
-      });
+      toast({ title: 'Error', description: 'Failed to create challenge', variant: 'destructive' });
     } finally {
       setLoading(false);
     }
   };
 
+  const canProceed = () => {
+    if (step === 1) return !!formData.subject;
+    if (step === 2) return true; // difficulty always selected
+    if (step === 3) return formData.type === 'quick' || (formData.type === 'friend' && formData.opponentId);
+    return true;
+  };
+
+  const nextStep = () => {
+    if (step < 3) setStep(step + 1);
+    else handleCreate();
+  };
+
   return (
-    <div className="container mx-auto p-4 md:p-6 max-w-3xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Swords className="h-8 w-8 text-primary" />
-          Create Challenge
-        </h1>
-        <p className="text-muted-foreground">Set up your battle arena</p>
+    <div className="container mx-auto p-4 md:p-6 max-w-2xl">
+      {/* Header with Progress */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Swords className="h-6 w-6 text-primary" />
+            Challenge Arena
+          </h1>
+          <span className="text-sm text-muted-foreground">Step {step} of 3</span>
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="flex gap-2">
+          {[1, 2, 3].map((s) => (
+            <div 
+              key={s} 
+              className={`h-1.5 flex-1 rounded-full transition-colors ${s <= step ? 'bg-primary' : 'bg-muted'}`}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="grid gap-6">
-        {/* Subject Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">1. Choose Subject</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {SUBJECTS.map((subject) => (
-                <div
-                  key={subject.id}
-                  className={`cursor-pointer rounded-lg border-2 p-4 hover:bg-muted/50 transition-all ${
-                    formData.subject === subject.id ? 'border-primary bg-primary/5' : 'border-transparent bg-card shadow-sm'
-                  }`}
-                  onClick={() => setFormData({ ...formData, subject: subject.id })}
-                >
-                  <div className="flex flex-col items-center text-center gap-2">
-                    <subject.icon className={`h-8 w-8 ${subject.color}`} />
-                    <span className="font-medium text-sm">{subject.name}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Difficulty Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">2. Select Difficulty</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup 
-              value={formData.difficulty} 
-              onValueChange={(val) => setFormData({ ...formData, difficulty: val })}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
-            >
-              {DIFFICULTIES.map((diff) => (
-                <div key={diff.id}>
-                  <RadioGroupItem value={diff.id} id={diff.id} className="peer sr-only" />
-                  <Label
-                    htmlFor={diff.id}
-                    className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer h-full"
-                  >
-                    <div className="mb-2">
-                      {diff.id === 'easy' && <Zap className="h-6 w-6 text-green-500" />}
-                      {diff.id === 'medium' && <Zap className="h-6 w-6 text-yellow-500" />}
-                      {diff.id === 'hard' && <Zap className="h-6 w-6 text-red-500" />}
-                    </div>
-                    <div className="text-center">
-                      <div className="font-semibold capitalize">{diff.name}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{diff.description}</div>
-                    </div>
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </CardContent>
-        </Card>
-
-        {/* Challenge Type */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">3. Challenge Type</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div
-                className={`cursor-pointer rounded-lg border-2 p-4 flex items-center gap-4 transition-all ${
-                  formData.type === 'quick' ? 'border-primary bg-primary/5' : 'border-muted'
-                }`}
-                onClick={() => setFormData({ ...formData, type: 'quick' })}
-              >
-                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-blue-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">Quick Match</h3>
-                  <p className="text-sm text-muted-foreground">Play against a random opponent</p>
-                </div>
-              </div>
-
-              <div
-                className={`cursor-pointer rounded-lg border-2 p-4 flex items-center gap-4 transition-all ${
-                  formData.type === 'friend' ? 'border-primary bg-primary/5' : 'border-muted'
-                }`}
-                onClick={() => setFormData({ ...formData, type: 'friend' })}
-              >
-                <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                  <Users className="h-5 w-5 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold">Challenge a Friend</h3>
-                  <p className="text-sm text-muted-foreground">Invite a specific friend to duel</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Friend Selection */}
-        {formData.type === 'friend' && (
-          <Card className="animate-in fade-in slide-in-from-top-4 duration-300">
-            <CardHeader>
-              <CardTitle className="text-lg">4. Select Opponent</CardTitle>
-              <CardDescription>Choose a friend to challenge</CardDescription>
+      <Card className="overflow-hidden">
+        {/* Step 1: Subject */}
+        {step === 1 && (
+          <div className="animate-in fade-in duration-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Choose Subject</CardTitle>
+              <CardDescription>What do you want to battle in?</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="mb-4 relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Search friends..." 
-                  className="pl-9"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 overflow-y-auto pr-2">
-                {filteredFriends.map((friend) => (
-                  <div
-                    key={friend.userId}
-                    className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                      formData.opponentId === friend.userId 
-                        ? 'border-primary bg-primary/5' 
+            <CardContent className="pb-4">
+              <div className="grid grid-cols-2 gap-3">
+                {SUBJECTS.map((subject) => (
+                  <button
+                    key={subject.id}
+                    className={`flex items-center gap-2 p-3 rounded-xl border-2 transition-all overflow-hidden ${
+                      formData.subject === subject.id 
+                        ? 'border-primary bg-primary/5 shadow-sm' 
                         : 'border-transparent bg-muted/50 hover:bg-muted'
                     }`}
-                    onClick={() => setFormData({ ...formData, opponentId: friend.userId })}
+                    onClick={() => setFormData({ ...formData, subject: subject.id })}
                   >
-                    <Avatar>
-                      <AvatarFallback>{friend.userName.substring(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 overflow-hidden">
-                      <p className="font-medium truncate">{friend.userName}</p>
-                      <p className="text-xs text-muted-foreground truncate">{friend.school}</p>
+                    <div className={`p-2 rounded-lg shrink-0 ${subject.bg}`}>
+                      <subject.icon className={`h-5 w-5 ${subject.color}`} />
                     </div>
-                    {formData.opponentId === friend.userId && (
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    <span className="font-medium text-sm truncate flex-1 text-left">{subject.name}</span>
+                    {formData.subject === subject.id && (
+                      <CheckCircle2 className="h-4 w-4 text-primary ml-auto" />
                     )}
-                  </div>
+                  </button>
                 ))}
-                
-                {filteredFriends.length === 0 && (
-                  <div className="col-span-full text-center py-8 text-muted-foreground">
-                    No friends found matching "{searchQuery}"
-                  </div>
-                )}
               </div>
             </CardContent>
-          </Card>
+          </div>
         )}
 
-        <Button 
-          size="lg" 
-          className="w-full md:w-auto md:self-end"
-          disabled={!formData.subject || loading}
-          onClick={handleCreate}
-        >
-          {loading ? 'Creating Arena...' : 'Start Challenge'}
-          {!loading && <Swords className="ml-2 h-4 w-4" />}
-        </Button>
-      </div>
+        {/* Step 2: Difficulty & Type */}
+        {step === 2 && (
+          <div className="animate-in fade-in duration-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Battle Settings</CardTitle>
+              <CardDescription>Choose difficulty and opponent type</CardDescription>
+            </CardHeader>
+            <CardContent className="pb-4 space-y-4">
+              {/* Difficulty - Compact */}
+              <div>
+                <Label className="text-xs text-muted-foreground mb-2 block">Difficulty</Label>
+                <div className="flex gap-2">
+                  {DIFFICULTIES.map((diff) => (
+                    <button
+                      key={diff.id}
+                      className={`flex-1 py-2 px-3 rounded-lg border-2 text-center transition-all ${
+                        formData.difficulty === diff.id 
+                          ? 'border-primary bg-primary/5' 
+                          : 'border-transparent bg-muted/50 hover:bg-muted'
+                      }`}
+                      onClick={() => setFormData({ ...formData, difficulty: diff.id })}
+                    >
+                      <div className={`font-semibold text-sm ${diff.color}`}>{diff.name}</div>
+                      <div className="text-xs text-muted-foreground">{diff.questions} Qs</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Challenge Type - Compact */}
+              <div>
+                <Label className="text-xs text-muted-foreground mb-2 block">Opponent</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    className={`p-3 rounded-xl border-2 text-left transition-all ${
+                      formData.type === 'quick' ? 'border-primary bg-primary/5' : 'border-transparent bg-muted/50 hover:bg-muted'
+                    }`}
+                    onClick={() => setFormData({ ...formData, type: 'quick', opponentId: '' })}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Zap className="h-4 w-4 text-blue-500" />
+                      <span className="font-semibold text-sm">Quick Match</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Random opponent</p>
+                  </button>
+                  <button
+                    className={`p-3 rounded-xl border-2 text-left transition-all ${
+                      formData.type === 'friend' ? 'border-primary bg-primary/5' : 'border-transparent bg-muted/50 hover:bg-muted'
+                    }`}
+                    onClick={() => setFormData({ ...formData, type: 'friend' })}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-purple-500" />
+                      <span className="font-semibold text-sm">Challenge Friend</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">Pick a friend</p>
+                  </button>
+                </div>
+              </div>
+            </CardContent>
+          </div>
+        )}
+
+        {/* Step 3: Friend Selection OR Confirmation */}
+        {step === 3 && (
+          <div className="animate-in fade-in duration-200">
+            {formData.type === 'friend' ? (
+              <>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">Select Friend</CardTitle>
+                  <div className="relative mt-2">
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input 
+                      placeholder="Search..." 
+                      className="pl-9 h-9"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent className="pb-4">
+                  <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto">
+                    {filteredFriends.map((friend) => (
+                      <button
+                        key={friend.userId}
+                        className={`flex items-center gap-3 p-2.5 rounded-lg border-2 transition-all ${
+                          formData.opponentId === friend.userId 
+                            ? 'border-primary bg-primary/5' 
+                            : 'border-transparent bg-muted/50 hover:bg-muted'
+                        }`}
+                        onClick={() => setFormData({ ...formData, opponentId: friend.userId })}
+                      >
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="text-xs">{friend.userName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 text-left overflow-hidden">
+                          <p className="font-medium text-sm truncate">{friend.userName}</p>
+                          <p className="text-xs text-muted-foreground truncate">{friend.school}</p>
+                        </div>
+                        {formData.opponentId === friend.userId && (
+                          <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                        )}
+                      </button>
+                    ))}
+                    {filteredFriends.length === 0 && (
+                      <p className="text-center py-6 text-sm text-muted-foreground">No friends found</p>
+                    )}
+                  </div>
+                </CardContent>
+              </>
+            ) : (
+              <>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">Ready to Battle!</CardTitle>
+                  <CardDescription>Review your challenge settings</CardDescription>
+                </CardHeader>
+                <CardContent className="pb-4">
+                  <div className="bg-muted/50 rounded-xl p-4 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Subject</span>
+                      <span className="font-medium text-sm">{SUBJECTS.find(s => s.id === formData.subject)?.name}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Difficulty</span>
+                      <span className="font-medium text-sm capitalize">{formData.difficulty}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Questions</span>
+                      <span className="font-medium text-sm">{DIFFICULTIES.find(d => d.id === formData.difficulty)?.questions}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Opponent</span>
+                      <span className="font-medium text-sm">Random Match</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Navigation Footer */}
+        <div className="border-t px-4 py-3 flex items-center justify-between bg-muted/30">
+          {step === 1 ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push('/challenge-arena')}
+              className="gap-1"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Cancel
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setStep(step - 1)}
+              className="gap-1"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+          )}
+          
+          <Button
+            size="sm"
+            onClick={nextStep}
+            disabled={!canProceed() || loading}
+            className="gap-1"
+          >
+            {loading ? 'Creating...' : step === 3 ? 'Start Challenge' : 'Next'}
+            {!loading && step < 3 && <ArrowRight className="h-4 w-4" />}
+            {!loading && step === 3 && <Swords className="h-4 w-4" />}
+          </Button>
+        </div>
+      </Card>
+
+      {/* Summary Preview (always visible) */}
+      {formData.subject && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          <span className="bg-muted px-2 py-1 rounded-full">{SUBJECTS.find(s => s.id === formData.subject)?.name}</span>
+          <span className="bg-muted px-2 py-1 rounded-full capitalize">{formData.difficulty}</span>
+          <span className="bg-muted px-2 py-1 rounded-full">{formData.type === 'quick' ? 'Quick Match' : selectedFriend?.userName || 'Select friend'}</span>
+        </div>
+      )}
     </div>
   );
 }
