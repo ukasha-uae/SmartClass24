@@ -3,6 +3,8 @@
 import { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 
+const VALID_LEVELS = ['primary', 'jhs', 'shs'];
+
 export default function SubjectsCatchAll() {
   const router = useRouter();
   const params = useParams();
@@ -15,8 +17,19 @@ export default function SubjectsCatchAll() {
       
       // If accessing /subjects/something, redirect to /subjects/{level}/something
       if (slug && slug.length > 0) {
-        const path = slug.join('/');
-        router.replace(`/subjects/${level}/${path}`);
+        // Check if the first segment is already a valid level
+        const firstSegment = slug[0]?.toLowerCase();
+        
+        if (VALID_LEVELS.includes(firstSegment)) {
+          // Already has a level - don't add another one
+          // Just reconstruct the path as-is
+          const path = slug.join('/');
+          router.replace(`/subjects/${path}`);
+        } else {
+          // No level in path - prepend the stored level
+          const path = slug.join('/');
+          router.replace(`/subjects/${level}/${path}`);
+        }
       } else {
         router.replace(`/subjects/${level}`);
       }

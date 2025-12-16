@@ -1,6 +1,6 @@
 # Carousel Migration Tracker
 
-**Last Updated**: December 15, 2025  
+**Last Updated**: December 16, 2025  
 **Reference Guide**: [CAROUSEL_LESSONS_GUIDE.md](./CAROUSEL_LESSONS_GUIDE.md)  
 **Strategy Document**: [CAROUSEL_MIGRATION_STRATEGY.md](./CAROUSEL_MIGRATION_STRATEGY.md)
 
@@ -10,10 +10,10 @@
 
 ### Overall Statistics
 - **Total Lessons Planned**: ~800-1000
-- **Migrated**: 15
+- **Migrated**: 33
 - **In Progress**: 0
-- **Remaining**: ~785-985
-- **Progress**: ~1.5-1.9%
+- **Remaining**: ~767-967
+- **Progress**: ~3.3-4.1%
 
 ---
 
@@ -55,6 +55,32 @@
 | Energy Transformation & Conservation | `is-en-forms-of-energy-transformation-conservation` | `EnergyTransformationIntro.tsx` | ✅ Complete | Dec 15, 2025 |
 | Heat Energy & Temperature | `is-en-heat-energy-temperature` | `HeatEnergyIntro.tsx` | ✅ Complete | Dec 15, 2025 |
 | Acids, Bases, and Salts | `is-im-acids-bases-salts-properties-reactions` | `AcidsBasesIntro.tsx` | ✅ Complete | Dec 15, 2025 |
+
+#### Integrated Science (SHS2) - 10 lessons ✅ ALL COMPLETE
+| Lesson | Slug | Intro Component | Status | Date |
+|--------|------|-----------------|--------|------|
+| Life Cycles: Plants & Animals | `is-cy-life-cycles-plants-animals` | `LifeCyclesPlantsAnimalsIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Life Cycles: Human Development | `is-cy-life-cycles-human-development` | `LifeCyclesHumanDevelopmentIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Nutrient Cycles: Nitrogen & Carbon | `is-cy-nutrient-cycles-nitrogen-carbon` | `NutrientCyclesNitrogenCarbonIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Nutrient Cycles: Water Cycle | `is-cy-nutrient-cycles-water` | `WaterCycleIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Reproduction: Asexual & Sexual | `is-cy-reproduction-asexual-sexual` | `ReproductionAsexualSexualIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Reproduction: Fertilization & Development | `is-cy-reproduction-fertilization-development` | `ReproductionFertilizationDevelopmentIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Electricity & Magnetism: Concepts | `is-em-electricity-magnetism-concepts` | `ElectricityMagnetismConceptsIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Electricity & Magnetism: Simple Circuits | `is-en-electricity-magnetism-simple-circuits` | `SimpleCircuitsIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Work & Machines: Force, Work, Power | `is-en-work-machines-force-work-power` | `ForceWorkPowerIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Work & Machines: Simple Machines | `is-en-work-machines-simple-machines-uses` | `SimpleMachinesIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+
+#### Integrated Science (SHS3) - 8 lessons ✅ ALL COMPLETE
+| Lesson | Slug | Intro Component | Status | Date |
+|--------|------|-----------------|--------|------|
+| Human Body Systems: Overview | `is-sy-human-body-systems-overview` | `HumanBodySystemsOverviewIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Human Body Systems: Functions | `is-sy-human-body-systems-functions-interactions` | `HumanBodyFunctionsIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Plant Systems: Photosynthesis | `is-sy-plant-systems-photosynthesis` | `PlantSystemsPhotosynthesisIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Plant Systems: Transport | `is-sy-plant-systems-transport` | `PlantSystemsTransportIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Ecosystems: Components & Relationships | `is-sy-ecosystems-components-relationships` | `EcosystemsComponentsRelationshipsIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Ecosystems: Energy Flow & Food Chains | `is-sy-ecosystems-energy-flow-food-chains` | `EcosystemsEnergyFlowIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Environmental Chemistry: Pollution & Effects | `is-im-environmental-chemistry-pollution-effects` | `EnvironmentalChemistryPollutionIntro.tsx` | ✅ Complete | Dec 16, 2025 |
+| Environmental Chemistry: Waste Management | `is-im-environmental-chemistry-waste-management` | `WasteManagementIntro.tsx` | ✅ Complete | Dec 16, 2025 |
 
 ### Key Learnings
 1. ✅ **DO NOT** add `carouselTeachingMethod` property - uses standard lesson structure

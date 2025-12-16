@@ -270,8 +270,14 @@ export default function SubjectPage() {
                       <ul className="space-y-2">
                         {topic.lessons.map((lesson) => (
                           <li key={lesson.id}>
+                            {/* 
+                              IMPORTANT: For SHS, topics ARE lessons (no nested structure).
+                              Both topicSlug and lessonSlug use lesson.slug to ensure proper routing.
+                              The lesson page handles when topicSlug === lessonSlug correctly.
+                              DO NOT change this back to ${topic.slug}/${lesson.slug}
+                            */}
                             <Link
-                              href={`/subjects/${levelParam}/${subjectSlug}/${topic.slug}/${lesson.slug}`}
+                              href={`/subjects/${levelParam}/${subjectSlug}/${lesson.slug}/${lesson.slug}`}
                               className="text-primary hover:underline"
                             >
                               {lesson.title}

@@ -111,13 +111,26 @@ import SoilCompositionIntro from '@/components/intros/shs/integrated-science/Soi
 import ElementsCompoundsIntro from '@/components/intros/shs/integrated-science/ElementsCompoundsIntro';
 import UnitsInstrumentsIntro from '@/components/intros/shs/integrated-science/UnitsInstrumentsIntro';
 import AccuracyPrecisionIntro from '@/components/intros/shs/integrated-science/AccuracyPrecisionIntro';
-import LifeCyclesPlantsAnimalsIntro from '@/components/intros/shs/integrated-science/LifeCyclesPlantsAnimalsIntro';
-import LifeCyclesHumanDevelopmentIntro from '@/components/intros/shs/integrated-science/LifeCyclesHumanDevelopmentIntro';
-import NutrientCyclesNitrogenCarbonIntro from '@/components/intros/shs/integrated-science/NutrientCyclesNitrogenCarbonIntro';
-import WaterCycleIntro from '@/components/intros/shs/integrated-science/WaterCycleIntro';
-import ReproductionAsexualSexualIntro from '@/components/intros/shs/integrated-science/ReproductionAsexualSexualIntro';
-import ReproductionFertilizationDevelopmentIntro from '@/components/intros/shs/integrated-science/ReproductionFertilizationDevelopmentIntro';
+// SHS2 Integrated Science - Custom Interactive Intros
+import LifeCyclesPlantsAnimalsIntro from '@/components/lesson-intros/integrated-science/shs2/LifeCyclesPlantsAnimalsIntro';
+import LifeCyclesHumanDevelopmentIntro from '@/components/lesson-intros/integrated-science/shs2/LifeCyclesHumanDevelopmentIntro';
+import NutrientCyclesNitrogenCarbonIntro from '@/components/lesson-intros/integrated-science/shs2/NutrientCyclesNitrogenCarbonIntro';
+import WaterCycleIntro from '@/components/lesson-intros/integrated-science/shs2/WaterCycleIntro';
+import ReproductionAsexualSexualIntro from '@/components/lesson-intros/integrated-science/shs2/ReproductionAsexualSexualIntro';
+import ReproductionFertilizationDevelopmentIntro from '@/components/lesson-intros/integrated-science/shs2/ReproductionFertilizationDevelopmentIntro';
 import ElectricityMagnetismConceptsIntro from '@/components/lesson-intros/integrated-science/shs2/ElectricityMagnetismConceptsIntro';
+import SimpleCircuitsIntro from '@/components/lesson-intros/integrated-science/shs2/SimpleCircuitsIntro';
+import ForceWorkPowerIntro from '@/components/lesson-intros/integrated-science/shs2/ForceWorkPowerIntro';
+import SimpleMachinesIntro from '@/components/lesson-intros/integrated-science/shs2/SimpleMachinesIntro';
+// SHS3 Integrated Science Intro Components
+import HumanBodySystemsOverviewIntro from '@/components/lesson-intros/integrated-science/shs3/HumanBodySystemsOverviewIntro';
+import HumanBodyFunctionsIntro from '@/components/lesson-intros/integrated-science/shs3/HumanBodyFunctionsIntro';
+import PlantSystemsPhotosynthesisIntro from '@/components/lesson-intros/integrated-science/shs3/PlantSystemsPhotosynthesisIntro';
+import PlantSystemsTransportIntro from '@/components/lesson-intros/integrated-science/shs3/PlantSystemsTransportIntro';
+import EcosystemsComponentsRelationshipsIntro from '@/components/lesson-intros/integrated-science/shs3/EcosystemsComponentsRelationshipsIntro';
+import EcosystemsEnergyFlowIntro from '@/components/lesson-intros/integrated-science/shs3/EcosystemsEnergyFlowIntro';
+import EnvironmentalChemistryPollutionIntro from '@/components/lesson-intros/integrated-science/shs3/EnvironmentalChemistryPollutionIntro';
+import WasteManagementIntro from '@/components/lesson-intros/integrated-science/shs3/WasteManagementIntro';
 import { CarouselLesson } from '@/components/CarouselLesson';
 import { 
   addBookmark, 
@@ -315,6 +328,16 @@ export default function LessonPage() {
         eligible
       });
       
+      console.log('🎠 CAROUSEL CHECK DETAILS:', {
+        'level (normalized)': level.toLowerCase(),
+        'subject (normalized)': subjectSlug.toLowerCase(),
+        'topic (normalized)': topicSlug.toLowerCase(),
+        'lesson (normalized)': lessonSlug.toLowerCase(),
+        'Expected lesson slug': 'is-sy-ecosystems-energy-flow-food-chains',
+        'Match?': lessonSlug.toLowerCase() === 'is-sy-ecosystems-energy-flow-food-chains',
+        'eligible': eligible
+      });
+      
       setCarouselEligible(eligible);
       
       // Validate lesson structure if eligible
@@ -505,7 +528,7 @@ export default function LessonPage() {
         subject: subjectInfo.name,
         topic: localTopic?.title || '',
         bookmarkedAt: new Date().toISOString(),
-        href: `/subjects/${subjectSlug}/${topicSlug}/${lessonSlug}`
+        href: `/subjects/${level}/${subjectSlug}/${topicSlug}/${lessonSlug}`
       });
       setBookmarked(true);
       toast({ title: 'Lesson bookmarked!' });
@@ -752,6 +775,28 @@ export default function LessonPage() {
               <ReproductionFertilizationDevelopmentIntro />
             ) : lessonSlug === 'is-em-electricity-magnetism-concepts' ? (
               <ElectricityMagnetismConceptsIntro />
+            ) : lessonSlug === 'is-en-electricity-magnetism-simple-circuits' ? (
+              <SimpleCircuitsIntro />
+            ) : lessonSlug === 'is-en-work-machines-force-work-power' ? (
+              <ForceWorkPowerIntro />
+            ) : lessonSlug === 'is-en-work-machines-simple-machines-uses' ? (
+              <SimpleMachinesIntro />
+            ) : lessonSlug === 'is-sy-human-body-systems-overview' ? (
+              <HumanBodySystemsOverviewIntro />
+            ) : lessonSlug === 'is-sy-human-body-systems-functions-interactions' ? (
+              <HumanBodyFunctionsIntro />
+            ) : lessonSlug === 'is-sy-plant-systems-photosynthesis' ? (
+              <PlantSystemsPhotosynthesisIntro />
+            ) : lessonSlug === 'is-sy-plant-systems-transport' ? (
+              <PlantSystemsTransportIntro />
+            ) : lessonSlug === 'is-sy-ecosystems-components-relationships' ? (
+              <EcosystemsComponentsRelationshipsIntro />
+            ) : lessonSlug === 'is-sy-ecosystems-energy-flow-food-chains' ? (
+              <EcosystemsEnergyFlowIntro />
+            ) : lessonSlug === 'is-im-environmental-chemistry-pollution-effects' ? (
+              <EnvironmentalChemistryPollutionIntro />
+            ) : lessonSlug === 'is-im-environmental-chemistry-waste-management' ? (
+              <WasteManagementIntro />
             ) : (
               // Fallback - should not reach here if all intros are properly mapped
               null

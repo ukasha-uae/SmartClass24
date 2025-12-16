@@ -377,7 +377,9 @@ export default function LessonCompleteQuiz({ lessonId, topicSlug, subjectSlug, l
       case 'fillblank':
         return (
           <div className={`${style === 'card' ? 'border border-border p-3 rounded-md shadow-sm' : ''}`}>
-            <label className="block text-sm mb-2">{(quiz as FillBlankQuiz).sentence}</label>
+            <div className="block text-sm mb-2 prose prose-sm dark:prose-invert max-w-none">
+              <MarkdownRenderer content={(quiz as FillBlankQuiz).sentence} />
+            </div>
             <input value={userAnswers[index] || ''} onChange={(e) => handleAnswerChange(e.target.value)} className={`w-full rounded border border-border ${style === 'compact' ? 'p-1 text-sm' : 'p-2'}`} />
           </div>
         );
@@ -388,8 +390,10 @@ export default function LessonCompleteQuiz({ lessonId, topicSlug, subjectSlug, l
       case 'shortanswer':
         return (
           <div className={`${style === 'card' ? 'border border-border p-3 rounded-md shadow-sm' : ''}`}>
-            <label className="block text-sm mb-2">{(quiz as ShortAnswerQuiz).question}</label>
-            <textarea value={userAnswers[index] || ''} onChange={(e) => handleAnswerChange(e.target.value)} className={`w-full rounded border border-border ${style === 'compact' ? 'p-1 text-sm' : 'p-2'}`} />
+            <div className="block text-sm mb-2 prose prose-sm dark:prose-invert max-w-none">
+              <MarkdownRenderer content={(quiz as ShortAnswerQuiz).question} />
+            </div>
+            <textarea value={userAnswers[index] || ''} onChange={(e) => handleAnswerChange(e.target.value)} className={`w-full rounded border border-border ${style === 'compact' ? 'p-1 text-sm' : 'p-2'}`} rows={3} />
           </div>
         );
       default:

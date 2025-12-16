@@ -9,7 +9,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "clear-cache": "powershell -ExecutionPolicy Bypass -File ./clear-cache.ps1",
+    "dev:fresh": "npm run clear-cache && npm run dev"
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.7",

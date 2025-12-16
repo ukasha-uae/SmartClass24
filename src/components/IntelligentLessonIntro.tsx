@@ -303,7 +303,7 @@ export function IntelligentLessonIntro({
   };
 
   return (
-    <Card className="border-2 border-violet-300 dark:border-violet-700 shadow-lg mb-6" data-skip-tts="true">
+    <Card className="border-2 border-violet-300 dark:border-violet-700 shadow-lg mb-6 pb-20 sm:pb-6" data-skip-tts="true">
       <CardContent className="p-4 md:p-6 space-y-4">
         {/* Skip Intro Button */}
         <div className="flex justify-end -mt-2 -mr-2 relative z-50">
@@ -400,8 +400,8 @@ export function IntelligentLessonIntro({
           </motion.div>
         </AnimatePresence>
 
-        {/* Controls */}
-        <div className="flex gap-2 pt-2 relative z-50">
+        {/* Controls - Fixed on mobile */}
+        <div className="hidden sm:flex gap-2 pt-2 relative z-50">
           <Button
             variant="outline"
             size="sm"
@@ -466,6 +466,67 @@ export function IntelligentLessonIntro({
           >
             <RotateCcw className="h-4 w-4" />
           </Button>
+        </div>
+
+        {/* Fixed Mobile Navigation */}
+        <div className="fixed sm:hidden bottom-0 left-0 right-0 bg-white/98 dark:bg-gray-900/98 backdrop-blur-md px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-gray-200 dark:border-gray-700 z-50 shadow-lg">
+          <div className="flex items-center justify-between gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrevious}
+              disabled={currentScene === 0}
+              className={`p-2 h-10 touch-manipulation select-none active:scale-95 transition-all ${
+                currentScene === 0 ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleAudio}
+                disabled={!isSupported}
+                className="p-2 h-10 touch-manipulation select-none active:scale-95 transition-transform"
+              >
+                {isSpeaking ? <Pause className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
+              </Button>
+              
+              <div className="flex gap-1">
+                {scenes.map((_, idx) => (
+                  <div 
+                    key={idx}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      idx === currentScene 
+                        ? 'bg-violet-600 w-4' 
+                        : idx < currentScene 
+                          ? 'bg-violet-400' 
+                          : 'bg-gray-300 dark:bg-gray-600'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleNext}
+              className={`p-2 h-10 touch-manipulation select-none active:scale-95 transition-transform ${
+                currentScene === scenes.length - 1 
+                  ? 'bg-gradient-to-r from-green-600 to-emerald-600 shadow-lg'
+                  : 'bg-gradient-to-r from-violet-600 to-indigo-600'
+              }`}
+            >
+              {currentScene === scenes.length - 1 ? (
+                <Play className="h-5 w-5" />
+              ) : (
+                <ChevronRight className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>

@@ -6,6 +6,7 @@ import { coreMathSHS2Lessons } from './shs2-lessons-data';
 import { coreMathSHS3Lessons } from './shs3-lessons-data';
 import { integratedScienceSHS1Lessons } from './integrated-science-shs1-lessons-data';
 import { integratedScienceSHS2Lessons } from './integrated-science-shs2-lessons-data';
+import { integratedScienceSHS3Lessons } from './integrated-science-shs3-lessons-data';
 import type { Lesson } from './types';
 
 export interface Topic {
@@ -1366,7 +1367,7 @@ export const getSHSLesson = (subjectSlug: string, topicSlug: string, lessonSlug:
   
   // Integrated Science lessons
   if (subjectSlug === 'integrated-science') {
-    const allLessons = [...integratedScienceSHS1Lessons, ...integratedScienceSHS2Lessons];
+    const allLessons = [...integratedScienceSHS1Lessons, ...integratedScienceSHS2Lessons, ...integratedScienceSHS3Lessons];
 
     // Helper to strip shs1-, shs2-, shs3- prefix
     const stripPrefix = (slug: string) => slug.replace(/^shs[123]-/, '');

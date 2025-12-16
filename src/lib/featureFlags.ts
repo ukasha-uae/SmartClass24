@@ -100,6 +100,18 @@ export const FEATURE_FLAGS = {
       'is-cy-reproduction-asexual-sexual',
       'is-cy-reproduction-fertilization-development',
       'is-em-electricity-magnetism-concepts',
+      'is-en-electricity-magnetism-simple-circuits',
+      'is-en-work-machines-force-work-power',
+      'is-en-work-machines-simple-machines-uses',
+      // SHS3 Integrated Science Topics
+      'is-sy-human-body-systems-overview',
+      'is-sy-human-body-systems-functions-interactions',
+      'is-sy-plant-systems-photosynthesis',
+      'is-sy-plant-systems-transport',
+      'is-sy-ecosystems-components-relationships',
+      'is-sy-ecosystems-energy-flow-food-chains', // NEW: Ecosystems Energy Flow
+      'is-im-environmental-chemistry-pollution-effects', // NEW: Environmental Chemistry
+      'is-im-environmental-chemistry-waste-management', // NEW: Waste Management
     ], // Support multiple topic formats
     lessons: [
       'quadratic-equations',
@@ -189,8 +201,21 @@ export const FEATURE_FLAGS = {
       'is-cy-nutrient-cycles-water', // Nutrient Cycles: Water Cycle
       'is-cy-reproduction-asexual-sexual', // Reproduction: Asexual and Sexual
       'is-cy-reproduction-fertilization-development', // Reproduction: Fertilization and Development
+      // Integrated Science Lessons (SHS3)
+      'is-sy-ecosystems-energy-flow-food-chains', // Ecosystems: Energy Flow & Food Chains
       'is-em-electricity-magnetism-concepts', // Electricity and Magnetism: Concepts
-    ], // SHS3 (29) + SHS2 (12) + SHS1 (16) + Science SHS1 (22) + Science SHS2 (7) = 86 lessons total
+      'is-en-electricity-magnetism-simple-circuits', // Electricity and Magnetism: Simple Circuits
+      'is-en-work-machines-force-work-power', // Work and Machines: Force, Work, Power
+      'is-en-work-machines-simple-machines-uses', // Work and Machines: Simple Machines & Uses
+      // Integrated Science Lessons (SHS3)
+      'is-sy-human-body-systems-overview', // Human Body Systems: Overview
+      'is-sy-human-body-systems-functions-interactions', // Human Body Systems: Functions & Interactions
+      'is-sy-plant-systems-photosynthesis', // Plant Systems: Photosynthesis
+      'is-sy-plant-systems-transport', // Plant Systems: Transport
+      'is-sy-ecosystems-components-relationships', // Ecosystems: Components & Relationships
+      'is-im-environmental-chemistry-pollution-effects', // Environmental Chemistry: Pollution & Effects
+      'is-im-environmental-chemistry-waste-management', // Environmental Chemistry: Waste Management
+    ], // SHS3 (29) + SHS2 (12) + SHS1 (16) + Science SHS1 (22) + Science SHS2 (10) + Science SHS3 (5) = 94 lessons total
   },
 };
 

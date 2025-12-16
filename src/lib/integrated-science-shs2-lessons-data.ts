@@ -373,172 +373,64 @@ Most mammals in Ghana are placental mammals with direct development.
     ],
 
     activities: {
-      type: 'exercises',
+      type: 'quiz',
       questions: [
         {
-          type: 'identification',
-          question: `**Exercise 1: Life Cycle Stage Identification**
-
-Identify the life cycle stage being described:
-
-1. A butterfly structure hanging motionless from a leaf, undergoing internal transformation
-2. A tiny frog with a short tail stub, recently emerged from water
-3. A seed that has just sprouted with a small root emerging
-4. A caterpillar that has just molted for the third time
-5. A grasshopper that looks like an adult but smaller with no wings
-
-**Answers:**
-1. Pupa (chrysalis) - complete metamorphosis stage
-2. Froglet - transitional stage in amphibian metamorphosis
-3. Germinating seed/seedling - beginning of plant life cycle
-4. Larva (third instar) - growth stage in complete metamorphosis
-5. Nymph - incomplete metamorphosis stage`
+          type: 'mcq',
+          question: 'What type of metamorphosis does a butterfly undergo?',
+          options: ['Incomplete metamorphosis', 'Complete metamorphosis', 'Direct development', 'Gradual metamorphosis'],
+          answer: 'Complete metamorphosis',
+          explanation: 'Butterflies undergo complete metamorphosis with four distinct stages: egg → larva (caterpillar) → pupa (chrysalis) → adult. The larva looks completely different from the adult.'
         },
         {
-          type: 'comparison',
-          question: `**Exercise 2: Compare and Contrast**
-
-Create a table comparing:
-a) Complete metamorphosis vs. Incomplete metamorphosis
-b) Plant life cycle vs. Frog life cycle
-
-Include: Number of stages, example organisms, duration, and key features.
-
-**Sample Answer for (a):**
-
-Complete Metamorphosis:
-- 4 stages: egg, larva, pupa, adult
-- Examples: butterflies, beetles, flies
-- Larva looks very different from adult
-- Has pupal stage with dramatic transformation
-
-Incomplete Metamorphosis:
-- 3 stages: egg, nymph, adult
-- Examples: grasshoppers, cockroaches, dragonflies
-- Nymph resembles small adult
-- No pupal stage, gradual development`
+          type: 'mcq',
+          question: 'Which stage of the butterfly life cycle causes the most damage to crops?',
+          options: ['Egg', 'Larva (caterpillar)', 'Pupa', 'Adult'],
+          answer: 'Larva (caterpillar)',
+          explanation: 'The larval stage (caterpillar) is the feeding stage where the insect actively eats and grows, causing significant damage to crops. Pupae do not feed, and adult butterflies mainly drink nectar.'
+        },
+        {
+          type: 'mcq',
+          question: 'In incomplete metamorphosis, what is the immature form called?',
+          options: ['Larva', 'Pupa', 'Nymph', 'Caterpillar'],
+          answer: 'Nymph',
+          explanation: 'In incomplete metamorphosis (3 stages), the immature form is called a nymph. Nymphs look like small adults without wings and gradually develop through molts. Examples include grasshoppers and cockroaches.'
+        },
+        {
+          type: 'truefalse',
+          statement: 'A froglet is a tadpole that has developed legs but still has a tail.',
+          answer: 'true',
+          reason: 'A froglet is the transitional stage between tadpole and adult frog. It has developed legs and lungs but still retains a short tail that will eventually be absorbed.'
+        },
+        {
+          type: 'truefalse',
+          statement: 'The pupal stage in insects is an active feeding stage.',
+          answer: 'false',
+          reason: 'The pupal stage is a non-feeding transformation stage. The pupa uses energy stored during the larval stage to power dramatic internal reorganization that transforms it into an adult.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each organism with its type of metamorphosis:',
+          pairs: [
+            { left: 'Butterfly', right: 'Complete metamorphosis' },
+            { left: 'Grasshopper', right: 'Incomplete metamorphosis' },
+            { left: 'Beetle', right: 'Complete metamorphosis' },
+            { left: 'Dragonfly', right: 'Incomplete metamorphosis' }
+          ],
+          explanation: 'Butterflies and beetles have complete metamorphosis (4 stages with pupal stage). Grasshoppers and dragonflies have incomplete metamorphosis (3 stages, nymph resembles adult).'
+        },
+        {
+          type: 'fillblank',
+          sentence: 'The process by which a seed begins to grow is called __________.',
+          answer: 'germination',
+          alternatives: ['Germination'],
+          explanation: 'Germination is the process where a seed begins to grow, sprouting a root (radicle) and shoot (plumule) when conditions are favorable (water, temperature, oxygen).'
         },
         {
           type: 'shortanswer',
-          question: `**Exercise 3: Agricultural Application**
-
-A farmer in the Ashanti Region notices caterpillars destroying his cabbage plants. Using your knowledge of butterfly life cycles:
-
-a) At which stage should the farmer intervene for most effective pest control?
-b) Why is it important to act quickly?
-c) Suggest two control methods that target the vulnerable stage
-
-**Answers:**
-a) Larval (caterpillar) stage - this is when most feeding damage occurs
-b) Quick action prevents caterpillars from completing metamorphosis, becoming adults that lay more eggs, multiplying the problem
-c) Methods:
-   - Hand-picking caterpillars and destroying them (organic method)
-   - Applying biological pesticide (Bt) that specifically targets caterpillar stage
-   - Introducing natural predators like wasps that parasitize caterpillars
-   - Using row covers to prevent adult butterflies from laying eggs`
-        },
-        {
-          type: 'sequencing',
-          question: `**Exercise 4: Life Cycle Sequencing**
-
-Arrange these stages of a frog's life cycle in correct order:
-
-A. Adult frog with lungs, living on land
-B. Tadpole with gills, swimming in pond
-C. Eggs in jelly-like mass in water
-D. Froglet with small tail stub
-E. Tadpole with back legs emerging
-
-**Correct Order:** C → B → E → D → A
-
-**Explanation:**
-1. Eggs laid in water (C)
-2. Tadpole hatches with gills (B)
-3. Back legs develop first during metamorphosis (E)
-4. Front legs appear, tail shortens - froglet stage (D)
-5. Fully developed adult frog (A)`
-        },
-        {
-          type: 'diagram_labeling',
-          question: `**Exercise 5: Diagram Interpretation**
-
-Study a diagram showing the life cycle of a mosquito (egg → larva → pupa → adult). Answer:
-
-a) Which stages occur in water?
-b) Which stage is most vulnerable to control measures?
-c) Why do mosquito eggs hatch faster during Ghana's hot season?
-d) How can you break the mosquito life cycle at your home?
-
-**Answers:**
-a) Egg, larva, and pupa stages all occur in water; only adult is aerial
-b) Larval stage - they must surface to breathe and can be targeted with oils or larvicides
-c) Higher temperatures speed up metabolic processes in cold-blooded insects, reducing development time from egg to adult
-d) Break the cycle by:
-   - Eliminating standing water (breeding sites)
-   - Covering water storage containers
-   - Changing water in flower vases weekly
-   - Treating water bodies with biological larvicides
-   - Using mosquito nets to prevent bites from adults`
-        },
-        {
-          type: 'critical_thinking',
-          question: `**Exercise 6: Life Cycles and Conservation**
-
-Ghana's forests are home to many butterfly species. Deforestation threatens these butterflies. Explain:
-
-a) Why protecting caterpillar food plants is as important as protecting adult butterflies
-b) How loss of specific plants can cause butterfly extinction
-c) What happens to ecosystem if pollinators disappear
-
-**Answers:**
-a) Caterpillars and adults often require different plants. Caterpillars need specific host plants for food; without these plants, eggs cannot develop into adults even if adult butterflies survive. Both life stages must be supported for species survival.
-
-b) Many butterflies are specialists - their caterpillars can only eat specific plant species. If that plant goes extinct or disappears from an area, the butterfly cannot complete its life cycle there, leading to local or total extinction. Example: Monarch caterpillars only eat milkweed plants.
-
-c) Ecosystem collapse cascade:
-   - Plants cannot reproduce without pollination
-   - Fewer seeds/fruits produced
-   - Animals that eat fruits lose food source
-   - Predators that eat fruit-eaters also decline
-   - Biodiversity decreases overall
-   - Agriculture suffers (crop yields decline)`
-        },
-        {
-          type: 'problem_solving',
-          question: `**Exercise 7: Pest Management Strategy**
-
-You are advising a cocoa farmer in the Western Region about managing cocoa pod borer (an insect pest with complete metamorphosis). Design an integrated pest management strategy considering the insect's life cycle.
-
-Include:
-- Monitoring methods
-- Stage-specific interventions
-- Timing considerations
-- Non-chemical controls
-
-**Sample Answer:**
-
-**Monitoring:**
-- Weekly inspection of cocoa pods for eggs and entry holes
-- Use pheromone traps to detect adult moths
-- Record pest numbers to identify peak activity periods
-
-**Stage-Specific Interventions:**
-- **Egg stage:** Remove and destroy infected pods before larvae hatch
-- **Larval stage:** Apply biological control (parasitic wasps) that target larvae inside pods
-- **Pupal stage:** Remove fallen pods and leaf litter where pupation occurs
-- **Adult stage:** Use pheromone traps to catch moths before they lay eggs
-
-**Timing:**
-- Intensive monitoring during peak fruiting season
-- Coordinate interventions with weather patterns (adults more active in dry season)
-- Apply controls before population builds up
-
-**Non-Chemical Controls:**
-- Proper spacing of cocoa trees (reduces humidity that favors pests)
-- Regular pruning to improve air circulation
-- Remove all infected pods promptly (sanitation)
-- Maintain diverse shade trees (habitat for natural predators)
-- Use resistant cocoa varieties where available`
+          question: 'Why do many aquatic organisms like fish and frogs produce thousands of eggs?',
+          answer: 'To compensate for high mortality in early life stages',
+          explanation: 'High offspring numbers compensate for the fact that most eggs and young die from predation, disease, and environmental hazards. Producing many offspring increases the probability that some will survive to reproduce.'
         }
       ]
     },
@@ -1172,205 +1064,64 @@ This lesson explores the remarkable journey of human life, from a single fertili
     ],
 
     activities: {
-      type: 'exercises',
+      type: 'quiz',
       questions: [
         {
+          type: 'mcq',
+          question: 'Which life stage is characterized by rapid brain growth, attachment formation, and sensorimotor development?',
+          options: ['Early childhood', 'Infancy', 'Adolescence', 'Middle childhood'],
+          correctAnswer: 1,
+          explanation: 'Infancy (0-2 years) is characterized by rapid brain development, formation of attachments to caregivers, and sensorimotor learning (Piaget\'s first stage).'
+        },
+        {
+          type: 'mcq',
+          question: 'During which prenatal stage are all major organs formed, making the developing organism most vulnerable to teratogens?',
+          options: ['Germinal stage (weeks 1-2)', 'Embryonic stage (weeks 3-8)', 'Early fetal stage (weeks 9-16)', 'Late fetal stage (weeks 25-40)'],
+          correctAnswer: 1,
+          explanation: 'The embryonic stage (weeks 3-8) is the most critical period when all major organs begin forming. Exposure to teratogens during this time can cause serious birth defects.'
+        },
+        {
+          type: 'mcq',
+          question: 'According to Piaget, at what stage do children develop conservation - understanding that quantity remains the same despite changes in appearance?',
+          options: ['Sensorimotor stage', 'Preoperational stage', 'Concrete operational stage', 'Formal operational stage'],
+          correctAnswer: 2,
+          explanation: 'Conservation develops during the concrete operational stage (ages 7-11). Before this, preoperational children are fooled by appearance changes.'
+        },
+        {
+          type: 'truefalse',
+          question: 'Puberty typically occurs during adolescence and involves the development of secondary sexual characteristics and reproductive capability.',
+          correctAnswer: true,
+          explanation: 'True. Puberty marks the physical changes during adolescence when the body matures for reproduction, including development of secondary sexual characteristics triggered by hormones like testosterone and estrogen.'
+        },
+        {
+          type: 'truefalse',
+          question: 'According to Erikson, the developmental crisis of adolescence is "generativity vs. stagnation."',
+          correctAnswer: false,
+          explanation: 'False. The crisis of adolescence is "identity vs. role confusion." "Generativity vs. stagnation" is the crisis of middle adulthood, focusing on guiding the next generation.'
+        },
+        {
           type: 'matching',
-          question: `**Exercise 1: Match Life Stages with Key Characteristics**
-
-Match each life stage (1-5) with its key characteristic (A-E):
-
-1. Infancy
-2. Early Childhood
-3. Adolescence
-4. Middle Adulthood
-5. Late Adulthood
-
-A. Puberty and rapid growth spurt
-B. Wisdom and life reflection
-C. Rapid brain growth and attachment formation
-D. Generativity and guiding next generation
-E. Symbolic thinking and pretend play
-
-**Answers:**
-1-C (Infancy: rapid brain growth, attachment to caregivers)
-2-E (Early Childhood: preoperational stage, pretend play)
-3-A (Adolescence: puberty, physical maturation)
-4-D (Middle Adulthood: generativity, mentoring)
-5-B (Late Adulthood: integrity, wisdom, life review)`
+          question: 'Match each life stage with its key developmental focus:',
+          pairs: [
+            { item: 'Infancy', match: 'Attachment and sensorimotor learning' },
+            { item: 'Early Childhood', match: 'Symbolic thinking and pretend play' },
+            { item: 'Adolescence', match: 'Identity formation and puberty' },
+            { item: 'Middle Adulthood', match: 'Generativity and mentoring others' },
+            { item: 'Late Adulthood', match: 'Wisdom and life reflection' }
+          ],
+          explanation: 'Each life stage has a primary developmental focus: infants develop attachment; early childhood involves symbolic play; adolescents form identity; middle adults guide the next generation; late adults reflect on life with wisdom.'
         },
         {
-          type: 'critical_thinking',
-          question: `**Exercise 2: Prenatal Development Risks**
-
-Explain why the embryonic stage (weeks 3-8) is considered the most critical period for prenatal development. What can pregnant women in Ghana do to protect their babies during this vulnerable time?
-
-**Sample Answer:**
-
-The embryonic stage is most critical because:
-1. **Organ formation:** All major organs and body systems begin forming during weeks 3-8
-2. **High vulnerability:** The developing embryo is most susceptible to teratogens (harmful substances)
-3. **Permanent effects:** Damage during this period can cause major birth defects
-
-**Protective measures for Ghanaian women:**
-1. **Attend antenatal clinic early:** Register pregnancy and begin regular checkups
-2. **Take folic acid:** Prevents neural tube defects (spina bifida)
-3. **Avoid harmful substances:**
-   - No alcohol or tobacco
-   - No unprescribed medications
-   - Avoid traditional herbal medicines without doctor's approval
-4. **Prevent malaria:** Sleep under treated mosquito nets, take prophylaxis medication
-5. **Proper nutrition:** Eat balanced diet with protein, fruits, vegetables
-6. **Avoid infections:** Practice good hygiene, avoid sick people, get vaccinated
-7. **Rest adequately:** Manage stress and get enough sleep`
-        },
-        {
-          type: 'case_study',
-          question: `**Exercise 3: Adolescent Development**
-
-Kwame is 14 years old and in JHS 2. Recently, he's become more rebellious, arguing with parents, spending more time with friends, and his grades have dropped. His voice is deepening and he's grown taller. His parents are worried and don't understand his behavior.
-
-Using your knowledge of adolescent development, explain:
-a) What physical and psychological changes is Kwame experiencing?
-b) Why is his behavior changing?
-c) What advice would you give his parents?
-
-**Sample Answer:**
-
-a) **Changes Kwame is experiencing:**
-- Physical: Puberty - voice deepening, growth spurt, hormonal changes
-- Psychological: Identity formation, seeking independence, increased peer influence
-- Cognitive: Developing abstract thinking, questioning authority
-- Emotional: Mood swings due to hormones, sensitivity to peer opinions
-
-b) **Why behavior is changing:**
-- **Normal developmental task:** Adolescence is about establishing identity separate from parents
-- **Peer importance:** Friends become primary reference group for values and behavior
-- **Brain development:** Prefrontal cortex (impulse control) still maturing - may take risks
-- **Hormonal effects:** Testosterone increases can affect mood and behavior
-- **Stress:** Academic pressure (WASSCE approaching), body changes, social pressures
-
-c) **Advice for parents:**
-- **Stay connected:** Keep communication open even when difficult
-- **Set clear boundaries:** Rules with logical consequences, not harsh punishment
-- **Allow appropriate independence:** Give choices within safe limits
-- **Monitor academics:** Help with homework, communicate with teachers
-- **Know his friends:** Invite them home, know where he goes
-- **Be patient:** Remember this is temporary developmental stage
-- **Show interest:** Attend his school events, ask about his interests
-- **Provide guidance:** Discuss peer pressure, sexuality, career goals without lecturing`
-        },
-        {
-          type: 'comparison',
-          question: `**Exercise 4: Piaget's Stages**
-
-Compare concrete operational thinking (middle childhood) with formal operational thinking (adolescence) using these scenarios:
-
-Scenario 1: A child/teen is shown two identical glasses of water. Water from one is poured into a tall, thin glass. Is there more water in the tall glass?
-
-Scenario 2: "If all Ghanaians spoke French, how would that change education?"
-
-Explain how a 7-year-old vs. a 15-year-old would approach each question.
-
-**Sample Answer:**
-
-**Scenario 1 - Conservation:**
-- **7-year-old (concrete operational):** "No, it's the same amount. Just because it looks taller doesn't mean there's more water. If you pour it back, you'll see." They understand conservation through logical reasoning about concrete, visible transformations.
-- **15-year-old (formal operational):** Same correct answer but may additionally explain the concept using volume (V = πr²h) and understand the general principle applies to any liquid, container shape.
-
-**Scenario 2 - Hypothetical thinking:**
-- **7-year-old (concrete operational):** Difficulty answering. May say "But we don't speak French!" or give concrete, literal response: "We'd go to French school." Cannot easily reason about hypothetical situations that contradict reality.
-- **15-year-old (formal operational):** Can engage with hypothetical: "Well, textbooks would be in French, teachers would need French training, we might have cultural exchanges with France, students could study in French universities easily, but we'd lose some Ghanaian cultural identity in education..." They can systematically think through implications of hypothetical scenarios.
-
-**Key difference:** Concrete operational thinkers need tangible, real situations to reason effectively. Formal operational thinkers can reason abstractly about hypothetical, future, or contrary-to-fact situations.`
+          type: 'fillblank',
+          question: 'The three stages of prenatal development in order are: _______ stage (weeks 1-2), _______ stage (weeks 3-8), and _______ stage (weeks 9-40).',
+          correctAnswer: 'germinal, embryonic, fetal',
+          explanation: 'Prenatal development proceeds through germinal (implantation), embryonic (organ formation), and fetal (growth and maturation) stages.'
         },
         {
           type: 'shortanswer',
-          question: `**Exercise 5: Nutrition Across Life Stages**
-
-Design a one-day meal plan for three different life stages in Ghana:
-a) A 1-year-old infant
-b) A 10-year-old child
-c) A 60-year-old adult
-
-Explain why each meal plan is appropriate for that life stage.
-
-**Sample Answer:**
-
-**a) 1-Year-Old Infant:**
-- **Breakfast:** Mashed kenkey with mashed boiled egg; breast milk
-- **Mid-morning:** Breast milk or formula
-- **Lunch:** Mashed rice with soft fish and vegetables (carrots, garden eggs)
-- **Afternoon:** Mashed banana or papaya; breast milk
-- **Dinner:** Tom Brown (roasted maize/millet porridge); mashed sweet potato
-- **Before bed:** Breast milk
-
-**Why appropriate:** Soft, mashed foods (learning to chew); frequent small meals; continued breastfeeding; iron from egg and fish; variety of nutrients for rapid growth; no salt/sugar/spices.
-
-**b) 10-Year-Old Child:**
-- **Breakfast:** Hausa koko with bread or koose; boiled egg
-- **Mid-morning snack:** Groundnuts and banana
-- **Lunch:** Jollof rice with chicken and salad
-- **Afternoon snack:** Kelewele (fried plantain) or fruit
-- **Dinner:** Banku with okro stew and fish
-
-**Why appropriate:** Higher calories for active play and learning; protein for growth (egg, chicken, fish); carbohydrates for energy (rice, plantain); fruits for vitamins; regular meal times for school schedule.
-
-**c) 60-Year-Old Adult:**
-- **Breakfast:** Oats porridge with groundnut paste; papaya
-- **Mid-morning:** Green tea; small banana
-- **Lunch:** Brown rice with grilled fish, lots of vegetables (kontomire, cabbage, tomatoes)
-- **Afternoon:** Orange or watermelon
-- **Dinner:** Light soup (vegetable or palm nut) with small amount of fufu; fish
-
-**Why appropriate:** Smaller portions (lower metabolism); less salt (blood pressure control); more fiber (whole grains, vegetables); lean protein (fish over red meat); lots of water; reduced starch; focus on vegetables and fruits for vitamins/minerals; easily digestible foods.`
-        },
-        {
-          type: 'reflection',
-          question: `**Exercise 6: Life Stage Challenges in Ghana**
-
-For each life stage below, identify ONE major challenge facing people in Ghana and suggest a solution:
-
-a) Adolescence
-b) Young adulthood
-c) Late adulthood
-
-**Sample Answer:**
-
-**a) Adolescence Challenge: Teenage Pregnancy**
-- **Impact:** Education interrupted, health risks, poverty cycle
-- **Solution:** Comprehensive sexuality education in schools; accessible contraception; parent-child communication programs; media campaigns; youth-friendly health services; keeping girls in school; male involvement in reproductive responsibility
-
-**b) Young Adulthood Challenge: Youth Unemployment**
-- **Impact:** Financial stress, delayed independence, migration, social problems
-- **Solution:** Skills training programs; entrepreneurship education and funding; apprenticeship programs; investment in job-creating sectors; career guidance in schools; support for small businesses; technology/digital skills training
-
-**c) Late Adulthood Challenge: Limited Social Security and Healthcare**
-- **Impact:** Poverty in old age, inability to access healthcare, burden on families
-- **Solution:** Expand LEAP (Livelihood Empowerment Against Poverty) coverage; improve National Health Insurance accessibility for elderly; community-based elderly care programs; pension scheme improvements; free/subsidized healthcare for conditions common in elderly; family support systems strengthened; elderly-friendly infrastructure`
-        },
-        {
-          type: 'sequencing',
-          question: `**Exercise 7: Prenatal Development Timeline**
-
-Arrange these prenatal events in correct chronological order:
-
-A. Heart begins beating
-B. Mother feels baby movement
-C. Fertilization occurs
-D. Lungs mature enough for survival
-E. Neural tube forms
-F. Implantation in uterus
-
-**Correct Order:** C → F → E → A → B → D
-
-**Explanation with timing:**
-1. **C - Fertilization** (Day 0): Sperm meets egg
-2. **F - Implantation** (Day 6-7): Fertilized egg attaches to uterine wall
-3. **E - Neural tube forms** (Week 3-4): Future brain and spinal cord
-4. **A - Heart begins beating** (Week 4): Primitive heart starts pumping
-5. **B - Mother feels movement** (Week 16-20): Quickening
-6. **D - Lungs mature** (Week 24+): Survival possible with medical care`
+          question: 'Name TWO hormones involved in puberty and state ONE effect of each.',
+          correctAnswer: 'Testosterone - causes voice deepening, facial hair, muscle development in males. Estrogen - causes breast development, menstruation, hip widening in females. Other hormones include FSH and LH.',
+          explanation: 'Testosterone (male) and estrogen (female) are the primary hormones driving pubertal changes in their respective sexes.'
         }
       ]
     },
@@ -2073,761 +1824,63 @@ Understanding nutrient cycles isn't just academic - it's essential knowledge for
     ],
 
     activities: {
-      type: 'exercises',
+      type: 'quiz',
       questions: [
         {
-          type: 'diagram',
-          question: `**Exercise 1: Nitrogen Cycle Diagram**
-
-Draw a comprehensive diagram of the nitrogen cycle showing:
-• Atmosphere (N₂ gas)
-• Soil with bacteria
-• Root nodules of legume plants
-• Plants
-• Animals (herbivore and carnivore)
-• Decomposers
-• All processes: fixation, nitrification, assimilation, ammonification, denitrification
-
-Label each arrow with:
-1. The process name
-2. The chemical form of nitrogen (N₂, NH₃, NO₂⁻, NO₃⁻)
-3. The organisms involved
-
-**Sample Answer Structure:**
-
-Your diagram should show:
-• **Atmospheric N₂** at top
-• **Lightning and bacteria arrows** pointing from N₂ to **NH₃ in soil** (Fixation)
-• **Root nodules** on legume roots with Rhizobium bacteria
-• **Nitrifying bacteria** converting NH₃ → NO₂⁻ → NO₃⁻
-• **Plant roots** absorbing NO₃⁻ (Assimilation)
-• **Arrow from plants to animals** (consumption)
-• **Dead organisms and waste** going to **decomposers**
-• **Decomposers** releasing NH₃ (Ammonification)
-• **Denitrifying bacteria** in waterlogged soil converting NO₃⁻ → N₂ (Denitrification)
-• **Arrows returning to atmosphere** completing cycle`
+          type: 'mcq',
+          question: 'Which process in the nitrogen cycle converts atmospheric nitrogen (N₂) into ammonia (NH₃)?',
+          options: ['Nitrification', 'Nitrogen fixation', 'Denitrification', 'Ammonification'],
+          answer: 'Nitrogen fixation',
+          explanation: 'Nitrogen fixation is the process that converts atmospheric nitrogen (N₂) into ammonia (NH₃). This is done by nitrogen-fixing bacteria like Rhizobium in legume root nodules, or by lightning.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which bacteria are found in the root nodules of legumes and fix atmospheric nitrogen?',
+          options: ['Nitrosomonas', 'Nitrobacter', 'Rhizobium', 'Azotobacter'],
+          answer: 'Rhizobium',
+          explanation: 'Rhizobium bacteria live in symbiotic relationship with legume plants (cowpea, groundnut, soybean) in their root nodules, fixing atmospheric nitrogen into forms the plant can use.'
+        },
+        {
+          type: 'mcq',
+          question: 'In the carbon cycle, what process releases CO₂ back into the atmosphere?',
+          options: ['Photosynthesis', 'Respiration and combustion', 'Nitrogen fixation', 'Assimilation'],
+          answer: 'Respiration and combustion',
+          explanation: 'Respiration by living organisms and combustion (burning of fuels and organic matter) release carbon dioxide back into the atmosphere, completing the carbon cycle.'
+        },
+        {
+          type: 'truefalse',
+          question: 'Deforestation disrupts the carbon cycle by reducing the amount of CO₂ absorbed from the atmosphere.',
+          answer: true,
+          explanation: 'True. Trees absorb CO₂ through photosynthesis. When forests are cut down, less CO₂ is absorbed, and burning trees releases stored carbon, increasing atmospheric CO₂.'
+        },
+        {
+          type: 'truefalse',
+          question: 'Nitrification is the process where ammonia is converted to nitrites and then nitrates by bacteria.',
+          answer: true,
+          explanation: 'True. Nitrification involves Nitrosomonas bacteria converting ammonia (NH₃) to nitrites (NO₂⁻), and Nitrobacter converting nitrites to nitrates (NO₃⁻), which plants can absorb.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each nitrogen cycle process with its correct description:',
+          pairs: [
+            { item: 'Nitrogen fixation', match: 'Converting N₂ gas to ammonia' },
+            { item: 'Nitrification', match: 'Converting ammonia to nitrates' },
+            { item: 'Denitrification', match: 'Converting nitrates back to N₂ gas' },
+            { item: 'Ammonification', match: 'Decomposers releasing ammonia from dead matter' }
+          ],
+          explanation: 'These are the four main processes in the nitrogen cycle that convert nitrogen between its different chemical forms.'
+        },
+        {
+          type: 'fillblank',
+          question: 'In the carbon cycle, plants absorb CO₂ from the atmosphere through the process of ______.',
+          answer: 'photosynthesis',
+          explanation: 'Photosynthesis is the process by which plants use sunlight to convert CO₂ and water into glucose and oxygen, removing carbon from the atmosphere.'
         },
         {
           type: 'shortanswer',
-          question: `**Exercise 2: Sustainable Farming in Ghana**
-
-A farmer in the Ashanti Region has a 2-hectare farm. For three years, he has grown only maize continuously. Now his yields are declining despite using fertilizer, and the soil seems depleted. The farmer wants to improve soil fertility naturally and reduce costs.
-
-a) Explain why continuous maize cultivation has depleted the soil
-b) Suggest a detailed crop rotation plan for the next 3 years
-c) Explain how your plan will restore nitrogen naturally
-d) What other benefits will the rotation provide?
-
-**Sample Answer:**
-
-a) **Why soil is depleted:**
-• Maize is a heavy nitrogen feeder - removes large amounts of nitrogen from soil
-• Continuous cultivation without nitrogen replacement exhausts soil reserves
-• No nitrogen-fixing crops to replenish soil
-• Monoculture depletes same nutrients repeatedly
-• Soil organic matter declines without diverse plant residues
-• Increased pest and disease pressure from same crop
-
-b) **3-Year Crop Rotation Plan:**
-
-**Year 1:**
-• **First Season (April-July):** Plant groundnuts (nitrogen-fixing legume)
-• **Second Season (September-December):** Plant cowpea (another legume for insurance)
-
-**Year 2:**
-• **First Season:** Plant maize (benefit from previous year's nitrogen)
-• **Second Season:** Plant soybean (restore nitrogen again)
-
-**Year 3:**
-• **First Season:** Plant maize with cowpea intercropping (maize provides support, cowpea fixes nitrogen)
-• **Second Season:** Plant cassava with mucuna (cover crop that fixes nitrogen)
-
-c) **How nitrogen is restored:**
-• **Rhizobium bacteria** in root nodules of groundnuts, cowpea, soybean convert atmospheric N₂ to NH₃
-• When legume roots decompose, fixed nitrogen released into soil
-• Legume leaves and stems plowed under after harvest add organic matter and nitrogen
-• Reduced fertilizer application allows natural nitrogen-fixing bacteria populations to recover
-• Groundnuts can fix 40-80 kg N/hectare/year!
-• Cowpea fixes 40-70 kg N/hectare/year
-• This nitrogen benefits following maize crop
-
-d) **Additional benefits:**
-• **Pest/disease control:** Rotation breaks pest and disease cycles
-• **Improved soil structure:** Different root systems improve soil aeration and water infiltration
-• **Increased biodiversity:** Diverse crops support beneficial insects, pollinators
-• **Risk reduction:** Multiple crops protect against total crop failure
-• **Income diversity:** Different markets (grains, legumes, tubers)
-• **Nutritional diversity:** Varied crops for family consumption
-• **Reduced erosion:** Continuous ground cover, especially with cowpea and cassava
-• **Cost savings:** Less fertilizer needed, saving money
-• **Better soil organic matter:** Diverse plant residues improve humus content`
-        },
-        {
-          type: 'shortanswer',
-          question: `**Exercise 3: Forest Loss and Nutrient Cycles**
-
-Ghana has lost over 1.7 million hectares of forest in the past 30 years. Explain in detail how deforestation affects BOTH the nitrogen cycle AND carbon cycle, and discuss the interconnected consequences for Ghana's environment and agriculture.
-
-**Sample Answer:**
-
-**Impact on NITROGEN CYCLE:**
-
-**Immediate Effects:**
-1. **Loss of nitrogen-fixing trees:** Many tropical trees have symbiotic nitrogen-fixing bacteria. Cutting these trees removes natural nitrogen input.
-2. **Soil erosion:** Without tree roots holding soil, heavy rains wash away nitrogen-rich topsoil. Ghana loses millions of tons of fertile soil annually to erosion.
-3. **Disrupted decomposition:** Forest floor decomposition cycle interrupted. Leaf litter that normally releases nutrients no longer present.
-4. **Reduced nitrifying bacteria:** Soil bacteria populations decline without stable forest conditions (temperature, moisture, organic matter).
-
-**Long-term Effects:**
-1. **Farmland nitrogen deficiency:** Cleared land for farming has poor nitrogen content, requiring expensive fertilizers
-2. **Water pollution:** Erosion carries nitrogen-rich sediment into rivers (Pra, Ankobra, Tano), causing eutrophication
-3. **Increased fertilizer dependency:** Farmers must buy synthetic fertilizers, increasing costs and environmental damage
-4. **Degraded watersheds:** Rivers carry less nitrogen naturally to downstream ecosystems
-
-**Impact on CARBON CYCLE:**
-
-**Immediate Effects:**
-1. **Loss of CO₂ absorption:** Forests are carbon sinks. Mature tropical trees absorb 10-20 kg CO₂/year each. Removing millions of trees eliminates massive CO₂ absorption capacity.
-2. **Carbon release from burning:** If forest is burned for clearing (common practice), stored carbon rapidly converted to CO₂. A single hectare can release 100+ tons of CO₂.
-3. **Soil carbon loss:** Forest soil contains huge carbon stores in organic matter. Exposure to sun and wind accelerates decomposition, releasing CO₂.
-
-**Long-term Effects:**
-1. **Reduced carbon sequestration:** Lost forest capacity can't absorb CO₂. It takes decades for replanted trees to match old-growth forest carbon storage.
-2. **Altered rainfall:** Large-scale deforestation affects rainfall patterns (trees release moisture through transpiration, influencing local climate)
-3. **Contribution to climate change:** Ghana's forest loss contributes to global atmospheric CO₂ increase
-4. **Feedback loop:** Climate change (droughts, temperature increase) makes remaining forests more vulnerable to fire and degradation
-
-**INTERCONNECTED CONSEQUENCES:**
-
-**For Agriculture:**
-• Poor soil quality (low nitrogen + low organic carbon) = lower yields
-• Increased drought risk (less rainfall from forest transpiration)
-• More expensive farming (must buy fertilizers)
-• Soil erosion makes land unusable
-
-**For Water Resources:**
-• Rivers carry more sediment, reducing water quality
-• Irregular river flow (floods during rains, dry during drought)
-• Hydroelectric power affected (Akosombo Dam dependent on stable Volta River flow)
-• Coastal lagoons and estuaries damaged by sediment
-
-**For Climate:**
-• Higher local temperatures (no tree shade)
-• Reduced rainfall
-• Increased vulnerability to climate change
-• Contributes to global warming
-
-**For Biodiversity:**
-• Loss of plant and animal species
-• Reduced ecosystem services
-• Disrupted pollination affecting crops
-
-**For Society:**
-• Rural livelihoods affected (farming, fishing harder)
-• Migration from degraded areas to cities
-• Conflicts over remaining fertile land
-• Food security threatened
-
-**SOLUTIONS:**
-
-**Government Level:**
-• Enforce forest reserve protection laws
-• Provide alternative livelihoods to reduce pressure on forests
-• Support tree planting programs (Green Ghana Project)
-• Regulate logging industry
-• Promote agroforestry instead of clear-cutting
-
-**Community Level:**
-• Community forest management programs
-• Establish woodlots for sustainable charcoal production
-• Practice agroforestry (combine trees with crops)
-• Protect sacred groves and water sources
-
-**Individual Level:**
-• Plant trees on farms and around homes
-• Use efficient cookstoves (reduce firewood demand)
-• Support sustainable products
-• Educate others about forest value
-
-The nitrogen and carbon cycles are deeply connected through forests. Disrupting one affects the other, creating cascading environmental problems. Ghana's forests are not just "trees" - they are critical infrastructure for nutrient cycling, climate regulation, water management, and food security. Protecting remaining forests and restoring degraded land is essential for sustainable development.`
-        },
-        {
-          type: 'calculation',
-          question: `**Exercise 4: Carbon Footprint Calculation**
-
-Calculate the annual CO₂ emissions from these activities of a typical Ghanaian family and suggest reduction strategies:
-
-**Family Activities:**
-• 4 people in household
-• Electricity: 200 kWh/month (Ghana's grid is ~60% fossil fuel, 40% hydro)
-• Car: 1000 km/month at 10 km/liter fuel efficiency
-• Cooking: 3 bags charcoal/month (10 kg each)
-• Waste: household produces 2 kg waste/day, 40% burned
-
-**Emission Factors:**
-• Electricity (fossil fuel portion): 0.5 kg CO₂/kWh
-• Gasoline: 2.3 kg CO₂/liter
-• Charcoal production and burning: 3 kg CO₂/kg
-• Burning waste (organic matter): 1.5 kg CO₂/kg
-
-a) Calculate total annual CO₂ emissions
-b) Suggest 3 realistic ways to reduce emissions by 30%
-
-**Sample Answer:**
-
-a) **Calculations:**
-
-**Electricity:**
-• Monthly use: 200 kWh
-• Fossil fuel portion: 200 × 0.6 = 120 kWh
-• Monthly CO₂: 120 × 0.5 = 60 kg CO₂
-• Annual CO₂: 60 × 12 = 720 kg CO₂
-
-**Car (Gasoline):**
-• Monthly distance: 1000 km
-• Fuel used: 1000 km ÷ 10 km/L = 100 liters
-• Monthly CO₂: 100 × 2.3 = 230 kg CO₂
-• Annual CO₂: 230 × 12 = 2,760 kg CO₂
-
-**Charcoal:**
-• Monthly use: 3 bags × 10 kg = 30 kg
-• Monthly CO₂: 30 × 3 = 90 kg CO₂
-• Annual CO₂: 90 × 12 = 1,080 kg CO₂
-
-**Waste Burning:**
-• Daily waste: 2 kg
-• Burned portion: 2 × 0.4 = 0.8 kg
-• Daily CO₂: 0.8 × 1.5 = 1.2 kg CO₂
-• Annual CO₂: 1.2 × 365 = 438 kg CO₂
-
-**TOTAL ANNUAL CO₂: 720 + 2,760 + 1,080 + 438 = 4,998 kg ≈ 5.0 tons CO₂/year**
-
-**Per capita: 5,000 kg ÷ 4 people = 1,250 kg CO₂ per person/year**
-
-b) **Reduction Strategies to cut 30% (1,500 kg CO₂):**
-
-**Strategy 1: Switch to LPG Gas for Cooking**
-• Replace charcoal with LPG (cleaner burning)
-• LPG emissions: ~2 kg CO₂/kg vs charcoal's 3 kg CO₂/kg
-• Also more efficient, so less fuel needed
-• **Savings:** Reduce charcoal emissions from 1,080 kg to ~400 kg = **680 kg CO₂ saved**
-• **Additional benefits:** Healthier (less indoor air pollution), faster cooking, cheaper long-term
-
-**Strategy 2: Improve Energy Efficiency + Use Solar**
-• Replace incandescent bulbs with LEDs (use 75% less electricity)
-• Install solar panels for water heating and some lighting
-• Use energy-efficient appliances
-• Turn off devices when not in use
-• Target 50% electricity reduction: 200 kWh → 100 kWh
-• **Savings:** Cut electricity emissions from 720 kg to 360 kg = **360 kg CO₂ saved**
-• **Additional benefits:** Lower electricity bills
-
-**Strategy 3: Reduce Car Use + Practice Eco-Driving**
-• Use car only for necessary trips
-• Combine multiple errands in one trip
-• Share rides with neighbors/coworkers
-• Use tro-tro (shared public transport) for some trips
-• Walk or bicycle for short distances
-• Maintain car properly (tire pressure, regular service improves efficiency)
-• Target 30% reduction: 1000 km → 700 km/month
-• **Savings:** Reduce car emissions from 2,760 kg to 1,932 kg = **828 kg CO₂ saved**
-• **Additional benefits:** Save money on fuel, healthier (walking/cycling), less traffic
-
-**Strategy 4: Stop Waste Burning + Compost Organic Waste**
-• Compost food scraps and garden waste instead of burning
-• Separate recyclables (plastic, metal, paper) for collection
-• Reduces burning from 40% to 0%
-• **Savings:** Eliminate waste burning emissions = **438 kg CO₂ saved**
-• **Additional benefits:** Free fertilizer for garden, cleaner air, reduced waste
-
-**TOTAL POTENTIAL SAVINGS: 680 + 360 + 828 + 438 = 2,306 kg CO₂ (46% reduction!)**
-
-Even implementing just strategies 1, 2, and 3 would achieve 1,868 kg reduction (37% - exceeding the 30% target).
-
-**Cost-Benefit Analysis:**
-• Initial investment needed (LPG setup, LEDs, solar) pays for itself through fuel/electricity savings
-• Behavioral changes (reducing car use, composting) cost nothing and provide immediate savings
-• Health benefits (cleaner air indoors and outdoors)
-• Contributes to Ghana's climate commitments under Paris Agreement`
-        },
-        {
-          type: 'critical_thinking',
-          question: `**Exercise 5: The Fertilizer Dilemma**
-
-Ghana's government provides subsidized fertilizer to farmers to increase food production and achieve food security. However, environmental scientists warn about nitrogen pollution from fertilizer overuse.
-
-Analyze this situation:
-a) What are the benefits of fertilizer subsidy program?
-b) What are the environmental risks?
-c) How can Ghana balance food security with environmental protection?
-d) Propose a comprehensive solution
-
-**Sample Answer:**
-
-a) **Benefits of Fertilizer Subsidy:**
-
-**Food Security:**
-• Increases crop yields immediately (nitrogen limits plant growth)
-• More food production reduces imports, saves foreign exchange
-• Lower food prices benefit consumers
-• Helps Ghana work toward self-sufficiency in rice, maize
-
-**Farmer Economic Benefits:**
-• Subsidy makes fertilizer affordable for small-scale farmers
-• Higher yields = more income
-• Reduces poverty in rural areas
-• Enables investment in better farming practices
-
-**National Development:**
-• Agriculture employs 45% of Ghana's workforce
-• Increased productivity supports economic growth
-• Reduces food import dependency (improving trade balance)
-• Job creation in agricultural supply chains
-
-b) **Environmental Risks:**
-
-**Water Pollution:**
-• Only ~50% of applied nitrogen absorbed by crops
-• Excess nitrates leach into groundwater (drinking water contamination)
-• Runoff into rivers, lakes, lagoons causes eutrophication
-• Algal blooms kill fish, destroying fisheries
-• **Example:** Lake Bosomtwe, Volta Lake at risk
-
-**Soil Degradation:**
-• Over-reliance on synthetic fertilizer reduces organic matter use
-• Soil structure deteriorates (compaction, poor water retention)
-• Beneficial soil organisms (earthworms, bacteria) decline
-• Long-term soil fertility actually decreases!
-• Soil acidification from nitrification
-
-**Air Pollution:**
-• Nitrous oxide (N₂O) released from excess fertilizer
-• N₂O is 300× more potent greenhouse gas than CO₂
-• Contributes significantly to Ghana's GHG emissions
-• Ammonia volatilization creates air pollution
-
-**Economic Costs:**
-• Treating polluted water is expensive
-• Healthcare costs from nitrate-contaminated drinking water
-• Loss of fisheries income
-• Soil degradation reduces future productivity
-
-**Ecosystem Damage:**
-• Loss of aquatic biodiversity
-• Wetland degradation
-• Impacts on food web
-
-c) **Balancing Food Security and Environment:**
-
-This requires integrated approach combining:
-
-**Short-term (Immediate Actions):**
-• Farmer education on correct fertilizer application rates and timing
-• Soil testing programs to apply only needed amounts
-• Precision agriculture techniques
-• Proper storage to prevent waste
-
-**Medium-term (3-5 years):**
-• Promote integrated soil fertility management (combine synthetic + organic)
-• Support compost production and use
-• Expand crop rotation with legumes
-• Develop better crop varieties (nitrogen-use efficient cultivars)
-
-**Long-term (Structural Changes):**
-• Transition to agroecological farming systems
-• Invest in organic agriculture
-• Restore degraded lands
-• Build resilience to climate change
-
-d) **Comprehensive Solution: "Smart Fertilizer Program"**
-
-**Component 1: Targeted Subsidy Reform**
-• Link subsidy to soil testing - farmers get subsidy only after testing shows need
-• Variable subsidy rates: higher subsidy for organic/compost, lower for synthetic
-• Require training for subsidy eligibility
-• Support formation of farmer cooperatives for bulk purchasing and knowledge sharing
-
-**Component 2: Integrated Soil Fertility Management (ISFM)**
-• **"4Rs" approach:** Right product, Right rate, Right time, Right place
-• Combine synthetic fertilizer with:
-  - Compost/manure (adds organic matter)
-  - Legume intercropping or rotation
-  - Cover crops
-  - Crop residue retention (don't burn!)
-• Provides both immediate nutrients (synthetic) and long-term soil health (organic)
-
-**Component 3: Knowledge and Extension Services**
-• Train agricultural extension officers in sustainable practices
-• Farmer field schools for hands-on learning
-• Demonstrations of successful integrated approaches
-• Mobile apps for fertilizer recommendations based on crop, soil, weather
-• Peer-to-peer learning networks
-
-**Component 4: Legume Promotion**
-• Subsidize legume seeds (groundnut, cowpea, soybean)
-• Develop markets for legume products
-• Research into high-yielding, nitrogen-fixing varieties
-• School feeding programs to create demand for legumes
-• Processing facilities for value addition
-
-**Component 5: Compost Infrastructure**
-• Support community composting facilities
-• Train farmers in compost production
-• Market linkages for selling compost
-• Use urban organic waste (markets, restaurants) for rural compost
-
-**Component 6: Monitoring and Enforcement**
-• Water quality monitoring in agricultural areas
-• Farmer compliance with best practices
-• Environmental impact assessments
-• Research into Ghana-specific solutions
-
-**Component 7: Economic Incentives**
-• Premium prices for organically grown produce
-• Payment for ecosystem services (farmers protecting water sources)
-• Carbon credits for farmers using sustainable practices
-• Green certification for sustainable farms
-
-**Implementation Strategy:**
-
-**Pilot Phase (Year 1):**
-• Select 5 districts representing different agro-ecological zones
-• Implement full program with intensive support
-• Document successes and challenges
-
-**Scaling Phase (Years 2-3):**
-• Expand to 20 districts based on pilot learnings
-• Refine approaches
-• Build institutional capacity
-
-**National Rollout (Years 4-5):**
-• Gradual nationwide implementation
-• Sustained investment in extension services
-• Integration with other agricultural programs
-
-**Expected Outcomes:**
-• 30-50% reduction in synthetic fertilizer use per hectare
-• Maintained or increased yields through better practices
-• Improved soil health (organic matter, structure, biology)
-• Reduced water pollution
-• Lower GHG emissions
-• Increased farmer resilience to climate change
-• Long-term food security AND environmental sustainability
-
-**Financing:**
-• Redirect some fertilizer subsidy funds to training, soil testing, compost facilities
-• International climate finance (Ghana's NDC commitments)
-• Development partner support
-• Public-private partnerships
-
-This solution recognizes that food security and environmental health are not competing goals - they're interdependent. Degraded soils and polluted water ultimately undermine food security. The "Smart Fertilizer Program" invests in both immediate productivity and long-term sustainability, ensuring Ghana can feed itself while protecting natural resources for future generations.`
-        },
-        {
-          type: 'experimental',
-          question: `**Exercise 6: Investigating Nitrogen Fixation**
-
-Design a simple experiment to demonstrate nitrogen fixation by legume root nodules that could be conducted at your school.
-
-**Sample Answer:**
-
-**Research Question:** Do legume plants (cowpea) with root nodules grow better than legumes without nodules and non-legume plants (maize) in nitrogen-poor soil?
-
-**Hypothesis:** Cowpea with root nodules will show better growth in nitrogen-poor soil than cowpea without nodules or maize, because Rhizobium bacteria fix atmospheric nitrogen making it available to the plant.
-
-**Materials:**
-• 9 identical pots (or cut plastic bottles)
-• Soil from subsoil (low nitrogen) or sand mixed with small amount of soil
-• Cowpea seeds
-• Maize seeds
-• Water
-• Measuring tape/ruler
-• Labels
-
-**Method:**
-
-**Set-up (Day 1):**
-1. Fill all pots with nitrogen-poor soil (subsoil or sand mixture)
-2. Label pots:
-   - Group A (3 pots): "Cowpea with nodules"
-   - Group B (3 pots): "Cowpea without nodules"  
-   - Group C (3 pots): "Maize control"
-3. Plant 3 seeds per pot at same depth
-4. Water all pots equally
-
-**Special Treatment for Group B:**
-To prevent nodule formation, water Group B plants with solution containing trace antibiotics (or use sterilized soil) to kill Rhizobium bacteria. This ensures cowpea grows but without nitrogen fixation.
-
-**During Experiment (6-8 weeks):**
-• Place all pots in same location (same sunlight, temperature)
-• Water all equally (same amount, same frequency)
-• Measure plant height weekly
-• Record leaf color, number of leaves, overall vigor
-
-**Harvest and Analysis:**
-• After 6-8 weeks, carefully remove plants from pots
-• Gently wash roots with water
-• **Observe roots:**
-  - Group A: Look for pink/reddish nodules on roots
-  - Group B: Should have few/no nodules
-  - Group C: Maize roots have no nodules
-• Cut open nodules - pink inside indicates active nitrogen fixation
-• Measure: plant height, root length, number of leaves, plant mass (dry if possible)
-
-**Expected Results:**
-
-**Plant Growth (Height/Mass):**
-• **Group A (Cowpea with nodules):** BEST growth - tallest, most leaves, greenest
-• **Group B (Cowpea no nodules):** POOR growth - short, pale/yellow leaves (nitrogen deficiency)
-• **Group C (Maize):** POOR growth - similar to Group B
-
-**Root Observations:**
-• **Group A:** Many pink nodules on roots (active nitrogen fixation)
-• **Group B:** No nodules or very few, not pink
-• **Group C:** No nodules (maize doesn't associate with Rhizobium)
-
-**Leaf Color:**
-• **Group A:** Dark green (adequate nitrogen for chlorophyll)
-• **Group B & C:** Pale green or yellow (chlorosis from nitrogen deficiency)
-
-**Explanation of Results:**
-• Nitrogen is essential for chlorophyll and proteins
-• Cowpea with nodules (Group A) get nitrogen from Rhizobium bacteria fixing N₂
-• Without nodules (Group B) or without bacteria (Group C), plants depend on soil nitrogen
-• Nitrogen-poor soil cannot support good growth
-• Result proves nitrogen fixation by legume-bacteria symbiosis provides significant growth advantage
-
-**Real-World Application:**
-This explains why:
-• Farmers plant legumes to improve soil
-• Crop rotation with cowpea/groundnuts benefits following maize
-• Traditional Ghanaian farming includes legumes
-• Rhizobium inoculants are sold to farmers (bacteria to ensure nodule formation)
-
-**Extensions:**
-• Add small amount of nitrogen fertilizer to one pot in each group to show nitrogen effect
-• Test different legumes (groundnut, soybean)
-• Compare soil nitrogen before and after (requires testing kit)
-• Measure nitrogen content in plant tissues (school lab if equipped)
-
-**Safety:**
-• Handle plants carefully
-• Wash hands after handling soil
-• Dispose of plant material properly (can compost!)
-
-This experiment provides visual, measurable proof of nitrogen fixation - one of nature's most important processes!`
-        },
-        {
-          type: 'case_study',
-          question: `**Exercise 7: Climate Change Adaptation - A Farmer's Challenge**
-
-**Case Study:**
-Kofi is a 45-year-old farmer in the Brong-Ahafo Region who has grown maize and cassava for 20 years. In the past 5 years, he has noticed:
-• Rainy season starting 2-3 weeks later than before
-• Long dry spells in the middle of rainy season
-• More intense rainfall when it comes (causing erosion)
-• Higher temperatures
-• Reduced maize yields despite using fertilizer
-• Increased pest attacks
-• His neighbor's farm that intercropped trees with crops seems to do better
-
-Kofi wants to adapt to these changes. Using your knowledge of carbon and nitrogen cycles, climate change, and sustainable agriculture, develop a comprehensive adaptation plan for Kofi's farm.
-
-**Sample Answer:**
-
-**Climate Change Analysis:**
-Kofi is experiencing typical climate change impacts in Ghana:
-• Disrupted carbon cycle (excess atmospheric CO₂) causing warming and altered rainfall
-• Temperature increase affects plant growth and water availability
-• Unpredictable rainfall makes traditional planting calendars unreliable
-• Extreme weather (droughts, heavy rains) increasing
-
-**Comprehensive Adaptation Plan:**
-
-**STRATEGY 1: Agroforestry (Working with Carbon Cycle)**
-
-**Implementation:**
-• Plant nitrogen-fixing trees around farm boundaries: Gliricidia sepium, Leucaena, Acacia
-• Intercrop with fruit trees: Mango, cashew, citrus (income diversification)
-• Maintain some trees within fields (scattered tree system)
-• Tree spacing: 10m apart to allow adequate sunlight for crops
-
-**Benefits:**
-• **Carbon sequestration:** Trees absorb CO₂, helping combat climate change
-• **Microclimate improvement:** Trees provide shade, reduce temperature by 2-3°C, reduce evaporation
-• **Windbreaks:** Reduce wind erosion and crop damage
-• **Soil improvement:** Tree roots prevent erosion, leaf litter adds organic matter
-• **Nitrogen fixation:** Trees fix nitrogen like legume crops
-• **Additional income:** Fruit, timber, firewood
-• **Pest control:** Trees provide habitat for beneficial insects and birds
-• **Water cycle:** Trees improve water infiltration and retention
-
-**STRATEGY 2: Diversified Crop Rotation (Nitrogen Cycle Management)**
-
-**New Rotation Plan (2-year cycle):**
-
-**Year 1, Season 1 (March-July):**
-• Main crop: Maize intercropped with cowpea
-• Cowpea climbs maize stalks, fixes nitrogen
-• Harvest both crops
-
-**Year 1, Season 2 (August-November):**
-• Groundnuts (nitrogen fixing)
-• Or soybean for market
-• Builds soil nitrogen for next year
-
-**Year 2, Season 1:**
-• Maize (benefits from legume nitrogen)
-• Needs less fertilizer than before
-
-**Year 2, Season 2:**
-• Cassava (deep roots access subsoil water)
-• Drought tolerant
-• Can be harvested as needed over many months
-
-**Advantages:**
-• Natural nitrogen enrichment reduces fertilizer costs
-• Nitrogen-fixing bacteria populations increase
-• Soil organic matter improves
-• Multiple crops reduce risk
-• Continuous ground cover reduces erosion
-• Different root depths tap different soil layers
-• Pest/disease cycles broken
-
-**STRATEGY 3: Soil Health and Organic Matter (Both Cycles)**
-
-**Practices:**
-• **Composting:** Make compost from crop residues, household waste, animal manure
-• **Mulching:** Cover soil between plants with grass, crop residues
-• **No-burn policy:** Never burn crop residues - incorporate into soil
-• **Cover crops:** Plant mucuna or lablab between main crops
-• **Reduce tillage:** Minimum soil disturbance preserves soil structure and carbon
-
-**Benefits for Carbon Cycle:**
-• Soil organic matter stores carbon (keeps it out of atmosphere)
-• Reduces CO₂ emissions from decomposition and burning
-• Healthy soil acts as carbon sink
-
-**Benefits for Nitrogen Cycle:**
-• Organic matter releases nitrogen slowly (no leaching)
-• Supports beneficial soil bacteria (nitrogen-fixing, nitrifying)
-• Improves soil structure for better root growth
-• Increases water retention (critical during droughts)
-
-**STRATEGY 4: Water Management (Climate Adaptation)**
-
-**Techniques:**
-• **Rainwater harvesting:** Dig small ponds to capture runoff
-• **Contour bunding:** Earth bunds along contours slow water flow, increase infiltration
-• **Planting basins/Zai pits:** Small planting holes concentrate water and compost
-• **Drip irrigation:** For high-value crops (vegetables) if water available
-• **Drought-resistant varieties:** Use improved maize varieties (Obatanpa, Mamaba)
-
-**Benefits:**
-• Capture rainfall during intense storms
-• Reduce soil erosion
-• Provide supplemental water during dry spells
-• Increase water use efficiency
-• Protect crops from climate variability
-
-**STRATEGY 5: Diversification and Risk Management**
-
-**Additional enterprises:**
-• **Vegetable garden:** Under trees, irrigated in dry season (tomatoes, okra, pepper)
-• **Poultry:** Chicken manure for compost, eggs/meat for income
-• **Beekeeping:** Bees pollinate crops, honey provides income, requires minimal land
-• **Mushroom cultivation:** Uses crop residues, shade-tolerant
-
-**Benefits:**
-• Multiple income streams reduce financial risk
-• Year-round income (not just harvest time)
-• Animal manure provides nitrogen-rich fertilizer
-• Efficient resource use (residues become inputs)
-
-**STRATEGY 6: Climate-Smart Crop Choices**
-
-**Selection criteria:**
-• Drought tolerance (sorghum, millet, sweet potato)
-• Short-duration varieties (mature before dry spell)
-• Heat tolerance
-• Pest/disease resistance
-
-**Mix of crops:**
-• **Staples:** Maize (improved varieties), cassava, yam
-• **Legumes:** Cowpea, groundnut, soybean, bambara beans
-• **Traditional crops:** Millet, sorghum (revive these climate-resilient crops)
-• **Vegetables:** Under agroforestry trees
-• **Perennials:** Tree crops provide long-term stability
-
-**STRATEGY 7: Knowledge and Information**
-
-**Actions:**
-• Join farmer association for knowledge sharing
-• Attend agricultural extension training
-• Use mobile phone weather apps for forecasts
-• Learn from neighbor's successful agroforestry
-• Participate in farmer field schools
-• Share successful practices with other farmers
-
-**IMPLEMENTATION TIMELINE:**
-
-**Year 1 (Transition):**
-• **Dry season:** Plant trees around boundaries, start compost production
-• **First rains:** Plant maize-cowpea intercrop, establish water management structures
-• **Second season:** Plant groundnut or soybean, continue composting
-• **End year:** Harvest all crops, assess results, plan Year 2
-
-**Year 2 (Expansion):**
-• Trees established, beginning to provide benefits
-• Full crop rotation implemented
-• Compost supplying 30-50% of nutrient needs
-• Water harvesting structures functional
-• Add vegetable garden in dry season
-
-**Year 3+ (Mature System):**
-• Agroforestry system providing significant benefits
-• Soil fertility improving visibly
-• Reduced fertilizer costs
-• Multiple income sources
-• More resilient to climate shocks
-
-**EXPECTED OUTCOMES:**
-
-**Economic:**
-• Reduced input costs (less fertilizer: save 500-1000 GHS/year)
-• Diversified income reduces risk
-• Improved long-term yields (soil health)
-• Additional income from fruits, vegetables, honey
-
-**Environmental:**
-• Carbon sequestration: ~2-5 tons CO₂/hectare/year in trees and soil
-• Reduced nitrogen pollution (less fertilizer runoff)
-• Improved water quality
-• Enhanced biodiversity
-• Soil erosion reduced by 50-70%
-
-**Resilience:**
-• Better able to withstand droughts (water management, organic matter)
-• Multiple crops buffer against crop failure
-• Stable income throughout year
-• Food security for family
-
-**LESSONS FOR OTHER FARMERS:**
-
-Kofi's success would demonstrate:
-1. Climate adaptation is possible with knowledge and effort
-2. Working WITH natural cycles (carbon, nitrogen, water) is more effective than fighting them
-3. Traditional knowledge (crop rotation, trees on farms) combined with modern science
-4. Short-term costs (labor for composting, tree planting) pay off in long-term benefits
-5. Individual farmer actions contribute to larger climate solution
-
-**CONNECTION TO NUTRIENT CYCLES:**
-This plan is fundamentally about understanding and working with nature's cycles:
-• **Nitrogen cycle:** Using biological fixation instead of only synthetic fertilizers
-• **Carbon cycle:** Sequestering carbon in trees and soil instead of releasing it
-• **Water cycle:** Managing water to adapt to changes
-• **Nutrient cycle:** Recycling all organic materials, nothing wasted
-
-Kofi transforms from a victim of climate change to an active participant in climate solutions. His farm becomes a model of sustainable, climate-smart agriculture that could inspire his community!`
+          question: 'Explain why crop rotation with legumes is an important farming practice for maintaining soil nitrogen levels.',
+          answer: 'Legumes like cowpea, groundnut, and soybean have symbiotic bacteria (Rhizobium) in their root nodules that fix atmospheric nitrogen into ammonia. When legumes are included in crop rotation, they naturally add nitrogen to the soil, reducing the need for synthetic fertilizers and improving soil fertility for subsequent crops.',
+          explanation: 'This is a key application of nitrogen cycle knowledge to sustainable agriculture in Ghana.'
         }
       ]
     },
@@ -4922,32 +3975,63 @@ Ghana\'s water security depends on:
     ],
 
     activities: {
-      type: 'exercises',
+      type: 'quiz',
       questions: [
         {
-          type: 'diagram',
-          question: '**Exercise 1: Water Cycle Diagram**\n\nDraw a comprehensive diagram of the water cycle showing:\n• Major water reservoirs (ocean, atmosphere, groundwater, lakes/rivers)\n• All key processes (evaporation, transpiration, condensation, precipitation, infiltration, runoff)\n• The sun as energy source\n• Arrows indicating water movement with labels\n\n**Sample Answer:** Diagram should show ocean at bottom with evaporation arrows rising to clouds, transpiration from trees, precipitation falling as rain, infiltration into groundwater, and runoff flowing back to ocean via rivers.',
-          solution: 'Complete labeled diagram showing continuous water cycle with all components connected'
+          type: 'mcq',
+          question: 'Which process in the water cycle involves water changing from liquid to gas due to solar heat?',
+          options: ['Condensation', 'Precipitation', 'Evaporation', 'Infiltration'],
+          answer: 'Evaporation',
+          explanation: 'Evaporation is the transformation of liquid water into water vapor (gas) when heated by the sun. This occurs primarily from oceans, lakes, rivers, and moist surfaces.'
+        },
+        {
+          type: 'mcq',
+          question: 'What percentage of atmospheric water vapor comes from ocean evaporation?',
+          options: ['About 50%', 'About 65%', 'About 86%', 'About 95%'],
+          answer: 'About 86%',
+          explanation: 'Oceans contribute approximately 86% of the water vapor in the atmosphere through evaporation. The remaining comes from transpiration (plants) and evaporation from land surfaces.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which human activity reduces infiltration and increases runoff, causing urban flooding?',
+          options: ['Reforestation', 'Building impermeable surfaces', 'Rainwater harvesting', 'Wetland protection'],
+          answer: 'Building impermeable surfaces',
+          explanation: 'Concrete, asphalt, and other impermeable surfaces in cities prevent water from soaking into the ground, causing rapid surface runoff that overwhelms drainage systems and causes flooding.'
+        },
+        {
+          type: 'truefalse',
+          question: 'Transpiration is the process by which plants release water vapor through stomata in their leaves.',
+          answer: true,
+          explanation: 'True. Transpiration occurs when plants absorb water through roots and release it as vapor through tiny pores (stomata) in their leaves. A large tree can transpire 100-200 liters per day.'
+        },
+        {
+          type: 'truefalse',
+          question: 'Deforestation increases local rainfall because there are fewer trees blocking rain clouds.',
+          answer: false,
+          explanation: 'False. Deforestation actually DECREASES local rainfall. Trees release water vapor through transpiration which contributes to cloud formation. Without trees, less moisture enters the atmosphere locally.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each water cycle process with its correct description:',
+          pairs: [
+            { item: 'Evaporation', match: 'Liquid water becomes water vapor' },
+            { item: 'Condensation', match: 'Water vapor forms clouds' },
+            { item: 'Infiltration', match: 'Water soaks into the soil' },
+            { item: 'Runoff', match: 'Water flows over land to rivers' }
+          ],
+          explanation: 'These are key processes that move water through the water cycle between the atmosphere, land, and oceans.'
+        },
+        {
+          type: 'fillblank',
+          question: 'The sun provides the ______ that drives the water cycle by heating water and causing evaporation.',
+          answer: 'energy',
+          explanation: 'Solar energy is the driving force behind the water cycle. The sun\'s heat causes evaporation, and temperature differences create winds that move water vapor around the globe.'
         },
         {
           type: 'shortanswer',
-          question: '**Exercise 2: Process Comparison**\n\nCompare and contrast evaporation and transpiration:\n\na) Definition of each\nb) Where each occurs\nc) Energy source\nd) Importance in the water cycle\n\n**Sample Answer:**\na) Evaporation: liquid water → vapor from surfaces; Transpiration: water vapor release from plant leaves through stomata\nb) Evaporation: oceans, lakes, rivers, soil; Transpiration: plant leaves\nc) Both powered by solar energy (heat)\nd) Evaporation contributes ~86% of atmospheric water; Transpiration ~10%. Both return water to atmosphere.',
-          solution: 'Detailed comparison highlighting similarities (both return water to atmosphere, both solar-powered) and differences (location, mechanism)'
-        },
-        {
-          type: 'shortanswer',
-          question: '**Exercise 3: Ghana Water Issues**\n\nAnalyze ONE water challenge in Ghana and propose solutions:\n\nChoose from:\n- Accra urban flooding\n- Northern Ghana dry season water scarcity\n- Galamsey pollution of rivers\n- Lake Volta water level decline\n\n**Sample Answer (Accra Flooding):**\n**Problem:** Impermeable surfaces (concrete, asphalt) prevent infiltration → rapid runoff → overwhelms drainage → floods during heavy rains\n**Solutions:**\n1. Green infrastructure (permeable pavements, rain gardens)\n2. Proper waste management (unblock drains)\n3. Protect wetlands as natural sponges\n4. Urban tree planting\n5. Rainwater harvesting to reduce runoff',
-          solution: 'Clear problem identification with multiple practical solutions linked to water cycle understanding'
-        },
-        {
-          type: 'calculation',
-          question: '**Exercise 4: Rainwater Harvesting Calculation**\n\nA school in Accra has a roof area of 500 m². The annual rainfall is 1,200 mm. Calculate:\n\na) How many liters of rainwater could potentially be collected annually?\nb) If collection efficiency is 80%, actual collection?\nc) If the school uses 200 liters/day, how many days of water supply?\n\n**Sample Answer:**\na) 500 m² × 1,200 mm = 500 × 1.2 m = 600 m³ = 600,000 liters\nb) 600,000 × 0.80 = 480,000 liters\nc) 480,000 ÷ 200 = 2,400 days (~6.5 years worth!)',
-          solution: '(a) 600,000 liters (b) 480,000 liters (c) 2,400 days'
-        },
-        {
-          type: 'essay',
-          question: '**Exercise 5: Climate Change and Water Cycle**\n\nExplain how climate change affects Ghana\'s water cycle and propose adaptation strategies. Include:\n- Changes observed in rainfall patterns\n- Impacts on water resources\n- At least 3 adaptation strategies\n\n**Sample Answer:**\n**Changes:** Delayed rainy season onset (2-4 weeks), shorter duration, more intense storms, longer dry spells, increased evaporation from higher temperatures.\n**Impacts:** Lake Volta levels declining (hydropower affected), northern water scarcity worsening, crop failures, flooding from intense storms.\n**Adaptations:**\n1. Rainwater harvesting (store water when available)\n2. Reforestation (increase infiltration, local rainfall)\n3. Drought-resistant crops\n4. Improved water storage infrastructure\n5. Efficient irrigation (drip systems)',
-          solution: 'Comprehensive essay linking climate change mechanisms to local impacts with practical solutions'
+          question: 'Explain how galamsey (illegal mining) in Ghana affects the water cycle and water resources.',
+          answer: 'Galamsey pollutes rivers with mercury and sediment, making water unsafe for drinking, fishing, and irrigation. It destroys vegetation along riverbanks (reducing transpiration), increases soil erosion and runoff, and contaminates groundwater. This disrupts the natural water cycle and reduces the availability of clean water for communities and ecosystems.',
+          explanation: 'Understanding the connection between human activities and water cycle disruption is crucial for environmental protection in Ghana.'
         }
       ]
     },
@@ -5409,32 +4493,63 @@ This flexibility allows organisms to get benefits of both strategies!`
     ],
 
     activities: {
-      type: 'exercises',
+      type: 'quiz',
       questions: [
         {
-          type: 'comparison',
-          question: '**Exercise 1: Comparison Table**\n\nComplete a table comparing asexual and sexual reproduction with these headings: Number of parents, Gametes involved, Genetic variation, Speed, Examples.\n\n**Sample Answer:**\n| Feature | Asexual | Sexual |\n|---------|---------|--------|\n| Parents | One | Two (usually) |\n| Gametes | None | Yes (sperm + egg) |\n| Variation | None (clones) | High (unique offspring) |\n| Speed | Fast | Slower |\n| Examples | Binary fission, budding, cuttings | Humans, birds, flowering plants |',
-          solution: 'Complete comparison table with accurate information for each feature'
+          type: 'mcq',
+          question: 'Which type of reproduction produces offspring that are genetically identical to the parent?',
+          options: ['Sexual reproduction', 'Asexual reproduction', 'Cross-pollination', 'Fertilization'],
+          answer: 'Asexual reproduction',
+          explanation: 'Asexual reproduction involves only one parent and produces clones - offspring that are genetically identical to the parent. No gametes or fertilization are involved.'
         },
         {
-          type: 'identification',
-          question: '**Exercise 2: Ghana Crops Identification**\n\nFor each crop, identify whether farmers primarily use asexual or sexual reproduction and explain the method:\n\na) Cassava\nb) Maize\nc) Plantain\nd) Cocoa\ne) Pineapple\n\n**Sample Answers:**\na) Cassava - ASEXUAL (stem cuttings planted directly)\nb) Maize - SEXUAL (seeds planted; cross-pollinated by wind)\nc) Plantain - ASEXUAL (suckers from parent plant)\nd) Cocoa - SEXUAL for new varieties (seeds), then ASEXUAL (grafting) for propagation\ne) Pineapple - ASEXUAL (crown or suckers planted)',
-          solution: 'Correct identification with explanation of propagation method for each crop'
+          type: 'mcq',
+          question: 'Which of the following is an example of vegetative propagation used by Ghanaian farmers?',
+          options: ['Planting maize seeds', 'Planting cassava stem cuttings', 'Pollinating cocoa flowers', 'Hatching chicken eggs'],
+          answer: 'Planting cassava stem cuttings',
+          explanation: 'Cassava stem cuttings are a form of vegetative propagation (asexual reproduction). Farmers cut mature stems into 20-30 cm pieces and plant them directly to grow new cassava plants.'
         },
         {
-          type: 'diagram',
-          question: '**Exercise 3: Binary Fission Diagram**\n\nDraw and label the stages of binary fission in bacteria:\n1. Parent cell with DNA\n2. DNA replication\n3. Cell elongation\n4. Cell membrane constriction\n5. Two daughter cells\n\n**Key labels:** DNA/chromosome, cell membrane, cytoplasm, daughter cells',
-          solution: 'Clear sequential diagram showing all 5 stages with proper labels'
+          type: 'mcq',
+          question: 'What is the main advantage of sexual reproduction over asexual reproduction?',
+          options: ['It is faster', 'It requires less energy', 'It produces genetic variation', 'It needs only one parent'],
+          answer: 'It produces genetic variation',
+          explanation: 'Sexual reproduction combines genetic material from two parents, producing offspring that are genetically different. This variation allows populations to adapt to changing environments and diseases.'
+        },
+        {
+          type: 'truefalse',
+          question: 'Binary fission is a type of asexual reproduction found in bacteria where one cell divides into two identical daughter cells.',
+          answer: true,
+          explanation: 'True. Binary fission occurs when a bacterial cell replicates its DNA, elongates, and then divides into two genetically identical daughter cells. This can happen very quickly - every 20 minutes in ideal conditions.'
+        },
+        {
+          type: 'truefalse',
+          question: 'If all cassava plants in a field are grown from cuttings of one plant, they will have different levels of disease resistance.',
+          answer: false,
+          explanation: 'False. All plants grown from cuttings of one parent are clones - genetically identical. They all have the SAME disease resistance, making the entire field vulnerable if a disease arrives that affects that variety.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each type of asexual reproduction with its correct example:',
+          pairs: [
+            { item: 'Binary fission', match: 'Bacteria and Amoeba' },
+            { item: 'Budding', match: 'Yeast and Hydra' },
+            { item: 'Vegetative propagation', match: 'Cassava stem cuttings' },
+            { item: 'Spore formation', match: 'Fungi and ferns' }
+          ],
+          explanation: 'Different organisms use different methods of asexual reproduction depending on their body structure and environment.'
+        },
+        {
+          type: 'fillblank',
+          question: 'In sexual reproduction, the fusion of male and female gametes (sperm and egg) produces a ______.',
+          answer: 'zygote',
+          explanation: 'A zygote is the single cell formed when a sperm fertilizes an egg. It contains genetic material from both parents and develops into a new organism.'
         },
         {
           type: 'shortanswer',
-          question: '**Exercise 4: Disease Vulnerability**\n\nA farmer plants an entire field with cassava from cuttings of one high-yielding plant. A new disease arrives that this variety is susceptible to.\n\na) What happens to the field? Why?\nb) How could this have been prevented?\nc) What does this teach us about genetic diversity?\n\n**Sample Answers:**\na) The ENTIRE field will be affected because all plants are genetically identical (clones) - all equally susceptible.\nb) Plant different varieties (genetic diversity); use disease-resistant varieties developed through breeding (sexual reproduction).\nc) Genetic diversity is insurance - variation means some individuals may survive threats that kill others.',
-          solution: 'Understanding that clonal populations are vulnerable; diversity provides resilience'
-        },
-        {
-          type: 'shortanswer',
-          question: '**Exercise 5: Advantages Analysis**\n\nExplain why a strawberry plant uses BOTH asexual (runners) and sexual (seeds) reproduction. What advantage does each provide?\n\n**Sample Answer:**\n- **Runners (asexual):** Fast spread in favorable conditions; colonize nearby area quickly; offspring identical (good traits preserved); less energy than making seeds\n- **Seeds (sexual):** Genetic variation; some offspring may survive if conditions change; seeds disperse to new locations; survive winter dormant\n- **Combined benefit:** Best of both worlds - rapid local spread AND long-term adaptability',
-          solution: 'Clear explanation of benefits of each method and why using both is advantageous'
+          question: 'Explain why a farmer might choose to propagate plantain using suckers rather than planting seeds.',
+          answer: 'Suckers are shoots that grow from the base of an existing plantain plant. Using suckers ensures the new plant is genetically identical to the parent (a clone), preserving desirable traits like high yield and good fruit quality. Suckers already have roots and grow faster than seeds. Seeds would produce plants with unpredictable characteristics due to genetic variation.',
+          explanation: 'This demonstrates practical application of asexual reproduction in Ghana agriculture.'
         }
       ]
     },
@@ -6042,32 +5157,63 @@ Egg → Nymph → Adult
     ],
 
     activities: {
-      type: 'exercises',
+      type: 'quiz',
       questions: [
         {
-          type: 'comparison',
-          question: '**Exercise 1: Fertilization Comparison**\n\nComplete a table comparing external and internal fertilization with these features: Location, Environment needed, Number of eggs, Survival rate, Examples.\n\n**Sample Answer:**\n<table><thead><tr><th>Feature</th><th>External</th><th>Internal</th></tr></thead><tbody><tr><td>Location</td><td>Outside body (water)</td><td>Inside female body</td></tr><tr><td>Environment</td><td>Aquatic required</td><td>Any (terrestrial ok)</td></tr><tr><td>Number of eggs</td><td>Many (hundreds-thousands)</td><td>Few</td></tr><tr><td>Survival rate</td><td>Low</td><td>High</td></tr><tr><td>Examples</td><td>Tilapia, frogs</td><td>Chickens, humans, goats</td></tr></tbody></table>',
-          solution: 'Complete comparison table with accurate information'
+          type: 'mcq',
+          question: 'Where does fertilization normally occur in humans?',
+          options: ['Uterus', 'Vagina', 'Fallopian tube (oviduct)', 'Ovary'],
+          answer: 'Fallopian tube (oviduct)',
+          explanation: 'Human fertilization occurs in the fallopian tube (oviduct) when a sperm meets and fuses with an egg. The fertilized egg then travels to the uterus for implantation.'
         },
         {
-          type: 'sequencing',
-          question: '**Exercise 2: Development Sequence**\n\nArrange these stages of human development in correct order:\nBlastocyst, Gastrulation, Zygote, Fetus, Morula, Implantation, Organogenesis\n\n**Sample Answer:**\n1. Zygote (fertilization)\n2. Morula (16-32 cells)\n3. Blastocyst (hollow ball)\n4. Implantation (attaches to uterus)\n5. Gastrulation (3 germ layers form)\n6. Organogenesis (organs develop)\n7. Fetus (week 8 onward)',
-          solution: 'Correct sequence: Zygote → Morula → Blastocyst → Implantation → Gastrulation → Organogenesis → Fetus'
+          type: 'mcq',
+          question: 'External fertilization is found in which of the following organisms?',
+          options: ['Humans', 'Birds (chickens)', 'Fish and frogs', 'Cattle'],
+          answer: 'Fish and frogs',
+          explanation: 'External fertilization occurs outside the body in water. Fish and frogs release eggs and sperm into water where they meet. Humans, birds, and cattle have internal fertilization.'
         },
         {
-          type: 'labeling',
-          question: '**Exercise 3: Placenta Functions**\n\nList FIVE functions of the placenta and explain why each is essential for fetal survival.\n\n**Sample Answer:**\n1. **Nutrition:** Transfers glucose, amino acids from mother - fetus cannot eat\n2. **Gas exchange:** Provides oxygen, removes CO₂ - fetus cannot breathe\n3. **Waste removal:** Removes urea, etc. - fetus has no functioning kidneys yet\n4. **Hormone production:** Maintains pregnancy with progesterone\n5. **Immunity:** Transfers antibodies - protects newborn from infections',
-          solution: 'Five functions with explanations of why each is essential'
+          type: 'mcq',
+          question: 'Which structure connects the fetus to the placenta and carries nutrients and oxygen?',
+          options: ['Fallopian tube', 'Umbilical cord', 'Cervix', 'Amnion'],
+          answer: 'Umbilical cord',
+          explanation: 'The umbilical cord connects the fetus to the placenta, containing blood vessels that transport nutrients and oxygen to the fetus and remove waste products.'
+        },
+        {
+          type: 'truefalse',
+          question: 'The placenta allows all substances in the mother\'s blood to pass directly to the fetus.',
+          answer: false,
+          explanation: 'False. The placenta acts as a selective barrier, allowing nutrients and oxygen to pass but blocking some (not all) harmful substances. However, alcohol, nicotine, and some infections can still cross the placenta.'
+        },
+        {
+          type: 'truefalse',
+          question: 'The morula is a solid ball of cells that forms before the hollow blastocyst stage.',
+          answer: true,
+          explanation: 'True. After fertilization, the zygote divides repeatedly through cleavage. At 16-32 cells, it forms a solid ball called the morula, which then develops into the hollow blastocyst before implantation.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each structure with its correct function during pregnancy:',
+          pairs: [
+            { item: 'Placenta', match: 'Exchanges nutrients and gases between mother and fetus' },
+            { item: 'Umbilical cord', match: 'Connects fetus to placenta' },
+            { item: 'Amnion', match: 'Produces amniotic fluid to protect fetus' },
+            { item: 'Uterus', match: 'Where the fetus develops during pregnancy' }
+          ],
+          explanation: 'These structures work together to support fetal development throughout pregnancy.'
+        },
+        {
+          type: 'fillblank',
+          question: 'Fertilization is the fusion of a sperm and egg to form a single cell called a ______.',
+          answer: 'zygote',
+          explanation: 'The zygote is the first cell of a new organism, formed when the sperm nucleus fuses with the egg nucleus. It contains 46 chromosomes (23 from each parent in humans).'
         },
         {
           type: 'shortanswer',
-          question: '**Exercise 4: Maternal Health**\n\nA pregnant woman in rural Ghana asks why she should attend antenatal clinic. Give FOUR reasons based on what you have learned about fetal development.\n\n**Sample Answer:**\n1. **Monitor fetal growth:** Ultrasound checks if baby developing normally\n2. **Detect complications early:** High blood pressure, anemia, infections can be treated\n3. **Nutritional advice:** Proper diet and supplements (folic acid, iron) prevent defects\n4. **Prevent infections:** Malaria prevention, HIV testing, tetanus vaccination\n5. **Birth planning:** Identify risks, plan for safe delivery',
-          solution: 'At least four relevant reasons connecting antenatal care to fetal development'
-        },
-        {
-          type: 'diagram',
-          question: '**Exercise 5: Fertilization Diagram**\n\nDraw and label a diagram showing fertilization in humans. Include: sperm, egg, zona pellucida, sperm nucleus, egg nucleus, zygote.\n\n**Key elements:**\n- Egg (much larger than sperm)\n- Many sperm approaching\n- One sperm penetrating zona pellucida\n- Nuclei fusing\n- Result: zygote with 46 chromosomes',
-          solution: 'Clear diagram showing sperm-egg fusion with all structures labeled'
+          question: 'Explain why pregnant women in Ghana are advised to avoid alcohol and attend antenatal clinics regularly.',
+          answer: 'Alcohol crosses the placenta easily and can cause Fetal Alcohol Syndrome, leading to intellectual disability, facial abnormalities, and growth problems. Antenatal clinics monitor fetal development, detect complications early, provide nutritional supplements (folic acid, iron), prevent malaria, test for HIV, and ensure safe delivery planning. These measures protect both mother and baby.',
+          explanation: 'This connects reproductive biology to practical health practices in Ghana.'
         }
       ]
     },
@@ -6563,98 +5709,63 @@ $$V = IR = 3 \\times 4 = 12V$$
     ],
 
     activities: {
-      type: 'exercises',
+      type: 'quiz',
       questions: [
         {
-          type: 'experiment',
-          question: `**Static Electricity Investigation**
-
-**Materials:** Plastic comb, small paper bits, balloon, woolen cloth, thread
-
-**Part A - Charging by Friction:**
-1. Scatter tiny paper bits on a table
-2. Run plastic comb through dry hair 10 times (or rub with wool)
-3. Slowly bring comb near paper bits
-4. Observe what happens
-5. Try attracting the paper bits from different heights
-
-**Part B - Charged Balloon:**
-1. Inflate balloon and rub vigorously on woolen cloth
-2. Try sticking balloon to wall
-3. Bring balloon near your hair (without touching)
-4. Try bringing two charged balloons near each other
-
-**Questions:**
-- Why do paper bits jump to the comb?
-- Why does the balloon stick to the wall?
-- What happens when two similarly charged balloons approach?
-- Why does this work better on dry days?`,
-          solution: 'Paper bits are attracted by induced charge. Balloon sticks due to charge induction on wall. Two charged balloons repel (like charges). Works better on dry days because moisture conducts away charges.'
+          type: 'mcq',
+          question: 'According to Ohm\'s Law, if a resistor has a resistance of 20Ω and is connected to a 10V battery, what current flows through it?',
+          options: ['0.2A', '0.5A', '2A', '200A'],
+          answer: '0.5A',
+          explanation: 'Using Ohm\'s Law: I = V/R = 10V ÷ 20Ω = 0.5A. Current is directly proportional to voltage and inversely proportional to resistance.'
         },
         {
-          type: 'calculation',
-          question: `**Ohm's Law Practice Problems**
-
-**Basic Level:**
-1. A lamp has resistance 60Ω. If connected to 240V mains, what current flows?
-2. A current of 0.5A flows through a 100Ω resistor. What voltage is across it?
-3. When 9V is applied across a component, 3A flows. What is the resistance?
-
-**Intermediate Level:**
-4. A phone charger outputs 5V and delivers 2A. What is the effective resistance?
-5. A car headlight bulb draws 5A from the 12V car battery. Calculate the bulb's resistance.
-
-**Challenge:**
-6. A student connects a 6V battery to a bulb. The current is 0.3A. 
-   a) What is the bulb's resistance?
-   b) If the battery voltage drops to 4.5V, what current would flow?`,
-          solution: '1. I=V/R=240/60=4A 2. V=IR=0.5×100=50V 3. R=V/I=9/3=3Ω 4. R=V/I=5/2=2.5Ω 5. R=V/I=12/5=2.4Ω 6a. R=V/I=6/0.3=20Ω 6b. I=V/R=4.5/20=0.225A'
+          type: 'mcq',
+          question: 'Which of the following is an example of static electricity?',
+          options: ['Current flowing through a light bulb', 'Lightning during a thunderstorm', 'A battery powering a torch', 'Electric fan rotating'],
+          answer: 'Lightning during a thunderstorm',
+          explanation: 'Lightning is a massive discharge of static electricity that has accumulated in clouds. Static electricity involves charges at rest that suddenly discharge, unlike current electricity which is continuous flow.'
         },
         {
-          type: 'investigation',
-          question: `**Electrical Safety Audit**
-
-Examine electrical installations at home or school and check for these hazards:
-
-**Wiring Issues:**
-□ Exposed wires (insulation damaged)
-□ Wires running under carpets
-□ Loose connections at sockets
-□ Overloaded extension cords
-
-**Socket/Outlet Issues:**
-□ Broken socket covers
-□ Sockets near water sources
-□ Too many devices in one outlet
-□ Burn marks around sockets
-
-**Appliance Issues:**
-□ Frayed power cords
-□ Appliances with damaged plugs
-□ Using appliances with wet hands
-
-For each hazard found, identify the risk (shock, fire), explain WHY it's dangerous, and suggest how to fix it.`,
-          solution: 'Each hazard should be linked to its danger: exposed wires = shock risk, overloaded sockets = fire risk, wet appliance use = reduced body resistance = fatal shock'
+          type: 'mcq',
+          question: 'What is the SI unit of electrical resistance?',
+          options: ['Ampere (A)', 'Volt (V)', 'Ohm (Ω)', 'Watt (W)'],
+          answer: 'Ohm (Ω)',
+          explanation: 'Resistance is measured in Ohms (Ω). One ohm is the resistance that allows one ampere of current to flow when one volt is applied.'
         },
         {
-          type: 'diagram',
-          question: `**Build a Simple Circuit Diagram**
-
-Draw and label a complete circuit diagram showing:
-- Battery (use correct symbol: long and short parallel lines)
-- Light bulb (circle with cross)
-- Switch (gap with lever)
-- Connecting wires (straight lines)
-- Ammeter (circle with A)
-
-Show the direction of conventional current flow.
-
-**Questions to answer:**
-- Why must the circuit be complete for bulb to light?
-- What is the purpose of the switch?
-- Which direction does conventional current flow?
-- Where would you place a voltmeter to measure voltage across the bulb?`,
-          solution: 'Circuit must be complete for electrons to flow. Switch opens/closes circuit. Conventional current flows from + to −. Voltmeter placed in parallel across the bulb.'
+          type: 'truefalse',
+          question: 'In a complete electrical circuit, conventional current flows from the positive terminal to the negative terminal of the battery.',
+          answer: true,
+          explanation: 'True. Conventional current (the direction historically defined) flows from positive to negative. However, electrons actually flow from negative to positive.'
+        },
+        {
+          type: 'truefalse',
+          question: 'Copper is a good electrical conductor because it has high resistance to electron flow.',
+          answer: false,
+          explanation: 'False. Copper is a good conductor because it has LOW resistance, allowing electrons to flow easily through it. Materials with high resistance are insulators, not conductors.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each electrical term with its correct definition:',
+          pairs: [
+            { item: 'Current (I)', match: 'Rate of flow of electric charge' },
+            { item: 'Voltage (V)', match: 'Electrical pressure or potential difference' },
+            { item: 'Resistance (R)', match: 'Opposition to current flow' },
+            { item: 'Conductor', match: 'Material that allows current to flow easily' }
+          ],
+          explanation: 'These are fundamental concepts in electricity that are related by Ohm\'s Law: V = IR.'
+        },
+        {
+          type: 'fillblank',
+          question: 'The formula for Ohm\'s Law is V = I × R, where V is voltage, I is current, and R is ______.',
+          answer: 'resistance',
+          explanation: 'Ohm\'s Law states that Voltage equals Current multiplied by Resistance. This relationship is fundamental to understanding electrical circuits.'
+        },
+        {
+          type: 'shortanswer',
+          question: 'Explain why it is dangerous to use electrical appliances with wet hands or near water.',
+          answer: 'Water reduces the electrical resistance of skin from about 100,000Ω when dry to as low as 1,000Ω when wet. According to Ohm\'s Law (I = V/R), lower resistance means higher current flow. At Ghana\'s mains voltage of 230V, even small currents through the body (as low as 0.1A or 100mA) can be fatal because they can stop the heart. Wet conditions dramatically increase the risk of electrocution.',
+          explanation: 'This applies physics concepts to practical electrical safety in daily life.'
         }
       ]
     },
@@ -6966,6 +6077,2122 @@ $$\\boxed{V = IR}$$
         explanation: 'This tests understanding of material properties related to electrical conduction.'
       }
     ]
+  },
+
+  // LESSON 8: ELECTRICITY AND MAGNETISM - SIMPLE CIRCUITS
+  {
+    id: 'is-shs2-electricity-magnetism-simple-circuits',
+    slug: 'is-en-electricity-magnetism-simple-circuits',
+    title: 'Electricity and Magnetism - Simple Circuits',
+    
+    objectives: [
+      'Describe what constitutes an electric circuit and its essential components',
+      'Draw and interpret simple circuit diagrams using standard symbols',
+      'Distinguish between series and parallel circuits and their characteristics',
+      'Calculate total resistance in series and parallel circuits',
+      'Apply Ohm\'s Law to solve circuit problems',
+      'Connect ammeters and voltmeters correctly in circuits',
+      'Relate circuit concepts to household wiring and electrical safety in Ghana'
+    ],
+
+    introduction: `Build on your understanding of electrical fundamentals to master electric circuits. Learn to draw circuit diagrams, understand series and parallel connections, and calculate current, voltage, and resistance in circuits.
+
+Electric circuits are the pathways that electricity follows to power devices. In Ghana, circuit knowledge is essential because:
+
+🔌 **Household Wiring:** Understanding how your home's electrical system works
+💡 **Troubleshooting:** Diagnosing why lights or appliances don't work
+🔧 **Career Skills:** Electricians, engineers, and technicians need circuit knowledge
+📱 **Technology:** Every electronic device contains circuits
+📝 **WASSCE Exams:** Circuit calculations are frequently tested
+
+This lesson covers circuit components, symbols, series and parallel arrangements, and practical calculations using Ohm's Law. You'll learn to analyze circuits like a professional electrician!`,
+
+    keyConcepts: [
+      {
+        title: 'Electric Circuits and Components',
+        content: `**An electric circuit is a complete, closed path through which electric current can flow continuously.**
+
+## 🔄 WHAT IS A CIRCUIT?
+
+**Definition:** A circuit is a closed conducting path that allows electric charges to flow from a source of electrical energy through components and back to the source.
+
+**ESSENTIAL COMPONENTS OF A CIRCUIT:**
+
+1. **Power Source (e.g., Battery, Generator)**
+   - Provides the energy that pushes electrons
+   - Creates a potential difference (voltage)
+   - In Ghana: batteries (1.5V, 9V) or mains (230V AC)
+
+2. **Conductors (Wires)**
+   - Provide the pathway for current flow
+   - Usually copper or aluminum
+   - Must form a complete loop
+
+3. **Load (e.g., Bulb, Motor, Resistor)**
+   - The device that uses electrical energy
+   - Converts electrical energy to light, heat, motion, etc.
+   - Provides resistance to current flow
+
+4. **Switch (Optional)**
+   - Controls current flow
+   - Opens or closes the circuit
+   - Safety device to turn things on/off
+
+---
+
+## 🔓 OPEN vs. CLOSED CIRCUITS
+
+<table><thead><tr><th>Feature</th><th>Closed Circuit</th><th>Open Circuit</th></tr></thead><tbody><tr><td><strong>Path</strong></td><td>Complete, unbroken</td><td>Has a break or gap</td></tr><tr><td><strong>Current flow</strong></td><td>Current flows continuously</td><td>No current flows</td></tr><tr><td><strong>Device operation</strong></td><td>Devices work (bulb lights)</td><td>Devices don\'t work (bulb off)</td></tr><tr><td><strong>Switch position</strong></td><td>Switch is ON (closed)</td><td>Switch is OFF (open)</td></tr></tbody></table>
+
+**Key Insight:** A switch "opens" the circuit to stop current (OFF), and "closes" the circuit to allow current (ON).
+
+---
+
+## ⚡ SHORT CIRCUIT - DANGEROUS!
+
+**What is a Short Circuit?**
+- When current takes a shorter, unintended path
+- Bypasses the load/resistance
+- Very high current flows
+- Can cause fires, damage equipment, or electrocution
+
+**Ghana Examples:**
+- Damaged wire insulation allowing wires to touch
+- Water bridging between live and neutral wires
+- Faulty appliances with internal shorts
+
+**Protection:**
+- Fuses: Wire that melts when current is too high
+- Circuit breakers: Automatic switches that trip
+- MCBs (Miniature Circuit Breakers): Used in modern Ghana homes`
+      },
+      {
+        title: 'Circuit Symbols and Diagrams',
+        content: `**Standard symbols allow us to draw circuits clearly and communicate circuit designs universally.**
+
+## 📐 STANDARD CIRCUIT SYMBOLS
+
+These symbols are internationally recognized and used in WASSCE examinations:
+
+<table><thead><tr><th>Component</th><th>Symbol Description</th><th>Function</th></tr></thead><tbody><tr><td><strong>Cell</strong></td><td>Long line (+) and short line (−)</td><td>Single source of electrical energy (1.5V typically)</td></tr><tr><td><strong>Battery</strong></td><td>Multiple cells in series</td><td>Multiple cells combined for higher voltage</td></tr><tr><td><strong>Switch (Open)</strong></td><td>Gap in line with contact points</td><td>Circuit is OFF, no current flows</td></tr><tr><td><strong>Switch (Closed)</strong></td><td>Line connecting contact points</td><td>Circuit is ON, current flows</td></tr><tr><td><strong>Bulb/Lamp</strong></td><td>Circle with X inside</td><td>Converts electrical energy to light</td></tr><tr><td><strong>Resistor</strong></td><td>Zigzag line or rectangle</td><td>Opposes current flow (measured in Ω)</td></tr><tr><td><strong>Variable Resistor</strong></td><td>Resistor with arrow through it</td><td>Adjustable resistance (dimmer, volume control)</td></tr><tr><td><strong>Ammeter</strong></td><td>Circle with letter A</td><td>Measures current (connected in SERIES)</td></tr><tr><td><strong>Voltmeter</strong></td><td>Circle with letter V</td><td>Measures voltage (connected in PARALLEL)</td></tr><tr><td><strong>Motor</strong></td><td>Circle with M inside</td><td>Converts electrical energy to motion</td></tr><tr><td><strong>Fuse</strong></td><td>Rectangle or wavy line in rectangle</td><td>Safety device - melts if current too high</td></tr></tbody></table>
+
+---
+
+## ✏️ DRAWING CIRCUIT DIAGRAMS
+
+**Rules for Drawing Circuit Diagrams:**
+
+1. Use straight lines (horizontal and vertical only)
+2. Use standard symbols
+3. Keep components properly spaced
+4. Show clear connections at junctions
+5. Label components if needed
+6. Show current direction (conventional: + to −)
+
+**Example: Simple Torch Circuit**
+\`\`\`
+    +---[ ]---+
+    |  Switch |
+    |         |
+[Battery]   [Bulb]
+    |         |
+    +---------+
+\`\`\`
+
+Components: Battery (2 cells), switch, bulb, connecting wires forming a complete loop.
+
+---
+
+## 📊 READING CIRCUIT DIAGRAMS
+
+When analyzing a circuit diagram:
+
+1. **Identify the power source** - Look for battery symbol
+2. **Trace the current path** - From + terminal through components to − terminal
+3. **Identify series vs parallel** - Are components in single line or branched?
+4. **Locate measuring instruments** - Ammeter (series), Voltmeter (parallel)
+5. **Find protection devices** - Fuses, switches`
+      },
+      {
+        title: 'Series Circuits',
+        content: `**In a series circuit, components are connected end-to-end in a single loop, so the same current flows through all components.**
+
+## 🔗 CHARACTERISTICS OF SERIES CIRCUITS
+
+**Key Features:**
+- All components form ONE single path
+- Same current flows through ALL components
+- If one component breaks, the whole circuit stops
+- Total voltage divides among components
+- Total resistance is the SUM of all resistances
+
+---
+
+## 📝 FORMULAS FOR SERIES CIRCUITS
+
+**1. CURRENT (Same throughout):**
+\`\`\`
+I_total = I₁ = I₂ = I₃ = ...
+\`\`\`
+The current is the SAME at every point in a series circuit.
+
+**2. VOLTAGE (Divides/Adds up):**
+\`\`\`
+V_total = V₁ + V₂ + V₃ + ...
+\`\`\`
+Total voltage equals the SUM of voltage drops across each component.
+
+**3. RESISTANCE (Adds up):**
+\`\`\`
+R_total = R₁ + R₂ + R₃ + ...
+\`\`\`
+Total resistance is the SUM of all individual resistances.
+
+---
+
+## 📊 EXAMPLE: SERIES CIRCUIT CALCULATION
+
+**Problem:** Three resistors of 2Ω, 3Ω, and 5Ω are connected in series to a 20V battery. Calculate:
+a) Total resistance
+b) Current in the circuit
+c) Voltage across each resistor
+
+**Solution:**
+
+**a) Total Resistance:**
+R_total = R₁ + R₂ + R₃
+R_total = 2Ω + 3Ω + 5Ω = **10Ω**
+
+**b) Current (using Ohm\'s Law V = IR):**
+I = V/R_total = 20V ÷ 10Ω = **2A**
+(This same 2A flows through ALL components)
+
+**c) Voltage across each resistor:**
+V₁ = IR₁ = 2A × 2Ω = **4V**
+V₂ = IR₂ = 2A × 3Ω = **6V**
+V₃ = IR₃ = 2A × 5Ω = **10V**
+
+**Check:** V₁ + V₂ + V₃ = 4V + 6V + 10V = 20V ✓
+
+---
+
+## 🎄 SERIES CIRCUIT EXAMPLES IN GHANA
+
+**1. Old-Style Christmas Lights:**
+- All bulbs in one loop
+- If one bulb breaks, all go out
+- This is why newer lights use parallel!
+
+**2. Torch/Flashlight:**
+- Battery, switch, and bulb in series
+- Switch controls the whole circuit
+
+**3. Disadvantages:**
+- One broken component stops everything
+- Each additional component reduces brightness
+- Not used for home wiring`
+      },
+      {
+        title: 'Parallel Circuits',
+        content: `**In a parallel circuit, components are connected across each other, creating multiple independent paths for current to flow.**
+
+## 🔀 CHARACTERISTICS OF PARALLEL CIRCUITS
+
+**Key Features:**
+- Multiple paths for current
+- Same voltage across ALL parallel branches
+- If one branch breaks, others continue working
+- Total current divides among branches
+- Total resistance is LESS than smallest individual resistance
+
+---
+
+## 📝 FORMULAS FOR PARALLEL CIRCUITS
+
+**1. VOLTAGE (Same across all branches):**
+\`\`\`
+V_total = V₁ = V₂ = V₃ = ...
+\`\`\`
+Every parallel branch has the SAME voltage across it.
+
+**2. CURRENT (Divides/Adds up):**
+\`\`\`
+I_total = I₁ + I₂ + I₃ + ...
+\`\`\`
+Total current is the SUM of currents through each branch.
+
+**3. RESISTANCE (Special formula):**
+\`\`\`
+1/R_total = 1/R₁ + 1/R₂ + 1/R₃ + ...
+\`\`\`
+For TWO resistors only:
+\`\`\`
+R_total = (R₁ × R₂)/(R₁ + R₂)
+\`\`\`
+
+---
+
+## 📊 EXAMPLE: PARALLEL CIRCUIT CALCULATION
+
+**Problem:** Two resistors of 4Ω and 12Ω are connected in parallel to a 12V battery. Calculate:
+a) Total resistance
+b) Total current from battery
+c) Current through each resistor
+
+**Solution:**
+
+**a) Total Resistance (using product over sum):**
+R_total = (R₁ × R₂)/(R₁ + R₂)
+R_total = (4 × 12)/(4 + 12) = 48/16 = **3Ω**
+
+Note: 3Ω is less than both 4Ω and 12Ω!
+
+**b) Total Current:**
+I_total = V/R_total = 12V ÷ 3Ω = **4A**
+
+**c) Current through each resistor:**
+I₁ = V/R₁ = 12V ÷ 4Ω = **3A**
+I₂ = V/R₂ = 12V ÷ 12Ω = **1A**
+
+**Check:** I₁ + I₂ = 3A + 1A = 4A ✓
+
+---
+
+## 🏠 PARALLEL CIRCUITS IN GHANA HOMES
+
+**1. All Room Outlets:**
+- Each socket is in parallel with mains
+- All get 230V regardless of which are used
+- Turning off one doesn\'t affect others
+
+**2. Light Fixtures:**
+- Each light operates independently
+- One bulb blowing doesn\'t affect others
+
+**3. Advantages:**
+- Independent operation of devices
+- Full voltage to each device
+- One failure doesn\'t stop others
+
+**4. Disadvantage:**
+- Can overload if too many devices (causes fire risk!)`
+      },
+      {
+        title: 'Series vs Parallel Comparison',
+        content: `**Understanding when to use series or parallel is crucial for practical electrical work.**
+
+## 📊 COMPARISON TABLE
+
+<table><thead><tr><th>Feature</th><th>Series Circuit</th><th>Parallel Circuit</th></tr></thead><tbody><tr><td><strong>Current</strong></td><td>Same through all components</td><td>Divides among branches</td></tr><tr><td><strong>Voltage</strong></td><td>Divides among components</td><td>Same across all branches</td></tr><tr><td><strong>Total Resistance</strong></td><td>R = R₁ + R₂ + ... (adds up)</td><td>1/R = 1/R₁ + 1/R₂ + ... (decreases)</td></tr><tr><td><strong>Effect of break</strong></td><td>Whole circuit stops</td><td>Only broken branch stops</td></tr><tr><td><strong>Brightness of bulbs</strong></td><td>Dimmer (voltage divided)</td><td>Full brightness (full voltage)</td></tr><tr><td><strong>Adding components</strong></td><td>Increases total resistance</td><td>Decreases total resistance</td></tr></tbody></table>
+
+---
+
+## 🎯 COMBINED (SERIES-PARALLEL) CIRCUITS
+
+Real circuits often combine both series and parallel connections.
+
+**Strategy for Solving:**
+1. Identify which parts are in series, which are in parallel
+2. Simplify parallel sections first (combine to single resistance)
+3. Then add series resistances
+4. Calculate total current using Ohm\'s Law
+5. Work backwards to find individual currents and voltages
+
+**Example:** A circuit has a 2Ω resistor in series with a parallel combination of 3Ω and 6Ω, connected to 18V.
+
+**Step 1:** Combine parallel resistors:
+R_parallel = (3 × 6)/(3 + 6) = 18/9 = 2Ω
+
+**Step 2:** Add series resistance:
+R_total = 2Ω + 2Ω = 4Ω
+
+**Step 3:** Calculate total current:
+I = V/R = 18V ÷ 4Ω = 4.5A
+
+**Step 4:** Calculate voltage drops:
+V across 2Ω series = 4.5A × 2Ω = 9V
+V across parallel section = 4.5A × 2Ω = 9V
+
+---
+
+## 🔌 PRACTICAL APPLICATIONS
+
+**SERIES is used when:**
+- You need components to operate together or not at all
+- Voltage division is needed (voltage divider circuits)
+- Simple on/off control is required (switches)
+- Example: Battery cells combined for higher voltage
+
+**PARALLEL is used when:**
+- Independent operation is needed
+- Full voltage to each component is required
+- Reliability is important (backup paths)
+- Example: All household appliances`
+      },
+      {
+        title: 'Measuring Instruments in Circuits',
+        content: `**Ammeters and voltmeters must be connected correctly to measure current and voltage without disrupting the circuit.**
+
+## 📏 AMMETER - MEASURING CURRENT
+
+**What it measures:** Current (I) in Amperes (A)
+
+**How to connect:** IN SERIES
+- Current must flow THROUGH the ammeter
+- Place it in line with the circuit
+- All current passes through it
+
+**Requirements:**
+- Very LOW internal resistance
+- Why? To not significantly reduce current flow
+- If resistance is high, it reduces current being measured
+
+**Symbol:** Circle with "A" inside
+
+**Ghana Example:** A technician measures how much current your refrigerator draws by connecting ammeter in series.
+
+---
+
+## 📊 VOLTMETER - MEASURING VOLTAGE
+
+**What it measures:** Voltage (V) or potential difference in Volts (V)
+
+**How to connect:** IN PARALLEL
+- Placed ACROSS the component being measured
+- Has its own branch parallel to component
+- Measures voltage "drop" across component
+
+**Requirements:**
+- Very HIGH internal resistance
+- Why? To draw minimal current (not affect circuit)
+- If resistance is low, it provides a short circuit
+
+**Symbol:** Circle with "V" inside
+
+**Ghana Example:** Checking if battery is charged by measuring voltage across its terminals.
+
+---
+
+## 📋 SUMMARY TABLE
+
+<table><thead><tr><th>Feature</th><th>Ammeter</th><th>Voltmeter</th></tr></thead><tbody><tr><td><strong>Measures</strong></td><td>Current (I)</td><td>Voltage (V)</td></tr><tr><td><strong>Unit</strong></td><td>Amperes (A)</td><td>Volts (V)</td></tr><tr><td><strong>Connection</strong></td><td>SERIES</td><td>PARALLEL</td></tr><tr><td><strong>Internal Resistance</strong></td><td>Very LOW</td><td>Very HIGH</td></tr><tr><td><strong>Reason</strong></td><td>Minimize voltage drop</td><td>Minimize current drawn</td></tr></tbody></table>
+
+---
+
+## ⚠️ COMMON MISTAKES TO AVOID
+
+**1. Ammeter Connected in Parallel:**
+- Creates a short circuit!
+- Very high current flows through ammeter
+- Can damage ammeter or circuit
+- NEVER connect ammeter across a component
+
+**2. Voltmeter Connected in Series:**
+- Breaks the circuit (high resistance)
+- Very little/no current flows
+- Devices won\'t work properly
+- NEVER put voltmeter in series
+
+**Memory Tip:**
+- **A**mmeter = **A**ll current goes through it (series)
+- **V**oltmeter = **V**erifies voltage across (parallel)`
+      },
+      {
+        title: 'Household Wiring and Safety',
+        content: `**Understanding how circuits work in Ghana homes is essential for safety and practical applications.**
+
+## 🏠 HOUSEHOLD WIRING IN GHANA
+
+**Ghana Electrical Supply:**
+- Voltage: 230V AC (Alternating Current)
+- Frequency: 50Hz
+- This is DANGEROUS - can be lethal!
+
+**Three-Wire System:**
+
+1. **LIVE Wire (L) - Brown/Red**
+   - Carries current TO appliances
+   - Always dangerous when supply is on
+   - 230V potential relative to neutral
+
+2. **NEUTRAL Wire (N) - Blue/Black**
+   - Return path for current
+   - Should be at 0V (earth potential)
+   - Completes the circuit
+
+3. **EARTH Wire (E) - Green/Yellow-Green**
+   - Safety wire
+   - Connected to ground (earth)
+   - Carries fault current if appliance case becomes live
+   - Triggers circuit breaker/fuse
+
+---
+
+## 🔌 HOW APPLIANCES ARE WIRED
+
+**All appliances in parallel with mains:**
+- Each gets full 230V
+- Each can be switched on/off independently
+- More appliances = more total current drawn
+
+**Ring Main Circuit:**
+- Wire forms a ring around the house
+- Sockets connected along the ring
+- Current can flow from either direction
+- More efficient, uses less copper
+
+---
+
+## ⚠️ ELECTRICAL HAZARDS IN GHANA
+
+**1. OVERLOADING**
+- Connecting too many devices to one socket
+- Using adapters to multiply outlets
+- Causes overheating → FIRE!
+- Solution: Spread loads across circuits
+
+**2. DAMAGED WIRES**
+- Exposed conductors
+- Cracked insulation
+- Can cause shock or short circuit
+- Replace immediately!
+
+**3. WATER AND ELECTRICITY**
+- Never use appliances near water
+- Wet skin has lower resistance
+- Higher current = more dangerous
+- Bathrooms need special safety rules
+
+**4. UNAUTHORIZED MODIFICATIONS**
+- Bypassing meters (illegal!)
+- DIY wiring without qualification
+- Can cause fires and electrocution
+- Always use licensed electricians
+
+---
+
+## 🛡️ SAFETY DEVICES
+
+**1. FUSE**
+- Thin wire that melts at set current
+- Breaks circuit when overloaded
+- Must be replaced after "blowing"
+- Rated in Amperes (3A, 5A, 13A)
+
+**2. CIRCUIT BREAKER**
+- Automatic switch that trips
+- Can be reset (not replaced)
+- Faster than fuses
+- MCBs common in modern Ghana homes
+
+**3. EARTH LEAKAGE CIRCUIT BREAKER (ELCB)**
+- Detects current flowing to earth
+- Trips if current doesn\'t return via neutral
+- Protects against electrocution
+- Required in bathrooms, kitchens
+
+**4. PROPER EARTHING**
+- Metal parts of appliances earthed
+- If live wire touches case, current goes to earth
+- Triggers fuse/breaker before harm
+
+---
+
+## 📝 ELECTRICAL SAFETY RULES
+
+1. ✋ Never touch live wires
+2. 💧 Keep electricity away from water
+3. 🔌 Don\'t overload sockets
+4. 🔧 Only qualified electricians do wiring
+5. ⚡ If unsure, turn off main switch
+6. 🏠 Report fallen power lines to ECG
+7. 🔍 Check appliances regularly for damage`
+      }
+    ],
+
+    pastQuestions: [
+      {
+        question: 'In a series circuit with three identical bulbs connected to a battery, what happens when one bulb breaks? Explain your answer using your knowledge of series circuits. [WASSCE-style]',
+        solution: 'When one bulb breaks in a series circuit, **ALL bulbs go off**. This is because in a series circuit, there is only ONE path for current to flow. All components are connected end-to-end in a single loop, and the same current must flow through every component. When one bulb breaks (its filament burns out), it creates an open circuit - a break in the path. With no complete path, current cannot flow anywhere in the circuit, so all bulbs stop working. This is a major disadvantage of series circuits and why household appliances are connected in parallel instead.'
+      },
+      {
+        question: 'Calculate the total resistance when three resistors of 4Ω, 6Ω, and 12Ω are connected (a) in series, and (b) in parallel.',
+        solution: '**(a) In Series:**\nR_total = R₁ + R₂ + R₃\nR_total = 4Ω + 6Ω + 12Ω\n**R_total = 22Ω**\n\n**(b) In Parallel:**\n1/R_total = 1/R₁ + 1/R₂ + 1/R₃\n1/R_total = 1/4 + 1/6 + 1/12\n1/R_total = 3/12 + 2/12 + 1/12 = 6/12 = 1/2\n**R_total = 2Ω**\n\nNote: Parallel resistance (2Ω) is less than the smallest individual resistor (4Ω), while series resistance (22Ω) is the sum of all resistors.'
+      },
+      {
+        question: 'Explain how an ammeter and voltmeter should be connected in a circuit. Why is the connection method different for each instrument?',
+        solution: '**Ammeter connection: IN SERIES**\n- Must be placed in line with the circuit so all current flows through it\n- Has very LOW internal resistance so it doesn\'t significantly reduce current flow\n- If connected in parallel, it would create a short circuit (dangerous!)\n\n**Voltmeter connection: IN PARALLEL**\n- Must be placed across (parallel to) the component being measured\n- Has very HIGH internal resistance so it draws minimal current\n- If connected in series, it would break the circuit due to high resistance\n\nThe connection methods differ because: Ammeter measures current (charge flow rate), so all charge must pass through it. Voltmeter measures potential difference (voltage drop), which requires comparing potentials on either side of a component - hence across/parallel connection.'
+      },
+      {
+        question: 'A 12V battery is connected to two resistors in series: R₁ = 4Ω and R₂ = 8Ω. Calculate (a) the total resistance, (b) the current in the circuit, and (c) the voltage drop across each resistor.',
+        solution: '**(a) Total resistance:**\nR_total = R₁ + R₂ = 4Ω + 8Ω = **12Ω**\n\n**(b) Current (using Ohm\'s Law):**\nI = V/R_total = 12V ÷ 12Ω = **1A**\nNote: This same 1A flows through both resistors (series circuit property)\n\n**(c) Voltage across each resistor:**\nV₁ = I × R₁ = 1A × 4Ω = **4V**\nV₂ = I × R₂ = 1A × 8Ω = **8V**\n\n**Verification:** V₁ + V₂ = 4V + 8V = 12V ✓ (equals battery voltage)'
+      },
+      {
+        question: 'Explain why household electrical appliances in Ghana are connected in parallel rather than in series. Give THREE reasons.',
+        solution: 'Household appliances in Ghana are connected in parallel for these reasons:\n\n**(1) Full voltage to each device:** Each appliance receives the full 230V supply voltage. In series, voltage would divide among devices, reducing performance (dim lights, slow fans).\n\n**(2) Independent operation:** Each appliance can be switched on or off without affecting others. In series, turning off one device would switch off everything connected to it.\n\n**(3) Reliability:** If one appliance fails or is disconnected, others continue working normally. In series, one broken device stops current to all devices.\n\nAdditional benefit: Parallel connection allows appliances of different resistances to operate at their designed current levels, since each creates its own branch with its own current.'
+      },
+      {
+        question: 'Describe the function of the three wires (Live, Neutral, and Earth) in household electrical wiring in Ghana.',
+        solution: '**LIVE Wire (Brown or Red color):**\n- Carries current FROM the power supply TO appliances\n- Has a potential of 230V relative to neutral\n- Always dangerous when supply is on\n- Connected to the fuse in a plug\n\n**NEUTRAL Wire (Blue or Black color):**\n- Provides the return path for current back to supply\n- Should be at 0V (earth potential)\n- Completes the circuit for current to flow\n- Usually connected directly to appliance\n\n**EARTH Wire (Green or Yellow-Green stripes):**\n- Safety wire connected to the ground\n- Normally carries no current\n- If a fault occurs (live wire touches metal case), Earth provides a low-resistance path for current to flow to ground\n- This triggers the fuse or circuit breaker, preventing electrocution'
+      },
+      {
+        question: 'Two resistors of 6Ω and 3Ω are connected in parallel across a 12V battery. Calculate (a) the total resistance, (b) the current from the battery, and (c) the current through each resistor.',
+        solution: '**(a) Total resistance (parallel):**\nR_total = (R₁ × R₂)/(R₁ + R₂)\nR_total = (6 × 3)/(6 + 3) = 18/9 = **2Ω**\n\n**(b) Total current from battery:**\nI_total = V/R_total = 12V/2Ω = **6A**\n\n**(c) Current through each resistor:**\n(Voltage is same across all parallel branches = 12V)\n\nI₁ = V/R₁ = 12V/6Ω = **2A**\nI₂ = V/R₂ = 12V/3Ω = **4A**\n\n**Verification:** I₁ + I₂ = 2A + 4A = 6A ✓ (equals total current)'
+      },
+      {
+        question: 'What is a short circuit? Explain why short circuits are dangerous and describe TWO safety devices that protect against them.',
+        solution: '**What is a short circuit:**\nA short circuit occurs when current takes an unintended shorter path of very low resistance, bypassing the normal load. This causes extremely high current flow since I = V/R and R is very small.\n\n**Why short circuits are dangerous:**\n- Excessive current causes wires to overheat rapidly\n- Can melt insulation and start fires\n- Can damage equipment connected to the circuit\n- Can cause electric shock or electrocution\n- In Ghana, short circuits from damaged wiring cause many house fires\n\n**Safety devices:**\n\n**(1) Fuse:** Contains a thin wire that melts when current exceeds its rated value (e.g., 5A, 13A). Breaking the circuit stops current flow. Must be replaced after blowing.\n\n**(2) Circuit Breaker (MCB):** An automatic switch that trips (opens) when current is too high or a fault is detected. Can be reset after the fault is corrected. Faster response than fuses. Common in modern Ghana homes.'
+      },
+      {
+        question: 'Distinguish between series and parallel circuits in terms of (a) current flow, (b) voltage distribution, (c) total resistance, and (d) effect of component failure.',
+        solution: '<table border="1" cellpadding="5">\n<tr><th>Feature</th><th>Series Circuit</th><th>Parallel Circuit</th></tr>\n<tr><td><strong>(a) Current</strong></td><td>Same current through all components (I = I₁ = I₂ = I₃)</td><td>Current divides among branches (I = I₁ + I₂ + I₃)</td></tr>\n<tr><td><strong>(b) Voltage</strong></td><td>Voltage divides among components (V = V₁ + V₂ + V₃)</td><td>Same voltage across all branches (V = V₁ = V₂ = V₃)</td></tr>\n<tr><td><strong>(c) Total Resistance</strong></td><td>R_total = R₁ + R₂ + R₃ (resistances add up, always larger)</td><td>1/R_total = 1/R₁ + 1/R₂ + 1/R₃ (always smaller than smallest)</td></tr>\n<tr><td><strong>(d) Component failure</strong></td><td>One broken component stops entire circuit</td><td>Other branches continue working normally</td></tr>\n</table>'
+      },
+      {
+        question: 'State THREE electrical safety rules that should be followed in a household in Ghana.',
+        solution: '**(1) Never overload sockets:** Don\'t connect too many appliances to one socket using adapters. This draws excessive current, causing overheating and fire risk. Spread loads across different circuits.\n\n**(2) Keep electricity away from water:** Never use electrical appliances (phones, radios, heaters) near water or with wet hands. Water conducts electricity and wet skin has lower resistance, increasing the danger of fatal shocks. Never use mains-powered devices in bathrooms.\n\n**(3) Only use qualified electricians:** Never attempt DIY electrical repairs or modifications. Faulty wiring causes fires and electrocution. Ghana uses 230V AC which can be fatal. Always hire licensed ECG-approved electricians for installations and repairs.\n\nAdditional important rules:\n- Report fallen power lines to ECG immediately\n- Check appliances regularly for damaged cords or exposed wires\n- Use correct fuse ratings for appliances\n- Switch off mains when working on any electrical issue'
+      }
+    ],
+
+    activities: {
+      type: 'quiz',
+      questions: [
+        {
+          type: 'mcq',
+          question: 'In a series circuit, what happens to the current through each component?',
+          options: ['Current divides equally', 'Current is the same through all components', 'Current increases through each component', 'Current decreases through each component'],
+          answer: 'Current is the same through all components',
+          explanation: 'In a series circuit, there is only one path for current to flow, so the same current passes through every component. This is a key characteristic that distinguishes series from parallel circuits.'
+        },
+        {
+          type: 'mcq',
+          question: 'What is the total resistance when a 4Ω and 6Ω resistor are connected in series?',
+          options: ['2.4Ω', '10Ω', '24Ω', '1.5Ω'],
+          answer: '10Ω',
+          explanation: 'In series circuits, resistances add up directly: R_total = R₁ + R₂ = 4Ω + 6Ω = 10Ω'
+        },
+        {
+          type: 'mcq',
+          question: 'Which instrument is used to measure current and must be connected in series?',
+          options: ['Voltmeter', 'Ammeter', 'Ohmmeter', 'Galvanometer'],
+          answer: 'Ammeter',
+          explanation: 'An ammeter measures current in amperes and must be connected in series so all current flows through it. It has very low internal resistance to avoid affecting the circuit.'
+        },
+        {
+          type: 'truefalse',
+          statement: 'In a parallel circuit, if one bulb fails, all other bulbs stop working.',
+          answer: 'false',
+          reason: 'In parallel circuits, each component has its own independent path. If one bulb fails, current still flows through the other branches, so other bulbs continue working. This is why household circuits use parallel connections.'
+        },
+        {
+          type: 'truefalse',
+          statement: 'The voltage across each branch in a parallel circuit is the same.',
+          answer: 'true',
+          reason: 'In parallel circuits, all branches are connected across the same two points (positive and negative terminals), so they all have the same voltage across them. This is why all appliances in your home receive the same 230V.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each circuit component with its function:',
+          pairs: [
+            { left: 'Ammeter', right: 'Measures current in amperes' },
+            { left: 'Voltmeter', right: 'Measures potential difference in volts' },
+            { left: 'Resistor', right: 'Opposes the flow of current' },
+            { left: 'Switch', right: 'Opens or closes the circuit' }
+          ],
+          explanation: 'Ammeter measures current (series connection); Voltmeter measures voltage (parallel connection); Resistor limits current flow; Switch controls whether current flows.'
+        },
+        {
+          type: 'fillblank',
+          sentence: 'The three wires in a standard electrical plug are live (brown), neutral (blue), and __________ (green/yellow).',
+          answer: 'earth',
+          alternatives: ['ground', 'earthing'],
+          explanation: 'The earth wire (green/yellow) is a safety wire that provides a path for current to flow to the ground if there is a fault, protecting users from electric shock.'
+        },
+        {
+          type: 'mcq',
+          question: 'Two resistors of 6Ω each are connected in parallel. What is the total resistance?',
+          options: ['12Ω', '6Ω', '3Ω', '0.33Ω'],
+          answer: '3Ω',
+          explanation: 'For two equal resistors in parallel: R_total = R/2 = 6Ω/2 = 3Ω. Alternatively: 1/R = 1/6 + 1/6 = 2/6, so R = 3Ω. Parallel resistance is always less than the smallest individual resistor.'
+        },
+        {
+          type: 'shortanswer',
+          question: 'Why are household appliances in Ghana connected in parallel rather than in series?',
+          answer: 'Each appliance gets full voltage and works independently',
+          explanation: 'Parallel connection ensures: (1) Each appliance receives the full 230V mains voltage needed to operate properly; (2) Appliances can be switched on/off independently; (3) If one appliance fails, others continue working.'
+        }
+      ]
+    },
+
+    summary: `## 📋 LESSON 8 SUMMARY: Simple Circuits
+
+### 🔌 What is a Circuit?
+- **Definition:** A complete, closed path through which electric current can flow
+- **Essential components:** Power source (battery), conductors (wires), load (bulb/resistor), and optionally a switch
+- **Closed circuit:** Complete path, current flows, devices work
+- **Open circuit:** Break in path, no current, devices don't work
+- **Short circuit:** Current bypasses load through low-resistance path (DANGEROUS!)
+
+### 📐 Circuit Symbols
+Standard symbols are used in all circuit diagrams:
+| Component | Function |
+|-----------|----------|
+| Cell/Battery | Provides electrical energy |
+| Bulb | Converts electrical to light energy |
+| Switch | Controls current flow (on/off) |
+| Resistor | Opposes current flow |
+| Ammeter (A) | Measures current (series connection) |
+| Voltmeter (V) | Measures voltage (parallel connection) |
+
+### 🔗 Series Circuits
+**Characteristics:**
+- Single path for current
+- **Current is SAME** throughout: I = I₁ = I₂ = I₃
+- **Voltage DIVIDES:** V = V₁ + V₂ + V₃
+- **Resistance ADDS:** R = R₁ + R₂ + R₃
+- If one component breaks, entire circuit stops
+
+### 🔀 Parallel Circuits
+**Characteristics:**
+- Multiple paths for current
+- **Voltage is SAME** across all branches: V = V₁ = V₂ = V₃
+- **Current DIVIDES:** I = I₁ + I₂ + I₃
+- **Resistance formula:** 1/R = 1/R₁ + 1/R₂ + 1/R₃
+- If one branch fails, others continue working
+
+### 📏 Measuring Instruments
+| Instrument | Measures | Connection | Internal Resistance |
+|------------|----------|------------|---------------------|
+| Ammeter | Current (A) | SERIES | Very LOW |
+| Voltmeter | Voltage (V) | PARALLEL | Very HIGH |
+
+### 🏠 Ghana Household Wiring
+**Three-wire system (230V AC):**
+- **LIVE (Brown/Red):** Carries current to appliances at 230V
+- **NEUTRAL (Blue/Black):** Return path, normally at 0V
+- **EARTH (Green/Yellow-Green):** Safety wire, connected to ground
+
+**Why parallel?** All appliances connected in parallel to get full voltage and work independently.
+
+### 🛡️ Safety Devices
+1. **Fuse:** Thin wire that melts when current exceeds rating
+2. **Circuit Breaker (MCB):** Automatic switch that trips on overload
+3. **ELCB:** Detects current leaking to earth
+
+### ⚠️ Key Safety Rules
+1. Never touch live wires
+2. Keep electricity away from water
+3. Don't overload sockets
+4. Use qualified electricians only
+5. Report fallen power lines to ECG
+
+### 📝 Essential Formulas
+- **Ohm's Law:** V = IR (Voltage = Current × Resistance)
+- **Series resistance:** R_total = R₁ + R₂ + R₃
+- **Parallel resistance:** 1/R_total = 1/R₁ + 1/R₂ + 1/R₃
+- **For two parallel resistors:** R = (R₁ × R₂)/(R₁ + R₂)
+- **Power:** P = VI = I²R = V²/R`
+  },
+
+  // LESSON 9: WORK AND MACHINES - FORCE, WORK, POWER
+  {
+    id: 'is-shs2-work-machines-force-work-power',
+    slug: 'is-en-work-machines-force-work-power',
+    title: 'Work and Machines - Force, Work, and Power',
+    
+    objectives: [
+      'Define force and identify different types of forces',
+      'State Newton\'s laws of motion and apply them to real situations',
+      'Define work done and calculate work in different scenarios',
+      'Explain the concept of energy and state the law of conservation of energy',
+      'Define power and calculate power output',
+      'Distinguish between work, energy, and power',
+      'Apply concepts of force, work, and power to everyday situations in Ghana'
+    ],
+
+    introduction: `Understand the fundamental physics concepts of force, work, and power. Learn how forces cause motion, how work is done, and how power measures the rate of doing work.
+
+Force, work, and power are central to understanding how things move and how energy is transferred. In Ghana, these concepts explain:
+
+💪 **Daily Activities:** How we lift, push, and carry loads at markets and farms
+🚜 **Agriculture:** Why tractors are more powerful than manual labor
+💡 **Electricity Bills:** Why ECG charges based on kilowatt-hours (power × time)
+🏗️ **Construction:** How cranes and machines make building easier
+🚗 **Transportation:** Why vehicles need engines of different power ratings
+
+This lesson covers Newton's laws of motion, the physics definition of work (F × d), energy conservation, and power calculations. These concepts are essential for WASSCE and understanding technology around us!`,
+
+    keyConcepts: [
+      {
+        title: 'Force - The Push or Pull',
+        content: `**Force is any push or pull that can change an object's state of rest or uniform motion, or change its shape.**
+
+## 🔵 WHAT IS FORCE?
+
+**Definition:** Force is an agent that can change the velocity (speed or direction) of an object, or deform it.
+
+**Unit:** Newton (N)
+- Named after Sir Isaac Newton
+- 1 Newton = force needed to accelerate 1 kg at 1 m/s²
+
+---
+
+## 📋 TYPES OF FORCES
+
+**1. Contact Forces (require physical touch):**
+- **Friction:** Opposes motion between surfaces in contact
+- **Tension:** Pulling force in ropes, strings, cables
+- **Normal/Reaction:** Perpendicular force from surfaces
+- **Applied Force:** Push or pull by a person or machine
+- **Air Resistance/Drag:** Opposes motion through air
+
+**2. Non-Contact Forces (act at a distance):**
+- **Gravitational Force:** Attraction between masses (weight)
+- **Magnetic Force:** Attraction/repulsion between magnets
+- **Electrostatic Force:** Between charged objects
+
+---
+
+## ⚖️ WEIGHT vs MASS
+
+<table><thead><tr><th>Property</th><th>Mass</th><th>Weight</th></tr></thead><tbody><tr><td><strong>Definition</strong></td><td>Amount of matter in an object</td><td>Force of gravity on an object</td></tr><tr><td><strong>Unit</strong></td><td>Kilogram (kg)</td><td>Newton (N)</td></tr><tr><td><strong>Type</strong></td><td>Scalar (no direction)</td><td>Vector (has direction - downward)</td></tr><tr><td><strong>Changes with location?</strong></td><td>No (constant everywhere)</td><td>Yes (less on moon, zero in space)</td></tr><tr><td><strong>Measured with</strong></td><td>Beam balance</td><td>Spring balance</td></tr></tbody></table>
+
+**Formula:** W = mg
+- W = weight (N)
+- m = mass (kg)
+- g = gravitational field strength (≈ 10 m/s² on Earth)
+
+**Example:** A student with mass 50 kg:
+Weight = 50 kg × 10 m/s² = **500 N**
+
+---
+
+## 📐 FORCE AS A VECTOR
+
+Force has both **magnitude** (size) and **direction** - making it a vector quantity.
+
+**Adding Forces:**
+- Forces in same direction: Add magnitudes
+- Forces in opposite directions: Subtract (net force = difference)
+- Forces at angles: Use parallelogram law or components
+
+**Resultant Force:** The single force that has the same effect as all forces combined.
+
+**Equilibrium:** When resultant force = 0, object remains at rest or moves with constant velocity.`
+      },
+      {
+        title: 'Newton\'s Laws of Motion',
+        content: `**Newton's three laws explain how forces affect the motion of objects.**
+
+## 🥇 NEWTON'S FIRST LAW (Law of Inertia)
+
+**Statement:** An object remains at rest or continues moving at constant velocity unless acted upon by an external unbalanced force.
+
+**Key Concept - Inertia:**
+- Inertia is the tendency of an object to resist changes in its motion
+- Mass is a measure of inertia (more mass = more inertia)
+
+**Ghana Examples:**
+- Passengers jerk forward when a trotro brakes suddenly (body tends to continue moving)
+- Dust flies off a mat when beaten (dust tends to stay at rest)
+- A football remains still until kicked
+
+---
+
+## 🥈 NEWTON'S SECOND LAW (Law of Acceleration)
+
+**Statement:** The acceleration of an object is directly proportional to the net force acting on it and inversely proportional to its mass.
+
+**Formula:** F = ma
+- F = force (N)
+- m = mass (kg)
+- a = acceleration (m/s²)
+
+**Rearranged:**
+- a = F/m (acceleration = force ÷ mass)
+- m = F/a (mass = force ÷ acceleration)
+
+**Key Points:**
+- Larger force → greater acceleration
+- Larger mass → smaller acceleration (harder to accelerate)
+- Direction of acceleration = direction of net force
+
+**Example:**
+A 1000 kg car accelerates at 2 m/s². What force does the engine provide?
+F = ma = 1000 kg × 2 m/s² = **2000 N**
+
+---
+
+## 🥉 NEWTON'S THIRD LAW (Action-Reaction)
+
+**Statement:** For every action, there is an equal and opposite reaction.
+
+**Key Points:**
+- Action and reaction forces are equal in magnitude
+- They act in opposite directions
+- They act on DIFFERENT objects (not the same object)
+
+**Ghana Examples:**
+- Walking: Your foot pushes ground backward; ground pushes you forward
+- Rowing a canoe: Paddle pushes water backward; water pushes paddle (and canoe) forward
+- Jumping: You push Earth down; Earth pushes you up
+- Firing a gun: Gun pushes bullet forward; bullet pushes gun backward (recoil)
+
+**Common Misconception:**
+Action-reaction pairs do NOT cancel out because they act on different objects!`
+      },
+      {
+        title: 'Work Done in Physics',
+        content: `**In physics, work is done when a force moves an object in the direction of the force.**
+
+## 📏 DEFINITION OF WORK
+
+**Work** is done when a force causes displacement (movement) of an object.
+
+**Formula:** W = F × d × cos(θ)
+
+For force in same direction as movement:
+**W = F × d**
+
+Where:
+- W = work done (Joules, J)
+- F = force applied (Newtons, N)
+- d = distance moved in direction of force (meters, m)
+- θ = angle between force and direction of motion
+
+**Unit:** Joule (J)
+- 1 Joule = 1 Newton × 1 meter = 1 N·m
+
+---
+
+## ✅ WHEN IS WORK DONE?
+
+Work is done when:
+1. A force is applied to an object
+2. The object moves
+3. Movement is in the direction of the force (or has a component in that direction)
+
+**Work is NOT done when:**
+- Force is applied but object doesn't move (pushing a wall)
+- Object moves but no force in direction of motion (carrying a load horizontally - the load moves horizontally but your upward force is perpendicular)
+- Force is perpendicular to motion (circular motion by string)
+
+---
+
+## 📊 WORK DONE EXAMPLES
+
+**Example 1: Horizontal push**
+A worker pushes a 50 kg crate with 200 N force for 10 m.
+W = F × d = 200 N × 10 m = **2000 J**
+
+**Example 2: Lifting against gravity**
+A crane lifts a 500 kg load 20 m high.
+Force needed = Weight = mg = 500 × 10 = 5000 N
+W = F × d = 5000 N × 20 m = **100,000 J = 100 kJ**
+
+**Example 3: Force at an angle**
+A farmer pulls a plough with 300 N at 30° to horizontal for 50 m.
+W = F × d × cos(θ) = 300 × 50 × cos(30°) = 300 × 50 × 0.866 = **12,990 J**
+
+---
+
+## 📈 WORK-ENERGY RELATIONSHIP
+
+**Work-Energy Theorem:**
+Work done on an object equals the change in its kinetic energy.
+
+W = ΔKE = ½mv₂² - ½mv₁²
+
+This connects force, motion, and energy!`
+      },
+      {
+        title: 'Energy and Its Forms',
+        content: `**Energy is the capacity to do work. It exists in many forms and can be converted from one form to another.**
+
+## ⚡ DEFINITION OF ENERGY
+
+**Energy** is the ability or capacity to do work.
+
+**Unit:** Joule (J) - same as work
+- 1 kilojoule (kJ) = 1000 J
+- 1 megajoule (MJ) = 1,000,000 J
+
+---
+
+## 🔋 FORMS OF ENERGY
+
+**1. Kinetic Energy (KE)** - Energy of motion
+\`\`\`
+KE = ½mv²
+\`\`\`
+- m = mass (kg)
+- v = velocity (m/s)
+
+**2. Potential Energy (PE)** - Stored energy due to position or condition
+
+*Gravitational PE:*
+\`\`\`
+PE = mgh
+\`\`\`
+- m = mass (kg)
+- g = gravitational acceleration (10 m/s²)
+- h = height above reference point (m)
+
+*Elastic PE:* Stored in stretched/compressed springs
+\`\`\`
+PE = ½kx²
+\`\`\`
+
+**3. Other Forms:**
+- **Chemical energy:** In fuels, food, batteries
+- **Electrical energy:** Moving charges
+- **Thermal/Heat energy:** Related to temperature
+- **Light energy:** Electromagnetic radiation
+- **Sound energy:** Vibrations in medium
+- **Nuclear energy:** In atomic nuclei
+
+---
+
+## 🔄 LAW OF CONSERVATION OF ENERGY
+
+**Statement:** Energy cannot be created or destroyed; it can only be transformed from one form to another. The total energy in an isolated system remains constant.
+
+**Energy Transformations in Ghana:**
+
+| Source | Transformation |
+|--------|---------------|
+| Akosombo Dam | Gravitational PE → KE → Electrical |
+| Car engine | Chemical → Heat → KE |
+| Solar panel | Light → Electrical |
+| Cooking fire | Chemical → Heat + Light |
+| Electric fan | Electrical → KE + Sound |
+| Phone charging | Electrical → Chemical (battery) |
+
+---
+
+## 📊 ENERGY CALCULATIONS
+
+**Example 1: Kinetic Energy**
+A 1500 kg car travels at 20 m/s.
+KE = ½mv² = ½ × 1500 × 20² = ½ × 1500 × 400 = **300,000 J = 300 kJ**
+
+**Example 2: Gravitational PE**
+A 5 kg coconut is 10 m above ground.
+PE = mgh = 5 × 10 × 10 = **500 J**
+
+**Example 3: Energy Conservation**
+The coconut falls. Just before hitting ground, all PE converts to KE:
+KE = 500 J
+From KE = ½mv²: 500 = ½ × 5 × v²
+v² = 200, so v = **14.1 m/s**`
+      },
+      {
+        title: 'Power - The Rate of Doing Work',
+        content: `**Power measures how quickly work is done or energy is transferred.**
+
+## ⚡ DEFINITION OF POWER
+
+**Power** is the rate of doing work or the rate of energy transfer.
+
+**Formula:**
+\`\`\`
+P = W/t = E/t
+\`\`\`
+
+Where:
+- P = power (Watts, W)
+- W = work done (Joules, J)
+- E = energy transferred (Joules, J)
+- t = time taken (seconds, s)
+
+**Unit:** Watt (W)
+- Named after James Watt
+- 1 Watt = 1 Joule per second = 1 J/s
+- 1 kilowatt (kW) = 1000 W
+- 1 megawatt (MW) = 1,000,000 W
+- 1 horsepower (hp) ≈ 746 W
+
+---
+
+## 🔌 ALTERNATIVE POWER FORMULA
+
+Since W = F × d:
+\`\`\`
+P = W/t = (F × d)/t = F × (d/t) = F × v
+\`\`\`
+
+**P = Fv**
+
+Where v = velocity (m/s)
+
+This is useful for moving vehicles and machines.
+
+---
+
+## 💡 POWER IN ELECTRICITY
+
+**Electrical Power:**
+\`\`\`
+P = VI = I²R = V²/R
+\`\`\`
+
+**Energy consumed:**
+\`\`\`
+E = Pt
+\`\`\`
+
+**Kilowatt-hour (kWh):**
+- Unit used for electricity billing
+- 1 kWh = 1000 W × 3600 s = 3,600,000 J = 3.6 MJ
+
+---
+
+## 📊 POWER CALCULATIONS
+
+**Example 1: Human Power**
+A porter (kayayo) carries a 30 kg load up 5 m stairs in 20 seconds.
+Work done = mgh = 30 × 10 × 5 = 1500 J
+Power = W/t = 1500/20 = **75 W**
+
+**Example 2: Engine Power**
+A car engine exerts 4000 N force while traveling at 25 m/s.
+Power = Fv = 4000 × 25 = **100,000 W = 100 kW**
+
+**Example 3: Electrical Appliance**
+A 2 kW electric cooker runs for 3 hours.
+Energy = Pt = 2 kW × 3 h = **6 kWh**
+At GH₵1.50 per kWh, cost = 6 × 1.50 = **GH₵9.00**
+
+---
+
+## 🔄 EFFICIENCY
+
+**Efficiency** measures how much useful output we get compared to total input.
+
+\`\`\`
+Efficiency = (Useful output / Total input) × 100%
+\`\`\`
+
+**Example:**
+A motor uses 500 J of electrical energy to lift a load, doing 350 J of useful work.
+Efficiency = (350/500) × 100% = **70%**
+
+The remaining 30% (150 J) is "lost" as heat, sound, etc.
+
+**No machine is 100% efficient** due to friction and other losses.`
+      },
+      {
+        title: 'Comparing Work, Energy, and Power',
+        content: `**Understanding the relationships and differences between work, energy, and power is essential.**
+
+## 📊 COMPARISON TABLE
+
+<table><thead><tr><th>Concept</th><th>Work</th><th>Energy</th><th>Power</th></tr></thead><tbody><tr><td><strong>Definition</strong></td><td>Force × displacement in direction of force</td><td>Capacity to do work</td><td>Rate of doing work</td></tr><tr><td><strong>Formula</strong></td><td>W = Fd</td><td>Various (KE = ½mv², PE = mgh)</td><td>P = W/t</td></tr><tr><td><strong>SI Unit</strong></td><td>Joule (J)</td><td>Joule (J)</td><td>Watt (W)</td></tr><tr><td><strong>Type</strong></td><td>Scalar</td><td>Scalar</td><td>Scalar</td></tr><tr><td><strong>What it tells us</strong></td><td>How much energy transferred</td><td>How much work CAN be done</td><td>How FAST work is done</td></tr></tbody></table>
+
+---
+
+## 🔗 RELATIONSHIPS
+
+**1. Work and Energy:**
+- Work done = Energy transferred
+- When you do work ON an object, you give it energy
+- When an object does work, it loses energy
+
+**2. Energy and Power:**
+- Energy = Power × Time
+- E = Pt
+- More power means same energy transferred in less time
+
+**3. Work and Power:**
+- Power = Work ÷ Time
+- Same work can be done with different power (different times)
+
+---
+
+## 🇬🇭 GHANA PRACTICAL APPLICATIONS
+
+**1. Kayayei (Head Porters):**
+- Work: Carrying loads upstairs (W = mgh)
+- Power: How quickly they complete the task
+- A fit porter has more power (same work, less time)
+
+**2. Akosombo Dam:**
+- Energy: Potential energy of water behind dam
+- Work: Water does work on turbines as it falls
+- Power: Rate of electrical energy generation (1,020 MW capacity)
+
+**3. Vehicles:**
+- Work: Engine moves car against resistance
+- Energy: Chemical energy from fuel
+- Power: Engine rating (e.g., 100 kW car engine)
+
+**4. Household Appliances:**
+- Power rating tells you energy consumption rate
+- Higher wattage = higher electricity bills
+- ECG charges per kWh (energy used)
+
+| Appliance | Power | Use 5 hrs/day | Daily Energy |
+|-----------|-------|---------------|--------------|
+| Light bulb | 60 W | 5 h | 0.3 kWh |
+| TV | 150 W | 5 h | 0.75 kWh |
+| Fridge | 200 W | 24 h | 4.8 kWh |
+| AC | 2000 W | 8 h | 16 kWh |
+
+---
+
+## 📝 PROBLEM-SOLVING TIPS
+
+**For Work problems:**
+1. Identify the force (in Newtons)
+2. Find the distance moved in direction of force
+3. Use W = Fd (or W = Fd cos θ if at angle)
+
+**For Energy problems:**
+1. Identify initial and final energy types
+2. Use appropriate formulas (KE, PE)
+3. Apply conservation of energy if needed
+
+**For Power problems:**
+1. First calculate work done
+2. Identify time taken
+3. Use P = W/t or P = Fv`
+      }
+    ],
+
+    activities: {
+      type: 'quiz',
+      questions: [
+        {
+          type: 'mcq',
+          question: 'Which formula correctly represents Newton\'s second law of motion?',
+          options: ['F = mv', 'F = ma', 'F = m/a', 'F = a/m'],
+          answer: 'F = ma',
+          explanation: 'Newton\'s second law states that Force equals mass times acceleration (F = ma). This shows that a larger force produces greater acceleration, and a larger mass requires more force to accelerate.'
+        },
+        {
+          type: 'mcq',
+          question: 'A 50 kg person stands on a scale. What is their weight? (Take g = 10 m/s²)',
+          options: ['50 N', '500 N', '5 N', '5000 N'],
+          answer: '500 N',
+          explanation: 'Weight = mass × gravitational acceleration. W = mg = 50 kg × 10 m/s² = 500 N. Remember: mass is in kg, weight is in Newtons.'
+        },
+        {
+          type: 'mcq',
+          question: 'When is work done on an object in physics?',
+          options: ['When a force is applied but object does not move', 'When object moves in direction of applied force', 'When force is perpendicular to motion', 'When object is at rest'],
+          answer: 'When object moves in direction of applied force',
+          explanation: 'Work is done only when a force causes displacement in the direction of the force. No work is done if the object doesn\'t move or if the force is perpendicular to the motion.'
+        },
+        {
+          type: 'truefalse',
+          statement: 'The kinetic energy of an object doubles when its velocity doubles.',
+          answer: 'false',
+          reason: 'Kinetic energy depends on velocity squared (KE = ½mv²). When velocity doubles, kinetic energy increases by a factor of 4, not 2. For example, if v doubles from 10 to 20 m/s, KE increases from ½m(100) to ½m(400).'
+        },
+        {
+          type: 'truefalse',
+          statement: 'Power is the rate at which work is done.',
+          answer: 'true',
+          reason: 'Power = Work ÷ Time (P = W/t). It measures how quickly energy is transferred or work is completed. The unit of power is the Watt (W), where 1 W = 1 J/s.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each physics concept with its correct formula:',
+          pairs: [
+            { left: 'Work done', right: 'W = F × d' },
+            { left: 'Kinetic energy', right: 'KE = ½mv²' },
+            { left: 'Gravitational PE', right: 'PE = mgh' },
+            { left: 'Power', right: 'P = W/t' }
+          ],
+          explanation: 'Work = Force × distance; Kinetic energy = half × mass × velocity squared; Gravitational potential energy = mass × g × height; Power = Work ÷ time.'
+        },
+        {
+          type: 'fillblank',
+          sentence: 'The SI unit of power is the __________, which equals one joule per second.',
+          answer: 'watt',
+          alternatives: ['Watt', 'W'],
+          explanation: 'Power is measured in watts (W), named after James Watt. 1 Watt = 1 Joule per second. Common multiples include kilowatt (kW = 1000 W) and megawatt (MW = 1,000,000 W).'
+        },
+        {
+          type: 'mcq',
+          question: 'A crane lifts a 200 kg load through 10 m in 20 seconds. What is the power developed? (g = 10 m/s²)',
+          options: ['100 W', '1000 W', '2000 W', '200 W'],
+          answer: '1000 W',
+          explanation: 'Work done = mgh = 200 × 10 × 10 = 20,000 J. Power = Work/Time = 20,000 J ÷ 20 s = 1000 W = 1 kW.'
+        },
+        {
+          type: 'shortanswer',
+          question: 'Why does ECG (Electricity Company of Ghana) bill customers in kilowatt-hours (kWh) rather than just kilowatts (kW)?',
+          answer: 'kWh measures energy consumed, kW only measures power rating',
+          explanation: 'Kilowatt (kW) measures power - the rate of energy use. Kilowatt-hour (kWh) measures actual energy consumed over time (Energy = Power × Time). A 2 kW heater used for 3 hours consumes 6 kWh of energy. ECG charges for the total energy used, not just how powerful your appliances are.'
+        }
+      ]
+    },
+
+    pastQuestions: [
+      {
+        question: 'Define force and state its SI unit. Give three effects that a force can produce on an object. [WASSCE-style]',
+        solution: '**Definition:** Force is a push or pull that can change the state of rest or uniform motion of an object, or change its shape.\n\n**SI Unit:** Newton (N)\n\n**Three effects of force:**\n1. **Start motion** - A force can make a stationary object begin to move (kicking a football)\n2. **Stop motion** - A force can bring a moving object to rest (braking a car)\n3. **Change direction** - A force can change the direction of a moving object (hitting a tennis ball)\n4. **Change speed** - A force can increase or decrease an object\'s speed (acceleration/deceleration)\n5. **Change shape** - A force can deform an object (squeezing clay, stretching rubber)'
+      },
+      {
+        question: 'State Newton\'s three laws of motion. Give one practical example for each law.',
+        solution: '**Newton\'s First Law (Law of Inertia):**\nAn object remains at rest or continues moving at constant velocity unless acted upon by an external unbalanced force.\n*Example:* Passengers in a trotro jerk forward when the driver brakes suddenly - their bodies tend to continue moving forward.\n\n**Newton\'s Second Law (Law of Acceleration):**\nThe acceleration of an object is directly proportional to the net force acting on it and inversely proportional to its mass. (F = ma)\n*Example:* A loaded truck accelerates more slowly than an empty one when the same engine force is applied, because it has greater mass.\n\n**Newton\'s Third Law (Action-Reaction):**\nFor every action, there is an equal and opposite reaction.\n*Example:* When you walk, your foot pushes backward on the ground (action), and the ground pushes forward on your foot (reaction), propelling you forward.'
+      },
+      {
+        question: 'Define work done and state the conditions necessary for work to be done in physics.',
+        solution: '**Definition:** Work is done when a force causes displacement of an object in the direction of the applied force. Work done = Force × Distance moved in direction of force (W = Fd).\n\n**Conditions for work to be done:**\n\n1. **A force must be applied** - There must be a push or pull acting on the object\n\n2. **The object must move** - The force must cause displacement; if the object doesn\'t move, no work is done (e.g., pushing against a wall)\n\n3. **Movement must have a component in the direction of force** - If the force is perpendicular to the motion, no work is done by that force (e.g., carrying a load horizontally - gravity acts downward but movement is horizontal)\n\n**Examples where NO work is done:**\n- Pushing a wall that doesn\'t move\n- Holding a heavy bag stationary\n- A satellite orbiting Earth (gravitational force perpendicular to motion)'
+      },
+      {
+        question: 'A crane lifts a load of mass 2000 kg through a vertical height of 25 m in 50 seconds. Calculate: (a) the work done by the crane, (b) the power developed by the crane. [Take g = 10 m/s²]',
+        solution: '**Given:**\n- Mass (m) = 2000 kg\n- Height (h) = 25 m\n- Time (t) = 50 s\n- g = 10 m/s²\n\n**(a) Work done by the crane:**\n\nForce (weight lifted) = mg = 2000 × 10 = 20,000 N\n\nWork done = Force × Distance\nW = F × h = 20,000 × 25\n**W = 500,000 J = 500 kJ**\n\n**(b) Power developed:**\n\nPower = Work ÷ Time\nP = W/t = 500,000/50\n**P = 10,000 W = 10 kW**\n\n*Alternative method for power:*\nP = Fv where v = h/t = 25/50 = 0.5 m/s\nP = 20,000 × 0.5 = 10,000 W ✓'
+      },
+      {
+        question: 'Explain the law of conservation of energy. Describe the energy transformations that occur when a ball is thrown vertically upward and falls back down.',
+        solution: '**Law of Conservation of Energy:**\nEnergy cannot be created or destroyed; it can only be transformed from one form to another. The total energy in an isolated system remains constant.\n\n**Energy transformations when a ball is thrown up and falls:**\n\n**1. At the start (throwing):**\n- Muscular/chemical energy in arm converts to kinetic energy (KE) of the ball\n- Ball has maximum KE and minimum gravitational PE\n\n**2. Going up:**\n- KE gradually converts to gravitational PE\n- Ball slows down (loses KE) as it gains height (gains PE)\n- Total energy (KE + PE) remains constant\n\n**3. At maximum height:**\n- KE = 0 (ball momentarily stops)\n- PE = maximum\n- All kinetic energy has converted to potential energy\n\n**4. Falling down:**\n- PE converts back to KE\n- Ball speeds up as it loses height\n- Just before being caught: PE = 0, KE = maximum\n\n**5. Energy at any point:**\nTotal mechanical energy = KE + PE = constant\n(Ignoring air resistance)\n\n**With air resistance:** Some energy converts to heat due to friction with air, so ball returns with less KE than it started with.'
+      },
+      {
+        question: 'Distinguish between power and energy. A 2 kW electric heater is used for 3 hours. Calculate the energy consumed in (i) Joules (ii) kilowatt-hours.',
+        solution: '**Distinction between Power and Energy:**\n\n| Power | Energy |\n|-------|--------|\n| Rate of doing work or transferring energy | Capacity to do work |\n| P = W/t | E = Pt |\n| Unit: Watt (W) | Unit: Joule (J) |\n| Tells us how FAST energy is used | Tells us how MUCH energy is used |\n| A 100W bulb uses energy at 100 J/s | Running 100W bulb for 1 hour uses 360,000 J |\n| Property of the device | Depends on power AND time |\n\n**Calculation:**\nGiven: P = 2 kW = 2000 W, t = 3 hours\n\n**(i) Energy in Joules:**\nt = 3 hours = 3 × 3600 = 10,800 seconds\nE = Pt = 2000 W × 10,800 s\n**E = 21,600,000 J = 21.6 MJ**\n\n**(ii) Energy in kilowatt-hours:**\nE = Pt = 2 kW × 3 h\n**E = 6 kWh**\n\n*Verification:* 6 kWh = 6 × 3,600,000 J = 21,600,000 J ✓'
+      },
+      {
+        question: 'A car of mass 1500 kg accelerates uniformly from rest to 20 m/s in 8 seconds. Calculate: (a) the acceleration, (b) the accelerating force, (c) the kinetic energy at 20 m/s.',
+        solution: '**Given:**\n- Mass (m) = 1500 kg\n- Initial velocity (u) = 0 m/s (rest)\n- Final velocity (v) = 20 m/s\n- Time (t) = 8 s\n\n**(a) Acceleration:**\nUsing a = (v - u)/t\na = (20 - 0)/8\n**a = 2.5 m/s²**\n\n**(b) Accelerating force:**\nUsing F = ma\nF = 1500 × 2.5\n**F = 3750 N**\n\n**(c) Kinetic energy at 20 m/s:**\nUsing KE = ½mv²\nKE = ½ × 1500 × 20²\nKE = ½ × 1500 × 400\nKE = 750 × 400\n**KE = 300,000 J = 300 kJ**\n\n*Alternative check using work-energy theorem:*\nDistance: s = ut + ½at² = 0 + ½(2.5)(8)² = 80 m\nWork done = Fs = 3750 × 80 = 300,000 J ✓'
+      },
+      {
+        question: 'What is meant by efficiency of a machine? A motor rated 5 kW raises a load of 400 kg through 20 m in 25 s. Calculate the efficiency of the motor. [g = 10 m/s²]',
+        solution: '**Efficiency of a machine:**\nEfficiency is the ratio of useful output energy (or power) to the total input energy (or power), expressed as a percentage.\n\nEfficiency = (Useful output / Total input) × 100%\n\nNo machine is 100% efficient because some energy is always lost as heat (due to friction), sound, or other forms.\n\n**Calculation:**\n\n**Given:**\n- Motor power (input) = 5 kW = 5000 W\n- Mass of load = 400 kg\n- Height = 20 m\n- Time = 25 s\n- g = 10 m/s²\n\n**Step 1: Calculate useful work output (lifting the load)**\nUseful work = mgh = 400 × 10 × 20 = **80,000 J**\n\n**Step 2: Calculate useful power output**\nUseful power = Work/time = 80,000/25 = **3200 W**\n\n**Step 3: Calculate efficiency**\nEfficiency = (Useful output power / Input power) × 100%\nEfficiency = (3200/5000) × 100%\n**Efficiency = 64%**\n\n*The remaining 36% is lost as heat due to friction in motor bearings, electrical resistance, etc.*'
+      },
+      {
+        question: 'A 60 kg student runs up a flight of 20 stairs, each 0.2 m high, in 5 seconds. Another student of the same mass walks up the same stairs in 15 seconds. Compare the work done and power developed by each student.',
+        solution: '**Given:**\n- Mass of each student = 60 kg\n- Number of stairs = 20\n- Height per stair = 0.2 m\n- Total height (h) = 20 × 0.2 = 4 m\n- Running time = 5 s\n- Walking time = 15 s\n\n**Work done (both students):**\nWork = mgh = 60 × 10 × 4 = **2400 J**\n\n**Both students do the SAME work** because:\n- Same mass\n- Same height climbed\n- Work depends only on force × distance, not on time\n\n**Power developed:**\n\n*Running student:*\nP = W/t = 2400/5 = **480 W**\n\n*Walking student:*\nP = W/t = 2400/15 = **160 W**\n\n**Comparison:**\n- **Work:** Both students do equal work (2400 J each)\n- **Power:** Running student develops 3× more power (480 W vs 160 W)\n\n**Conclusion:** The running student is more POWERFUL (does the same work in less time), but does not do more WORK. This illustrates the difference between work and power - power is about HOW FAST work is done, not how much.'
+      },
+      {
+        question: 'Explain why a bullet fired from a gun has more kinetic energy than the gun that fired it, even though they experience equal and opposite forces (Newton\'s third law).',
+        solution: '**Explanation:**\n\nWhen a gun fires, by Newton\'s third law:\n- Force on bullet (forward) = Force on gun (backward) = F\n- These forces are equal in magnitude but opposite in direction\n\n**However, the kinetic energies are NOT equal because:**\n\n**1. Difference in mass:**\n- Bullet mass (m) is very small (e.g., 0.01 kg)\n- Gun mass (M) is much larger (e.g., 1 kg)\n\n**2. Effect on acceleration (F = ma):**\nSince F is same for both:\n- Bullet acceleration: a = F/m (large, because m is small)\n- Gun acceleration: A = F/M (small, because M is large)\n\n**3. Effect on velocity:**\nBullet gains much higher velocity than gun.\nIf momentum is conserved: mv = MV\nSo: v/V = M/m (bullet velocity is M/m times gun velocity)\n\n**4. Kinetic energy comparison:**\nKE = ½mv² = ½m × v × v\n\nUsing momentum conservation (mv = MV):\n- KE(bullet) = ½mv² = ½(mv)v = ½(mv)(mv/m) = (mv)²/2m\n- KE(gun) = ½MV² = ½(MV)(MV/M) = (MV)²/2M\n\nSince mv = MV (momentum conserved):\n**KE(bullet)/KE(gun) = M/m**\n\n**Example:**\nIf gun is 100× heavier than bullet:\n- Bullet has 100× more KE than gun\n- This is why bullet is deadly but gun recoil is manageable\n\n**Key insight:** Equal forces produce equal momenta (mv = MV), but the lighter object gets more kinetic energy because KE depends on v², and the lighter object moves faster.'
+      }
+    ],
+
+    summary: `## 📋 LESSON 9 SUMMARY: Force, Work, and Power
+
+### 💪 FORCE
+**Definition:** A push or pull that can change motion or shape
+**Unit:** Newton (N)
+**Formula (Newton's 2nd Law):** F = ma
+
+**Types of Forces:**
+- Contact: Friction, tension, normal, applied
+- Non-contact: Gravity, magnetic, electrostatic
+
+**Weight vs Mass:**
+- Mass = amount of matter (kg) - constant everywhere
+- Weight = gravitational force (N) - varies with location
+- W = mg (g ≈ 10 m/s² on Earth)
+
+### ⚖️ NEWTON'S LAWS
+1. **First Law (Inertia):** Objects stay at rest or constant velocity unless acted on by unbalanced force
+2. **Second Law:** F = ma (force = mass × acceleration)
+3. **Third Law:** Action = Reaction (equal, opposite, on different objects)
+
+### 📏 WORK DONE
+**Definition:** Force × displacement in direction of force
+**Formula:** W = Fd (or W = Fd cos θ)
+**Unit:** Joule (J) = N·m
+
+**Work is done when:**
+- Force is applied
+- Object moves
+- Movement is in direction of force
+
+### ⚡ ENERGY
+**Definition:** Capacity to do work
+**Unit:** Joule (J)
+
+**Key Formulas:**
+- Kinetic Energy: KE = ½mv²
+- Gravitational PE: PE = mgh
+- Elastic PE: PE = ½kx²
+
+**Conservation of Energy:** Energy cannot be created or destroyed, only transformed.
+
+### 🔌 POWER
+**Definition:** Rate of doing work
+**Formulas:** P = W/t = Fv
+**Unit:** Watt (W) = J/s
+
+**Electrical:** P = VI = I²R = V²/R
+**Energy:** E = Pt
+**Kilowatt-hour:** 1 kWh = 3.6 MJ
+
+### 📊 KEY RELATIONSHIPS
+| Concept | Formula | Unit |
+|---------|---------|------|
+| Force | F = ma | Newton (N) |
+| Work | W = Fd | Joule (J) |
+| Power | P = W/t | Watt (W) |
+| KE | ½mv² | Joule (J) |
+| PE | mgh | Joule (J) |
+
+### 🔧 EFFICIENCY
+Efficiency = (Useful output / Total input) × 100%
+- No machine is 100% efficient
+- Losses occur due to friction, heat, sound
+
+### 🇬🇭 GHANA APPLICATIONS
+- **Kayayo:** Work = mgh when lifting loads
+- **ECG bills:** Energy = Power × Time (kWh)
+- **Akosombo:** PE → KE → Electrical energy
+- **Vehicles:** Engine power ratings in kW or hp`
+  },
+
+  // LESSON 10: WORK AND MACHINES - SIMPLE MACHINES & USES
+  {
+    id: 'is-shs2-work-machines-simple-machines',
+    slug: 'is-en-work-machines-simple-machines-uses',
+    title: 'Work and Machines: Simple Machines & Uses',
+    
+    objectives: [
+      'Define a machine and explain its purpose',
+      'Identify and describe the six types of simple machines',
+      'Calculate mechanical advantage, velocity ratio, and efficiency',
+      'Explain how levers work and identify the three classes of levers',
+      'Describe the operation of pulleys and their mechanical advantages',
+      'Explain how inclined planes, wedges, and screws reduce effort',
+      'Apply knowledge of simple machines to everyday situations in Ghana',
+      'Solve problems involving simple machines'
+    ],
+
+    introduction: `Simple machines are the building blocks of all mechanical devices. They make work easier by reducing the effort needed, changing the direction of force, or increasing speed. Understanding simple machines helps us appreciate how technology works!
+
+In Ghana, simple machines are used everywhere:
+
+🪓 **Agriculture:** Cutlasses (wedges), hoes (levers), and pulleys for lifting water from wells
+🚲 **Transportation:** Bicycles use wheel and axle, gears, and levers
+🏗️ **Construction:** Cranes use pulleys, ramps are inclined planes, screws hold buildings together
+🎣 **Fishing:** Pulleys to haul nets, levers in oars and paddles
+✂️ **Daily Life:** Scissors (levers), bottle openers, wheelbarrows, and door handles
+
+This lesson covers the six simple machines: lever, pulley, wheel and axle, inclined plane, wedge, and screw. You'll learn to calculate mechanical advantage, velocity ratio, and efficiency - essential concepts for WASSCE physics!`,
+
+    keyConcepts: [
+      {
+        title: 'What is a Machine?',
+        content: `**A machine is any device that makes work easier by changing the magnitude or direction of force, or by transferring energy from one place to another.**
+
+## 🔧 PURPOSE OF MACHINES
+
+Machines help us in three main ways:
+
+**1. Force Multiplication (MA > 1)**
+- Apply small effort to move large load
+- Example: Using a crowbar to lift heavy rocks
+
+**2. Change Direction of Force**
+- Pull down to lift up
+- Example: Using a pulley to raise a flag
+
+**3. Speed/Distance Multiplication (MA < 1)**
+- Small movement produces large movement
+- Example: Fishing rod - small wrist movement moves the end of rod a large distance
+
+---
+
+## ⚠️ IMPORTANT PRINCIPLE
+
+**Machines do NOT reduce the amount of work done!**
+
+Work input = Work output (in ideal machines)
+Effort × Effort Distance = Load × Load Distance
+
+If effort is reduced, effort distance increases proportionally.
+
+---
+
+## 📐 KEY TERMS AND FORMULAS
+
+**1. Mechanical Advantage (MA)**
+- Ratio of load to effort
+- MA = Load / Effort = L / E
+- MA > 1 means force is multiplied
+- No units (it's a ratio)
+
+**2. Velocity Ratio (VR)**
+- Ratio of distance moved by effort to distance moved by load
+- VR = Distance moved by Effort / Distance moved by Load
+- VR = dE / dL
+- No units (it's a ratio)
+
+**3. Efficiency (η)**
+- Ratio of useful work output to total work input
+- Efficiency = (Work output / Work input) × 100%
+- OR: Efficiency = (MA / VR) × 100%
+- Always less than 100% due to friction
+
+---
+
+## 🇬🇭 MACHINES IN GHANA CONTEXT
+
+<table><thead><tr><th>Machine</th><th>Ghana Example</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>Lever</strong></td><td>Hoe, crowbar, wheelbarrow</td><td>Force multiplication</td></tr><tr><td><strong>Pulley</strong></td><td>Well bucket system, cranes at Tema port</td><td>Lift heavy loads</td></tr><tr><td><strong>Wheel & Axle</strong></td><td>Bicycle, car steering, door knob</td><td>Multiply force or speed</td></tr><tr><td><strong>Inclined Plane</strong></td><td>Loading ramps, stairs, mountain roads</td><td>Reduce effort to raise loads</td></tr><tr><td><strong>Wedge</strong></td><td>Cutlass, axe, knife, chisel</td><td>Split or cut materials</td></tr><tr><td><strong>Screw</strong></td><td>Bolts, jar lids, car jack</td><td>Hold things together, lift</td></tr></tbody></table>`
+      },
+      {
+        title: 'Levers - The First Simple Machine',
+        content: `**A lever is a rigid bar that rotates around a fixed point called the fulcrum. It's one of the oldest and most common simple machines.**
+
+## ⚖️ PARTS OF A LEVER
+
+**1. Effort (E):** The force applied to operate the lever
+**2. Load (L):** The resistance or weight being moved
+**3. Fulcrum (F):** The pivot point around which the lever rotates
+**4. Effort Arm (EA):** Distance from fulcrum to where effort is applied
+**5. Load Arm (LA):** Distance from fulcrum to where load acts
+
+---
+
+## 📐 LEVER FORMULAS
+
+**Principle of Moments (Equilibrium):**
+\`\`\`
+Effort × Effort Arm = Load × Load Arm
+E × EA = L × LA
+\`\`\`
+
+**Mechanical Advantage:**
+\`\`\`
+MA = Load / Effort = Effort Arm / Load Arm
+MA = L/E = EA/LA
+\`\`\`
+
+**Velocity Ratio:**
+\`\`\`
+VR = Effort Arm / Load Arm = EA/LA
+\`\`\`
+
+For an ideal lever: MA = VR
+
+---
+
+## 📊 THREE CLASSES OF LEVERS
+
+**FIRST CLASS LEVER** - Fulcrum between Effort and Load
+\`\`\`
+     E ←──[====F====]──→ L
+     Effort  Fulcrum  Load
+\`\`\`
+
+- Examples: See-saw, crowbar, scissors, pliers, claw hammer
+- MA can be > 1, = 1, or < 1 depending on arm lengths
+- Ghana example: Oware board (see-saw type), crowbar removing nails
+
+**SECOND CLASS LEVER** - Load between Fulcrum and Effort
+\`\`\`
+     F ←──[==L====]──→ E
+   Fulcrum  Load    Effort
+\`\`\`
+
+- Examples: Wheelbarrow, nutcracker, bottle opener, door
+- MA is ALWAYS > 1 (force multiplier)
+- Effort arm always longer than load arm
+- Ghana example: Wheelbarrow at construction sites, door handle
+
+**THIRD CLASS LEVER** - Effort between Fulcrum and Load
+\`\`\`
+     F ←──[==E====]──→ L
+   Fulcrum Effort   Load
+\`\`\`
+
+- Examples: Fishing rod, broom, tongs, human forearm
+- MA is ALWAYS < 1 (speed/distance multiplier)
+- Load arm always longer than effort arm
+- Ghana example: Paddle for canoe, hoe when digging
+
+---
+
+## 📝 WORKED EXAMPLE
+
+**Problem:** A farmer uses a crowbar 1.5 m long. The fulcrum is 30 cm from the end under a rock. If the rock weighs 600 N, what effort is needed to lift it?
+
+**Solution:**
+- Load Arm (LA) = 30 cm = 0.3 m
+- Effort Arm (EA) = 1.5 - 0.3 = 1.2 m
+- Load (L) = 600 N
+
+Using principle of moments:
+E × EA = L × LA
+E × 1.2 = 600 × 0.3
+E = 180 / 1.2 = **150 N**
+
+MA = 600/150 = **4** (the crowbar multiplies force by 4)`
+      },
+      {
+        title: 'Pulleys - Lifting Made Easy',
+        content: `**A pulley is a wheel with a grooved rim around which a rope or chain passes. Pulleys can change the direction of a force or multiply it.**
+
+## 🔵 TYPES OF PULLEYS
+
+**1. SINGLE FIXED PULLEY**
+- Attached to a fixed point (ceiling, beam)
+- Changes direction of effort only
+- MA = 1, VR = 1
+- No force multiplication
+- Example: Raising Ghana flag on flagpole
+
+**2. SINGLE MOVABLE PULLEY**
+- Moves with the load
+- Force is multiplied by 2
+- MA = 2, VR = 2
+- Load rises half the distance rope is pulled
+- Example: Some construction site lifting
+
+**3. BLOCK AND TACKLE (Combination)**
+- Multiple pulleys working together
+- MA = number of ropes supporting the load
+- Greater force multiplication
+- Example: Cranes at Tema/Takoradi ports
+
+---
+
+## 📐 PULLEY FORMULAS
+
+**For n pulleys in a block and tackle system:**
+
+\`\`\`
+VR = n (number of ropes supporting load)
+MA = Load / Effort
+Efficiency = (MA / VR) × 100%
+\`\`\`
+
+**Distance Relationships:**
+\`\`\`
+Distance pulled = n × Distance load rises
+dE = n × dL
+\`\`\`
+
+---
+
+## 📊 COMPARISON TABLE
+
+<table><thead><tr><th>Pulley System</th><th>VR</th><th>MA (ideal)</th><th>Rope Pulled</th></tr></thead><tbody><tr><td>Single Fixed</td><td>1</td><td>1</td><td>Same as load rise</td></tr><tr><td>Single Movable</td><td>2</td><td>2</td><td>2× load rise</td></tr><tr><td>2 pulleys (1+1)</td><td>2</td><td>2</td><td>2× load rise</td></tr><tr><td>4 pulleys (2+2)</td><td>4</td><td>4</td><td>4× load rise</td></tr><tr><td>6 pulleys (3+3)</td><td>6</td><td>6</td><td>6× load rise</td></tr></tbody></table>
+
+---
+
+## 📝 WORKED EXAMPLE
+
+**Problem:** A block and tackle system has 4 pulleys. A load of 800 N needs to be lifted 5 m. If efficiency is 80%, calculate:
+a) Velocity ratio
+b) Effort needed
+c) Length of rope to be pulled
+
+**Solution:**
+
+a) **VR = 4** (number of supporting ropes)
+
+b) Using efficiency formula:
+   Efficiency = (MA / VR) × 100%
+   80% = (MA / 4) × 100%
+   MA = 3.2
+   
+   MA = Load / Effort
+   3.2 = 800 / E
+   **Effort = 250 N**
+
+c) Distance pulled = VR × Load distance
+   **dE = 4 × 5 = 20 m of rope**
+
+---
+
+## 🇬🇭 PULLEYS IN GHANA
+
+**Traditional Well System:**
+- Single or double pulley to draw water
+- Makes lifting water much easier
+- Found in rural Ghana communities
+
+**Fishing Industry:**
+- Block and tackle systems on trawlers
+- Lifting heavy nets with fish
+- Coastal towns like Elmina, Tema
+
+**Construction:**
+- Tower cranes use multiple pulley systems
+- Lifting cement, blocks, steel beams
+- Building sites across Ghana`
+      },
+      {
+        title: 'Wheel and Axle',
+        content: `**The wheel and axle is a simple machine consisting of a large wheel attached to a smaller cylinder (axle) so they rotate together.**
+
+## 🎡 HOW IT WORKS
+
+When effort is applied to the wheel (larger radius), a larger force is delivered at the axle (smaller radius).
+
+The wheel acts like a continuous lever:
+- Radius of wheel = Effort arm
+- Radius of axle = Load arm
+- Center = Fulcrum
+
+---
+
+## 📐 WHEEL AND AXLE FORMULAS
+
+**Velocity Ratio:**
+\`\`\`
+VR = Radius of wheel / Radius of axle
+VR = R / r
+\`\`\`
+
+**OR using circumference:**
+\`\`\`
+VR = Circumference of wheel / Circumference of axle
+VR = 2πR / 2πr = R/r
+\`\`\`
+
+**Mechanical Advantage:**
+\`\`\`
+MA = Load / Effort
+\`\`\`
+
+**For ideal machine:** MA = VR
+
+**Efficiency:**
+\`\`\`
+η = (MA/VR) × 100%
+\`\`\`
+
+---
+
+## 📊 EXAMPLES OF WHEEL AND AXLE
+
+<table><thead><tr><th>Device</th><th>Wheel Part</th><th>Axle Part</th><th>Purpose</th></tr></thead><tbody><tr><td><strong>Door knob</strong></td><td>Knob handle</td><td>Spindle rod</td><td>Turn easily</td></tr><tr><td><strong>Steering wheel</strong></td><td>Steering wheel</td><td>Steering column</td><td>Turn car wheels</td></tr><tr><td><strong>Screwdriver</strong></td><td>Handle</td><td>Metal shaft</td><td>Turn screw with more force</td></tr><tr><td><strong>Bicycle pedals</strong></td><td>Pedal crank</td><td>Chain wheel</td><td>Multiply force to chain</td></tr><tr><td><strong>Windlass (well)</strong></td><td>Handle/crank</td><td>Drum/roller</td><td>Lift water bucket</td></tr><tr><td><strong>Fishing reel</strong></td><td>Handle</td><td>Spool</td><td>Wind fishing line</td></tr></tbody></table>
+
+---
+
+## 📝 WORKED EXAMPLE
+
+**Problem:** A car steering wheel has a radius of 20 cm. The steering column (axle) has a radius of 2.5 cm. Calculate:
+a) The velocity ratio
+b) The force transmitted to the axle if the driver applies 50 N to the wheel
+
+**Solution:**
+
+a) VR = R/r = 20/2.5 = **8**
+
+b) Assuming ideal machine (MA = VR = 8)
+   MA = Load/Effort
+   8 = Load/50
+   **Load = 400 N**
+   
+   The steering wheel multiplies the driver's force by 8!
+
+---
+
+## 🇬🇭 WHEEL AND AXLE IN GHANA
+
+**Bicycle Repair Shops:**
+- Mechanics understand gear ratios
+- Different sized gears for hills vs flat roads
+- Common trade across Ghana
+
+**Traditional Corn Mills:**
+- Hand-cranked grinding mills
+- Wheel and axle mechanism
+- Found in villages for grinding maize
+
+**Vehicles:**
+- Every car, truck, trotro uses this principle
+- Steering systems, axle systems
+- Essential for transportation`
+      },
+      {
+        title: 'Inclined Plane, Wedge, and Screw',
+        content: `**These three simple machines are all variations of the inclined plane - a flat surface tilted at an angle.**
+
+## 📐 INCLINED PLANE (RAMP)
+
+**How it works:** Instead of lifting straight up, push along the slope using less force over a greater distance.
+
+**Formulas:**
+
+\`\`\`
+VR = Length of slope / Height
+VR = L / h
+
+MA = Load / Effort (ideal: MA = VR)
+
+Effort (ideal) = Load × (h/L) = Load × sin(θ)
+\`\`\`
+
+Where θ is the angle of inclination.
+
+**Key principle:** 
+- Gentler slope = Less effort needed
+- But you push over longer distance
+- Work done remains the same!
+
+**Ghana Examples:**
+- Loading ramps at Tema Port
+- Wheelchair ramps at hospitals
+- Mountain roads (less steep = easier climb)
+- Staircase (steps are inclined planes)
+
+---
+
+## 🔺 WEDGE
+
+**A wedge is a double inclined plane that moves through material to split or separate it.**
+
+**How it works:**
+- Converts force parallel to wedge into force perpendicular to its surfaces
+- The thinner the wedge, the greater the splitting force
+- Used for cutting, splitting, holding in place
+
+**Formulas:**
+\`\`\`
+MA = Length of wedge / Thickness at wide end
+MA = L / t
+\`\`\`
+
+**Ghana Examples:**
+- **Cutlass (machete):** Thin edge for cutting grass, wood
+- **Axe:** Splits firewood for cooking
+- **Knife:** Kitchen cutting, butchering at market
+- **Chisel:** Woodworking, carving
+- **Nails:** Pointed end is a wedge
+- **Plough:** Splits soil for farming
+
+---
+
+## 🔩 SCREW
+
+**A screw is an inclined plane wrapped around a cylinder.**
+
+**How it works:**
+- Rotational motion converts to linear motion
+- One complete turn moves screw forward by one pitch
+- Very high mechanical advantage
+
+**Key Terms:**
+- **Pitch (p):** Distance between adjacent threads
+- **Lead:** Distance screw advances in one turn (= pitch for single thread)
+
+**Formulas:**
+\`\`\`
+VR = Circumference of effort / Pitch
+VR = 2πr / p
+
+Where r = radius of screwdriver handle or lever arm
+
+Efficiency = (MA/VR) × 100%
+\`\`\`
+
+**Ghana Examples:**
+- **Wood screws:** Holding furniture together
+- **Bolts and nuts:** Construction, machinery
+- **Car jack (screw jack):** Lifting vehicles for tire changes
+- **Jar lids:** Sealing containers
+- **Vice grip:** Holding wood for carpenters
+- **Meat mincer:** Traditional hand-cranked grinders
+
+---
+
+## 📝 WORKED EXAMPLE 1: Inclined Plane
+
+**Problem:** Workers need to load 500 N boxes onto a truck 1.5 m high. They use a 6 m long ramp. Calculate:
+a) The velocity ratio
+b) The ideal effort needed
+c) The actual effort if efficiency is 75%
+
+**Solution:**
+
+a) VR = L/h = 6/1.5 = **4**
+
+b) Ideal effort: E = L/VR = 500/4 = **125 N**
+
+c) With 75% efficiency:
+   η = MA/VR × 100%
+   75 = MA/4 × 100%
+   MA = 3
+   
+   Actual effort = Load/MA = 500/3 = **166.7 N**
+
+---
+
+## 📝 WORKED EXAMPLE 2: Screw Jack
+
+**Problem:** A screw jack has a pitch of 5 mm. The operating handle is 30 cm long. Calculate:
+a) The velocity ratio
+b) The effort needed to lift a 6000 N car (assuming 40% efficiency)
+
+**Solution:**
+
+a) VR = 2πr/p = 2π × 300mm / 5mm = **377**
+
+b) η = MA/VR × 100%
+   40 = MA/377 × 100%
+   MA = 150.8
+   
+   Effort = Load/MA = 6000/150.8 = **39.8 N ≈ 40 N**
+
+   Even with low efficiency, a small effort lifts a heavy car!`
+      },
+      {
+        title: 'Efficiency and Energy in Machines',
+        content: `**No real machine is 100% efficient. Some energy is always lost to friction, heat, sound, or deformation.**
+
+## ⚡ EFFICIENCY FORMULA
+
+\`\`\`
+Efficiency (η) = (Useful Work Output / Total Work Input) × 100%
+
+η = (Work output / Work input) × 100%
+
+η = (MA / VR) × 100%
+
+η = (Load × Load distance) / (Effort × Effort distance) × 100%
+\`\`\`
+
+---
+
+## 🔥 ENERGY LOSSES IN MACHINES
+
+**1. Friction**
+- Surfaces rubbing together generate heat
+- Main source of energy loss in most machines
+- Reduced by lubrication (oil, grease)
+
+**2. Heat**
+- Energy converted to thermal energy
+- Machines get warm during operation
+
+**3. Sound**
+- Vibrations produce sound waves
+- Squeaking, grinding noises = energy loss
+
+**4. Deformation**
+- Bending or stretching parts
+- Especially in ropes, chains, belts
+
+---
+
+## 📊 TYPICAL EFFICIENCIES
+
+<table><thead><tr><th>Machine</th><th>Typical Efficiency</th><th>Main Loss Factor</th></tr></thead><tbody><tr><td>Lever</td><td>90-95%</td><td>Friction at fulcrum</td></tr><tr><td>Single pulley</td><td>90-95%</td><td>Friction, rope stiffness</td></tr><tr><td>Block & tackle</td><td>60-80%</td><td>Multiple friction points</td></tr><tr><td>Wheel and axle</td><td>85-90%</td><td>Bearing friction</td></tr><tr><td>Inclined plane</td><td>70-90%</td><td>Friction with surface</td></tr><tr><td>Screw jack</td><td>25-50%</td><td>High thread friction</td></tr><tr><td>Bicycle</td><td>95-99%</td><td>Well-designed bearings</td></tr></tbody></table>
+
+---
+
+## 📝 IMPORTANT RELATIONSHIPS
+
+**For ALL machines:**
+\`\`\`
+Work Input = Work Output + Energy Lost to Friction
+
+Effort × dE = Load × dL + Work against friction
+
+If η < 100%: MA < VR (actual MA is less than ideal)
+\`\`\`
+
+**Relationship between MA, VR, and η:**
+\`\`\`
+MA = η × VR / 100
+
+If η = 100%: MA = VR (ideal machine)
+If η = 80%: MA = 0.8 × VR
+If η = 50%: MA = 0.5 × VR
+\`\`\`
+
+---
+
+## 📝 WORKED EXAMPLE
+
+**Problem:** A machine has VR = 5. When a 200 N effort is applied, it lifts a 750 N load. Calculate:
+a) The mechanical advantage
+b) The efficiency
+c) The work done against friction if the load is raised by 2 m
+
+**Solution:**
+
+a) MA = Load/Effort = 750/200 = **3.75**
+
+b) η = (MA/VR) × 100% = (3.75/5) × 100% = **75%**
+
+c) Work input = Effort × Effort distance
+   - Effort distance = VR × Load distance = 5 × 2 = 10 m
+   - Work input = 200 × 10 = 2000 J
+
+   Work output = Load × Load distance = 750 × 2 = 1500 J
+   
+   **Work against friction = 2000 - 1500 = 500 J**
+
+---
+
+## 🇬🇭 MAINTAINING EFFICIENCY IN GHANA
+
+**Practical Tips:**
+- Regular lubrication of moving parts
+- Keep machines clean (dust increases friction)
+- Replace worn parts (ropes, bearings)
+- Proper alignment of pulleys and wheels
+- Use smooth, polished surfaces
+
+**Economic Importance:**
+- Higher efficiency = less effort needed
+- Less fuel/energy consumption
+- Lower operating costs
+- Longer machine lifespan
+- More productive work`
+      }
+    ],
+
+    activities: {
+      type: 'quiz',
+      questions: [
+        {
+          type: 'mcq',
+          question: 'A lever has an effort arm of 80 cm and a load arm of 20 cm. What is its mechanical advantage?',
+          options: ['0.25', '2', '4', '100'],
+          correctAnswer: 2,
+          explanation: 'MA = Effort Arm / Load Arm = 80/20 = 4. This means the lever multiplies force by 4 times.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which class of lever always has a mechanical advantage greater than 1?',
+          options: ['First class lever', 'Second class lever', 'Third class lever', 'All classes of levers'],
+          correctAnswer: 1,
+          explanation: 'In a second class lever, the load is between the fulcrum and effort, so the effort arm is always longer than the load arm, giving MA > 1. Examples include wheelbarrow and bottle opener.'
+        },
+        {
+          type: 'mcq',
+          question: 'A block and tackle pulley system has 6 ropes supporting the load. What is the velocity ratio?',
+          options: ['3', '6', '12', '1'],
+          correctAnswer: 1,
+          explanation: 'For a pulley system, VR equals the number of ropes supporting the load. With 6 supporting ropes, VR = 6.'
+        },
+        {
+          type: 'truefalse',
+          question: 'Simple machines reduce the amount of work needed to complete a task.',
+          correctAnswer: false,
+          explanation: 'False. Simple machines do NOT reduce work. They make work easier by reducing the effort needed, but you must apply that effort over a greater distance. Work input equals work output (plus losses to friction).'
+        },
+        {
+          type: 'truefalse',
+          question: 'A screw is essentially an inclined plane wrapped around a cylinder.',
+          correctAnswer: true,
+          explanation: 'True. A screw thread is an inclined plane wrapped in a helix around a cylinder. This gives screws a very high mechanical advantage for holding and lifting.'
+        },
+        {
+          type: 'matching',
+          question: 'Match each simple machine with its Ghana example:',
+          pairs: [
+            { item: 'Lever (First Class)', match: 'Crowbar removing nails' },
+            { item: 'Lever (Second Class)', match: 'Wheelbarrow at construction site' },
+            { item: 'Pulley System', match: 'Crane at Tema Port' },
+            { item: 'Inclined Plane', match: 'Loading ramp for trucks' },
+            { item: 'Wedge', match: 'Cutlass for clearing farm' }
+          ],
+          explanation: 'Simple machines are found everywhere in Ghana: crowbars and scissors are first-class levers, wheelbarrows are second-class levers, port cranes use pulleys, ramps are inclined planes, and cutlasses are wedges.'
+        },
+        {
+          type: 'fillblank',
+          question: 'A machine with VR = 4 and MA = 3 has an efficiency of _______% .',
+          correctAnswer: '75',
+          explanation: 'Efficiency = (MA/VR) × 100% = (3/4) × 100% = 75%. The machine loses 25% of input energy to friction.'
+        },
+        {
+          type: 'shortanswer',
+          question: 'Explain why a screw jack can lift a heavy car with very little effort, even though it has low efficiency (around 40%).',
+          correctAnswer: 'A screw jack has a very high velocity ratio because VR = 2πr/pitch. The large handle radius and small pitch (thread spacing) create VR of 300-500. Even with 40% efficiency, MA = 0.4 × VR gives MA of 120-200. This means a 50N effort can lift a 6000N+ car. The trade-off is turning the handle many times (large effort distance) to raise the car a small amount.',
+          explanation: 'The high VR of screw jacks compensates for low efficiency, still providing enormous force multiplication.'
+        }
+      ]
+    },
+
+    pastQuestions: [
+      {
+        question: 'Define mechanical advantage and state its formula. [WASSCE 2019]',
+        solution: '**Mechanical Advantage (MA)** is defined as the ratio of the load (output force) to the effort (input force) applied to a machine.\n\n**Formula:**\nMA = Load / Effort = L / E\n\nAlternatively, for specific machines:\n- Lever: MA = Effort Arm / Load Arm\n- Pulley: MA = Number of supporting ropes\n- Inclined Plane: MA = Length / Height\n- Wheel and Axle: MA = Radius of Wheel / Radius of Axle\n\n**Note:** MA has no units as it is a ratio. If MA > 1, force is multiplied. If MA < 1, speed/distance is multiplied.'
+      },
+      {
+        question: 'A lever of length 2 m has its fulcrum 0.4 m from one end where a load of 500 N acts. Calculate the effort needed to lift the load. [WASSCE-style]',
+        solution: '**Given:**\n- Total length = 2 m\n- Load arm = 0.4 m (distance from fulcrum to load)\n- Effort arm = 2 - 0.4 = 1.6 m\n- Load = 500 N\n\n**Using Principle of Moments:**\nEffort × Effort Arm = Load × Load Arm\nE × 1.6 = 500 × 0.4\nE × 1.6 = 200\n**E = 125 N**\n\n**Verification:**\nMA = EA/LA = 1.6/0.4 = 4\nMA = L/E = 500/125 = 4 ✓\n\nThe lever multiplies force by 4 times.'
+      },
+      {
+        question: 'State THREE differences between first class and second class levers. Give one example of each. [WASSCE 2018]',
+        solution: '**Differences between First Class and Second Class Levers:**\n\n| First Class Lever | Second Class Lever |\n|---|---|\n| 1. Fulcrum is between effort and load | Load is between fulcrum and effort |\n| 2. MA can be > 1, = 1, or < 1 | MA is always > 1 |\n| 3. Effort and load move in opposite directions | Effort and load move in same direction |\n\n**Examples:**\n- First Class: Crowbar, see-saw, scissors, beam balance\n- Second Class: Wheelbarrow, nutcracker, bottle opener, door (hinged at edge)'
+      },
+      {
+        question: 'A block and tackle system consisting of 4 pulleys is used to raise a load of 800 N through a height of 5 m. If the effort required is 250 N, calculate:\n(a) the velocity ratio\n(b) the mechanical advantage\n(c) the efficiency\n(d) the work done against friction [WASSCE 2020]',
+        solution: '**Given:** 4 pulleys, Load = 800 N, Height = 5 m, Effort = 250 N\n\n**(a) Velocity Ratio:**\nVR = Number of supporting ropes = **4**\n\n**(b) Mechanical Advantage:**\nMA = Load / Effort = 800 / 250 = **3.2**\n\n**(c) Efficiency:**\nη = (MA / VR) × 100%\nη = (3.2 / 4) × 100% = **80%**\n\n**(d) Work done against friction:**\nEffort distance = VR × Load distance = 4 × 5 = 20 m\n\nWork Input = Effort × Effort distance = 250 × 20 = 5000 J\nWork Output = Load × Height = 800 × 5 = 4000 J\n\nWork against friction = Work Input - Work Output\n= 5000 - 4000 = **1000 J**\n\n**Verification:** Energy lost = 20% of 5000 J = 1000 J ✓'
+      },
+      {
+        question: 'Explain why a screw has a very high mechanical advantage. [WASSCE-style]',
+        solution: '**Why screws have very high mechanical advantage:**\n\n1. **VR Formula:** VR = 2πr / p\n   - r = radius of handle/lever arm (relatively large)\n   - p = pitch (thread spacing, very small)\n   - Large numerator, small denominator = High VR\n\n2. **Example Calculation:**\n   - Handle radius r = 20 cm = 0.2 m\n   - Pitch p = 2 mm = 0.002 m\n   - VR = 2π × 0.2 / 0.002 = 628\n\n3. **Implication:** Even with low efficiency (40%), the MA is still very high:\n   - MA = η × VR = 0.4 × 628 = 251\n   - A 10 N effort can lift 2510 N!\n\n4. **Trade-off:** Many turns required to advance screw a small distance, but each turn requires little effort.\n\n5. **Applications:** Car jacks (lift cars with hand force), vices (clamp with great force), presses.'
+      },
+      {
+        question: 'State TWO advantages and TWO disadvantages of using inclined planes. [WASSCE 2017]',
+        solution: '**Advantages of Inclined Planes:**\n\n1. **Reduced Effort Required:** Less force needed to move load up the slope compared to lifting straight up. The gentler the slope, the less effort needed.\n\n2. **Better Control:** Objects can be moved more carefully and safely up or down the slope. Less risk of dropping or damaging load.\n\n3. **Simple and Reliable:** No moving parts, doesn\'t break down, low maintenance. Just a flat surface.\n\n**Disadvantages of Inclined Planes:**\n\n1. **Greater Distance to Travel:** The reduced effort comes at the cost of increased distance. Must push load over the entire length of slope.\n\n2. **Friction Losses:** Contact with slope surface causes friction, requiring additional effort. Rough surfaces have low efficiency.\n\n3. **Space Requirements:** Long ramps take up significant space. Not always practical in limited areas.\n\n4. **Not Suitable for All Loads:** Very heavy or unstable loads may roll back or be difficult to control on slopes.'
+      },
+      {
+        question: 'A wheel and axle has a wheel of radius 30 cm and axle of radius 5 cm. If an effort of 40 N is applied to the wheel, calculate the load that can be lifted (assuming the machine is 80% efficient). [WASSCE-style]',
+        solution: '**Given:**\n- Wheel radius (R) = 30 cm\n- Axle radius (r) = 5 cm\n- Effort (E) = 40 N\n- Efficiency (η) = 80%\n\n**Step 1: Calculate Velocity Ratio**\nVR = R / r = 30 / 5 = **6**\n\n**Step 2: Calculate actual MA using efficiency**\nη = (MA / VR) × 100%\n80 = (MA / 6) × 100\nMA = (80 × 6) / 100 = **4.8**\n\n**Step 3: Calculate Load**\nMA = Load / Effort\n4.8 = Load / 40\nLoad = 4.8 × 40 = **192 N**\n\n**Summary:**\n- The wheel and axle has VR = 6 (ideal force multiplication)\n- Due to 80% efficiency, actual MA = 4.8\n- A 40 N effort lifts a 192 N load\n- If it were 100% efficient, it would lift 240 N'
+      }
+    ],
+
+    summary: `This lesson covered simple machines - devices that make work easier by changing the magnitude or direction of force.
+
+**Key Concept: Machines don't reduce work, they reduce effort!**
+- Work Input = Work Output + Energy losses
+- Trade-off: Less effort means greater distance
+
+**The Six Simple Machines:**
+
+1. **LEVER** - Rigid bar rotating around fulcrum
+   - First Class: Fulcrum between E and L (crowbar, scissors)
+   - Second Class: Load between F and E (wheelbarrow) - MA > 1
+   - Third Class: Effort between F and L (fishing rod) - MA < 1
+   - MA = Effort Arm / Load Arm
+
+2. **PULLEY** - Wheel with rope
+   - Fixed: Changes direction only (MA = 1)
+   - Movable: Doubles force (MA = 2)
+   - Block & Tackle: MA = number of ropes supporting load
+
+3. **WHEEL AND AXLE** - Large wheel on small cylinder
+   - MA = VR = Radius of wheel / Radius of axle
+   - Examples: Steering wheel, doorknob, screwdriver
+
+4. **INCLINED PLANE** - Sloped surface
+   - VR = Length / Height = L/h
+   - Examples: Ramps, stairs, mountain roads
+
+5. **WEDGE** - Double inclined plane that moves
+   - Used for cutting and splitting
+   - Examples: Cutlass, axe, knife
+
+6. **SCREW** - Inclined plane wrapped around cylinder
+   - VR = 2πr / pitch (very high!)
+   - Examples: Bolts, car jack, jar lids
+
+**Key Formulas:**
+| Quantity | Formula |
+|----------|---------|
+| MA | Load / Effort |
+| VR | Effort distance / Load distance |
+| Efficiency | (MA/VR) × 100% |
+| Lever | E × EA = L × LA |
+| Pulley VR | Number of ropes |
+| W&A VR | R/r |
+| Inclined VR | L/h |
+| Screw VR | 2πr/p |
+
+**Efficiency:**
+- No machine is 100% efficient
+- Losses due to friction, heat, sound
+- Lever: 90-95%, Pulley: 60-90%, Screw: 25-50%
+- η = (MA/VR) × 100%
+
+**Ghana Applications:**
+- Agriculture: Hoes (lever), cutlass (wedge)
+- Construction: Wheelbarrow, cranes, ramps
+- Fishing: Pulleys for nets, oars (lever)
+- Transport: Bicycles (W&A), vehicles
+- Daily life: Scissors, bottle openers, screws`
   }
 ];
 
