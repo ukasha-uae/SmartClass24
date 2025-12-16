@@ -6,16 +6,584 @@ export const integratedScienceSHS3Lessons: Lesson[] = [
     slug: 'is-sy-human-body-systems-overview',
     title: 'Human Body Systems: Overview',
     objectives: [
-      'List the major organ systems',
-      'Describe general functions of each system'
+      'List and identify the 11 major organ systems of the human body',
+      'Describe the main function of each organ system',
+      'Identify the major organs that make up each system',
+      'Explain the concept of levels of organization in the body',
+      'Describe how organ systems work together to maintain life',
+      'Relate organ systems to common health conditions in Ghana',
+      'Explain the importance of maintaining healthy organ systems',
+      'Apply knowledge of body systems to understand disease prevention'
     ],
-    introduction: `Overview of the 11 major organ systems and how they work together.`,
+    
+    introduction: `Have you ever wondered how your body manages to breathe, digest food, fight infections, and think - all at the same time? The answer lies in the remarkable organization of the human body into specialized **organ systems**.
+
+Your body is like a well-organized city. Just as a city has different departments (electricity, water, sanitation, security), your body has 11 major organ systems, each with a specific job. These systems don't work alone - they communicate and cooperate constantly to keep you alive and healthy.
+
+**Why Study Human Body Systems?**
+
+Understanding body systems is essential for:
+• **Healthcare:** Nurses and doctors at Korle-Bu and other hospitals diagnose diseases based on which systems are affected
+• **Disease Prevention:** Knowing how systems work helps you make healthier choices
+• **First Aid:** Understanding body functions helps in emergencies
+• **Career Preparation:** Essential knowledge for medicine, nursing, pharmacy, and health sciences
+
+**Ghana Health Context:**
+Many health challenges in Ghana relate to specific body systems:
+• Malaria affects the circulatory and immune systems
+• Typhoid impacts the digestive system
+• Hypertension stresses the cardiovascular system
+• Diabetes affects the endocrine system
+
+**In this lesson, you will:**
+• Discover all 11 organ systems and their functions
+• Learn the major organs in each system
+• Understand how systems collaborate for survival
+• Connect body systems to real health situations in Ghana
+
+Let's explore the amazing machinery that keeps you alive! 🫀🧠💪`,
+
     keyConcepts: [
-      { title: 'Organ Systems', content: `Overview of major organ systems.` }
+      {
+        title: '1. Levels of Organization in the Body',
+        content: `The human body is organized from simple to complex structures. Understanding this hierarchy helps us see how organ systems fit into the bigger picture.
+
+**The Five Levels of Organization:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Level</th><th>Description</th><th>Example</th></tr>
+<tr><td><strong>1. Chemical/Molecular</strong></td><td>Atoms and molecules - the building blocks</td><td>Water, glucose, proteins, DNA</td></tr>
+<tr><td><strong>2. Cellular</strong></td><td>Basic unit of life</td><td>Red blood cells, neurons, muscle cells</td></tr>
+<tr><td><strong>3. Tissue</strong></td><td>Groups of similar cells working together</td><td>Muscle tissue, nervous tissue, epithelial tissue</td></tr>
+<tr><td><strong>4. Organ</strong></td><td>Two or more tissues forming a structure with specific function</td><td>Heart, liver, brain, lungs</td></tr>
+<tr><td><strong>5. Organ System</strong></td><td>Group of organs working together for major body functions</td><td>Circulatory system, digestive system</td></tr>
+</table>
+
+**Beyond Organ Systems:**
+All 11 organ systems working together form the **organism** - a complete living human being!
+
+**Key Point:** A problem at any level affects the levels above it. For example:
+• Sickle cell disease starts at the molecular level (abnormal hemoglobin)
+• This affects red blood cells (cellular level)
+• Which impacts blood tissue
+• Leading to problems in multiple organs and systems`
+      },
+      {
+        title: '2. The 11 Major Organ Systems - Overview Table',
+        content: `Here is a comprehensive overview of all 11 organ systems you need to know:
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #2563eb; color: white;"><th>System</th><th>Main Function</th><th>Key Organs</th></tr>
+<tr><td><strong>1. Integumentary</strong></td><td>Protection, temperature regulation</td><td>Skin, hair, nails, sweat glands</td></tr>
+<tr style="background-color: #f8f9fa;"><td><strong>2. Skeletal</strong></td><td>Support, protection, movement, blood cell production</td><td>Bones, cartilage, ligaments, joints</td></tr>
+<tr><td><strong>3. Muscular</strong></td><td>Movement, posture, heat production</td><td>Skeletal, smooth, and cardiac muscles</td></tr>
+<tr style="background-color: #f8f9fa;"><td><strong>4. Nervous</strong></td><td>Control, coordination, sensation</td><td>Brain, spinal cord, nerves</td></tr>
+<tr><td><strong>5. Endocrine</strong></td><td>Hormone secretion, chemical regulation</td><td>Pituitary, thyroid, adrenals, pancreas</td></tr>
+<tr style="background-color: #f8f9fa;"><td><strong>6. Cardiovascular</strong></td><td>Transport of blood, nutrients, oxygen</td><td>Heart, blood vessels, blood</td></tr>
+<tr><td><strong>7. Lymphatic/Immune</strong></td><td>Defense against disease, fluid balance</td><td>Lymph nodes, spleen, thymus, white blood cells</td></tr>
+<tr style="background-color: #f8f9fa;"><td><strong>8. Respiratory</strong></td><td>Gas exchange (O₂ in, CO₂ out)</td><td>Lungs, trachea, bronchi, diaphragm</td></tr>
+<tr><td><strong>9. Digestive</strong></td><td>Break down food, absorb nutrients</td><td>Mouth, stomach, intestines, liver, pancreas</td></tr>
+<tr style="background-color: #f8f9fa;"><td><strong>10. Urinary/Excretory</strong></td><td>Filter blood, remove waste, water balance</td><td>Kidneys, ureters, bladder, urethra</td></tr>
+<tr><td><strong>11. Reproductive</strong></td><td>Produce offspring</td><td>Male: testes, penis; Female: ovaries, uterus</td></tr>
+</table>
+
+**Memory Tip - "I See My Nephew Eating Cake, Licking Red Delicious Unusual Raspberries":**
+**I**ntegumentary, **S**keletal, **M**uscular, **N**ervous, **E**ndocrine, **C**ardiovascular, **L**ymphatic, **R**espiratory, **D**igestive, **U**rinary, **R**eproductive`
+      },
+      {
+        title: '3. Protection & Support Systems (Integumentary, Skeletal, Muscular)',
+        content: `These three systems provide the body's framework and protection:
+
+**A. INTEGUMENTARY SYSTEM - Your Body's Shield**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Component</th><th>Function</th></tr>
+<tr><td>Skin (largest organ)</td><td>Barrier against pathogens, UV protection, sensation</td></tr>
+<tr><td>Hair</td><td>Insulation, protection, sensory function</td></tr>
+<tr><td>Nails</td><td>Protection of fingertips, tool for manipulation</td></tr>
+<tr><td>Sweat glands</td><td>Temperature regulation through perspiration</td></tr>
+<tr><td>Oil (sebaceous) glands</td><td>Keep skin and hair moisturized</td></tr>
+</table>
+
+**Ghana Health Link:** Skin conditions like eczema and fungal infections are common in Ghana's humid climate. Proper skin care is essential!
+
+**B. SKELETAL SYSTEM - Your Body's Framework**
+
+• **206 bones** in an adult human (babies have ~270, which fuse)
+• **Functions:** Support, protection of organs, movement (with muscles), mineral storage (calcium), blood cell production (in bone marrow)
+• **Types of bones:** Long (femur), short (wrist), flat (skull), irregular (vertebrae)
+
+**Ghana Health Link:** Rickets (soft bones) can occur in children with vitamin D and calcium deficiency. Adequate sunlight and nutrition are important!
+
+**C. MUSCULAR SYSTEM - Your Body's Motors**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Muscle Type</th><th>Location</th><th>Control</th><th>Function</th></tr>
+<tr><td>Skeletal</td><td>Attached to bones</td><td>Voluntary</td><td>Movement, posture</td></tr>
+<tr><td>Smooth</td><td>Organs, blood vessels</td><td>Involuntary</td><td>Move food, regulate blood flow</td></tr>
+<tr><td>Cardiac</td><td>Heart only</td><td>Involuntary</td><td>Pump blood</td></tr>
+</table>
+
+**Interesting Fact:** You have over **600 skeletal muscles** making up about 40% of your body weight!`
+      },
+      {
+        title: '4. Control & Communication Systems (Nervous, Endocrine)',
+        content: `These two systems coordinate all body activities:
+
+**A. NERVOUS SYSTEM - Your Body's Electrical Network**
+
+The nervous system uses **electrical signals** for fast, precise communication.
+
+**Components:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Part</th><th>Includes</th><th>Function</th></tr>
+<tr><td><strong>Central Nervous System (CNS)</strong></td><td>Brain, spinal cord</td><td>Processing center, decision making</td></tr>
+<tr><td><strong>Peripheral Nervous System (PNS)</strong></td><td>All other nerves</td><td>Connects CNS to body parts</td></tr>
+<tr><td><strong>Sensory Division</strong></td><td>Sensory neurons</td><td>Carry signals TO the CNS</td></tr>
+<tr><td><strong>Motor Division</strong></td><td>Motor neurons</td><td>Carry signals FROM the CNS</td></tr>
+</table>
+
+**Key Facts:**
+• The brain has ~86 billion neurons
+• Nerve signals travel up to 120 m/s (432 km/h!)
+• Reflexes protect you before you even think
+
+**Ghana Health Link:** Meningitis outbreaks affect the nervous system. Vaccination and early treatment are crucial!
+
+**B. ENDOCRINE SYSTEM - Your Body's Chemical Messenger**
+
+The endocrine system uses **hormones** (chemical messengers) for slower, longer-lasting effects.
+
+**Major Endocrine Glands:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Gland</th><th>Location</th><th>Key Hormones</th><th>Function</th></tr>
+<tr><td>Pituitary</td><td>Base of brain</td><td>Growth hormone, TSH, FSH</td><td>Master gland - controls others</td></tr>
+<tr><td>Thyroid</td><td>Neck</td><td>Thyroxine (T3, T4)</td><td>Metabolism, growth</td></tr>
+<tr><td>Adrenal</td><td>Above kidneys</td><td>Adrenaline, cortisol</td><td>Stress response</td></tr>
+<tr><td>Pancreas</td><td>Behind stomach</td><td>Insulin, glucagon</td><td>Blood sugar regulation</td></tr>
+<tr><td>Gonads</td><td>Reproductive organs</td><td>Testosterone, estrogen</td><td>Reproduction, development</td></tr>
+</table>
+
+**Ghana Health Link:** Diabetes is increasing in Ghana due to changing diets. It occurs when the pancreas doesn't produce enough insulin or cells don't respond to it.
+
+**Comparing the Two Control Systems:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #2563eb; color: white;"><th>Feature</th><th>Nervous System</th><th>Endocrine System</th></tr>
+<tr><td>Signal type</td><td>Electrical impulses</td><td>Chemical hormones</td></tr>
+<tr><td>Speed</td><td>Very fast (milliseconds)</td><td>Slower (seconds to hours)</td></tr>
+<tr><td>Duration</td><td>Short-lived</td><td>Long-lasting</td></tr>
+<tr><td>Target</td><td>Specific muscles/glands</td><td>Multiple organs</td></tr>
+<tr><td>Example</td><td>Pulling hand from fire</td><td>Growth during puberty</td></tr>
+</table>`
+      },
+      {
+        title: '5. Transport & Defense Systems (Cardiovascular, Lymphatic/Immune)',
+        content: `These systems move substances around the body and protect against disease:
+
+**A. CARDIOVASCULAR (CIRCULATORY) SYSTEM**
+
+This system is your body's transport network, delivering oxygen, nutrients, and hormones while removing waste.
+
+**Components:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Component</th><th>Description</th><th>Function</th></tr>
+<tr><td><strong>Heart</strong></td><td>4-chambered muscular pump</td><td>Pumps blood throughout body</td></tr>
+<tr><td><strong>Arteries</strong></td><td>Thick-walled vessels</td><td>Carry blood AWAY from heart</td></tr>
+<tr><td><strong>Veins</strong></td><td>Thin-walled with valves</td><td>Carry blood TO the heart</td></tr>
+<tr><td><strong>Capillaries</strong></td><td>Microscopic vessels</td><td>Exchange of substances with tissues</td></tr>
+<tr><td><strong>Blood</strong></td><td>Red cells, white cells, platelets, plasma</td><td>Transport, defense, clotting</td></tr>
+</table>
+
+**Key Facts:**
+• Your heart beats ~100,000 times per day
+• Blood travels ~19,000 km daily through your vessels
+• You have about 5 liters of blood
+
+**Ghana Health Link:** Hypertension (high blood pressure) is called the "silent killer" because it damages the cardiovascular system without obvious symptoms. Regular check-ups are important!
+
+**B. LYMPHATIC/IMMUNE SYSTEM**
+
+This system defends against disease and maintains fluid balance.
+
+**Components:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Component</th><th>Function</th></tr>
+<tr><td>Lymph nodes</td><td>Filter lymph, trap pathogens, house immune cells</td></tr>
+<tr><td>Lymph vessels</td><td>Transport lymph (tissue fluid) back to blood</td></tr>
+<tr><td>Spleen</td><td>Filters blood, stores blood cells, immune response</td></tr>
+<tr><td>Thymus</td><td>Matures T-lymphocytes (immune cells)</td></tr>
+<tr><td>Tonsils</td><td>First line of defense in throat</td></tr>
+<tr><td>White blood cells</td><td>Attack and destroy pathogens</td></tr>
+</table>
+
+**Types of Immunity:**
+• **Innate immunity:** Born with it (skin, stomach acid, white blood cells)
+• **Adaptive immunity:** Develops after exposure (antibodies, vaccines)
+
+**Ghana Health Link:** Vaccination programs (polio, measles, COVID-19) work by training the immune system to recognize and fight specific diseases!`
+      },
+      {
+        title: '6. Gas Exchange & Nutrition Systems (Respiratory, Digestive)',
+        content: `These systems bring in oxygen and nutrients essential for life:
+
+**A. RESPIRATORY SYSTEM**
+
+This system brings oxygen into the body and removes carbon dioxide.
+
+**The Respiratory Pathway:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Structure</th><th>Function</th></tr>
+<tr><td>Nose/Mouth</td><td>Air entry, warming, filtering, moistening</td></tr>
+<tr><td>Pharynx (throat)</td><td>Passageway for air and food</td></tr>
+<tr><td>Larynx (voice box)</td><td>Sound production, prevents food entering airway</td></tr>
+<tr><td>Trachea (windpipe)</td><td>Air passage to lungs, lined with cilia</td></tr>
+<tr><td>Bronchi</td><td>Two tubes branching into each lung</td></tr>
+<tr><td>Bronchioles</td><td>Smaller branches within lungs</td></tr>
+<tr><td>Alveoli</td><td>Tiny air sacs where gas exchange occurs (300 million!)</td></tr>
+<tr><td>Diaphragm</td><td>Muscle that enables breathing</td></tr>
+</table>
+
+**Gas Exchange:**
+• Oxygen diffuses from alveoli → blood → cells
+• Carbon dioxide diffuses from cells → blood → alveoli → exhaled
+
+**Ghana Health Link:** Air pollution in cities like Accra and Kumasi can damage the respiratory system. Avoiding smoke and wearing masks in dusty areas helps protect your lungs!
+
+**B. DIGESTIVE SYSTEM**
+
+This system breaks down food into nutrients the body can absorb.
+
+**The Digestive Journey:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Organ</th><th>Process</th><th>What Happens</th></tr>
+<tr><td>Mouth</td><td>Ingestion, mechanical & chemical digestion</td><td>Teeth chew, saliva breaks down starch</td></tr>
+<tr><td>Esophagus</td><td>Peristalsis</td><td>Pushes food to stomach</td></tr>
+<tr><td>Stomach</td><td>Chemical digestion</td><td>Acid and enzymes break down proteins</td></tr>
+<tr><td>Small intestine</td><td>Digestion & absorption</td><td>Nutrients absorbed into blood (6m long!)</td></tr>
+<tr><td>Large intestine</td><td>Water absorption</td><td>Removes water, forms feces</td></tr>
+<tr><td>Liver</td><td>Bile production</td><td>Breaks down fats, detoxifies blood</td></tr>
+<tr><td>Pancreas</td><td>Enzyme & hormone secretion</td><td>Produces digestive enzymes, insulin</td></tr>
+<tr><td>Rectum/Anus</td><td>Elimination</td><td>Stores and expels waste</td></tr>
+</table>
+
+**Ghana Health Link:** Typhoid fever and cholera affect the digestive system and spread through contaminated food and water. Good hygiene and safe water are essential!`
+      },
+      {
+        title: '7. Waste Removal & Reproduction Systems (Urinary, Reproductive)',
+        content: `These systems remove waste and ensure the continuation of life:
+
+**A. URINARY (EXCRETORY) SYSTEM**
+
+This system filters blood and removes metabolic waste as urine.
+
+**Components:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Organ</th><th>Function</th></tr>
+<tr><td><strong>Kidneys</strong> (2)</td><td>Filter blood, remove waste, regulate water & electrolytes</td></tr>
+<tr><td><strong>Ureters</strong> (2)</td><td>Tubes carrying urine from kidneys to bladder</td></tr>
+<tr><td><strong>Urinary bladder</strong></td><td>Stores urine (can hold ~500 mL)</td></tr>
+<tr><td><strong>Urethra</strong></td><td>Tube releasing urine from body</td></tr>
+</table>
+
+**Kidney Functions:**
+• Filter ~180 liters of blood daily (produce ~1.5L urine)
+• Remove urea, excess salts, and toxins
+• Regulate water balance
+• Maintain blood pH
+• Produce hormones (renin, erythropoietin)
+
+**Ghana Health Link:** Kidney disease is increasing in Ghana. Risk factors include diabetes, hypertension, and overuse of certain medications. Drinking enough water and managing blood pressure helps protect kidneys!
+
+**B. REPRODUCTIVE SYSTEM**
+
+This system produces offspring and ensures species continuation.
+
+**Male Reproductive System:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Organ</th><th>Function</th></tr>
+<tr><td>Testes</td><td>Produce sperm and testosterone</td></tr>
+<tr><td>Epididymis</td><td>Stores and matures sperm</td></tr>
+<tr><td>Vas deferens</td><td>Transports sperm</td></tr>
+<tr><td>Prostate gland</td><td>Produces fluid for semen</td></tr>
+<tr><td>Penis</td><td>Delivers sperm to female</td></tr>
+</table>
+
+**Female Reproductive System:**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #f0f0f0;"><th>Organ</th><th>Function</th></tr>
+<tr><td>Ovaries</td><td>Produce eggs and hormones (estrogen, progesterone)</td></tr>
+<tr><td>Fallopian tubes</td><td>Site of fertilization, transport egg to uterus</td></tr>
+<tr><td>Uterus (womb)</td><td>Site of embryo implantation and fetal development</td></tr>
+<tr><td>Vagina</td><td>Birth canal, receives sperm</td></tr>
+</table>
+
+**Ghana Health Link:** Reproductive health education is important for preventing teenage pregnancy and sexually transmitted infections. Ghana Health Service provides family planning services!`
+      },
+      {
+        title: '8. How Body Systems Work Together - Integration',
+        content: `No organ system works alone. All 11 systems constantly interact to maintain **homeostasis** - a stable internal environment.
+
+**Example 1: Running a Race (Multiple Systems Involved)**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #2563eb; color: white;"><th>System</th><th>Response During Exercise</th></tr>
+<tr><td>Muscular</td><td>Skeletal muscles contract to move legs</td></tr>
+<tr><td>Skeletal</td><td>Bones provide leverage for muscles</td></tr>
+<tr><td>Respiratory</td><td>Breathing rate increases for more oxygen</td></tr>
+<tr><td>Cardiovascular</td><td>Heart beats faster, blood vessels dilate</td></tr>
+<tr><td>Nervous</td><td>Brain coordinates movement, senses environment</td></tr>
+<tr><td>Endocrine</td><td>Adrenaline released for energy boost</td></tr>
+<tr><td>Integumentary</td><td>Sweating increases to cool the body</td></tr>
+<tr><td>Urinary</td><td>Reduced urine production to conserve water</td></tr>
+</table>
+
+**Example 2: Eating Fufu and Light Soup**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #2563eb; color: white;"><th>System</th><th>Role in Digestion</th></tr>
+<tr><td>Nervous</td><td>Smell triggers saliva; controls swallowing</td></tr>
+<tr><td>Muscular</td><td>Chewing, peristalsis moves food</td></tr>
+<tr><td>Digestive</td><td>Breaks down food, absorbs nutrients</td></tr>
+<tr><td>Cardiovascular</td><td>Transports absorbed nutrients to cells</td></tr>
+<tr><td>Endocrine</td><td>Insulin released to regulate blood sugar</td></tr>
+<tr><td>Urinary</td><td>Removes waste products from metabolism</td></tr>
+</table>
+
+**Example 3: Fighting Malaria Infection**
+
+<table border="1" style="border-collapse: collapse; width: 100%; margin-top: 1rem;">
+<tr style="background-color: #2563eb; color: white;"><th>System</th><th>Response to Infection</th></tr>
+<tr><td>Immune/Lymphatic</td><td>White blood cells attack parasites</td></tr>
+<tr><td>Cardiovascular</td><td>Transports immune cells to infection sites</td></tr>
+<tr><td>Nervous</td><td>Triggers fever response in hypothalamus</td></tr>
+<tr><td>Integumentary</td><td>Fever causes sweating to cool body</td></tr>
+<tr><td>Muscular</td><td>Shivering generates heat during chills</td></tr>
+<tr><td>Urinary</td><td>Removes waste from destroyed cells</td></tr>
+</table>
+
+**Key Concept: Homeostasis**
+All these systems work together to maintain:
+• Body temperature (~37°C)
+• Blood pH (7.35-7.45)
+• Blood glucose levels
+• Water and electrolyte balance
+• Oxygen and carbon dioxide levels
+
+When homeostasis is disrupted, disease occurs!`
+      }
     ],
-    activities: { type: 'quiz', questions: [] },
-    pastQuestions: [],
-    summary: `Summary of human body systems.`
+    
+    activities: {
+      type: 'quiz',
+      questions: [
+        {
+          type: 'mcq',
+          question: 'How many major organ systems are there in the human body?',
+          options: ['9', '10', '11', '12'],
+          answer: '11',
+          explanation: 'There are 11 major organ systems: Integumentary, Skeletal, Muscular, Nervous, Endocrine, Cardiovascular, Lymphatic/Immune, Respiratory, Digestive, Urinary, and Reproductive.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which organ system includes the skin, hair, and nails?',
+          options: ['Skeletal system', 'Muscular system', 'Integumentary system', 'Nervous system'],
+          answer: 'Integumentary system',
+          explanation: 'The integumentary system includes the skin (the largest organ), hair, nails, and associated glands. It protects the body and regulates temperature.'
+        },
+        {
+          type: 'mcq',
+          question: 'What is the correct order of organization levels from simplest to most complex?',
+          options: ['Cell → Tissue → Organ → Organ System', 'Tissue → Cell → Organ → Organ System', 'Organ → Tissue → Cell → Organ System', 'Organ System → Organ → Tissue → Cell'],
+          answer: 'Cell → Tissue → Organ → Organ System',
+          explanation: 'The levels of organization from simplest to most complex are: Chemical/Molecular → Cell → Tissue → Organ → Organ System → Organism.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which two systems are responsible for control and coordination in the body?',
+          options: ['Respiratory and Digestive', 'Nervous and Endocrine', 'Skeletal and Muscular', 'Cardiovascular and Lymphatic'],
+          answer: 'Nervous and Endocrine',
+          explanation: 'The nervous system (electrical signals) and endocrine system (hormones) work together to control and coordinate all body activities.'
+        },
+        {
+          type: 'mcq',
+          question: 'The pancreas produces insulin to regulate blood sugar. Which organ system does this function belong to?',
+          options: ['Digestive system', 'Endocrine system', 'Cardiovascular system', 'Urinary system'],
+          answer: 'Endocrine system',
+          explanation: 'When the pancreas produces hormones like insulin and glucagon to regulate blood sugar, it functions as part of the endocrine system. It also belongs to the digestive system when producing digestive enzymes.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which organ system is primarily responsible for gas exchange?',
+          options: ['Cardiovascular system', 'Respiratory system', 'Digestive system', 'Urinary system'],
+          answer: 'Respiratory system',
+          explanation: 'The respiratory system (lungs, airways) is responsible for gas exchange - bringing oxygen into the body and removing carbon dioxide.'
+        },
+        {
+          type: 'mcq',
+          question: 'What is the function of the lymphatic/immune system?',
+          options: ['Transport oxygen to cells', 'Break down food', 'Defend against disease', 'Remove carbon dioxide'],
+          answer: 'Defend against disease',
+          explanation: 'The lymphatic/immune system defends the body against pathogens (bacteria, viruses, parasites) and maintains fluid balance by returning tissue fluid to the blood.'
+        },
+        {
+          type: 'mcq',
+          question: 'Which type of muscle is found only in the heart?',
+          options: ['Skeletal muscle', 'Smooth muscle', 'Cardiac muscle', 'Voluntary muscle'],
+          answer: 'Cardiac muscle',
+          explanation: 'Cardiac muscle is found only in the heart. It is involuntary and contracts rhythmically to pump blood throughout the body.'
+        },
+        {
+          type: 'mcq',
+          question: 'The kidneys belong to which organ system?',
+          options: ['Digestive system', 'Cardiovascular system', 'Urinary system', 'Endocrine system'],
+          answer: 'Urinary system',
+          explanation: 'The kidneys are the main organs of the urinary (excretory) system. They filter blood, remove waste, and regulate water and electrolyte balance.'
+        },
+        {
+          type: 'mcq',
+          question: 'Homeostasis refers to:',
+          options: ['The study of the home environment', 'Maintaining a stable internal environment', 'The process of digestion', 'The production of hormones'],
+          answer: 'Maintaining a stable internal environment',
+          explanation: 'Homeostasis is the maintenance of a stable internal environment despite changes in external conditions. All organ systems work together to maintain homeostasis.'
+        }
+      ]
+    },
+    
+    pastQuestions: [
+      {
+        year: 'WASSCE 2019',
+        question: 'List the eleven organ systems of the human body.',
+        answer: 'The eleven organ systems are: 1) Integumentary, 2) Skeletal, 3) Muscular, 4) Nervous, 5) Endocrine, 6) Cardiovascular, 7) Lymphatic/Immune, 8) Respiratory, 9) Digestive, 10) Urinary/Excretory, 11) Reproductive.'
+      },
+      {
+        year: 'WASSCE 2020',
+        question: 'Distinguish between the nervous system and the endocrine system as control systems.',
+        answer: 'Nervous system uses electrical impulses which are fast (milliseconds) and short-lived, targeting specific muscles or glands. Endocrine system uses chemical hormones which are slower (seconds to hours) but longer-lasting, affecting multiple organs. Both work together for body coordination.'
+      },
+      {
+        year: 'WASSCE 2018',
+        question: 'What is homeostasis? Give two examples.',
+        answer: 'Homeostasis is the maintenance of a stable internal environment in the body. Examples include: 1) Regulation of body temperature at about 37°C through sweating or shivering, 2) Regulation of blood glucose levels through insulin and glucagon.'
+      }
+    ],
+    
+    summary: `**Key Takeaways - Human Body Systems Overview:**
+
+**1. The 11 Major Organ Systems:**
+The human body has 11 organ systems, each with specific functions that contribute to survival:
+- **Protection & Support:** Integumentary, Skeletal, Muscular
+- **Control & Coordination:** Nervous, Endocrine
+- **Transport & Defense:** Cardiovascular, Lymphatic/Immune
+- **Gas Exchange & Nutrition:** Respiratory, Digestive
+- **Waste Removal & Reproduction:** Urinary, Reproductive
+
+**2. Levels of Organization:**
+Chemical → Cellular → Tissue → Organ → Organ System → Organism
+
+**3. System Comparison - Control Systems:**
+| Feature | Nervous | Endocrine |
+|---------|---------|-----------|
+| Signal | Electrical | Chemical (hormones) |
+| Speed | Fast | Slow |
+| Duration | Short | Long |
+
+**4. Homeostasis:**
+All systems work together to maintain stable internal conditions:
+- Body temperature (~37°C)
+- Blood glucose levels
+- Water and pH balance
+- Oxygen and CO₂ levels
+
+**5. Ghana Health Connections:**
+- Malaria → Immune & Circulatory systems
+- Diabetes → Endocrine system
+- Hypertension → Cardiovascular system
+- Typhoid → Digestive system
+
+**Remember:** No system works alone! Understanding how systems interact helps us understand health and disease.`,
+
+    endOfLessonQuiz: [
+      {
+        type: 'mcq',
+        question: 'Which organ system is described as the "body\'s shield" because it provides the first line of defense against pathogens?',
+        options: ['Immune system', 'Integumentary system', 'Skeletal system', 'Muscular system'],
+        answer: 'Integumentary system',
+        explanation: 'The integumentary system (skin, hair, nails) is the body\'s first line of defense, acting as a physical barrier against pathogens, UV radiation, and physical damage.'
+      },
+      {
+        type: 'mcq',
+        question: 'An adult human skeleton contains approximately how many bones?',
+        options: ['106', '206', '306', '270'],
+        answer: '206',
+        explanation: 'An adult human skeleton has 206 bones. Babies are born with about 270 bones, but many fuse together as they grow.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which gland is known as the "master gland" because it controls many other endocrine glands?',
+        options: ['Thyroid gland', 'Adrenal gland', 'Pituitary gland', 'Pancreas'],
+        answer: 'Pituitary gland',
+        explanation: 'The pituitary gland at the base of the brain is called the master gland because it produces hormones that control other endocrine glands like the thyroid, adrenals, and gonads.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which structure in the respiratory system is the site of gas exchange?',
+        options: ['Trachea', 'Bronchi', 'Bronchioles', 'Alveoli'],
+        answer: 'Alveoli',
+        explanation: 'Gas exchange (oxygen in, carbon dioxide out) occurs in the alveoli - tiny air sacs in the lungs. There are about 300 million alveoli providing a huge surface area for gas exchange.'
+      },
+      {
+        type: 'mcq',
+        question: 'The small intestine is approximately how long in an adult?',
+        options: ['2 meters', '4 meters', '6 meters', '8 meters'],
+        answer: '6 meters',
+        explanation: 'The small intestine is approximately 6 meters (20 feet) long. This length, combined with villi and microvilli, provides a huge surface area for nutrient absorption.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which system produces white blood cells that fight infection?',
+        options: ['Respiratory system', 'Digestive system', 'Lymphatic/Immune system', 'Urinary system'],
+        answer: 'Lymphatic/Immune system',
+        explanation: 'The lymphatic/immune system produces and houses white blood cells (leukocytes) that defend the body against pathogens. The skeletal system also produces white blood cells in bone marrow.'
+      },
+      {
+        type: 'mcq',
+        question: 'During exercise, which statement is TRUE about body system responses?',
+        options: ['Heart rate decreases', 'Breathing rate increases', 'Sweating decreases', 'Blood flow to muscles decreases'],
+        answer: 'Breathing rate increases',
+        explanation: 'During exercise, breathing rate increases to bring more oxygen to working muscles and remove more carbon dioxide. Heart rate and sweating also increase, while blood flow to muscles increases.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which pair of organs belongs to BOTH the digestive AND endocrine systems?',
+        options: ['Liver and kidneys', 'Stomach and intestines', 'Pancreas and liver', 'Pancreas and gonads'],
+        answer: 'Pancreas and liver',
+        explanation: 'The pancreas belongs to both systems - it produces digestive enzymes (digestive function) and hormones like insulin (endocrine function). The liver also has roles in both systems.'
+      },
+      {
+        type: 'mcq',
+        question: 'The kidneys filter approximately how many liters of blood per day?',
+        options: ['18 liters', '80 liters', '180 liters', '280 liters'],
+        answer: '180 liters',
+        explanation: 'The kidneys filter approximately 180 liters of blood per day! However, most water and useful substances are reabsorbed, producing only about 1.5 liters of urine.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which of the following is NOT a function of the skeletal system?',
+        options: ['Support and protection', 'Blood cell production', 'Mineral storage', 'Hormone secretion'],
+        answer: 'Hormone secretion',
+        explanation: 'Hormone secretion is a function of the endocrine system, not the skeletal system. The skeletal system functions include support, protection, movement, blood cell production (in bone marrow), and mineral storage (calcium, phosphorus).'
+      }
+    ]
   },
   {
     id: 'is-shs3-sy-2',
