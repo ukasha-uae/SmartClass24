@@ -8,6 +8,9 @@ import { integratedScienceSHS1Lessons } from './integrated-science-shs1-lessons-
 import { integratedScienceSHS2Lessons } from './integrated-science-shs2-lessons-data';
 import { integratedScienceSHS3Lessons } from './integrated-science-shs3-lessons-data';
 import { englishSHS1Lessons } from './english-shs1-lessons-data';
+import { financialAccountingSHS1Lessons } from '@/content/financial-accounting-shs1-lessons-data';
+import { computerProgrammingSHS1Lessons } from '@/content/computer-programming-shs1-lessons-data';
+import { hardwareNetworkingSHS1Lessons } from '@/content/hardware-networking-shs1-lessons-data';
 import type { Lesson } from './types';
 
 export interface Topic {
@@ -1434,6 +1437,34 @@ export const getSHSLesson = (subjectSlug: string, topicSlug: string, lessonSlug:
     match = allLessons.find(lesson =>
       lesson.slug === strippedLessonSlug ||
       lesson.slug === strippedTopicSlug
+    );
+    if (match) return match;
+
+    return null;
+  }
+  
+  // Financial Accounting lessons
+  if (subjectSlug === 'financial-accounting') {
+    const allLessons = [...financialAccountingSHS1Lessons];
+
+    // 1. Try exact match first
+    let match = allLessons.find(lesson => 
+      lesson.slug === lessonSlug || 
+      lesson.slug === topicSlug
+    );
+    if (match) return match;
+
+    return null;
+  }
+
+  // ICT/Computing lessons (both programming and hardware/networking)
+  if (subjectSlug === 'ict-computing' || subjectSlug === 'computer-programming') {
+    const allLessons = [...computerProgrammingSHS1Lessons, ...hardwareNetworkingSHS1Lessons];
+
+    // 1. Try exact match first
+    let match = allLessons.find(lesson => 
+      lesson.slug === lessonSlug || 
+      lesson.slug === topicSlug
     );
     if (match) return match;
 

@@ -29,6 +29,8 @@ import {
   Player 
 } from '@/lib/challenge';
 import { GHANA_SCHOOLS } from '@/lib/schools';
+import { getSchoolsByCountry, getAllMultiCountrySchools } from '@/lib/schools-multi-country';
+import { useLocalization } from '@/hooks/useLocalization';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
@@ -39,13 +41,14 @@ const getSubjectsForLevel = (level: 'Primary' | 'JHS' | 'SHS') => {
   } else if (level === 'SHS') {
     return ['Core Mathematics', 'Core English', 'Core Science', 'Social Studies', 'Elective Mathematics', 'Physics', 'Chemistry', 'Biology'];
   } else {
-    return ['Mathematics', 'English Language', 'Integrated Science', 'Social Studies', 'RME', 'Creative Arts', 'French', 'Ghanaian Language', 'ICT'];
+    return ['Mathematics', 'English Language', 'Integrated Science', 'Social Studies', 'RME', 'Creative Arts', 'French', 'Local Language', 'ICT'];
   }
 };
 
 export default function SchoolBattlePage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { country } = useLocalization();
   const [rankings, setRankings] = useState<SchoolRanking[]>([]);
   const [mySchool, setMySchool] = useState<SchoolRanking | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);
@@ -60,10 +63,12 @@ export default function SchoolBattlePage() {
     const currentPlayer = getPlayerProfile('user-1'); // Mock user
     setPlayer(currentPlayer);
     
-    if (currentPlayer) {
-      // Filter rankings by education level (JHS or SHS)
+    if (currentPlayer && country) {
+      // Filter rankings by education level (JHS or SHS) and country
       const playerLevel = currentPlayer.level || 'JHS';
-      const schoolsOfSameLevel = GHANA_SCHOOLS.filter(school => school.type === playerLevel).map(s => s.name);
+      const countryId = country.id as 'ghana' | 'nigeria' | 'sierra-leone' | 'liberia' | 'gambia';
+      const countrySchools = getSchoolsByCountry(countryId);
+      const schoolsOfSameLevel = countrySchools.filter(school => school.type === playerLevel).map(s => s.name);
       const filteredRankings = allRankings.filter(r => schoolsOfSameLevel.includes(r.school));
       setRankings(filteredRankings);
       
@@ -74,7 +79,7 @@ export default function SchoolBattlePage() {
       const subjects = getSubjectsForLevel(playerLevel);
       setSelectedSubject(subjects[0]);
     }
-  }, []);
+  }, [country]);
 
   const handleStartBattle = async () => {
     if (!player?.isVerified) {
@@ -153,12 +158,30 @@ export default function SchoolBattlePage() {
           <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900">
             <School className="h-8 w-8 text-purple-600" />
           </div>
-          <div>
-            <h1 className="text-3xl font-bold">School Battle Arena</h1>
-            <p className="text-muted-foreground">Defend your school's honor!</p>
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              School Battle Arena
+              {country && <span className="text-2xl">{country.flag}</span>}
+            </h1>
+            <p className="text-muted-foreground">Defend your school's honor in {country?.name || 'your country'}!</p>
           </div>
         </div>
       </div>
+
+      {/* Country Info Banner */}
+      <Card className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-200 dark:border-green-800">
+        <CardContent className="p-4">
+          <div className="flex items-center gap-3">
+            <Target className="h-5 w-5 text-green-600" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">
+                🎯 You're competing with schools in <strong>{country?.name || 'your country'}</strong>. 
+                Want to see other countries? Use the country selector in the main Arena page!
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {!player.isVerified && (
         <Alert variant="destructive" className="mb-6 border-red-200 bg-red-50 dark:bg-red-950/20">
@@ -210,7 +233,7 @@ export default function SchoolBattlePage() {
               </div>
               <div className="text-right">
                 <div className="text-3xl font-bold text-purple-600">#{mySchool?.rank || '-'}</div>
-                <div className="text-sm text-muted-foreground">National Rank</div>
+                <div className="text-sm text-muted-foreground">{country?.name || 'National'} Rank</div>
               </div>
             </div>
 

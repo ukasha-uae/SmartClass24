@@ -1,0 +1,119 @@
+
+{
+  "title": "Scientific Methods & Safety",
+  "introduction": "Science is a systematic way of studying the natural world. Scientific methods help scientists and learners investigate problems, test ideas, and find reliable solutions. In every scientific process, safety is essential to protect oneself and others from harm during experiments.",
+  "sections": [
+    {
+      "title": "Steps in the Scientific Method",
+      "type": "accordion",
+      "items": [
+        {
+          "title": "1. Observation",
+          "content": "Carefully noticing something in the environment using your senses. **Example:** You see that plants in a sunny spot seem to grow taller than plants in the shade."
+        },
+        {
+          "title": "2. Forming a Question",
+          "content": "Asking a clear, focused question based on the observation. **Example:** Why do iron nails rust when left outside?"
+        },
+        {
+          "title": "3. Hypothesis",
+          "content": "An educated guess or a testable prediction. **Example:** 'Iron nails rust because they react with oxygen and water in the air.'"
+        },
+        {
+          "title": "4. Experimentation",
+          "content": "Conducting a test to prove or disprove the hypothesis. This involves identifying variables (independent, dependent, controlled) and recording procedures."
+        },
+        {
+          "title": "5. Data Collection & Analysis",
+          "content": "Gathering results from the experiment and organizing them in charts or tables to look for patterns or trends."
+        },
+        {
+          "title": "6. Conclusion & Reporting",
+          "content": "Deciding if the data supports or rejects the hypothesis and sharing the findings so others can verify them."
+        }
+      ]
+    },
+    {
+        "title": "Importance of the Scientific Method",
+        "type": "prose",
+        "content": "The scientific method is the backbone of all scientific inquiry. Its importance includes:<ul><li><strong>Encourages Critical Thinking:</strong> It teaches a structured way to approach problems logically rather than relying on beliefs or superstitions.</li><li><strong>Ensures Reliable Results:</strong> By following a standardized process, experiments can be repeated by other scientists to verify the findings, making the results more reliable.</li><li><strong>Supports Problem-Solving:</strong> This structured approach is not just for science; it can be applied to solve everyday problems in health, agriculture, and industry.</li><li><strong>Builds Knowledge:</strong> Each conclusion, whether it supports or refutes a hypothesis, adds to our collective understanding of the world, allowing future research to build upon it.</li></ul>"
+    },
+    {
+      "title": "Laboratory Safety Rules",
+      "type": "accordion",
+      "items": [
+        {
+            "title": "a. Personal Safety",
+            "content": "<ul><li>Always wear a lab coat and safety goggles to protect your clothes and eyes from spills and splashes.</li><li>Tie back long hair to prevent it from catching fire or falling into chemicals.</li><li>Do not eat, drink, or chew gum in the laboratory to avoid accidental ingestion of harmful substances.</li><li>Never work alone in the laboratory.</li></ul>"
+        },
+        {
+            "title": "b. Handling Chemicals",
+            "content": "<ul><li>Always label all containers clearly with their contents.</li><li>Never taste or directly inhale chemicals. To smell a chemical, gently waft the vapor towards your nose.</li><li>Use a fume hood when working with volatile or toxic chemicals.</li><li>Always add acid to water slowly, never the other way around, to prevent dangerous splashing.</li></ul>"
+        },
+        {
+            "title": "c. Equipment Use",
+            "content": "<ul><li>Handle glassware with care. Never use cracked or broken glassware.</li><li>Turn off Bunsen burners and other heat sources when not in use.</li><li>Report any damaged or malfunctioning equipment to your teacher immediately.</li></ul>"
+        },
+        {
+            "title": "d. Emergency Preparedness",
+            "content": "<ul><li>Know the location of all safety equipment, including the fire extinguisher, first aid kit, and eyewash station.</li><li>Report all accidents, spills, or injuries to your teacher immediately, no matter how small.</li><li>Always wash your hands thoroughly with soap and water before leaving the laboratory.</li></ul>"
+        }
+      ]
+    },
+    {
+      "title": "Laboratory Symbols & Their Meanings",
+      "type": "prose",
+      "content": "<table><thead><tr><th>Symbol</th><th>Meaning</th></tr></thead><tbody><tr><td>☣️</td><td>Biohazard – Dangerous to health</td></tr><tr><td>🔥</td><td>Flammable – Can catch fire easily</td></tr><tr><td>☠️</td><td>Toxic – Poisonous substance</td></tr><tr><td>⚡</td><td>Electrical hazard – Risk of shock</td></tr><tr><td>🧪</td><td>Corrosive – Can burn skin or damage materials</td></tr></tbody></table>"
+    },
+    {
+      "title": "Interactive Quiz",
+      "type": "quiz",
+      "questions": [
+        {
+          "question": "What is the correct sequence of steps in the scientific method?",
+          "type": "radio",
+          "options": [
+            "Observation → Hypothesis → Experiment → Conclusion",
+            "Experiment → Hypothesis → Observation → Conclusion",
+            "Conclusion → Experiment → Observation → Hypothesis"
+          ],
+          "answer": "Observation → Hypothesis → Experiment → Conclusion",
+          "feedback": {
+            "correct": "Correct! This is the logical flow of scientific investigation. ✅",
+            "incorrect": "Incorrect. The scientific method starts with an observation. 🧠"
+          }
+        },
+        {
+          "question": "Which of the following is a critical laboratory safety rule?",
+          "type": "radio",
+          "options": [
+            "Smelling chemicals directly from the container",
+            "Wearing safety goggles during experiments",
+            "Using broken glassware if it still holds liquid"
+          ],
+          "answer": "Wearing safety goggles during experiments",
+          "feedback": {
+            "correct": "Excellent! Protecting your eyes is a non-negotiable safety rule. ✅",
+            "incorrect": "Incorrect. Wearing safety goggles is essential to protect your eyes. 🧠"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Past Questions by WAEC",
+      "type": "essay_grader",
+      "questions": [
+        {
+          "question": "WASSCE Integrated Science: (a) List the five main steps of the scientific method in the correct order. (b) Explain the importance of a 'control' in an experiment.",
+          "gradingRubric": "(a) 5 marks for listing the steps in order. (b) 3 marks for explaining the role of a control.",
+          "modelAnswer": "(a) The steps are: 1. Observation, 2. Hypothesis, 3. Experimentation, 4. Data Collection/Analysis, 5. Conclusion. \n(b) A 'control' is the part of the experiment that is not changed and is used as a baseline for comparison. It is important because it helps the scientist confirm that the results are due to the variable being tested and not some other factor."
+        },
+        {
+          "question": "WASSCE Chemistry: State four safety precautions to be observed when working in a chemistry laboratory.",
+          "gradingRubric": "1 mark for each of four valid safety rules.",
+          "modelAnswer": "1. Always wear safety goggles to protect the eyes. 2. Never taste any chemical. 3. Report all accidents to the teacher immediately. 4. Always read the label on a chemical bottle before using it to ensure it is the correct substance."
+        }
+      ]
+    }
+  ]
+}

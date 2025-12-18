@@ -37,10 +37,16 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
+import { useLocalization } from '@/hooks/useLocalization';
+import CountrySelector from '@/components/CountrySelector';
+import RegionSelector from '@/components/RegionSelector';
+import CountryMigrationDialog from '@/components/localization/CountryMigrationDialog';
 
 export default function SettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { country, countryId, setCountry } = useLocalization();
+  const [showCountryDialog, setShowCountryDialog] = useState(false);
   
   // Settings state
   const [notifications, setNotifications] = useState({
@@ -190,6 +196,20 @@ export default function SettingsPage() {
       title: 'Cache cleared',
       description: 'All temporary data has been removed',
     });
+  };
+
+  const handleCountryChange = (newCountryId: string) => {
+    console.log('🌍 Changing country from', countryId, 'to', newCountryId);
+    
+    // Update the country using the localization context
+    setCountry(newCountryId);
+    
+    toast({
+      title: '🌍 Country Updated!',
+      description: `Your country has been changed. All content will now reflect your new selection.`,
+      duration: 4000,
+    });
+    setShowCountryDialog(false);
   };
 
   const transitionToJHS = () => {
@@ -399,6 +419,75 @@ export default function SettingsPage() {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Country & Region */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-5 w-5" />
+              Country & Region
+            </CardTitle>
+            <CardDescription>
+              Localize content to your country's curriculum and context
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Current Country Display */}
+            <div className="flex items-start justify-between p-4 border rounded-lg">
+              <div className="space-y-2 flex-1">
+                <div className="flex items-center gap-2">
+                  {country?.flag && <span className="text-3xl">{country.flag}</span>}
+                  <div>
+                    <h3 className="font-semibold text-lg">{country?.name || 'Ghana'}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {country?.currency?.symbol} {country?.currency?.code} • {country?.capital}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-sm mt-3">
+                  <div>
+                    <span className="text-muted-foreground">Primary Exam:</span>
+                    <span className="ml-1 font-medium">{country?.examSystem?.primary || 'BECE'}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Secondary Exam:</span>
+                    <span className="ml-1 font-medium">{country?.examSystem?.secondary || 'WASSCE'}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Junior Level:</span>
+                    <span className="ml-1 font-medium">{country?.academicStructure?.juniorSecondary?.name || 'JHS'}</span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Senior Level:</span>
+                    <span className="ml-1 font-medium">{country?.academicStructure?.seniorSecondary?.name || 'SHS'}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Change Country Button */}
+            <Button 
+              variant="outline" 
+              className="w-full justify-start"
+              onClick={() => setShowCountryDialog(true)}
+            >
+              <Globe className="h-4 w-4 mr-2" />
+              Change Country
+            </Button>
+
+            <Separator />
+
+            {/* Region Selector */}
+            <div className="space-y-2">
+              <Label>Region</Label>
+              <RegionSelector variant="dropdown" />
+              <p className="text-xs text-muted-foreground">
+                Optional: Select your region for more localized content
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -858,6 +947,14 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Country Migration Dialog */}
+      <CountryMigrationDialog
+        isOpen={showCountryDialog}
+        onClose={() => setShowCountryDialog(false)}
+        onConfirm={handleCountryChange}
+        currentCountryName={country?.name || 'Ghana'}
+      />
     </div>
   );
 }

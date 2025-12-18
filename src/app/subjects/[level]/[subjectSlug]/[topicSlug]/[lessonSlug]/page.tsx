@@ -3,7 +3,8 @@
 
 import { getSubjectBySlug } from '@/lib/jhs-data';
 import { getPrimarySubjectBySlug } from '@/lib/primary-data';
-import { getSHSSubjectBySlug, getSHSLesson } from '@/lib/shs-data';
+import { getSHSSubjectBySlug } from '@/lib/shs-data';
+import { useLocalizedLesson } from '@/hooks/useLocalizedLesson';
 import { notFound, useParams } from 'next/navigation';
 import { isCarouselEnabled } from '@/lib/featureFlags';
 import { validateLessonForCarousel } from '@/lib/lessonValidator';
@@ -28,6 +29,7 @@ import LessonVisual, { ConceptCard, TipCard, ExampleCard, SuccessCard } from '@/
 import { IconGrid, FloatingIcon } from '@/components/AnimatedIcons';
 import { useFirebase } from '@/firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { useLocalization } from '@/hooks/useLocalization';
 import type { Lesson } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useEffect, useState, useMemo } from 'react';
@@ -161,6 +163,7 @@ export default function LessonPage() {
   const lessonSlug = params.lessonSlug as string;
 
   const { firestore } = useFirebase();
+  const { country } = useLocalization();
   const { toast } = useToast();
   const [firestoreLesson, setFirestoreLesson] = useState<Lesson | null>(null);
   const [isFirestoreLoading, setIsFirestoreLoading] = useState(true);
@@ -176,6 +179,10 @@ export default function LessonPage() {
   const [carouselEligible, setCarouselEligible] = useState(false);
   const [validationResult, setValidationResult] = useState<any>(null);
   const [hasCheckedAutostart, setHasCheckedAutostart] = useState(false);
+  
+  // Call useLocalizedLesson at the top level (before any conditional logic)
+  // This ensures hooks are always called in the same order
+  const detailedLesson = useLocalizedLesson(subjectSlug, topicSlug, lessonSlug);
 
   // Detect education level from localStorage
   useEffect(() => {
@@ -214,10 +221,8 @@ export default function LessonPage() {
     // Debug: Log the parameters
     console.log('SHS Lesson Loading:', { subjectSlug, topicSlug, lessonSlug, localTopic });
     
-    // Try to get detailed lesson from shs-lessons-data.ts
-    const detailedLesson = getSHSLesson(subjectSlug, topicSlug, lessonSlug);
-    
-    console.log('Detailed lesson from getSHSLesson:', detailedLesson);
+    // Use the detailed lesson from useLocalizedLesson (called at top level)
+    console.log('Detailed lesson from useLocalizedLesson:', detailedLesson);
     if (detailedLesson) {
       console.log('Lesson has activities?', !!detailedLesson.activities);
       const activities = detailedLesson.activities as any;
@@ -284,7 +289,7 @@ export default function LessonPage() {
             explanation: 'Take notes, practice regularly, and don\'t hesitate to ask questions. Review this lesson multiple times to strengthen your understanding.',
           }
         ],
-        summary: `Congratulations on completing this lesson on ${baseLesson.title}! You've learned important concepts that will help you succeed in ${subjectInfo?.name}. Remember to review regularly and practice with examples. ${educationLevel === 'SHS' ? 'These skills will be valuable for your WASSCE preparation.' : 'Keep up the great work!'}`,
+        summary: `Congratulations on completing this lesson on ${baseLesson.title}! You've learned important concepts that will help you succeed in ${subjectInfo?.name}. Remember to review regularly and practice with examples. ${educationLevel === 'SHS' ? `These skills will be valuable for your ${country?.examSystem?.secondary || 'WASSCE'} preparation.` : 'Keep up the great work!'}`,
         additionalResources: [
           {
             title: 'Practice Exercises',
@@ -1000,7 +1005,11 @@ export default function LessonPage() {
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="flex items-center gap-2 text-amber-900 dark:text-amber-100">
                           <Award className="h-5 w-5" />
-                          {educationLevel === 'SHS' ? 'WASSCE Past Questions' : educationLevel === 'JHS' ? 'BECE Past Questions' : 'Past Questions'}
+                          {educationLevel === 'SHS' 
+                            ? `${country?.examSystem?.secondary || 'WASSCE'} Past Questions` 
+                            : educationLevel === 'JHS' 
+                            ? `${country?.examSystem?.primary || 'BECE'} Past Questions` 
+                            : 'Past Questions'}
                         </CardTitle>
                         {/* Temporarily disabled - Use interactive animations with intelligent voice teacher */}
                         {/* <ReadAloud textId={`${lesson.id}-pastquestions`} /> */}

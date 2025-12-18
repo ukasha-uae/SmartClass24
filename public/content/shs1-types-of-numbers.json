@@ -1,0 +1,90 @@
+{
+  "title": "Types of Numbers",
+  "subject": "Core Mathematics",
+  "gradeLevel": "SHS 1",
+  "introduction": "Understanding different types of numbers is fundamental to mathematics. In this lesson, we'll explore natural numbers, whole numbers, integers, rational numbers, irrational numbers, and real numbers.",
+  "sections": [
+    {
+      "title": "Natural Numbers",
+      "content": "Natural numbers are the counting numbers we use in everyday life. They start from 1 and go on infinitely.",
+      "points": [
+        "Natural numbers: 1, 2, 3, 4, 5, ...",
+        "Also called counting numbers",
+        "Denoted by the symbol ℕ",
+        "Used for counting discrete objects"
+      ]
+    },
+    {
+      "title": "Whole Numbers",
+      "content": "Whole numbers include all natural numbers plus zero.",
+      "points": [
+        "Whole numbers: 0, 1, 2, 3, 4, 5, ...",
+        "Natural numbers + 0",
+        "Denoted by the symbol 𝕎",
+        "Cannot be negative"
+      ]
+    },
+    {
+      "title": "Integers",
+      "content": "Integers include all whole numbers and their negative counterparts.",
+      "points": [
+        "Integers: ..., -3, -2, -1, 0, 1, 2, 3, ...",
+        "Includes positive and negative whole numbers",
+        "Denoted by the symbol ℤ",
+        "No fractions or decimals"
+      ]
+    },
+    {
+      "title": "Rational Numbers",
+      "content": "Rational numbers can be expressed as a fraction of two integers, where the denominator is not zero.",
+      "points": [
+        "Can be written as p/q where p and q are integers and q ≠ 0",
+        "Denoted by the symbol ℚ",
+        "Examples: 1/2, -3/4, 5, 0.75, 2.333...",
+        "Includes all integers, fractions, and terminating or repeating decimals"
+      ]
+    },
+    {
+      "title": "Irrational Numbers",
+      "content": "Irrational numbers cannot be expressed as a simple fraction. Their decimal representation is non-terminating and non-repeating.",
+      "points": [
+        "Cannot be written as p/q",
+        "Decimal expansion never ends and never repeats",
+        "Examples: π (pi), √2, √3, e (Euler's number)",
+        "π ≈ 3.14159265358979..."
+      ]
+    },
+    {
+      "title": "Real Numbers",
+      "content": "Real numbers include all rational and irrational numbers. They represent all points on the number line.",
+      "points": [
+        "Denoted by the symbol ℝ",
+        "Includes all rational and irrational numbers",
+        "Can be positive, negative, or zero",
+        "Represents all possible measurements"
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "question": "Classify the following numbers: 5, -3, 1/2, √7, 0, π",
+      "solution": "• 5: Natural number, Whole number, Integer, Rational number, Real number\n• -3: Integer, Rational number, Real number\n• 1/2: Rational number, Real number\n• √7: Irrational number, Real number\n• 0: Whole number, Integer, Rational number, Real number\n• π: Irrational number, Real number"
+    },
+    {
+      "question": "Is 0.333... a rational or irrational number?",
+      "solution": "0.333... is a rational number because it can be expressed as 1/3. It is a repeating decimal, which makes it rational."
+    },
+    {
+      "question": "Give three examples of irrational numbers.",
+      "solution": "1. √2 ≈ 1.41421356...\n2. π ≈ 3.14159265...\n3. √5 ≈ 2.23606797..."
+    }
+  ],
+  "keyTakeaways": [
+    "Natural numbers are counting numbers starting from 1",
+    "Whole numbers include natural numbers and zero",
+    "Integers include positive and negative whole numbers",
+    "Rational numbers can be expressed as fractions",
+    "Irrational numbers have non-terminating, non-repeating decimals",
+    "Real numbers include all rational and irrational numbers"
+  ]
+}

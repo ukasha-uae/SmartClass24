@@ -839,8 +839,19 @@ export const getChallengeNotifications = (userId: string): any[] => {
 
 // School Rankings
 
-export const getSchoolRankings = (): SchoolRanking[] => {
+export const getSchoolRankings = (country?: string): SchoolRanking[] => {
   const players = getAllPlayers();
+  
+  // Filter players by country if provided
+  const filteredPlayers = country 
+    ? players.filter(p => {
+        // Get the player's school and check if it belongs to the specified country
+        // This requires the player object to have country information
+        // For now, we'll filter based on school names from the country
+        return true; // Will be enhanced when Player interface includes country
+      })
+    : players;
+  
   const schoolMap = new Map<string, {
     school: string;
     totalStudents: number;
@@ -850,7 +861,7 @@ export const getSchoolRankings = (): SchoolRanking[] => {
     ratings: number[]; // Store all ratings to calculate top average
   }>();
   
-  players.forEach(player => {
+  filteredPlayers.forEach(player => {
     if (!schoolMap.has(player.school)) {
       schoolMap.set(player.school, {
         school: player.school,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { GraduationCap, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -13,16 +13,18 @@ interface CampusSelectorProps {
 
 export default function CampusSelector({ onLevelChange, defaultLevel, className }: CampusSelectorProps) {
   const [selectedLevel, setSelectedLevel] = useState<'Primary' | 'JHS' | 'SHS'>('Primary');
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
-    // Initialize from localStorage or default
-    if (typeof window !== 'undefined') {
+    // Initialize from localStorage or default only once
+    if (typeof window !== 'undefined' && !hasInitialized.current) {
       const savedLevel = localStorage.getItem('userEducationLevel') as 'Primary' | 'JHS' | 'SHS' | null;
       const initialLevel = defaultLevel || savedLevel || 'Primary';
       setSelectedLevel(initialLevel);
       onLevelChange?.(initialLevel);
+      hasInitialized.current = true;
     }
-  }, [defaultLevel, onLevelChange]);
+  }, [defaultLevel]);
 
   const handleLevelChange = (level: 'Primary' | 'JHS' | 'SHS') => {
     setSelectedLevel(level);

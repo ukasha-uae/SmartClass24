@@ -1,0 +1,80 @@
+
+{
+  "title": "Nature and Scope of Chemistry",
+  "introduction": "Chemistry is the branch of science that deals with the study of matter—its composition, properties, and the changes it undergoes. It helps us understand how substances interact, react, and transform. When you cook rice, the raw grains absorb water and become soft. That change is a chemical process. When iron rusts, soap cleans your hands, or fruit gets ripe—chemistry is at work.",
+  "sections": [
+    {
+      "title": "Branches of Chemistry",
+      "type": "accordion",
+      "items": [
+        {
+          "title": "1. Organic Chemistry",
+          "content": "The study of carbon-based compounds, which form the basis of all living organisms. **Examples:** Fuels (petrol), plastics, medicines, and the food we eat."
+        },
+        {
+          "title": "2. Inorganic Chemistry",
+          "content": "Studies substances that are not carbon-based, including metals, minerals, and salts. **Examples:** The rusting of an iron nail (an oxidation process), the properties of salt (NaCl), and how fertilizers work."
+        },
+        {
+          "title": "3. Physical Chemistry",
+          "content": "Explores the physical principles that govern chemical reactions, such as energy changes (thermodynamics) and reaction rates (kinetics). **Example:** Understanding why some reactions are fast (like an explosion) and others are slow (like rusting)."
+        },
+        {
+          "title": "4. Analytical Chemistry",
+          "content": "Focuses on identifying the components of a substance and how much of each component is present. **Example:** Testing a water sample to see if it contains harmful chemicals, or checking the purity of a gold sample."
+        },
+        {
+          "title": "5. Biochemistry",
+          "content": "Looks at the chemical processes that occur within living things. **Example:** How our bodies digest food, how photosynthesis works, and the structure of DNA."
+        }
+      ]
+    },
+    {
+      "title": "Importance of Chemistry in Everyday Life",
+      "type": "prose",
+      "content": "Chemistry is not just for laboratories; it is central to our daily existence.\n<ul><li><strong>Agriculture:</strong> Chemistry provides fertilizers (like NPK) to enrich soil, pesticides to protect crops, and methods for food preservation.</li><li><strong>Health and Medicine:</strong> The development of drugs, anesthetics, antiseptics, and diagnostic tools are all products of chemistry.</li><li><strong>Industry:</strong> Chemistry is used to produce cement, paints, textiles, plastics, and soap. Refining crude oil into petrol and kerosene is also a key industrial chemical process.</li><li><strong>Home:</strong> Cleaning with soap and detergents, cooking food, and using batteries are all daily chemical activities.</li><li><strong>Environment:</strong> Chemistry helps us understand and combat pollution by analyzing pollutants and developing cleaner energy sources.</li></ul>"
+    },
+    {
+      "title": "Interactive Quiz",
+      "type": "quiz",
+      "questions": [
+        {
+          "question": "A scientist studying how a new drug (a carbon-based molecule) affects the body is working in which field?",
+          "type": "radio",
+          "options": ["Inorganic Chemistry", "Organic Chemistry", "Analytical Chemistry"],
+          "answer": "Organic Chemistry",
+          "feedback": {
+            "correct": "Correct! The drug is a carbon compound, which is the focus of organic chemistry. ✅",
+            "incorrect": "Not quite. Since the drug is carbon-based, it falls under Organic Chemistry. 🧠"
+          }
+        },
+        {
+          "question": "A technician testing the amount of lead in drinking water is applying:",
+          "type": "radio",
+          "options": ["Physical Chemistry", "Biochemistry", "Analytical Chemistry"],
+          "answer": "Analytical Chemistry",
+          "feedback": {
+            "correct": "Excellent! Identifying and quantifying substances is the core of analytical chemistry. ✅",
+            "incorrect": "Incorrect. The act of identifying components is Analytical Chemistry. 🧠"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Past Questions by WAEC",
+      "type": "essay_grader",
+      "questions": [
+        {
+          "question": "WASSCE 2018 (Integrated Science): (a) Define Chemistry. (b) List three branches of chemistry and give one example of a substance studied in each.",
+          "gradingRubric": "(a) 2 marks for a clear definition. (b) 2 marks for each of the three branches with a correct example (6 marks total).",
+          "modelAnswer": "(a) Chemistry is the scientific study of matter, its properties, composition, and the changes it undergoes. \n(b) 1. **Organic Chemistry:** Studies carbon compounds, e.g., Methane (CH₄). 2. **Inorganic Chemistry:** Studies non-carbon compounds, e.g., Sodium Chloride (NaCl). 3. **Biochemistry:** Studies chemical processes in living things, e.g., Glucose (C₆H₁₂O₆)."
+        },
+        {
+          "question": "WASSCE 2021 (Chemistry Theory): Explain why Chemistry is considered a central science.",
+          "gradingRubric": "4 marks for explaining its connection to at least two other major science fields with examples.",
+          "modelAnswer": "Chemistry is called the central science because its principles are fundamental to understanding other scientific disciplines. It connects with **Biology** through biochemistry (the study of life processes), with **Physics** through physical chemistry (the study of energy and matter), and with **Geology** through geochemistry (the study of Earth's composition). For example, a biologist needs chemistry to understand digestion, and a physicist needs it to understand batteries."
+        }
+      ]
+    }
+  ]
+}

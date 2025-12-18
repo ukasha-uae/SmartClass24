@@ -112,6 +112,15 @@ export interface Media {
   fileName?: string;
 }
 
+export interface ContentAvailability {
+  applicableCountries?: string[];
+  excludedCountries?: string[];
+  isCountrySpecific?: boolean;
+  countrySpecificTo?: string;
+  examBoards?: string[];
+  examRelevance?: 'all' | 'country-specific' | 'optional';
+}
+
 export interface Lesson {
   id: string;
   slug: string;
@@ -137,6 +146,7 @@ export interface Lesson {
   summaryMedia?: Media;
   endOfLessonQuiz?: Quiz[];
   defaultQuizStyle?: QuizStyle;
+  availability?: ContentAvailability;
 }
 
 export interface QuizAttempt {

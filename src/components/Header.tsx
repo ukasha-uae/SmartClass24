@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { GraduationCap, Users, MessagesSquare, Trophy, HelpCircle, ChevronDown } from 'lucide-react';
 import AuthModal from './AuthModal';
 import { ThemeToggle } from './ThemeToggle';
+import CountrySelector from './CountrySelector';
 import NotificationBell from './NotificationBell';
 import { useFirebase, useDoc } from '@/firebase';
 import { useHasMounted } from '@/hooks/use-has-mounted';
+import { useScrollPosition } from '@/hooks/use-scroll-position';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,38 +20,54 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { doc } from 'firebase/firestore';
 import { useMemo } from 'react';
+import { cn } from '@/lib/utils';
 
 export default function Header() {
   const { user, firestore } = useFirebase();
   const hasMounted = useHasMounted();
+  const scrolled = useScrollPosition(10);
   const profileRef = useMemo(() => (user && firestore) ? doc(firestore, `students/${user.uid}`) : null, [user, firestore]);
   const { data: profile } = useDoc<any>(profileRef as any);
+  
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur-sm">
+    <header 
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur-sm transition-shadow duration-300",
+        scrolled && "shadow-md"
+      )}
+    >
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href="/" className="flex items-center gap-2 group shrink-0">
           <div className="relative">
-            <GraduationCap className="h-7 w-7 text-violet-600 dark:text-violet-400 transition-transform group-hover:scale-110" />
+            <GraduationCap className="h-6 w-6 sm:h-7 sm:w-7 text-violet-600 dark:text-violet-400 transition-transform group-hover:scale-110 duration-200" />
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-xl font-bold font-headline bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">SmartC24</span>
-            <span className="text-[9px] text-muted-foreground -mt-1">Smart Learning</span>
+            <span className="text-base sm:text-lg md:text-xl font-bold font-headline bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              SmartC24
+            </span>
+            <span className="hidden xs:inline text-[9px] text-muted-foreground -mt-1">Smart Learning</span>
           </div>
         </Link>
-        <div className="ml-auto flex items-center gap-2">
+        
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          <CountrySelector 
+            variant="compact" 
+            showSearch={false} 
+            className="hidden xs:flex border-0 bg-transparent hover:bg-accent" 
+          />
           <ThemeToggle />
           {hasMounted && user && (
             <>
               {/* Resources Menu Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                  <Button variant="ghost" size="sm" className="flex items-center gap-1 px-2 sm:px-3 transition-colors">
                     <MessagesSquare className="h-4 w-4" />
-                    <span className="hidden sm:inline">Resources</span>
-                    <ChevronDown className="h-3 w-3" />
+                    <span className="hidden md:inline">Resources</span>
+                    <ChevronDown className="h-3 w-3 hidden md:inline transition-transform group-data-[state=open]:rotate-180" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-48 animate-in fade-in-50 slide-in-from-top-1">
                   <DropdownMenuLabel>Learning Tools</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <Link href="/shs-programmes">
@@ -126,7 +144,7 @@ export default function Header() {
                 </Button>
               </Link>
               {profile?.profilePictureUrl && (
-                <Link href="/profile">
+                <Link href="/profile" className="hidden sm:block">
                   <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity">
                     <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
                     <AvatarFallback>{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>

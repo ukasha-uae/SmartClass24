@@ -11,6 +11,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useMemo, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useParams, notFound } from 'next/navigation';
+import { useLocalization } from '@/hooks/useLocalization';
+import { useLocalizedSubjects } from '@/hooks/useLocalizedSubjects';
 
 import { subjects as localSubjects } from '@/lib/jhs-data';
 import { primarySubjects } from '@/lib/primary-data';
@@ -28,6 +30,40 @@ export default function LevelSubjectsPage() {
   // Validate level parameter - default to jhs if invalid
   const isValidLevel = ['primary', 'jhs', 'shs'].includes(levelParam?.toLowerCase());
   const educationLevel = (isValidLevel ? levelParam.toLowerCase() : 'jhs') as EducationLevel;
+
+  // Localization hooks
+  const { country } = useLocalization();
+  const localizedJSSSubjects = useLocalizedSubjects('jss');
+  
+  // Country-specific color theming
+  const getCountryColors = () => {
+    if (country?.id === 'nigeria') {
+      return {
+        primary: 'from-green-600 to-green-700',
+        secondary: 'from-green-700 to-emerald-800',
+        accent: 'from-emerald-500 to-green-600',
+        flag: '🇳🇬',
+        tagline: "Nigeria's Curriculum Standard"
+      };
+    } else if (country?.id === 'ghana') {
+      return {
+        primary: 'from-red-600 to-red-700',
+        secondary: 'from-yellow-500 to-orange-500',
+        accent: 'from-green-600 to-green-700',
+        flag: '🇬🇭',
+        tagline: "Ghana's Academic Excellence"
+      };
+    }
+    return {
+      primary: 'from-blue-600 to-indigo-600',
+      secondary: 'from-indigo-600 to-purple-600',
+      accent: 'from-violet-500 to-purple-600',
+      flag: '🌍',
+      tagline: 'World-Class Education'
+    };
+  };
+
+  const colors = getCountryColors();
 
   // Store education level in localStorage for consistent experience
   useEffect(() => {
@@ -61,7 +97,19 @@ export default function LevelSubjectsPage() {
       // For SHS, use SHS subjects
       return shsSubjects;
     }
-    // For JHS, use Firestore or local data
+    // For JHS/JSS, use country-specific localized subjects
+    if (localizedJSSSubjects && localizedJSSSubjects.length > 0) {
+      return localizedJSSSubjects.map(subject => {
+        const localSubject = localSubjects.find(ls => ls.slug === subject.slug);
+        if (!localSubject) return null;
+        return {
+          ...localSubject,
+          name: subject.name || localSubject.name,
+          description: subject.description || localSubject.description,
+        };
+      }).filter(Boolean);
+    }
+    // Fallback to local subjects
     return (subjects && subjects.length > 0) ? subjects : localSubjects;
   };
 
@@ -69,78 +117,128 @@ export default function LevelSubjectsPage() {
 
   const primaryClasses: PrimaryClass[] = ['All', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6'];
 
-  // Get level display name
+  // Get level display name (country-specific)
   const getLevelName = () => {
     switch (educationLevel) {
       case 'primary': return 'Primary School';
-      case 'jhs': return 'JHS';
-      case 'shs': return 'SHS';
+      case 'jhs': 
+        return country?.academicStructure.juniorSecondary.name || 'JHS';
+      case 'shs': 
+        return country?.academicStructure.seniorSecondary.name || 'SHS';
     }
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-6 lg:p-8">
-      {/* Class Selector for Primary */}
-      {educationLevel === 'primary' && (
-        <div className="mb-6">
-          <p className="text-center text-sm text-muted-foreground mb-3">Select Class Level</p>
-          <div className="flex flex-wrap gap-2 justify-center">
-            {primaryClasses.map((cls) => (
-              <Button
-                key={cls}
-                variant={selectedClass === cls ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedClass(cls)}
-                className={selectedClass === cls ? 'bg-green-600 hover:bg-green-700' : ''}
-              >
-                {cls}
-              </Button>
-            ))}
+    <div className="relative min-h-screen">
+      {/* Decorative Background Elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className={`absolute top-20 -right-20 w-96 h-96 bg-gradient-to-br ${colors.primary} opacity-10 rounded-full blur-3xl animate-float`} />
+        <div className={`absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-tr ${colors.accent} opacity-10 rounded-full blur-3xl`} style={{ animationDelay: '1s' }} />
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br ${colors.secondary} opacity-5 rounded-full blur-3xl`} />
+      </div>
+
+      <div className="container mx-auto p-4 md:p-6 lg:p-8">
+        {/* Enhanced Header Section */}
+        <div className="mb-12 text-center animate-fadeInUp">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 mb-4">
+            <span className="text-2xl">{colors.flag}</span>
+            <span className="text-sm font-semibold text-primary">{colors.tagline}</span>
+          </div>
+          
+          <h1 className={`text-5xl md:text-6xl font-bold font-headline mb-4 bg-gradient-to-r ${colors.primary} bg-clip-text text-transparent`}>
+            {getLevelName()} Subjects
+          </h1>
+          
+          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-6">
+            {educationLevel === 'primary' 
+              ? `Explore ${selectedClass === 'All' ? 'all Primary School' : selectedClass} subjects and topics`
+              : 'Choose a subject to start your learning adventure'}
+          </p>
+
+          {/* Stats Badge */}
+          <div className="inline-flex items-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${colors.accent} animate-pulse`} />
+              <span className="font-semibold">{displaySubjects?.length || 0} Subjects</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${colors.primary}`} />
+              <span>Curriculum Aligned</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${colors.accent}`} />
+              <span>{country?.examSystem?.conductor || 'WAEC'} Standard</span>
+            </div>
           </div>
         </div>
-      )}
 
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold font-headline">
-          {getLevelName()} Subjects
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          {educationLevel === 'primary' 
-            ? `Explore ${selectedClass === 'All' ? 'all Primary School' : selectedClass} subjects and topics`
-            : 'Choose a subject to start your learning adventure.'}
-        </p>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isLoading && (!displaySubjects || displaySubjects.length === 0) && (
-          <>
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-            <Skeleton className="h-48 w-full" />
-          </>
+        {/* Class Selector for Primary */}
+        {educationLevel === 'primary' && (
+          <div className="mb-8">
+            <p className="text-center text-sm text-muted-foreground mb-3">Select Class Level</p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {primaryClasses.map((cls) => (
+                <Button
+                  key={cls}
+                  variant={selectedClass === cls ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSelectedClass(cls)}
+                  className={selectedClass === cls ? `bg-gradient-to-r ${colors.primary} text-white hover:opacity-90` : ''}
+                >
+                  {cls}
+                </Button>
+              ))}
+            </div>
+          </div>
         )}
-        {displaySubjects && displaySubjects.map((subject) => (
-          <Link key={subject.id} href={`/subjects/${educationLevel}/${subject.slug}`} passHref>
-            <Card className="h-full flex flex-col hover:border-primary hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-              <CardHeader className="flex-grow">
-                <div className="flex items-center mb-4">
-                   <BookOpen className="h-8 w-8 text-primary mr-4" />
-                  <CardTitle className="font-headline">{subject.name}</CardTitle>
+        
+        {/* Modern Subject Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {isLoading && (!displaySubjects || displaySubjects.length === 0) && (
+            <>
+              <Skeleton className="h-64 w-full" />
+              <Skeleton className="h-64 w-full" />
+              <Skeleton className="h-64 w-full" />
+            </>
+          )}
+          {displaySubjects && displaySubjects.map((subject, index) => (
+            <Link key={subject.id} href={`/subjects/${educationLevel}/${subject.slug}`} passHref>
+              <Card 
+                className="h-full flex flex-col hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer group relative overflow-hidden border-2 hover:border-primary/50 animate-fadeInUp"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                {/* Gradient overlay on hover */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${colors.primary} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                
+                <CardHeader className="flex-grow relative z-10">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className={`p-3 rounded-xl bg-gradient-to-br ${colors.primary} shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
+                      <BookOpen className="h-6 w-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <CardTitle className="font-headline text-xl group-hover:text-primary transition-colors">
+                        {subject.name}
+                      </CardTitle>
+                    </div>
+                  </div>
+                  <CardDescription className="text-base leading-relaxed">
+                    {subject.description}
+                  </CardDescription>
+                </CardHeader>
+                
+                <div className="p-6 pt-0 mt-auto relative z-10">
+                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${colors.accent} text-white font-semibold group-hover:gap-4 transition-all duration-300`}>
+                    <span>View Topics</span>
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-                <CardDescription>{subject.description}</CardDescription>
-              </CardHeader>
-              <div className="p-6 pt-0 mt-auto">
-                 <div className="flex items-center text-primary font-semibold">
-                    View Topics
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                 </div>
-              </div>
-            </Card>
-          </Link>
-        ))}
-      </div>
+              </Card>
+            </Link>
+          ))}
+        </div>
 
-      {/* Challenge Arena Section */}
-      <div className="mt-12 max-w-4xl mx-auto">
+        {/* Challenge Arena Section */}
+        <div className="mt-12 max-w-4xl mx-auto">
         <Link href="/challenge-arena">
           <Card className={`relative overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer group border-2 ${
             educationLevel === 'primary' 
@@ -189,7 +287,7 @@ export default function LevelSubjectsPage() {
                   <CardDescription className="text-base mb-4">
                     {educationLevel === 'primary'
                       ? 'Have fun while learning! Play educational games, earn badges, and compete with classmates in a safe, friendly environment.'
-                      : 'Test your knowledge in exciting multiplayer quiz battles. Challenge your friends, compete with other schools, and prove you\'re the best in Ghana!'}
+                      : `Test your knowledge in exciting multiplayer quiz battles. Challenge your friends, compete with other schools, and prove you're the best in ${country?.name || 'your country'}!`}
                   </CardDescription>
                   
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -249,6 +347,7 @@ export default function LevelSubjectsPage() {
             </CardHeader>
           </Card>
         </Link>
+        </div>
       </div>
     </div>
   );

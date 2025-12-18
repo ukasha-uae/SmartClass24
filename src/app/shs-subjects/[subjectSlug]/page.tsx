@@ -138,23 +138,25 @@ export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSl
                         </div>
                       )}
                       
-                      <Button 
-                        className="w-full" 
-                        variant={isCompleted ? "outline" : "default"}
-                        size="sm"
-                        disabled={isLocked}
-                      >
-                        {isLocked ? (
-                          <>
-                            <Lock className="h-4 w-4 mr-2" />
-                            Locked
-                          </>
-                        ) : isCompleted ? (
-                          'Review'
-                        ) : (
-                          'Start Learning'
-                        )}
-                      </Button>
+                      <Link href={isLocked ? '#' : `/subjects/shs/${resolvedParams.subjectSlug}/${topic.slug}/${topic.slug}`}>
+                        <Button 
+                          className="w-full" 
+                          variant={isCompleted ? "outline" : "default"}
+                          size="sm"
+                          disabled={isLocked}
+                        >
+                          {isLocked ? (
+                            <>
+                              <Lock className="h-4 w-4 mr-2" />
+                              Locked
+                            </>
+                          ) : isCompleted ? (
+                            'Review'
+                          ) : (
+                            'Start Learning'
+                          )}
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
                 );

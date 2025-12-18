@@ -1,0 +1,411 @@
+{
+  "title": "Definition and Objectives of Accounting",
+  "introduction": "Accounting is the language of business! Whether you're running a small provision shop in Makola or managing a large company like MTN {{country}}, you need accounting to track your money, make smart decisions, and grow your business. Let's discover what accounting is all about and why it's essential for every business in {{country}} and beyond.",
+  "sections": [
+    {
+      "title": "What is Accounting?",
+      "type": "accordion",
+      "items": [
+        {
+          "title": "Definition of Accounting",
+          "content": "**Accounting** is the systematic process of recording, classifying, summarizing, analyzing, and interpreting financial transactions to provide useful information for decision-making. Think of it as keeping a detailed diary of all the money coming in and going out of a business. The American Institute of Certified Public Accountants (AICPA) defines accounting as 'the art of recording, classifying, and summarizing in a significant manner and in terms of money, transactions and events which are, in part at least, of a financial character, and interpreting the results thereof.'"
+        },
+        {
+          "title": "Accounting as a Language",
+          "content": "Accounting is often called the **language of business** because it communicates financial information in a standardized way that everyone can understand. Just as Twi or English helps people communicate ideas, accounting helps businesses communicate their financial health. When you see a company's financial statements, you're reading their 'story' told through numbers."
+        },
+        {
+          "title": "Book-keeping vs Accounting",
+          "content": "**Book-keeping** is the systematic recording of daily financial transactions. It's the foundation! **Accounting** goes further—it includes analyzing, interpreting, and communicating this financial information. Think of book-keeping as gathering ingredients, while accounting is cooking the full meal and serving it beautifully. A book-keeper records sales; an accountant analyzes whether sales are improving."
+        },
+        {
+          "title": "Key Terms to Know",
+          "content": "• **Transaction**: Any business activity involving exchange of money or value (buying goods, paying rent, receiving payment)\n• **Financial Statements**: Reports summarizing a business's financial activities\n• **Assets**: Things the business owns (cash, inventory, equipment)\n• **Liabilities**: What the business owes to others (loans, debts)\n• **Capital/Equity**: The owner's investment in the business"
+        }
+      ]
+    },
+    {
+      "title": "The Objectives of Accounting",
+      "type": "accordion",
+      "items": [
+        {
+          "title": "1. Recording Financial Transactions",
+          "content": "The primary objective is to maintain a systematic record of all business transactions. Every cedi that enters or leaves the business must be documented. This creates an audit trail and prevents fraud. Example: When Auntie Ama's provision shop sells {{currency}}50 worth of goods, this sale is recorded in the sales book."
+        },
+        {
+          "title": "2. Determining Profit or Loss",
+          "content": "Accounting helps business owners know if they are making money or losing it. By comparing income (money earned) with expenses (money spent), we calculate **profit** (if income > expenses) or **loss** (if expenses > income). This is shown in the **Income Statement** or **Profit and Loss Account**."
+        },
+        {
+          "title": "3. Showing Financial Position",
+          "content": "Accounting reveals what a business owns (assets), what it owes (liabilities), and the owner's stake (capital). This information appears in the **Balance Sheet** or **Statement of Financial Position**. It answers: 'If we sold everything and paid all debts, what would remain?'"
+        },
+        {
+          "title": "4. Providing Information for Decision Making",
+          "content": "Managers, investors, and creditors need financial information to make decisions. Should we expand? Can we afford new equipment? Is this business worth investing in? Accounting provides the data needed to answer these questions confidently."
+        },
+        {
+          "title": "5. Meeting Legal Requirements",
+          "content": "In {{country}}, the Companies Act requires businesses to keep proper accounting records and file annual returns. The {{country}} Revenue Authority (GRA) needs accurate records for tax purposes. Good accounting ensures compliance with the law and avoids penalties."
+        },
+        {
+          "title": "6. Control and Prevention of Fraud",
+          "content": "Proper accounting systems include checks and controls that help prevent theft and fraud. When every transaction is recorded and verified, it becomes difficult for dishonest people to steal without being caught. Regular audits compare records with actual assets."
+        }
+      ]
+    },
+    {
+      "title": "Users of Accounting Information",
+      "type": "prose",
+      "content": "Different people need accounting information for different reasons:\n<ul><li><strong>Owners/Shareholders:</strong> Want to know if their investment is profitable and growing</li><li><strong>Managers:</strong> Need information to plan, control, and make daily decisions</li><li><strong>Creditors/Lenders:</strong> Banks and suppliers want to know if the business can repay debts</li><li><strong>Employees:</strong> Interested in job security and fair compensation</li><li><strong>Government (GRA):</strong> Needs accurate records to calculate taxes</li><li><strong>Investors:</strong> Analyze financial health before investing money</li><li><strong>Customers:</strong> Want assurance the business will continue operating</li></ul>"
+    },
+    {
+      "title": "Branches of Accounting",
+      "type": "accordion",
+      "items": [
+        {
+          "title": "Financial Accounting",
+          "content": "Focuses on preparing financial statements for external users (investors, creditors, regulators). It follows standards like IFRS (International Financial Reporting Standards). This is what we're studying in this course!"
+        },
+        {
+          "title": "Management/Cost Accounting",
+          "content": "Provides detailed information for internal managers. It helps with budgeting, cost control, and decision-making. Unlike financial accounting, it doesn't follow strict external standards."
+        },
+        {
+          "title": "Auditing",
+          "content": "Independent examination of financial records to verify accuracy and compliance. External auditors check if financial statements present a true and fair view. In {{country}}, the Institute of Chartered Accountants {{country}} (ICAG) regulates auditors."
+        },
+        {
+          "title": "Tax Accounting",
+          "content": "Specializes in preparing tax returns and tax planning. In {{country}}, this involves working with GRA regulations, VAT, corporate taxes, and personal income taxes."
+        },
+        {
+          "title": "Forensic Accounting",
+          "content": "Investigates financial crimes, fraud, and disputes. Forensic accountants often work with law enforcement to uncover financial wrongdoing and present evidence in court."
+        }
+      ]
+    },
+    {
+      "title": "The Accounting Cycle Overview",
+      "type": "prose",
+      "content": "Accounting follows a systematic cycle:\n<ol><li><strong>Identify transactions</strong> – Recognize events that need recording</li><li><strong>Record in journals</strong> – Write transactions in chronological order</li><li><strong>Post to ledgers</strong> – Transfer to individual accounts</li><li><strong>Prepare trial balance</strong> – Verify debits equal credits</li><li><strong>Make adjustments</strong> – Account for accruals and prepayments</li><li><strong>Prepare financial statements</strong> – Income Statement and Balance Sheet</li><li><strong>Close the books</strong> – Reset temporary accounts for the new period</li></ol>\nWe'll explore each step in detail throughout this course!"
+    },
+    {
+      "title": "Knowledge Check",
+      "type": "quiz",
+      "questions": [
+        {
+          "question": "What is the primary difference between book-keeping and accounting?",
+          "type": "radio",
+          "options": [
+            "Book-keeping deals with large businesses only",
+            "Accounting only involves recording transactions",
+            "Book-keeping records transactions; accounting analyzes and interprets them",
+            "There is no difference between them"
+          ],
+          "answer": "Book-keeping records transactions; accounting analyzes and interprets them",
+          "feedback": {
+            "correct": "Excellent! Book-keeping is the foundation (recording), while accounting builds on it with analysis and interpretation. ✅",
+            "incorrect": "Not quite. Book-keeping focuses on recording transactions, while accounting includes analysis, interpretation, and reporting. 🧠"
+          }
+        },
+        {
+          "question": "Which objective of accounting helps business owners know if they made money?",
+          "type": "radio",
+          "options": [
+            "Meeting legal requirements",
+            "Determining profit or loss",
+            "Preventing fraud",
+            "Recording transactions"
+          ],
+          "answer": "Determining profit or loss",
+          "feedback": {
+            "correct": "Correct! Determining profit or loss shows whether income exceeds expenses (profit) or vice versa (loss). ✅",
+            "incorrect": "The objective that shows if a business made money is 'Determining profit or loss.' 🧠"
+          }
+        },
+        {
+          "question": "The {{country}} Revenue Authority (GRA) needs accounting information primarily for:",
+          "type": "radio",
+          "options": [
+            "Planning business expansion",
+            "Calculating taxes owed",
+            "Deciding on employee salaries",
+            "Determining market prices"
+          ],
+          "answer": "Calculating taxes owed",
+          "feedback": {
+            "correct": "Right! GRA uses accounting records to assess and collect taxes owed by businesses. ✅",
+            "incorrect": "GRA is a government tax authority—they need accounting information to calculate and collect taxes. 🧠"
+          }
+        },
+        {
+          "question": "Which financial statement shows what a business owns and owes at a specific point in time?",
+          "type": "radio",
+          "options": [
+            "Income Statement",
+            "Cash Flow Statement",
+            "Balance Sheet",
+            "Trial Balance"
+          ],
+          "answer": "Balance Sheet",
+          "feedback": {
+            "correct": "Exactly! The Balance Sheet (Statement of Financial Position) shows assets, liabilities, and capital at a specific date. ✅",
+            "incorrect": "The Balance Sheet shows the financial position—what the business owns (assets) and owes (liabilities). 🧠"
+          }
+        },
+        {
+          "question": "Why is accounting called 'the language of business'?",
+          "type": "radio",
+          "options": [
+            "Because accountants speak a special language",
+            "Because it communicates financial information in a standardized way",
+            "Because only business people understand it",
+            "Because it uses only English"
+          ],
+          "answer": "Because it communicates financial information in a standardized way",
+          "feedback": {
+            "correct": "Perfect! Just like any language, accounting provides a standardized way to communicate financial information that everyone can understand. ✅",
+            "incorrect": "Accounting is the 'language of business' because it communicates financial information in a standardized way everyone can understand. 🧠"
+          }
+        }
+      ]
+    },
+    {
+      "title": "{{exam:secondary}} Practice Questions",
+      "type": "essay_grader",
+      "questions": [
+        {
+          "question": "{{exam:secondary}} 2019: (a) Define accounting. (b) State FOUR objectives of accounting.",
+          "gradingRubric": "(a) 2 marks for a clear, complete definition. (b) 1 mark each for any four valid objectives (4 marks).",
+          "modelAnswer": "(a) Accounting is the systematic process of recording, classifying, summarizing, analyzing, and interpreting financial transactions to provide useful information for decision-making by various users.\n\n(b) Four objectives of accounting:\n1. **Recording financial transactions** – Maintaining systematic records of all business activities\n2. **Determining profit or loss** – Calculating whether income exceeds expenses\n3. **Showing financial position** – Revealing assets, liabilities, and capital through the Balance Sheet\n4. **Providing information for decision-making** – Helping managers, investors, and creditors make informed choices"
+        },
+        {
+          "question": "{{exam:secondary}} 2021: Distinguish between book-keeping and accounting. Give TWO examples of activities under each.",
+          "gradingRubric": "2 marks for correct distinction. 1 mark each for two examples under book-keeping (2 marks). 1 mark each for two examples under accounting (2 marks). Total: 6 marks.",
+          "modelAnswer": "**Distinction:**\nBook-keeping is the systematic recording of daily financial transactions in the books of account. It is the foundation of the accounting process.\n\nAccounting goes beyond recording to include analyzing, interpreting, summarizing, and communicating financial information to users for decision-making.\n\n**Examples of Book-keeping Activities:**\n1. Recording daily sales in the sales journal\n2. Entering purchases in the purchases book\n\n**Examples of Accounting Activities:**\n1. Preparing financial statements (Income Statement, Balance Sheet)\n2. Analyzing profitability ratios to assess business performance"
+        },
+        {
+          "question": "{{exam:secondary}} 2020: List FIVE users of accounting information and state ONE reason why each needs the information.",
+          "gradingRubric": "1 mark for each correct user (5 marks). 1 mark for each valid reason (5 marks). Total: 10 marks.",
+          "modelAnswer": "1. **Owners/Shareholders** – Need to assess whether their investment is profitable and whether dividends can be paid\n\n2. **Managers** – Require information to plan operations, control costs, and make daily business decisions\n\n3. **Creditors/Banks** – Want to evaluate the ability of the business to repay loans and meet credit obligations\n\n4. **Government (GRA)** – Needs accurate records to assess and collect taxes owed by the business\n\n5. **Employees** – Interested in the financial stability of the business to ensure job security and fair wages"
+        }
+      ]
+    },
+    {
+      "title": "Key Takeaways",
+      "type": "callout",
+      "calloutType": "info",
+      "content": "🎯 **Remember These Points:**\n\n• Accounting is the **systematic process** of recording, classifying, summarizing, analyzing, and interpreting financial transactions\n\n• It's called the **language of business** because it communicates financial information in a standardized way\n\n• **Book-keeping** is recording; **Accounting** is analysis and interpretation\n\n• Key objectives: Record transactions, determine profit/loss, show financial position, aid decisions, meet legal requirements, prevent fraud\n\n• The **Balance Sheet** shows position; the **Income Statement** shows performance\n\n• Various users need accounting information: owners, managers, GRA, creditors, employees, investors"
+    }
+  ],
+  "keyConcepts": [
+    {
+      "term": "Accounting",
+      "definition": "The systematic process of recording, classifying, summarizing, analyzing, and interpreting financial transactions to provide useful information for decision-making."
+    },
+    {
+      "term": "Book-keeping",
+      "definition": "The systematic recording of daily financial transactions in the books of account. It forms the foundation of the accounting process."
+    },
+    {
+      "term": "Transaction",
+      "definition": "Any business activity involving the exchange of money, goods, or services that has a financial impact and needs to be recorded."
+    },
+    {
+      "term": "Financial Statements",
+      "definition": "Formal reports summarizing the financial activities and position of a business, including the Income Statement and Balance Sheet."
+    },
+    {
+      "term": "Assets",
+      "definition": "Resources owned by a business that have economic value and can provide future benefits. Examples: cash, inventory, equipment, buildings."
+    },
+    {
+      "term": "Liabilities",
+      "definition": "Obligations or debts that a business owes to external parties. Examples: loans, accounts payable, accrued expenses."
+    },
+    {
+      "term": "Capital/Equity",
+      "definition": "The owner's claim on the business assets after all liabilities are paid. It represents the owner's investment plus accumulated profits."
+    },
+    {
+      "term": "Income Statement",
+      "definition": "A financial statement showing revenues and expenses over a period, resulting in net profit or loss. Also called Profit and Loss Account."
+    },
+    {
+      "term": "Balance Sheet",
+      "definition": "A financial statement showing assets, liabilities, and capital at a specific point in time. Also called Statement of Financial Position."
+    },
+    {
+      "term": "IFRS",
+      "definition": "International Financial Reporting Standards - global accounting standards that ensure consistency and comparability of financial statements across countries."
+    }
+  ],
+  "quiz": [
+    {
+      "question": "What is the main purpose of accounting?",
+      "options": [
+        "To make businesses look profitable",
+        "To provide useful financial information for decision-making",
+        "To satisfy government regulations only",
+        "To replace the need for managers"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The main purpose of accounting is to provide useful financial information that helps various users make informed decisions about the business."
+    },
+    {
+      "question": "Which of the following is NOT a branch of accounting?",
+      "options": [
+        "Financial Accounting",
+        "Management Accounting",
+        "Marketing Accounting",
+        "Tax Accounting"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Marketing Accounting is not a branch of accounting. The main branches include Financial Accounting, Management/Cost Accounting, Auditing, Tax Accounting, and Forensic Accounting."
+    },
+    {
+      "question": "The accounting equation is:",
+      "options": [
+        "Assets = Liabilities - Capital",
+        "Assets = Liabilities + Capital",
+        "Assets + Liabilities = Capital",
+        "Capital = Assets + Liabilities"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The fundamental accounting equation is Assets = Liabilities + Capital (or Owner's Equity). This equation must always balance."
+    },
+    {
+      "question": "Which user of accounting information is primarily concerned with tax collection?",
+      "options": [
+        "Shareholders",
+        "Employees",
+        "{{country}} Revenue Authority (GRA)",
+        "Creditors"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The {{country}} Revenue Authority (GRA) uses accounting information to assess and collect taxes owed by businesses and individuals."
+    },
+    {
+      "question": "An accountant who investigates financial fraud is practicing:",
+      "options": [
+        "Financial Accounting",
+        "Management Accounting",
+        "Forensic Accounting",
+        "Tax Accounting"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Forensic Accounting specializes in investigating financial crimes, fraud, and disputes, often working with law enforcement."
+    },
+    {
+      "question": "Which statement is prepared to show the financial position of a business?",
+      "options": [
+        "Income Statement",
+        "Trial Balance",
+        "Balance Sheet",
+        "Cash Book"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The Balance Sheet (Statement of Financial Position) shows what a business owns (assets), owes (liabilities), and the owner's stake (capital) at a specific date."
+    },
+    {
+      "question": "Recording daily sales in a sales journal is an example of:",
+      "options": [
+        "Accounting",
+        "Book-keeping",
+        "Auditing",
+        "Budgeting"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Recording transactions in journals is a book-keeping activity. Book-keeping focuses on the systematic recording of daily financial transactions."
+    },
+    {
+      "question": "The professional body regulating accountants in {{country}} is:",
+      "options": [
+        "{{country}} Revenue Authority",
+        "Bank of {{country}}",
+        "Institute of Chartered Accountants {{country}} (ICAG)",
+        "Securities and Exchange Commission"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The Institute of Chartered Accountants {{country}} (ICAG) is the professional body that regulates and certifies accountants in {{country}}."
+    },
+    {
+      "question": "What does IFRS stand for?",
+      "options": [
+        "International Financial Recording System",
+        "International Financial Reporting Standards",
+        "Internal Financial Reporting System",
+        "Integrated Financial Recording Standards"
+      ],
+      "correctAnswer": 1,
+      "explanation": "IFRS stands for International Financial Reporting Standards—global accounting standards ensuring consistency and comparability of financial statements."
+    },
+    {
+      "question": "Which objective of accounting helps detect and prevent theft?",
+      "options": [
+        "Determining profit or loss",
+        "Meeting legal requirements",
+        "Control and prevention of fraud",
+        "Recording transactions"
+      ],
+      "correctAnswer": 2,
+      "explanation": "The 'Control and prevention of fraud' objective involves implementing checks and controls in accounting systems to detect and prevent theft and dishonesty."
+    },
+    {
+      "question": "Capital can also be called:",
+      "options": [
+        "Liability",
+        "Asset",
+        "Owner's Equity",
+        "Revenue"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Capital is also known as Owner's Equity. It represents the owner's claim on the business assets after all liabilities are paid."
+    },
+    {
+      "question": "Which financial statement shows whether a business made profit or loss?",
+      "options": [
+        "Balance Sheet",
+        "Income Statement",
+        "Cash Flow Statement",
+        "Statement of Changes in Equity"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The Income Statement (Profit and Loss Account) shows revenues and expenses over a period, calculating whether the business made a profit or loss."
+    },
+    {
+      "question": "A bank considering a loan application would be classified as:",
+      "options": [
+        "Internal user",
+        "External user",
+        "Primary user",
+        "Regulatory user"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Banks and creditors are external users of accounting information. They use financial data to assess whether a business can repay loans."
+    },
+    {
+      "question": "Which is the correct order in the accounting cycle?",
+      "options": [
+        "Record → Identify → Post → Trial Balance",
+        "Identify → Record → Post → Trial Balance",
+        "Post → Record → Identify → Trial Balance",
+        "Trial Balance → Record → Post → Identify"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The accounting cycle follows: Identify transactions → Record in journals → Post to ledgers → Prepare trial balance → Prepare financial statements."
+    },
+    {
+      "question": "Management accounting primarily serves:",
+      "options": [
+        "External investors",
+        "Government tax authorities",
+        "Internal managers",
+        "External auditors"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Management (Cost) Accounting provides detailed financial information for internal managers to help with planning, budgeting, and decision-making."
+    }
+  ]
+}

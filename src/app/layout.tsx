@@ -2,11 +2,13 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import BottomNav from '@/components/BottomNav';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
 import StudentProfileSetup from '@/components/StudentProfileSetup';
 import InstallPrompt from '@/components/InstallPrompt';
+import { LocalizationProvider } from '@/lib/localization/localization-context';
 
 export const metadata: Metadata = {
   title: 'Smartclass24',
@@ -32,13 +34,16 @@ export default function RootLayout({
       </head>
       <body className={cn('font-body antialiased bg-background h-full')}>
         <FirebaseClientProvider>
-          <div className="relative flex min-h-screen w-full flex-col">
-            <Header />
-            <main className="flex-1 pb-20 pt-16">{children}</main>
-            <InstallPrompt />
-            <BottomNav />
-            <Toaster />
-          </div>
+          <LocalizationProvider>
+            <div className="relative flex min-h-screen w-full flex-col">
+              <Header />
+              <main className="flex-1 pb-20 md:pb-8 pt-16">{children}</main>
+              <Footer />
+              <InstallPrompt />
+              <BottomNav />
+              <Toaster />
+            </div>
+          </LocalizationProvider>
         </FirebaseClientProvider>
       </body>
     </html>

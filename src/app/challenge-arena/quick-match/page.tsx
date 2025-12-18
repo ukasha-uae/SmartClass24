@@ -66,7 +66,7 @@ export default function QuickMatchPage() {
         'Religious & Moral Education',
         'Creative Arts',
         'French',
-        'Ghanaian Language',
+        'Local Language',
         'ICT',
         'Career Technology'
       ];

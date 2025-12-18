@@ -1,6 +1,7 @@
 import React from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import { useLocalization } from '@/hooks/useLocalization';
 import VennDiagram from './VennDiagram';
 import GeometryDiagram from './GeometryDiagram';
 import EnhancedAnimationPlayer from './EnhancedAnimationPlayer';
@@ -64,10 +65,15 @@ function processMarkdownToHtml(text: string): string {
 }
 
 export default function MarkdownRenderer({ content, id, className }: MarkdownRendererProps) {
+  const { localizeContent } = useLocalization();
+  
   if (!content) return null;
 
+  // Process localization template variables first
+  const localizedContent = localizeContent(content);
+
   // Ensure code blocks are separated by double newlines so they are treated as paragraphs
-  const normalizedContent = content
+  const normalizedContent = localizedContent
     .replace(/([^\n])\n```/g, '$1\n\n```') // Add newline before code block if missing
     .replace(/```\n([^\n])/g, '```\n\n$1'); // Add newline after code block if missing
 

@@ -1,0 +1,68 @@
+
+{
+  "title": "Ecosystems: Components and Relationships",
+  "introduction": "An ecosystem is a community of living organisms (biotic factors) interacting with their physical (abiotic) environment. It can be as large as a forest or as small as a pond. Understanding ecosystems helps us see how all parts of nature are connected.",
+  "sections": [
+    {
+      "title": "Key Components of an Ecosystem",
+      "type": "accordion",
+      "items": [
+        {
+          "title": "Biotic (Living) Components",
+          "content": "These are all the living or once-living parts of an ecosystem. They include:<ul><li><strong>Producers:</strong> Plants that make their own food (e.g., trees, algae).</li><li><strong>Consumers:</strong> Animals that eat other organisms.</li><li><strong>Decomposers:</strong> Organisms like bacteria and fungi that break down dead matter.</li></ul>"
+        },
+        {
+          "title": "Abiotic (Non-Living) Components",
+          "content": "These are the non-living physical and chemical parts of the environment. They include:<ul><li>Sunlight</li><li>Water</li><li>Soil and minerals</li><li>Temperature</li><li>Air (gases like Oxygen and Carbon Dioxide)</li></ul>"
+        }
+      ]
+    },
+    {
+      "title": "Interactive Quiz: Biotic or Abiotic?",
+      "type": "quiz",
+      "questions": [
+        {
+          "question": "Which of the following is an abiotic factor?",
+          "type": "radio",
+          "options": ["A mango tree", "A fish", "Sunlight", "A mushroom"],
+          "answer": "Sunlight",
+          "feedback": {
+            "correct": "Correct! Sunlight is a non-living component. ✅",
+            "incorrect": "Not quite. Abiotic means non-living. Try again! 🧠"
+          }
+        },
+        {
+          "question": "An earthworm, which helps break down soil, is an example of a:",
+          "type": "radio",
+          "options": ["Producer", "Consumer", "Decomposer"],
+          "answer": "Decomposer",
+          "feedback": {
+            "correct": "Excellent! Earthworms are decomposers that help enrich the soil. ✅",
+            "incorrect": "Incorrect. Earthworms break down dead organic matter. 🧠"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Relationships in an Ecosystem",
+      "type": "prose",
+      "content": "Organisms in an ecosystem interact in many ways:\n\n- **Predation:** One organism (the predator) hunts and kills another (the prey). Example: A lion hunting a zebra.\n\n- **Competition:** Organisms struggle for the same limited resources like food, water, or territory.\n\n- **Symbiosis:** A close, long-term interaction between two different species. This includes:\n  - **Mutualism:** Both species benefit (e.g., bees pollinating flowers).\n  - **Parasitism:** One benefits (parasite) and the other is harmed (host) (e.g., a tick on a dog).\n  - **Commensalism:** One benefits, and the other is unaffected (e.g., a bird nesting in a tree)."
+    },
+    {
+      "title": "Past Questions by WAEC",
+      "type": "essay_grader",
+      "questions": [
+        {
+          "question": "WASSCE 2018: (a) What is an ecosystem? (b) Differentiate between biotic and abiotic components, giving two examples of each.",
+          "gradingRubric": "(a) Definition (2 marks). (b) Differentiation (2 marks), 2 examples for biotic (1 mark), 2 examples for abiotic (1 mark).",
+          "modelAnswer": "(a) An ecosystem is a biological community of interacting organisms and their physical environment. \n(b) Biotic components are the living parts of an ecosystem, such as plants and animals. Abiotic components are the non-living parts, such as water and sunlight."
+        },
+        {
+          "question": "WASSCE 2021: Explain the term 'mutualism' with a relevant example.",
+          "gradingRubric": "Definition of mutualism (2 marks), correct example (2 marks).",
+          "modelAnswer": "Mutualism is a type of symbiotic relationship where both species involved benefit from the interaction. A classic example is the relationship between bees and flowers; the bee gets nectar (food), and in the process, it pollinates the flower, helping it to reproduce."
+        }
+      ]
+    }
+  ]
+}
