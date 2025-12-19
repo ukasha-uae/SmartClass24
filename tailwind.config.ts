@@ -13,8 +13,8 @@ export default {
         'xs': '475px',
       },
       fontFamily: {
-        body: ['"PT Sans"', 'sans-serif'],
-        headline: ['"PT Sans"', 'sans-serif'],
+        body: ['"PT Sans"', '"Segoe UI Emoji"', '"Apple Color Emoji"', '"Noto Color Emoji"', 'sans-serif'],
+        headline: ['"PT Sans"', '"Segoe UI Emoji"', '"Apple Color Emoji"', '"Noto Color Emoji"', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {

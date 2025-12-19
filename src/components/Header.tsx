@@ -5,6 +5,7 @@ import AuthModal from './AuthModal';
 import { ThemeToggle } from './ThemeToggle';
 import CountrySelector from './CountrySelector';
 import NotificationBell from './NotificationBell';
+import { FlagIcon } from './FlagIcon';
 import { useFirebase, useDoc } from '@/firebase';
 import { useHasMounted } from '@/hooks/use-has-mounted';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
@@ -99,18 +100,19 @@ export default function Header() {
                   {/* Country Selector - Collapsible */}
                   <Collapsible open={countryOpen} onOpenChange={setCountryOpen}>
                     <CollapsibleTrigger className="w-full">
-                      <div className="flex items-center justify-between p-3 rounded-lg hover:bg-accent transition-colors">
+                      <div className="flex items-center justify-between p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors group">
                         <div className="flex items-center gap-3">
                           <Globe className="h-5 w-5 text-violet-600 dark:text-violet-400" />
                           <div className="flex flex-col items-start">
-                            <span className="text-sm font-medium">Country</span>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              {country?.flag} {country?.name || 'Select country'}
+                            <span className="text-sm font-medium text-foreground">Country</span>
+                            <span className="text-xs text-muted-foreground group-hover:text-foreground/70 flex items-center gap-1.5 transition-colors">
+                              {country?.iso2 && <FlagIcon countryCode={country.iso2} size="sm" />}
+                              {country?.name || 'Select country'}
                             </span>
                           </div>
                         </div>
                         <ChevronRight className={cn(
-                          "h-4 w-4 transition-transform",
+                          "h-4 w-4 text-muted-foreground group-hover:text-foreground transition-all",
                           countryOpen && "rotate-90"
                         )} />
                       </div>
