@@ -107,6 +107,20 @@ export function localizeString(text: string, country: CountryConfig): string {
   result = result.replace(/\{\{business:record-retention\}\}/gi, country.businessContext.recordRetention);
   result = result.replace(/\{\{business:stock-exchange\}\}/gi, country.businessContext.stockExchange);
   
+  // Additional business context tokens (with smart fallbacks)
+  result = result.replace(/\{\{business:accounting-body\}\}/gi, 
+    country.id === 'ghana' ? 'ICAG' :
+    country.id === 'nigeria' ? 'ICAN' :
+    country.id === 'kenya' ? 'ICPAK' :
+    'Professional Accounting Body'
+  );
+  result = result.replace(/\{\{business:audit-firm\}\}/gi, 
+    'KPMG' // Big 4 firms are global
+  );
+  result = result.replace(/\{\{business:accounting-standards\}\}/gi, 
+    'IFRS' // International Financial Reporting Standards are used across West Africa
+  );
+  
   // Regulatory requirements
   result = result.replace(/\{\{regulation:annual-return-deadline\}\}/gi, country.businessContext.regulations.annualReturnDeadline);
   result = result.replace(/\{\{regulation:audit-threshold\}\}/gi, country.businessContext.regulations.auditRequirement.threshold || '');
@@ -149,9 +163,44 @@ export function localizeString(text: string, country: CountryConfig): string {
     result = result.replace(/\{\{region:example\}\}/gi, country.regions[0]);
   }
 
-  // Cities (capital or first major city)
+  // Cities
+  result = result.replace(/\{\{city:capital\}\}/gi, country.capital);
   if (country.majorCities && country.majorCities.length > 0) {
     result = result.replace(/\{\{city:major\}\}/gi, country.majorCities[0]);
+  }
+
+  // Foods (common foods from cultural context)
+  if (country.culturalContext?.commonFoods && country.culturalContext.commonFoods.length > 0) {
+    const foods = country.culturalContext.commonFoods;
+    // Replace {{food:rice}}, {{food:staple}}, {{food:popular}} with actual foods
+    const foodMatches = result.match(/\{\{food:([^}]+)\}\}/gi);
+    if (foodMatches) {
+      foodMatches.forEach((match, index) => {
+        const food = foods[index % foods.length]; // Cycle through available foods
+        result = result.replace(match, food);
+      });
+    }
+  }
+
+  // Historical figures
+  if (country.culturalContext?.historicalFigures && country.culturalContext.historicalFigures.length > 0) {
+    const figures = country.culturalContext.historicalFigures;
+    const figureMatches = result.match(/\{\{figure:([^}]+)\}\}/gi);
+    if (figureMatches) {
+      figureMatches.forEach((match) => {
+        // Extract the type from {{figure:independence}}
+        const typeMatch = match.match(/\{\{figure:([^}]+)\}\}/i);
+        if (typeMatch) {
+          const type = typeMatch[1].toLowerCase();
+          // Find a figure that matches the type or use first one
+          const figure = figures.find(f => 
+            f.significance.toLowerCase().includes(type) || 
+            f.achievement.toLowerCase().includes(type)
+          ) || figures[0];
+          result = result.replace(match, figure.name);
+        }
+      });
+    }
   }
 
   return result;

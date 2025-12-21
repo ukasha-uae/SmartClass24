@@ -6,6 +6,14 @@ import { getProgrammeBySlug } from '@/lib/shs-data';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useLocalizedLesson } from '@/hooks/useLocalizedLesson';
 import AccountingDefinitionIntro from '@/components/lesson-intros/financial-accounting/shs1/AccountingDefinitionIntro';
+import SalesPurchasesJournalsIntro from '@/components/lesson-intros/financial-accounting/shs1/SalesPurchasesJournalsIntro';
+import CashPettyCashBookIntro from '@/components/lesson-intros/financial-accounting/shs1/CashPettyCashBookIntro';
+import UsersOfInformationIntro from '@/components/lesson-intros/financial-accounting/shs1/UsersOfInformationIntro';
+import BranchesOfAccountingIntro from '@/components/lesson-intros/financial-accounting/shs1/BranchesOfAccountingIntro';
+import BusinessEntityIntro from '@/components/lesson-intros/financial-accounting/shs1/BusinessEntityIntro';
+import GoingConcernIntro from '@/components/lesson-intros/financial-accounting/shs1/GoingConcernIntro';
+import AccrualConceptIntro from '@/components/lesson-intros/financial-accounting/shs1/AccrualConceptIntro';
+import ConsistencyPrudenceIntro from '@/components/lesson-intros/financial-accounting/shs1/ConsistencyPrudenceIntro';
 import { CarouselLesson } from '@/components/CarouselLesson';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -168,9 +176,33 @@ export default function ElectiveLessonPage({
 
   // Create custom intro component based on lesson slug
   const getIntroComponent = () => {
-    // Financial Accounting intros
+    // Financial Accounting SHS1 intros
     if (resolvedParams.lessonSlug === 'facc-shs1-intro-definition-objectives') {
       return <AccountingDefinitionIntro onComplete={() => {}} />;
+    }
+    if (resolvedParams.lessonSlug === 'facc-shs1-intro-users-information') {
+      return <UsersOfInformationIntro onComplete={() => {}} />;
+    }
+    if (resolvedParams.lessonSlug === 'facc-shs1-intro-branches') {
+      return <BranchesOfAccountingIntro onComplete={() => {}} />;
+    }
+    if (resolvedParams.lessonSlug === 'facc-shs1-concepts-business-entity') {
+      return <BusinessEntityIntro onComplete={() => {}} />;
+    }
+    if (resolvedParams.lessonSlug === 'facc-shs1-concepts-going-concern') {
+      return <GoingConcernIntro onComplete={() => {}} />;
+    }
+    if (resolvedParams.lessonSlug === 'facc-shs1-concepts-accrual') {
+      return <AccrualConceptIntro onComplete={() => {}} />;
+    }
+    if (resolvedParams.lessonSlug === 'facc-shs1-concepts-consistency-prudence') {
+      return <ConsistencyPrudenceIntro onComplete={() => {}} />;
+    }
+    if (resolvedParams.lessonSlug === 'facc-shs1-boe-sales-purchases-journals') {
+      return <SalesPurchasesJournalsIntro onComplete={() => {}} />;
+    }
+    if (resolvedParams.lessonSlug === 'facc-shs1-boe-cash-petty-cash-book') {
+      return <CashPettyCashBookIntro onComplete={() => {}} />;
     }
     
     // Add more custom intros here as they're created

@@ -281,6 +281,7 @@ export type TemplateCategory =
   | 'exam'
   | 'landmark'
   | 'city'
+  | 'business'
   | 'institution'
   | 'food'
   | 'festival'

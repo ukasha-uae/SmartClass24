@@ -1,0 +1,285 @@
+{
+  "id": "magnetic-field",
+  "title": "Magnetic Fields and Forces",
+  "subject": "integrated-science",
+  "classLevel": "jhs-3",
+  "duration": 45,
+  "lessonType": "virtual-lab",
+  "description": "Explore magnetic fields, observe attraction and repulsion between magnets, and map field lines using compasses",
+  "materials": [
+    "Two bar magnets",
+    "Iron filings",
+    "Small compasses (3-5)",
+    "White paper or card",
+    "Protractor (optional)",
+    "Ruler"
+  ],
+  "objectives": [
+    "Identify the poles of a magnet (North and South)",
+    "Demonstrate that opposite poles attract and same poles repel",
+    "Map magnetic field lines using iron filings or compasses",
+    "Explain the direction of magnetic field lines",
+    "Describe real-world applications of magnetism"
+  ],
+  "theory": {
+    "introduction": "Magnetism is a fundamental force of nature. Every magnet has two poles (North and South) and creates an invisible magnetic field around it. This field exerts forces on other magnets and magnetic materials.",
+    "keyPoints": [
+      "Magnets have two poles: North (N) and South (S)",
+      "Magnetic poles always exist in pairs - you cannot have a single isolated pole",
+      "Opposite poles attract (N-S attraction)",
+      "Same poles repel (N-N or S-S repulsion)",
+      "The magnetic field is the region around a magnet where magnetic forces act",
+      "Field lines show the direction and strength of the magnetic field",
+      "Field lines go from North pole to South pole outside the magnet",
+      "Field lines never cross each other",
+      "Closer field lines indicate stronger magnetic field"
+    ],
+    "magneticFieldProperties": {
+      "direction": "From North pole to South pole (outside the magnet)",
+      "strength": "Strongest at the poles, weakest far from the magnet",
+      "visualization": "Can be seen using iron filings or detected with compasses",
+      "threedimensional": "Magnetic fields exist in 3D space around the magnet"
+    },
+    "earthsMagnetism": {
+      "fact": "Earth itself is a giant magnet",
+      "northPole": "Earth's geographic North pole is near the magnetic South pole",
+      "southPole": "Earth's geographic South pole is near the magnetic North pole",
+      "compassBehavior": "A compass needle's North pole points toward Earth's magnetic South pole (geographic North)"
+    }
+  },
+  "procedure": [
+    {
+      "step": 1,
+      "instruction": "Place two bar magnets on a flat surface, about 30 cm apart",
+      "safety": "Handle magnets carefully - strong magnets can pinch fingers"
+    },
+    {
+      "step": 2,
+      "instruction": "Slowly bring the North pole of one magnet near the South pole of the other",
+      "observation": "The magnets should attract and pull toward each other"
+    },
+    {
+      "step": 3,
+      "instruction": "Separate the magnets and bring two North poles (or two South poles) together",
+      "observation": "The magnets should repel and push away from each other"
+    },
+    {
+      "step": 4,
+      "instruction": "Place one bar magnet on white paper and sprinkle iron filings around it",
+      "tip": "Tap the paper gently to help filings align with the field"
+    },
+    {
+      "step": 5,
+      "instruction": "Observe the pattern formed by iron filings",
+      "expected": "Filings should form curved lines from North to South pole"
+    },
+    {
+      "step": 6,
+      "instruction": "Place small compasses at various positions around the magnet",
+      "note": "Space compasses about 5-10 cm apart"
+    },
+    {
+      "step": 7,
+      "instruction": "Observe the direction each compass needle points",
+      "expected": "Compass needles align tangent to the magnetic field lines"
+    },
+    {
+      "step": 8,
+      "instruction": "Draw arrows showing the direction of field lines",
+      "convention": "Arrows point from North to South pole"
+    },
+    {
+      "step": 9,
+      "instruction": "Repeat steps 4-8 with two magnets placed end-to-end (N-S)",
+      "observation": "Field lines connect the two magnets smoothly"
+    },
+    {
+      "step": 10,
+      "instruction": "Repeat with two magnets placed with same poles facing (N-N or S-S)",
+      "observation": "Field lines bend away from each other, showing repulsion"
+    }
+  ],
+  "observations": {
+    "attraction": {
+      "configuration": "North pole near South pole",
+      "force": "Attractive (magnets pull together)",
+      "fieldLines": "Connect smoothly between poles",
+      "strength": "Force increases as magnets get closer"
+    },
+    "repulsion": {
+      "configuration": "North near North, or South near South",
+      "force": "Repulsive (magnets push apart)",
+      "fieldLines": "Bend away from each other",
+      "strength": "Force increases as magnets get closer"
+    },
+    "fieldPattern": {
+      "singleMagnet": "Field lines emerge from North pole, curve around, enter South pole",
+      "twoMagnets_opposite": "Field lines connect N to S between magnets",
+      "twoMagnets_same": "Field lines repel and bend outward between magnets"
+    }
+  },
+  "analysis": {
+    "lawOfMagneticPoles": "Opposite poles attract, same poles repel",
+    "fieldLineRules": [
+      "Field lines go from North to South outside the magnet",
+      "Field lines never cross each other",
+      "Density of field lines indicates field strength",
+      "Field lines are continuous closed loops"
+    ],
+    "compassBehavior": "Compass needle aligns with local field direction. The North-seeking pole of the compass points along field lines toward the magnet's South pole.",
+    "distanceEffect": "Magnetic force follows an inverse square law - doubling the distance reduces force to 1/4"
+  },
+  "applications": [
+    {
+      "application": "Navigation Compasses",
+      "description": "Use Earth's magnetic field to find direction. Compass needle aligns with Earth's field, with North pole pointing toward geographic North."
+    },
+    {
+      "application": "Electric Motors",
+      "description": "Convert electrical energy to mechanical motion using magnetic forces between electromagnets and permanent magnets."
+    },
+    {
+      "application": "Electric Generators",
+      "description": "Convert mechanical motion to electricity by rotating magnets near coils of wire."
+    },
+    {
+      "application": "Magnetic Levitation (Maglev) Trains",
+      "description": "Use magnetic repulsion to make trains float above tracks, reducing friction and allowing very high speeds."
+    },
+    {
+      "application": "MRI Machines",
+      "description": "Medical imaging devices that use very strong magnetic fields to create detailed images of internal body structures."
+    },
+    {
+      "application": "Data Storage",
+      "description": "Hard disk drives use tiny magnets to store computer data. Magnetic patterns represent 1s and 0s."
+    },
+    {
+      "application": "Credit Cards and Magnetic Strips",
+      "description": "Store information in magnetic patterns that can be read by card readers."
+    },
+    {
+      "application": "Loudspeakers",
+      "description": "Use magnets and electromagnets to convert electrical signals into sound vibrations."
+    },
+    {
+      "application": "Door Locks and Security Systems",
+      "description": "Magnetic locks and sensors for doors and windows."
+    }
+  ],
+  "safety": [
+    "Keep strong magnets away from electronic devices (phones, computers, tablets, TVs)",
+    "Keep magnets away from credit cards, ID cards, and magnetic storage media",
+    "Handle strong magnets carefully - they can pinch fingers when attracted together",
+    "Keep magnets away from people with pacemakers or other medical implants",
+    "Don't drop magnets - they can lose their magnetization",
+    "Store magnets with keepers (soft iron bars) across the poles to preserve magnetism",
+    "Supervise young children around magnets",
+    "Clean up iron filings carefully - avoid getting them in eyes or breathing them in",
+    "Wash hands after handling magnets and iron filings"
+  ],
+  "quiz": [
+    {
+      "question": "What happens when opposite magnetic poles are brought together?",
+      "options": [
+        "They attract each other",
+        "They repel each other",
+        "Nothing happens",
+        "They lose their magnetism"
+      ],
+      "correctAnswer": 0
+    },
+    {
+      "question": "What happens when two North poles are brought together?",
+      "options": [
+        "They attract each other",
+        "They repel each other",
+        "They cancel each other out",
+        "They create a stronger magnet"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "Magnetic field lines go from:",
+      "options": [
+        "South pole to North pole",
+        "North pole to South pole",
+        "Center outward in all directions",
+        "They don't have a direction"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "What device uses Earth's magnetic field for navigation?",
+      "options": [
+        "Thermometer",
+        "Barometer",
+        "Compass",
+        "Telescope"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "Where is the magnetic field strongest around a bar magnet?",
+      "options": [
+        "At the poles",
+        "At the center",
+        "Everywhere equally",
+        "It's strongest far from the magnet"
+      ],
+      "correctAnswer": 0
+    }
+  ],
+  "extendedLearning": {
+    "electromagnets": "Electricity can be used to create magnets (electromagnets). When current flows through a coil of wire, it creates a magnetic field. The strength can be controlled by changing the current, and the magnet can be turned on and off.",
+    "magneticDomains": "Materials like iron are made of tiny magnetic regions called domains. In unmagnetized iron, domains point in random directions. When magnetized, domains align, creating a net magnetic field.",
+    "curieTmperature": "If a magnet is heated above its Curie temperature, the thermal energy disrupts the alignment of magnetic domains, causing the magnet to lose its magnetism.",
+    "temporaryVsPermanent": "Soft iron can be temporarily magnetized but loses magnetism quickly. Hard steel retains magnetism for long periods, making good permanent magnets."
+  },
+  "vocabulary": [
+    {
+      "term": "Magnetism",
+      "definition": "The force of attraction or repulsion between magnetic materials"
+    },
+    {
+      "term": "Magnetic Field",
+      "definition": "The region around a magnet where magnetic forces act"
+    },
+    {
+      "term": "Magnetic Poles",
+      "definition": "The ends of a magnet where the field is strongest - North (N) and South (S)"
+    },
+    {
+      "term": "Attraction",
+      "definition": "The pulling force between opposite magnetic poles (N-S)"
+    },
+    {
+      "term": "Repulsion",
+      "definition": "The pushing force between same magnetic poles (N-N or S-S)"
+    },
+    {
+      "term": "Field Lines",
+      "definition": "Imaginary lines showing the direction and strength of a magnetic field"
+    },
+    {
+      "term": "Compass",
+      "definition": "A device with a magnetized needle that aligns with Earth's magnetic field"
+    },
+    {
+      "term": "Bar Magnet",
+      "definition": "A rectangular permanent magnet with North and South poles at opposite ends"
+    },
+    {
+      "term": "Iron Filings",
+      "definition": "Tiny pieces of iron used to visualize magnetic field patterns"
+    },
+    {
+      "term": "Electromagnet",
+      "definition": "A temporary magnet created by electric current flowing through a coil of wire"
+    },
+    {
+      "term": "Magnetic Domain",
+      "definition": "A small region in magnetic material where atomic magnets are aligned"
+    }
+  ]
+}

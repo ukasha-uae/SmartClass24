@@ -1,0 +1,300 @@
+{
+  "id": "oxygen-test",
+  "title": "Testing for Oxygen Gas",
+  "subject": "integrated-science",
+  "classLevel": "jhs-3",
+  "duration": 40,
+  "lessonType": "virtual-lab",
+  "description": "Learn how to identify oxygen gas using the glowing splint test",
+  "materials": [
+    "Test tubes containing oxygen gas",
+    "Test tubes containing air",
+    "Wooden splints",
+    "Matches or lighter",
+    "Test tube rack",
+    "Safety goggles",
+    "Heat-resistant surface"
+  ],
+  "objectives": [
+    "Perform the glowing splint test to identify oxygen gas",
+    "Observe the difference between oxygen and air reactions",
+    "Explain why oxygen relights a glowing splint",
+    "Understand oxygen's role in combustion",
+    "Apply safety procedures when testing gases"
+  ],
+  "theory": {
+    "introduction": "Oxygen (O₂) is a colorless, odorless gas that makes up about 21% of Earth's atmosphere. It is essential for respiration and combustion. The glowing splint test is a reliable qualitative test to identify the presence of oxygen gas.",
+    "principle": "Oxygen supports combustion but is not itself flammable. When a glowing splint (wood with hot embers) is placed in concentrated oxygen, it provides enough oxygen molecules for rapid combustion, causing the splint to burst into flame.",
+    "testReaction": {
+      "positiveTest": "A glowing splint relights with a bright flame when placed in pure or concentrated oxygen",
+      "negativeTest": "A glowing splint continues to glow briefly or goes out in air or gases without sufficient oxygen",
+      "explanation": "The hot ember on the splint provides activation energy, and concentrated oxygen provides the reactant needed for rapid combustion of the wood"
+    },
+    "chemicalProcess": {
+      "combustionReaction": "C (wood) + O₂ → CO₂ + H₂O + Energy (heat and light)",
+      "description": "The carbon in wood combines with oxygen to produce carbon dioxide, water vapor, and energy in the form of heat and light",
+      "energyRelease": "This is an exothermic reaction that releases energy, which we see as flames"
+    },
+    "oxygenProperties": {
+      "state": "Gas at room temperature",
+      "color": "Colorless",
+      "odor": "Odorless",
+      "taste": "Tasteless (but never taste chemicals!)",
+      "density": "Slightly denser than air (1.43 g/L vs 1.29 g/L)",
+      "solubility": "Slightly soluble in water (allows aquatic life to breathe)",
+      "reactivity": "Supports combustion, reacts with most elements"
+    },
+    "atmosphericComposition": {
+      "nitrogen": "78%",
+      "oxygen": "21%",
+      "argon": "0.9%",
+      "carbonDioxide": "0.04%",
+      "others": "Trace amounts"
+    }
+  },
+  "procedure": [
+    {
+      "step": 1,
+      "instruction": "Put on safety goggles and ensure the work area is clear",
+      "safety": "CRITICAL - Eye protection is mandatory when working with flames"
+    },
+    {
+      "step": 2,
+      "instruction": "Place test tubes in a rack on a heat-resistant surface",
+      "note": "Ensure test tubes are stable and won't tip over"
+    },
+    {
+      "step": 3,
+      "instruction": "Identify which test tube contains oxygen and which contains air",
+      "note": "Tubes should be labeled clearly"
+    },
+    {
+      "step": 4,
+      "instruction": "Light a wooden splint using matches or a lighter",
+      "safety": "Keep hair tied back, hold splint away from face"
+    },
+    {
+      "step": 5,
+      "instruction": "Allow the splint to burn for 3-5 seconds to create a good ember",
+      "note": "The wood should be burning well before proceeding"
+    },
+    {
+      "step": 6,
+      "instruction": "Blow out the flame, leaving the splint glowing (red ember visible)",
+      "critical": "The splint must be glowing but NOT flaming for the test to work properly"
+    },
+    {
+      "step": 7,
+      "instruction": "Quickly insert the glowing splint into the test tube with oxygen",
+      "timing": "Work quickly - the ember cools rapidly in air"
+    },
+    {
+      "step": 8,
+      "instruction": "Observe what happens and record your observations",
+      "expected": "The splint should burst into flame with a bright glow"
+    },
+    {
+      "step": 9,
+      "instruction": "Prepare a new glowing splint (repeat steps 4-6)",
+      "note": "Each test requires a fresh glowing splint"
+    },
+    {
+      "step": 10,
+      "instruction": "Insert the glowing splint into the test tube with air",
+      "note": "Compare the reaction with the oxygen test"
+    },
+    {
+      "step": 11,
+      "instruction": "Observe and record the difference",
+      "expected": "The splint should continue glowing briefly then go out"
+    },
+    {
+      "step": 12,
+      "instruction": "Dispose of used splints safely in a fire-resistant container",
+      "safety": "Ensure splints are completely extinguished"
+    }
+  ],
+  "observations": {
+    "oxygenTest": {
+      "observation": "The glowing splint immediately relights with a bright yellow-orange flame",
+      "sound": "May hear a soft 'whoosh' as the splint ignites",
+      "flame": "Bright, vigorous flame that burns the wood rapidly",
+      "duration": "Flame continues until wood is consumed or oxygen is depleted",
+      "conclusion": "POSITIVE test - confirms presence of oxygen gas"
+    },
+    "airTest": {
+      "observation": "The glowing splint continues to glow for 1-2 seconds then goes out",
+      "flame": "No flame appears - ember just fades away",
+      "duration": "Ember visible for brief moment only",
+      "explanation": "Air contains only 21% oxygen - insufficient concentration to relight splint",
+      "conclusion": "NEGATIVE test - not enough oxygen to support rapid combustion"
+    },
+    "comparison": {
+      "oxygenConcentration": "Pure O₂ vs 21% O₂ in air",
+      "reactionSpeed": "Immediate flame vs slow extinguishing",
+      "intensity": "Bright flame vs dim glow",
+      "conclusion": "Oxygen concentration is key to the test's success"
+    }
+  },
+  "analysis": {
+    "whyItWorks": "The glowing splint has hot embers (around 600-700°C) but insufficient oxygen supply for sustained combustion. When placed in concentrated oxygen, the increased oxygen molecules collide more frequently with the hot wood particles, providing the oxygen needed for rapid combustion reaction.",
+    "combustionTriangle": {
+      "fuel": "Carbon and hydrogen in wood",
+      "heat": "Hot ember provides activation energy (600-700°C)",
+      "oxygen": "Pure O₂ provides abundant oxidizer",
+      "result": "All three components combine to produce flame"
+    },
+    "molecularExplanation": "In pure oxygen, the concentration of O₂ molecules is approximately 5 times higher than in air. This dramatically increases the collision frequency between oxygen and hot wood particles, allowing rapid oxidation (burning) to occur.",
+    "energyConsiderations": "The combustion of wood is exothermic, releasing approximately 15 MJ/kg. This energy sustains the flame once started. In air, the lower oxygen concentration cannot sustain this reaction rate."
+  },
+  "applications": [
+    {
+      "application": "Medical Oxygen Testing",
+      "description": "Hospitals use oxygen analyzers and the glowing splint test to verify the purity of medical oxygen tanks used for patient care. Pure oxygen is critical for patients with respiratory issues."
+    },
+    {
+      "application": "Industrial Welding",
+      "description": "Welding operations use pure oxygen with acetylene for oxy-acetylene torches. The oxygen purity must be tested to ensure proper flame temperature (over 3000°C) for cutting and welding metals."
+    },
+    {
+      "application": "Fire Safety",
+      "description": "Firefighters understand that increasing oxygen concentration increases fire intensity. They control fires by limiting oxygen supply (smothering with foam or CO₂)."
+    },
+    {
+      "application": "Aviation and Space",
+      "description": "Aircraft and spacecraft carry oxygen systems for crew and passengers. These systems must be regularly tested for oxygen concentration and purity to ensure safety at high altitudes."
+    },
+    {
+      "application": "Water Quality Testing",
+      "description": "Dissolved oxygen (DO) in water is critical for aquatic life. Environmental scientists measure DO to assess water quality and ecosystem health."
+    },
+    {
+      "application": "Aquaculture",
+      "description": "Fish farms monitor oxygen levels in water tanks. Oxygen generators and aerators are used to maintain healthy oxygen concentrations for fish survival."
+    },
+    {
+      "application": "Brewing and Wine Making",
+      "description": "Brewers and vintners control oxygen exposure during fermentation. Too much oxygen can spoil the product, so oxygen levels must be carefully monitored."
+    },
+    {
+      "application": "Scuba Diving",
+      "description": "Scuba tanks contain compressed air or enriched oxygen mixtures (Nitrox). The oxygen percentage must be verified before each dive to prevent oxygen toxicity or hypoxia."
+    }
+  ],
+  "safety": [
+    "ALWAYS wear safety goggles - flames can cause eye injury",
+    "Tie back long hair and secure loose clothing",
+    "Work in a well-ventilated area",
+    "Keep flammable materials away from the work area",
+    "Have a fire extinguisher or fire blanket nearby",
+    "Use heat-resistant surfaces for hot items",
+    "Never point test tubes toward yourself or others",
+    "Ensure splints are completely extinguished before disposal",
+    "Do not touch hot splints or test tubes",
+    "Work standing up with clear exit route",
+    "Never leave flames unattended",
+    "Report any accidents or burns immediately to teacher",
+    "Wash hands after the experiment"
+  ],
+  "quiz": [
+    {
+      "question": "What happens when a glowing splint is placed in pure oxygen?",
+      "options": [
+        "It goes out immediately",
+        "It relights with a bright flame",
+        "Nothing happens",
+        "It produces smoke only"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "Why does oxygen relight a glowing splint?",
+      "options": [
+        "Oxygen is flammable",
+        "Oxygen supports combustion by providing an oxidizer",
+        "Oxygen is very hot",
+        "Oxygen creates a vacuum"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "What happens to a glowing splint in normal air (21% oxygen)?",
+      "options": [
+        "It relights with a bright flame",
+        "It continues glowing then goes out",
+        "It explodes",
+        "It turns blue"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "What percentage of Earth's atmosphere is oxygen?",
+      "options": [
+        "78%",
+        "50%",
+        "21%",
+        "5%"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "For the glowing splint test to work, the splint must be:",
+      "options": [
+        "Cold and dry",
+        "Wet with water",
+        "Glowing with a red ember (not flaming)",
+        "Burning with a large flame"
+      ],
+      "correctAnswer": 2
+    }
+  ],
+  "extendedLearning": {
+    "historicalContext": "Joseph Priestley discovered oxygen in 1774 by heating mercury oxide. He observed that a candle burned more brightly in the gas produced, and a mouse lived longer in a container of this gas compared to normal air.",
+    "oxygenCycle": "Oxygen cycles through Earth's systems: photosynthesis produces O₂ from CO₂, respiration and combustion consume O₂ to produce CO₂, and decomposition returns nutrients to soil while consuming O₂.",
+    "oxygenForms": "Oxygen exists in two main forms: O₂ (dioxygen - the form we breathe) and O₃ (ozone - in the upper atmosphere, protects Earth from UV radiation).",
+    "medicalOxygenTherapy": "Supplemental oxygen therapy is used to treat hypoxemia (low blood oxygen). Oxygen concentrations range from 21% (room air) to 100% (pure oxygen) depending on patient needs.",
+    "oxygenProduction": "Industrial oxygen is produced by fractional distillation of liquid air. Air is cooled to -183°C, where oxygen liquefies before nitrogen (-196°C), allowing separation."
+  },
+  "vocabulary": [
+    {
+      "term": "Glowing Splint",
+      "definition": "A wooden stick with a hot ember (red glow) but no flame, used to test for oxygen gas"
+    },
+    {
+      "term": "Combustion",
+      "definition": "A chemical reaction between a fuel and oxygen that produces heat and light (fire)"
+    },
+    {
+      "term": "Oxidizer",
+      "definition": "A substance that provides oxygen for a reaction, supporting combustion"
+    },
+    {
+      "term": "Exothermic Reaction",
+      "definition": "A reaction that releases energy in the form of heat or light"
+    },
+    {
+      "term": "Ember",
+      "definition": "A glowing piece of wood or coal from a fire, hot enough to ignite in the presence of oxygen"
+    },
+    {
+      "term": "Activation Energy",
+      "definition": "The minimum energy required to start a chemical reaction"
+    },
+    {
+      "term": "Qualitative Test",
+      "definition": "A test that identifies the presence or absence of a substance, not the exact amount"
+    },
+    {
+      "term": "Concentration",
+      "definition": "The amount of a substance in a given volume, measured as percentage or molarity"
+    },
+    {
+      "term": "Respiration",
+      "definition": "The biological process where organisms use oxygen to release energy from glucose"
+    },
+    {
+      "term": "Photosynthesis",
+      "definition": "The process where plants use sunlight to convert CO₂ and water into glucose and oxygen"
+    }
+  ]
+}

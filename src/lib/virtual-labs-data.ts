@@ -1,37 +1,39 @@
-import { AmmoniaTestLab } from "@/components/virtual-labs/ammonia-test-lab";
-import { BiuretTestLab } from "@/components/virtual-labs/biuret-test-lab";
-import { CellDivisionLab } from "@/components/virtual-labs/cell-division-lab";
-import { CondensationLab } from "@/components/virtual-labs/condensation-lab";
-import { DensityLab } from "@/components/virtual-labs/density-lab";
-import { EnzymeStarchLab } from "@/components/virtual-labs/enzyme-starch-lab";
-import { EvaporationLab } from "@/components/virtual-labs/evaporation-lab";
-import { ExpansionLab } from "@/components/virtual-labs/expansion-lab";
-import { ExpansionOfAirLab } from "@/components/virtual-labs/expansion-of-air-lab";
-import { FlameTestLab } from "@/components/virtual-labs/flame-test-lab";
-import { FoodTestLab } from "@/components/virtual-labs/food-test-lab";
-import { GreaseSpotTestLab } from "@/components/virtual-labs/grease-spot-test-lab";
-import { HeatTransferLab } from "@/components/virtual-labs/heat-transfer-lab";
-import { HookesLawLab } from "@/components/virtual-labs/hookes-law-lab";
-import { HydrogenPopTestLab } from "@/components/virtual-labs/hydrogen-pop-test-lab";
+import { AmmoniaTestLab } from "@/components/virtual-labs/ammonia-test-lab-enhanced";
+import { AcidBaseNeutralizationLabEnhanced as AcidBaseNeutralizationLab } from "@/components/virtual-labs/acid-base-neutralization-lab";
+import { BiuretTestLabEnhanced as BiuretTestLab } from "@/components/virtual-labs/biuret-test-lab-enhanced";
+import { CellDivisionLabEnhanced as CellDivisionLab } from "@/components/virtual-labs/cell-division-lab-enhanced";
+import { CondensationLabEnhanced } from "@/components/virtual-labs/condensation-lab-enhanced";
+import { DensityLabEnhanced } from "@/components/virtual-labs/density-lab-enhanced";
+import { EnzymeStarchLabEnhanced as EnzymeStarchLab } from "@/components/virtual-labs/enzyme-starch-lab-enhanced";
+import { EvaporationLabEnhanced } from "@/components/virtual-labs/evaporation-lab-enhanced";
+import { ThermalExpansionLabEnhanced } from "@/components/virtual-labs/thermal-expansion-lab-enhanced";
+import { ExpansionOfAirLabEnhanced } from "@/components/virtual-labs/expansion-of-air-lab-enhanced";
+import { FlameTestLabEnhanced as FlameTestLab } from "@/components/virtual-labs/flame-test-lab-v2";
+import { FoodTestLabEnhanced as FoodTestLab } from "@/components/virtual-labs/food-test-lab-enhanced";
+import { GreaseSpotTestLabEnhanced as GreaseSpotTestLab } from "@/components/virtual-labs/grease-spot-test-lab-enhanced";
+import { HeatTransferLabEnhanced } from "@/components/virtual-labs/heat-transfer-lab-enhanced";
+import { HookesLawLabEnhanced } from "@/components/virtual-labs/hookes-law-lab-enhanced";
+import { HydrogenPopTestLab } from "@/components/virtual-labs/hydrogen-pop-test-lab-enhanced";
 import { LimewaterTestLab } from "@/components/virtual-labs/limewater-test-lab";
-import { LitmusTestLab } from "@/components/virtual-labs/litmus-test-lab";
-import { MagneticFieldLab } from "@/components/virtual-labs/magnetic-field-lab";
-import { MetalAcidReactionLab } from "@/components/virtual-labs/metal-acid-reaction-lab";
-import { NeutralizationReactionLab } from "@/components/virtual-labs/neutralization-reaction-lab";
-import { OhmsLawLab } from "@/components/virtual-labs/ohms-law-lab";
-import { OsmosisLab } from "@/components/virtual-labs/osmosis-lab";
-import { PhotosynthesisLab } from "@/components/virtual-labs/photosynthesis-lab";
-import { ProjectileMotionLab } from "@/components/virtual-labs/projectile-motion-lab";
-import { ReflectionLab } from "@/components/virtual-labs/reflection-lab";
-import { RefractionLab } from "@/components/virtual-labs/refraction-lab";
-import { RespirationLab } from "@/components/virtual-labs/respiration-lab";
-import { RustingLab } from "@/components/virtual-labs/rusting-lab";
-import { SeparationTechniquesLab } from "@/components/virtual-labs/separation-techniques-lab";
-import { SimpleCircuitLab } from "@/components/virtual-labs/simple-circuit-lab";
-import { TranspirationLab } from "@/components/virtual-labs/transpiration-lab";
-import { WaterCycleLab } from "@/components/virtual-labs/water-cycle-lab";
-import { WaterTestLab } from "@/components/virtual-labs/water-test-lab";
-import { WorkEnergyLab } from "@/components/virtual-labs/work-energy-lab";
+import { LitmusTestLab } from "@/components/virtual-labs/litmus-test-lab-enhanced";
+import { MagneticFieldLabEnhanced as MagneticFieldLab } from "@/components/virtual-labs/magnetic-field-lab-enhanced";
+import { MetalAcidReactionLabEnhanced as MetalAcidReactionLab } from "@/components/virtual-labs/metal-acid-reaction-lab-enhanced";
+import { NeutralizationReactionLabEnhanced } from "@/components/virtual-labs/neutralization-reaction-lab-enhanced";
+import { OhmsLawLabEnhanced as OhmsLawLab } from "@/components/virtual-labs/ohms-law-lab-enhanced";
+import { OxygenTestLabEnhanced as OxygenTestLab } from "@/components/virtual-labs/oxygen-test-lab-enhanced";
+import { OsmosisLabEnhanced as OsmosisLab } from "@/components/virtual-labs/osmosis-lab-enhanced";
+import { PhotosynthesisLabEnhanced as PhotosynthesisLab } from '@/components/virtual-labs/photosynthesis-lab-enhanced';
+import { ProjectileMotionLabEnhanced as ProjectileMotionLab } from "@/components/virtual-labs/projectile-motion-lab-enhanced";
+import { ReflectionLabEnhanced as ReflectionLab } from "@/components/virtual-labs/reflection-lab-enhanced";
+import { RefractionLabEnhanced as RefractionLab } from "@/components/virtual-labs/refraction-lab-enhanced";
+import { RespirationLabEnhanced as RespirationLab } from '@/components/virtual-labs/respiration-lab-enhanced';
+import { RustingLabEnhanced as RustingLab } from "@/components/virtual-labs/rusting-lab-enhanced";
+import { SeparationTechniquesLabEnhanced as SeparationTechniquesLab } from "@/components/virtual-labs/separation-techniques-lab-enhanced";
+import { SimpleCircuitLabEnhanced as SimpleCircuitLab } from "@/components/virtual-labs/simple-circuit-lab-enhanced";
+import { TranspirationLabEnhanced as TranspirationLab } from '@/components/virtual-labs/transpiration-lab-enhanced';
+import { WaterCycleLabEnhanced as WaterCycleLab } from "@/components/virtual-labs/water-cycle-lab-enhanced";
+import { WaterTestLabEnhanced as WaterTestLab } from "@/components/virtual-labs/water-test-lab-enhanced";
+import { WorkEnergyLabEnhanced as WorkEnergyLab } from "@/components/virtual-labs/work-energy-lab-enhanced";
 
 
 export interface VirtualLabExperiment {
@@ -137,7 +139,7 @@ export const virtualLabExperiments = {
             subject: 'Physics', 
             description: 'Observe water vapor condensing into liquid.', 
             learningObjective: 'Understand phase changes and how temperature affects the state of matter.',
-            component: CondensationLab 
+            component: CondensationLabEnhanced 
         },
         { 
             id: 'phy-lab-2', 
@@ -146,7 +148,7 @@ export const virtualLabExperiments = {
             subject: 'Physics', 
             description: 'Compare the evaporation rates of different liquids.', 
             learningObjective: 'Explore the relationship between molecular structure and evaporation rates.',
-            component: EvaporationLab 
+            component: EvaporationLabEnhanced 
         },
         { 
             id: 'phy-lab-3', 
@@ -155,7 +157,7 @@ export const virtualLabExperiments = {
             subject: 'Physics', 
             description: 'See how solids and liquids expand when heated.', 
             learningObjective: 'Learn how heat energy causes matter to expand and the practical applications of this principle.',
-            component: ExpansionLab 
+            component: ThermalExpansionLabEnhanced 
         },
         { 
             id: 'phy-lab-4', 
@@ -164,28 +166,37 @@ export const virtualLabExperiments = {
             subject: 'Physics', 
             description: 'Demonstrate that air expands when heated.', 
             learningObjective: 'Understand how gases respond to temperature changes and apply Charles\' Law.',
-            component: ExpansionOfAirLab 
+            component: ExpansionOfAirLabEnhanced,
         },
         { 
             id: 'phy-lab-5', 
+            slug: 'density-buoyancy', 
+            title: 'Density & Buoyancy', 
+            subject: 'Physics', 
+            description: 'Investigate why objects float or sink based on density.', 
+            learningObjective: 'Master the concept of density and how Archimedes\' Principle explains buoyancy.',
+            component: DensityLabEnhanced 
+        },
+        { 
+            id: 'phy-lab-6', 
             slug: 'heat-transfer', 
             title: 'Heat Transfer Mechanisms', 
             subject: 'Physics', 
             description: 'Explore conduction, convection, and radiation.', 
             learningObjective: 'Master the three methods of heat transfer and identify real-world examples of each.',
-            component: HeatTransferLab 
+            component: HeatTransferLabEnhanced 
         },
         { 
-            id: 'phy-lab-6', 
+            id: 'phy-lab-7', 
             slug: 'hookes-law', 
             title: "Hooke's Law", 
             subject: 'Physics', 
             description: "Investigate the relationship between force and a spring's extension.", 
             learningObjective: 'Discover the linear relationship between force and displacement in elastic materials.',
-            component: HookesLawLab 
+            component: HookesLawLabEnhanced 
         },
         { 
-            id: 'phy-lab-7', 
+            id: 'phy-lab-8', 
             slug: 'magnetic-field-mapping', 
             title: 'Magnetic Field Mapping', 
             subject: 'Physics', 
@@ -194,7 +205,7 @@ export const virtualLabExperiments = {
             component: MagneticFieldLab 
         },
         { 
-            id: 'phy-lab-8', 
+            id: 'phy-lab-9', 
             slug: 'ohms-law', 
             title: "Ohm's Law", 
             subject: 'Physics', 
@@ -203,7 +214,7 @@ export const virtualLabExperiments = {
             component: OhmsLawLab 
         },
         { 
-            id: 'phy-lab-9', 
+            id: 'phy-lab-10', 
             slug: 'projectile-motion', 
             title: 'Projectile Motion', 
             subject: 'Physics', 
@@ -212,7 +223,7 @@ export const virtualLabExperiments = {
             component: ProjectileMotionLab 
         },
         { 
-            id: 'phy-lab-10', 
+            id: 'phy-lab-11', 
             slug: 'reflection-of-light', 
             title: 'Reflection of Light', 
             subject: 'Physics', 
@@ -221,7 +232,7 @@ export const virtualLabExperiments = {
             component: ReflectionLab 
         },
         { 
-            id: 'phy-lab-11', 
+            id: 'phy-lab-12', 
             slug: 'refraction-of-light', 
             title: 'Refraction of Light', 
             subject: 'Physics', 
@@ -230,7 +241,7 @@ export const virtualLabExperiments = {
             component: RefractionLab 
         },
         { 
-            id: 'phy-lab-12', 
+            id: 'phy-lab-13', 
             slug: 'simple-circuits', 
             title: 'Simple Circuits Lab', 
             subject: 'Physics', 
@@ -239,7 +250,7 @@ export const virtualLabExperiments = {
             component: SimpleCircuitLab 
         },
         { 
-            id: 'phy-lab-13', 
+            id: 'phy-lab-14', 
             slug: 'work-energy-inclined-plane', 
             title: 'Work & Energy on an Inclined Plane', 
             subject: 'Physics', 
@@ -269,6 +280,15 @@ export const virtualLabExperiments = {
         },
         { 
             id: 'chem-lab-3', 
+            slug: 'oxygen-test', 
+            title: 'Testing for Oxygen Gas', 
+            subject: 'Chemistry', 
+            description: 'Learn how to identify oxygen gas using the glowing splint test.', 
+            learningObjective: 'Understand how oxygen supports combustion and master the glowing splint test for identifying oxygen.',
+            component: OxygenTestLab 
+        },
+        { 
+            id: 'chem-lab-4', 
             slug: 'limewater-test-for-co2', 
             title: 'Limewater Test for CO₂', 
             subject: 'Chemistry', 
@@ -277,7 +297,7 @@ export const virtualLabExperiments = {
             component: LimewaterTestLab 
         },
         { 
-            id: 'chem-lab-4', 
+            id: 'chem-lab-5', 
             slug: 'litmus-test', 
             title: 'Litmus Test for Acids and Bases', 
             subject: 'Chemistry', 
@@ -286,16 +306,16 @@ export const virtualLabExperiments = {
             component: LitmusTestLab 
         },
         { 
-            id: 'chem-lab-5', 
+            id: 'chem-lab-6', 
             slug: 'neutralization-reaction', 
             title: 'Neutralization Reaction', 
             subject: 'Chemistry', 
             description: 'Observe the reaction between an acid and a base.', 
             learningObjective: 'Understand how acids and bases react to produce salt and water, and measure pH changes.',
-            component: NeutralizationReactionLab 
+            component: NeutralizationReactionLabEnhanced 
         },
         { 
-            id: 'chem-lab-6', 
+            id: 'chem-lab-7', 
             slug: 'rusting-of-iron', 
             title: 'Rusting of Iron', 
             subject: 'Chemistry', 
@@ -304,7 +324,16 @@ export const virtualLabExperiments = {
             component: RustingLab 
         },
         { 
-            id: 'chem-lab-7', 
+            id: 'chem-lab-7a', 
+            slug: 'acid-base-neutralization', 
+            title: 'Acid-Base Neutralization', 
+            subject: 'Chemistry', 
+            description: 'Master titration and learn about chemical neutralization through precise experimentation.', 
+            learningObjective: 'Understand and perform acid-base titration accurately using pH indicators.',
+            component: AcidBaseNeutralizationLab 
+        },
+        { 
+            id: 'chem-lab-8', 
             slug: 'separation-techniques', 
             title: 'Separation Techniques', 
             subject: 'Chemistry', 
@@ -313,7 +342,7 @@ export const virtualLabExperiments = {
             component: SeparationTechniquesLab 
         },
         { 
-            id: 'chem-lab-8', 
+            id: 'chem-lab-9', 
             slug: 'test-for-water', 
             title: 'Test for Water', 
             subject: 'Chemistry', 
@@ -322,7 +351,7 @@ export const virtualLabExperiments = {
             component: WaterTestLab 
         },
         { 
-            id: 'chem-lab-9', 
+            id: 'chem-lab-10', 
             slug: 'flame-test', 
             title: 'Flame Test', 
             subject: 'Chemistry', 
@@ -331,7 +360,7 @@ export const virtualLabExperiments = {
             component: FlameTestLab 
         },
         { 
-            id: 'chem-lab-10', 
+            id: 'chem-lab-11', 
             slug: 'metal-acid-reaction', 
             title: 'Metal-Acid Reaction', 
             subject: 'Chemistry', 

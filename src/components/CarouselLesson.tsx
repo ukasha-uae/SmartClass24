@@ -29,6 +29,7 @@ interface CarouselLessonProps {
   localQuizzes?: any[];
   introComponent?: React.ReactNode;
   onExit?: () => void;
+  onSlideChange?: (slideIndex: number, totalSlides: number) => void;
 }
 
 export function CarouselLesson({
@@ -39,18 +40,11 @@ export function CarouselLesson({
   educationLevel,
   localQuizzes,
   introComponent,
-  onExit
+  onExit,
+  onSlideChange
 }: CarouselLessonProps) {
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [introCompleted, setIntroCompleted] = useState(false);
-
-  // Enable immersive mode on mount, disable on unmount
-  useEffect(() => {
-    document.body.classList.add('immersive-lesson-mode');
-    return () => {
-      document.body.classList.remove('immersive-lesson-mode');
-    };
-  }, []);
 
   // Build slides array
   const buildSlides = () => {
@@ -126,9 +120,24 @@ export function CarouselLesson({
     return slides;
   };
 
+  // Build slides to get total count
   const slides = buildSlides();
-  const currentSlide = slides[currentSlideIndex];
   const totalSlides = slides.length;
+
+  // Notify parent of slide changes
+  useEffect(() => {
+    if (introCompleted && onSlideChange) {
+      onSlideChange(currentSlideIndex, totalSlides);
+    }
+  }, [currentSlideIndex, introCompleted, totalSlides, onSlideChange]);
+
+  // Enable immersive mode on mount, disable on unmount
+  useEffect(() => {
+    document.body.classList.add('immersive-lesson-mode');
+    return () => {
+      document.body.classList.remove('immersive-lesson-mode');
+    };
+  }, []);
 
   const handleNext = () => {
     if (currentSlideIndex < totalSlides - 1) {
@@ -149,9 +158,15 @@ export function CarouselLesson({
   // Show intro first
   if (introComponent && !introCompleted) {
     return React.cloneElement(introComponent as React.ReactElement, {
-      onComplete: handleIntroComplete
+      onComplete: handleIntroComplete,
+      currentSlide: 0,
+      totalSlides: totalSlides,
+      isCarouselMode: true
     });
   }
+
+  // Show lesson slides with teacher guidance
+  const currentSlide = slides[currentSlideIndex];
 
   return (
     <div className="immersive-container fixed inset-0 flex flex-col bg-background z-50">

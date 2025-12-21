@@ -102,6 +102,9 @@ export function resolveTemplateVariable(
     case 'city':
       return resolveCity(subcategory, country);
     
+    case 'business':
+      return resolveBusiness(subcategory, country);
+    
     case 'landmark':
       return resolveLandmark(subcategory, country);
     
@@ -208,6 +211,53 @@ function resolveCity(subcategory: string | undefined, country: CountryConfig): s
       return country.majorCities[Math.floor(Math.random() * country.majorCities.length)];
     default:
       return country.capital;
+  }
+}
+
+/**
+ * Resolve business template
+ */
+function resolveBusiness(subcategory: string | undefined, country: CountryConfig): string {
+  if (!subcategory) {
+    return country.businessContext.publicCompanies[0] || 'Business';
+  }
+  
+  const [type, index] = subcategory.split(':');
+  const idx = index ? parseInt(index) - 1 : 0;
+  
+  switch (type) {
+    case 'tax-authority':
+      return country.businessContext.taxAuthority;
+    
+    case 'companies-act':
+      return country.businessContext.companiesAct;
+    
+    case 'record-retention':
+      return country.businessContext.recordRetention;
+    
+    case 'stock-exchange':
+      return country.businessContext.stockExchange;
+    
+    case 'company':
+      return country.businessContext.publicCompanies[idx % country.businessContext.publicCompanies.length] || 'Company';
+    
+    case 'bank':
+      return country.businessContext.banks[idx % country.businessContext.banks.length] || 'Bank';
+    
+    case 'accounting-body':
+      return country.id === 'ghana' ? 'ICAG' :
+             country.id === 'nigeria' ? 'ICAN' :
+             country.id === 'kenya' ? 'ICPAK' :
+             'Professional Accounting Body';
+    
+    case 'audit-firm':
+      return 'KPMG'; // Big 4 firms are global
+    
+    case 'accounting-standards':
+      return 'IFRS'; // International Financial Reporting Standards
+    
+    default:
+      return country.businessContext.publicCompanies[0] || 'Business';
   }
 }
 

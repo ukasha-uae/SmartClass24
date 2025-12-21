@@ -1,0 +1,381 @@
+{
+  "id": "acid-base-neutralization",
+  "title": "Acid-Base Neutralization",
+  "description": "Master titration and learn about chemical neutralization through precise experimentation",
+  "category": "chemistry",
+  "type": "titration-experiment",
+  "difficulty": "intermediate",
+  "duration": "40 minutes",
+  "objectives": [
+    "Understand and perform acid-base titration accurately",
+    "Recognize the equivalence point using indicators",
+    "Learn about the pH scale and neutralization reactions",
+    "Calculate concentrations from titration data",
+    "Understand stoichiometry in acid-base reactions"
+  ],
+  "keyTerms": [
+    {
+      "term": "Titration",
+      "definition": "A laboratory technique to determine the concentration of a solution by reacting it with a solution of known concentration"
+    },
+    {
+      "term": "Equivalence Point",
+      "definition": "The point at which the amount of acid exactly equals the amount of base - moles of H+ = moles of OH-"
+    },
+    {
+      "term": "pH Scale",
+      "definition": "A logarithmic scale from 0-14 measuring acidity (0-6), neutrality (7), or basicity (8-14)"
+    },
+    {
+      "term": "Neutralization",
+      "definition": "A chemical reaction between an acid and a base producing a salt and water"
+    },
+    {
+      "term": "Indicator",
+      "definition": "A substance that changes color based on pH, used to visually detect the equivalence point"
+    },
+    {
+      "term": "Burette",
+      "definition": "A graduated glass tube with a tap for accurately delivering small volumes of liquid"
+    },
+    {
+      "term": "Titrant",
+      "definition": "The solution of known concentration that is added from the burette"
+    },
+    {
+      "term": "Analyte",
+      "definition": "The solution of unknown or variable concentration being analyzed"
+    }
+  ],
+  "safetyConsiderations": [
+    "Always wear safety goggles - acid and base splashes cause eye damage",
+    "Wear a laboratory coat and nitrile gloves",
+    "If acid or base contacts skin, wash immediately with running water for at least 15 minutes",
+    "Work with dilute solutions (1M or less)",
+    "Never add water to acid - always add acid to water",
+    "Keep spill kits nearby and know how to use them",
+    "Work in a well-ventilated area",
+    "Handle burettes carefully - they are fragile glass equipment",
+    "Never pipette by mouth",
+    "Dispose of acids and bases according to laboratory waste procedures"
+  ],
+  "supplies": [
+    {
+      "item": "Hydrochloric Acid (HCl)",
+      "description": "1.0 M HCl solution",
+      "quantity": "100 mL"
+    },
+    {
+      "item": "Sodium Hydroxide (NaOH)",
+      "description": "1.0 M NaOH solution (titrant)",
+      "quantity": "100 mL"
+    },
+    {
+      "item": "Phenolphthalein Indicator",
+      "description": "pH indicator solution (colorless in acid, pink in base)",
+      "quantity": "10 mL"
+    },
+    {
+      "item": "Burette",
+      "description": "50mL glass burette with stopcock",
+      "quantity": 1
+    },
+    {
+      "item": "Conical Flask",
+      "description": "250mL Erlenmeyer flask for titration",
+      "quantity": 3
+    },
+    {
+      "item": "Measuring Cylinder",
+      "description": "25mL graduated measuring cylinder",
+      "quantity": 1
+    },
+    {
+      "item": "Pipette",
+      "description": "25mL volumetric pipette",
+      "quantity": 1
+    },
+    {
+      "item": "Funnel",
+      "description": "For filling burette",
+      "quantity": 1
+    },
+    {
+      "item": "Beaker",
+      "description": "For rinsing glassware",
+      "quantity": 3
+    },
+    {
+      "item": "Distilled Water",
+      "description": "For rinsing and dilution",
+      "quantity": "500 mL"
+    }
+  ],
+  "procedure": {
+    "setup": "Set up the burette on a stand with burette clamp. Rinse all glassware with distilled water.",
+    "preparation": {
+      "steps": [
+        "Rinse the burette with small portions of the NaOH solution 3-4 times",
+        "Fill the burette with NaOH solution, ensuring no air bubbles are present",
+        "Record the initial burette reading (usually 0.00 mL)",
+        "Pipette exactly 25mL of HCl into a conical flask",
+        "Add 2-3 drops of phenolphthalein indicator to the flask",
+        "Place a white tile under the flask to better see color changes"
+      ]
+    },
+    "titration": {
+      "steps": [
+        "Position the flask under the burette tip",
+        "Slowly open the stopcock to add NaOH drop by drop",
+        "As you approach the equivalence point, the color persists longer",
+        "Add NaOH dropwise when the solution starts showing pink color",
+        "Stop when the solution changes from colorless to faint pink",
+        "Record the final burette reading",
+        "Calculate the volume of NaOH used: Final reading - Initial reading"
+      ]
+    },
+    "repetition": {
+      "steps": [
+        "Repeat the titration 2-3 times with fresh HCl",
+        "Discard the solution after each titration",
+        "Record all burette readings",
+        "Calculate average volume of NaOH used"
+      ]
+    }
+  },
+  "calculations": {
+    "formula": "Moles of acid = Moles of base at equivalence point",
+    "derivation": "n₁V₁ = n₂V₂ (for 1:1 acid-base reactions)",
+    "example": {
+      "description": "If 25mL of 1.0M HCl requires 25mL of 1.0M NaOH",
+      "calculation": "n(HCl) = 1.0 M × 0.025 L = 0.025 mol; n(NaOH) = 1.0 M × 0.025 L = 0.025 mol"
+    }
+  },
+  "observations": {
+    "initial": "HCl is colorless; after adding indicator, stays colorless (acidic)",
+    "during": "As NaOH is added, the solution gradually changes from colorless to light pink",
+    "atEquivalence": "Solution is at pH 7 (neutral); color is light yellow/colorless",
+    "afterEquivalence": "Excess NaOH makes solution pink/light red (basic)"
+  },
+  "chemicalEquation": {
+    "molecular": "HCl + NaOH → NaCl + H₂O",
+    "ionic": "H⁺(aq) + Cl⁻(aq) + Na⁺(aq) + OH⁻(aq) → Na⁺(aq) + Cl⁻(aq) + H₂O(l)",
+    "net": "H⁺(aq) + OH⁻(aq) → H₂O(l)"
+  },
+  "phScale": {
+    "0": "Highly acidic (1M HCl)",
+    "3": "Moderately acidic",
+    "7": "Neutral (water, equivalence point)",
+    "11": "Moderately basic",
+    "14": "Highly basic (1M NaOH)"
+  },
+  "indicators": [
+    {
+      "name": "Phenolphthalein",
+      "colorInAcid": "Colorless",
+      "colorInBase": "Pink/Red",
+      "rangeStart": 8.2,
+      "rangeEnd": 10.0
+    },
+    {
+      "name": "Methyl Orange",
+      "colorInAcid": "Red",
+      "colorInBase": "Yellow",
+      "rangeStart": 3.1,
+      "rangeEnd": 4.4
+    },
+    {
+      "name": "Universal Indicator",
+      "colorInAcid": "Red",
+      "colorInBase": "Blue/Purple",
+      "rangeStart": 2,
+      "rangeEnd": 10
+    }
+  ],
+  "conclusion": {
+    "mainFinding": "Neutralization occurs when equal moles of acid and base react, producing salt and water. The equivalence point can be detected precisely using pH indicators.",
+    "evidence": [
+      "All three titrations showed consistent volume of base needed (approximately 25mL)",
+      "Indicator color changed from colorless to pink at equivalence point",
+      "Both solutions disappeared and formed a neutral salt solution"
+    ],
+    "implications": "Understanding titration allows chemists to determine unknown concentrations and verify chemical reactions"
+  },
+  "realWorldApplications": [
+    {
+      "application": "Water Quality Testing",
+      "description": "Measuring acidity/alkalinity of water samples to ensure they meet safety standards",
+      "economicImpact": "Essential for public water systems and environmental protection"
+    },
+    {
+      "application": "Pharmaceutical Manufacturing",
+      "description": "Quality control to ensure correct pH and concentration of medications",
+      "economicImpact": "Billions in pharmaceutical products tested annually"
+    },
+    {
+      "application": "Food Industry",
+      "description": "Determining acidity in wine, juice, vinegar, and other beverages",
+      "economicImpact": "Critical for taste, preservation, and safety"
+    },
+    {
+      "application": "Environmental Analysis",
+      "description": "Testing soil pH, river acidity, and air pollutants",
+      "economicImpact": "Monitoring acid rain and environmental degradation"
+    },
+    {
+      "application": "Laboratory Analysis",
+      "description": "Determining unknown acid/base concentrations in various solutions",
+      "economicImpact": "Fundamental technique in analytical chemistry"
+    },
+    {
+      "application": "Clinical Medicine",
+      "description": "Monitoring blood pH and electrolytes for diagnosis",
+      "economicImpact": "Critical for patient care and medical research"
+    }
+  ],
+  "quizQuestions": [
+    {
+      "id": 1,
+      "question": "In a neutralization reaction, what reacts with the acid?",
+      "options": [
+        {
+          "text": "A base to form salt and water",
+          "correct": true
+        },
+        {
+          "text": "Water to form a more dilute solution",
+          "correct": false
+        },
+        {
+          "text": "Another acid to form a stronger acid",
+          "correct": false
+        }
+      ],
+      "explanation": "Acid + Base → Salt + Water. This is the fundamental neutralization reaction. The acid (H⁺) reacts with the base (OH⁻) to produce water and a salt."
+    },
+    {
+      "id": 2,
+      "question": "Why is a pH indicator essential in titration?",
+      "options": [
+        {
+          "text": "To speed up the chemical reaction",
+          "correct": false
+        },
+        {
+          "text": "To visually indicate when the equivalence point is reached",
+          "correct": true
+        },
+        {
+          "text": "To control the temperature of the solution",
+          "correct": false
+        }
+      ],
+      "explanation": "Indicators change color at the equivalence point, allowing precise detection of when the acid and base have completely neutralized each other. This is critical for accurate titration results."
+    },
+    {
+      "id": 3,
+      "question": "What is the color of phenolphthalein in acidic solution?",
+      "options": [
+        {
+          "text": "Pink/Red",
+          "correct": false
+        },
+        {
+          "text": "Colorless",
+          "correct": true
+        },
+        {
+          "text": "Blue",
+          "correct": false
+        }
+      ],
+      "explanation": "Phenolphthalein is colorless in acidic solutions (pH < 8.2) and turns pink/red in basic solutions (pH > 8.2). This color change helps identify the equivalence point in titration."
+    },
+    {
+      "id": 4,
+      "question": "What is the pH value at the equivalence point of a strong acid-strong base titration?",
+      "options": [
+        {
+          "text": "1",
+          "correct": false
+        },
+        {
+          "text": "7",
+          "correct": true
+        },
+        {
+          "text": "14",
+          "correct": false
+        }
+      ],
+      "explanation": "At the equivalence point of a strong acid-strong base reaction, the solution is neutral with pH = 7 because moles of H⁺ exactly equal moles of OH⁻."
+    },
+    {
+      "id": 5,
+      "question": "In the titration, what is the purpose of recording burette readings?",
+      "options": [
+        {
+          "text": "To calculate the volume of titrant used",
+          "correct": true
+        },
+        {
+          "text": "To measure the temperature change",
+          "correct": false
+        },
+        {
+          "text": "To determine the final pH",
+          "correct": false
+        }
+      ],
+      "explanation": "The volume of NaOH used is calculated as Final Reading - Initial Reading. This volume is essential for determining the concentration of the unknown acid using stoichiometry."
+    }
+  ],
+  "extensions": [
+    {
+      "activity": "Weak Acid Titration",
+      "description": "Titrate acetic acid (weak acid) with NaOH and observe how the pH curve differs from strong acid titration",
+      "difficulty": "advanced"
+    },
+    {
+      "activity": "Back Titration",
+      "description": "Determine unknown concentration by first adding excess titrant, then back-titrating with a known standard",
+      "difficulty": "advanced"
+    },
+    {
+      "activity": "Multi-protic Acids",
+      "description": "Titrate phosphoric acid (H₃PO₄) which has three dissociation steps",
+      "difficulty": "advanced"
+    },
+    {
+      "activity": "Water Quality Analysis",
+      "description": "Perform titration on local water samples to determine hardness or alkalinity",
+      "difficulty": "intermediate"
+    },
+    {
+      "activity": "Food Acidity Testing",
+      "description": "Use titration to determine acidity in fruit juices or vinegar samples",
+      "difficulty": "intermediate"
+    }
+  ],
+  "learningOutcomes": [
+    "Students can accurately perform acid-base titration using proper laboratory technique",
+    "Students understand the relationship between acid-base reactions and neutralization",
+    "Students can identify equivalence points using pH indicators",
+    "Students can calculate unknown concentrations using titration data and stoichiometry",
+    "Students recognize real-world applications of titration in various industries",
+    "Students appreciate precision and reproducibility in analytical chemistry"
+  ],
+  "xpRewards": {
+    "completion": 50,
+    "perfectQuiz": 50,
+    "total": 100
+  },
+  "relatedLabs": [
+    "rusting-of-iron",
+    "electrochemistry-basics",
+    "buffer-solutions"
+  ],
+  "sequence": 21,
+  "version": "1.0.0",
+  "lastUpdated": "2024-01-15"
+}

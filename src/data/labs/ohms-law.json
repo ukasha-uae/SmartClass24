@@ -1,0 +1,372 @@
+{
+  "id": "ohms-law",
+  "title": "Ohm's Law Experiment",
+  "description": "Explore the fundamental relationship between voltage, current, and resistance in electrical circuits",
+  "category": "physics",
+  "type": "electrical-circuits",
+  "difficulty": "intermediate",
+  "duration": "35 minutes",
+  "objectives": [
+    "Understand Ohm's Law: V = I × R",
+    "Learn to use ammeters and voltmeters correctly",
+    "Measure voltage, current, and resistance in circuits",
+    "Analyze the relationship between electrical quantities",
+    "Apply Ohm's Law to solve circuit problems"
+  ],
+  "keyTerms": [
+    {
+      "term": "Voltage (V)",
+      "definition": "The electrical potential difference between two points, measured in Volts (V)"
+    },
+    {
+      "term": "Current (I)",
+      "definition": "The rate of flow of electric charge, measured in Amperes (A)"
+    },
+    {
+      "term": "Resistance (R)",
+      "definition": "The opposition to current flow in a conductor, measured in Ohms (Ω)"
+    },
+    {
+      "term": "Ohm's Law",
+      "definition": "The fundamental relationship: Voltage = Current × Resistance (V = I × R)"
+    },
+    {
+      "term": "Ammeter",
+      "definition": "An instrument used to measure electric current, connected in series with the circuit"
+    },
+    {
+      "term": "Voltmeter",
+      "definition": "An instrument used to measure voltage, connected in parallel across components"
+    },
+    {
+      "term": "Series Circuit",
+      "definition": "A circuit where components are connected end-to-end, forming a single path for current"
+    },
+    {
+      "term": "Parallel Circuit",
+      "definition": "A circuit where components are connected across common points, providing multiple paths for current"
+    }
+  ],
+  "safetyConsiderations": [
+    "Always disconnect power before making circuit connections or changes",
+    "Start with low voltages (1-5V) and gradually increase",
+    "Check polarity before connecting meters to avoid damage",
+    "Never exceed the maximum ratings of components",
+    "Avoid touching exposed wires when the circuit is energized",
+    "Use insulated tools and probes when working with circuits",
+    "Monitor components for signs of overheating",
+    "Have a fire extinguisher nearby when working with electrical equipment",
+    "Ensure proper ventilation in the laboratory",
+    "Report any damaged equipment immediately"
+  ],
+  "supplies": [
+    {
+      "item": "DC Power Supply (Battery)",
+      "description": "Variable voltage source (1-12V DC)",
+      "quantity": 1
+    },
+    {
+      "item": "Resistors",
+      "description": "Various fixed resistors (5Ω, 10Ω, 20Ω, 50Ω, 100Ω)",
+      "quantity": 5
+    },
+    {
+      "item": "Ammeter",
+      "description": "Digital or analog ammeter (0-2A range)",
+      "quantity": 1
+    },
+    {
+      "item": "Voltmeter",
+      "description": "Digital or analog voltmeter (0-15V range)",
+      "quantity": 1
+    },
+    {
+      "item": "Connecting Wires",
+      "description": "Insulated copper wires with alligator clips",
+      "quantity": 10
+    },
+    {
+      "item": "Switch",
+      "description": "SPST (Single Pole Single Throw) switch",
+      "quantity": 1
+    },
+    {
+      "item": "Breadboard (optional)",
+      "description": "For easy circuit assembly",
+      "quantity": 1
+    }
+  ],
+  "procedure": {
+    "setup": "Assemble components on a clean, dry work surface. Verify all equipment is functioning properly before starting.",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Initial Setup",
+        "instructions": [
+          "Set the power supply to 0V and ensure it's off",
+          "Select a resistor (start with 10Ω)",
+          "Connect the resistor in series with the ammeter",
+          "Connect the voltmeter in parallel across the resistor",
+          "Add a switch for safety"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "First Measurement",
+        "instructions": [
+          "Set the power supply to 2V",
+          "Close the switch to complete the circuit",
+          "Record the ammeter reading (current)",
+          "Record the voltmeter reading (voltage)",
+          "Calculate resistance using R = V/I",
+          "Open the switch"
+        ]
+      },
+      {
+        "step": 3,
+        "title": "Varying Voltage",
+        "instructions": [
+          "Keep the same resistor",
+          "Increase voltage to 4V, 6V, 8V, 10V",
+          "For each voltage, record current",
+          "Plot V vs I graph",
+          "Observe the linear relationship"
+        ]
+      },
+      {
+        "step": 4,
+        "title": "Varying Resistance",
+        "instructions": [
+          "Set voltage to a constant value (e.g., 6V)",
+          "Replace resistor with different values",
+          "For each resistor, record current",
+          "Plot I vs 1/R graph",
+          "Observe inverse relationship"
+        ]
+      }
+    ]
+  },
+  "calculations": {
+    "ohmsLaw": "V = I × R",
+    "rearrangements": {
+      "current": "I = V / R",
+      "resistance": "R = V / I"
+    },
+    "example": {
+      "given": "V = 6V, R = 10Ω",
+      "find": "Current (I)",
+      "solution": "I = V / R = 6V / 10Ω = 0.6A"
+    },
+    "power": {
+      "formula": "P = V × I = I² × R = V² / R",
+      "unit": "Watts (W)"
+    }
+  },
+  "observations": {
+    "voltageConstant": "When resistance is constant, current increases linearly with voltage (direct proportionality)",
+    "resistanceConstant": "When voltage is constant, current decreases as resistance increases (inverse proportionality)",
+    "graphVvsI": "The V-I graph is a straight line passing through origin, with slope = R",
+    "graphIvs1R": "The I vs 1/R graph is a straight line with slope = V"
+  },
+  "dataAnalysis": {
+    "expectedRelationships": [
+      "V ∝ I (at constant R)",
+      "I ∝ 1/R (at constant V)",
+      "V/I = constant = R"
+    ],
+    "errorSources": [
+      "Meter accuracy and precision",
+      "Internal resistance of meters",
+      "Heating effects changing resistance",
+      "Contact resistance in connections",
+      "Fluctuations in power supply"
+    ]
+  },
+  "conclusion": {
+    "mainFinding": "Ohm's Law (V = I × R) accurately describes the relationship between voltage, current, and resistance in simple circuits. Current is directly proportional to voltage and inversely proportional to resistance.",
+    "evidence": [
+      "Linear V-I graph confirms direct proportionality between voltage and current",
+      "Calculated resistance values match nominal resistor values",
+      "Inverse relationship between current and resistance verified",
+      "All measurements follow the equation V = I × R within experimental error"
+    ],
+    "implications": "Understanding Ohm's Law is fundamental for circuit design, troubleshooting, and analysis in electronics and electrical engineering"
+  },
+  "realWorldApplications": [
+    {
+      "application": "Circuit Design",
+      "description": "Engineers use Ohm's Law to calculate appropriate resistor values for LEDs, transistors, and integrated circuits",
+      "example": "Selecting a 330Ω resistor to limit current through a 2V LED powered by a 5V source"
+    },
+    {
+      "application": "Power Distribution",
+      "description": "Calculating voltage drops in transmission lines and house wiring",
+      "example": "Determining wire gauge needed to minimize voltage loss over distance"
+    },
+    {
+      "application": "Electronics Troubleshooting",
+      "description": "Technicians use Ohm's Law to diagnose circuit faults by measuring voltages and currents",
+      "example": "Identifying a short circuit by measuring abnormally high current"
+    },
+    {
+      "application": "Safety Systems",
+      "description": "Designing fuses and circuit breakers based on maximum safe currents",
+      "example": "A 15A household circuit breaker protects against overload"
+    },
+    {
+      "application": "Battery Life Calculation",
+      "description": "Estimating how long a battery will last given load resistance",
+      "example": "Calculating runtime of a 1000mAh battery powering a 50Ω load"
+    },
+    {
+      "application": "Sensor Circuits",
+      "description": "Many sensors work by changing resistance, which affects current according to Ohm's Law",
+      "example": "Thermistors, photoresistors, and strain gauges"
+    }
+  ],
+  "quizQuestions": [
+    {
+      "id": 1,
+      "question": "What is the correct formula for Ohm's Law?",
+      "options": [
+        {
+          "text": "V = I × R",
+          "correct": true
+        },
+        {
+          "text": "V = I / R",
+          "correct": false
+        },
+        {
+          "text": "V² = I × R",
+          "correct": false
+        }
+      ],
+      "explanation": "Ohm's Law states that Voltage (V) equals Current (I) multiplied by Resistance (R). This can be rearranged to find any unknown quantity: I = V/R or R = V/I."
+    },
+    {
+      "id": 2,
+      "question": "If voltage stays constant, how does current change when resistance increases?",
+      "options": [
+        {
+          "text": "Current increases (directly proportional)",
+          "correct": false
+        },
+        {
+          "text": "Current decreases (inversely proportional)",
+          "correct": true
+        },
+        {
+          "text": "Current stays the same",
+          "correct": false
+        }
+      ],
+      "explanation": "From I = V/R, we see that current is inversely proportional to resistance. When R increases, I decreases (and vice versa) if V remains constant."
+    },
+    {
+      "id": 3,
+      "question": "If you double the voltage across a resistor, what happens to the current?",
+      "options": [
+        {
+          "text": "Current is halved",
+          "correct": false
+        },
+        {
+          "text": "Current doubles",
+          "correct": true
+        },
+        {
+          "text": "Current stays the same",
+          "correct": false
+        }
+      ],
+      "explanation": "Current is directly proportional to voltage (I = V/R). Doubling the voltage doubles the current if resistance remains constant."
+    },
+    {
+      "id": 4,
+      "question": "A circuit has a 12V battery and a 4Ω resistor. What is the current?",
+      "options": [
+        {
+          "text": "2A",
+          "correct": false
+        },
+        {
+          "text": "3A",
+          "correct": true
+        },
+        {
+          "text": "48A",
+          "correct": false
+        }
+      ],
+      "explanation": "Using Ohm's Law: I = V/R = 12V / 4Ω = 3A"
+    },
+    {
+      "id": 5,
+      "question": "How should an ammeter be connected in a circuit?",
+      "options": [
+        {
+          "text": "In series with the component",
+          "correct": true
+        },
+        {
+          "text": "In parallel with the component",
+          "correct": false
+        },
+        {
+          "text": "Across the power supply",
+          "correct": false
+        }
+      ],
+      "explanation": "An ammeter must be connected in series so that all the current flows through it. Connecting in parallel would create a short circuit and damage the meter."
+    }
+  ],
+  "extensions": [
+    {
+      "activity": "Non-Ohmic Materials",
+      "description": "Test materials like light bulbs and diodes that don't follow Ohm's Law",
+      "difficulty": "advanced"
+    },
+    {
+      "activity": "Series vs Parallel",
+      "description": "Compare how Ohm's Law applies to series and parallel circuit configurations",
+      "difficulty": "intermediate"
+    },
+    {
+      "activity": "Temperature Effects",
+      "description": "Investigate how resistance changes with temperature and affects current",
+      "difficulty": "advanced"
+    },
+    {
+      "activity": "Power Calculations",
+      "description": "Use Ohm's Law to calculate power dissipation (P = V × I) in resistors",
+      "difficulty": "intermediate"
+    },
+    {
+      "activity": "Circuit Simulation",
+      "description": "Use software like CircuitJS or TINA to simulate complex circuits and verify Ohm's Law",
+      "difficulty": "intermediate"
+    }
+  ],
+  "learningOutcomes": [
+    "Students can state and apply Ohm's Law to solve circuit problems",
+    "Students understand the relationships between voltage, current, and resistance",
+    "Students can correctly use ammeters and voltmeters in circuits",
+    "Students can interpret V-I graphs and determine resistance from slopes",
+    "Students recognize when Ohm's Law applies and when it doesn't",
+    "Students can troubleshoot simple circuit problems using measurements"
+  ],
+  "xpRewards": {
+    "completion": 50,
+    "perfectQuiz": 50,
+    "total": 100
+  },
+  "relatedLabs": [
+    "simple-circuit-lab",
+    "work-energy-lab",
+    "magnetic-field-lab"
+  ],
+  "sequence": 22,
+  "version": "1.0.0",
+  "lastUpdated": "2024-01-15"
+}

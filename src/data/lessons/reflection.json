@@ -1,0 +1,224 @@
+{
+  "id": "reflection",
+  "title": "Reflection of Light",
+  "subject": "integrated-science",
+  "classLevel": "jhs-3",
+  "duration": 45,
+  "lessonType": "virtual-lab",
+  "description": "Investigate the law of reflection and understand how light bounces off different surfaces",
+  "materials": [
+    "Plane mirror",
+    "Ray box or laser pointer",
+    "Protractor",
+    "White paper",
+    "Pencil and ruler"
+  ],
+  "objectives": [
+    "State the law of reflection",
+    "Measure angles of incidence and reflection",
+    "Verify that angle of incidence equals angle of reflection",
+    "Identify the normal line in reflection diagrams",
+    "Explain real-world applications of reflection"
+  ],
+  "theory": {
+    "introduction": "Reflection is the bouncing back of light when it hits a surface. This phenomenon is responsible for our ability to see objects and is the principle behind mirrors and many optical devices.",
+    "keyPoints": [
+      "The incident ray is the light approaching the surface",
+      "The reflected ray is the light bouncing off the surface",
+      "The normal is an imaginary line perpendicular to the surface at the point of incidence",
+      "The angle of incidence (i) is measured between the incident ray and the normal",
+      "The angle of reflection (r) is measured between the reflected ray and the normal"
+    ],
+    "lawOfReflection": {
+      "statement": "The angle of incidence is equal to the angle of reflection (∠i = ∠r)",
+      "conditions": [
+        "The incident ray, reflected ray, and normal all lie in the same plane",
+        "Both angles are measured from the normal, not from the surface"
+      ]
+    }
+  },
+  "procedure": [
+    {
+      "step": 1,
+      "instruction": "Place a plane mirror on a white sheet of paper",
+      "safety": "Handle the mirror carefully to avoid cuts"
+    },
+    {
+      "step": 2,
+      "instruction": "Draw a line at the base of the mirror - this represents the reflecting surface",
+      "note": "Keep the mirror perpendicular to the paper"
+    },
+    {
+      "step": 3,
+      "instruction": "Draw a normal (perpendicular line) at the center of the mirror line",
+      "tip": "Use a protractor to ensure the normal is exactly 90° to the surface"
+    },
+    {
+      "step": 4,
+      "instruction": "Direct a light ray toward the mirror at an angle (e.g., 30°) from the normal",
+      "warning": "Do not shine laser pointers into eyes"
+    },
+    {
+      "step": 5,
+      "instruction": "Mark the path of the incident ray and the reflected ray",
+      "note": "Use a ruler for straight lines"
+    },
+    {
+      "step": 6,
+      "instruction": "Measure the angle of incidence using a protractor",
+      "tip": "Measure from the normal, not from the mirror surface"
+    },
+    {
+      "step": 7,
+      "instruction": "Measure the angle of reflection",
+      "expected": "Should equal the angle of incidence"
+    },
+    {
+      "step": 8,
+      "instruction": "Repeat with different incident angles (e.g., 20°, 45°, 60°)",
+      "purpose": "Verify the law holds for all angles"
+    }
+  ],
+  "observations": {
+    "expected": [
+      "For every incident angle, the reflected angle is equal",
+      "Light always reflects symmetrically about the normal",
+      "The rays and normal line are coplanar",
+      "The relationship holds for any smooth reflecting surface"
+    ],
+    "measurements": {
+      "trial1": { "incidentAngle": 30, "reflectedAngle": 30, "verified": true },
+      "trial2": { "incidentAngle": 45, "reflectedAngle": 45, "verified": true },
+      "trial3": { "incidentAngle": 60, "reflectedAngle": 60, "verified": true }
+    }
+  },
+  "applications": [
+    {
+      "application": "Plane Mirrors",
+      "description": "Used in homes for grooming and decoration. Create virtual images that appear behind the mirror."
+    },
+    {
+      "application": "Periscopes",
+      "description": "Use two plane mirrors at 45° to allow users to see over obstacles or around corners."
+    },
+    {
+      "application": "Kaleidoscopes",
+      "description": "Use multiple mirrors at angles to create beautiful symmetric patterns through multiple reflections."
+    },
+    {
+      "application": "Telescopes",
+      "description": "Reflecting telescopes use curved mirrors to gather and focus light from distant objects."
+    },
+    {
+      "application": "Solar Energy",
+      "description": "Arrays of mirrors reflect and concentrate sunlight onto solar collectors for energy generation."
+    },
+    {
+      "application": "Vehicle Mirrors",
+      "description": "Rearview and side mirrors use reflection to help drivers see behind and beside their vehicles."
+    }
+  ],
+  "safety": [
+    "Never shine bright lights or lasers directly into eyes",
+    "Handle glass mirrors carefully to avoid cuts from sharp edges",
+    "Use only low-power laser pointers (Class 2 or below)",
+    "Secure mirrors to prevent them from falling",
+    "Clean glass surfaces carefully to avoid slipping",
+    "Work in a well-lit room to reduce eye strain"
+  ],
+  "quiz": [
+    {
+      "question": "According to the law of reflection, the angle of incidence is:",
+      "options": [
+        "Equal to the angle of reflection",
+        "Greater than the angle of reflection",
+        "Less than the angle of reflection",
+        "Twice the angle of reflection"
+      ],
+      "correctAnswer": 0
+    },
+    {
+      "question": "Angles of incidence and reflection are measured from:",
+      "options": [
+        "The reflecting surface",
+        "The normal (perpendicular to surface)",
+        "The horizontal",
+        "The incident ray"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "Which type of surface gives the clearest reflection?",
+      "options": [
+        "Rough surface",
+        "Any curved surface",
+        "Smooth plane mirror",
+        "Translucent surface"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "What is the normal line in reflection?",
+      "options": [
+        "The reflecting surface",
+        "A line perpendicular to the surface at the point of incidence",
+        "The incident ray",
+        "The reflected ray"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "If the angle of incidence is 35°, the angle of reflection is:",
+      "options": [
+        "70°",
+        "35°",
+        "17.5°",
+        "55°"
+      ],
+      "correctAnswer": 1
+    }
+  ],
+  "extendedLearning": {
+    "diffuseReflection": "Rough surfaces scatter light in many directions (diffuse reflection), while smooth surfaces produce clear images (specular reflection).",
+    "totalInternalReflection": "When light travels from a denser medium to a less dense medium at angles greater than the critical angle, it reflects completely back into the denser medium. This principle is used in fiber optics.",
+    "curvedMirrors": "Concave mirrors can focus light to a point, while convex mirrors spread light out. Both still follow the law of reflection at each point on the surface."
+  },
+  "vocabulary": [
+    {
+      "term": "Reflection",
+      "definition": "The bouncing back of light when it strikes a surface"
+    },
+    {
+      "term": "Incident Ray",
+      "definition": "The ray of light approaching the reflecting surface"
+    },
+    {
+      "term": "Reflected Ray",
+      "definition": "The ray of light bouncing off the reflecting surface"
+    },
+    {
+      "term": "Normal",
+      "definition": "An imaginary line perpendicular to the surface at the point of incidence"
+    },
+    {
+      "term": "Angle of Incidence",
+      "definition": "The angle between the incident ray and the normal"
+    },
+    {
+      "term": "Angle of Reflection",
+      "definition": "The angle between the reflected ray and the normal"
+    },
+    {
+      "term": "Plane Mirror",
+      "definition": "A flat, smooth reflecting surface"
+    },
+    {
+      "term": "Specular Reflection",
+      "definition": "Clear reflection from smooth surfaces"
+    },
+    {
+      "term": "Diffuse Reflection",
+      "definition": "Scattered reflection from rough surfaces"
+    }
+  ]
+}

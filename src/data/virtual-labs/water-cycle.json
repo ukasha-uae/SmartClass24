@@ -1,0 +1,480 @@
+{
+  "id": "water-cycle",
+  "title": "The Water Cycle - Hydrologic Cycle",
+  "category": "earth-science",
+  "difficulty": "beginner",
+  "duration": 30,
+  "description": "Explore the continuous movement of water through Earth's systems. Learn about evaporation, condensation, precipitation, and collection in this interactive simulation of the hydrologic cycle.",
+  
+  "learningObjectives": [
+    "Identify the four main stages of the water cycle",
+    "Explain how energy from the sun drives evaporation",
+    "Describe the process of cloud formation through condensation",
+    "Understand how precipitation returns water to Earth's surface",
+    "Recognize the water cycle as a continuous, global process",
+    "Explain the importance of the water cycle for life on Earth"
+  ],
+
+  "theory": {
+    "introduction": "The water cycle, also called the hydrologic cycle, is the continuous movement of water on, above, and below the surface of the Earth. Water is constantly changing states - from liquid to gas to solid and back again - as it cycles through different parts of our planet. This cycle has been operating for billions of years and is essential for all life on Earth.",
+    
+    "concepts": [
+      {
+        "title": "What Is the Water Cycle?",
+        "content": "The water cycle is a closed system, meaning the total amount of water on Earth remains relatively constant. The same water that existed millions of years ago still exists today - it just moves through different states and locations. This means we're drinking the same water that dinosaurs drank!\n\nThe cycle is powered primarily by energy from the sun and is driven by the forces of evaporation (lifting water into the atmosphere) and gravity (pulling water back to Earth's surface). These processes work together to distribute water around the globe, making fresh water available to support life in all environments."
+      },
+      {
+        "title": "Stage 1: Evaporation",
+        "content": "Evaporation is the process by which liquid water turns into water vapor (gas). This occurs when the sun heats water in oceans, lakes, rivers, and even puddles. The heat energy gives water molecules enough energy to break free from the liquid surface and escape into the air as invisible gas.\n\nKey facts about evaporation:\n- About 90% of water vapor in the atmosphere comes from ocean evaporation\n- Warmer temperatures increase evaporation rates\n- Wind speed also affects evaporation - faster wind removes water vapor more quickly\n- Approximately 505,000 cubic kilometers of water evaporate each year globally\n- Evaporation has a cooling effect on surfaces (which is why sweating cools us down)\n\nTranspiration is a related process where plants release water vapor through their leaves. When combined with evaporation, this is called evapotranspiration - a single Amazon rainforest tree can transpire 200+ liters per day!"
+      },
+      {
+        "title": "Stage 2: Condensation",
+        "content": "As water vapor rises into the atmosphere, it encounters cooler temperatures. When the vapor cools enough, it condenses - meaning it changes from gas back into tiny liquid water droplets. These microscopic droplets cluster together to form clouds.\n\nThe condensation process:\n- Water vapor needs tiny particles (dust, salt, pollen) called condensation nuclei to condense around\n- As air rises, it expands and cools (about 6.5°C per 1000 meters of altitude)\n- When air reaches its dew point (the temperature at which it can no longer hold all its water vapor), condensation begins\n- Each cloud droplet is only about 0.01 mm in diameter - it takes a million cloud droplets to make one raindrop!\n- Condensation releases latent heat energy, which warms the surrounding air\n\nDifferent types of clouds form at different altitudes and temperatures. High cirrus clouds are made of ice crystals, while low stratus clouds contain water droplets."
+      },
+      {
+        "title": "Stage 3: Precipitation",
+        "content": "Precipitation occurs when cloud droplets combine and grow large enough that gravity pulls them down to Earth's surface. Precipitation can take several forms depending on temperature:\n\nTypes of precipitation:\n- Rain: Liquid water droplets (most common in warm climates)\n- Snow: Ice crystals (forms when temperatures are below freezing throughout the atmosphere)\n- Sleet: Frozen raindrops (rain freezes as it falls through cold air)\n- Hail: Ice balls formed in thunderstorms (updrafts carry droplets up where they freeze repeatedly)\n\nFor rain to form, cloud droplets must grow about 1 million times larger through collision and coalescence (bumping into each other and merging). This is why not all clouds produce rain - the droplets must grow large enough to overcome air resistance and fall.\n\nGlobal precipitation patterns are influenced by:\n- Temperature (warmer air holds more water vapor)\n- Geography (mountains force air upward, causing cooling and precipitation)\n- Ocean currents (carry warm or cold water, affecting nearby climate)\n- Atmospheric circulation (trade winds, jet streams)"
+      },
+      {
+        "title": "Stage 4: Collection",
+        "content": "Collection is the stage where precipitation gathers in various places on Earth. This completes the cycle and allows it to begin again.\n\nWhere water collects:\n- Oceans (96.5% of all Earth's water)\n- Ice caps and glaciers (1.74% - mostly fresh water but frozen)\n- Groundwater (1.69% - water stored underground in aquifers)\n- Lakes and rivers (0.013% - tiny amount but crucial for life)\n- Atmosphere (0.001% - small amount but constantly moving)\n- Soil moisture (0.001%)\n\nWhen rain falls on land, several things can happen:\n- Surface runoff: Water flows over land into streams and rivers\n- Infiltration: Water soaks into soil and rock\n- Storage: Water collects in lakes, reservoirs, or wetlands\n- Plant uptake: Absorbed by plant roots for transpiration\n\nWater can spend vastly different amounts of time in different parts of the cycle. A water molecule might spend:\n- 9 days in the atmosphere\n- 2 weeks in rivers\n- 10 years in lakes\n- Hundreds to thousands of years in groundwater\n- 3,000+ years in the ocean\n- Tens of thousands of years in ice caps"
+      },
+      {
+        "title": "Additional Processes in the Water Cycle",
+        "content": "While the basic four-stage model is useful, the complete water cycle includes several other important processes:\n\n1. Transpiration: Plants absorb water through roots and release it through leaves. A large tree can transpire hundreds of liters per day. This process is crucial in rainforests, where transpiration creates its own weather patterns.\n\n2. Sublimation: Ice and snow can turn directly into water vapor without melting first. This is common in cold, dry climates and at high altitudes. The opposite process (vapor turning directly to ice) is called deposition.\n\n3. Infiltration and Percolation: Water soaking into soil (infiltration) and moving down through rock layers (percolation) recharges underground aquifers. These aquifers store enormous amounts of fresh water and feed springs and wells.\n\n4. Groundwater Flow: Water underground moves very slowly through porous rock and soil, eventually emerging at springs or seeping into lakes and oceans.\n\n5. Ice and Snowmelt: In spring, melting snow and ice release stored water back into rivers and streams. Many regions depend on this seasonal meltwater for agriculture."
+      },
+      {
+        "title": "Energy in the Water Cycle",
+        "content": "The water cycle is fundamentally an energy cycle. The sun provides the energy needed to evaporate water, lifting it against gravity. This energy is stored as latent heat in the water vapor.\n\nEnergy transformations:\n- Solar radiation → Heat energy (warms water)\n- Heat energy → Kinetic energy (water molecules move faster and evaporate)\n- Latent heat stored in water vapor\n- Latent heat released during condensation (warms the atmosphere)\n- Gravitational potential energy (water high in clouds)\n- Kinetic energy (falling precipitation)\n\nThe water cycle distributes heat energy around the planet. Evaporation in the tropics absorbs heat, cooling those regions. When that water vapor moves to higher latitudes and condenses, it releases heat, warming those regions. This heat transport helps regulate Earth's climate."
+      },
+      {
+        "title": "The Water Cycle and Climate",
+        "content": "The water cycle and climate are deeply interconnected. Water vapor is Earth's most abundant greenhouse gas, trapping heat in the atmosphere. Changes in the water cycle can amplify or reduce climate change effects.\n\nClimate impacts on the water cycle:\n- Warmer temperatures increase evaporation rates\n- The atmosphere can hold about 7% more water vapor for each 1°C of warming\n- This leads to more intense precipitation events (heavier rainstorms)\n- Some regions may get wetter, others drier\n- Glaciers and ice caps melting reduce seasonal meltwater storage\n- Changes in precipitation patterns affect water availability\n\nHuman activities affecting the cycle:\n- Deforestation reduces transpiration (less water vapor from plants)\n- Urbanization increases surface runoff and reduces infiltration\n- Irrigation transfers water from one place to another\n- Reservoir construction changes natural flow patterns\n- Greenhouse gas emissions warm the planet, intensifying the cycle"
+      }
+    ],
+
+    "realWorldApplications": [
+      {
+        "title": "Water Supply Management",
+        "description": "Understanding the water cycle helps cities and regions manage water supplies. Engineers track precipitation patterns, snowpack levels, and groundwater recharge to predict water availability. This information guides decisions about reservoir management, water conservation measures, and infrastructure investments."
+      },
+      {
+        "title": "Agriculture and Irrigation",
+        "description": "Farmers rely on the water cycle for rainfall to grow crops. Knowledge of seasonal precipitation patterns, evaporation rates, and soil moisture helps farmers decide when to plant, when to irrigate, and how much water crops need. Understanding transpiration rates helps optimize crop water use efficiency."
+      },
+      {
+        "title": "Weather Forecasting",
+        "description": "Meteorologists use knowledge of the water cycle to predict weather. By tracking moisture in the atmosphere, wind patterns, and temperature conditions, they can forecast rain, snow, and severe storms. This helps communities prepare for floods, droughts, and other weather-related hazards."
+      },
+      {
+        "title": "Climate Science",
+        "description": "Climate scientists study how the water cycle is changing due to global warming. Changes in evaporation, precipitation patterns, and ice melt have major implications for sea level rise, freshwater availability, and ecosystem health. Understanding these changes helps society prepare for and adapt to climate change."
+      },
+      {
+        "title": "Flood and Drought Management",
+        "description": "The water cycle determines when and where floods and droughts occur. By understanding how precipitation, runoff, and soil moisture interact, engineers can design flood control systems (dams, levees, retention ponds) and drought response strategies (water storage, conservation programs)."
+      },
+      {
+        "title": "Ecosystem Conservation",
+        "description": "Ecosystems depend on predictable water cycles. Wetlands need seasonal flooding, salmon need winter rains to swell rivers for migration, and deserts are adapted to rare but intense storms. Conservation efforts must consider how human activities affect local and regional water cycles."
+      },
+      {
+        "title": "Hydroelectric Power",
+        "description": "Hydroelectric dams convert the energy of falling water into electricity. This renewable energy source directly depends on the water cycle - precipitation fills reservoirs, and the cycle of evaporation and precipitation keeps rivers flowing. Understanding the water cycle helps predict power generation capacity."
+      }
+    ]
+  },
+
+  "materials": [
+    {
+      "name": "Computer or tablet",
+      "description": "Device to run the interactive simulation",
+      "quantity": "1"
+    },
+    {
+      "name": "Internet connection",
+      "description": "To access the virtual lab",
+      "quantity": "1"
+    },
+    {
+      "name": "Notebook (optional)",
+      "description": "For recording observations",
+      "quantity": "1"
+    }
+  ],
+
+  "procedure": [
+    {
+      "step": 1,
+      "title": "Introduction to the Water Cycle",
+      "instruction": "Read the introduction carefully to understand the four main stages: evaporation, condensation, precipitation, and collection. Note that the cycle is continuous with no beginning or end.",
+      "tips": [
+        "Pay attention to the role of the sun as the energy source",
+        "Notice how water changes states (liquid, gas, solid)",
+        "Remember that the total amount of water on Earth stays constant"
+      ],
+      "duration": "5 minutes"
+    },
+    {
+      "step": 2,
+      "title": "Explore the Simulation Setup",
+      "instruction": "Familiarize yourself with the interactive controls. You'll click buttons to advance through each stage of the cycle and observe animated representations of water movement.",
+      "tips": [
+        "The landscape shows a sun, mountains, trees, and a body of water",
+        "Each stage button triggers animations specific to that process",
+        "Watch for visual cues like rising droplets, forming clouds, and falling rain"
+      ],
+      "duration": "3 minutes"
+    },
+    {
+      "step": 3,
+      "title": "Observe Evaporation",
+      "instruction": "Click the 'Evaporation' button. Watch as the sun intensifies and water droplets rise from the ocean surface into the atmosphere. Notice the sun's rays and the upward movement of water vapor.",
+      "tips": [
+        "Evaporation requires heat energy from the sun",
+        "Water changes from liquid to invisible gas (water vapor)",
+        "The animation shows rising droplets representing evaporating water",
+        "In reality, water vapor is invisible - the animation makes it visible for learning"
+      ],
+      "duration": "3 minutes",
+      "observation": "Water rises from the ocean surface as the sun provides heat energy. The liquid water transforms into water vapor, which is lighter than air and rises into the atmosphere."
+    },
+    {
+      "step": 4,
+      "title": "Observe Condensation",
+      "instruction": "Click the 'Condensation' button. Watch as clouds form in the sky. Notice how water vapor (which rose during evaporation) cools and condenses into visible cloud droplets.",
+      "tips": [
+        "Clouds form when water vapor cools and condenses",
+        "Tiny water droplets cluster together to create visible clouds",
+        "The animation shows clouds growing and becoming fuller",
+        "Different cloud types form at different altitudes"
+      ],
+      "duration": "3 minutes",
+      "observation": "As water vapor rises and cools in the atmosphere, it condenses into tiny liquid droplets. These droplets gather to form clouds, which appear white or gray depending on their thickness and density."
+    },
+    {
+      "step": 5,
+      "title": "Observe Precipitation",
+      "instruction": "Click the 'Precipitation' button. Watch as rain falls from the clouds to the ground. Observe how the heavy clouds release water back to Earth's surface.",
+      "tips": [
+        "Precipitation occurs when cloud droplets grow large enough to fall",
+        "Gravity pulls the water droplets downward",
+        "The animation shows rain streaks falling from clouds",
+        "Wind can also be seen affecting the falling rain"
+      ],
+      "duration": "3 minutes",
+      "observation": "Water droplets in clouds combine and grow larger. When they become heavy enough, gravity overcomes air resistance and pulls them down as precipitation. Rain falls from the clouds and returns water to Earth's surface."
+    },
+    {
+      "step": 6,
+      "title": "Observe Collection",
+      "instruction": "Click the 'Collection' button. Watch as water collects in rivers, lakes, and oceans. Notice how water flows downhill and gathers in bodies of water, completing the cycle.",
+      "tips": [
+        "Collection occurs in oceans, lakes, rivers, and underground",
+        "Some water runs off the surface, some infiltrates into soil",
+        "The animation shows water flowing and pooling",
+        "From here, the cycle can begin again with evaporation"
+      ],
+      "duration": "3 minutes",
+      "observation": "Precipitation collects in various locations on Earth's surface. Some flows as runoff into rivers and streams, eventually reaching oceans. Some infiltrates into soil and groundwater. Bodies of water grow as they receive precipitation, and the cycle continues."
+    },
+    {
+      "step": 7,
+      "title": "Complete Multiple Cycles",
+      "instruction": "Go through the entire cycle again, clicking each stage in order. Try to complete at least 2-3 full cycles to reinforce your understanding of the continuous process.",
+      "tips": [
+        "Watch how each stage connects to the next",
+        "Pay attention to the energy sources (sun) and forces (gravity)",
+        "Notice that water is neither created nor destroyed, just moved and transformed",
+        "Think about where you see these processes in your daily life"
+      ],
+      "duration": "5 minutes"
+    },
+    {
+      "step": 8,
+      "title": "Review Observations",
+      "instruction": "Read through your recorded observations for each stage. Reflect on how the four stages connect to form a continuous cycle and why this process is important for life on Earth.",
+      "tips": [
+        "Consider how the water cycle affects weather in your region",
+        "Think about how humans depend on the water cycle",
+        "Reflect on how climate change might affect the cycle",
+        "Consider conservation efforts to protect water resources"
+      ],
+      "duration": "5 minutes"
+    }
+  ],
+
+  "expectedResults": {
+    "observations": [
+      "Evaporation: Water transforms from liquid to gas and rises from Earth's surface into the atmosphere, driven by heat energy from the sun",
+      "Condensation: Water vapor cools in the atmosphere and condenses into liquid droplets, forming visible clouds",
+      "Precipitation: Cloud droplets combine and grow until gravity pulls them down as rain, snow, or other forms of precipitation",
+      "Collection: Water gathers in oceans, rivers, lakes, and underground aquifers, completing the cycle and allowing it to restart",
+      "The cycle is continuous - it has no beginning or end, and water constantly moves through the system",
+      "The sun provides energy for evaporation, while gravity drives precipitation and collection"
+    ],
+    "conclusions": [
+      "The water cycle is a continuous, global process that moves water through different states and locations",
+      "Solar energy drives evaporation, lifting water into the atmosphere against gravity",
+      "Cooling causes condensation, forming clouds from water vapor",
+      "Precipitation returns water to Earth's surface, where it collects and the cycle repeats",
+      "The total amount of water on Earth remains constant - it just changes form and location",
+      "The water cycle is essential for distributing fresh water, regulating climate, and supporting all life on Earth",
+      "Human activities can affect the water cycle through land use changes, water extraction, and greenhouse gas emissions"
+    ]
+  },
+
+  "safety": [
+    {
+      "type": "info",
+      "message": "This is a virtual simulation with no physical safety hazards"
+    },
+    {
+      "type": "info",
+      "message": "Take breaks if viewing the screen for extended periods to prevent eye strain"
+    },
+    {
+      "type": "info",
+      "message": "If conducting a related physical experiment with water, ensure work areas are free of electrical devices"
+    },
+    {
+      "type": "info",
+      "message": "In real-world water cycle observations, be aware of weather conditions and stay safe during storms"
+    }
+  ],
+
+  "quiz": [
+    {
+      "question": "What is the first stage of the water cycle?",
+      "options": [
+        "Condensation",
+        "Evaporation",
+        "Precipitation",
+        "Collection"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Evaporation is typically considered the first stage, where the sun heats water and it transforms from liquid to gas, rising into the atmosphere. However, since the cycle is continuous, it technically has no beginning or end."
+    },
+    {
+      "question": "What provides the energy that drives the water cycle?",
+      "options": [
+        "Wind",
+        "The Sun",
+        "Clouds",
+        "Oceans"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The sun is the primary energy source for the water cycle. Solar radiation heats water, providing the energy needed for evaporation. Without the sun, the water cycle would stop."
+    },
+    {
+      "question": "What process forms clouds?",
+      "options": [
+        "Evaporation",
+        "Precipitation",
+        "Condensation",
+        "Collection"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Condensation forms clouds. As water vapor rises and cools in the atmosphere, it condenses into tiny liquid water droplets. Billions of these droplets cluster together to form visible clouds."
+    },
+    {
+      "question": "Where is most of Earth's water located?",
+      "options": [
+        "Rivers and lakes",
+        "Ice caps and glaciers",
+        "Oceans",
+        "Underground aquifers"
+      ],
+      "correctAnswer": 2,
+      "explanation": "About 96.5% of all Earth's water is in the oceans. While this is salt water, oceans are crucial to the water cycle as the main source of water vapor through evaporation."
+    },
+    {
+      "question": "What causes precipitation to fall from clouds?",
+      "options": [
+        "Wind pushing droplets down",
+        "Gravity pulling water droplets",
+        "Temperature changes",
+        "Air pressure"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Gravity causes precipitation to fall. When cloud droplets combine and grow large enough that gravity overcomes air resistance, they fall as rain, snow, or other forms of precipitation."
+    }
+  ],
+
+  "extendedLearning": {
+    "furtherExploration": [
+      {
+        "title": "Physical Water Cycle Model",
+        "description": "Create a simple physical model of the water cycle using a clear plastic box, water, ice, and sunlight or a heat lamp. This demonstrates evaporation, condensation, and precipitation in miniature.",
+        "experiment": "Place water in the bottom of a clear container. Cover with plastic wrap and place ice on top. Put in sunlight or under a lamp. Water will evaporate, condense on the cool plastic, and 'rain' back down."
+      },
+      {
+        "title": "Transpiration Demonstration",
+        "description": "Demonstrate how plants contribute to the water cycle through transpiration. This shows that the water cycle includes processes beyond the basic four stages.",
+        "experiment": "Cover a potted plant with a clear plastic bag and secure it around the pot. After several hours, observe water droplets forming inside the bag - this is water the plant released through its leaves."
+      },
+      {
+        "title": "Local Water Cycle Investigation",
+        "description": "Research your local or regional water cycle. Where does your community's water come from? How do seasonal changes affect water availability?",
+        "research": "Investigate your watershed, local rainfall patterns, nearby rivers or aquifers, and how your community manages water resources. Create a diagram showing your local water cycle."
+      },
+      {
+        "title": "Climate Change and the Water Cycle",
+        "description": "Explore how climate change is intensifying the water cycle. Warmer temperatures increase evaporation and the atmosphere can hold more water vapor, leading to more intense storms but also longer droughts.",
+        "advanced": "Research how changing precipitation patterns are affecting different regions. Some areas are getting wetter, others drier. Investigate what this means for water management and agriculture."
+      },
+      {
+        "title": "Water Footprint Analysis",
+        "description": "Calculate your personal water footprint - not just water you drink, but water used to produce your food, clothing, and other goods. This reveals hidden connections to the water cycle.",
+        "application": "Use online water footprint calculators to estimate your usage. Consider how your choices affect water resources and think about ways to reduce your water footprint."
+      }
+    ],
+    "connections": [
+      {
+        "subject": "Chemistry",
+        "topic": "The water cycle demonstrates phase changes - evaporation (liquid to gas), condensation (gas to liquid), freezing (liquid to solid), and melting (solid to liquid). Understanding these molecular processes enhances water cycle knowledge."
+      },
+      {
+        "subject": "Physics",
+        "topic": "Energy transformations drive the water cycle. Study how solar radiation energy becomes kinetic energy in water molecules, latent heat in water vapor, gravitational potential energy in clouds, and kinetic energy in falling rain."
+      },
+      {
+        "subject": "Geography",
+        "topic": "Geography shapes regional water cycles. Mountains create rain shadows, oceans moderate coastal climates, and latitude affects precipitation patterns. Study how geography creates Earth's diverse climate zones."
+      },
+      {
+        "subject": "Biology",
+        "topic": "All living organisms depend on the water cycle. Plants need water for photosynthesis, animals for metabolism, and ecosystems for nutrient cycling. Study how organisms are adapted to their local water availability."
+      },
+      {
+        "subject": "Environmental Science",
+        "topic": "Human activities affect the water cycle through deforestation, urbanization, pollution, and climate change. Study how to protect water resources and manage water sustainably for future generations."
+      }
+    ]
+  },
+
+  "vocabulary": [
+    {
+      "term": "Hydrologic Cycle",
+      "definition": "Another name for the water cycle; the continuous movement of water on, above, and below Earth's surface."
+    },
+    {
+      "term": "Evaporation",
+      "definition": "The process by which liquid water transforms into water vapor (gas) due to heat energy, typically from the sun."
+    },
+    {
+      "term": "Condensation",
+      "definition": "The process by which water vapor (gas) cools and transforms into liquid water droplets, forming clouds."
+    },
+    {
+      "term": "Precipitation",
+      "definition": "Water released from clouds in the form of rain, snow, sleet, or hail that falls to Earth's surface."
+    },
+    {
+      "term": "Collection",
+      "definition": "The stage where precipitation gathers in oceans, rivers, lakes, groundwater, and other water bodies."
+    },
+    {
+      "term": "Transpiration",
+      "definition": "The process by which plants release water vapor through their leaves into the atmosphere."
+    },
+    {
+      "term": "Evapotranspiration",
+      "definition": "The combined effect of evaporation from surfaces and transpiration from plants."
+    },
+    {
+      "term": "Runoff",
+      "definition": "Water from precipitation that flows over land surfaces into streams, rivers, and eventually oceans."
+    },
+    {
+      "term": "Infiltration",
+      "definition": "The process of water soaking into soil and rock, recharging groundwater aquifers."
+    },
+    {
+      "term": "Groundwater",
+      "definition": "Water stored underground in soil and porous rock formations called aquifers."
+    },
+    {
+      "term": "Aquifer",
+      "definition": "An underground layer of porous rock or sediment that holds and transmits groundwater."
+    },
+    {
+      "term": "Sublimation",
+      "definition": "The process by which ice and snow transform directly into water vapor without melting first."
+    },
+    {
+      "term": "Condensation Nuclei",
+      "definition": "Tiny particles (dust, salt, pollen) in the atmosphere around which water vapor condenses to form cloud droplets."
+    },
+    {
+      "term": "Dew Point",
+      "definition": "The temperature at which air becomes saturated with water vapor and condensation begins."
+    },
+    {
+      "term": "Latent Heat",
+      "definition": "Energy absorbed or released during phase changes; evaporation absorbs heat, condensation releases heat."
+    },
+    {
+      "term": "Watershed",
+      "definition": "An area of land where all water that falls drains into a common outlet such as a river, lake, or ocean."
+    }
+  ],
+
+  "commonMistakes": [
+    {
+      "mistake": "Thinking clouds are made of water vapor",
+      "why": "Water vapor is an invisible gas. Clouds are made of tiny liquid water droplets or ice crystals that have condensed from water vapor",
+      "solution": "Remember: water vapor is invisible. When it condenses into liquid droplets, it becomes visible as clouds, fog, or mist."
+    },
+    {
+      "mistake": "Believing the water cycle has a starting point",
+      "why": "The cycle is continuous with no beginning or end. While we often start explanations with evaporation, the cycle has been operating for billions of years",
+      "solution": "Understand that all stages happen simultaneously around the world. The cycle is continuous and interconnected."
+    },
+    {
+      "mistake": "Assuming all precipitation is rain",
+      "why": "Precipitation includes rain, snow, sleet, hail, and freezing rain - different forms depending on temperature conditions",
+      "solution": "Remember that precipitation is any form of water falling from clouds, including frozen forms."
+    },
+    {
+      "mistake": "Forgetting about groundwater",
+      "why": "Groundwater is a crucial part of the water cycle but is invisible, leading students to overlook it",
+      "solution": "Remember that infiltration and groundwater flow are important parts of collection. Much of Earth's fresh water is underground."
+    },
+    {
+      "mistake": "Not recognizing human impacts",
+      "why": "The water cycle is often presented as a natural process, but human activities significantly affect it",
+      "solution": "Consider how deforestation, urbanization, dams, irrigation, and climate change alter the natural water cycle."
+    }
+  ],
+
+  "troubleshooting": [
+    {
+      "problem": "Simulation animations not playing smoothly",
+      "possible_causes": [
+        "Slow internet connection",
+        "Too many browser tabs open",
+        "Device performance limitations"
+      ],
+      "solutions": [
+        "Close unnecessary browser tabs and applications",
+        "Refresh the page",
+        "Try using a different browser",
+        "Restart your device if needed"
+      ]
+    },
+    {
+      "problem": "Difficulty understanding the sequence of stages",
+      "possible_causes": [
+        "Trying to learn all stages at once",
+        "Not observing each animation carefully"
+      ],
+      "solutions": [
+        "Focus on one stage at a time",
+        "Watch each animation multiple times",
+        "Draw a diagram showing how stages connect",
+        "Relate each stage to real-world examples you've experienced"
+      ]
+    }
+  ]
+}

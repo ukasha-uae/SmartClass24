@@ -1,0 +1,473 @@
+{
+  "id": "simple-circuits",
+  "title": "Simple Circuits",
+  "subject": "Physics",
+  "grade": "SHS1",
+  "duration": "45 minutes",
+  "objective": "Understand the differences between series and parallel circuits, their properties, and real-world applications",
+  "learningOutcomes": [
+    "Explain how current flows in series and parallel circuits",
+    "Compare brightness and behavior of bulbs in different circuit configurations",
+    "Identify real-world examples of series and parallel circuits",
+    "Calculate current and voltage distribution in circuits",
+    "Understand why parallel circuits are preferred in homes"
+  ],
+  "theory": {
+    "introduction": "Electric circuits are closed loops through which electric current flows. Understanding how components can be connected is fundamental to electricity. There are two main ways to connect components: in series or in parallel.",
+    "sections": [
+      {
+        "title": "Series Circuits",
+        "content": "In a series circuit, all components are connected in a single loop. Current flows through one component after another in sequence. Key characteristics of series circuits:\n\n• Single path for current flow\n• Same current through all components (I₁ = I₂ = I₃)\n• Voltages add up across components (V_total = V₁ + V₂ + V₃)\n• If one component breaks or is removed, the entire circuit stops working\n• More components means more resistance and less current\n• Light bulbs become progressively dimmer as more are added\n\nExample: Old Christmas light strings where one broken bulb meant the entire string went dark",
+        "importance": "Series connections are used where we need components to operate in sequence or where we want the circuit to break if any component fails"
+      },
+      {
+        "title": "Parallel Circuits",
+        "content": "In a parallel circuit, components are connected on separate branches. Current splits at junctions and can follow multiple paths. Key characteristics of parallel circuits:\n\n• Multiple paths for current flow\n• Same voltage across all components (V₁ = V₂ = V₃ = V_total)\n• Currents add up at junctions (I_total = I₁ + I₂ + I₃)\n• If one component breaks, others continue to work\n• More branches means less total resistance and more total current\n• Light bulbs stay equally bright regardless of how many are added\n\nExample: Electrical outlets in a house - each outlet operates independently at full voltage",
+        "importance": "Parallel connections are used when we need components to operate independently and safely fail without affecting others"
+      },
+      {
+        "title": "Comparing Series and Parallel",
+        "content": "Series circuits are simple but have the 'all or nothing' limitation. Parallel circuits are more complex but provide reliability. The choice depends on the application:\n\nSeries is used for:\n• Simple applications where reliability isn't critical\n• Dimmer switches (resistances in series reduce voltage)\n• Old lighting systems\n• Some battery arrangements for added voltage\n\nParallel is used for:\n• Home electrical systems\n• Modern lighting\n• Battery arrangements for added capacity\n• Any critical system that shouldn't fail completely",
+        "importance": "Understanding which configuration to use is essential for safe and effective electrical design"
+      }
+    ]
+  },
+  "procedure": {
+    "title": "Building and Comparing Circuits",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Introduction and Safety",
+        "description": "Review circuit safety precautions and understand what you'll learn today",
+        "keyPoints": [
+          "Always use low voltage (batteries, not mains electricity)",
+          "Check connections before closing the circuit",
+          "Disconnect immediately if wires become hot",
+          "Never create short circuits directly across batteries"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "Gather Components",
+        "description": "Collect all necessary circuit components in order",
+        "materials": [
+          "Battery (6V or 9V)",
+          "3 Light bulbs (same rating)",
+          "Connecting wires",
+          "3 Switches (optional but recommended)",
+          "Circuit board or breadboard"
+        ],
+        "keyPoints": [
+          "Identify each component by its symbol",
+          "Ensure all bulbs have the same rating for fair comparison",
+          "Check that wires are in good condition"
+        ]
+      },
+      {
+        "step": 3,
+        "title": "Build Series Circuit",
+        "description": "Connect components in a single continuous loop",
+        "procedure": [
+          "Connect the positive terminal of the battery to one end of the wire",
+          "Connect the first bulb to the wire (one terminal in, one terminal out)",
+          "Connect the second bulb to the end of the first bulb (series connection)",
+          "Connect the third bulb to the end of the second bulb",
+          "Connect the final wire from the third bulb back to the negative terminal of the battery",
+          "Add one switch in the circuit to control the entire loop"
+        ],
+        "observations": [
+          "Note the brightness of the bulbs",
+          "Observe that all bulbs are lit",
+          "Observe that bulbs are dimmer than they would be alone",
+          "Try removing one bulb - the entire circuit goes dark"
+        ],
+        "keyPoints": [
+          "All current flows through each bulb sequentially",
+          "Bulb brightness decreases as more components are added",
+          "One broken component breaks the entire circuit"
+        ]
+      },
+      {
+        "step": 4,
+        "title": "Build Parallel Circuit",
+        "description": "Connect components on separate branches",
+        "procedure": [
+          "Connect the positive terminal of the battery to a junction point",
+          "From this junction, create three separate paths (branches)",
+          "On each branch, connect a bulb in series with a switch",
+          "Connect the other end of each bulb back to the negative terminal junction",
+          "Ensure all branches connect back to the same point"
+        ],
+        "observations": [
+          "Note the brightness of the bulbs - they should be very bright",
+          "Observe that all bulbs are equally bright",
+          "Observe that bulbs are brighter than in the series circuit",
+          "Try opening one switch - other bulbs stay lit",
+          "Try removing one bulb - other bulbs stay lit"
+        ],
+        "keyPoints": [
+          "Each bulb gets full voltage from the battery",
+          "Bulb brightness remains constant as more branches are added",
+          "One broken component doesn't affect others"
+        ]
+      },
+      {
+        "step": 5,
+        "title": "Compare and Analyze",
+        "description": "Examine the differences between the two circuit types",
+        "comparisons": [
+          "Compare brightness: Parallel bulbs are brighter",
+          "Compare behavior when a bulb breaks: Series stops, parallel continues",
+          "Compare voltage across components: Series divides voltage, parallel maintains voltage",
+          "Compare current flow: Series has one path, parallel has multiple paths",
+          "Compare resistance: Adding components increases series resistance, decreases parallel resistance"
+        ],
+        "realWorldApplications": [
+          "House wiring uses parallel circuits so each outlet works independently",
+          "Old Christmas light strings used series, modern ones often use parallel",
+          "Car headlights are parallel so both work independently",
+          "Battery backup systems use parallel for redundancy"
+        ]
+      }
+    ]
+  },
+  "safety": {
+    "title": "Circuit Safety",
+    "warnings": [
+      "Never use mains electricity (wall outlet) for these experiments",
+      "Always use batteries (9V or less) as power source",
+      "Ensure no exposed wire touching other exposed wire (short circuit)",
+      "Never connect positive and negative terminals directly (short circuit)",
+      "Check for hot wires before removing components",
+      "If wires become hot, disconnect immediately",
+      "Keep circuits away from water and metal objects",
+      "Wear safety goggles if bulbs may shatter"
+    ],
+    "beforeStarting": [
+      "Review the circuit diagram carefully",
+      "Check all connections are secure",
+      "Verify the battery is appropriate voltage",
+      "Ensure all components are in good condition"
+    ],
+    "duringExperiment": [
+      "Never touch the components while the circuit is live",
+      "Monitor for any signs of overheating",
+      "Keep a fire extinguisher nearby as a precaution",
+      "Have an adult supervise if you're under 18"
+    ]
+  },
+  "quiz": {
+    "title": "Knowledge Check",
+    "questions": [
+      {
+        "number": 1,
+        "question": "In a series circuit, how is current distributed?",
+        "options": [
+          {
+            "text": "All current flows through each component in one path",
+            "correct": true,
+            "explanation": "Correct! In series circuits, there's only one path for current, so all current flows through each component."
+          },
+          {
+            "text": "Current splits into different branches",
+            "correct": false,
+            "explanation": "That's a parallel circuit characteristic. In series, current follows one continuous path."
+          },
+          {
+            "text": "Current changes at each component",
+            "correct": false,
+            "explanation": "Current is the same throughout a series circuit due to conservation of charge."
+          }
+        ],
+        "conceptsTestedmca": ["Series circuit current distribution"]
+      },
+      {
+        "number": 2,
+        "question": "In a parallel circuit, which bulbs are brightest?",
+        "options": [
+          {
+            "text": "All bulbs are bright and equal",
+            "correct": true,
+            "explanation": "Correct! In parallel circuits, each component gets full voltage, so all bulbs are equally bright."
+          },
+          {
+            "text": "The first bulb is brightest",
+            "correct": false,
+            "explanation": "In a parallel circuit, all bulbs get the same voltage and current, so they're equally bright."
+          },
+          {
+            "text": "All bulbs are dimmer than in series",
+            "correct": false,
+            "explanation": "Actually, parallel bulbs are brighter than series because each gets full voltage."
+          }
+        ],
+        "conceptsTested": ["Parallel circuit voltage distribution"]
+      },
+      {
+        "number": 3,
+        "question": "If one bulb breaks in a parallel circuit, what happens?",
+        "options": [
+          {
+            "text": "Other bulbs stay lit - current finds alternate paths",
+            "correct": true,
+            "explanation": "Correct! This is why parallel circuits are used in homes - one broken device doesn't affect others."
+          },
+          {
+            "text": "All bulbs go out",
+            "correct": false,
+            "explanation": "That's what happens in a series circuit. Parallel circuits have multiple paths for current."
+          },
+          {
+            "text": "Other bulbs become dimmer",
+            "correct": false,
+            "explanation": "In a parallel circuit, each branch is independent, so removing one doesn't affect others."
+          }
+        ],
+        "conceptsTested": ["Parallel circuit reliability"]
+      },
+      {
+        "number": 4,
+        "question": "Which circuit type is used in home electrical wiring?",
+        "options": [
+          {
+            "text": "Parallel circuits",
+            "correct": true,
+            "explanation": "Correct! Homes use parallel circuits so each outlet and device can operate independently."
+          },
+          {
+            "text": "Series circuits",
+            "correct": false,
+            "explanation": "Series would mean one broken circuit breaks everything - unsafe for homes."
+          },
+          {
+            "text": "Both equally",
+            "correct": false,
+            "explanation": "While some components use series internally, the main house wiring is parallel."
+          }
+        ],
+        "conceptsTested": ["Real-world circuit applications"]
+      },
+      {
+        "number": 5,
+        "question": "If you add more bulbs to a series circuit, what happens?",
+        "options": [
+          {
+            "text": "All bulbs become dimmer",
+            "correct": true,
+            "explanation": "Correct! Adding more resistance (bulbs) in series reduces current and dimness increases."
+          },
+          {
+            "text": "The bulbs stay equally bright",
+            "correct": false,
+            "explanation": "That's what happens in parallel. In series, adding components increases resistance."
+          },
+          {
+            "text": "Some bulbs turn off",
+            "correct": false,
+            "explanation": "In a series circuit, all components either work or none work."
+          }
+        ],
+        "conceptsTested": ["Series circuit resistance effect"]
+      }
+    ]
+  },
+  "calculations": {
+    "title": "Circuit Math",
+    "formulas": [
+      {
+        "name": "Ohm's Law",
+        "equation": "V = I × R",
+        "description": "Voltage equals current multiplied by resistance",
+        "example": "If current is 1A and resistance is 10Ω, voltage is 1 × 10 = 10V"
+      },
+      {
+        "name": "Series Resistance",
+        "equation": "R_total = R₁ + R₂ + R₃",
+        "description": "Total resistance in series is the sum of all resistances",
+        "example": "If three 10Ω resistors are in series, R_total = 10 + 10 + 10 = 30Ω"
+      },
+      {
+        "name": "Parallel Resistance",
+        "equation": "1/R_total = 1/R₁ + 1/R₂ + 1/R₃",
+        "description": "Total resistance in parallel uses the reciprocal formula",
+        "example": "If three 10Ω resistors are in parallel, 1/R_total = 1/10 + 1/10 + 1/10 = 3/10, so R_total ≈ 3.3Ω"
+      },
+      {
+        "name": "Series Voltage Division",
+        "equation": "V₁ : V₂ : V₃ = R₁ : R₂ : R₃",
+        "description": "Voltage divides proportionally to resistance in series circuits",
+        "example": "A 12V battery with resistors in ratio 1:2:3 gives voltages 2V, 4V, 6V"
+      },
+      {
+        "name": "Parallel Current Division",
+        "equation": "I₁ : I₂ : I₃ = 1/R₁ : 1/R₂ : 1/R₃",
+        "description": "Current divides inversely to resistance in parallel circuits",
+        "example": "A 10Ω and 20Ω resistor in parallel share current in ratio 2:1"
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "Battery (6V or 9V)",
+      "quantity": 1,
+      "purpose": "Power source for the circuit",
+      "notes": "Use DC (direct current) batteries, not AC from outlets"
+    },
+    {
+      "name": "Light Bulbs (same rating)",
+      "quantity": 3,
+      "purpose": "Load components to show circuit behavior and brightness differences",
+      "notes": "All should have identical ratings (e.g., 3.5V, 0.5A)"
+    },
+    {
+      "name": "Connecting Wires",
+      "quantity": 6,
+      "purpose": "Create circuit connections",
+      "notes": "Use insulated copper wire to prevent short circuits"
+    },
+    {
+      "name": "Switches",
+      "quantity": 3,
+      "purpose": "Control individual branches in parallel or main circuit in series",
+      "notes": "Simple on/off switches work fine"
+    },
+    {
+      "name": "Breadboard or Circuit Board",
+      "quantity": 1,
+      "purpose": "Platform to construct and organize the circuit",
+      "notes": "Makes connections easier and safer"
+    },
+    {
+      "name": "Bulb Holders (optional)",
+      "quantity": 3,
+      "purpose": "Safely hold bulbs in place",
+      "notes": "Prevents bulbs from falling and breaking"
+    }
+  ],
+  "realWorldApplications": [
+    {
+      "title": "Home Electrical Wiring",
+      "type": "Parallel",
+      "explanation": "Your home uses parallel circuits so each outlet operates at full voltage (110V/220V). If one appliance breaks, it doesn't affect others. Each room can have its own circuit breaker."
+    },
+    {
+      "title": "Christmas Lights",
+      "type": "Both",
+      "explanation": "Old Christmas light strings used series (one broken light meant darkness). Modern LED strings use parallel (lights stay on if one breaks). This is why modern strings are more expensive but more reliable."
+    },
+    {
+      "title": "Car Electrical System",
+      "type": "Parallel",
+      "explanation": "Headlights, tail lights, radio, and other car components are parallel. This is why losing one bulb doesn't disable the entire electrical system. The battery provides the same voltage to all components."
+    },
+    {
+      "title": "Battery Arrangements",
+      "type": "Both",
+      "explanation": "Series batteries add voltage (two 1.5V batteries = 3V). Parallel batteries add capacity (two 1000mAh batteries = 2000mAh at same voltage). Devices often use combinations of both."
+    },
+    {
+      "title": "Computer Power Supply",
+      "type": "Parallel",
+      "explanation": "Internal components are mostly parallel so each can operate independently. If one component fails, it can be replaced without affecting others."
+    },
+    {
+      "title": "Audio Amplifier Speakers",
+      "type": "Both",
+      "explanation": "Multiple speakers are often wired in series and parallel configurations to achieve desired impedance and power distribution for optimal sound quality."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Thinking parallel bulbs should be dimmer",
+      "correction": "Parallel bulbs are brighter because each gets full voltage. Series bulbs are dimmer because voltage is shared."
+    },
+    {
+      "mistake": "Confusing series with parallel in diagrams",
+      "correction": "Series = one loop. Parallel = multiple branches. Use the 'train track' analogy: series is one track, parallel is multiple tracks."
+    },
+    {
+      "mistake": "Creating an accidental short circuit",
+      "correction": "Never directly connect positive and negative without any component. Always have at least one resistive element in every path."
+    },
+    {
+      "mistake": "Forgetting that parallel needs a complete circuit on each branch",
+      "correction": "Each parallel branch must form a complete circuit back to both terminals of the battery."
+    },
+    {
+      "mistake": "Using different bulb ratings in the same circuit",
+      "correction": "Use identical bulbs for fair comparison. Different ratings will show different brightness independent of circuit type."
+    }
+  ],
+  "extensions": [
+    {
+      "title": "Mixed Circuits",
+      "description": "Build a circuit that combines series and parallel elements (e.g., two bulbs in parallel, then that combination in series with another bulb). This is what real circuits often look like."
+    },
+    {
+      "title": "Variable Resistors",
+      "description": "Replace one component with a rheostat or potentiometer to see how changing resistance affects brightness and current flow."
+    },
+    {
+      "title": "Ammeter and Voltmeter",
+      "description": "Use meters to measure actual voltage and current at different points in the circuit. Compare series and parallel measurements."
+    },
+    {
+      "title": "Power Calculation",
+      "description": "Calculate power (P = V × I) consumed by components in different configurations. Compare which arrangement uses more or less power."
+    },
+    {
+      "title": "Real Building Wiring",
+      "description": "Tour your home's electrical system with an adult. Identify where main circuit breakers are, how outlets are grouped, and understand the real-world implications of circuit design."
+    }
+  ],
+  "keyTerms": [
+    {
+      "term": "Circuit",
+      "definition": "A closed loop through which electric current flows"
+    },
+    {
+      "term": "Current",
+      "definition": "The flow of electric charge, measured in Amperes (A)"
+    },
+    {
+      "term": "Voltage",
+      "definition": "The electrical potential difference, measured in Volts (V)"
+    },
+    {
+      "term": "Resistance",
+      "definition": "Opposition to current flow, measured in Ohms (Ω)"
+    },
+    {
+      "term": "Series Circuit",
+      "definition": "Components connected in a single path; current flows through each component sequentially"
+    },
+    {
+      "term": "Parallel Circuit",
+      "definition": "Components connected on separate branches; current can flow through multiple paths"
+    },
+    {
+      "term": "Short Circuit",
+      "definition": "Direct connection between positive and negative terminals, bypassing the load"
+    },
+    {
+      "term": "Load",
+      "definition": "Any device that uses electrical power (light bulbs, motors, resistors, etc.)"
+    },
+    {
+      "term": "Junction",
+      "definition": "Point where current splits into multiple paths (in parallel circuits)"
+    },
+    {
+      "term": "Switch",
+      "definition": "Device to open or close a circuit, controlling current flow"
+    }
+  ],
+  "xpReward": 100,
+  "difficulty": "intermediate",
+  "estimatedTime": "45 minutes",
+  "prerequisites": [
+    "Basic understanding of electricity",
+    "Knowledge of voltage and current concepts",
+    "Ability to follow diagrams and safety instructions"
+  ]
+}

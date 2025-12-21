@@ -1,0 +1,420 @@
+{
+  "id": "projectile-motion",
+  "title": "Projectile Motion",
+  "subject": "Physics",
+  "grade": "SHS1",
+  "duration": "45 minutes",
+  "objective": "Investigate how launch angle and initial velocity affect the trajectory, range, and maximum height of projectiles",
+  "learningOutcomes": [
+    "Understand that projectile motion combines horizontal and vertical motion",
+    "Explain why projectiles follow parabolic paths",
+    "Identify that 45° gives maximum range for a given velocity",
+    "Calculate range, maximum height, and time of flight",
+    "Apply projectile motion principles to real-world situations"
+  ],
+  "theory": {
+    "introduction": "Projectile motion is the motion of an object thrown or projected into the air, subject only to the acceleration of gravity. The object is called a projectile, and its path is called its trajectory. Examples include a thrown ball, a launched rocket, or water from a fountain.",
+    "sections": [
+      {
+        "title": "Two-Dimensional Motion",
+        "content": "Projectile motion is two-dimensional motion under constant acceleration (gravity). The motion can be broken down into two independent components:\n\n**Horizontal Motion (x-direction):**\n• Constant velocity (no acceleration)\n• No forces acting horizontally (ignoring air resistance)\n• Distance: x = v₀ × cos(θ) × t\n\n**Vertical Motion (y-direction):**\n• Constant downward acceleration due to gravity (g = 9.81 m/s²)\n• Initial upward velocity: v₀ × sin(θ)\n• Height: y = v₀ × sin(θ) × t - ½gt²\n\nThese two motions are completely independent of each other. The horizontal motion doesn't affect the vertical motion, and vice versa.",
+        "importance": "Understanding independence of motion components is key to solving projectile problems"
+      },
+      {
+        "title": "Parabolic Trajectory",
+        "content": "The path of a projectile is always a parabola (assuming air resistance is negligible). This curved path results from:\n\n1. **Constant horizontal velocity** - moves forward at steady speed\n2. **Accelerated vertical motion** - speeds up downward due to gravity\n3. **Combination creates curve** - forward motion + downward acceleration = parabola\n\nThe parabola is symmetric: the time to reach maximum height equals the time to fall back down. The angle at landing equals the launch angle (on level ground).",
+        "importance": "The parabolic shape is a fundamental characteristic of projectile motion"
+      },
+      {
+        "title": "Key Equations",
+        "content": "**Range (R):** Horizontal distance traveled\n• R = (v₀² × sin(2θ)) / g\n• Maximum when sin(2θ) = 1, which occurs at θ = 45°\n\n**Maximum Height (H):** Highest point reached\n• H = (v₀² × sin²(θ)) / (2g)\n• Maximum when θ = 90° (straight up)\n\n**Time of Flight (T):** Total time in air\n• T = (2v₀ × sin(θ)) / g\n• Equals twice the time to reach maximum height\n\n**Velocity at any time:**\n• Horizontal: vₓ = v₀ × cos(θ) (constant)\n• Vertical: vᵧ = v₀ × sin(θ) - gt",
+        "importance": "These equations allow us to predict and calculate projectile behavior"
+      },
+      {
+        "title": "The 45° Principle",
+        "content": "For maximum range on level ground:\n\n**Why 45° is optimal:**\n• Range formula: R = (v₀² × sin(2θ)) / g\n• sin(2θ) is maximum when 2θ = 90°\n• Therefore θ = 45°\n• At 45°, horizontal and vertical components are balanced\n\n**Complementary angles:**\n• Angles that add to 90° give the same range\n• Example: 30° and 60° produce identical ranges\n• 30° is flatter (longer time), 60° is higher (shorter time)\n• Both travel the same horizontal distance\n\n**Special cases:**\n• 0° (horizontal): Maximum horizontal velocity, but hits ground immediately\n• 90° (vertical): Maximum height, but zero range\n• 45° balances both for maximum distance",
+        "importance": "Understanding optimal launch angles is critical for applications like sports and engineering"
+      }
+    ]
+  },
+  "procedure": {
+    "title": "Investigating Projectile Motion",
+    "steps": [
+      {
+        "step": 1,
+        "title": "Introduction and Setup",
+        "description": "Understand the lab objectives and set up the projectile launcher",
+        "materials": [
+          "Projectile launcher (spring-loaded or manual)",
+          "Projectiles (foam balls, ping-pong balls, or similar)",
+          "Measuring tape or meter stick",
+          "Protractor for angle measurement",
+          "Safety goggles",
+          "Landing area marked with grid"
+        ],
+        "safety": [
+          "Always launch in a safe, clear area",
+          "Never aim at people or animals",
+          "Wear safety goggles",
+          "Secure launcher to prevent tipping",
+          "Use soft projectiles only"
+        ]
+      },
+      {
+        "step": 2,
+        "title": "Launch at Different Angles",
+        "description": "Conduct launches at various angles while keeping velocity constant",
+        "procedure": [
+          "Set the launcher to 15° above horizontal",
+          "Load the projectile and ensure consistent launch mechanism",
+          "Launch and measure the horizontal distance (range)",
+          "Record the angle and range in your data table",
+          "Repeat for angles: 30°, 45°, 60°, 75°",
+          "Perform at least 2 trials per angle for accuracy"
+        ],
+        "observations": [
+          "Note which angle produces the longest range",
+          "Observe the height of the trajectory at each angle",
+          "Compare the time in air for different angles",
+          "Notice the shape of each trajectory (parabolic)"
+        ]
+      },
+      {
+        "step": 3,
+        "title": "Vary Launch Velocity",
+        "description": "Change the initial velocity while keeping angle constant",
+        "procedure": [
+          "Set launcher to 45° (optimal angle)",
+          "If launcher has speed settings, start with slowest",
+          "Launch and measure range",
+          "Increase velocity setting",
+          "Launch again and measure",
+          "Repeat for all available velocity settings"
+        ],
+        "observations": [
+          "Higher velocity produces longer range",
+          "Trajectory shape stays parabolic",
+          "Time of flight increases with velocity",
+          "Maximum height also increases"
+        ]
+      },
+      {
+        "step": 4,
+        "title": "Measure Maximum Height",
+        "description": "Determine the maximum height reached during flight",
+        "procedure": [
+          "Set up a vertical measurement system (marked pole or wall)",
+          "Launch projectile at various angles",
+          "Observe or video the highest point",
+          "Record maximum height for each angle",
+          "Note: Steeper angles (60°, 75°) reach higher"
+        ],
+        "calculations": [
+          "Use H = (v₀² × sin²(θ)) / (2g) to verify",
+          "Compare experimental and calculated values",
+          "Calculate percent error"
+        ]
+      },
+      {
+        "step": 5,
+        "title": "Analyze Results",
+        "description": "Create graphs and identify patterns",
+        "analysis": [
+          "Plot Range vs. Angle (should show maximum at 45°)",
+          "Plot Height vs. Angle (should increase with angle)",
+          "Plot Range vs. Velocity (should show parabolic increase)",
+          "Identify complementary angles with equal ranges",
+          "Calculate theoretical values and compare with experimental"
+        ],
+        "conclusions": [
+          "45° gives maximum range on level ground",
+          "Higher velocity increases both range and height",
+          "Complementary angles (e.g., 30° and 60°) give equal ranges",
+          "All trajectories are parabolic"
+        ]
+      }
+    ]
+  },
+  "realWorldApplications": [
+    {
+      "title": "Sports",
+      "examples": [
+        "Basketball: Players aim for ~45° for long shots",
+        "Soccer: Goal kicks use projectile motion principles",
+        "Golf: Clubs designed for specific launch angles",
+        "Javelin throw: Athletes optimize angle and velocity",
+        "Baseball: Outfielders calculate trajectory to catch fly balls"
+      ],
+      "explanation": "Athletes instinctively use projectile motion principles to maximize performance. Understanding the physics helps improve technique."
+    },
+    {
+      "title": "Military and Defense",
+      "examples": [
+        "Artillery: Calculate firing angles for specific ranges",
+        "Missiles: Trajectory optimization for target accuracy",
+        "Ballistics: Study of bullet paths",
+        "Naval warfare: Ship-to-ship projectile calculations",
+        "Anti-aircraft systems: Predict aircraft interception points"
+      ],
+      "explanation": "Precise calculations of projectile motion are critical for military applications where accuracy can be life-or-death."
+    },
+    {
+      "title": "Engineering and Design",
+      "examples": [
+        "Water fountains: Design arcs and patterns",
+        "Fireworks: Calculate burst heights and patterns",
+        "Amusement rides: Design safe launch and landing trajectories",
+        "Package delivery: Automated systems calculate throwing trajectories",
+        "Robotic systems: Program throwing and catching mechanisms"
+      ],
+      "explanation": "Engineers use projectile motion equations to design systems that move objects through the air safely and efficiently."
+    },
+    {
+      "title": "Space Exploration",
+      "examples": [
+        "Rocket launches: Calculate trajectories to reach orbit",
+        "Satellite deployment: Precise velocity and angle calculations",
+        "Planetary landing: Controlled descent trajectories",
+        "Asteroid deflection: Calculate impact trajectories",
+        "Space debris: Predict orbital paths"
+      ],
+      "explanation": "Space missions require extremely precise projectile motion calculations, accounting for different gravitational fields and velocities."
+    }
+  ],
+  "calculations": {
+    "title": "Projectile Motion Calculations",
+    "examples": [
+      {
+        "problem": "A ball is thrown at 20 m/s at an angle of 45°. Calculate the range.",
+        "given": "v₀ = 20 m/s, θ = 45°, g = 9.81 m/s²",
+        "formula": "R = (v₀² × sin(2θ)) / g",
+        "solution": "R = (20² × sin(2×45°)) / 9.81 = (400 × sin(90°)) / 9.81 = (400 × 1) / 9.81 = 40.8 m",
+        "answer": "The ball will travel 40.8 meters horizontally"
+      },
+      {
+        "problem": "What is the maximum height reached by the ball in the previous example?",
+        "given": "v₀ = 20 m/s, θ = 45°, g = 9.81 m/s²",
+        "formula": "H = (v₀² × sin²(θ)) / (2g)",
+        "solution": "H = (20² × sin²(45°)) / (2×9.81) = (400 × 0.5) / 19.62 = 200 / 19.62 = 10.2 m",
+        "answer": "The maximum height is 10.2 meters"
+      },
+      {
+        "problem": "How long does the ball stay in the air?",
+        "given": "v₀ = 20 m/s, θ = 45°, g = 9.81 m/s²",
+        "formula": "T = (2v₀ × sin(θ)) / g",
+        "solution": "T = (2×20 × sin(45°)) / 9.81 = (40 × 0.707) / 9.81 = 28.28 / 9.81 = 2.88 s",
+        "answer": "The ball is in the air for 2.88 seconds"
+      },
+      {
+        "problem": "At what other angle would the ball travel the same range?",
+        "given": "Original angle = 45°",
+        "concept": "Complementary angles give equal range",
+        "solution": "Complementary angle = 90° - 45° = 45°. Since 45° is already optimal, we check other pairs: 30° and 60° are complementary, 15° and 75° are complementary, etc.",
+        "answer": "45° is unique (its own complement), but any angle θ and (90°-θ) give equal ranges"
+      }
+    ]
+  },
+  "commonMistakes": [
+    {
+      "mistake": "Thinking 90° gives maximum range",
+      "correction": "90° (straight up) gives ZERO range. Maximum range is at 45°. At 90°, all velocity is vertical."
+    },
+    {
+      "mistake": "Ignoring the parabolic shape",
+      "correction": "Projectiles don't travel in straight lines. They always curve downward due to gravity, forming a parabola."
+    },
+    {
+      "mistake": "Using degrees in calculators set to radians",
+      "correction": "Always check calculator mode. Convert degrees to radians (multiply by π/180) or set calculator to degree mode."
+    },
+    {
+      "mistake": "Confusing maximum height with range",
+      "correction": "Maximum height is vertical distance (highest point). Range is horizontal distance (total forward travel)."
+    },
+    {
+      "mistake": "Thinking horizontal velocity changes during flight",
+      "correction": "Horizontal velocity is constant (ignoring air resistance). Only vertical velocity changes due to gravity."
+    },
+    {
+      "mistake": "Not considering g = 9.81 m/s² is negative",
+      "correction": "When using equations, g accelerates downward. Use correct sign conventions: positive up, negative down."
+    }
+  ],
+  "extensions": [
+    {
+      "title": "Air Resistance Effects",
+      "description": "Compare projectile motion with and without air resistance. Use different objects (feather vs. ball) to observe how air resistance affects trajectory. Explain why real projectiles don't exactly follow parabolic paths."
+    },
+    {
+      "title": "Angled Launch Surface",
+      "description": "Launch projectiles from elevated positions or sloped surfaces. Calculate how initial height affects range. Discover that 45° is no longer optimal when launching from height."
+    },
+    {
+      "title": "Video Analysis",
+      "description": "Record projectile motion with slow-motion video. Use video analysis software to track position over time. Create position vs. time graphs and verify equations."
+    },
+    {
+      "title": "Computer Simulation",
+      "description": "Use simulation software to model projectile motion with different parameters. Test extreme cases (e.g., launching on the Moon with lower gravity). Explore how gravity affects trajectory shape."
+    },
+    {
+      "title": "Target Practice",
+      "description": "Set up targets at various distances. Calculate the angle needed to hit each target with a fixed velocity. Practice applying equations to real scenarios."
+    }
+  ],
+  "quiz": {
+    "questions": [
+      {
+        "question": "At what angle does a projectile achieve maximum range?",
+        "options": [
+          { "text": "45 degrees", "correct": true },
+          { "text": "30 degrees", "correct": false },
+          { "text": "60 degrees", "correct": false },
+          { "text": "90 degrees", "correct": false }
+        ],
+        "explanation": "45° provides the optimal balance between horizontal and vertical velocity components, maximizing range for a given initial velocity."
+      },
+      {
+        "question": "What shape is the path of a projectile?",
+        "options": [
+          { "text": "Parabola (curved arc)", "correct": true },
+          { "text": "Straight line", "correct": false },
+          { "text": "Circle", "correct": false },
+          { "text": "Ellipse", "correct": false }
+        ],
+        "explanation": "Due to constant horizontal velocity and constant vertical acceleration from gravity, projectiles follow parabolic trajectories."
+      },
+      {
+        "question": "What affects the range of a projectile?",
+        "options": [
+          { "text": "Both angle and velocity", "correct": true },
+          { "text": "Only angle", "correct": false },
+          { "text": "Only velocity", "correct": false },
+          { "text": "Neither angle nor velocity", "correct": false }
+        ],
+        "explanation": "Range depends on both launch angle (determines direction of velocity components) and initial velocity (determines magnitude of motion)."
+      },
+      {
+        "question": "Which angles give the same range?",
+        "options": [
+          { "text": "30° and 60° (complementary angles)", "correct": true },
+          { "text": "30° and 45°", "correct": false },
+          { "text": "45° and 90°", "correct": false },
+          { "text": "All angles give the same range", "correct": false }
+        ],
+        "explanation": "Complementary angles (angles that add to 90°) produce the same range. For example, 30° and 60° give equal ranges."
+      },
+      {
+        "question": "What happens to horizontal velocity during projectile flight?",
+        "options": [
+          { "text": "It remains constant", "correct": true },
+          { "text": "It increases due to gravity", "correct": false },
+          { "text": "It decreases due to gravity", "correct": false },
+          { "text": "It becomes zero at the highest point", "correct": false }
+        ],
+        "explanation": "Horizontal velocity remains constant because there are no horizontal forces (ignoring air resistance). Only vertical velocity changes."
+      }
+    ]
+  },
+  "materials": [
+    {
+      "name": "Projectile Launcher",
+      "quantity": 1,
+      "purpose": "Launch projectiles at controlled angles and velocities",
+      "alternatives": "Hand-thrown projectiles with angle guide"
+    },
+    {
+      "name": "Projectiles (foam balls)",
+      "quantity": 3,
+      "purpose": "Safe objects to launch that won't cause damage",
+      "alternatives": "Ping-pong balls, tennis balls, bean bags"
+    },
+    {
+      "name": "Measuring Tape (10m+)",
+      "quantity": 1,
+      "purpose": "Measure horizontal distance traveled",
+      "notes": "Metal tape measures work best for long distances"
+    },
+    {
+      "name": "Protractor or Angle Measure",
+      "quantity": 1,
+      "purpose": "Set and verify launch angle accurately",
+      "notes": "Digital angle finders provide more precision"
+    },
+    {
+      "name": "Safety Goggles",
+      "quantity": 1,
+      "purpose": "Protect eyes during launches",
+      "notes": "Required safety equipment"
+    },
+    {
+      "name": "Landing Grid/Target Area",
+      "quantity": 1,
+      "purpose": "Marked area to easily measure where projectiles land",
+      "alternatives": "Chalk grid on pavement or tape grid on floor"
+    },
+    {
+      "name": "Stopwatch",
+      "quantity": 1,
+      "purpose": "Measure time of flight",
+      "alternatives": "Smartphone timer app"
+    },
+    {
+      "name": "Video Camera (optional)",
+      "quantity": 1,
+      "purpose": "Record launches for detailed analysis",
+      "alternatives": "Smartphone with slow-motion capability"
+    }
+  ],
+  "keyTerms": [
+    {
+      "term": "Projectile",
+      "definition": "An object that is thrown, launched, or otherwise projected, moving under the influence of gravity alone"
+    },
+    {
+      "term": "Trajectory",
+      "definition": "The path followed by a projectile through space"
+    },
+    {
+      "term": "Range",
+      "definition": "The horizontal distance traveled by a projectile from launch to landing"
+    },
+    {
+      "term": "Maximum Height",
+      "definition": "The highest vertical point reached by a projectile during its flight"
+    },
+    {
+      "term": "Time of Flight",
+      "definition": "The total time a projectile remains in the air from launch to landing"
+    },
+    {
+      "term": "Launch Angle",
+      "definition": "The angle at which a projectile is released, measured from the horizontal"
+    },
+    {
+      "term": "Initial Velocity",
+      "definition": "The velocity of the projectile at the moment of launch"
+    },
+    {
+      "term": "Parabola",
+      "definition": "The U-shaped curve that describes the path of a projectile"
+    },
+    {
+      "term": "Complementary Angles",
+      "definition": "Two angles that add up to 90°; they produce equal ranges in projectile motion"
+    },
+    {
+      "term": "Acceleration due to Gravity (g)",
+      "definition": "The constant downward acceleration of 9.81 m/s² experienced by all objects near Earth's surface"
+    }
+  ],
+  "xpReward": 100,
+  "difficulty": "intermediate",
+  "estimatedTime": "45 minutes",
+  "prerequisites": [
+    "Understanding of velocity and acceleration",
+    "Basic trigonometry (sine, cosine)",
+    "Knowledge of gravitational acceleration",
+    "Ability to use equations and solve for variables"
+  ]
+}

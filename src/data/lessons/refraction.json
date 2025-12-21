@@ -1,0 +1,268 @@
+{
+  "id": "refraction",
+  "title": "Refraction of Light",
+  "subject": "integrated-science",
+  "classLevel": "jhs-3",
+  "duration": 45,
+  "lessonType": "virtual-lab",
+  "description": "Investigate how light bends when passing from one medium to another and verify Snell's Law",
+  "materials": [
+    "Rectangular glass block",
+    "Ray box or laser pointer",
+    "Protractor",
+    "White paper",
+    "Pencil and ruler",
+    "Water container (optional)"
+  ],
+  "objectives": [
+    "Define refraction and explain why it occurs",
+    "Apply Snell's Law to calculate angles of refraction",
+    "Measure angles of incidence and refraction accurately",
+    "Compare refraction in different media (glass, water)",
+    "Explain real-world applications of refraction"
+  ],
+  "theory": {
+    "introduction": "Refraction is the bending of light as it passes from one medium to another with a different optical density. This phenomenon occurs because light travels at different speeds in different materials.",
+    "keyPoints": [
+      "Light travels fastest in vacuum (c = 3 × 10⁸ m/s)",
+      "Light slows down when entering denser media",
+      "The change in speed causes the light ray to bend",
+      "Light bends toward the normal when entering a denser medium",
+      "Light bends away from the normal when entering a less dense medium",
+      "The amount of bending depends on the refractive indices of the two media"
+    ],
+    "snellsLaw": {
+      "statement": "The ratio of the sine of the angle of incidence to the sine of the angle of refraction is constant for a given pair of media",
+      "formula": "n₁ sin(θ₁) = n₂ sin(θ₂)",
+      "where": {
+        "n₁": "Refractive index of first medium",
+        "θ₁": "Angle of incidence (measured from normal)",
+        "n₂": "Refractive index of second medium",
+        "θ₂": "Angle of refraction (measured from normal)"
+      }
+    },
+    "refractiveIndices": {
+      "vacuum": 1.0,
+      "air": 1.0003,
+      "water": 1.33,
+      "glass": 1.5,
+      "diamond": 2.42
+    }
+  },
+  "procedure": [
+    {
+      "step": 1,
+      "instruction": "Place a rectangular glass block on white paper",
+      "safety": "Handle glass carefully to avoid cuts"
+    },
+    {
+      "step": 2,
+      "instruction": "Trace the outline of the glass block on the paper",
+      "note": "Keep the glass block stationary throughout the experiment"
+    },
+    {
+      "step": 3,
+      "instruction": "Draw a normal (perpendicular line) at the center of one side of the block",
+      "tip": "Use a protractor to ensure the normal is exactly 90° to the surface"
+    },
+    {
+      "step": 4,
+      "instruction": "Direct a light ray toward the glass block at an angle (e.g., 30°) from the normal",
+      "warning": "Do not shine laser pointers into eyes"
+    },
+    {
+      "step": 5,
+      "instruction": "Mark the path of the incident ray and the refracted ray inside the glass",
+      "note": "Use dots to mark the ray path, then connect with a ruler"
+    },
+    {
+      "step": 6,
+      "instruction": "Measure the angle of incidence (θ₁) using a protractor",
+      "tip": "Measure from the normal, not from the surface"
+    },
+    {
+      "step": 7,
+      "instruction": "Measure the angle of refraction (θ₂) inside the glass block",
+      "expected": "Should be smaller than angle of incidence"
+    },
+    {
+      "step": 8,
+      "instruction": "Repeat with different incident angles (e.g., 20°, 40°, 60°)",
+      "purpose": "Verify that Snell's Law holds for all angles"
+    },
+    {
+      "step": 9,
+      "instruction": "Calculate sin(θ₁)/sin(θ₂) for each measurement",
+      "expected": "Ratio should be approximately constant (≈ 1.5 for air-to-glass)"
+    }
+  ],
+  "observations": {
+    "expected": [
+      "Light bends toward the normal when entering glass from air",
+      "The angle of refraction is always less than the angle of incidence",
+      "Larger incident angles produce larger refracted angles",
+      "The ratio sin(θ₁)/sin(θ₂) remains constant",
+      "Different materials (water vs glass) produce different amounts of bending"
+    ],
+    "measurements": {
+      "glass": {
+        "trial1": { "incidentAngle": 30, "refractedAngle": 19.5, "ratio": 1.52 },
+        "trial2": { "incidentAngle": 45, "refractedAngle": 28.1, "ratio": 1.50 },
+        "trial3": { "incidentAngle": 60, "refractedAngle": 35.3, "ratio": 1.50 }
+      },
+      "water": {
+        "trial1": { "incidentAngle": 30, "refractedAngle": 22.1, "ratio": 1.33 },
+        "trial2": { "incidentAngle": 45, "refractedAngle": 32.1, "ratio": 1.33 },
+        "trial3": { "incidentAngle": 60, "refractedAngle": 40.6, "ratio": 1.33 }
+      }
+    }
+  },
+  "analysis": {
+    "verifyingSnellsLaw": "For air-to-glass refraction, n₁ = 1.0 (air) and n₂ = 1.5 (glass). Using Snell's Law: sin(θ₁)/sin(θ₂) = n₂/n₁ = 1.5",
+    "graphing": "Plot sin(θ₁) vs sin(θ₂). The graph should be a straight line passing through the origin, with slope equal to n₂/n₁",
+    "errors": [
+      "Parallax error when reading protractor",
+      "Difficulty seeing exact ray path",
+      "Glass block not perfectly rectangular",
+      "Ambient light interference"
+    ]
+  },
+  "applications": [
+    {
+      "application": "Eyeglasses and Contact Lenses",
+      "description": "Corrective lenses use refraction to focus light correctly on the retina, correcting nearsightedness, farsightedness, and astigmatism."
+    },
+    {
+      "application": "Cameras and Microscopes",
+      "description": "Multiple lenses refract light to magnify images and bring them into sharp focus."
+    },
+    {
+      "application": "Fiber Optic Cables",
+      "description": "Use total internal reflection (special case of refraction) to transmit light signals over long distances for internet and telecommunications."
+    },
+    {
+      "application": "Prisms",
+      "description": "Separate white light into its component colors (spectrum) because different wavelengths refract by different amounts (dispersion)."
+    },
+    {
+      "application": "Atmospheric Phenomena",
+      "description": "Mirages, twinkling stars, and the apparent bending of objects in water are all caused by refraction."
+    },
+    {
+      "application": "Diamonds",
+      "description": "High refractive index (2.42) causes light to bend dramatically, creating the brilliant sparkle and fire."
+    },
+    {
+      "application": "Swimming Pools",
+      "description": "Objects underwater appear closer and at different positions than they actually are due to refraction at the water-air boundary."
+    }
+  ],
+  "safety": [
+    "Never shine bright lights or lasers directly into eyes or at reflective surfaces that could redirect into eyes",
+    "Use only low-power laser pointers (Class 2 or below)",
+    "Handle glass blocks carefully - edges can be sharp",
+    "If using water containers, ensure they are stable to prevent spills",
+    "Clean up water spills immediately to prevent slipping",
+    "Work in a well-lit room to reduce eye strain",
+    "Report any broken glass or equipment damage immediately"
+  ],
+  "quiz": [
+    {
+      "question": "When light enters a denser medium, it:",
+      "options": [
+        "Bends toward the normal",
+        "Bends away from the normal",
+        "Continues straight without bending",
+        "Reflects back completely"
+      ],
+      "correctAnswer": 0
+    },
+    {
+      "question": "In refraction, light bends:",
+      "options": [
+        "The same amount regardless of the medium",
+        "Away from the normal when entering a denser medium",
+        "Toward the normal when entering a denser medium",
+        "Only at angles greater than 45°"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "Which law describes the relationship between incident and refracted angles?",
+      "options": [
+        "Newton's Law",
+        "Hooke's Law",
+        "Snell's Law",
+        "Law of Reflection"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "The refractive index of glass is approximately:",
+      "options": [
+        "1.0",
+        "1.33",
+        "1.5",
+        "2.42"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "What causes light to bend during refraction?",
+      "options": [
+        "Change in light intensity",
+        "Change in light speed in different media",
+        "Change in light color",
+        "Change in light wavelength only"
+      ],
+      "correctAnswer": 1
+    }
+  ],
+  "extendedLearning": {
+    "totalInternalReflection": "When light travels from a denser to less dense medium at angles greater than the critical angle, it reflects completely back into the denser medium. This is used in fiber optics and diamond cutting.",
+    "dispersion": "Different wavelengths (colors) of light refract by different amounts in the same medium, causing white light to separate into a spectrum. This is why prisms create rainbows.",
+    "criticalAngle": "The angle of incidence in the denser medium for which the angle of refraction is 90°. Beyond this angle, total internal reflection occurs. For glass-air boundary: θc = sin⁻¹(1/n) ≈ 42°"
+  },
+  "vocabulary": [
+    {
+      "term": "Refraction",
+      "definition": "The bending of light as it passes from one medium to another"
+    },
+    {
+      "term": "Refractive Index (n)",
+      "definition": "A measure of how much light slows down in a medium compared to vacuum"
+    },
+    {
+      "term": "Snell's Law",
+      "definition": "The mathematical relationship between angles and refractive indices: n₁sin(θ₁) = n₂sin(θ₂)"
+    },
+    {
+      "term": "Angle of Incidence",
+      "definition": "The angle between the incident ray and the normal"
+    },
+    {
+      "term": "Angle of Refraction",
+      "definition": "The angle between the refracted ray and the normal"
+    },
+    {
+      "term": "Normal",
+      "definition": "An imaginary line perpendicular to the surface at the point where light enters"
+    },
+    {
+      "term": "Optical Density",
+      "definition": "A measure of how much a medium can slow down light"
+    },
+    {
+      "term": "Total Internal Reflection",
+      "definition": "Complete reflection of light at the boundary when traveling from denser to less dense medium at angles beyond the critical angle"
+    },
+    {
+      "term": "Critical Angle",
+      "definition": "The angle of incidence at which the refracted ray travels along the boundary (angle of refraction = 90°)"
+    },
+    {
+      "term": "Dispersion",
+      "definition": "The separation of white light into its component colors due to different wavelengths refracting by different amounts"
+    }
+  ]
+}

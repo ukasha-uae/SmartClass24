@@ -65,8 +65,8 @@ export function PWAInstallPrompt() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 z-50 animate-in slide-in-from-bottom-5">
-      <Card className="border-2 border-violet-500 shadow-2xl">
+    <div className="fixed bottom-24 left-4 right-4 md:left-auto md:right-4 md:w-96 z-[100] animate-in slide-in-from-bottom-5">
+      <Card className="border-2 border-violet-500 shadow-2xl bg-card">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0">

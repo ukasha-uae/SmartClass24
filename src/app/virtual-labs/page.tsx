@@ -11,7 +11,7 @@ import { useLabProgress } from '@/stores/lab-progress-store';
 import { Progress } from "@/components/ui/progress";
 
 export default function VirtualLabsPage() {
-  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics' | 'Science'>('All');
+  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics'>('All');
   const [difficultyFilter, setDifficultyFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
   const { completedLabs, totalXP, streak, isLabCompleted } = useLabProgress();
   const [mounted, setMounted] = useState(false);
@@ -23,15 +23,13 @@ export default function VirtualLabsPage() {
   const subjectIcons = {
     Biology: Dna,
     Chemistry: FlaskConical,
-    Physics: Zap,
-    Science: Atom
+    Physics: Zap
   };
 
   const subjectColors = {
     Biology: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30',
     Chemistry: 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/30',
-    Physics: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30',
-    Science: 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30'
+    Physics: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30'
   };
 
   // Assign difficulty levels to labs (you can customize this)
@@ -76,67 +74,38 @@ export default function VirtualLabsPage() {
         </p>
       </div>
 
-      {/* Progress Section */}
+      {/* Progress Section - Compact */}
       {mounted && (
-        <div className="mb-8">
+        <div className="mb-6">
           <Card className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/20 dark:to-purple-950/20 border-violet-200 dark:border-violet-800">
-            <CardContent className="p-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Left: Stats */}
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold flex items-center gap-2">
-                      <Trophy className="h-5 w-5 text-violet-600" />
-                      Your Progress
-                    </h3>
-                    <Badge variant="outline" className="bg-violet-100 dark:bg-violet-900 border-violet-300">
-                      Level {currentLevel}
-                    </Badge>
-                  </div>
-
-                  {/* XP Progress */}
-                  <div className="mb-4">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-muted-foreground">Experience Points</span>
-                      <span className="font-semibold text-violet-600">{totalXP} XP</span>
-                    </div>
-                    <Progress value={(totalXP % 500) / 5} className="h-2" />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {500 - (totalXP % 500)} XP to level {currentLevel + 1}
-                    </p>
-                  </div>
-
-                  {/* Overall Completion */}
-                  <div className="mb-4">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-muted-foreground">Labs Completed</span>
-                      <span className="font-semibold">{Object.keys(completedLabs).length}/{virtualLabExperiments.experiments.length}</span>
-                    </div>
-                    <Progress value={completionRate} className="h-2" />
-                  </div>
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                {/* Title and Level */}
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-violet-600" />
+                  <h3 className="text-base font-bold">Your Progress</h3>
+                  <Badge variant="outline" className="bg-violet-100 dark:bg-violet-900 border-violet-300 text-xs">
+                    Level {currentLevel}
+                  </Badge>
                 </div>
 
-                {/* Right: Quick Stats */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="text-center p-4 bg-white dark:bg-gray-900 rounded-lg">
-                    <CheckCircle2 className="h-6 w-6 mx-auto text-green-600 mb-2" />
-                    <p className="text-2xl font-bold">{completionRate}%</p>
-                    <p className="text-xs text-muted-foreground">Complete</p>
+                {/* Quick Stats - Horizontal */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-bold">{completionRate}%</span>
                   </div>
-                  <div className="text-center p-4 bg-white dark:bg-gray-900 rounded-lg">
-                    <Star className="h-6 w-6 mx-auto text-yellow-500 mb-2" />
-                    <p className="text-2xl font-bold">{Object.keys(completedLabs).length}</p>
-                    <p className="text-xs text-muted-foreground">Labs Done</p>
+                  <div className="flex items-center gap-1.5">
+                    <Star className="h-4 w-4 text-yellow-500" />
+                    <span className="text-sm font-bold">{Object.keys(completedLabs).length}/{virtualLabExperiments.experiments.length}</span>
                   </div>
-                  <div className="text-center p-4 bg-white dark:bg-gray-900 rounded-lg">
-                    <Zap className="h-6 w-6 mx-auto text-orange-500 mb-2" />
-                    <p className="text-2xl font-bold">{streak}</p>
-                    <p className="text-xs text-muted-foreground">Day Streak</p>
+                  <div className="flex items-center gap-1.5">
+                    <Zap className="h-4 w-4 text-orange-500" />
+                    <span className="text-sm font-bold">{streak}d</span>
                   </div>
-                  <div className="text-center p-4 bg-white dark:bg-gray-900 rounded-lg">
-                    <Trophy className="h-6 w-6 mx-auto text-violet-600 mb-2" />
-                    <p className="text-2xl font-bold">{currentLevel}</p>
-                    <p className="text-xs text-muted-foreground">Level</p>
+                  <div className="flex items-center gap-1.5">
+                    <Trophy className="h-4 w-4 text-violet-600" />
+                    <span className="text-sm font-bold">{totalXP} XP</span>
                   </div>
                 </div>
               </div>
@@ -149,14 +118,14 @@ export default function VirtualLabsPage() {
       <div className="mb-6">
         <p className="text-sm font-semibold mb-2">Subject</p>
         <div className="flex flex-wrap gap-2 mb-4">
-          {(['All', 'Biology', 'Chemistry', 'Physics', 'Science'] as const).map((subject) => (
+          {(['All', 'Biology', 'Chemistry', 'Physics'] as const).map((subject) => (
             <button
               key={subject}
               onClick={() => setFilter(subject)}
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 filter === subject
                   ? 'bg-violet-600 text-white shadow-lg'
-                  : 'bg-secondary hover:bg-secondary/80'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600'
               }`}
             >
               {subject}
@@ -173,7 +142,7 @@ export default function VirtualLabsPage() {
               className={`px-4 py-2 rounded-lg font-medium transition-all ${
                 difficultyFilter === diff
                   ? 'bg-violet-600 text-white shadow-lg'
-                  : 'bg-secondary hover:bg-secondary/80'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600'
               }`}
             >
               {diff}
@@ -182,20 +151,16 @@ export default function VirtualLabsPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {/* Stats - Compact */}
+      <div className="flex flex-wrap gap-3 mb-6">
         {Object.entries(subjectIcons).map(([subject, Icon]) => {
           const count = virtualLabExperiments.experiments.filter(exp => exp.subject === subject).length;
           return (
-            <Card key={subject}>
-              <CardContent className="p-4 flex items-center gap-3">
-                <Icon className={`h-8 w-8 ${subject === 'Biology' ? 'text-green-600' : subject === 'Chemistry' ? 'text-orange-600' : subject === 'Physics' ? 'text-blue-600' : 'text-purple-600'}`} />
-                <div>
-                  <p className="text-2xl font-bold">{count}</p>
-                  <p className="text-sm text-muted-foreground">{subject}</p>
-                </div>
-              </CardContent>
-            </Card>
+            <div key={subject} className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
+              <Icon className={`h-5 w-5 ${subject === 'Biology' ? 'text-green-600' : subject === 'Chemistry' ? 'text-orange-600' : 'text-blue-600'}`} />
+              <span className="font-bold text-lg">{count}</span>
+              <span className="text-sm text-muted-foreground">{subject}</span>
+            </div>
           );
         })}
       </div>

@@ -1,0 +1,297 @@
+{
+  "id": "metal-acid-reaction",
+  "title": "Metal-Acid Reactions",
+  "subject": "integrated-science",
+  "classLevel": "jhs-3",
+  "duration": 45,
+  "lessonType": "virtual-lab",
+  "description": "Investigate how different metals react with dilute hydrochloric acid and learn the reactivity series",
+  "materials": [
+    "Dilute hydrochloric acid (1M HCl)",
+    "Test tubes and test tube rack",
+    "Small pieces of: Magnesium ribbon, Zinc granules, Iron filings, Copper turnings",
+    "Safety goggles",
+    "Protective gloves",
+    "Splint for testing hydrogen",
+    "Matches or lighter"
+  ],
+  "objectives": [
+    "Observe and compare the reactions of different metals with acid",
+    "Identify which metals react with dilute hydrochloric acid",
+    "Recognize hydrogen gas production through bubbling",
+    "Arrange metals in order of reactivity",
+    "Explain the reactivity series and its importance"
+  ],
+  "theory": {
+    "introduction": "When reactive metals are placed in dilute acids, they displace hydrogen from the acid, producing a salt and hydrogen gas. The speed of this reaction depends on the metal's position in the reactivity series.",
+    "generalEquation": "Metal + Acid → Salt + Hydrogen Gas",
+    "example": "Mg + 2HCl → MgCl₂ + H₂↑",
+    "reactivitySeries": {
+      "description": "The reactivity series ranks metals from most reactive to least reactive",
+      "order": [
+        { "metal": "Potassium (K)", "reactivity": "Most reactive - reacts violently with water and acids" },
+        { "metal": "Sodium (Na)", "reactivity": "Very reactive - reacts vigorously with water and acids" },
+        { "metal": "Calcium (Ca)", "reactivity": "Very reactive" },
+        { "metal": "Magnesium (Mg)", "reactivity": "Reactive - vigorous reaction with acids" },
+        { "metal": "Aluminum (Al)", "reactivity": "Moderately reactive" },
+        { "metal": "Zinc (Zn)", "reactivity": "Moderately reactive - steady reaction with acids" },
+        { "metal": "Iron (Fe)", "reactivity": "Slowly reactive - gradual reaction with acids" },
+        { "metal": "Lead (Pb)", "reactivity": "Very slowly reactive" },
+        { "metal": "Hydrogen (H)", "reactivity": "Reference point" },
+        { "metal": "Copper (Cu)", "reactivity": "Unreactive with dilute acids" },
+        { "metal": "Silver (Ag)", "reactivity": "Unreactive" },
+        { "metal": "Gold (Au)", "reactivity": "Least reactive - does not react with acids" }
+      ],
+      "rule": "Only metals above hydrogen in the series can displace hydrogen from acids"
+    },
+    "observations": {
+      "fastReaction": "Vigorous bubbling, heat production, metal dissolves quickly",
+      "slowReaction": "Occasional bubbles, little or no heat, metal dissolves slowly",
+      "noReaction": "No bubbles, no heat, metal remains unchanged"
+    }
+  },
+  "procedure": [
+    {
+      "step": 1,
+      "instruction": "Put on safety goggles and protective gloves",
+      "safety": "CRITICAL - Acids can cause burns and eye damage"
+    },
+    {
+      "step": 2,
+      "instruction": "Label 4 test tubes: A (Magnesium), B (Zinc), C (Iron), D (Copper)",
+      "note": "Keep test tubes in a rack on a stable surface"
+    },
+    {
+      "step": 3,
+      "instruction": "Add about 5 mL of dilute hydrochloric acid to each test tube",
+      "safety": "Pour carefully to avoid splashing"
+    },
+    {
+      "step": 4,
+      "instruction": "Add a small piece of magnesium ribbon to test tube A",
+      "observation": "Watch for immediate vigorous bubbling"
+    },
+    {
+      "step": 5,
+      "instruction": "Observe and record the reaction rate, bubbling, and temperature change",
+      "expected": "Very fast reaction, lots of bubbles, tube feels warm"
+    },
+    {
+      "step": 6,
+      "instruction": "Add zinc granules to test tube B",
+      "observation": "Watch for steady bubbling"
+    },
+    {
+      "step": 7,
+      "instruction": "Observe and record the reaction",
+      "expected": "Moderate reaction, continuous bubbles, slight warmth"
+    },
+    {
+      "step": 8,
+      "instruction": "Add iron filings to test tube C",
+      "observation": "Watch for slow, occasional bubbling"
+    },
+    {
+      "step": 9,
+      "instruction": "Observe and record the reaction",
+      "expected": "Slow reaction, few bubbles"
+    },
+    {
+      "step": 10,
+      "instruction": "Add copper turnings to test tube D",
+      "observation": "Watch for any sign of reaction"
+    },
+    {
+      "step": 11,
+      "instruction": "Observe and record",
+      "expected": "No reaction, no bubbles, copper remains shiny"
+    },
+    {
+      "step": 12,
+      "instruction": "Test for hydrogen gas: Light a splint and bring it near the mouth of tube A",
+      "expected": "Hear a 'pop' sound - confirms hydrogen gas",
+      "safety": "Keep face away from test tube opening"
+    },
+    {
+      "step": 13,
+      "instruction": "Wait 5 minutes and compare all four tubes",
+      "analysis": "Rank metals by reaction speed"
+    }
+  ],
+  "observations": {
+    "magnesium": {
+      "reactionSpeed": "Very fast",
+      "bubbles": "Vigorous bubbling",
+      "heat": "Noticeable heat produced",
+      "metalChanges": "Ribbon dissolves quickly, disappears",
+      "solutionChanges": "May become slightly cloudy",
+      "equation": "Mg + 2HCl → MgCl₂ + H₂↑"
+    },
+    "zinc": {
+      "reactionSpeed": "Moderate/Fast",
+      "bubbles": "Steady continuous bubbling",
+      "heat": "Slight warmth",
+      "metalChanges": "Granules dissolve steadily",
+      "solutionChanges": "Remains clear",
+      "equation": "Zn + 2HCl → ZnCl₂ + H₂↑"
+    },
+    "iron": {
+      "reactionSpeed": "Slow",
+      "bubbles": "Occasional small bubbles",
+      "heat": "Little or no heat",
+      "metalChanges": "Filings dissolve very slowly",
+      "solutionChanges": "May turn greenish (Fe²⁺ ions)",
+      "equation": "Fe + 2HCl → FeCl₂ + H₂↑"
+    },
+    "copper": {
+      "reactionSpeed": "No reaction",
+      "bubbles": "No bubbles",
+      "heat": "No heat",
+      "metalChanges": "Remains shiny and unchanged",
+      "solutionChanges": "No change",
+      "explanation": "Copper is below hydrogen in the reactivity series and cannot displace it from acids"
+    }
+  },
+  "analysis": {
+    "reactivityOrder": "Magnesium > Zinc > Iron > Copper (no reaction)",
+    "hydrogenTest": "The 'pop' sound confirms hydrogen gas production. Hydrogen is flammable and burns with oxygen in air to produce the characteristic sound.",
+    "exothermicReactions": "Faster reactions release more heat energy. This indicates the reaction is exothermic.",
+    "displacement": "Only metals more reactive than hydrogen can displace it from acids. This is why copper does not react."
+  },
+  "applications": [
+    {
+      "application": "Cooking Utensils",
+      "description": "Copper and stainless steel cookware are safe because they don't react with acidic foods like tomatoes or lemon juice."
+    },
+    {
+      "application": "Batteries",
+      "description": "Zinc is used in many batteries because of its moderate reactivity. It provides electrons through chemical reactions."
+    },
+    {
+      "application": "Galvanizing",
+      "description": "Iron is coated with zinc to prevent rusting. The zinc reacts instead of the iron, providing sacrificial protection."
+    },
+    {
+      "application": "Antacids",
+      "description": "Magnesium hydroxide and other metal compounds are used in antacids to neutralize excess stomach acid."
+    },
+    {
+      "application": "Metal Extraction",
+      "description": "Understanding reactivity helps predict how much energy is needed to extract metals from their ores. More reactive metals require more energy."
+    },
+    {
+      "application": "Jewelry",
+      "description": "Gold and silver are used for jewelry because they don't react with acids, sweat, or air, maintaining their appearance."
+    },
+    {
+      "application": "Statues and Monuments",
+      "description": "Bronze (copper alloy) is used for outdoor statues because it resists corrosion better than more reactive metals."
+    }
+  ],
+  "safety": [
+    "ALWAYS wear safety goggles - acids can cause permanent eye damage",
+    "Wear protective gloves when handling acids",
+    "Work in a well-ventilated area - hydrogen gas is produced",
+    "Never add water to concentrated acid - always add acid to water",
+    "If acid spills on skin, rinse immediately with plenty of water for at least 10 minutes",
+    "Keep long hair tied back and loose clothing secured",
+    "Hydrogen gas is flammable - test carefully with a lit splint",
+    "Keep face and body away from test tube openings",
+    "Never taste or smell chemicals directly",
+    "Clean up any spills immediately",
+    "Dispose of chemical waste properly as instructed by teacher",
+    "Wash hands thoroughly after the experiment"
+  ],
+  "quiz": [
+    {
+      "question": "What gas is produced when a reactive metal reacts with an acid?",
+      "options": [
+        "Hydrogen (H₂)",
+        "Oxygen (O₂)",
+        "Carbon Dioxide (CO₂)",
+        "Nitrogen (N₂)"
+      ],
+      "correctAnswer": 0
+    },
+    {
+      "question": "Which metal reacts most vigorously with dilute hydrochloric acid?",
+      "options": [
+        "Copper",
+        "Iron",
+        "Magnesium",
+        "Gold"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "Which metal does NOT react with dilute hydrochloric acid?",
+      "options": [
+        "Magnesium",
+        "Zinc",
+        "Copper",
+        "Iron"
+      ],
+      "correctAnswer": 2
+    },
+    {
+      "question": "The 'pop' sound when testing with a lit splint indicates the presence of:",
+      "options": [
+        "Oxygen",
+        "Hydrogen",
+        "Carbon dioxide",
+        "Nitrogen"
+      ],
+      "correctAnswer": 1
+    },
+    {
+      "question": "Why is copper used for cooking utensils?",
+      "options": [
+        "It is the most reactive metal",
+        "It does not react with acidic foods",
+        "It reacts slowly with acids",
+        "It is magnetic"
+      ],
+      "correctAnswer": 1
+    }
+  ],
+  "extendedLearning": {
+    "displacementReactions": "A more reactive metal can displace a less reactive metal from its salt solution. For example, zinc can displace copper from copper sulfate solution: Zn + CuSO₄ → ZnSO₄ + Cu",
+    "electrochemicalSeries": "The reactivity series is related to standard electrode potentials. More reactive metals have more negative potentials and lose electrons more easily.",
+    "thermodynamics": "The reactivity series reflects the stability of metal ions. More reactive metals form more stable ions and release more energy when reacting.",
+    "industrialImportance": "Understanding metal reactivity is crucial for: metal extraction (pyrometallurgy and hydrometallurgy), corrosion prevention, alloy design, and battery technology."
+  },
+  "vocabulary": [
+    {
+      "term": "Reactivity Series",
+      "definition": "An ordered list of metals arranged from most reactive to least reactive"
+    },
+    {
+      "term": "Displacement Reaction",
+      "definition": "A reaction where a more reactive element replaces a less reactive element in a compound"
+    },
+    {
+      "term": "Hydrogen Gas",
+      "definition": "A colorless, odorless, highly flammable gas produced when reactive metals react with acids"
+    },
+    {
+      "term": "Exothermic Reaction",
+      "definition": "A reaction that releases heat energy to the surroundings"
+    },
+    {
+      "term": "Salt",
+      "definition": "An ionic compound formed when a metal reacts with an acid"
+    },
+    {
+      "term": "Dilute Acid",
+      "definition": "An acid solution that contains a relatively small amount of acid dissolved in water"
+    },
+    {
+      "term": "Vigorous Reaction",
+      "definition": "A fast, energetic reaction with lots of bubbling and heat production"
+    },
+    {
+      "term": "Galvanizing",
+      "definition": "Coating iron or steel with zinc to prevent corrosion"
+    }
+  ]
+}

@@ -1,0 +1,351 @@
+{
+  "id": "rusting-of-iron",
+  "title": "Rusting of Iron",
+  "description": "Investigate the conditions necessary for iron to rust",
+  "category": "chemistry",
+  "type": "rusting-investigation",
+  "difficulty": "intermediate",
+  "duration": "30 minutes",
+  "objectives": [
+    "Understand that rusting requires both water and oxygen",
+    "Design and conduct a controlled experiment with multiple variables",
+    "Analyze experimental results to draw conclusions",
+    "Learn prevention strategies for corrosion",
+    "Apply understanding of oxidation reactions"
+  ],
+  "keyTerms": [
+    {
+      "term": "Rusting",
+      "definition": "The oxidation of iron and iron alloys, forming iron oxide compounds (rust)"
+    },
+    {
+      "term": "Oxidation",
+      "definition": "A chemical reaction where a substance loses electrons, typically reacting with oxygen"
+    },
+    {
+      "term": "Corrosion",
+      "definition": "The gradual destruction of a material (usually metal) by chemical reaction with its environment"
+    },
+    {
+      "term": "Iron(III) Oxide",
+      "definition": "Fe₂O₃, the main component of rust, formed when iron reacts with oxygen and water"
+    },
+    {
+      "term": "Electrolyte",
+      "definition": "A substance that conducts electricity; water acts as an electrolyte in the rusting process"
+    },
+    {
+      "term": "Galvanizing",
+      "definition": "Coating iron or steel with zinc to protect it from corrosion"
+    }
+  ],
+  "safetyConsiderations": [
+    "Handle iron nails carefully to avoid puncture wounds",
+    "Wear safety goggles when handling containers",
+    "Be cautious with boiling water - risk of burns",
+    "Anhydrous calcium chloride should not contact skin or eyes",
+    "Handle oil carefully to avoid spills",
+    "Work in a well-ventilated area",
+    "Wash hands thoroughly after handling all materials"
+  ],
+  "supplies": [
+    {
+      "item": "Iron nails (3)",
+      "description": "Clean iron nails, approximately 5cm long",
+      "quantity": 3
+    },
+    {
+      "item": "Test tubes (3)",
+      "description": "Clear glass test tubes, 20-25cm long",
+      "quantity": 3
+    },
+    {
+      "item": "Distilled water",
+      "description": "Distilled water for experiments",
+      "quantity": "200 ml"
+    },
+    {
+      "item": "Mineral oil",
+      "description": "Oil to create a barrier against oxygen",
+      "quantity": "50 ml"
+    },
+    {
+      "item": "Calcium chloride (drying agent)",
+      "description": "Anhydrous calcium chloride or silica gel",
+      "quantity": "20 g"
+    },
+    {
+      "item": "Cotton wool",
+      "description": "To hold drying agent in tube",
+      "quantity": "Small amount"
+    },
+    {
+      "item": "Test tube rack",
+      "description": "To hold test tubes upright",
+      "quantity": 1
+    },
+    {
+      "item": "Measuring cylinder",
+      "description": "For measuring water and oil",
+      "quantity": 1
+    }
+  ],
+  "procedure": {
+    "setup": "Prepare three test tubes labeled A, B, and C. Place them in a test tube rack.",
+    "tubeA": {
+      "title": "Tube A: Control (Water + Oxygen)",
+      "steps": [
+        "Place a clean iron nail in test tube A",
+        "Add enough distilled water to cover the nail completely",
+        "Leave the tube open to allow air (oxygen) to contact the water",
+        "Observe and record results over 5 days"
+      ],
+      "conditions": "BOTH water and oxygen present",
+      "expectedResult": "Rust formation (orange-brown color)"
+    },
+    "tubeB": {
+      "title": "Tube B: No Oxygen",
+      "steps": [
+        "Boil distilled water and let it cool completely (to remove dissolved oxygen)",
+        "Place a clean iron nail in test tube B",
+        "Pour the boiled water over the nail",
+        "Add a layer of mineral oil (about 2cm) on top of the water to seal it",
+        "Observe and record results over 5 days"
+      ],
+      "conditions": "Water present, OXYGEN EXCLUDED by oil layer",
+      "expectedResult": "No rust formation"
+    },
+    "tubeC": {
+      "title": "Tube C: No Water",
+      "steps": [
+        "Place a clean iron nail in test tube C",
+        "Add a layer of calcium chloride drying agent at the bottom",
+        "Add a small amount of cotton wool on top of the drying agent",
+        "Close the tube loosely (allow air circulation)",
+        "Observe and record results over 5 days"
+      ],
+      "conditions": "Oxygen present, WATER REMOVED by drying agent",
+      "expectedResult": "No rust formation"
+    }
+  },
+  "observations": {
+    "day1": "Initial state - all nails appear identical",
+    "day2": "Tube A may show slight discoloration",
+    "day3": "Tube A shows visible rust formation; B and C remain unchanged",
+    "day4": "Rust in Tube A continues to develop; B and C still unchanged",
+    "day5": "Significant rust in Tube A; B and C show no signs of rusting"
+  },
+  "conclusion": {
+    "mainFinding": "Rusting requires BOTH water AND oxygen. Neither condition alone is sufficient.",
+    "evidence": [
+      "Tube A (both water and oxygen): Rust formed",
+      "Tube B (water only, no oxygen): No rust",
+      "Tube C (oxygen only, no water): No rust"
+    ],
+    "implications": "Understanding rusting mechanisms helps us develop effective prevention strategies"
+  },
+  "preventionStrategies": [
+    {
+      "method": "Oil/Grease Coating",
+      "mechanism": "Forms a barrier to exclude oxygen",
+      "effectiveness": "High",
+      "example": "Machine lubricants, WD-40"
+    },
+    {
+      "method": "Paint Coating",
+      "mechanism": "Seals surface from both water and oxygen",
+      "effectiveness": "Very High",
+      "example": "Car paint, house paint, bridge coating"
+    },
+    {
+      "method": "Galvanizing",
+      "mechanism": "Zinc coating sacrifices before iron rusts",
+      "effectiveness": "Very High",
+      "example": "Galvanized steel fencing, roofing"
+    },
+    {
+      "method": "Drying/Moisture Removal",
+      "mechanism": "Removes water necessary for oxidation",
+      "effectiveness": "Moderate",
+      "example": "Desiccant bags, heated storage"
+    },
+    {
+      "method": "Alloy Substitution",
+      "mechanism": "Using metals resistant to oxidation",
+      "effectiveness": "Very High",
+      "example": "Stainless steel, aluminum alloys"
+    }
+  ],
+  "realWorldApplications": [
+    {
+      "application": "Vehicle Maintenance",
+      "description": "Cars require regular painting and undercoating to prevent rust damage",
+      "economicImpact": "Billions spent annually on rust-related vehicle repairs"
+    },
+    {
+      "application": "Infrastructure",
+      "description": "Bridges, pipelines, and buildings need regular maintenance against corrosion",
+      "economicImpact": "Corrosion costs roughly 2-3% of GDP in developed nations"
+    },
+    {
+      "application": "Marine Engineering",
+      "description": "Ships face extreme rusting due to saltwater exposure",
+      "economicImpact": "Specialized coatings and maintenance required; significant operational cost"
+    },
+    {
+      "application": "Manufacturing",
+      "description": "Tools and machinery protected through various coating and maintenance methods",
+      "economicImpact": "Equipment life extension through rust prevention"
+    },
+    {
+      "application": "Archaeological Preservation",
+      "description": "Iron artifacts protected in controlled environments with low humidity",
+      "economicImpact": "Museum preservation relies on preventing oxidation"
+    }
+  ],
+  "quizQuestions": [
+    {
+      "id": 1,
+      "question": "For rust to form on iron, what two conditions are necessary?",
+      "options": [
+        {
+          "text": "Both water and oxygen",
+          "correct": true
+        },
+        {
+          "text": "Only oxygen",
+          "correct": false
+        },
+        {
+          "text": "Only water",
+          "correct": false
+        }
+      ],
+      "explanation": "Rust formation requires BOTH water (H₂O) and oxygen (O₂). The water acts as an electrolyte enabling electron transfer, while oxygen participates in the oxidation reaction."
+    },
+    {
+      "id": 2,
+      "question": "Which element in Tube B was excluded to prevent rusting?",
+      "options": [
+        {
+          "text": "Oxygen",
+          "correct": true
+        },
+        {
+          "text": "Nitrogen",
+          "correct": false
+        },
+        {
+          "text": "Hydrogen",
+          "correct": false
+        }
+      ],
+      "explanation": "The oil layer in Tube B sealed the surface, preventing oxygen from reaching the nail even though water was present."
+    },
+    {
+      "id": 3,
+      "question": "Which method prevents rust by excluding oxygen?",
+      "options": [
+        {
+          "text": "Using a drying agent",
+          "correct": false
+        },
+        {
+          "text": "Applying an oil layer",
+          "correct": true
+        },
+        {
+          "text": "Heating the metal",
+          "correct": false
+        }
+      ],
+      "explanation": "An oil layer creates a physical barrier that prevents oxygen from reaching the iron surface. Drying agents remove water, not oxygen."
+    },
+    {
+      "id": 4,
+      "question": "What is the chemical formula for the main component of rust?",
+      "options": [
+        {
+          "text": "Fe₂O₃",
+          "correct": true
+        },
+        {
+          "text": "FeSO₄",
+          "correct": false
+        },
+        {
+          "text": "Fe(OH)₂",
+          "correct": false
+        }
+      ],
+      "explanation": "Iron(III) oxide (Fe₂O₃) is the primary component of rust, formed from the oxidation of iron."
+    },
+    {
+      "id": 5,
+      "question": "In Tube C, which condition was removed to prevent rusting?",
+      "options": [
+        {
+          "text": "Oxygen",
+          "correct": false
+        },
+        {
+          "text": "Water",
+          "correct": true
+        },
+        {
+          "text": "Temperature",
+          "correct": false
+        }
+      ],
+      "explanation": "The calcium chloride drying agent removed moisture from the environment, demonstrating that water is necessary for rust formation."
+    }
+  ],
+  "extensions": [
+    {
+      "activity": "Salt Water Rusting",
+      "description": "Repeat the experiment with saltwater instead of distilled water to show how salt accelerates rusting",
+      "difficulty": "intermediate"
+    },
+    {
+      "activity": "Rust Prevention Coatings",
+      "description": "Compare effectiveness of different coatings (paint, oil, grease, wax) over time",
+      "difficulty": "intermediate"
+    },
+    {
+      "activity": "Temperature Effect",
+      "description": "Test if rusting occurs faster at higher temperatures",
+      "difficulty": "intermediate"
+    },
+    {
+      "activity": "Different Metals",
+      "description": "Compare rusting rates of iron, copper, aluminum, and zinc",
+      "difficulty": "advanced"
+    },
+    {
+      "activity": "Electrochemical Series",
+      "description": "Connect to electrochemistry by studying galvanic couples and cathodic protection",
+      "difficulty": "advanced"
+    }
+  ],
+  "learningOutcomes": [
+    "Students can identify conditions necessary for rust formation",
+    "Students can design controlled experiments with proper variable isolation",
+    "Students understand oxidation as a chemical reaction",
+    "Students can explain and apply rust prevention strategies",
+    "Students recognize real-world economic impacts of corrosion",
+    "Students can analyze experimental data to support conclusions"
+  ],
+  "xpRewards": {
+    "completion": 50,
+    "perfectQuiz": 50,
+    "total": 100
+  },
+  "relatedLabs": [
+    "combustion-analysis",
+    "acid-base-neutralization",
+    "electrochemistry-basics"
+  ],
+  "sequence": 20,
+  "version": "1.0.0",
+  "lastUpdated": "2024-01-15"
+}

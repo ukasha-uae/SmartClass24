@@ -1,0 +1,346 @@
+{
+  "id": "separation-techniques",
+  "title": "Separation Techniques",
+  "subject": "integrated-science",
+  "classLevel": "jhs-3",
+  "duration": 45,
+  "lessonType": "virtual-lab",
+  "description": "Learn and practice three essential separation techniques: filtration, evaporation, and decantation",
+  "materials": [
+    "Filter paper and funnel",
+    "Beakers (various sizes)",
+    "Evaporating dish",
+    "Bunsen burner or hot plate",
+    "Tripod stand and wire gauze",
+    "Stirring rod",
+    "Muddy water sample",
+    "Salt water solution",
+    "Oil and water mixture",
+    "Safety goggles",
+    "Heat-resistant gloves"
+  ],
+  "objectives": [
+    "Understand the principles behind filtration, evaporation, and decantation",
+    "Perform each separation technique correctly and safely",
+    "Choose the appropriate technique for different types of mixtures",
+    "Explain why each technique works based on physical properties",
+    "Apply separation techniques to real-world situations"
+  ],
+  "theory": {
+    "introduction": "Mixtures can be separated using different techniques based on the physical properties of their components. The choice of technique depends on whether the substances are solids or liquids, soluble or insoluble, and miscible or immiscible.",
+    "types": {
+      "filtration": {
+        "principle": "Separates insoluble solid particles from liquid using a porous barrier (filter paper)",
+        "mechanism": "Filter paper has tiny holes that allow liquid molecules to pass through but trap larger solid particles",
+        "bestFor": "Insoluble solids mixed with liquids (e.g., sand in water, muddy water)",
+        "terms": {
+          "filtrate": "The liquid that passes through the filter",
+          "residue": "The solid left behind on the filter paper"
+        }
+      },
+      "evaporation": {
+        "principle": "Separates dissolved solid from liquid by heating the solution until the liquid turns to vapor",
+        "mechanism": "Heat provides energy for liquid molecules to overcome intermolecular forces and escape as gas. The dissolved solid cannot evaporate and remains as crystals",
+        "bestFor": "Soluble solids dissolved in liquids (e.g., salt in water, sugar in tea)",
+        "limitation": "Only useful when you want to recover the solid, not the liquid. The liquid is lost as vapor"
+      },
+      "decantation": {
+        "principle": "Separates two immiscible liquids by carefully pouring off the top layer",
+        "mechanism": "Based on density differences - less dense liquids float on top of denser liquids",
+        "bestFor": "Immiscible liquids (e.g., oil and water, kerosene and water)",
+        "note": "Can also be used for very dense solids that settle quickly at the bottom"
+      }
+    },
+    "keyTerms": {
+      "mixture": "Two or more substances physically combined, not chemically bonded",
+      "solution": "A homogeneous mixture where one substance is dissolved in another",
+      "soluble": "Able to dissolve in a particular solvent",
+      "insoluble": "Cannot dissolve in a particular solvent",
+      "miscible": "Liquids that can mix together (e.g., water and ethanol)",
+      "immiscible": "Liquids that cannot mix together (e.g., oil and water)"
+    }
+  },
+  "procedure": {
+    "filtration": [
+      {
+        "step": 1,
+        "instruction": "Set up the filtration apparatus: place filter paper in funnel, support funnel on beaker",
+        "note": "Fold filter paper into quarters, then open to form a cone shape"
+      },
+      {
+        "step": 2,
+        "instruction": "Wet the filter paper with a few drops of water to help it stick to the funnel",
+        "purpose": "Ensures good contact between paper and funnel, prevents leaks"
+      },
+      {
+        "step": 3,
+        "instruction": "Slowly pour the muddy water mixture into the filter",
+        "safety": "Pour down a stirring rod to prevent splashing"
+      },
+      {
+        "step": 4,
+        "instruction": "Observe and record what happens",
+        "expected": "Clear water (filtrate) passes through, sand/dirt (residue) remains on filter"
+      },
+      {
+        "step": 5,
+        "instruction": "Compare the clarity of the filtrate with the original mixture",
+        "analysis": "The filtrate should be significantly clearer than the original muddy water"
+      }
+    ],
+    "evaporation": [
+      {
+        "step": 1,
+        "instruction": "Pour salt water solution into an evaporating dish",
+        "amount": "About half full to prevent boiling over"
+      },
+      {
+        "step": 2,
+        "instruction": "Place the dish on a wire gauze supported by a tripod stand",
+        "safety": "Ensure the setup is stable"
+      },
+      {
+        "step": 3,
+        "instruction": "Light the Bunsen burner and adjust to a gentle flame",
+        "safety": "Never leave heating equipment unattended"
+      },
+      {
+        "step": 4,
+        "instruction": "Heat the solution gently, stirring occasionally",
+        "note": "Gentle heating prevents spitting and loss of solution"
+      },
+      {
+        "step": 5,
+        "instruction": "Continue heating until most of the water has evaporated",
+        "observation": "Water level decreases, steam rises, salt crystals begin to form"
+      },
+      {
+        "step": 6,
+        "instruction": "Remove from heat before completely dry (residual heat will complete evaporation)",
+        "safety": "Use heat-resistant gloves, do not touch hot dish"
+      },
+      {
+        "step": 7,
+        "instruction": "Allow to cool and observe the white salt crystals left behind",
+        "analysis": "The water has turned to vapor and escaped, leaving pure salt"
+      }
+    ],
+    "decantation": [
+      {
+        "step": 1,
+        "instruction": "Pour oil and water mixture into a beaker",
+        "note": "Oil will float on top of water due to lower density"
+      },
+      {
+        "step": 2,
+        "instruction": "Allow the mixture to stand undisturbed for 2-3 minutes",
+        "purpose": "Ensures complete separation of the two layers"
+      },
+      {
+        "step": 3,
+        "instruction": "Observe the formation of two distinct layers",
+        "observation": "Oil forms a golden top layer, water forms a clear bottom layer"
+      },
+      {
+        "step": 4,
+        "instruction": "Carefully tilt the beaker and slowly pour the top oil layer into another container",
+        "technique": "Pour slowly and steadily, stop when you reach the interface"
+      },
+      {
+        "step": 5,
+        "instruction": "Stop pouring before the water layer reaches the lip",
+        "note": "A small amount of oil will remain with the water - this is acceptable"
+      },
+      {
+        "step": 6,
+        "instruction": "Examine the separated oil and water",
+        "analysis": "Most oil has been removed, demonstrating effective separation"
+      }
+    ]
+  },
+  "observations": {
+    "filtration": {
+      "before": "Cloudy, brown mixture with visible particles suspended throughout",
+      "during": "Liquid slowly passes through filter, particles trapped on paper, filter becomes discolored",
+      "after": "Clear, colorless filtrate collected below; brown residue on filter paper",
+      "explanation": "Insoluble solid particles are too large to pass through filter pores"
+    },
+    "evaporation": {
+      "before": "Clear, colorless salt water solution",
+      "during": "Solution bubbles gently, steam rises, water level decreases, crystals start forming on sides",
+      "after": "White crystalline salt covers bottom of dish, no liquid remains",
+      "explanation": "Water molecules gained enough energy to escape as vapor, salt cannot evaporate"
+    },
+    "decantation": {
+      "before": "Mixed oil and water appears cloudy initially",
+      "during": "Two distinct layers form - golden oil on top, clear water below",
+      "after": "Most oil transferred to new container, small amount of water remains with oil",
+      "explanation": "Oil is less dense (0.92 g/mL) than water (1.0 g/mL), so it floats"
+    }
+  },
+  "applications": [
+    {
+      "application": "Water Treatment",
+      "description": "Municipal water treatment plants use filtration as a key step to remove suspended particles, dirt, and microorganisms from drinking water. Multiple filtration stages with different pore sizes remove increasingly smaller particles.",
+      "impact": "Provides safe, clean drinking water for billions of people worldwide"
+    },
+    {
+      "application": "Salt Production",
+      "description": "Sea salt is produced by evaporating seawater in large, shallow pools. The sun's heat causes water to evaporate over weeks or months, leaving behind salt crystals that are harvested.",
+      "location": "Used in coastal areas worldwide, especially in Mediterranean and tropical regions"
+    },
+    {
+      "application": "Coffee and Tea Making",
+      "description": "Your daily coffee is made using filtration! Filter paper separates liquid coffee from ground coffee beans. Tea bags also use filtration to separate tea leaves from the brewed tea.",
+      "relevance": "One of the most common daily applications of separation techniques"
+    },
+    {
+      "application": "Oil Spill Cleanup",
+      "description": "When oil spills occur in oceans, cleanup crews use decantation and specialized equipment to separate floating oil from water. Booms contain the oil, which is then skimmed or pumped off the surface.",
+      "importance": "Critical for protecting marine ecosystems and coastal communities"
+    },
+    {
+      "application": "Kidney Filtration",
+      "description": "Your kidneys are natural filters! They filter your blood about 50 times per day, removing waste products while retaining useful substances like proteins and blood cells.",
+      "medical": "Dialysis machines use similar filtration principles for patients with kidney failure"
+    },
+    {
+      "application": "Sugar Refining",
+      "description": "Sugar cane juice is filtered to remove impurities, then evaporated to concentrate the solution. Further evaporation and crystallization produce refined sugar crystals.",
+      "industry": "Major industrial application combining filtration and evaporation"
+    },
+    {
+      "application": "Recycling",
+      "description": "Paper recycling involves filtering pulp to remove contaminants. Plastic recycling uses density differences (like decantation) to separate different types of plastics.",
+      "environmental": "Essential for sustainable waste management"
+    }
+  ],
+  "safety": [
+    "ALWAYS wear safety goggles when working with chemicals or heating equipment",
+    "Use heat-resistant gloves when handling hot equipment",
+    "Never leave heating equipment unattended",
+    "Ensure Bunsen burner is stable before lighting",
+    "Keep long hair tied back and loose clothing secured away from flames",
+    "Allow hot equipment to cool completely before touching",
+    "Pour liquids slowly and carefully to avoid splashing",
+    "Clean up spills immediately to prevent slips",
+    "Work in a well-ventilated area when evaporating solutions",
+    "Never look directly down into a container being heated",
+    "Use tongs or heat-proof gloves to handle hot evaporating dishes",
+    "Dispose of chemical waste properly as instructed",
+    "Wash hands thoroughly after completing the experiment"
+  ],
+  "quiz": [
+    {
+      "question": "Which separation technique is best for separating sand from water?",
+      "options": [
+        "Evaporation",
+        "Filtration",
+        "Decantation",
+        "Distillation"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Filtration is ideal for separating insoluble solids (sand) from liquids (water) because the filter paper traps solid particles while allowing liquid to pass through."
+    },
+    {
+      "question": "What happens to water during evaporation of salt water?",
+      "options": [
+        "It remains in the dish",
+        "It turns into vapor and escapes",
+        "It mixes with salt",
+        "It turns into ice"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Heat provides energy for water molecules to overcome intermolecular forces and escape as water vapor (steam). The salt cannot evaporate and remains as solid crystals."
+    },
+    {
+      "question": "Decantation works best for separating:",
+      "options": [
+        "Salt from water",
+        "Sand from water",
+        "Oil from water",
+        "Sugar from tea"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Decantation is most effective for separating immiscible liquids like oil and water. Oil floats on top due to its lower density, allowing it to be poured off."
+    },
+    {
+      "question": "The liquid that passes through filter paper during filtration is called:",
+      "options": [
+        "Residue",
+        "Filtrate",
+        "Solution",
+        "Suspension"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The filtrate is the clear liquid that passes through the filter paper. The solid left behind on the filter is called the residue."
+    },
+    {
+      "question": "Why does oil float on water during decantation?",
+      "options": [
+        "Oil is hot",
+        "Oil is less dense than water",
+        "Oil is magnetic",
+        "Oil is acidic"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Oil floats on water because it has a lower density (about 0.92 g/mL) compared to water (1.0 g/mL). Less dense substances float on top of denser substances."
+    }
+  ],
+  "extendedLearning": {
+    "advancedTechniques": "Other separation techniques include distillation (separates liquids with different boiling points), chromatography (separates colored compounds), centrifugation (uses spinning to separate by density), and magnetic separation (uses magnets for magnetic materials).",
+    "industrialScale": "Industries use large-scale versions of these techniques. For example, oil refineries use distillation towers dozens of meters tall to separate crude oil into gasoline, diesel, and other products.",
+    "combinedTechniques": "Complex mixtures often require multiple techniques. For example, separating a mixture of sand, salt, and water would require filtration (to remove sand) followed by evaporation (to obtain salt from the filtrate).",
+    "naturalProcesses": "Nature uses separation techniques too! The water cycle involves evaporation and condensation. Kidneys filter blood. Plants filter water through their roots."
+  },
+  "vocabulary": [
+    {
+      "term": "Filtration",
+      "definition": "A separation technique that uses a porous barrier to separate solid particles from liquid"
+    },
+    {
+      "term": "Evaporation",
+      "definition": "The process of turning a liquid into vapor by heating, used to separate dissolved solids from solutions"
+    },
+    {
+      "term": "Decantation",
+      "definition": "Carefully pouring off a liquid layer to separate it from another liquid or solid"
+    },
+    {
+      "term": "Filtrate",
+      "definition": "The liquid that passes through a filter"
+    },
+    {
+      "term": "Residue",
+      "definition": "The solid material left behind on a filter paper"
+    },
+    {
+      "term": "Soluble",
+      "definition": "Able to dissolve in a particular liquid (solvent)"
+    },
+    {
+      "term": "Insoluble",
+      "definition": "Unable to dissolve in a particular liquid"
+    },
+    {
+      "term": "Miscible",
+      "definition": "Liquids that can mix together to form a uniform solution"
+    },
+    {
+      "term": "Immiscible",
+      "definition": "Liquids that do not mix and form separate layers"
+    },
+    {
+      "term": "Density",
+      "definition": "Mass per unit volume of a substance; determines whether one substance floats on another"
+    },
+    {
+      "term": "Suspension",
+      "definition": "A mixture where solid particles are dispersed throughout a liquid but not dissolved"
+    },
+    {
+      "term": "Solution",
+      "definition": "A homogeneous mixture where one substance is completely dissolved in another"
+    }
+  ]
+}

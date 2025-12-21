@@ -1,0 +1,457 @@
+{
+  "id": "work-energy",
+  "title": "Work and Energy - Conservation of Energy",
+  "category": "physics",
+  "difficulty": "intermediate",
+  "duration": 35,
+  "description": "Explore the Law of Conservation of Energy by observing how potential energy converts to kinetic energy as objects move. Learn about PE = mgh and KE = ½mv² through interactive simulations.",
+  
+  "learningObjectives": [
+    "Understand the Law of Conservation of Energy",
+    "Calculate potential energy using PE = mgh",
+    "Calculate kinetic energy using KE = ½mv²",
+    "Observe energy transformation from potential to kinetic",
+    "Analyze how height affects final speed",
+    "Recognize that total mechanical energy remains constant"
+  ],
+
+  "theory": {
+    "introduction": "The Law of Conservation of Energy is one of the most fundamental principles in physics. It states that energy cannot be created or destroyed - it can only be transformed from one form to another. When you drop a ball, lift a weight, or ride a roller coaster, you're witnessing this law in action as energy continuously transforms between potential and kinetic forms.",
+    
+    "concepts": [
+      {
+        "title": "The Law of Conservation of Energy",
+        "content": "In a closed system, the total amount of energy remains constant. Energy can change forms - chemical to electrical, thermal to mechanical, potential to kinetic - but the total quantity never changes.\n\nThis law applies universally, from subatomic particles to galaxies. It's the foundation for understanding everything from simple pendulums to nuclear reactors to the entire universe's evolution.\n\nIn this lab, we focus on mechanical energy - the sum of potential energy and kinetic energy. Ignoring friction and air resistance, the total mechanical energy of a system remains constant as objects move and interact."
+      },
+      {
+        "title": "Potential Energy (PE)",
+        "content": "Potential energy is stored energy due to an object's position or configuration. It's the energy an object has because of where it is or how it's arranged.\n\nGravitational Potential Energy:\nThe formula is PE = mgh, where:\n- m = mass (in kilograms)\n- g = gravitational acceleration (9.81 m/s² on Earth)\n- h = height above a reference point (in meters)\n\nThe higher an object is, the more gravitational potential energy it has. Think of it as 'stored' energy waiting to be released. When you lift a book onto a shelf, you do work against gravity, and that work is stored as potential energy.\n\nImportant points:\n- PE is always measured relative to some reference point (usually the ground)\n- Doubling the height doubles the potential energy\n- Doubling the mass doubles the potential energy\n- PE is measured in Joules (J) in the SI system\n- 1 Joule = 1 Newton × 1 meter = 1 kg⋅m²/s²\n\nExamples:\n- Water behind a dam has enormous PE due to its height\n- A wound-up spring has elastic potential energy\n- A drawn bow has potential energy stored in the bent material"
+      },
+      {
+        "title": "Kinetic Energy (KE)",
+        "content": "Kinetic energy is the energy of motion. Any object that is moving has kinetic energy. The faster it moves, the more kinetic energy it has.\n\nThe formula is KE = ½mv², where:\n- m = mass (in kilograms)\n- v = velocity or speed (in meters per second)\n- The ½ factor comes from calculus (integrating F = ma)\n\nKey observations:\n- KE depends on the square of velocity. This means doubling the speed quadruples the kinetic energy!\n- A 2 kg object moving at 10 m/s has the same KE as a 1 kg object moving at 14.14 m/s\n- KE is always positive (or zero) because velocity is squared\n- Like PE, KE is measured in Joules\n\nThe v² relationship has important implications:\n- Stopping a car going 100 km/h requires four times more braking distance than stopping one going 50 km/h\n- Faster-moving objects in collisions cause much more damage\n- Wind energy increases dramatically with wind speed\n\nExamples:\n- A speeding car has significant KE (which is why crashes are so destructive)\n- Flowing water has KE used to turn turbines\n- Your body has KE when you run or jump"
+      },
+      {
+        "title": "Energy Transformation: PE ↔ KE",
+        "content": "When an object falls under gravity (ignoring air resistance), potential energy continuously converts to kinetic energy:\n\nAt the top:\n- Maximum PE (mgh)\n- Zero KE (not moving yet)\n- Total Energy = mgh\n\nHalfway down:\n- PE reduced to mgh/2 (height is h/2)\n- KE increased to mgh/2 (gained from lost PE)\n- Total Energy = mgh (constant!)\n\nAt the bottom:\n- Zero PE (no height)\n- Maximum KE (maximum speed)\n- Total Energy = ½mv² = mgh\n\nThe transformation is smooth and continuous. At every point during the fall, PE + KE = constant. This is the Law of Conservation of Energy in action.\n\nInteresting fact: The mass cancels out when calculating final speed! If you drop a feather and a hammer from the same height in a vacuum, they hit the ground at exactly the same time with the same speed (Apollo 15 astronaut David Scott demonstrated this on the Moon)."
+      },
+      {
+        "title": "Deriving Final Speed",
+        "content": "We can use energy conservation to find how fast an object will be moving after falling from a height h:\n\nAt top: Total Energy = PE + KE = mgh + 0 = mgh\nAt bottom: Total Energy = PE + KE = 0 + ½mv²\n\nBy conservation of energy:\nmgh = ½mv²\n\nNotice the mass m appears on both sides, so it cancels:\ngh = ½v²\n\nSolving for v:\nv² = 2gh\nv = √(2gh)\n\nThis remarkable result shows that final speed depends only on the height and gravitational acceleration, NOT on the mass! This is why all objects (in a vacuum) fall at the same rate.\n\nExamples:\n- Object falling from 5 m: v = √(2 × 9.81 × 5) = 9.9 m/s\n- Object falling from 20 m: v = √(2 × 9.81 × 20) = 19.8 m/s (exactly double)\n- Doubling height increases speed by √2 ≈ 1.414"
+      },
+      {
+        "title": "Work and Energy",
+        "content": "The concept of 'work' connects force and energy. In physics, work is done when a force moves an object through a distance:\n\nWork (W) = Force × Distance × cos(θ)\nWhere θ is the angle between force and motion\n\nWhen you lift an object of mass m through height h, you do work against gravity:\nW = F × d = mg × h = mgh\n\nThis work is stored as potential energy! The work-energy theorem states that the work done on an object equals its change in kinetic energy:\n\nW = ΔKE = KE_final - KE_initial\n\nThis connects work (force × distance) with energy changes. When gravity does positive work on a falling object, it gains kinetic energy. When you do work lifting an object, it gains potential energy.\n\nImportant distinctions:\n- In everyday language, 'work' means any effort. In physics, holding a heavy object stationary is NOT work (no motion)\n- Only the component of force in the direction of motion does work\n- Work is measured in Joules, same unit as energy"
+      },
+      {
+        "title": "Power: Energy Transfer Rate",
+        "content": "Power is the rate at which energy is transferred or work is done:\n\nPower (P) = Energy / Time = Work / Time\n\nUnit: Watt (W) = Joule per second (J/s)\n\nExamples:\n- A 100-watt light bulb uses 100 J of electrical energy every second\n- A 1000-watt microwave transfers 1000 J of energy per second to food\n- A car engine rated at 150 horsepower = 112,000 watts\n\nWhen you quickly run up stairs, you're doing the same work as walking up slowly (same height gained), but at a much higher power because it takes less time.\n\nHistorical note: The term 'horsepower' was coined by James Watt to market his steam engines. One horsepower = 746 watts, representing the power of a typical working horse."
+      }
+    ],
+
+    "realWorldApplications": [
+      {
+        "title": "Roller Coasters",
+        "description": "Roller coasters are masterpieces of energy transformation. The initial lift hill gives the train gravitational potential energy. As it descends, PE converts to KE, accelerating the train. Engineers carefully calculate heights to ensure the train has enough energy to complete the circuit. The first hill is always the tallest because energy is gradually lost to friction."
+      },
+      {
+        "title": "Hydroelectric Power",
+        "description": "Dams store water at high elevation, giving it enormous potential energy. When released, the falling water's PE converts to KE, spinning turbines that generate electricity. Hydroelectric power provides about 16% of global electricity, making it the world's largest renewable energy source. The Hoover Dam, for example, can generate 2,080 megawatts."
+      },
+      {
+        "title": "Regenerative Braking",
+        "description": "Electric and hybrid vehicles use regenerative braking to recover energy. When you brake, the motor runs in reverse, acting as a generator. This converts the car's kinetic energy back into electrical energy stored in the battery. This can improve efficiency by 10-25%, significantly extending range."
+      },
+      {
+        "title": "Pendulums and Clocks",
+        "description": "A pendulum continuously trades PE and KE. At the highest point of its swing, it has maximum PE and zero KE (momentarily stopped). At the lowest point, it has maximum KE and minimum PE. This back-and-forth transformation creates the regular motion used in pendulum clocks for centuries."
+      },
+      {
+        "title": "Sports: Pole Vaulting",
+        "description": "Pole vaulters sprint to build kinetic energy, then plant the pole. The pole bends, storing elastic potential energy. As it straightens, it launches the vaulter upward, converting KE to gravitational PE. World records exceed 6 meters - that's like jumping onto a two-story building!"
+      },
+      {
+        "title": "Vehicle Safety",
+        "description": "Crash safety designs absorb kinetic energy. Crumple zones deform during impacts, converting the vehicle's KE into work (crushing metal) and heat. Airbags slow passengers more gradually, spreading the energy absorption over more time. Since KE = ½mv², doubling speed requires quadruple the energy absorption."
+      },
+      {
+        "title": "Spring-Powered Devices",
+        "description": "Wind-up toys, mechanical watches, and mouse traps store elastic potential energy in springs. Winding the spring does work, storing energy. As it unwinds, this PE converts to KE of moving parts. Hooke's Law describes spring energy: PE = ½kx², where k is the spring constant and x is compression distance."
+      }
+    ]
+  },
+
+  "materials": [
+    {
+      "name": "Computer or tablet",
+      "description": "Device to run the interactive simulation",
+      "quantity": "1"
+    },
+    {
+      "name": "Internet connection",
+      "description": "To access the virtual lab",
+      "quantity": "1"
+    },
+    {
+      "name": "Calculator (optional)",
+      "description": "For verifying energy calculations",
+      "quantity": "1"
+    },
+    {
+      "name": "Notebook",
+      "description": "For recording measurements and observations",
+      "quantity": "1"
+    }
+  ],
+
+  "procedure": [
+    {
+      "step": 1,
+      "title": "Study Energy Concepts",
+      "instruction": "Read the introduction carefully to understand potential energy (PE = mgh), kinetic energy (KE = ½mv²), and the Law of Conservation of Energy. These are the foundations for understanding the experiment.",
+      "tips": [
+        "PE depends on mass, gravity, and height",
+        "KE depends on mass and the SQUARE of velocity",
+        "Total mechanical energy (PE + KE) stays constant",
+        "Energy transforms between forms but total amount doesn't change"
+      ],
+      "duration": "5 minutes"
+    },
+    {
+      "step": 2,
+      "title": "Familiarize with Controls",
+      "instruction": "Explore the simulation interface. Use sliders to adjust mass (1-5 kg) and height (1-10 m). Observe how these changes affect the calculated PE and expected final speed.",
+      "tips": [
+        "Higher mass increases PE but doesn't change final speed",
+        "Greater height increases both PE and final speed",
+        "Notice the energy bar visualizations",
+        "The animated ramp shows the object's path"
+      ],
+      "duration": "3 minutes"
+    },
+    {
+      "step": 3,
+      "title": "First Trial: Baseline Measurement",
+      "instruction": "Set mass to 2 kg and height to 5 m. Record the initial PE value. Click 'Release' and watch the simulation. Record the final speed and KE when the object reaches the bottom.",
+      "tips": [
+        "Watch the energy bars transform: blue (PE) → red (KE)",
+        "Purple bar shows total energy stays constant",
+        "The object rotates as it descends to show motion",
+        "Speed indicator appears showing current velocity"
+      ],
+      "duration": "2 minutes",
+      "observation": "At 5 m height with 2 kg mass, initial PE = 98.1 J. As object descends, PE decreases while KE increases. At bottom, final speed ≈ 9.9 m/s, KE ≈ 98.1 J. Total energy constant throughout."
+    },
+    {
+      "step": 4,
+      "title": "Vary Height (Constant Mass)",
+      "instruction": "Keep mass at 2 kg. Conduct trials at heights of 2 m, 5 m, and 10 m. For each, record initial PE, final speed, and final KE. Compare how height affects these values.",
+      "tips": [
+        "Reset between trials for accurate results",
+        "Notice the pattern: doubling height increases speed by √2",
+        "PE and KE both double when height doubles",
+        "Record all data in the measurements table"
+      ],
+      "duration": "6 minutes",
+      "observation": "Height 2 m: PE = 39.2 J, v ≈ 6.3 m/s. Height 5 m: PE = 98.1 J, v ≈ 9.9 m/s. Height 10 m: PE = 196.2 J, v ≈ 14.0 m/s. Speed increases with √height."
+    },
+    {
+      "step": 5,
+      "title": "Vary Mass (Constant Height)",
+      "instruction": "Set height to 5 m. Conduct trials with masses of 1 kg, 3 kg, and 5 kg. Record PE, final speed, and KE for each mass.",
+      "tips": [
+        "PE increases with mass (more mass = more energy)",
+        "KE also increases with mass",
+        "But final SPEED should be the same for all masses!",
+        "This demonstrates that v = √(2gh) is independent of mass"
+      ],
+      "duration": "6 minutes",
+      "observation": "Height 5 m constant. Mass 1 kg: PE = 49.1 J, v ≈ 9.9 m/s, KE = 49.1 J. Mass 3 kg: PE = 147.2 J, v ≈ 9.9 m/s, KE = 147.2 J. Mass 5 kg: PE = 245.3 J, v ≈ 9.9 m/s, KE = 245.3 J. Speed unchanged!"
+    },
+    {
+      "step": 6,
+      "title": "Analyze Energy Bars",
+      "instruction": "During a trial, watch the three energy bars carefully: blue (PE), red (KE), and purple (Total). Observe how PE and KE change inversely while Total remains constant.",
+      "tips": [
+        "As PE bar shrinks, KE bar grows by the same amount",
+        "The purple Total Energy bar stays completely full",
+        "This visual directly shows energy conservation",
+        "Try pausing mentally at halfway point - PE and KE should be equal"
+      ],
+      "duration": "3 minutes",
+      "observation": "Energy bars demonstrate conservation law visually. As object descends, blue PE bar decreases smoothly while red KE bar increases. Purple total bar never changes, confirming energy is conserved."
+    },
+    {
+      "step": 7,
+      "title": "Verify v = √(2gh)",
+      "instruction": "Pick any height. Calculate the expected final speed using v = √(2gh) where g = 9.81 m/s². Run the simulation and compare your calculation to the measured speed.",
+      "tips": [
+        "For h = 5 m: v = √(2 × 9.81 × 5) = √98.1 ≈ 9.9 m/s",
+        "For h = 10 m: v = √(2 × 9.81 × 10) = √196.2 ≈ 14.0 m/s",
+        "Your calculated value should match the simulation",
+        "Small differences may be due to rounding or animation timing"
+      ],
+      "duration": "4 minutes"
+    },
+    {
+      "step": 8,
+      "title": "Review and Reflect",
+      "instruction": "Review all your recorded measurements. Identify patterns and relationships. Confirm that PE always equals KE at the bottom, and that total energy is conserved in all trials.",
+      "tips": [
+        "Check that initial PE ≈ final KE for each trial",
+        "Verify v = √(2gh) relationship",
+        "Confirm mass doesn't affect final speed",
+        "Prepare for quiz by reviewing key concepts"
+      ],
+      "duration": "6 minutes"
+    }
+  ],
+
+  "expectedResults": {
+    "observations": [
+      "As height increases, both initial PE and final speed increase",
+      "Final speed follows the relationship v = √(2gh), not v = gh",
+      "Doubling height increases speed by factor of √2 ≈ 1.414, not factor of 2",
+      "As mass increases, PE and KE increase proportionally, but final speed stays the same",
+      "Throughout descent, PE decreases while KE increases by the same amount",
+      "Total mechanical energy (PE + KE) remains constant at all times",
+      "Energy bars provide visual confirmation of energy conservation"
+    ],
+    "conclusions": [
+      "Energy is conserved: initial PE equals final KE (when friction is negligible)",
+      "The Law of Conservation of Energy holds: energy transforms but total amount stays constant",
+      "Potential energy depends on mass, gravity, and height: PE = mgh",
+      "Kinetic energy depends on mass and velocity squared: KE = ½mv²",
+      "Final speed can be calculated from height: v = √(2gh)",
+      "Mass affects energy quantities (Joules) but not final speed",
+      "Energy transformation is smooth and continuous as object descends"
+    ]
+  },
+
+  "safety": [
+    {
+      "type": "info",
+      "message": "This is a virtual simulation with no physical safety hazards"
+    },
+    {
+      "type": "info",
+      "message": "Take breaks to prevent eye strain from screen time"
+    },
+    {
+      "type": "info",
+      "message": "In real-world physics experiments with moving objects, ensure the area is clear and equipment is properly secured"
+    }
+  ],
+
+  "quiz": [
+    {
+      "question": "What happens to potential energy as an object falls?",
+      "options": [
+        "It increases",
+        "It stays the same",
+        "It converts to kinetic energy",
+        "It disappears"
+      ],
+      "correctAnswer": 2,
+      "explanation": "As an object falls, its height decreases, so its potential energy (PE = mgh) decreases. This energy doesn't disappear - it transforms into kinetic energy. The total energy (PE + KE) remains constant."
+    },
+    {
+      "question": "At the bottom of the ramp, where is most of the energy?",
+      "options": [
+        "Potential energy",
+        "Kinetic energy",
+        "Heat energy",
+        "Lost to friction"
+      ],
+      "correctAnswer": 1,
+      "explanation": "At the bottom, height is zero so PE = 0. All the energy has converted to kinetic energy (energy of motion). The object is moving fastest at the bottom, so KE is maximum."
+    },
+    {
+      "question": "If you double the height, what happens to the final speed?",
+      "options": [
+        "Doubles",
+        "Quadruples",
+        "Increases by √2",
+        "Stays the same"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Since v = √(2gh), doubling h means v becomes √(2 × 2gh) = √2 × √(2gh) = √2 × v. The speed increases by √2 ≈ 1.414, not doubles. This is because speed depends on the square root of height."
+    },
+    {
+      "question": "What is the formula for potential energy?",
+      "options": [
+        "PE = ½mv²",
+        "PE = mgh",
+        "PE = mv",
+        "PE = F × d"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Gravitational potential energy is PE = mgh, where m is mass, g is gravitational acceleration (9.81 m/s²), and h is height. This represents the work done against gravity to lift an object to that height."
+    },
+    {
+      "question": "Two balls of different masses are dropped from the same height. Which hits the ground first?",
+      "options": [
+        "The heavier ball",
+        "The lighter ball",
+        "They hit at the same time",
+        "It depends on their shapes"
+      ],
+      "correctAnswer": 2,
+      "explanation": "In a vacuum (no air resistance), all objects fall at the same rate regardless of mass. Since v = √(2gh) doesn't include mass, final speed depends only on height. This was famously demonstrated on the Moon by Apollo 15 astronaut David Scott."
+    }
+  ],
+
+  "extendedLearning": {
+    "furtherExploration": [
+      {
+        "title": "Build a Physical Ramp",
+        "description": "Create a simple ramp using a board and books. Roll different objects (ball, toy car, cylinder) down from various heights. Use a stopwatch to measure time and calculate speed.",
+        "experiment": "For a 1-meter high ramp, calculate expected speed: v = √(2 × 9.81 × 1) ≈ 4.4 m/s. Measure actual speed and compare. Differences show effects of friction and rolling resistance."
+      },
+      {
+        "title": "Pendulum Energy",
+        "description": "A pendulum demonstrates continuous energy transformation. Make a simple pendulum with string and a weight. At the highest points, it has maximum PE and zero KE. At the lowest point, maximum KE and minimum PE.",
+        "experiment": "Measure the pendulum's swing amplitude. Does it return to exactly the same height? Any loss shows energy dissipation to air resistance and friction."
+      },
+      {
+        "title": "Research: Energy in Extreme Sports",
+        "description": "Investigate how athletes use energy transformation: skateboard ramps, ski jumps, bungee jumping, or parkour. How do they manage PE and KE to perform impressive feats?",
+        "research": "Look up the world record for ski jumping (over 250 meters!). Calculate the speed and energy involved. Why do they crouch to minimize air resistance?"
+      },
+      {
+        "title": "Energy Loss to Friction",
+        "description": "Real-world energy transformations aren't perfect. Friction converts mechanical energy to heat. Calculate how much energy is lost in various scenarios.",
+        "advanced": "If a ball dropped from 10 m only bounces back to 7 m, it lost 30% of its energy to heat and sound during impact. Where does this energy go? (Answer: molecular vibrations - heat!)"
+      },
+      {
+        "title": "Design a Roller Coaster",
+        "description": "Use graph paper to design a roller coaster profile. The first hill must be tallest to provide enough energy for the entire ride. Calculate minimum heights needed to complete loops and climbs.",
+        "application": "For a loop of radius r, the coaster needs speed v ≥ √(5gr) at the bottom. Work backwards to find required starting height using energy conservation."
+      }
+    ],
+    "connections": [
+      {
+        "subject": "Mathematics",
+        "topic": "Energy problems involve algebra (solving PE = mgh for h), square roots (v = √(2gh)), and graphing relationships between height, speed, and energy."
+      },
+      {
+        "subject": "Biology",
+        "topic": "Living organisms constantly transform energy: food's chemical energy → ATP → kinetic energy of muscles. The human body is about 25% efficient at converting energy."
+      },
+      {
+        "subject": "Engineering",
+        "topic": "Engineers design energy systems: power plants, vehicles, renewable energy. Understanding energy transformation is crucial for efficiency and sustainability."
+      },
+      {
+        "subject": "Environmental Science",
+        "topic": "Energy conservation is key to sustainability. Renewable energy sources (solar, wind, hydro) transform natural energy flows. Efficiency reduces waste and environmental impact."
+      }
+    ]
+  },
+
+  "vocabulary": [
+    {
+      "term": "Energy",
+      "definition": "The capacity to do work. Measured in Joules (J). Energy exists in many forms: kinetic, potential, thermal, chemical, electrical, nuclear."
+    },
+    {
+      "term": "Law of Conservation of Energy",
+      "definition": "Energy cannot be created or destroyed, only transformed from one form to another. The total energy of a closed system remains constant."
+    },
+    {
+      "term": "Potential Energy (PE)",
+      "definition": "Stored energy due to an object's position or configuration. Gravitational PE = mgh, elastic PE = ½kx²."
+    },
+    {
+      "term": "Kinetic Energy (KE)",
+      "definition": "Energy of motion. KE = ½mv². Any moving object has kinetic energy."
+    },
+    {
+      "term": "Mechanical Energy",
+      "definition": "The sum of potential and kinetic energy in a system. In ideal conditions (no friction), mechanical energy is conserved."
+    },
+    {
+      "term": "Work",
+      "definition": "Energy transferred by a force moving an object. Work (W) = Force × Distance × cos(θ). Measured in Joules."
+    },
+    {
+      "term": "Power",
+      "definition": "The rate of energy transfer or work done. Power = Energy/Time. Measured in Watts (W). 1 Watt = 1 Joule/second."
+    },
+    {
+      "term": "Joule (J)",
+      "definition": "The SI unit of energy. 1 Joule = 1 Newton-meter = 1 kg⋅m²/s². Named after physicist James Prescott Joule."
+    },
+    {
+      "term": "Gravitational Acceleration (g)",
+      "definition": "The acceleration due to Earth's gravity, approximately 9.81 m/s². Objects in free fall accelerate at this rate (ignoring air resistance)."
+    },
+    {
+      "term": "Closed System",
+      "definition": "A system that doesn't exchange energy with its surroundings. In reality, perfectly closed systems don't exist, but we can approximate them."
+    },
+    {
+      "term": "Dissipation",
+      "definition": "The conversion of organized energy (like kinetic) into disorganized energy (heat). Friction dissipates mechanical energy."
+    },
+    {
+      "term": "Efficiency",
+      "definition": "The ratio of useful energy output to energy input, usually expressed as a percentage. No real system is 100% efficient due to dissipation."
+    }
+  ],
+
+  "commonMistakes": [
+    {
+      "mistake": "Confusing speed and velocity with energy",
+      "why": "Energy is not the same as speed. Energy depends on speed squared (KE = ½mv²), so doubling speed quadruples energy",
+      "solution": "Remember: energy is measured in Joules, speed in m/s. They're related but different physical quantities."
+    },
+    {
+      "mistake": "Thinking doubling height doubles final speed",
+      "why": "Since v = √(2gh), speed depends on the square root of height, not height directly",
+      "solution": "To double the speed, you need to quadruple the height. Use the formula v = √(2gh) for accurate predictions."
+    },
+    {
+      "mistake": "Forgetting that mass cancels when calculating speed",
+      "why": "Students expect heavier objects to fall faster because they have more PE, but PE and KE both depend on mass the same way",
+      "solution": "In the equation mgh = ½mv², the mass m divides out: gh = ½v². Final speed v = √(2gh) is independent of mass."
+    },
+    {
+      "mistake": "Believing energy disappears",
+      "why": "When friction slows an object, it seems like energy vanishes, but it's actually converted to heat",
+      "solution": "Energy never disappears - it only transforms. Friction converts organized kinetic energy into disorganized thermal energy (heat)."
+    },
+    {
+      "mistake": "Not recognizing potential energy as 'real' energy",
+      "why": "PE seems abstract compared to obvious motion of KE, but PE is just as real and can do work",
+      "solution": "Think of PE as 'stored' KE waiting to be released. A book on a shelf has energy that will be released if it falls."
+    }
+  ],
+
+  "troubleshooting": [
+    {
+      "problem": "Calculated speed doesn't match simulation",
+      "possible_causes": [
+        "Arithmetic error in calculation",
+        "Using wrong formula",
+        "Rounding differences"
+      ],
+      "solutions": [
+        "Double-check calculation: v = √(2 × 9.81 × h)",
+        "Use calculator for square root",
+        "Small differences (< 0.1 m/s) are normal due to rounding"
+      ]
+    },
+    {
+      "problem": "Energy bars don't add up to 100%",
+      "possible_causes": [
+        "Animation timing effects",
+        "Rounding in display"
+      ],
+      "solutions": [
+        "Focus on the purple 'Total Energy' bar - it should stay constant",
+        "The principles are correct even if visual display has minor timing variations"
+      ]
+    }
+  ]
+}

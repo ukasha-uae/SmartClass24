@@ -1,7 +1,7 @@
 "use client";
 
 import { virtualLabExperiments } from '@/lib/virtual-labs-data';
-import { ArrowLeft, FlaskConical, CheckCircle2, ArrowRight, Trophy, Star, Zap } from 'lucide-react';
+import { ArrowLeft, FlaskConical, CheckCircle2, ArrowRight, Trophy, Star, Zap, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useState, useEffect, use } from 'react';
@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useLabProgress } from '@/stores/lab-progress-store';
+import { LabNotes } from '@/components/virtual-labs/LabNotes';
 import confetti from 'canvas-confetti';
 
 interface QuizQuestion {
@@ -43,6 +44,11 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   }
 
   const LabComponent = experiment.component;
+  
+  // Check if this is a self-contained enhanced lab (has its own quiz/completion flow)
+  const isEnhancedLab = LabComponent.name?.includes('Enhanced') || 
+                        LabComponent.displayName?.includes('Enhanced') ||
+                        ['hookes-law', 'simple-circuit', 'work-energy-inclined-plane', 'separation-techniques', 'ohms-law'].includes(experiment.slug);
 
   const subjectColors = {
     Biology: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30',
@@ -112,41 +118,64 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
         </Button>
       </Link>
 
-      {/* Lab Header */}
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-4">
-          <FlaskConical className="h-8 w-8 text-violet-600 dark:text-violet-400" />
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-3xl font-bold">{experiment.title}</h1>
-              <Badge className={`${subjectColors[experiment.subject as keyof typeof subjectColors]} border`}>
-                {experiment.subject}
-              </Badge>
+      {/* For enhanced labs, render directly without wrapper UI */}
+      {isEnhancedLab ? (
+        <>
+          {/* Simple header for enhanced labs */}
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <FlaskConical className="h-8 w-8 text-violet-600 dark:text-violet-400" />
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h1 className="text-3xl font-bold">{experiment.title}</h1>
+                  <Badge className={`${subjectColors[experiment.subject as keyof typeof subjectColors]} border`}>
+                    {experiment.subject}
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">{experiment.description}</p>
+              </div>
             </div>
-            <p className="text-muted-foreground">{experiment.description}</p>
           </div>
-        </div>
+          {/* Enhanced lab handles its own UI flow */}
+          <LabComponent />
+        </>
+      ) : (
+        <>
+          {/* Original wrapper UI for non-enhanced labs */}
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-4">
+              <FlaskConical className="h-8 w-8 text-violet-600 dark:text-violet-400" />
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <h1 className="text-3xl font-bold">{experiment.title}</h1>
+                  <Badge className={`${subjectColors[experiment.subject as keyof typeof subjectColors]} border`}>
+                    {experiment.subject}
+                  </Badge>
+                </div>
+                <p className="text-muted-foreground">{experiment.description}</p>
+              </div>
+            </div>
 
-        {/* Progress Indicator */}
-        <div className="flex items-center gap-4 mt-4">
-          <div className={`flex items-center gap-2 ${!experimentCompleted ? 'text-violet-600 font-semibold' : 'text-green-600'}`}>
-            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${!experimentCompleted ? 'bg-violet-600 text-white' : 'bg-green-600 text-white'}`}>
-              {experimentCompleted ? <CheckCircle2 className="h-5 w-5" /> : '1'}
+            {/* Progress Indicator */}
+            <div className="flex items-center gap-4 mt-4">
+              <div className={`flex items-center gap-2 ${!experimentCompleted ? 'text-violet-600 font-semibold' : 'text-green-600'}`}>
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${!experimentCompleted ? 'bg-violet-600 text-white' : 'bg-green-600 text-white'}`}>
+                  {experimentCompleted ? <CheckCircle2 className="h-5 w-5" /> : '1'}
+                </div>
+                <span>Experiment</span>
+              </div>
+              <div className="flex-1 h-1 bg-secondary" />
+              <div className={`flex items-center gap-2 ${showQuiz ? 'text-violet-600 font-semibold' : 'text-muted-foreground'}`}>
+                <div className={`h-8 w-8 rounded-full flex items-center justify-center ${showQuiz ? 'bg-violet-600 text-white' : 'bg-secondary'}`}>
+                  2
+                </div>
+                <span>Post-Lab Quiz</span>
+              </div>
             </div>
-            <span>Experiment</span>
           </div>
-          <div className="flex-1 h-1 bg-secondary" />
-          <div className={`flex items-center gap-2 ${showQuiz ? 'text-violet-600 font-semibold' : 'text-muted-foreground'}`}>
-            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${showQuiz ? 'bg-violet-600 text-white' : 'bg-secondary'}`}>
-              2
-            </div>
-            <span>Post-Lab Quiz</span>
-          </div>
-        </div>
-      </div>
 
-      {/* Experiment Section */}
-      {!showQuiz && (
+          {/* Experiment Section */}
+          {!showQuiz && (
         <>
           <Card>
             <CardContent className="p-6">
@@ -182,6 +211,18 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
               </AlertDescription>
             </Alert>
           )}
+
+          {/* Lab Notes with Exam Practice Reminder */}
+          <Alert className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+            <BookOpen className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-sm">
+              <strong>📝 Exam Preparation Tip:</strong> Use digital notes below to capture your observations quickly, 
+              but <strong>remember to copy important points by hand</strong> into your notebook! Handwriting builds 
+              muscle memory and prepares you for written exams.
+            </AlertDescription>
+          </Alert>
+
+          <LabNotes labId={experiment.id} labTitle={experiment.title} />
         </>
       )}
 
@@ -330,6 +371,8 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
             })()}
           </CardContent>
         </Card>
+      )}
+      </>
       )}
     </div>
   );

@@ -54,7 +54,7 @@ export default function InstallPrompt() {
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 50 }}
-        className="fixed bottom-20 left-4 right-4 z-50 md:left-auto md:right-4 md:w-96"
+        className="fixed bottom-24 left-4 right-4 z-[100] md:left-auto md:right-4 md:w-96"
       >
         <div className="bg-primary text-primary-foreground p-4 rounded-lg shadow-lg flex items-center justify-between gap-4">
           <div className="flex-1">
