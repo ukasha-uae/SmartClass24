@@ -1,0 +1,934 @@
+'use client';
+
+import * as React from 'react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
+import { Button } from '../ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Label } from '../ui/label';
+import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Flame, Sparkles, Wind, TestTube2, Package } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { cn } from '@/lib/utils';
+import { TextToSpeech } from '../text-to-speech';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TeacherVoice } from './TeacherVoice';
+import { useLabProgress } from '@/stores/lab-progress-store';
+import confetti from 'canvas-confetti';
+import { LabNotes } from './LabNotes';
+import { Alert, AlertDescription } from '../ui/alert';
+
+type TestStep = 'intro' | 'setup' | 'select-tube' | 'inserting' | 'result' | 'complete';
+type TubeContent = 'Oxygen' | 'Air' | 'Carbon Dioxide';
+
+interface TubeInfo {
+    content: TubeContent;
+    emoji: string;
+    color: string;
+    result: 'relight' | 'nothing' | 'extinguish';
+    description: string;
+}
+
+const tubes: Record<TubeContent, TubeInfo> = {
+    'Oxygen': { 
+        content: 'Oxygen', 
+        emoji: '💫', 
+        color: 'cyan',
+        result: 'relight',
+        description: 'Test tube containing pure oxygen'
+    },
+    'Air': { 
+        content: 'Air', 
+        emoji: '🌬️', 
+        color: 'gray',
+        result: 'nothing',
+        description: 'Test tube containing regular air'
+    },
+    'Carbon Dioxide': { 
+        content: 'Carbon Dioxide', 
+        emoji: '🫧', 
+        color: 'purple',
+        result: 'extinguish',
+        description: 'Test tube containing carbon dioxide'
+    },
+};
+
+export function OxygenTestLabEnhanced() {
+    const { toast } = useToast();
+    const { markLabComplete, isLabCompleted, totalXP } = useLabProgress();
+    const [currentStep, setCurrentStep] = React.useState<TestStep>('intro');
+    const [selectedTube, setSelectedTube] = React.useState<TubeContent | null>(null);
+    const [testResult, setTestResult] = React.useState<'relight' | 'nothing' | 'extinguish' | null>(null);
+    const [isAnimating, setIsAnimating] = React.useState(false);
+    const [showPractice, setShowPractice] = React.useState(false);
+    const [showSupplies, setShowSupplies] = React.useState(true);
+    const [practiceInteraction, setPracticeInteraction] = React.useState<'oxygen' | 'test' | 'safety' | null>(null);
+    const [teacherMessage, setTeacherMessage] = React.useState('');
+    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    const [startTime] = React.useState(Date.now());
+    const [xpEarned, setXpEarned] = React.useState<number | null>(null);
+    const [showCelebration, setShowCelebration] = React.useState(false);
+    
+    const labId = 'oxygen-test-lab';
+    const alreadyCompleted = isLabCompleted(labId);
+
+    // Quiz State - 3 questions
+    const [quizAnswers, setQuizAnswers] = React.useState<{ [key: number]: string }>({});
+    const [quizFeedback, setQuizFeedback] = React.useState<string | null>(null);
+    const [quizAttempts, setQuizAttempts] = React.useState(0);
+    const [quizIsCorrect, setQuizIsCorrect] = React.useState<boolean | null>(null);
+
+    // Text constants
+    const objectiveText = "To confirm the presence of oxygen gas using the glowing splint test. When a glowing (not burning) splint is introduced into oxygen, it relights into a bright flame.";
+    const theoryText = "Oxygen (O₂) is a colorless, odorless gas that makes up about 21% of Earth's atmosphere. It is essential for combustion and supports burning. When a glowing splint (ember) is placed in pure oxygen, the concentration is high enough to rekindle the flame. This distinguishes oxygen from regular air, where the splint would only continue to glow dimly.";
+    const safetyText = "Always wear safety goggles. Be careful with the glowing splint - don't touch the hot end. Work in a well-ventilated area. Keep oxygen away from flammable materials as it accelerates burning. Never point the test tube at yourself or others when inserting the splint.";
+
+    // Show welcome and step messages
+    React.useEffect(() => {
+        if (currentStep === 'intro') {
+            setTeacherMessage("Welcome to the Oxygen Test Lab! Today we'll identify oxygen gas by watching what happens to a glowing splint. It's like magic - but it's science! Ready to begin?");
+        } else if (currentStep === 'setup') {
+            setTeacherMessage("Excellent! Look at these three test tubes. One contains pure oxygen. When we put a glowing splint inside, something amazing will happen!");
+    } else if (currentStep === 'prepare-splint') {
+      setTeacherMessage("🔥 Now comes the important part! We need to prepare a glowing splint - that means the wood should have a red ember but NO flame. This glowing ember will show us if oxygen is present.");
+    } else if (currentStep === 'testing') {
+      setTeacherMessage("🎯 Watch closely! When we insert the glowing splint into pure oxygen, something amazing happens...");
+    } else if (currentStep === 'result') {
+      if (testResult === 'relit') {
+        setTeacherMessage("🎉 Did you see that?! The splint burst back into flame! That's the oxygen supporting combustion. This is exactly what we expect with pure oxygen!");
+      } else {
+        setTeacherMessage("👀 Notice how the splint just glowed for a moment and went out? That's because air only has 21% oxygen - not enough to relight the splint. Great comparison!");
+      }
+    } else if (currentStep === 'complete') {
+      setTeacherMessage("🌟 Excellent work! You've successfully identified oxygen gas. This test is used in real labs worldwide. Ready to test your knowledge with a quick quiz?");
+    }
+  }, [currentStep, testResult, pendingTransition]);
+
+  const handleTeacherComplete = React.useCallback(() => {
+    if (pendingTransition) {
+      pendingTransition();
+      setPendingTransition(null);
+    }
+  }, [pendingTransition]);
+
+  const handleQuizSubmit = () => {
+    setQuizAttempts(prev => prev + 1);
+    
+    const allCorrect = Object.keys(correctAnswers).every(
+      key => quizAnswers[Number(key)] === correctAnswers[Number(key) as keyof typeof correctAnswers]
+    );
+
+    if (allCorrect) {
+      setQuizIsCorrect(true);
+      setQuizFeedback("🎉 Perfect! You've mastered the oxygen test!");
+      
+      // Calculate XP based on attempts
+      const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+      const score = quizAttempts === 0 ? 100 : quizAttempts === 1 ? 80 : 60;
+      
+      if (!alreadyCompleted) {
+        markLabComplete(labId, score, timeSpent);
+        setXpEarned(score);
+        setShowCelebration(true);
+        
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          origin: { y: 0.5 },
+        });
+
+        setTimeout(() => setShowCelebration(false), 3000);
+      }
+    } else {
+      setQuizIsCorrect(false);
+      const wrongCount = Object.keys(correctAnswers).filter(
+        key => quizAnswers[Number(key)] !== correctAnswers[Number(key) as keyof typeof correctAnswers]
+      ).length;
+      setQuizFeedback(`Not quite! You got ${3 - wrongCount} out of 3 correct. Review the lesson and try again.`);
+    }
+  };
+
+  const resetLab = () => {
+    setCurrentStep('intro');
+    setSelectedGas(null);
+    setTestResult(null);
+    setIsAnimating(false);
+    setShowPractice(false);
+    setShowSupplies(true);
+    setPracticeInteraction(null);
+    setQuizAnswers({});
+    setQuizFeedback(null);
+    setQuizAttempts(0);
+    setQuizIsCorrect(null);
+    setTeacherMessage('');
+    setPendingTransition(null);
+  };
+
+  return (
+    <div className="max-w-5xl mx-auto p-4 space-y-6">
+      <Card className="border-2">
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950">
+          <CardTitle className="flex items-center gap-2 text-2xl">
+            <TestTube className="w-8 h-8 text-blue-600" />
+            Oxygen Test Lab - Glowing Splint Test
+          </CardTitle>
+          <CardDescription className="text-base">
+            Learn how to identify oxygen gas using the glowing splint test
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="p-6">
+          <AnimatePresence mode="wait">
+            {/* INTRODUCTION STEP */}
+            {currentStep === 'intro' && (
+              <motion.div
+                key="intro"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-6"
+              >
+                <div className="prose dark:prose-invert max-w-none">
+                  <h3 className="text-xl font-semibold flex items-center gap-2">
+                    <Sparkles className="w-6 h-6 text-blue-500" />
+                    The Glowing Splint Test
+                  </h3>
+                  <p>
+                    Oxygen is a colorless, odorless gas that makes up about 21% of Earth's atmosphere. 
+                    It is essential for combustion (burning) and respiration. The glowing splint test is 
+                    a simple and reliable method to identify the presence of oxygen gas.
+                  </p>
+
+                  <h4 className="text-lg font-semibold mt-4">How It Works:</h4>
+                  <ul className="space-y-2">
+                    <li><strong>Pure Oxygen:</strong> A glowing splint relights into a bright flame</li>
+                    <li><strong>Air (21% oxygen):</strong> A glowing splint continues glowing or goes out</li>
+                    <li><strong>No oxygen:</strong> The splint goes out immediately</li>
+                  </ul>
+
+                  <div className="bg-amber-50 dark:bg-amber-950 border-l-4 border-amber-500 p-4 mt-4 rounded">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-amber-900 dark:text-amber-100">Safety First!</h4>
+                        <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-1 mt-2">
+                          <li>• Wear safety goggles at all times</li>
+                          <li>• Keep long hair tied back</li>
+                          <li>• Work in a well-ventilated area</li>
+                          <li>• Never point test tubes at yourself or others</li>
+                          <li>• Have a fire extinguisher nearby</li>
+                          <li>• Handle flames with care</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h4 className="text-lg font-semibold mt-6">What You'll Need:</h4>
+                  <ul className="grid grid-cols-2 gap-2">
+                    <li>✓ Test tubes with oxygen gas</li>
+                    <li>✓ Test tubes with air</li>
+                    <li>✓ Wooden splints</li>
+                    <li>✓ Matches or lighter</li>
+                    <li>✓ Safety goggles</li>
+                    <li>✓ Test tube rack</li>
+                  </ul>
+                </div>
+
+                <Button
+                  onClick={() => setStep('setup')}
+                  size="lg"
+                  className="w-full"
+                >
+                  Begin Experiment
+                </Button>
+              </motion.div>
+            )}
+
+            {/* SETUP STEP */}
+            {currentStep === 'setup' && (
+              <motion.div
+                key="setup"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-6"
+              >
+                <div className="prose dark:prose-invert max-w-none">
+                  <h3 className="text-xl font-semibold flex items-center gap-2">
+                    <Eye className="w-6 h-6 text-blue-500" />
+                    Prepare Your Materials
+                  </h3>
+
+                  <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg space-y-3">
+                    <h4 className="font-semibold text-blue-900 dark:text-blue-100">Setup Instructions:</h4>
+                    <ol className="space-y-2 text-blue-800 dark:text-blue-200">
+                      <li><strong>Step 1:</strong> Put on your safety goggles</li>
+                      <li><strong>Step 2:</strong> Prepare two test tubes - one with oxygen, one with air</li>
+                      <li><strong>Step 3:</strong> Light a wooden splint and let it burn for a few seconds</li>
+                      <li><strong>Step 4:</strong> Blow out the flame so the splint is <em>glowing</em> (red ember)</li>
+                      <li><strong>Step 5:</strong> Quickly insert the glowing splint into the test tube</li>
+                      <li><strong>Step 6:</strong> Observe what happens</li>
+                    </ol>
+                  </div>
+
+                  <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg mt-4">
+                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">Important Note:</h4>
+                    <p className="text-green-800 dark:text-green-200">
+                      The splint must be <strong>glowing</strong> (with a red ember) but NOT flaming. 
+                      If there's a flame, blow it out first. The test works because oxygen will relight 
+                      the glowing ember into a flame.
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => setStep('experiment')}
+                  size="lg"
+                  className="w-full"
+                >
+                  Start Testing
+                </Button>
+              </motion.div>
+            )}
+
+            {/* EXPERIMENT STEP */}
+            {currentStep === 'experiment' && (
+              <motion.div
+                key="experiment"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-6"
+              >
+                <div className="text-center space-y-2">
+                  <h3 className="text-xl font-semibold">Select a Gas to Test</h3>
+                  <p className="text-muted-foreground">
+                    Test both oxygen and air to see the difference
+                  </p>
+                </div>
+
+                {/* Gas Selection */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {(['oxygen', 'air'] as const).map((gas) => (
+                    <motion.button
+                      key={gas}
+                      onClick={() => setSelectedGas(gas)}
+                      disabled={
+                        isTesting ||
+                        testResults.some((r) => r.gas === gas)
+                      }
+                      className={`p-6 rounded-xl border-2 transition-all ${
+                        selectedGas === gas
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950 shadow-lg'
+                          : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
+                      } ${
+                        testResults.some((r) => r.gas === gas)
+                          ? 'opacity-50 cursor-not-allowed'
+                          : 'cursor-pointer'
+                      }`}
+                      whileHover={{ scale: testResults.some((r) => r.gas === gas) ? 1 : 1.02 }}
+                      whileTap={{ scale: testResults.some((r) => r.gas === gas) ? 1 : 0.98 }}
+                    >
+                      <div className="text-4xl mb-2">{gasData[gas].icon}</div>
+                      <h4 className="font-semibold text-lg mb-1">
+                        {gasData[gas].label}
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {gasData[gas].description}
+                      </p>
+                      {testResults.some((r) => r.gas === gas) && (
+                        <div className="mt-3 flex items-center justify-center gap-2 text-green-600">
+                          <CheckCircle className="w-5 h-5" />
+                          <span className="text-sm font-medium">Tested</span>
+                        </div>
+                      )}
+                    </motion.button>
+                  ))}
+                </div>
+
+                {/* Test Tube Visualization */}
+                {selectedGas !== 'none' && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex justify-center items-center gap-8 py-8"
+                  >
+                    {/* Glowing Splint - ALWAYS VISIBLE */}
+                    <div className="relative flex flex-col items-center gap-4">
+                      <p className="text-sm font-medium text-muted-foreground">Glowing Splint</p>
+                      <motion.div
+                        animate={isTesting ? { 
+                          x: 120,
+                          y: -20,
+                          scale: 0.8
+                        } : {
+                          x: 0,
+                          y: 0,
+                          scale: 1
+                        }}
+                        transition={{ duration: 1 }}
+                        className="relative"
+                      >
+                        {/* Splint stick */}
+                        <div className="w-3 h-32 bg-gradient-to-b from-amber-900 via-amber-800 to-amber-700 rounded-sm shadow-lg" />
+                        
+                        {/* Splint tip with different states */}
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                          {(!isTesting || splintState === 'glowing') && (
+                            <motion.div
+                              animate={{
+                                scale: [1, 1.2, 1],
+                                opacity: [0.8, 1, 0.8],
+                              }}
+                              transition={{
+                                duration: 0.5,
+                                repeat: Infinity,
+                              }}
+                              className="w-5 h-5 bg-orange-500 rounded-full shadow-[0_0_15px_5px_rgba(249,115,22,0.7)]"
+                            >
+                              <div className="absolute inset-0 bg-red-600 rounded-full opacity-50 blur-sm" />
+                            </motion.div>
+                          )}
+                          
+                          {isTesting && splintState === 'relit' && (
+                            <>
+                              <motion.div
+                                animate={{
+                                  scale: [1, 1.3, 1],
+                                  opacity: [0.9, 1, 0.9],
+                                }}
+                                transition={{
+                                  duration: 0.3,
+                                  repeat: Infinity,
+                                }}
+                              >
+                                <Flame className="w-8 h-8 text-orange-500" />
+                              </motion.div>
+                              <motion.div
+                                className="absolute inset-0"
+                                animate={{
+                                  opacity: [0.5, 0.8, 0.5],
+                                }}
+                                transition={{
+                                  duration: 0.4,
+                                  repeat: Infinity,
+                                }}
+                              >
+                                <div className="w-8 h-8 bg-yellow-400 rounded-full blur-sm" />
+                              </motion.div>
+                            </>
+                          )}
+                          
+                          {isTesting && splintState === 'extinguished' && (
+                            <motion.div
+                              initial={{ scale: 1 }}
+                              animate={{ scale: 0.7, opacity: 0.3 }}
+                              className="w-4 h-4 bg-gray-500 rounded-full"
+                            />
+                          )}
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    {/* Test Tube */}
+                    <div className="relative">
+                      <div
+                        className={`w-24 h-48 rounded-b-3xl border-4 border-gray-300 dark:border-gray-600 bg-gradient-to-b ${gasData[selectedGas].color} ${gasData[selectedGas].darkColor} relative overflow-hidden`}
+                      >
+                        {/* Gas label */}
+                        <div className="absolute top-2 left-0 right-0 text-center">
+                          <span className="text-xs font-semibold px-2 py-1 bg-white/80 dark:bg-black/80 rounded">
+                            {selectedGas === 'oxygen' ? 'O₂' : 'Air'}
+                          </span>
+                        </div>
+
+                        {/* Animated oxygen molecules (if oxygen) */}
+                        {selectedGas === 'oxygen' && (
+                          <>
+                            {Array.from({ length: 8 }).map((_, i) => (
+                              <motion.div
+                                key={i}
+                                className="absolute w-2 h-2 bg-blue-400 rounded-full"
+                                animate={{
+                                  x: [
+                                    Math.random() * 80,
+                                    Math.random() * 80,
+                                    Math.random() * 80,
+                                  ],
+                                  y: [
+                                    Math.random() * 180,
+                                    Math.random() * 180,
+                                    Math.random() * 180,
+                                  ],
+                                }}
+                                transition={{
+                                  duration: 3 + Math.random() * 2,
+                                  repeat: Infinity,
+                                  ease: 'linear',
+                                }}
+                              />
+                            ))}
+                          </>
+                        )}
+                      </div>
+
+                      {/* Glowing Splint */}
+                      <AnimatePresence>
+                        {isTesting && (
+                          <motion.div
+                            initial={{ y: -50, opacity: 0 }}
+                            animate={{ y: 20, opacity: 1 }}
+                            exit={{ y: -50, opacity: 0 }}
+                            className="absolute top-0 left-1/2 -translate-x-1/2 z-10"
+                          >
+                            {/* Splint stick */}
+                            <div className="w-2 h-32 bg-gradient-to-b from-amber-900 to-amber-700 rounded-sm" />
+                            
+                            {/* Splint tip with different states */}
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                              {splintState === 'glowing' && (
+                                <motion.div
+                                  animate={{
+                                    scale: [1, 1.2, 1],
+                                    opacity: [0.8, 1, 0.8],
+                                  }}
+                                  transition={{
+                                    duration: 0.5,
+                                    repeat: Infinity,
+                                  }}
+                                  className="w-4 h-4 bg-orange-500 rounded-full shadow-[0_0_15px_5px_rgba(249,115,22,0.7)]"
+                                />
+                              )}
+                              
+                              {splintState === 'relit' && (
+                                <>
+                                  <motion.div
+                                    animate={{
+                                      scale: [1, 1.3, 1],
+                                      opacity: [0.9, 1, 0.9],
+                                    }}
+                                    transition={{
+                                      duration: 0.3,
+                                      repeat: Infinity,
+                                    }}
+                                  >
+                                    <Flame className="w-8 h-8 text-orange-500" />
+                                  </motion.div>
+                                  <motion.div
+                                    className="absolute inset-0"
+                                    animate={{
+                                      opacity: [0.5, 0.8, 0.5],
+                                    }}
+                                    transition={{
+                                      duration: 0.4,
+                                      repeat: Infinity,
+                                    }}
+                                  >
+                                    <div className="w-8 h-8 bg-yellow-400 rounded-full blur-sm" />
+                                  </motion.div>
+                                </>
+                              )}
+                              
+                              {splintState === 'extinguished' && (
+                                <motion.div
+                                  initial={{ scale: 1 }}
+                                  animate={{ scale: 0.7, opacity: 0.3 }}
+                                  className="w-3 h-3 bg-gray-500 rounded-full"
+                                />
+                              )}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Status indicator */}
+                    <div className="text-left space-y-2">
+                      {!isTesting && splintState === 'idle' && (
+                        <div className="text-muted-foreground">
+                          <p className="font-medium">Ready to test</p>
+                          <p className="text-sm">The glowing splint will move into the tube</p>
+                        </div>
+                      )}
+                      
+                      {isTesting && splintState === 'glowing' && (
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-orange-600"
+                        >
+                          <p className="font-medium">Inserting glowing splint...</p>
+                          <p className="text-sm">Observing reaction</p>
+                        </motion.div>
+                      )}
+                      
+                      {splintState === 'relit' && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="text-yellow-600"
+                        >
+                          <p className="font-medium text-lg">🔥 Splint Relights!</p>
+                          <p className="text-sm">Bright flame confirms oxygen</p>
+                        </motion.div>
+                      )}
+                      
+                      {splintState === 'extinguished' && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="text-gray-600"
+                        >
+                          <p className="font-medium">Splint goes out</p>
+                          <p className="text-sm">Not enough oxygen to relight</p>
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Test Button */}
+                {selectedGas !== 'none' && !isTesting && (
+                  <Button
+                    onClick={handleTestGas}
+                    size="lg"
+                    className="w-full"
+                    disabled={isTesting}
+                  >
+                    <Flame className="w-5 h-5 mr-2" />
+                    Insert Glowing Splint
+                  </Button>
+                )}
+
+                {/* Results Table */}
+                {testResults.length > 0 && (
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-lg">Test Results:</h4>
+                    {testResults.map((result, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="mt-0.5">
+                            {result.splintState === 'relit' ? (
+                              <Flame className="w-6 h-6 text-orange-500" />
+                            ) : (
+                              <Wind className="w-6 h-6 text-gray-500" />
+                            )}
+                          </div>
+                          <div className="flex-1">
+                            <h5 className="font-semibold capitalize">
+                              {result.gas === 'oxygen' ? 'Oxygen Gas' : 'Air'}
+                            </h5>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {result.observation}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Continue Button */}
+                {testResults.length >= 2 && (
+                  <Button
+                    onClick={() => setStep('results')}
+                    size="lg"
+                    className="w-full"
+                  >
+                    View Analysis
+                  </Button>
+                )}
+              </motion.div>
+            )}
+
+            {/* RESULTS STEP */}
+            {currentStep === 'results' && (
+              <motion.div
+                key="results"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-6"
+              >
+                <div className="text-center space-y-2">
+                  <h3 className="text-2xl font-bold flex items-center justify-center gap-2">
+                    <Sparkles className="w-7 h-7 text-blue-500" />
+                    Analysis and Conclusions
+                  </h3>
+                </div>
+
+                <div className="prose dark:prose-invert max-w-none space-y-6">
+                  <div className="bg-blue-50 dark:bg-blue-950 p-5 rounded-lg">
+                    <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-3">
+                      🔬 What We Observed:
+                    </h4>
+                    <div className="space-y-3 text-blue-800 dark:text-blue-200">
+                      <div className="flex items-start gap-2">
+                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <p>
+                          <strong>Pure Oxygen:</strong> The glowing splint burst into a bright flame. 
+                          This is the positive test for oxygen gas.
+                        </p>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <XCircle className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                        <p>
+                          <strong>Normal Air:</strong> The glowing splint continued to glow briefly 
+                          before going out. Air contains only 21% oxygen - not concentrated enough 
+                          to relight the splint.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-green-50 dark:bg-green-950 p-5 rounded-lg">
+                    <h4 className="text-lg font-semibold text-green-900 dark:text-green-100 mb-3">
+                      💡 Why This Works:
+                    </h4>
+                    <div className="space-y-2 text-green-800 dark:text-green-200">
+                      <p>
+                        Oxygen is essential for combustion (burning). When you have pure or highly 
+                        concentrated oxygen, it provides the perfect conditions for rapid combustion.
+                      </p>
+                      <p>
+                        The glowing splint has hot embers that are not quite burning. When exposed 
+                        to concentrated oxygen, these embers get enough oxygen to reignite into a flame.
+                      </p>
+                      <p>
+                        In normal air (21% oxygen), there isn't enough oxygen concentration to support 
+                        the rapid combustion needed to relight the splint.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="bg-purple-50 dark:bg-purple-950 p-5 rounded-lg">
+                    <h4 className="text-lg font-semibold text-purple-900 dark:text-purple-100 mb-3">
+                      🌍 Real-World Applications:
+                    </h4>
+                    <ul className="space-y-2 text-purple-800 dark:text-purple-200">
+                      <li>
+                        <strong>Medical Use:</strong> Oxygen tanks in hospitals are tested to ensure 
+                        proper oxygen concentration for patient breathing support.
+                      </li>
+                      <li>
+                        <strong>Fire Safety:</strong> Understanding oxygen's role helps firefighters 
+                        control fires by limiting oxygen supply.
+                      </li>
+                      <li>
+                        <strong>Industrial Chemistry:</strong> Factories producing oxygen for welding 
+                        and cutting use this test to verify gas purity.
+                      </li>
+                      <li>
+                        <strong>Environmental Science:</strong> Scientists measure oxygen levels in 
+                        water and soil to assess ecosystem health.
+                      </li>
+                      <li>
+                        <strong>Space Exploration:</strong> Oxygen generation systems on spacecraft 
+                        must be monitored to ensure astronaut safety.
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-amber-50 dark:bg-amber-950 p-5 rounded-lg">
+                    <h4 className="text-lg font-semibold text-amber-900 dark:text-amber-100 mb-3">
+                      ⚗️ Key Chemistry Concepts:
+                    </h4>
+                    <ul className="space-y-2 text-amber-800 dark:text-amber-200">
+                      <li>
+                        <strong>Combustion Triangle:</strong> Fire needs three things - fuel (wood), 
+                        heat (ember), and oxygen. More oxygen = faster burning.
+                      </li>
+                      <li>
+                        <strong>Chemical Reaction:</strong> Wood + O₂ → CO₂ + H₂O + Energy (heat & light)
+                      </li>
+                      <li>
+                        <strong>Test Specificity:</strong> This test is specific to oxygen. No other 
+                        common gas will relight a glowing splint.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => setStep('quiz')}
+                  size="lg"
+                  className="w-full"
+                >
+                  Take the Quiz
+                </Button>
+              </motion.div>
+            )}
+
+            {/* QUIZ STEP */}
+            {currentStep === 'quiz' && (
+              <motion.div
+                key="quiz"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="space-y-6"
+              >
+                <div className="text-center space-y-2">
+                  <h3 className="text-2xl font-bold">Test Your Knowledge</h3>
+                  <p className="text-muted-foreground">
+                    Answer these questions about the oxygen test
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  {quizQuestions.map((q, qIdx) => (
+                    <div
+                      key={qIdx}
+                      className="p-5 bg-gray-50 dark:bg-gray-900 rounded-lg border-2"
+                    >
+                      <h4 className="font-semibold mb-3">
+                        {qIdx + 1}. {q.question}
+                      </h4>
+                      <div className="space-y-2">
+                        {q.options.map((option, oIdx) => (
+                          <label
+                            key={oIdx}
+                            className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                              quizAnswers[qIdx] === oIdx
+                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
+                                : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
+                            } ${
+                              showQuizFeedback
+                                ? oIdx === q.correct
+                                  ? 'border-green-500 bg-green-50 dark:bg-green-950'
+                                  : quizAnswers[qIdx] === oIdx
+                                  ? 'border-red-500 bg-red-50 dark:bg-red-950'
+                                  : ''
+                                : ''
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name={`question-${qIdx}`}
+                              checked={quizAnswers[qIdx] === oIdx}
+                              onChange={() => {
+                                if (!showQuizFeedback) {
+                                  setQuizAnswers((prev) => ({
+                                    ...prev,
+                                    [qIdx]: oIdx,
+                                  }));
+                                }
+                              }}
+                              disabled={showQuizFeedback}
+                              className="w-4 h-4"
+                            />
+                            <span className="flex-1">{option}</span>
+                            {showQuizFeedback && oIdx === q.correct && (
+                              <CheckCircle className="w-5 h-5 text-green-600" />
+                            )}
+                            {showQuizFeedback &&
+                              quizAnswers[qIdx] === oIdx &&
+                              oIdx !== q.correct && (
+                                <XCircle className="w-5 h-5 text-red-600" />
+                              )}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {!showQuizFeedback && (
+                  <Button
+                    onClick={handleQuizSubmit}
+                    size="lg"
+                    className="w-full"
+                    disabled={
+                      Object.keys(quizAnswers).length < quizQuestions.length
+                    }
+                  >
+                    Submit Answers
+                  </Button>
+                )}
+
+                {showQuizFeedback && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="text-center space-y-4"
+                  >
+                    <div className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 rounded-lg border-2">
+                      <h3 className="text-2xl font-bold mb-2">
+                        Your Score: {quizScore} / {quizQuestions.length}
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {quizScore === quizQuestions.length
+                          ? '🎉 Perfect! You mastered the oxygen test!'
+                          : quizScore >= quizQuestions.length / 2
+                          ? '👍 Good job! Review the material to improve.'
+                          : '📚 Keep learning! Review the concepts and try again.'}
+                      </p>
+                    </div>
+
+                    <Button
+                      onClick={handleComplete}
+                      size="lg"
+                      className="w-full"
+                    >
+                      Complete Lab
+                    </Button>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+
+            {/* COMPLETE STEP */}
+            {currentStep === 'complete' && (
+              <motion.div
+                key="complete"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="text-center space-y-6 py-8"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: 'spring' }}
+                >
+                  <Trophy className="w-24 h-24 text-yellow-500 mx-auto mb-4" />
+                </motion.div>
+
+                <div className="space-y-2">
+                  <h3 className="text-3xl font-bold">Congratulations! 🎉</h3>
+                  <p className="text-xl text-muted-foreground">
+                    You've completed the Oxygen Test Lab
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-center gap-2 text-2xl font-bold text-blue-600">
+                  <Award className="w-8 h-8" />
+                  <span>+100 XP</span>
+                </div>
+
+                <div className="prose dark:prose-invert max-w-none text-left bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 p-6 rounded-lg">
+                  <h4 className="text-lg font-semibold mb-3">What You Learned:</h4>
+                  <ul className="space-y-2">
+                    <li>✓ How to perform the glowing splint test for oxygen</li>
+                    <li>✓ Pure oxygen relights a glowing splint with a bright flame</li>
+                    <li>✓ Normal air (21% O₂) is not concentrated enough to relight the splint</li>
+                    <li>✓ Oxygen supports combustion but is not flammable itself</li>
+                    <li>✓ Real-world applications in medicine, fire safety, and industry</li>
+                  </ul>
+                </div>
+
+                <Button onClick={resetLab} size="lg" variant="outline">
+                  Try Again
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

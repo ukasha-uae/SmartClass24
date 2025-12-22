@@ -14,7 +14,7 @@ import { GreaseSpotTestLabEnhanced as GreaseSpotTestLab } from "@/components/vir
 import { HeatTransferLabEnhanced } from "@/components/virtual-labs/heat-transfer-lab-enhanced";
 import { HookesLawLabEnhanced } from "@/components/virtual-labs/hookes-law-lab-enhanced";
 import { HydrogenPopTestLab } from "@/components/virtual-labs/hydrogen-pop-test-lab-enhanced";
-import { LimewaterTestLab } from "@/components/virtual-labs/limewater-test-lab";
+import { LimewaterTestLabEnhanced as LimewaterTestLab } from "@/components/virtual-labs/limewater-test-lab-enhanced";
 import { LitmusTestLab } from "@/components/virtual-labs/litmus-test-lab-enhanced";
 import { MagneticFieldLabEnhanced as MagneticFieldLab } from "@/components/virtual-labs/magnetic-field-lab-enhanced";
 import { MetalAcidReactionLabEnhanced as MetalAcidReactionLab } from "@/components/virtual-labs/metal-acid-reaction-lab-enhanced";

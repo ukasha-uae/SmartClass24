@@ -47,8 +47,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   
   // Check if this is a self-contained enhanced lab (has its own quiz/completion flow)
   const isEnhancedLab = LabComponent.name?.includes('Enhanced') || 
-                        LabComponent.displayName?.includes('Enhanced') ||
-                        ['hookes-law', 'simple-circuit', 'work-energy-inclined-plane', 'separation-techniques', 'ohms-law'].includes(experiment.slug);
+                        ['hookes-law', 'simple-circuit', 'work-energy-inclined-plane', 'separation-techniques', 'ohms-law', 'ammonia-test', 'hydrogen-pop-test', 'oxygen-test-lab', 'limewater-test-for-co2'].includes(experiment.slug);
 
   const subjectColors = {
     Biology: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30',

@@ -14,6 +14,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TeacherVoice } from './TeacherVoice';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
+import { LabNotes } from './LabNotes';
+import { Alert, AlertDescription } from '../ui/alert';
 
 type TestStep = 'intro' | 'setup' | 'heating' | 'gas-produced' | 'testing' | 'result' | 'complete';
 type DragItem = 'bunsen' | 'litmus' | null;
@@ -38,7 +40,7 @@ export function AmmoniaTestLab() {
     const alreadyCompleted = isLabCompleted(labId);
 
     // Quiz State
-    const [quizAnswer, setQuizAnswer] = React.useState<string | undefined>();
+    const [quizAnswers, setQuizAnswers] = React.useState<{ [key: number]: string }>({});
     const [quizFeedback, setQuizFeedback] = React.useState<string | null>(null);
     const [quizAttempts, setQuizAttempts] = React.useState(0);
     const [quizIsCorrect, setQuizIsCorrect] = React.useState<boolean | null>(null);
@@ -131,7 +133,7 @@ export function AmmoniaTestLab() {
         setBunsenPlaced(false);
         setLitmusPlaced(false);
         setShowSupplies(true);
-        setQuizAnswer(undefined);
+        setQuizAnswers({});
         setQuizFeedback(null);
         setQuizAttempts(0);
         setQuizIsCorrect(null);
@@ -151,47 +153,64 @@ export function AmmoniaTestLab() {
 
     const handleQuizSubmit = () => {
         if (quizIsCorrect !== null) return;
-        const isCorrect = quizAnswer === 'base';
+        
+        const correctAnswers: { [key: number]: string } = {
+            1: 'base',
+            2: 'blue',
+            3: 'nh3'
+        };
+        
+        const totalQuestions = 3;
+        const correctCount = Object.keys(correctAnswers).filter(
+            key => quizAnswers[parseInt(key)] === correctAnswers[parseInt(key)]
+        ).length;
+        
+        const isCorrect = correctCount === totalQuestions;
         const newAttempts = quizAttempts + 1;
         setQuizAttempts(newAttempts);
         
         if (isCorrect) {
             setQuizIsCorrect(true);
-            setQuizFeedback("Correct! Ammonia is a base, which is why it turns red litmus blue. ✅");
+            setQuizFeedback(`Perfect! You got all ${totalQuestions} questions correct! 🎉`);
             
-            // Award XP if not already completed
-            if (!alreadyCompleted) {
-                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
-                const score = newAttempts === 1 ? 100 : newAttempts === 2 ? 80 : 60;
-                const earnedXP = markLabComplete(labId, score, timeSpent);
-                
-                // Trigger confetti
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-                
-                // Show celebration and message
-                setXpEarned(earnedXP);
-                setShowCelebration(true);
-                
-                setTimeout(() => setShowCelebration(false), 5000);
-                
-                setTeacherMessage(`Outstanding! You earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Keep up the great work!`);
-            } else {
-                setTeacherMessage('Excellent work! You got it right again. Understanding ammonia testing is crucial for chemistry!');
-            }
+            // Award XP
+            const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            const score = newAttempts === 1 ? 100 : newAttempts === 2 ? 80 : 60;
+            const earnedXP = markLabComplete(labId, score, timeSpent);
+            
+            console.log('XP Earned:', earnedXP, 'Already Completed:', alreadyCompleted);
+            
+            // Trigger confetti
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            
+            // Show celebration and message
+            setXpEarned(earnedXP);
+            setShowCelebration(true);
+            
+            setTimeout(() => setShowCelebration(false), 5000);
+            
+            setTeacherMessage(`Outstanding! You earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Keep up the great work!`);
         } else {
             if (newAttempts === 1) {
-                setQuizFeedback("Not quite right. Remember: what turns red litmus blue? Try again! 🔄");
-                setTeacherMessage('Not quite right. Think about the properties of bases and how they react with litmus paper. Try again!');
+                setQuizFeedback(`You got ${correctCount} out of ${totalQuestions} correct. Review the experiment and try again! 🔄`);
+                setTeacherMessage('Not all answers are correct. Think about what you observed in the experiment. You can try again!');
             } else {
                 setQuizIsCorrect(false);
-                setQuizFeedback("The correct answer is Base. Ammonia (NH₃) is an alkaline gas that forms a basic solution in water. 🧠");
-                setTeacherMessage('The correct answer is Base. Ammonia is alkaline, which means it turns red litmus paper blue. Remember this for your exams!');
+                setQuizFeedback(`Correct answers: 1) Base 2) Blue 3) NH₃. Review these key points from the experiment! 🧠`);
+                setTeacherMessage('Here are the correct answers. Make sure to review these concepts - they are important for your exams!');
             }
         }
+    };
+
+    const handleAnswerChange = (questionIndex: number, value: string) => {
+        setQuizAnswers(prev => ({
+            ...prev,
+            [questionIndex]: value
+        }));
     };
 
     const objectiveText = "To identify ammonia gas (NH₃) by observing its effect on moist red litmus paper and its characteristic pungent smell.";
@@ -202,7 +221,7 @@ export function AmmoniaTestLab() {
         <div className="space-y-6">
             {/* Celebration Overlay */}
             <AnimatePresence>
-                {showCelebration && xpEarned && (
+                {showCelebration && xpEarned !== null && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -568,9 +587,9 @@ export function AmmoniaTestLab() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
                                 <Package className="h-5 w-5 text-amber-600" />
-                                Lab Supplies - Drag to Use
+                                Lab Supplies - Click to Use
                             </CardTitle>
-                            <CardDescription>Click and drag items to the experiment area</CardDescription>
+                            <CardDescription>Click items to add them to the experiment area</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-6 justify-center flex-wrap">
@@ -710,20 +729,85 @@ export function AmmoniaTestLab() {
                             <CardDescription>Test your understanding of the experiment</CardDescription>
                         </CardHeader>
                     <CardContent>
-                        <RadioGroup value={quizAnswer} onValueChange={setQuizAnswer} disabled={quizIsCorrect !== null}>
-                            <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                <RadioGroupItem value="acid" id="q-acid" />
-                                <Label htmlFor="q-acid" className="flex-1 cursor-pointer">Acid</Label>
+                        <div className="space-y-6">
+                            {/* Question 1 */}
+                            <div>
+                                <p className="text-base font-semibold mb-3">1. What type of substance is ammonia (NH₃)?</p>
+                                <RadioGroup 
+                                    value={quizAnswers[1]} 
+                                    onValueChange={(value) => handleAnswerChange(1, value)} 
+                                    disabled={quizIsCorrect !== null}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="acid" id="q1-acid" />
+                                        <Label htmlFor="q1-acid" className="flex-1 cursor-pointer">Acid</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="base" id="q1-base" />
+                                        <Label htmlFor="q1-base" className="flex-1 cursor-pointer">Base</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="neutral" id="q1-neutral" />
+                                        <Label htmlFor="q1-neutral" className="flex-1 cursor-pointer">Neutral</Label>
+                                    </div>
+                                </RadioGroup>
                             </div>
-                            <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                <RadioGroupItem value="base" id="q-base" />
-                                <Label htmlFor="q-base" className="flex-1 cursor-pointer">Base</Label>
+
+                            {/* Question 2 */}
+                            <div>
+                                <p className="text-base font-semibold mb-3">2. What color does red litmus paper turn when exposed to ammonia gas?</p>
+                                <RadioGroup 
+                                    value={quizAnswers[2]} 
+                                    onValueChange={(value) => handleAnswerChange(2, value)} 
+                                    disabled={quizIsCorrect !== null}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="red" id="q2-red" />
+                                        <Label htmlFor="q2-red" className="flex-1 cursor-pointer">Stays Red</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="blue" id="q2-blue" />
+                                        <Label htmlFor="q2-blue" className="flex-1 cursor-pointer">Turns Blue</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="green" id="q2-green" />
+                                        <Label htmlFor="q2-green" className="flex-1 cursor-pointer">Turns Green</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="colorless" id="q2-colorless" />
+                                        <Label htmlFor="q2-colorless" className="flex-1 cursor-pointer">Becomes Colorless</Label>
+                                    </div>
+                                </RadioGroup>
                             </div>
-                            <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                <RadioGroupItem value="neutral" id="q-neutral" />
-                                <Label htmlFor="q-neutral" className="flex-1 cursor-pointer">Neutral</Label>
+
+                            {/* Question 3 */}
+                            <div>
+                                <p className="text-base font-semibold mb-3">3. What is the chemical formula for ammonia?</p>
+                                <RadioGroup 
+                                    value={quizAnswers[3]} 
+                                    onValueChange={(value) => handleAnswerChange(3, value)} 
+                                    disabled={quizIsCorrect !== null}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="nh2" id="q3-nh2" />
+                                        <Label htmlFor="q3-nh2" className="flex-1 cursor-pointer">NH₂</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="nh3" id="q3-nh3" />
+                                        <Label htmlFor="q3-nh3" className="flex-1 cursor-pointer">NH₃</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="nh4" id="q3-nh4" />
+                                        <Label htmlFor="q3-nh4" className="flex-1 cursor-pointer">NH₄</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="n2h4" id="q3-n2h4" />
+                                        <Label htmlFor="q3-n2h4" className="flex-1 cursor-pointer">N₂H₄</Label>
+                                    </div>
+                                </RadioGroup>
                             </div>
-                        </RadioGroup>
+                        </div>
+
                         {quizFeedback && (
                             <motion.p
                                 initial={{ opacity: 0, y: -10 }}
@@ -745,43 +829,95 @@ export function AmmoniaTestLab() {
                     <CardFooter>
                         <Button 
                             onClick={handleQuizSubmit} 
-                            disabled={!quizAnswer || quizIsCorrect !== null}
+                            disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect !== null}
                             className="bg-green-600 hover:bg-green-700"
                         >
-                            {quizIsCorrect === true ? "✓ Correct!" : quizIsCorrect === false ? "Answer Shown" : "Check Answer"}
+                            {quizIsCorrect === true ? "✓ All Correct!" : quizIsCorrect === false ? "See Answers" : "Submit Answers"}
                         </Button>
                     </CardFooter>
                 </Card>
                 </motion.div>
             )}
 
-            {/* Conclusion */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <CheckCircle className="h-5 w-5 text-green-600" />
-                        Conclusion
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="prose prose-sm dark:prose-invert">
-                    <ul className="space-y-2">
-                        <li className="flex items-start gap-2">
-                            <span className="text-xl">💨</span>
-                            <span><strong>Ammonia (NH₃)</strong> is a colorless gas with a pungent, characteristic smell</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-xl">🔵</span>
-                            <span>It turns <strong>moist red litmus paper blue</strong>, confirming it is a base</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-xl">⚗️</span>
-                            <span>Chemical formula: <strong>NH₃</strong> | In water: <strong>NH₃ + H₂O → NH₄OH</strong></span>
-                        </li>
-                    </ul>
-                    <p className="mt-4 text-sm font-semibold text-violet-600 dark:text-violet-400">
-                        💡 Fun Fact: Ammonia is one of the most produced chemicals in the world, mainly used for fertilizers!
-                    </p>
-                </CardContent>
+            {/* Conclusion - Only shows after quiz is answered */}
+            {currentStep === 'complete' && quizIsCorrect !== null && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <Card className="border-2 border-violet-200 dark:border-violet-800">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                                Conclusion & Key Takeaways
+                            </CardTitle>
+                            <CardDescription>Summary of what you learned in this experiment</CardDescription>
+                        </CardHeader>
+                        <CardContent className="prose prose-sm dark:prose-invert">
+                            <ul className="space-y-2">
+                                <li className="flex items-start gap-2">
+                                    <span className="text-xl">💨</span>
+                                    <span><strong>Ammonia (NH₃)</strong> is a colorless gas with a pungent, characteristic smell</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-xl">🔵</span>
+                                    <span>It turns <strong>moist red litmus paper blue</strong>, confirming it is a base</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-xl">⚗️</span>
+                                    <span>Chemical formula: <strong>NH₃</strong> | In water: <strong>NH₃ + H₂O → NH₄OH</strong></span>
+                                </li>
+                            </ul>
+                            <div className="mt-4 p-3 bg-violet-50 dark:bg-violet-950/30 rounded-lg border border-violet-200 dark:border-violet-800">
+                                <p className="text-sm font-semibold text-violet-700 dark:text-violet-400 mb-2">
+                                    💡 Real-World Application
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                    Ammonia is one of the most produced chemicals worldwide, primarily used in fertilizers to help plants grow. 
+                                    It's also used in cleaning products, refrigeration systems, and industrial processes.
+                                </p>
+                            </div>
+                            <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+                                <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2">
+                                    📝 Exam Tip
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                    Remember: <strong>Bases turn red litmus blue</strong>. This is a common exam question! 
+                                    Also know that ammonia has formula NH₃ and forms NH₄OH in water.
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+            )}
+
+            {/* Lab Notes - Always Available */}
+            <Card className="border-2 border-amber-200 dark:border-amber-800">
+                <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="lab-notes" className="border-none">
+                        <AccordionTrigger className="px-6 pt-6 hover:no-underline">
+                            <div className="flex items-center gap-2 text-lg font-semibold">
+                                <BookOpen className="h-5 w-5 text-amber-600" />
+                                Lab Notes
+                            </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-6 pb-6">
+                            <p className="text-sm text-muted-foreground mb-4">
+                                Record your observations, findings, and questions as you work through the experiment
+                            </p>
+                            <Alert className="mb-4 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+                                <BookOpen className="h-4 w-4 text-amber-600" />
+                                <AlertDescription className="text-sm">
+                                    <strong>📝 Exam Preparation Tip:</strong> Use digital notes to capture your observations quickly, 
+                                    but <strong>remember to copy important points by hand</strong> into your notebook! Handwriting builds 
+                                    muscle memory and prepares you for written exams.
+                                </AlertDescription>
+                            </Alert>
+                            <LabNotes labId="ammonia-test-lab" labTitle="Test for Ammonia Gas" />
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
             </Card>
         </div>
     );

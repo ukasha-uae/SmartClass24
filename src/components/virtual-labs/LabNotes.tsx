@@ -172,11 +172,11 @@ export function LabNotes({ labId, labTitle }: LabNotesProps) {
           </p>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button 
             onClick={handleSave} 
             disabled={isSaving || !content.trim()}
-            className="flex-1 min-w-[120px]"
+            className="w-full sm:flex-1"
           >
             <Save className="h-4 w-4 mr-2" />
             {isSaving ? 'Saving...' : 'Save Notes'}
@@ -186,7 +186,7 @@ export function LabNotes({ labId, labTitle }: LabNotesProps) {
             <Button 
               onClick={handlePrint} 
               variant="outline"
-              className="flex-1 min-w-[120px] border-amber-300 text-amber-700 hover:bg-amber-50 dark:hover:bg-amber-950"
+              className="w-full sm:flex-1 border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 hover:text-amber-900 hover:border-amber-400 dark:bg-amber-950/30 dark:text-amber-400 dark:hover:bg-amber-950/50 dark:hover:text-amber-300 dark:border-amber-700 dark:hover:border-amber-600"
             >
               <Printer className="h-4 w-4 mr-2" />
               Print for Practice
@@ -197,7 +197,7 @@ export function LabNotes({ labId, labTitle }: LabNotesProps) {
             <Button 
               onClick={handleDelete} 
               variant="outline"
-              className="text-red-600 hover:bg-red-50 dark:hover:bg-red-950"
+              className="w-full sm:w-auto bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800 hover:border-red-400 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 dark:hover:text-red-300 dark:border-red-700 dark:hover:border-red-600"
             >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete
