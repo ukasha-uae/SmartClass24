@@ -14,14 +14,68 @@ import { TeacherVoice } from './TeacherVoice';
 
 type Step = 'intro' | 'collect-supplies' | 'add-water' | 'heat-water' | 'place-lid' | 'observe' | 'results' | 'quiz' | 'complete';
 
-// SVG Icons
-const KettleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-        <path d="M20 70H80V90H20V70Z" fill="#C0C0C0" />
-        <path d="M25 40C25 25 75 25 75 40V70H25V40Z" fill="#E0E0E0" stroke="#A9A9A9" strokeWidth="2" />
-        <path d="M75 50H90L85 60H75V50Z" fill="#E0E0E0" stroke="#A9A9A9" strokeWidth="2" />
-        <path d="M50 25C55 20 45 20 50 25" stroke="#A9A9A9" strokeWidth="2" strokeLinecap="round" />
-    </svg>
+// Professional Kettle Component
+const ProfessionalKettle = ({ waterLevel = 0, isHeating = false }: { waterLevel?: number; isHeating?: boolean }) => (
+    <div className="relative w-32 h-40">
+        {/* Kettle Base */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-28 h-4 bg-gradient-to-b from-gray-400 to-gray-500 rounded-b-lg shadow-md" />
+        
+        {/* Kettle Body */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-24 h-28 bg-gradient-to-br from-gray-300 via-gray-200 to-gray-300 rounded-t-3xl rounded-b-xl border-4 border-gray-400 shadow-xl overflow-hidden">
+            {/* Water inside kettle */}
+            {waterLevel > 0 && (
+                <motion.div
+                    initial={{ height: 0 }}
+                    animate={{ height: `${waterLevel}%` }}
+                    className={cn(
+                        "absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-400 to-blue-300 dark:from-blue-600 dark:to-blue-500",
+                        isHeating && "animate-pulse"
+                    )}
+                    style={{
+                        borderRadius: '0 0 8px 8px'
+                    }}
+                >
+                    {/* Water surface ripples when heating */}
+                    {isHeating && (
+                        <motion.div
+                            className="absolute top-0 left-0 right-0 h-2 bg-blue-200/50"
+                            animate={{
+                                scaleX: [1, 1.1, 1],
+                                scaleY: [1, 0.8, 1]
+                            }}
+                            transition={{
+                                duration: 0.8,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                        />
+                    )}
+                </motion.div>
+            )}
+            
+            {/* Glass reflection effect */}
+            <div className="absolute top-2 left-2 w-8 h-12 bg-white/30 rounded-full blur-sm" />
+        </div>
+        
+        {/* Kettle Handle */}
+        <div className="absolute bottom-8 right-0 w-8 h-16 border-4 border-gray-400 rounded-r-full bg-gradient-to-br from-gray-300 to-gray-400" />
+        
+        {/* Kettle Spout */}
+        <div className="absolute bottom-10 -left-2 w-6 h-8">
+            <div className="w-full h-full bg-gradient-to-l from-gray-300 to-gray-400 border-2 border-gray-500" 
+                 style={{ 
+                     clipPath: 'polygon(100% 0%, 0% 50%, 100% 100%)',
+                     borderRadius: '0 4px 4px 0'
+                 }} 
+            />
+        </div>
+        
+        {/* Kettle Lid/Cap */}
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-6">
+            <div className="w-full h-4 bg-gradient-to-b from-gray-400 to-gray-500 rounded-t-lg border-2 border-gray-600" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-3 bg-gray-600 rounded-t-md" />
+        </div>
+    </div>
 );
 
 export function CondensationLabEnhanced() {
@@ -112,24 +166,24 @@ export function CondensationLabEnhanced() {
     const handleCollectKettle = () => {
         if (!kettleCollected) {
             setKettleCollected(true);
-            setTeacherMessage("Great! Now click on the WATER - this will turn into steam when we heat it.");
-            toast({ title: '✅ Kettle Collected' });
+            setTeacherMessage("Great! You collected the kettle. This is our container for heating water. The kettle's metal body conducts heat well, allowing water to boil quickly. Now click on the WATER to collect it!");
+            toast({ title: '✅ Kettle Collected', description: 'Container ready for heating' });
         }
     };
     
     const handleCollectWater = () => {
         if (kettleCollected && !waterCollected) {
             setWaterCollected(true);
-            setTeacherMessage("Excellent! Now click on the HEAT SOURCE (Bunsen burner) - we need heat to turn the water into steam.");
-            toast({ title: '✅ Water Collected' });
+            setTeacherMessage("Perfect! Water collected. Water is made of H₂O molecules. When we heat it, these molecules gain energy and turn into water vapor (steam). Click on the HEAT SOURCE next!");
+            toast({ title: '✅ Water Collected', description: 'Ready to fill the kettle' });
         }
     };
     
     const handleCollectHeatSource = () => {
         if (waterCollected && !heatSourceCollected) {
             setHeatSourceCollected(true);
-            setTeacherMessage("Perfect! Finally, click on the COLD LID with ice - the cold surface will cause condensation when steam hits it!");
-            toast({ title: '✅ Heat Source Collected' });
+            setTeacherMessage("Excellent! Heat source ready. This will provide thermal energy to boil the water and create steam. Finally, we need a COLD LID with ice - the cold surface is key for condensation!");
+            toast({ title: '✅ Heat Source Collected', description: 'Energy source ready' });
         }
     };
     
@@ -137,8 +191,8 @@ export function CondensationLabEnhanced() {
         if (heatSourceCollected && !lidCollected) {
             setLidCollected(true);
             setShowSupplies(false);
-            setTeacherMessage("All supplies collected! Now click on the kettle to pour water into it.");
-            toast({ title: '✅ All Supplies Collected!' });
+            setTeacherMessage("Perfect! All supplies collected! The ice on the lid will create a cold surface. Now let's start the experiment - click on the kettle to add water into it. Watch carefully as the water goes inside!");
+            toast({ title: '✅ All Supplies Collected!', description: 'Ready to begin experiment' });
             setPendingTransition(() => () => {
                 setCurrentStep('add-water');
             });
@@ -148,8 +202,8 @@ export function CondensationLabEnhanced() {
     const handleAddWater = () => {
         if (!waterAdded) {
             setWaterAdded(true);
-            setTeacherMessage("Water added! Now click the flame icon to turn on the heat and boil the water!");
-            toast({ title: '✅ Water Added to Kettle' });
+            setTeacherMessage("Great! Water is now inside the kettle - see how it's contained in the bottom? The water molecules are in liquid form, moving around but staying together. Now we need to HEAT the water to boil it and create steam. Click on the flame below!");
+            toast({ title: '✅ Water Added to Kettle', description: 'Water safely contained inside' });
             setPendingTransition(() => () => {
                 setCurrentStep('heat-water');
             });
@@ -159,16 +213,16 @@ export function CondensationLabEnhanced() {
     const handleStartHeating = () => {
         if (waterAdded && !isHeating) {
             setIsHeating(true);
-            setTeacherMessage("Heating started! Watch the water boil and create steam!");
-            toast({ title: '🔥 Heating Water...' });
+            setTeacherMessage("Excellent! The flame is heating the water. Watch the water level - as it heats up, the molecules gain kinetic energy and move faster. In a few seconds, it will reach 100°C and boil, turning into steam (water vapor). This phase change is called evaporation!");
+            toast({ title: '🔥 Heating Water...', description: 'Temperature rising to 100°C' });
         }
     };
     
     const handlePlaceLid = () => {
         if (!lidPlaced) {
             setLidPlaced(true);
-            setTeacherMessage("Perfect! Watch as the hot steam hits the cold lid and loses energy. The water vapor cools down and turns back into liquid droplets. This is condensation!");
-            toast({ title: '❄️ Lid Placed!' });
+            setTeacherMessage("Perfect! Lid placed over the steam! The ice on top keeps the lid cold. Now watch carefully - as hot steam (100°C) touches the cold lid surface, it loses heat energy rapidly. The water vapor molecules slow down and come together, changing back to liquid water. This is CONDENSATION! Count the droplets forming...");
+            toast({ title: '❄️ Cold Lid Placed', description: 'Condensation beginning...' });
             setPendingTransition(() => () => {
                 setCurrentStep('observe');
                 setDropletsFormed(0);
@@ -204,6 +258,7 @@ export function CondensationLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You've mastered condensation! +${earnedXP} XP`);
+            setTeacherMessage(`Outstanding! Perfect score! You've mastered condensation completely. You understand that water vapor (gas) turns to liquid when it loses heat energy on a cold surface. This process happens everywhere - in clouds, on cold windows, and even in your breath on a cold day. Excellent work! +${earnedXP} XP earned!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -212,8 +267,10 @@ export function CondensationLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the phase change from gas to liquid and try again!`);
+            setTeacherMessage(`Good effort! You got ${correctCount} out of 3 correct. Remember the key points: condensation is gas → liquid, it requires a cold surface, and it's how clouds form in nature. Review your observations from the experiment and try again!`);
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: condensation is when water vapor (gas) turns into liquid water when cooled!`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me help: Condensation happens when water vapor (gas at 100°C) touches a cold surface and loses heat energy, turning back into liquid water. Think about the droplets that formed on our cold lid - that's condensation! Review the experiment steps and give it another go!`);
         }
     };
 
@@ -241,34 +298,21 @@ export function CondensationLabEnhanced() {
 
     return (
         <div className="space-y-6 pb-20">
-            {/* Draggable Teacher Voice */}
-            <motion.div
-                drag
-                dragMomentum={false}
-                dragElastic={0}
-                dragConstraints={{ left: -300, right: 300, top: -100, bottom: 400 }}
-                onDragEnd={(_, info) => {
-                    setTeacherPosition({ x: info.offset.x, y: info.offset.y });
+            {/* Teacher Voice */}
+            <TeacherVoice 
+                message={teacherMessage}
+                onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : currentStep === 'observe' ? 'happy' : 'explaining'}
+                context={{
+                    attempts: dropletsFormed,
+                    correctStreak: dropletsFormed
                 }}
-                initial={{ x: 0, y: 0 }}
-                style={{ x: teacherPosition.x, y: teacherPosition.y }}
-                className="fixed bottom-16 left-2 right-2 md:left-auto md:right-4 md:w-96 max-w-md z-50 touch-none"
-            >
-                <Card className="shadow-2xl border-2 border-blue-400 dark:border-blue-600 cursor-move">
-                    <CardHeader className="pb-2 py-2 md:py-4">
-                        <div className="flex items-center gap-2">
-                            <GripVertical className="h-4 w-4 text-muted-foreground" />
-                            <CardTitle className="text-xs md:text-sm">Teacher Guide (Drag to Move)</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <TeacherVoice 
-                            message={teacherMessage}
-                            onComplete={handleTeacherComplete}
-                        />
-                    </CardContent>
-                </Card>
-            </motion.div>
+                quickActions={[
+                    { label: 'Reset Lab', icon: '🔄', onClick: handleRestart },
+                    { label: 'View Theory', icon: '📖', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', icon: '🛡️', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
+            />
 
             {isCompleted && (
                 <motion.div
@@ -443,7 +487,9 @@ export function CondensationLabEnhanced() {
                                             className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-gray-300 dark:border-gray-700 hover:border-gray-500 hover:shadow-xl transition-all"
                                         >
                                             <div className="flex flex-col items-center gap-2">
-                                                <KettleIcon className="h-20 w-20" />
+                                                <div className="w-20 h-20 flex items-center justify-center">
+                                                    <ProfessionalKettle waterLevel={0} isHeating={false} />
+                                                </div>
                                                 <span className="text-sm font-medium">Kettle</span>
                                                 <span className="text-xs text-muted-foreground">Click to Collect</span>
                                             </div>
@@ -630,34 +676,29 @@ export function CondensationLabEnhanced() {
                                         )}
                                     >
                                         <div className="relative">
-                                            <KettleIcon className="h-24 w-24 md:h-32 md:w-32" />
-                                            
-                                            {/* Water inside kettle */}
-                                            {waterAdded && (
-                                                <motion.div
-                                                    initial={{ height: 0 }}
-                                                    animate={{ height: isHeating ? 60 : 50 }}
-                                                    className="absolute bottom-3 left-1/2 -translate-x-1/2 w-20 bg-blue-400/50 dark:bg-blue-600/50 rounded-b-2xl"
-                                                />
-                                            )}
+                                            <ProfessionalKettle 
+                                                waterLevel={waterAdded ? (isHeating ? 70 : 60) : 0}
+                                                isHeating={isHeating}
+                                            />
                                             
                                             {/* Steam */}
                                             {steamVisible && (
-                                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16">
-                                                    {[...Array(5)].map((_, i) => (
+                                                <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-20">
+                                                    {[...Array(8)].map((_, i) => (
                                                         <motion.div
                                                             key={i}
-                                                            className="absolute w-2 h-2 bg-gray-400/60 rounded-full"
+                                                            className="absolute w-3 h-3 bg-white/70 dark:bg-gray-300/70 rounded-full blur-sm"
                                                             animate={{
-                                                                y: [0, -60],
-                                                                x: [(i - 2) * 3, (i - 2) * 8],
-                                                                opacity: [0.6, 0],
-                                                                scale: [0.5, 1.5]
+                                                                y: [0, -80],
+                                                                x: [(i - 4) * 4, (i - 4) * 10],
+                                                                opacity: [0.8, 0],
+                                                                scale: [0.5, 2]
                                                             }}
                                                             transition={{
-                                                                duration: 2,
+                                                                duration: 2.5,
                                                                 repeat: Infinity,
-                                                                delay: i * 0.2
+                                                                delay: i * 0.15,
+                                                                ease: "easeOut"
                                                             }}
                                                             style={{ left: '50%' }}
                                                         />
@@ -667,8 +708,8 @@ export function CondensationLabEnhanced() {
                                         </div>
                                         
                                         {currentStep === 'add-water' && (
-                                            <p className="text-center mt-2 font-medium bg-blue-100 dark:bg-blue-900 px-3 py-1 rounded text-sm">
-                                                Click to Add Water
+                                            <p className="text-center mt-4 font-medium bg-blue-100 dark:bg-blue-900 px-4 py-2 rounded-lg text-sm shadow-lg">
+                                                💧 Click to Pour Water Into Kettle
                                             </p>
                                         )}
                                     </motion.div>

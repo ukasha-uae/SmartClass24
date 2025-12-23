@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Leaf, TreePine, Bug, Fish, Sun, Droplets, Wind, Mountain, Users, Zap, Heart, Skull, ChevronLeft, ChevronRight, Play, Pause, Volume2, VolumeX, GraduationCap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocalization } from '@/hooks/useLocalization';
+import { localizeString } from '@/lib/localization/content-localizer';
+import type { CountryConfig } from '@/lib/localization/country-config';
 
 interface LessonIntroProps {
   onComplete?: () => void;
 }
 
 const EcosystemsComponentsRelationshipsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
+  const { country } = useLocalization();
   const [stage, setStage] = useState(0);
   
   // Interactive state
@@ -26,29 +30,32 @@ const EcosystemsComponentsRelationshipsIntro: React.FC<LessonIntroProps> = ({ on
   const hasSpokenRef = useRef<Set<number>>(new Set());
 
   // Ghana ecosystems
-  const ecosystems = {
-    rainforest: {
-      name: '🌳 Rainforest',
-      location: 'Southwest Ghana',
-      biotic: ['🌴 Mahogany trees', '🐒 Monkeys', '🦋 Butterflies', '🦜 Parrots', '🍄 Fungi'],
-      abiotic: ['☀️ High rainfall', '🌡️ Warm 25-28°C', '💧 High humidity', '🌱 Acidic soil'],
-      color: 'from-green-900 to-green-700'
-    },
-    savanna: {
-      name: '🌾 Savanna',
-      location: 'Northern Ghana',
-      biotic: ['🌳 Baobab trees', '🦌 Antelopes', '🦅 Eagles', '🐜 Termites', '🌿 Grasses'],
-      abiotic: ['☀️ Distinct dry season', '🔥 Natural fires', '🌡️ Hot days', '🏜️ Low rainfall'],
-      color: 'from-amber-900 to-yellow-700'
-    },
-    aquatic: {
-      name: '🌊 Lake Volta',
-      location: 'Eastern Ghana',
-      biotic: ['🐟 Tilapia', '🦆 Water birds', '🌿 Water plants', '🦐 Crustaceans', '🐊 Crocodiles'],
-      abiotic: ['💧 Fresh water', '☀️ Sunlight penetration', '🌡️ Water temperature', '🪨 Minerals'],
-      color: 'from-blue-900 to-cyan-700'
-    }
-  };
+  const ecosystems = useMemo(() => {
+    const baseEcosystems = {
+      rainforest: {
+        name: '🌳 Rainforest',
+        location: country ? localizeString("Rainforest Region in {{country}}", country as CountryConfig) : "Rainforest Region",
+        biotic: ['🌴 Mahogany trees', '🐒 Monkeys', '🦋 Butterflies', '🦜 Parrots', '🍄 Fungi'],
+        abiotic: ['☀️ High rainfall', '🌡️ Warm 25-28°C', '💧 High humidity', '🌱 Acidic soil'],
+        color: 'from-green-900 to-green-700'
+      },
+      savanna: {
+        name: '🌾 Savanna',
+        location: country ? localizeString("Savanna Region in {{country}}", country as CountryConfig) : "Savanna Region",
+        biotic: ['🌳 Baobab trees', '🦌 Antelopes', '🦅 Eagles', '🐜 Termites', '🌿 Grasses'],
+        abiotic: ['☀️ Distinct dry season', '🔥 Natural fires', '🌡️ Hot days', '🏜️ Low rainfall'],
+        color: 'from-amber-900 to-yellow-700'
+      },
+      aquatic: {
+        name: '🌊 Aquatic',
+        location: country ? localizeString("Lakes and Rivers of {{country}}", country as CountryConfig) : "Lakes and Rivers",
+        biotic: ['🐟 Fish', '🦆 Water birds', '🌿 Water plants', '🦐 Crustaceans', '🐊 Crocodiles'],
+        abiotic: ['💧 Fresh water', '☀️ Sunlight penetration', '🌡️ Water temperature', '🪨 Minerals'],
+        color: 'from-blue-900 to-cyan-700'
+      }
+    };
+    return baseEcosystems;
+  }, [country]);
 
   // Relationship examples
   const relationships = {

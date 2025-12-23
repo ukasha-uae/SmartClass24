@@ -87,10 +87,11 @@ export function BiuretTestLabEnhanced() {
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Quiz
-    const [quizAnswer, setQuizAnswer] = React.useState<string>('');
-    const [quizFeedback, setQuizFeedback] = React.useState<string | null>(null);
-    const [quizAttempts, setQuizAttempts] = React.useState(0);
-    const [quizIsCorrect, setQuizIsCorrect] = React.useState<boolean | null>(null);
+    const [selectedAnswer1, setSelectedAnswer1] = React.useState<string | null>(null);
+    const [selectedAnswer2, setSelectedAnswer2] = React.useState<string | null>(null);
+    const [selectedAnswer3, setSelectedAnswer3] = React.useState<string | null>(null);
+    const [quizFeedback, setQuizFeedback] = React.useState<string>('');
+    const [quizSubmitted, setQuizSubmitted] = React.useState(false);
     
     // XP & Celebration
     const { markLabComplete, isLabCompleted, getLabCompletion, totalXP } = useLabProgress();
@@ -194,21 +195,23 @@ export function BiuretTestLabEnhanced() {
     };
 
     const handleQuizSubmit = () => {
-        if (quizIsCorrect !== null) return;
+        if (quizSubmitted) return;
         
-        const correctAnswer = 'Egg White';
-        const isCorrect = quizAnswer === correctAnswer;
-        const newAttempts = quizAttempts + 1;
-        setQuizAttempts(newAttempts);
+        setQuizSubmitted(true);
         
-        if (isCorrect) {
-            setQuizIsCorrect(true);
-            setQuizFeedback("Perfect! Egg white is almost pure protein (albumin) and gives the strongest purple color in the Biuret test. ✅");
+        const isCorrect1 = selectedAnswer1 === 'Egg White';
+        const isCorrect2 = selectedAnswer2 === 'peptide-bonds';
+        const isCorrect3 = selectedAnswer3 === 'deep-purple';
+        const correctCount = [isCorrect1, isCorrect2, isCorrect3].filter(Boolean).length;
+        
+        if (correctCount === 3) {
+            // Perfect - all 3 correct
+            setQuizFeedback(`Perfect! You got all 3 correct! 🎉 Excellent understanding of the Biuret test!`);
+            setTeacherMessage(`Outstanding! Perfect score! You truly understand the BIURET TEST! 🎉 Let me summarize what you learned: (1) EGG WHITE has the highest protein content - it's almost pure ALBUMIN protein. That's why it shows the DEEPEST purple color in the test. Other high-protein foods: meat, fish, milk, groundnuts. (2) The Biuret reagent reacts with PEPTIDE BONDS - the links between amino acids in protein chains. When copper(II) ions (Cu²⁺) in the blue Biuret solution meet peptide bonds, they form a COMPLEX that appears PURPLE. No protein = no peptide bonds = stays blue! (3) DEEP PURPLE color indicates HIGH protein content. The color intensity is directly proportional to protein concentration: No color change (blue) = no protein. Light purple = low protein. Purple = moderate protein. Deep/dark purple = high protein! This is a QUALITATIVE test - we see if protein is present and estimate how much. The Biuret test is named after biuret (a compound formed when urea is heated), which was the first substance shown to give this reaction. In real labs, this test helps detect proteins in food, urine samples, and biological experiments. You've mastered protein detection!`);
             
             if (!hasCompleted) {
                 const timeSpent = Math.floor((Date.now() - startTime) / 1000);
-                const score = newAttempts === 1 ? 100 : 75;
-                const earnedXP = markLabComplete('biuret-test', score, timeSpent);
+                const earnedXP = markLabComplete('biuret-test', 100, timeSpent);
                 
                 confetti({
                     particleCount: 100,
@@ -219,19 +222,30 @@ export function BiuretTestLabEnhanced() {
                 setXpEarned(earnedXP);
                 setShowCelebration(true);
                 setTimeout(() => setShowCelebration(false), 5000);
-                
-                setTeacherMessage(`Wonderful work! You've mastered the Biuret test and earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Remember, the Biuret test detects peptide bonds in proteins!`);
-            } else {
-                setTeacherMessage('Correct! You clearly understand which foods are protein-rich. Well done!');
+            }
+        } else if (correctCount === 2) {
+            // Good effort - 2 out of 3 correct
+            setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Let me clarify the concepts you missed.`);
+            setTeacherMessage(`Good effort! You got 2 out of 3 correct about the Biuret test. Let me clarify: (1) HIGHEST PROTEIN: Egg white (albumin) has the HIGHEST protein concentration - almost 90% protein! It's used as a positive control in protein tests. Milk has moderate protein (3-4%). Groundnut paste has good protein but also lots of fat. Bread has some gluten protein but mostly carbs. Apple has almost NO protein. Rank: Egg white > Groundnut paste > Milk > Bread > Apple. (2) WHAT BIURET REAGENT DETECTS: The reagent specifically reacts with PEPTIDE BONDS - the chemical bonds (C-N) that link amino acids together in protein chains. Proteins are made of amino acids: Amino acid 1 - PEPTIDE BOND - Amino acid 2 - PEPTIDE BOND - Amino acid 3... The copper(II) ions (Cu²⁺) in the blue alkaline solution form a VIOLET COMPLEX with these bonds. At least 2 peptide bonds are needed for the reaction (so at least 3 amino acids linked). It does NOT detect individual amino acids, fats, or carbohydrates! (3) COLOR INTERPRETATION: DEEP/DARK PURPLE = HIGH protein. The more protein present, the more peptide bonds, the more copper complexes formed, the deeper the purple color! Blue (no change) = no protein. Light blue-purple = traces. Purple = moderate protein. Deep purple = high protein. This is a SEMI-QUANTITATIVE test - we can estimate "how much" by color intensity. Review these concepts and try the quiz again!`);
+            
+            if (!hasCompleted) {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                const earnedXP = markLabComplete('biuret-test', 75, timeSpent);
+                setXpEarned(earnedXP);
+                setShowCelebration(true);
+                setTimeout(() => setShowCelebration(false), 5000);
             }
         } else {
-            if (newAttempts === 1) {
-                setQuizFeedback("Not quite. Think about which food is famous for being almost pure protein. Try again! 🔄");
-                setTeacherMessage('Which food source is known for having the highest concentration of protein? Athletes often eat it for muscle building!');
-            } else {
-                setQuizIsCorrect(false);
-                setQuizFeedback(`The correct answer is ${correctAnswer}. Egg white contains about 90% protein and is one of the best protein sources. 🧠`);
-                setTeacherMessage('Egg white is the champion! It contains albumin, a high-quality protein that gives the deepest purple color in the Biuret test.');
+            // Needs work - 0 or 1 correct
+            setQuizFeedback(`You got ${correctCount} out of 3 correct. Don't worry! Let me explain the Biuret test from the beginning.`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Let me explain the BIURET TEST step by step: The Biuret test detects PROTEINS by reacting with PEPTIDE BONDS. WHAT IS PROTEIN? Large molecules made of AMINO ACIDS linked like a chain. The links = PEPTIDE BONDS. Examples: enzymes, antibodies, hair (keratin), muscle (myosin), egg white (albumin). BIURET REAGENT contains copper(II) sulfate (blue) + sodium hydroxide (alkaline). HOW IT WORKS: Add reagent to sample. If protein present, Cu²⁺ ions react with peptide bonds forming a PURPLE COMPLEX. Color changes blue → purple. RESULTS: Blue (no change) = NO protein (Apple). Light purple = LOW protein (Bread). Purple = MODERATE protein (Milk, Groundnut). Deep purple = HIGH protein (Egg white - 90% pure albumin!). KEY POINTS: (1) EGG WHITE shows DEEPEST purple - almost pure protein! (2) Reagent detects PEPTIDE BONDS - links between amino acids. NOT fats or carbs! (3) DEEP PURPLE = HIGH protein. Color intensity = protein amount. The test is named after biuret compound. Used in food testing, medical labs, research. Try again!`);
+            
+            if (!hasCompleted) {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                const earnedXP = markLabComplete('biuret-test', 50, timeSpent);
+                setXpEarned(earnedXP);
+                setShowCelebration(true);
+                setTimeout(() => setShowCelebration(false), 5000);
             }
         }
     };
@@ -242,12 +256,14 @@ export function BiuretTestLabEnhanced() {
         setResult(null);
         setShowDroplets(false);
         setReactionProgress(0);
-        setQuizAnswer('');
-        setQuizFeedback(null);
-        setQuizAttempts(0);
-        setQuizIsCorrect(null);
+        setSelectedAnswer1(null);
+        setSelectedAnswer2(null);
+        setSelectedAnswer3(null);
+        setQuizFeedback('');
+        setQuizSubmitted(false);
         setXpEarned(0);
         setShowCelebration(false);
+        setPendingTransition(null);
         setTeacherMessage('Welcome back! Ready to test another food for protein? Each one shows a different color intensity. Click Start Experiment when ready!');
     };
 
@@ -287,6 +303,34 @@ export function BiuretTestLabEnhanced() {
                 <TeacherVoice 
                     message={teacherMessage}
                     onComplete={handleTeacherComplete}
+                    emotion={currentStep === 'result' || quizSubmitted ? 'celebrating' : result ? 'happy' : 'explaining'}
+                    context={{
+                        attempts: reactionProgress,
+                        correctStreak: quizSubmitted ? 1 : 0
+                    }}
+                    quickActions={[
+                        {
+                            label: 'Reset Lab',
+                            icon: '🔄',
+                            onClick: handleReset
+                        },
+                        {
+                            label: 'View Theory',
+                            icon: '📖',
+                            onClick: () => {
+                                const theorySection = document.querySelector('[data-theory-section]');
+                                theorySection?.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        },
+                        {
+                            label: 'Safety Tips',
+                            icon: '🛡️',
+                            onClick: () => {
+                                const safetySection = document.querySelector('[data-safety-section]');
+                                safetySection?.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }
+                    ]}
                 />
             )}
 
@@ -303,7 +347,7 @@ export function BiuretTestLabEnhanced() {
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
+                        <AccordionItem value="item-1" data-theory-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <BookOpen className="h-4 w-4" />
@@ -314,7 +358,7 @@ export function BiuretTestLabEnhanced() {
                                 <p>{theoryText}</p>
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="item-2">
+                        <AccordionItem value="item-2" data-safety-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <Shield className="h-4 w-4" />
@@ -584,43 +628,83 @@ export function BiuretTestLabEnhanced() {
                             <CardTitle>Post-Lab Quiz</CardTitle>
                             <CardDescription>Test your understanding of the experiment</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="font-medium">
-                                Which food sample would show the DEEPEST purple color in the Biuret test?
-                            </p>
-                            <RadioGroup 
-                                value={quizAnswer} 
-                                onValueChange={setQuizAnswer}
-                                disabled={quizIsCorrect !== null}
-                            >
-                                {foodOptions.map(food => (
-                                    <div key={food} className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value={food} id={`q-${food}`} />
-                                        <Label htmlFor={`q-${food}`} className="flex-1 cursor-pointer">{food}</Label>
+                        <CardContent className="space-y-6">
+                            {/* Question 1 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    1. Which food sample would show the DEEPEST purple color in the Biuret test?
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer1 || ''} 
+                                    onValueChange={setSelectedAnswer1}
+                                    disabled={quizSubmitted}
+                                >
+                                    {foodOptions.map(food => (
+                                        <div key={food} className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                            <RadioGroupItem value={food} id={`q1-${food}`} />
+                                            <Label htmlFor={`q1-${food}`} className="flex-1 cursor-pointer">{food}</Label>
+                                        </div>
+                                    ))}
+                                </RadioGroup>
+                            </div>
+                            
+                            {/* Question 2 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    2. What does the Biuret reagent specifically react with to detect proteins?
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer2 || ''} 
+                                    onValueChange={setSelectedAnswer2}
+                                    disabled={quizSubmitted}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="peptide-bonds" id="q2-1" />
+                                        <Label htmlFor="q2-1" className="flex-1 cursor-pointer">Peptide bonds between amino acids</Label>
                                     </div>
-                                ))}
-                            </RadioGroup>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="carbohydrates" id="q2-2" />
+                                        <Label htmlFor="q2-2" className="flex-1 cursor-pointer">Carbohydrates and sugars</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="fats" id="q2-3" />
+                                        <Label htmlFor="q2-3" className="flex-1 cursor-pointer">Fats and lipids</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
+                            
+                            {/* Question 3 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    3. What color indicates HIGH protein content in the Biuret test?
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer3 || ''} 
+                                    onValueChange={setSelectedAnswer3}
+                                    disabled={quizSubmitted}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="blue" id="q3-1" />
+                                        <Label htmlFor="q3-1" className="flex-1 cursor-pointer">Blue (no color change)</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="light-purple" id="q3-2" />
+                                        <Label htmlFor="q3-2" className="flex-1 cursor-pointer">Light purple</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="deep-purple" id="q3-3" />
+                                        <Label htmlFor="q3-3" className="flex-1 cursor-pointer">Deep/dark purple</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
                             
                             {quizFeedback && (
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className={cn(
-                                        "p-4 rounded-lg border-2 flex items-start gap-3",
-                                        quizIsCorrect 
-                                            ? "bg-green-50 dark:bg-green-950/30 border-green-500 text-green-900 dark:text-green-100"
-                                            : quizIsCorrect === false
-                                            ? "bg-red-50 dark:bg-red-950/30 border-red-500 text-red-900 dark:text-red-100"
-                                            : "bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
-                                    )}
+                                    className="p-4 rounded-lg border-2 flex items-start gap-3 bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
                                 >
-                                    {quizIsCorrect ? (
-                                        <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : quizIsCorrect === false ? (
-                                        <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : (
-                                        <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    )}
+                                    <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
                                     <p className="text-sm font-medium">{quizFeedback}</p>
                                 </motion.div>
                             )}
@@ -628,10 +712,11 @@ export function BiuretTestLabEnhanced() {
                         <CardFooter>
                             <Button 
                                 onClick={handleQuizSubmit} 
-                                disabled={!quizAnswer || quizIsCorrect !== null}
+                                disabled={!selectedAnswer1 || !selectedAnswer2 || !selectedAnswer3 || quizSubmitted}
+                                className="w-full"
                                 size="lg"
                             >
-                                {quizIsCorrect === true ? "Correct! ✓" : quizIsCorrect === false ? "Review Answer" : quizAttempts === 1 ? "Try Again" : "Submit Answer"}
+                                {quizSubmitted ? "Quiz Completed ✓" : "Submit Answers"}
                             </Button>
                         </CardFooter>
                     </Card>

@@ -132,24 +132,24 @@ const getFullCoreMathematicsTopics = (): Topic[] => {
 
 const getFullCoreEnglishTopics = (): Topic[] => [
   // Strand 1: Listening & Speaking
-  { id: "eng_ls_1_1", name: "Effective Listening Strategies", slug: "eng-ls-effective-listening", progressValue: 0, gradeLevel: "STRAND 1: Listening & Speaking" },
-  { id: "eng_ls_1_2", name: "Oral Presentations and Discussions", slug: "eng-ls-oral-presentations", progressValue: 0, gradeLevel: "STRAND 1: Listening & Speaking" },
-  { id: "eng_ls_1_3", name: "Pronunciation, Stress, and Intonation", slug: "eng-ls-pronunciation-intonation", progressValue: 0, gradeLevel: "STRAND 1: Listening & Speaking" },
+  { id: "eng_ls_1_1", name: "Effective Listening Strategies", slug: "eng-ls-effective-listening", progressValue: 0, gradeLevel: "SHS 1 - STRAND 1: Listening & Speaking" },
+  { id: "eng_ls_1_2", name: "Oral Presentations and Discussions", slug: "eng-ls-oral-presentations", progressValue: 0, gradeLevel: "SHS 1 - STRAND 1: Listening & Speaking" },
+  { id: "eng_ls_1_3", name: "Pronunciation, Stress, and Intonation", slug: "eng-ls-pronunciation-intonation", progressValue: 0, gradeLevel: "SHS 1 - STRAND 1: Listening & Speaking" },
 
   // Strand 2: Reading & Writing
-  { id: "eng_rw_2_1", name: "Reading Comprehension", slug: "eng-rw-reading-comprehension", progressValue: 0, gradeLevel: "STRAND 2: Reading & Writing" },
-  { id: "eng_rw_2_2", name: "Identifying Author’s Purpose and Tone", slug: "eng-rw-author-purpose-tone", progressValue: 0, gradeLevel: "STRAND 2: Reading & Writing" },
-  { id: "eng_rw_2_4", name: "Functional Writing (Letters, Reports, CVs, Emails)", slug: "eng-rw-functional-writing", progressValue: 0, gradeLevel: "STRAND 2: Reading & Writing" },
-  { id: "eng_rw_2_5", name: "Essay Writing (Narrative, Descriptive, Expository, Argumentative)", slug: "eng-rw-essay-writing", progressValue: 0, gradeLevel: "STRAND 2: Reading & Writing" },
-  { id: "eng_rw_2_7", name: "Study and Research Skills (Summarizing, Note-taking)", slug: "eng-rw-study-research-skills", progressValue: 0, gradeLevel: "STRAND 2: Reading & Writing" },
+  { id: "eng_rw_2_1", name: "Reading Comprehension", slug: "eng-rw-reading-comprehension", progressValue: 0, gradeLevel: "SHS 1 - STRAND 2: Reading & Writing" },
+  { id: "eng_rw_2_2", name: "Identifying Author’s Purpose and Tone", slug: "eng-rw-author-purpose-tone", progressValue: 0, gradeLevel: "SHS 1 - STRAND 2: Reading & Writing" },
+  { id: "eng_rw_2_4", name: "Functional Writing (Letters, Reports, CVs, Emails)", slug: "eng-rw-functional-writing", progressValue: 0, gradeLevel: "SHS 1 - STRAND 2: Reading & Writing" },
+  { id: "eng_rw_2_5", name: "Essay Writing (Narrative, Descriptive, Expository, Argumentative)", slug: "eng-rw-essay-writing", progressValue: 0, gradeLevel: "SHS 1 - STRAND 2: Reading & Writing" },
+  { id: "eng_rw_2_7", name: "Study and Research Skills (Summarizing, Note-taking)", slug: "eng-rw-study-research-skills", progressValue: 0, gradeLevel: "SHS 1 - STRAND 2: Reading & Writing" },
 
   // Strand 3: Language and Literature
-  { id: "eng_ll_3_1", name: "Grammar (Parts of Speech, Sentences, Tenses, Concord)", slug: "eng-ll-grammar", progressValue: 0, gradeLevel: "STRAND 3: Language and Literature" },
-  { id: "eng_ll_3_2", name: "Vocabulary (Synonyms, Antonyms, Idioms)", slug: "eng-ll-vocabulary", progressValue: 0, gradeLevel: "STRAND 3: Language and Literature" },
-  { id: "eng_ll_3_3", name: "Punctuation & Mechanics", slug: "eng-ll-punctuation-mechanics", progressValue: 0, gradeLevel: "STRAND 3: Language and Literature" },
-  { id: "eng_ll_3_4", name: "Literature – Prose (Setting, Plot, Theme)", slug: "eng-ll-prose", progressValue: 0, gradeLevel: "STRAND 3: Language and Literature" },
-  { id: "eng_ll_3_5", name: "Literature – Poetry (Devices, Rhythm, Themes)", slug: "eng-ll-poetry", progressValue: 0, gradeLevel: "STRAND 3: Language and Literature" },
-  { id: "eng_ll_3_6", name: "Literature – Drama (Structure, Techniques)", slug: "eng-ll-drama", progressValue: 0, gradeLevel: "STRAND 3: Language and Literature" },
+  { id: "eng_ll_3_1", name: "Grammar (Parts of Speech, Sentences, Tenses, Concord)", slug: "eng-ll-grammar", progressValue: 0, gradeLevel: "SHS 1 - STRAND 3: Language and Literature" },
+  { id: "eng_ll_3_2", name: "Vocabulary (Synonyms, Antonyms, Idioms)", slug: "eng-ll-vocabulary", progressValue: 0, gradeLevel: "SHS 1 - STRAND 3: Language and Literature" },
+  { id: "eng_ll_3_3", name: "Punctuation & Mechanics", slug: "eng-ll-punctuation-mechanics", progressValue: 0, gradeLevel: "SHS 1 - STRAND 3: Language and Literature" },
+  { id: "eng_ll_3_4", name: "Literature – Prose (Setting, Plot, Theme)", slug: "eng-ll-prose", progressValue: 0, gradeLevel: "SHS 1 - STRAND 3: Language and Literature" },
+  { id: "eng_ll_3_5", name: "Literature – Poetry (Devices, Rhythm, Themes)", slug: "eng-ll-poetry", progressValue: 0, gradeLevel: "SHS 1 - STRAND 3: Language and Literature" },
+  { id: "eng_ll_3_6", name: "Literature – Drama (Structure, Techniques)", slug: "eng-ll-drama", progressValue: 0, gradeLevel: "SHS 1 - STRAND 3: Language and Literature" },
 ];
 
 

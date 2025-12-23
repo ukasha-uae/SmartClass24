@@ -1,36 +1,39 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX, Play, Pause, Skull, Droplets, Wind, Leaf, AlertTriangle, Recycle, ChevronRight } from 'lucide-react';
+import { useLocalization } from '@/hooks/useLocalization';
+import { localizeString } from '@/lib/localization/content-localizer';
+import type { CountryConfig } from '@/lib/localization/country-config';
 
 interface LessonIntroProps {
   onComplete?: () => void;
 }
 
-const stages = [
+const getStages = (country?: CountryConfig) => [
   {
     icon: AlertTriangle,
     title: "The Pollution Crisis",
-    content: "Look around Ghana today - our rivers once crystal clear now run brown with mining waste. Accra's air fills with vehicle exhaust. Plastic litters our beaches and streets. This is POLLUTION - the introduction of harmful substances into our environment at levels that threaten health, ecosystems, and our future.",
+    content: country ? localizeString("Look around {{country}} today - our rivers once crystal clear now run brown with mining waste. Air fills with vehicle exhaust. Plastic litters beaches and streets. This is POLLUTION - the introduction of harmful substances into our environment at levels that threaten health, ecosystems, and our future.", country as CountryConfig) : "Pollution threatens our rivers, air, and environment. The introduction of harmful substances creates serious health and ecological crises.",
     color: "from-red-500 to-orange-500"
   },
   {
     icon: Wind,
     title: "Air Pollution - Breathing Poison",
-    content: "Every breath in Accra's traffic exposes you to carbon monoxide, nitrogen oxides, and particulate matter from vehicles. Industrial emissions, burning waste, and even Harmattan dust contribute to air pollution. These pollutants cause respiratory diseases, heart problems, and contribute to global warming through the greenhouse effect.",
+    content: "Every breath in busy traffic exposes you to carbon monoxide, nitrogen oxides, and particulate matter from vehicles. Industrial emissions, burning waste, and dust contribute to air pollution. These pollutants cause respiratory diseases, heart problems, and contribute to global warming through the greenhouse effect.",
     color: "from-gray-400 to-blue-400"
   },
   {
     icon: Droplets,
     title: "Water Pollution - Poisoning Our Rivers",
-    content: "The galamsey crisis has devastated Ghana's rivers. Illegal miners use mercury to extract gold, poisoning the Pra, Ankobra, and Offin Rivers. Untreated sewage, plastic waste, and industrial discharge contaminate our water sources. Waterborne diseases like cholera and typhoid claim thousands of lives annually, especially children.",
+    content: country ? localizeString("Illegal mining has devastated {{country}}'s rivers. Miners use mercury to extract gold, poisoning local waterways. Untreated sewage, plastic waste, and industrial discharge contaminate water sources. Waterborne diseases like cholera and typhoid claim thousands of lives annually, especially children.", country as CountryConfig) : "Illegal mining has devastated rivers with mercury contamination. Untreated sewage, plastic waste, and industrial discharge create deadly waterborne diseases.",
     color: "from-blue-500 to-cyan-500"
   },
   {
     icon: Leaf,
     title: "Soil Pollution - Poisoning the Ground",
-    content: "Ghana's soil faces threats from agricultural chemicals, mining waste, and plastic accumulation. At Agbogbloshie, open burning of e-waste releases toxic heavy metals into soil and air. These pollutants enter our food chain, contaminating crops and accumulating in our bodies through bioaccumulation and biomagnification.",
+    content: country ? localizeString("{{country}}'s soil faces threats from agricultural chemicals, mining waste, and plastic accumulation. Open burning of e-waste releases toxic heavy metals into soil and air. These pollutants enter the food chain, contaminating crops and accumulating in our bodies through bioaccumulation and biomagnification.", country as CountryConfig) : "Soil faces threats from agricultural chemicals, mining waste, and e-waste burning. Toxic pollutants contaminate crops and accumulate in our bodies.",
     color: "from-green-600 to-emerald-500"
   },
   {
@@ -41,13 +44,15 @@ const stages = [
   },
   {
     icon: Recycle,
-    title: "Solutions - A Cleaner Ghana",
-    content: "Ghana can fight pollution! Individual actions matter: reduce plastic use, properly dispose waste, use public transport, plant trees. Communities must organize clean-ups and recycling. Government must enforce anti-galamsey laws, build sewage treatment plants, promote renewable energy. Prevention is cheaper than cleanup - act now to protect Ghana's environment!",
+    title: country ? localizeString("Solutions - A Cleaner {{country}}", country as CountryConfig) : "Solutions - Clean Environment",
+    content: country ? localizeString("{{country}} can fight pollution! Individual actions matter: reduce plastic use, properly dispose waste, use public transport, plant trees. Communities must organize clean-ups and recycling. Government must enforce laws, build treatment plants, promote renewable energy. Prevention is cheaper than cleanup - act now to protect {{country}}'s environment!", country as CountryConfig) : "Everyone can fight pollution! Individual actions matter: reduce plastic, dispose waste properly, use public transport. Communities and governments must work together to prevent pollution.",
     color: "from-green-500 to-teal-500"
   }
 ];
 
 export default function EnvironmentalChemistryPollutionIntro({ onComplete }: LessonIntroProps) {
+  const { country } = useLocalization();
+  const stages = useMemo(() => getStages(country), [country]);
   const [currentStage, setCurrentStage] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);

@@ -3,12 +3,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Zap, Battery, Lightbulb, AlertTriangle, ArrowRight, Gauge, Thermometer, Play, Pause, Volume2, VolumeX, GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocalization } from '@/hooks/useLocalization';
+import { localizeString } from '@/lib/localization/content-localizer';
+import type { CountryConfig } from '@/lib/localization/country-config';
 
 interface LessonIntroProps {
   onComplete?: () => void;
 }
 
 const ElectricityMagnetismConceptsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
+  const { country } = useLocalization();
   const [stage, setStage] = useState(0);
   const [voltage, setVoltage] = useState(0);
   const [current, setCurrent] = useState(0);
@@ -47,32 +51,37 @@ const ElectricityMagnetismConceptsIntro: React.FC<LessonIntroProps> = ({ onCompl
     setCurrent(voltage / resistance);
   }, [voltage, resistance]);
 
-  const stages = [
+  const maintsVoltage = React.useMemo(() => {
+    // Use localized template variable for voltage
+    return localizeString("{{country}}'s mains voltage", country as CountryConfig);
+  }, [country]);
+
+  const stages = React.useMemo(() => [
     {
       title: " Welcome to Electricity!",
-      content: "Electricity powers our modern world - from your phone to Ghana's national grid!",
-      narration: "Welcome, brilliant student! Today we enter the electrifying world of electricity and magnetism! Look around you - every phone charging, every light bulb glowing, every fan spinning uses electricity. In Ghana, our national grid delivers power from the Akosombo Dam to homes across the country. But what IS electricity really? How does current flow through wires? Why does your body get shocked if you touch exposed wires? By the end of this lesson, you will understand the invisible force that powers our modern world!",
-      highlightWords: ['electricity', 'magnetism', 'phone', 'light bulb', 'Ghana', 'Akosombo Dam', 'current', 'wires', 'shocked']
+      content: localizeString("Electricity powers our modern world - from your phone to {{country}}'s national grid!", country as CountryConfig),
+      narration: localizeString("Welcome, brilliant student! Today we enter the electrifying world of electricity and magnetism! Look around you - every phone charging, every light bulb glowing, every fan spinning uses electricity. In {{country}}, our national grid delivers power to homes across the country. But what IS electricity really? How does current flow through wires? Why does your body get shocked if you touch exposed wires? By the end of this lesson, you will understand the invisible force that powers our modern world!", country as CountryConfig),
+      highlightWords: ['electricity', 'magnetism', 'phone', 'light bulb', 'current', 'wires', 'shocked']
     },
     {
       title: " What is Electric Charge?",
       content: "All matter is made of atoms with positive protons and negative electrons.",
-      narration: "Let us start at the atomic level! Every atom has a nucleus with positive protons, surrounded by negative electrons orbiting like planets. When an object has equal protons and electrons, it is neutral - no charge! But when electrons move from one object to another, magic happens! Lose electrons and you become positive. Gain electrons and you become negative. Try the demonstration - click to add or remove electrons and watch the charge change! This is the foundation of ALL electricity. In Ghana, when you rub your feet on a carpet and touch a door handle - ZAP - that is electrons jumping!",
+      narration: localizeString("Let us start at the atomic level! Every atom has a nucleus with positive protons, surrounded by negative electrons orbiting like planets. When an object has equal protons and electrons, it is neutral - no charge! But when electrons move from one object to another, magic happens! Lose electrons and you become positive. Gain electrons and you become negative. Try the demonstration - click to add or remove electrons and watch the charge change! This is the foundation of ALL electricity. When you rub your feet on a carpet and touch a door handle - ZAP - that is electrons jumping!", country as CountryConfig),
       highlightWords: ['atom', 'nucleus', 'protons', 'electrons', 'neutral', 'positive', 'negative', 'charge', 'electrons jumping']
     },
     {
       title: " Static vs Current Electricity",
       content: "Charges can stay still (static) or flow continuously (current electricity).",
-      narration: "Now here is a crucial distinction! Static electricity is when charges build up and stay in one place - like lightning in Ghana's rainy season, or the shock from touching metal after walking on tiles. But CURRENT electricity is different - charges flow continuously through a conductor, like water through a pipe! This flowing electricity powers everything - your TV, refrigerator, and the fans in your classroom. Current is measured in AMPERES. One ampere means about six quintillion electrons passing a point every second! That is a six followed by eighteen zeros. Incredible, right?",
+      narration: localizeString("Now here is a crucial distinction! Static electricity is when charges build up and stay in one place - like lightning in the rainy season, or the shock from touching metal after walking on tiles. But CURRENT electricity is different - charges flow continuously through a conductor, like water through a pipe! This flowing electricity powers everything - your TV, refrigerator, and the fans in your classroom. Current is measured in AMPERES. One ampere means about six quintillion electrons passing a point every second! That is a six followed by eighteen zeros. Incredible, right?", country as CountryConfig),
       highlightWords: ['static electricity', 'lightning', 'shock', 'current electricity', 'conductor', 'amperes', 'six quintillion', 'electrons']
     },
     {
       title: " Ohm's Law: V = IR",
       content: "The most important equation in basic electricity - try it yourself!",
-      narration: "Now for the GOLDEN RULE of electricity - Ohm's Law! Voltage equals Current times Resistance. V equals I times R. Think of it like water in a pipe. Voltage is the PRESSURE pushing electrons - measured in volts. Current is how MANY electrons flow - measured in amperes. Resistance is how much the wire OPPOSES the flow - measured in ohms. Use the sliders to experiment! Increase voltage and watch current increase. Increase resistance and current decreases. Ghana's mains supply is two hundred thirty volts - very dangerous! This formula helps engineers design safe circuits. Master this equation and you have mastered the basics of electricity!",
-      highlightWords: ['Ohm\'s Law', 'Voltage', 'Current', 'Resistance', 'volts', 'amperes', 'ohms', 'two hundred thirty volts', 'safe circuits']
+      narration: localizeString("Now for the GOLDEN RULE of electricity - Ohm's Law! Voltage equals Current times Resistance. V equals I times R. Think of it like water in a pipe. Voltage is the PRESSURE pushing electrons - measured in volts. Current is how MANY electrons flow - measured in amperes. Resistance is how much the wire OPPOSES the flow - measured in ohms. Use the sliders to experiment! Increase voltage and watch current increase. Increase resistance and current decreases. {{country}}'s mains supply is 230 volts - very dangerous! This formula helps engineers design safe circuits. Master this equation and you have mastered the basics of electricity!", country as CountryConfig),
+      highlightWords: ['Ohm\'s Law', 'Voltage', 'Current', 'Resistance', 'volts', 'amperes', 'ohms', 'safe circuits']
     }
-  ];
+  ], [country]);
 
   // Speak the current stage narration
   const speakNarration = useCallback(() => {
@@ -523,7 +532,7 @@ const ElectricityMagnetismConceptsIntro: React.FC<LessonIntroProps> = ({ onCompl
         </motion.div>
       </AnimatePresence>
 
-      {/* Ghana safety notice */}
+      {/* Safety notice */}
       <motion.div 
         className="bg-red-900/30 border border-red-700 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6"
         initial={{ opacity: 0 }}
@@ -533,10 +542,10 @@ const ElectricityMagnetismConceptsIntro: React.FC<LessonIntroProps> = ({ onCompl
         <div className="flex items-start gap-2 sm:gap-3">
           <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-red-400 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="text-red-400 font-bold text-sm sm:text-base">⚠️ Safety in Ghana</h4>
+            <h4 className="text-red-400 font-bold text-sm sm:text-base">⚠️ Electrical Safety</h4>
             <p className="text-gray-300 text-xs sm:text-sm">
-              Ghana uses <strong>230V AC</strong> mains electricity - enough to be fatal!
-              Always be careful around electrical installations. Report fallen power lines to ECG.
+              Your country uses <strong>230V AC</strong> mains electricity - enough to be fatal!
+              Always be careful around electrical installations. Report hazards to local authorities.
             </p>
           </div>
         </div>

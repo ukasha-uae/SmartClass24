@@ -176,6 +176,7 @@ export function OhmsLawLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand Ohm's Law! +${earnedXP} XP`);
+            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered Ohm's Law! The formula V = I × R describes how voltage, current, and resistance relate. From your experiments: when voltage increased (5V → 10V) with constant resistance (10Ω), current DOUBLED (0.5A → 1.0A). This proves V ∝ I (voltage proportional to current). When resistance increased (10Ω → 20Ω) with constant voltage (5V), current HALVED (0.5A → 0.25A). This shows I ∝ 1/R (current inversely proportional to resistance). Current flows when voltage pushes electrons through resistance. High resistance = low current (like narrow pipe restricts water flow). Rearranging Ohm's Law: I = V/R or R = V/I. Real applications: circuit design, calculating wire thickness, fuses (break circuit when current too high), LED circuits (resistors limit current), electrical safety. You understand voltage (electrical pressure), current (electron flow rate), resistance (opposition to flow), and their mathematical relationship! +${earnedXP} XP earned!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -184,8 +185,10 @@ export function OhmsLawLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Remember V = I × R.`);
+            setTeacherMessage(`Good effort! You got 2 out of 3 correct. Let me clarify Ohm's Law: The formula is V = I × R (Voltage = Current × Resistance). This means: (1) Current is INVERSELY proportional to resistance - double resistance, current halves (if voltage stays constant). (2) When voltage doubles with fixed resistance, current DOUBLES - they're directly proportional. Think of it like water: voltage is pressure, current is flow rate, resistance is pipe narrowness. High pressure + wide pipe = high flow. Low pressure + narrow pipe = low flow. Review your circuit measurements and the graph!`);
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Review the relationship: Voltage = Current × Resistance.`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me explain Ohm's Law: V = I × R connects three quantities: VOLTAGE (V) in volts - electrical pressure pushing electrons. CURRENT (I) in amperes - rate of electron flow. RESISTANCE (R) in ohms - opposition to current flow. The key relationships: Current is INVERSELY proportional to resistance (I ∝ 1/R). If you double resistance, current halves. Voltage is directly proportional to current (V ∝ I). If you double voltage, current doubles (with fixed R). Try this: V=10V, R=10Ω → I = V/R = 10/10 = 1A. Now double V to 20V: I = 20/10 = 2A (doubled!). Review the formula and try again!`);
         }
     };
 
@@ -216,6 +219,16 @@ export function OhmsLawLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : readings.length >= 3 ? 'happy' : 'explaining'}
+                context={{
+                    attempts: readings.length,
+                    correctStreak: readings.length >= 5 ? 100 : 0
+                }}
+                quickActions={[
+                    { label: 'Reset Lab', onClick: handleRestart },
+                    { label: 'View Theory', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
             />
 
             {isCompleted && (

@@ -135,6 +135,7 @@ import EnvironmentalChemistryPollutionIntro from '@/components/lesson-intros/int
 import WasteManagementIntro from '@/components/lesson-intros/integrated-science/shs3/WasteManagementIntro';
 // English Language Intro Components
 import EffectiveListeningIntro from '@/components/lesson-intros/english-language/shs1/EffectiveListeningIntro';
+import OralPresentationsIntro from '@/components/lesson-intros/english-language/shs1/OralPresentationsIntro';
 import { CarouselLesson } from '@/components/CarouselLesson';
 import { 
   addBookmark, 
@@ -807,6 +808,8 @@ export default function LessonPage() {
             ) : // English Language Intros
             lessonSlug === 'eng-ls-effective-listening' ? (
               <EffectiveListeningIntro />
+            ) : lessonSlug === 'eng-ls-oral-presentations' ? (
+              <OralPresentationsIntro />
             ) : (
               // Fallback - should not reach here if all intros are properly mapped
               null

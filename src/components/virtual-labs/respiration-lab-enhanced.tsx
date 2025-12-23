@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, XCircle, Thermometer, Sprout, BookOpen, Shield, Sparkles, Droplet } from 'lucide-react';
+import { CheckCircle, XCircle, Thermometer, Sprout, BookOpen, Shield, Sparkles, Droplet, RefreshCw } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -194,14 +194,19 @@ export function RespirationLabEnhanced() {
                 origin: { y: 0.6 }
             });
             
-            setTeacherMessage(`Congratulations! You've completed the Respiration Lab with a perfect score! You earned ${earnedXP} XP. You now understand that living organisms convert nutrients into energy (ATP) and produce heat and CO₂ as waste products. This is how all living things power their life processes!`);
+            // 3-tier feedback: Perfect score
+            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered cellular respiration! Here's what you discovered: (1) FLASK A (germinating seeds) showed BOTH heat production and milky limewater - these are the two key products of respiration! Living seeds respire to release energy for growth. Flask B (boiled seeds) showed NO changes because boiling KILLED the seeds - dead cells cannot respire. (2) CARBON DIOXIDE (CO₂) is the gas that turned limewater milky. This is the waste product of respiration. The chemical test: Ca(OH)₂ + CO₂ → CaCO₃ (white precipitate) + H₂O. (3) Seeds release HEAT ENERGY during respiration because breaking down glucose releases energy in two forms: ATP (for cell work) and HEAT (thermal energy). The equation: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ENERGY (ATP + Heat). Germinating seeds use stored starch, convert it to glucose, and respire aerobically to fuel rapid cell division and growth. Temperature rose from 50°F to 80°F in Flask A! This same process happens in YOUR cells right now - you're respiring to power your muscles, brain, and heart. Every breath you take provides oxygen for respiration. Excellent work! +${earnedXP} XP earned!`);
             setPendingTransition(() => () => {
                 setCurrentStep('complete');
             });
         } else if (correctCount === 2) {
+            // Good effort - 2 out of 3 correct
             setQuizFeedback(`Good effort! You got ${correctCount} out of 3 correct. Review the experiment results and try again!`);
+            setTeacherMessage(`Good try! You got 2 out of 3 correct. Let me clarify the key concepts of cellular respiration: (1) FLASK A with GERMINATING (living) seeds showed changes - temperature increased and limewater turned milky. Flask B with BOILED (dead) seeds showed NO changes. Why? Living cells respire, dead cells don't! Boiling denatures enzymes and kills cells. (2) The gas produced is CARBON DIOXIDE (CO₂). This is why limewater turned milky - CO₂ reacts with calcium hydroxide to form calcium carbonate (white precipitate). It's a classic chemical test for CO₂! (3) Seeds release HEAT because respiration breaks chemical bonds in glucose, releasing ENERGY. Some energy becomes ATP (used by cells), and some becomes HEAT (thermal energy) that we can measure with a thermometer. Think about what you observed: Flask A got warmer (heat production) and limewater turned white (CO₂ detection). These are the TWO key signs of respiration. Review the results and try again!`);
         } else {
+            // Needs work - 0 or 1 correct
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Think about which flask had living seeds and what changes occurred. Try again!`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Let me explain cellular respiration from the beginning: RESPIRATION is how ALL living things (plants, animals, bacteria) release ENERGY from food. It's the opposite of photosynthesis! The equation: C₆H₁₂O₆ (glucose) + 6O₂ (oxygen) → 6CO₂ (carbon dioxide) + 6H₂O (water) + ENERGY (ATP + Heat). In our experiment: FLASK A had GERMINATING SEEDS - these are LIVING, growing seeds. They need energy to grow, so they respire actively. We saw TWO changes: (a) Temperature INCREASED from 50°F to 80°F - that's HEAT energy being released! (b) Limewater turned MILKY WHITE - that's CO₂ gas being produced! FLASK B had BOILED SEEDS - these are DEAD seeds. Boiling killed all the cells. Dead cells CANNOT respire, so we saw NO temperature change and NO milky limewater. This proves respiration is a LIFE PROCESS! Key points to remember: (1) Living seeds (Flask A) respire; dead seeds (Flask B) don't. (2) CO₂ is the gas produced - it turns limewater milky. (3) HEAT energy is released - that's why temperature rises. Germinating seeds use stored food (starch), break it down through respiration, and use the energy to grow roots and shoots. Review the experiment carefully and look at Flask A vs Flask B. What differences did you see? Try the quiz again!`);
         }
     };
 
@@ -231,6 +236,34 @@ export function RespirationLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : observationProgress > 50 ? 'happy' : 'explaining'}
+                context={{
+                    attempts: observationProgress,
+                    correctStreak: observationProgress
+                }}
+                quickActions={[
+                    {
+                        label: 'Reset Lab',
+                        icon: '🔄',
+                        onClick: handleRestart
+                    },
+                    {
+                        label: 'View Theory',
+                        icon: '📖',
+                        onClick: () => {
+                            const theorySection = document.querySelector('[data-theory-section]');
+                            theorySection?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    },
+                    {
+                        label: 'Safety Tips',
+                        icon: '🛡️',
+                        onClick: () => {
+                            const safetySection = document.querySelector('[data-safety-section]');
+                            safetySection?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                ]}
             />
 
             {isCompleted && (
@@ -265,7 +298,7 @@ export function RespirationLabEnhanced() {
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
+                        <AccordionItem value="item-1" data-theory-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <BookOpen className="h-4 w-4" />
@@ -288,7 +321,7 @@ export function RespirationLabEnhanced() {
                                 <p className="mt-2"><strong>Control Experiment:</strong> We use boiled (dead) seeds as a control. Boiling kills the seeds, stopping all life processes including respiration. No respiration = no heat, no CO₂.</p>
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="item-2">
+                        <AccordionItem value="item-2" data-safety-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <Shield className="h-4 w-4" />

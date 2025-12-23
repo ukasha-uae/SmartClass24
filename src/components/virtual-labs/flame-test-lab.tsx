@@ -11,6 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 import { cn } from '@/lib/utils';
 import { TextToSpeech } from '../text-to-speech';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TeacherVoice } from './TeacherVoice';
 
 type TestStep = 'prepare' | 'load-sample' | 'heat' | 'observe' | 'complete';
 type MetalSalt = 'Lithium Chloride' | 'Sodium Chloride' | 'Potassium Chloride' | 'Copper Sulfate' | 'Calcium Chloride' | 'Barium Chloride';
@@ -111,6 +112,7 @@ const HighlightedText = ({ text, sectionId, highlightedSentenceIndex }: {
 export function FlameTestLab() {
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<TestStep>('prepare');
+  const [teacherMessage, setTeacherMessage] = useState('Welcome to this experiment! Let\'s explore together.');
     const [selectedSalt, setSelectedSalt] = React.useState<MetalSalt | null>(null);
     const [currentFlame, setCurrentFlame] = React.useState<SaltInfo | null>(null);
     const [timer, setTimer] = React.useState(0);
@@ -946,6 +948,25 @@ export function FlameTestLab() {
                     </Button>
                 </CardFooter>
             </Card>
+
+        {/* Enhanced Teacher Voice with Phase 2 Features */}
+        <TeacherVoice 
+          message={teacherMessage}
+          autoPlay={true}
+          theme="science"
+          teacherName="Dr. Lab Instructor"
+          emotion="explaining"
+          quickActions={[
+            {
+              label: 'Reset Experiment',
+              onClick: () => {
+                // Add reset logic here
+                setTeacherMessage('Experiment reset! Ready to start fresh.');
+              }
+            }
+          ]}
+        />
+
         </div>
     );
 }

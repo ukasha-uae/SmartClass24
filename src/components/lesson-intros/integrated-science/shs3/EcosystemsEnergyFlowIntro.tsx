@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Sun, Leaf, Fish, Recycle, TrendingDown, Zap, ChevronLeft, ChevronRight, Play, Pause, Volume2, VolumeX, GraduationCap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocalization } from '@/hooks/useLocalization';
+import { localizeString } from '@/lib/localization/content-localizer';
+import type { CountryConfig } from '@/lib/localization/country-config';
 
 interface LessonIntroProps {
   onComplete?: () => void;
 }
 
 const EcosystemsEnergyFlowIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
+  const { country } = useLocalization();
   const [stage, setStage] = useState(0);
   
   // Teacher narration states
@@ -19,18 +23,18 @@ const EcosystemsEnergyFlowIntro: React.FC<LessonIntroProps> = ({ onComplete }) =
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const hasSpokenRef = useRef<Set<number>>(new Set());
 
-  const stages = [
+  const stages = useMemo(() => [
     {
       title: "🌞 The Sun: Ultimate Energy Source",
       content: "Every ecosystem's energy story begins with the sun!",
-      narration: "Welcome to one of nature's most POWERFUL stories - the journey of ENERGY through ecosystems! Look up at the SUN right now - every second, it bathes Ghana in massive amounts of SOLAR ENERGY. This energy powers EVERYTHING - the cocoa trees in our rainforests, the millet in northern savannas, the phytoplankton in Lake Volta. Have you ever wondered why there are MORE GRASSHOPPERS than BIRDS in a field? Or why LIONS need HUGE TERRITORIES to survive? The answer lies in how energy flows through nature. Unlike nutrients that CYCLE, energy flows ONE-WAY: from the sun through living things and finally out as HEAT. Understanding this flow is the key to understanding why ecosystems look the way they do! Today, we'll discover why food chains can't be infinitely long, why protecting forests means protecting entire food webs, and why overfishing threatens Lake Volta's ecosystem.",
+      narration: country ? localizeString("Welcome to one of nature's most POWERFUL stories - the journey of ENERGY through ecosystems! Look up at the SUN right now - every second, it bathes {{country}} in massive amounts of SOLAR ENERGY. This energy powers EVERYTHING - the trees in our forests, grains in savannas, and aquatic life in our waters. Have you ever wondered why there are MORE GRASSHOPPERS than BIRDS in a field? Or why LIONS need HUGE TERRITORIES to survive? The answer lies in how energy flows through nature. Unlike nutrients that CYCLE, energy flows ONE-WAY: from the sun through living things and finally out as HEAT. Understanding this flow is the key to understanding why ecosystems look the way they do! Today, we'll discover why food chains can't be infinitely long, why protecting forests means protecting entire food webs, and why overfishing threatens aquatic ecosystems.", country as CountryConfig) : "Welcome to one of nature's most powerful stories - the journey of energy through ecosystems! Energy flows ONE-WAY from the sun through living things and finally out as HEAT.",
       highlightWords: ['energy', 'sun', 'solar energy', 'one-way', 'heat', 'grasshoppers', 'birds', 'lions']
     },
     {
       title: "🌱 Producers: Nature's Solar Panels",
       content: "Plants capture sunlight and convert it to chemical energy through photosynthesis!",
-      narration: "Everything starts with PRODUCERS - and in Ghana, we have AMAZING producers! Picture a COCOA TREE in the Western Region. Its leaves are like SOLAR PANELS, capturing sunlight energy through PHOTOSYNTHESIS. Six carbon dioxide molecules plus six water molecules, powered by sunlight, create ONE GLUCOSE molecule plus oxygen. That glucose stores CHEMICAL ENERGY from sunlight! Producers include all GREEN PLANTS, ALGAE in rivers and lakes, and even microscopic PHYTOPLANKTON. They're called AUTOTROPHS because they make their OWN food - 'auto' means self, 'troph' means feeding. Without producers, NO ECOSYSTEM could exist! They're the FOUNDATION of every food chain and food web. In Ghana's rainforest, producers capture abundant solar energy. In the savanna, grasses withstand dry seasons. In Lake Volta, algae and water plants support the entire aquatic food web. Producers are literally LIFE CREATORS!",
-      highlightWords: ['producers', 'photosynthesis', 'solar panels', 'autotrophs', 'glucose', 'chemical energy', 'foundation', 'cocoa tree', 'phytoplankton']
+      narration: country ? localizeString("Everything starts with PRODUCERS - and in {{country}} we have AMAZING producers! Picture trees in forests or grains in fields. Their leaves are like SOLAR PANELS, capturing sunlight energy through PHOTOSYNTHESIS. Six carbon dioxide molecules plus six water molecules, powered by sunlight, create ONE GLUCOSE molecule plus oxygen. That glucose stores CHEMICAL ENERGY from sunlight! Producers include all GREEN PLANTS, ALGAE in rivers and lakes, and even microscopic PHYTOPLANKTON. They're called AUTOTROPHS because they make their OWN food - 'auto' means self, 'troph' means feeding. Without producers, NO ECOSYSTEM could exist! They're the FOUNDATION of every food chain and food web. Producers are literally LIFE CREATORS!", country as CountryConfig) : "Everything starts with PRODUCERS. Their leaves are like SOLAR PANELS capturing sunlight through PHOTOSYNTHESIS. Producers include all GREEN PLANTS, ALGAE, and PHYTOPLANKTON. They're called AUTOTROPHS because they make their OWN food.",
+      highlightWords: ['producers', 'photosynthesis', 'solar panels', 'autotrophs', 'glucose', 'chemical energy', 'foundation', 'phytoplankton']
     },
     {
       title: "🍃 The 10% Rule: Why Energy Decreases",
@@ -41,22 +45,22 @@ const EcosystemsEnergyFlowIntro: React.FC<LessonIntroProps> = ({ onComplete }) =
     {
       title: "🔗 Food Chains: Linear Energy Pathways",
       content: "Food chains show WHO EATS WHOM in a straight line!",
-      narration: "A FOOD CHAIN shows a simple, LINEAR pathway of energy flow. Let's trace a GHANAIAN SAVANNA food chain: GRASS grows using sunlight. A GRASSHOPPER eats the grass - it's a PRIMARY CONSUMER or HERBIVORE. Then a LIZARD eats the grasshopper - it's a SECONDARY CONSUMER or CARNIVORE. Next, a SNAKE eats the lizard - it's a TERTIARY CONSUMER. Finally, an EAGLE eats the snake - it's a QUATERNARY CONSUMER or TOP PREDATOR. We can write this as: Grass → Grasshopper → Lizard → Snake → Eagle. The ARROWS show energy flow direction - they mean 'is eaten by.' In Lake Volta, a food chain might be: Algae → Small fish → Tilapia → Crocodile. In a cocoa farm: Cocoa leaves → Caterpillar → Lizard → Mongoose. Food chains are simple to understand but they're OVERSIMPLIFIED - real ecosystems are much more COMPLEX!",
+      narration: country ? localizeString("A FOOD CHAIN shows a simple, LINEAR pathway of energy flow. Let's trace a {{country:adjective|uppercase=first}} ecosystem's food chain. In savanna regions: GRASS grows using sunlight. A GRASSHOPPER eats the grass - it's a PRIMARY CONSUMER or HERBIVORE. Then a LIZARD eats the grasshopper - it's a SECONDARY CONSUMER or CARNIVORE. Next, a SNAKE eats the lizard - it's a TERTIARY CONSUMER. Finally, an EAGLE eats the snake - it's a QUATERNARY CONSUMER or TOP PREDATOR. We write this as: Grass → Grasshopper → Lizard → Snake → Eagle. The ARROWS show energy flow direction - they mean 'is eaten by.' In aquatic systems, a food chain might be: Algae → Small fish → Larger fish → Aquatic birds. Food chains are simple to understand but they're OVERSIMPLIFIED - real ecosystems are much more COMPLEX!", country as CountryConfig) : "A FOOD CHAIN shows a simple, LINEAR pathway of energy flow. GRASS → GRASSHOPPER → LIZARD → SNAKE → EAGLE. The ARROWS show energy flow direction - they mean 'is eaten by.'",
       highlightWords: ['food chain', 'linear', 'pathway', 'grass', 'grasshopper', 'lizard', 'snake', 'eagle', 'arrows', 'primary consumer', 'herbivore']
     },
     {
       title: "🕸️ Food Webs: The Complex Reality",
       content: "Real ecosystems have interconnected food webs, not simple chains!",
-      narration: "In REAL LIFE, organisms don't eat just ONE thing - they have VARIED DIETS! A MONKEY in Kakum Forest doesn't just eat fruits - it also eats insects, leaves, and flowers. An EAGLE doesn't just hunt snakes - it also catches fish, lizards, and small birds. This creates a FOOD WEB - multiple interconnected food chains forming a COMPLEX NETWORK. Food webs have HUGE ADVANTAGES! They provide STABILITY - if one food source disappears, organisms can switch to ALTERNATIVES. If tilapia decline in Lake Volta, crocodiles can eat other fish. If grasshoppers are scarce, lizards can eat ants. But food webs also create VULNERABILITY - remove too many species, especially TOP PREDATORS or KEY PRODUCERS, and the whole web can COLLAPSE! This is why BIODIVERSITY matters. The more species in a web, the more RESILIENT the ecosystem. Ghana's food webs include OMNIVORES like humans who eat both plants and animals, making webs even more complex!",
-      highlightWords: ['food web', 'interconnected', 'complex', 'stability', 'alternatives', 'collapse', 'biodiversity', 'resilient', 'monkey', 'eagle']
+      narration: country ? localizeString("In REAL LIFE, organisms don't eat just ONE thing - they have VARIED DIETS! Animals in {{country}} forests don't just eat one food source - they also eat insects, leaves, and other items. Predators don't just hunt one prey - they catch various animals. This creates a FOOD WEB - multiple interconnected food chains forming a COMPLEX NETWORK. Food webs have HUGE ADVANTAGES! They provide STABILITY - if one food source disappears, organisms can switch to ALTERNATIVES. But food webs also create VULNERABILITY - remove too many species, especially TOP PREDATORS or KEY PRODUCERS, and the whole web can COLLAPSE! This is why BIODIVERSITY matters. The more species in a web, the more RESILIENT the ecosystem. {{country}}'s food webs include OMNIVORES like humans who eat both plants and animals, making webs even more complex!", country as CountryConfig) : "In REAL LIFE, organisms have VARIED DIETS! This creates a FOOD WEB - multiple interconnected food chains. Food webs provide STABILITY but create VULNERABILITY if species are removed.",
+      highlightWords: ['food web', 'interconnected', 'complex', 'stability', 'alternatives', 'collapse', 'biodiversity', 'resilient', 'omnivores']
     },
     {
       title: "♻️ Decomposers: The Essential Recyclers",
       content: "Decomposers break down dead matter and return nutrients to soil!",
-      narration: "Every living thing eventually DIES - so what happens to all that dead matter? Enter the DECOMPOSERS - BACTERIA and FUNGI that break down dead organisms and waste! They're the CLEANUP CREW of ecosystems. When a tree dies in the forest, decomposers break it down into simple molecules - CARBON, NITROGEN, PHOSPHORUS, MINERALS - which return to the SOIL for plants to use again. Without decomposers, dead bodies would pile up EVERYWHERE, nutrients would be LOCKED in corpses forever, and soil would become DEPLETED. Ghanaian farmers know this - they use COMPOSTING to let decomposers turn farm waste into rich FERTILIZER! Decomposers are HETEROTROPHS like consumers, but instead of eating living things, they feed on DEAD ORGANIC MATTER. They're found everywhere - in soil, water, even inside your body helping digest food! Decomposers complete the NUTRIENT CYCLE, allowing life to continue. Remember: energy flows ONE-WAY and exits as heat, but nutrients CYCLE thanks to decomposers!",
+      narration: country ? localizeString("Every living thing eventually DIES - so what happens to all that dead matter? Enter the DECOMPOSERS - BACTERIA and FUNGI that break down dead organisms and waste! They're the CLEANUP CREW of ecosystems. When a tree dies in the forest, decomposers break it down into simple molecules - CARBON, NITROGEN, PHOSPHORUS, MINERALS - which return to the SOIL for plants to use again. Without decomposers, dead bodies would pile up EVERYWHERE, nutrients would be LOCKED in corpses forever, and soil would become DEPLETED. Farmers in {{country}} know this - they use COMPOSTING to let decomposers turn farm waste into rich FERTILIZER! Decomposers are HETEROTROPHS like consumers, but instead of eating living things, they feed on DEAD ORGANIC MATTER. They're found everywhere - in soil, water, even inside your body helping digest food! Decomposers complete the NUTRIENT CYCLE, allowing life to continue. Remember: energy flows ONE-WAY and exits as heat, but nutrients CYCLE thanks to decomposers!", country as CountryConfig) : "Every living thing eventually DIES. DECOMPOSERS - BACTERIA and FUNGI - break down dead organisms. Without decomposers, nutrients would be locked in corpses forever. Decomposers complete the NUTRIENT CYCLE.",
       highlightWords: ['decomposers', 'bacteria', 'fungi', 'recyclers', 'nutrients', 'cycle', 'composting', 'fertilizer', 'dead', 'soil']
     }
-  ];
+  ], [country]);
 
   // Speak the current stage narration
   const speakNarration = useCallback(() => {

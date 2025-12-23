@@ -3,28 +3,31 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Volume2, VolumeX, Play, Pause, Trash2, Recycle, Leaf, Factory, AlertTriangle, Sparkles, ChevronRight } from 'lucide-react';
+import { useLocalization } from '@/hooks/useLocalization';
+import { localizeString } from '@/lib/localization/content-localizer';
+import type { CountryConfig } from '@/lib/localization/country-config';
 
 interface LessonIntroProps {
   onComplete?: () => void;
 }
 
-const stages = [
+const getStages = (country?: CountryConfig) => [
   {
     icon: Trash2,
-    title: "Ghana's Waste Crisis",
-    content: "Walk through any Ghanaian city and you'll see it - plastic bottles in gutters, sachet water bags everywhere, open dumps smoldering with burning trash. Ghana generates 12,710 tonnes of waste DAILY, yet less than 10% is properly recycled. This waste crisis threatens our health, clogs our drains causing floods, and pollutes our environment.",
+    title: country ? localizeString("{{country}}'s Waste Crisis", country as CountryConfig) : "Waste Crisis",
+    content: country ? localizeString("Walk through any {{country:adjective}} city and you'll see it - plastic bottles in gutters, sachet water bags everywhere, open dumps smoldering with burning trash. {{country}} generates 12,710 tonnes of waste DAILY, yet less than 10% is properly recycled. This waste crisis threatens our health, clogs our drains causing floods, and pollutes our environment.", country as CountryConfig) : "Walk through any city and you'll see it - plastic bottles in gutters, sachet water bags everywhere, open dumps smoldering with burning trash. This waste crisis threatens our health, clogs our drains causing floods, and pollutes our environment.",
     color: "from-gray-500 to-slate-600"
   },
   {
     icon: AlertTriangle,
     title: "The Dangers of Improper Disposal",
-    content: "Improperly disposed waste creates serious problems. Leachate from dumps contaminates groundwater. Burning waste releases toxic fumes. Plastic clogs drains causing deadly floods like the June 3, 2015 disaster. E-waste at Agbogbloshie releases lead and mercury poisoning workers and communities. Disease-carrying pests breed in waste sites.",
+    content: "Improperly disposed waste creates serious problems. Leachate from dumps contaminates groundwater. Burning waste releases toxic fumes. Plastic clogs drains causing deadly floods. E-waste releases lead and mercury poisoning workers and communities. Disease-carrying pests breed in waste sites.",
     color: "from-red-500 to-orange-500"
   },
   {
     icon: Factory,
     title: "Where Does Our Waste Come From?",
-    content: "Waste comes from homes (food scraps, packaging), markets (organic waste, plastics), industries (chemicals, byproducts), hospitals (infectious materials), farms (crop residues, manure), and construction sites. Ghana's waste is 61% organic, 14% plastic, and the rest paper, metals, glass, and other materials.",
+    content: country ? localizeString("Waste comes from homes (food scraps, packaging), markets (organic waste, plastics), industries (chemicals, byproducts), hospitals (infectious materials), farms (crop residues, manure), and construction sites. {{country}}'s waste is 61% organic, 14% plastic, and the rest paper, metals, glass, and other materials.", country as CountryConfig) : "Waste comes from homes, markets, industries, hospitals, farms, and construction sites.",
     color: "from-amber-500 to-yellow-500"
   },
   {
@@ -35,19 +38,21 @@ const stages = [
   },
   {
     icon: Leaf,
-    title: "Composting: Ghana's Golden Opportunity",
-    content: "With 61% organic waste, Ghana has enormous composting potential! Composting converts food and yard waste into nutrient-rich fertilizer. It diverts waste from landfills, reduces greenhouse gases, creates jobs, and produces fertilizer to replace expensive imports. Every home, school, and market can compost.",
+    title: country ? localizeString("Composting: {{country}}'s Golden Opportunity", country as CountryConfig) : "Composting Opportunity",
+    content: country ? localizeString("With 61% organic waste, {{country}} has enormous composting potential! Composting converts food and yard waste into nutrient-rich fertilizer. It diverts waste from landfills, reduces greenhouse gases, creates jobs, and produces fertilizer to replace expensive imports. Every home, school, and market can compost.", country as CountryConfig) : "Composting converts food and yard waste into nutrient-rich fertilizer. Every home, school, and market can compost.",
     color: "from-lime-500 to-green-600"
   },
   {
     icon: Sparkles,
     title: "Solutions: Everyone Has a Role",
-    content: "You can make a difference! Use reusable bags and bottles. Never dump in drains. Separate recyclables. Compost food waste. Communities can organize clean-ups and recycling. Government must build proper infrastructure and enforce laws. Together, we can transform Ghana's waste crisis into a circular economy where nothing is wasted!",
+    content: country ? localizeString("You can make a difference! Use reusable bags and bottles. Never dump in drains. Separate recyclables. Compost food waste. Communities can organize clean-ups and recycling. Government must build proper infrastructure and enforce laws. Together, we can transform {{country}}'s waste crisis into a circular economy where nothing is wasted!", country as CountryConfig) : "You can make a difference! Use reusable bags and bottles. Never dump in drains. Together, we can transform the waste crisis into a circular economy!",
     color: "from-blue-500 to-purple-500"
   }
 ];
 
 export default function WasteManagementIntro({ onComplete }: LessonIntroProps) {
+  const { country } = useLocalization();
+  const stages = React.useMemo(() => getStages(country as CountryConfig), [country]);
   const [currentStage, setCurrentStage] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);

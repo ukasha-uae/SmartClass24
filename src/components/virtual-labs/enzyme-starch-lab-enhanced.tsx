@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, XCircle, Droplets, Clock, BookOpen, Shield, Sparkles, Trophy, Award } from 'lucide-react';
+import { CheckCircle, XCircle, Droplets, Clock, BookOpen, Shield, Sparkles, Trophy, Award, RefreshCw } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -191,13 +191,20 @@ export function EnzymeStarchLabEnhanced() {
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You've mastered enzyme action! +${earnedXP} XP`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            
+            // 3-tier feedback: Perfect score
+            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered enzyme action! Here's what you discovered: (1) STARCH is the SUBSTRATE - the complex carbohydrate molecule that gets broken down. Starch is a polysaccharide made of many glucose units linked together. It's found in foods like bread, rice, potatoes, and pasta. (2) AMYLASE is the ENZYME - the biological catalyst that speeds up the reaction. Amylase has an active site with a specific shape that binds to starch molecules. It breaks the glycosidic bonds between glucose units, splitting starch into MALTOSE (a disaccharide) and eventually GLUCOSE (a monosaccharide). Enzymes work by LOWERING the activation energy needed for the reaction - they make it easier for the reaction to happen! (3) IODINE is the INDICATOR - the chemical test for starch. Iodine (I₂) reacts with starch to form a blue-black starch-iodine complex. When starch is broken down into sugars, there's NO starch left to react with iodine, so the solution stays ORANGE/AMBER. This proves the enzyme worked! The key enzyme properties: (a) SPECIFIC - each enzyme only works on certain substrates (amylase only breaks down starch, not proteins or fats), (b) REUSABLE - enzymes aren't consumed in the reaction, they can be used again and again, (c) AFFECTED BY CONDITIONS - temperature and pH affect enzyme activity. This happens in YOUR MOUTH right now - salivary amylase begins digesting starch as soon as you chew bread! Enzymes are essential for life - they control ALL chemical reactions in cells. +${earnedXP} XP earned!`);
             setTimeout(() => {
                 setCurrentStep('complete');
             }, 2000);
         } else if (correctCount === 2) {
+            // Good effort - 2 out of 3 correct
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the experiment and try again. Think about what each substance does!`);
+            setTeacherMessage(`Good effort! You got 2 out of 3 correct. Let me clarify the roles of each substance in this experiment: (1) STARCH is the SUBSTRATE - the substance being broken down. Think of it as the raw material. Starch is a large, complex molecule (polysaccharide) made of many glucose units. Your body cannot absorb starch directly - it must be broken into simpler sugars first. (2) AMYLASE is the ENZYME - the biological catalyst. Enzymes are proteins with a specific 3D shape. The ACTIVE SITE of amylase has a shape that perfectly fits starch molecules (lock and key model). When starch binds to the active site, the enzyme CATALYZES the breakdown reaction, splitting starch into maltose and glucose. Enzymes speed up reactions WITHOUT being consumed! (3) IODINE is the INDICATOR - the chemical test. Iodine turns BLUE-BLACK when it meets starch. After the enzyme works, NO starch remains, so iodine stays ORANGE. This is proof that the substrate was broken down! The sequence: Starch (substrate) + Amylase (enzyme) → Maltose + Glucose (products). Then: Add iodine → stays orange (no starch) = enzyme worked! Review these roles and try the quiz again!`);
         } else {
+            // Needs work - 0 or 1 correct
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Don't worry! Review how enzymes break down substrates and try again.`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Let me explain enzyme action from the beginning: ENZYMES are biological CATALYSTS - proteins that speed up chemical reactions in living organisms. Without enzymes, most reactions would be too slow to sustain life! In this experiment, we studied how AMYLASE (the enzyme) breaks down STARCH (the substrate). Here's the story: STARCH is a complex carbohydrate - a long chain of glucose molecules linked together. Your body needs to break it into simple sugars (glucose) to absorb it. This is where AMYLASE comes in! AMYLASE is an enzyme found in your SALIVA (salivary amylase) and PANCREATIC JUICE (pancreatic amylase). It has a special pocket called the ACTIVE SITE that's shaped perfectly to fit starch molecules - like a lock and key! When starch enters the active site, the enzyme CATALYZES (speeds up) the hydrolysis reaction that breaks the bonds between glucose units. The result? Starch → Maltose (2 glucose units) → Glucose (1 unit). The enzyme itself is NOT consumed - it's released and can work on another starch molecule! To prove this worked, we used IODINE - a chemical indicator. Iodine has a special property: it turns BLUE-BLACK when it meets starch (forms a starch-iodine complex). If there's NO starch present (because the enzyme broke it all down), iodine stays ORANGE/AMBER. In our experiment: (1) We started with STARCH in the tube (substrate). (2) We added AMYLASE enzyme - it immediately started breaking starch down. (3) After 10 seconds, most starch was broken into sugars. (4) We added IODINE - it stayed ORANGE! This proves NO starch remained = enzyme worked! Key points: Starch = substrate (what's broken down). Amylase = enzyme (the catalyst). Iodine = indicator (tests for starch). Review the experiment and think about what happened at each step. Try the quiz again!`);
         }
     };
 
@@ -237,6 +244,34 @@ export function EnzymeStarchLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : iodineAdded ? 'happy' : 'explaining'}
+                context={{
+                    attempts: timePassed,
+                    correctStreak: timePassed
+                }}
+                quickActions={[
+                    {
+                        label: 'Reset Lab',
+                        icon: '🔄',
+                        onClick: handleRestart
+                    },
+                    {
+                        label: 'View Theory',
+                        icon: '📖',
+                        onClick: () => {
+                            const theorySection = document.querySelector('[data-theory-section]');
+                            theorySection?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    },
+                    {
+                        label: 'Safety Tips',
+                        icon: '🛡️',
+                        onClick: () => {
+                            const safetySection = document.querySelector('[data-safety-section]');
+                            safetySection?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                ]}
             />
 
             {isCompleted && (
@@ -307,7 +342,7 @@ export function EnzymeStarchLabEnhanced() {
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="theory">
+                        <AccordionItem value="theory" data-theory-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <BookOpen className="h-4 w-4" />
@@ -321,7 +356,7 @@ export function EnzymeStarchLabEnhanced() {
                                 <p><strong>Why this matters:</strong> This is the first step of digestion! When you chew bread, amylase in your saliva begins breaking down the starch immediately.</p>
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="safety">
+                        <AccordionItem value="safety" data-safety-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <Shield className="h-4 w-4" />

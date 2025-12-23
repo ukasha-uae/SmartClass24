@@ -7,6 +7,9 @@ import {
   Play, Pause, Volume2, VolumeX, GraduationCap, 
   ChevronLeft, ChevronRight, ArrowDown, Wind
 } from 'lucide-react';
+import { useLocalization } from '@/hooks/useLocalization';
+import { localizeString } from '@/lib/localization/content-localizer';
+import type { CountryConfig } from '@/lib/localization/country-config';
 
 interface LessonIntroProps {
   onComplete?: () => void;
@@ -73,6 +76,7 @@ const waterStages: WaterStage[] = [
 ];
 
 const WaterCycleIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
+  const { country } = useLocalization();
   const [stage, setStage] = useState(0);
   
   // Interactive state
@@ -90,17 +94,17 @@ const WaterCycleIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const hasSpokenRef = useRef<Set<number>>(new Set());
 
-  const stages = [
+  const stages = React.useMemo(() => [
     {
       title: "💧 The Water Cycle",
       content: "Earth's life support system",
-      narration: "Water is essential for all life on Earth. Right now, the water in your body might have once been in a cloud over Kumasi, a river in the Volta Basin, or even a dinosaur millions of years ago! Water continuously cycles through our world in an endless journey called the hydrological cycle.",
+      narration: "Water is essential for all life on Earth. Right now, the water in your body might have once been in a cloud, a river, or even a dinosaur millions of years ago! Water continuously cycles through our world in an endless journey called the hydrological cycle.",
       highlightWords: ['essential', 'life', 'cycles', 'journey', 'hydrological']
     },
     {
       title: "☀️ Evaporation & Transpiration",
       content: "Water rises to the sky",
-      narration: "The sun is the engine of the water cycle. It heats water in oceans, lakes, and rivers, turning liquid water into invisible vapor that rises into the sky. Plants also release water vapor through their leaves in a process called transpiration. Ghana's forests are like giant humidifiers, adding moisture to our air!",
+      narration: localizeString("The sun is the engine of the water cycle. It heats water in oceans, lakes, and rivers, turning liquid water into invisible vapor that rises into the sky. Plants also release water vapor through their leaves in a process called transpiration. {{country}}'s forests are like giant humidifiers, adding moisture to our air!", country as CountryConfig),
       highlightWords: ['sun', 'engine', 'vapor', 'transpiration', 'forests']
     },
     {
@@ -112,16 +116,16 @@ const WaterCycleIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
     {
       title: "🌧️ Precipitation & Return",
       content: "Water falls back to Earth",
-      narration: "When cloud droplets combine and grow too heavy, they fall as precipitation. In Ghana, this is usually rain since we're in the tropics. Some water soaks into the ground to become groundwater. The rest flows as runoff into streams and rivers, eventually returning to the ocean. And the cycle begins again!",
+      narration: localizeString("When cloud droplets combine and grow too heavy, they fall as precipitation. In the tropics, this is usually rain. Some water soaks into the ground to become groundwater. The rest flows as runoff into streams and rivers, eventually returning to the ocean. And the cycle begins again!", country as CountryConfig),
       highlightWords: ['precipitation', 'rain', 'groundwater', 'runoff', 'ocean']
     },
     {
-      title: "🇬🇭 Water in Ghana",
-      content: "Our precious resource",
-      narration: "Ghana depends on the water cycle for agriculture, drinking water, and hydroelectric power at Akosombo Dam. Our rainy seasons from March to July and September to November are controlled by this cycle. But deforestation and climate change are disrupting it. Understanding the water cycle helps us protect this vital resource!",
-      highlightWords: ['agriculture', 'Akosombo', 'rainy', 'deforestation', 'protect']
+      title: "🌍 Water in {{country}}",
+      content: localizeString("Our precious resource", country as CountryConfig),
+      narration: localizeString("{{country}} depends on the water cycle for agriculture, drinking water, and hydroelectric power. Your rainy seasons are controlled by this cycle. But deforestation and climate change are disrupting it. Understanding the water cycle helps us protect this vital resource!", country as CountryConfig),
+      highlightWords: ['agriculture', 'rainy', 'deforestation', 'protect']
     }
-  ];
+  ], [country]);
 
   // Auto-advance water cycle animation
   useEffect(() => {
@@ -447,35 +451,39 @@ const WaterCycleIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
     </div>
   );
 
-  // Ghana Water Facts
-  const renderGhanaFacts = () => (
+  // Country-specific Water Facts
+  const renderCountryWaterFacts = () => {
+    const factTitle = country ? localizeString("Water in {{country}}", country as CountryConfig) : "World Water Facts";
+    
+    return (
     <div className="grid grid-cols-2 gap-2 sm:gap-3">
       <div className="bg-blue-900/40 rounded-lg p-2 sm:p-3 text-center border border-blue-700/50">
         <span className="text-xl sm:text-2xl">🌊</span>
-        <p className="text-[10px] sm:text-xs text-blue-300 mt-1">Lake Volta</p>
-        <p className="text-xs sm:text-sm text-white font-bold">8,500 km²</p>
-        <p className="text-[10px] text-gray-400">World's largest artificial lake</p>
+        <p className="text-[10px] sm:text-xs text-blue-300 mt-1">{country ? "Major Body" : "Water Body"}</p>
+        <p className="text-xs sm:text-sm text-white font-bold">{country ? localizeString("{{country}}'s Waters", country as CountryConfig) : "Fresh Water"}</p>
+        <p className="text-[10px] text-gray-400">{country ? "Vital resource" : "Essential for life"}</p>
       </div>
       <div className="bg-green-900/40 rounded-lg p-2 sm:p-3 text-center border border-green-700/50">
         <span className="text-xl sm:text-2xl">🌧️</span>
         <p className="text-[10px] sm:text-xs text-green-300 mt-1">Annual Rainfall</p>
-        <p className="text-xs sm:text-sm text-white font-bold">800-2000mm</p>
-        <p className="text-[10px] text-gray-400">Varies by region</p>
+        <p className="text-xs sm:text-sm text-white font-bold">Varies</p>
+        <p className="text-[10px] text-gray-400">{country ? "Differs by region" : "Seasonal patterns"}</p>
       </div>
       <div className="bg-yellow-900/40 rounded-lg p-2 sm:p-3 text-center border border-yellow-700/50">
         <span className="text-xl sm:text-2xl">⚡</span>
-        <p className="text-[10px] sm:text-xs text-yellow-300 mt-1">Akosombo Dam</p>
-        <p className="text-xs sm:text-sm text-white font-bold">1,020 MW</p>
-        <p className="text-[10px] text-gray-400">Hydroelectric power</p>
+        <p className="text-[10px] sm:text-xs text-yellow-300 mt-1">Hydroelectric Power</p>
+        <p className="text-xs sm:text-sm text-white font-bold">{country ? "Energy Source" : "Clean Energy"}</p>
+        <p className="text-[10px] text-gray-400">{country ? "From water" : "Water-powered"}</p>
       </div>
       <div className="bg-red-900/40 rounded-lg p-2 sm:p-3 text-center border border-red-700/50">
         <span className="text-xl sm:text-2xl">🌳</span>
-        <p className="text-[10px] sm:text-xs text-red-300 mt-1">Forest Loss</p>
-        <p className="text-xs sm:text-sm text-white font-bold">1.7M ha</p>
-        <p className="text-[10px] text-gray-400">Lost in 30 years</p>
+        <p className="text-[10px] sm:text-xs text-red-300 mt-1">Environment</p>
+        <p className="text-xs sm:text-sm text-white font-bold">Threatened</p>
+        <p className="text-[10px] text-gray-400">{country ? "Climate impacts" : "Conservation key"}</p>
       </div>
     </div>
   );
+  };
 
   return (
     <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-blue-900/30 via-gray-900 to-cyan-900/30 rounded-2xl p-4 sm:p-6 md:p-8 pb-24 sm:pb-28 overflow-hidden">
@@ -608,14 +616,14 @@ const WaterCycleIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
           )}
           {stage === 4 && (
             <>
-              {renderGhanaFacts()}
+              {renderCountryWaterFacts()}
               <div className="mt-4 bg-cyan-900/30 rounded-xl p-3 sm:p-4 border border-cyan-700/50">
                 <h4 className="text-cyan-400 font-semibold text-sm mb-2">🌍 Why It Matters</h4>
                 <ul className="text-xs sm:text-sm text-gray-300 space-y-1">
-                  <li>• Major rainy season: March - July</li>
-                  <li>• Minor rainy season: September - November</li>
-                  <li>• Northern Ghana: Only ONE rainy season</li>
-                  <li>• Climate change: More unpredictable rainfall</li>
+                  <li>• Rainfall patterns: Seasonal variations</li>
+                  <li>• Water cycles power ecosystems</li>
+                  <li>• Climate patterns affect agriculture</li>
+                  <li>• Climate change: More unpredictable patterns</li>
                 </ul>
               </div>
             </>

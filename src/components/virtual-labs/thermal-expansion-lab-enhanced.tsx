@@ -73,24 +73,33 @@ export function ThermalExpansionLabEnhanced() {
     const handleCollectMetalRod = () => {
         if (!metalRodCollected) {
             setMetalRodCollected(true);
-            setTeacherMessage("Perfect! Now click on the WATER container - we'll measure its expansion too.");
-            toast({ title: '✅ Metal Rod Collected' });
+            setTeacherMessage("Perfect! You collected the metal rod. Metal is a solid with atoms arranged in a tight, orderly structure. When we heat it, these atoms vibrate more, causing slight expansion. Solids expand the LEAST because their atoms are locked in fixed positions.");
+            toast({ 
+                title: '✅ Metal Rod Collected',
+                description: 'Solid material with tightly packed atoms'
+            });
         }
     };
     
     const handleCollectWater = () => {
         if (metalRodCollected && !waterCollected) {
             setWaterCollected(true);
-            setTeacherMessage("Good! Now click on the ALCOHOL bottle - liquids expand even more than solids!");
-            toast({ title: '✅ Water Collected' });
+            setTeacherMessage("Good! Water collected. H₂O molecules can slide past each other - that's what makes it a liquid. When heated, water molecules gain energy and push apart more than solid atoms can. Liquids expand MORE than solids!");
+            toast({ 
+                title: '✅ Water Collected',
+                description: 'Liquid with molecules that can flow'
+            });
         }
     };
     
     const handleCollectAlcohol = () => {
         if (waterCollected && !alcoholCollected) {
             setAlcoholCollected(true);
-            setTeacherMessage("Excellent! Finally, click on the THERMOMETER - we need this to measure temperature!");
-            toast({ title: '✅ Alcohol Collected' });
+            setTeacherMessage("Excellent! Alcohol collected. Alcohol molecules have WEAKER intermolecular forces than water - they're held together less tightly. This means alcohol will expand even MORE than water when heated. Let's see this in action!");
+            toast({ 
+                title: '✅ Alcohol Collected',
+                description: 'Liquid with weak intermolecular forces'
+            });
         }
     };
     
@@ -98,8 +107,11 @@ export function ThermalExpansionLabEnhanced() {
         if (alcoholCollected && !thermometerCollected) {
             setThermometerCollected(true);
             setShowSupplies(false);
-            setTeacherMessage("All supplies ready! Now we'll set up three containers and heat each one. Watch what happens to each material!");
-            toast({ title: '✅ All Supplies Collected!' });
+            setTeacherMessage("All supplies ready! The thermometer will measure how much thermal energy we add to each material. More heat = more molecular kinetic energy = more expansion. Now let's set up three containers - one for each material!");
+            toast({ 
+                title: '✅ All Supplies Collected!',
+                description: 'Ready to compare expansion rates'
+            });
             setPendingTransition(() => () => {
                 setCurrentStep('setup');
             });
@@ -109,8 +121,11 @@ export function ThermalExpansionLabEnhanced() {
     const handleSetupComplete = () => {
         if (!suppliesReady) {
             setSuppliesReady(true);
-            setTeacherMessage("Containers filled! Now let's start heating. Click the FLAME under the metal rod first!");
-            toast({ title: '✅ Setup Complete' });
+            setTeacherMessage("Containers filled! Each material starts at room temperature (20°C). Now we'll heat them one by one and observe the expansion. Click the FLAME under the metal rod first - let's see how solids expand!");
+            toast({ 
+                title: '✅ Setup Complete',
+                description: 'All materials at 20°C, ready to heat'
+            });
             setPendingTransition(() => () => {
                 setCurrentStep('heat-metal');
             });
@@ -130,19 +145,31 @@ export function ThermalExpansionLabEnhanced() {
                     
                     if (material === 'metal') {
                         setMetalExpanded(true);
-                        setTeacherMessage("Wow! The metal rod expanded! Notice it grew slightly. Now let's heat the water!");
+                        setTeacherMessage("Wow! The metal rod expanded! Notice it grew slightly - from 20°C to 80°C, the solid expanded just a little. Why? Metal atoms are locked in a rigid crystal structure. When heated, they vibrate more but can't move far from their positions. The coefficient of thermal expansion for steel is about 0.000012/°C - very small! Now let's heat the water and compare!");
+                        toast({
+                            title: '🔥 Metal Expanded!',
+                            description: 'Small expansion due to rigid atomic structure'
+                        });
                         setPendingTransition(() => () => {
                             setCurrentStep('heat-water');
                         });
                     } else if (material === 'water') {
                         setWaterExpanded(true);
-                        setTeacherMessage("The water expanded more than the metal! Liquids expand more than solids. Now let's try alcohol!");
+                        setTeacherMessage("The water expanded MORE than the metal! Watch the level rise - water molecules can slide past each other, so they push apart more easily when heated. Water's thermal expansion coefficient is about 0.00021/°C - that's 17 times larger than steel! Liquids expand more than solids because their particles have freedom to move. Now let's try alcohol!");
+                        toast({
+                            title: '🔥 Water Expanded!',
+                            description: 'Larger expansion - molecules can slide freely'
+                        });
                         setPendingTransition(() => () => {
                             setCurrentStep('heat-alcohol');
                         });
                     } else if (material === 'alcohol') {
                         setAlcoholExpanded(true);
-                        setTeacherMessage("Amazing! Alcohol expanded the MOST! This shows different materials have different expansion rates!");
+                        setTeacherMessage("Amazing! Alcohol expanded the MOST! Its thermal expansion coefficient is about 0.0011/°C - that's 5 times more than water and 92 times more than steel! Why? Alcohol molecules have WEAK intermolecular forces (weaker than water's hydrogen bonds). They easily push apart when heated. This is why alcohol thermometers work so well - small temperature changes cause big volume changes that are easy to see. Different materials = different expansion rates!");
+                        toast({
+                            title: '🔥 Alcohol Expanded Most!',
+                            description: 'Largest expansion - weakest intermolecular forces'
+                        });
                         setPendingTransition(() => () => {
                             setCurrentStep('results');
                         });
@@ -184,6 +211,7 @@ export function ThermalExpansionLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand thermal expansion! +${earnedXP} XP`);
+            setTeacherMessage(`Outstanding! Perfect score! You've completely mastered thermal expansion! 🎉 You understand that alcohol expands the most because it has the weakest intermolecular forces. When heated, alcohol molecules gain kinetic energy and push apart more easily than water or metal atoms. In liquids, molecules can move more freely than in solids, so they expand more. The coefficient of thermal expansion quantifies this - alcohol has a higher coefficient than water, and water higher than steel! This is why thermometers use mercury or alcohol - they expand significantly with small temperature changes. You also know that real-world structures like bridges and railway tracks need expansion joints to prevent buckling when heated by the sun. Fantastic understanding of heat, molecular motion, and material properties! +${earnedXP} XP earned!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -192,8 +220,10 @@ export function ThermalExpansionLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Think about which material expanded the most and why!`);
+            setTeacherMessage(`Good effort! You got 2 out of 3 correct. Let me clarify the key concepts: Remember that alcohol expanded the MOST because its molecules have weak intermolecular forces - they easily push apart when heated. Liquids generally expand MORE than solids because their molecules can move more freely. When we add heat, particles gain kinetic energy and vibrate faster, pushing neighbors away. Different materials have different expansion rates based on their molecular structure. Try the experiment again and watch carefully which material changes size the most!`);
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: different materials expand at different rates due to their molecular structure!`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me help you understand: When we heat materials, we add thermal energy, which increases molecular kinetic energy. Particles vibrate faster and push each other farther apart - that's expansion! The key points are: (1) Alcohol expanded the MOST - it has weak intermolecular forces, so molecules easily move apart. (2) Liquids expand MORE than solids because liquid molecules can slide past each other freely, while solid atoms are locked in place. (3) Heat gives particles kinetic energy - more heat means faster vibration and more expansion. Try the lab again and observe which container shows the biggest size change!`);
         }
     };
 
@@ -225,6 +255,16 @@ export function ThermalExpansionLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : currentStep === 'results' ? 'happy' : 'explaining'}
+                context={{
+                    attempts: temperatures.metal + temperatures.water + temperatures.alcohol - 60,
+                    correctStreak: metalExpanded && waterExpanded && alcoholExpanded ? 100 : 0
+                }}
+                quickActions={[
+                    { label: 'Reset Lab', onClick: handleRestart },
+                    { label: 'View Theory', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
             />
 
             {isCompleted && (

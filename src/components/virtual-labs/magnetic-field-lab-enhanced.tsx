@@ -183,6 +183,7 @@ export function MagneticFieldLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand magnetism! +${earnedXP} XP`);
+            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered magnetic fields! Here's what you discovered: Every magnet has two poles - NORTH and SOUTH. Magnetic field lines flow from North to South pole. OPPOSITE poles ATTRACT - when you brought N near S, the compass needles pointed toward each other, showing attractive force. SAME poles REPEL - when you brought N near N (or S near S), field lines pushed apart and compasses pointed away, showing repulsive force. A compass needle is a tiny magnet that always aligns with magnetic field lines. Earth itself is a giant magnet! The compass North pole points toward Earth's MAGNETIC NORTH (actually near geographic North), which is why compasses work for navigation. Magnetic fields are invisible but real - they exert forces on magnetic materials (iron, nickel, cobalt) and other magnets. The field is strongest at the poles and weakest between them. Real applications: compasses, electric motors, generators, MRI machines, magnetic levitation trains, hard drives, credit cards. Perfect understanding of magnetic poles, field lines, and compass behavior! +${earnedXP} XP earned!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -191,8 +192,10 @@ export function MagneticFieldLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review magnetic poles.`);
+            setTeacherMessage(`Good effort! You got 2 out of 3 correct. Let me clarify magnetic rules: OPPOSITE poles ATTRACT - North attracts South, South attracts North. This is because field lines flow from N to S, pulling them together. SAME poles REPEL - North repels North, South repels South. Field lines push apart, creating repulsive force. A compass needle is a small magnet - its North pole points toward magnetic South (Earth's magnetic North is actually a south pole!). That's why compass North points 'north' on Earth. Review your observations and watch how the compass needles orient!`);
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: opposite poles attract, same poles repel.`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me explain magnetism basics: Every magnet has TWO poles - North (N) and South (S). You cannot have just one pole (no magnetic monopoles!). The key rules: (1) OPPOSITE poles ATTRACT - N attracts S. When you placed N near S, field lines connected smoothly. (2) SAME poles REPEL - N repels N, S repels S. Field lines pushed apart. (3) A compass needle aligns with field lines. Its NORTH pole points toward the magnetic field's South pole. Earth's geographic North is near a magnetic South pole, so compass North points 'north'! Try moving the magnets again and watch the compass needles carefully.`);
         }
     };
 
@@ -250,34 +253,21 @@ export function MagneticFieldLabEnhanced() {
 
     return (
         <div className="space-y-6 pb-20">
-            {/* Draggable Teacher Voice */}
-            <motion.div
-                drag
-                dragMomentum={false}
-                dragElastic={0}
-                dragConstraints={{ left: -300, right: 300, top: -100, bottom: 400 }}
-                onDragEnd={(_, info) => {
-                    setTeacherPosition({ x: info.offset.x, y: info.offset.y });
+            {/* Teacher Voice */}
+            <TeacherVoice 
+                message={teacherMessage}
+                onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : currentStep === 'experiment' ? 'explaining' : 'happy'}
+                context={{
+                    attempts: observationsCount,
+                    correctStreak: observationsCount >= 3 ? 100 : 0
                 }}
-                initial={{ x: 0, y: 0 }}
-                style={{ x: teacherPosition.x, y: teacherPosition.y }}
-                className="fixed bottom-16 left-2 right-2 md:left-auto md:right-4 md:w-96 max-w-md z-50 touch-none"
-            >
-                <Card className="shadow-2xl border-2 border-red-400 dark:border-red-600 cursor-move">
-                    <CardHeader className="pb-2 py-2 md:py-4">
-                        <div className="flex items-center gap-2">
-                            <GripVertical className="h-4 w-4 text-muted-foreground" />
-                            <CardTitle className="text-xs md:text-sm">Teacher Guide (Drag to Move)</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <TeacherVoice 
-                            message={teacherMessage}
-                            onComplete={handleTeacherComplete}
-                        />
-                    </CardContent>
-                </Card>
-            </motion.div>
+                quickActions={[
+                    { label: 'Reset Lab', onClick: handleRestart },
+                    { label: 'View Theory', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
+            />
 
             {isCompleted && (
                 <motion.div

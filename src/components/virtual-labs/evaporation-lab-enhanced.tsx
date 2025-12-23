@@ -109,24 +109,24 @@ export function EvaporationLabEnhanced() {
     const handleCollectBeakers = () => {
         if (!beakersCollected) {
             setBeakersCollected(true);
-            setTeacherMessage("Perfect! Now click on the WATER bottle - this will be our first liquid to test.");
-            toast({ title: '✅ Beakers Collected' });
+            setTeacherMessage("Perfect! You collected the beakers. These identical glass containers ensure we're comparing the liquids fairly - same surface area, same container. Now click on the WATER bottle. Water is our baseline liquid with medium evaporation rate!");
+            toast({ title: '✅ Beakers Collected', description: 'Identical containers ready' });
         }
     };
     
     const handleCollectWater = () => {
         if (beakersCollected && !waterCollected) {
             setWaterCollected(true);
-            setTeacherMessage("Good! Now click on the ALCOHOL bottle - alcohol evaporates much faster than water!");
-            toast({ title: '✅ Water Collected' });
+            setTeacherMessage("Good! Water collected. H₂O molecules have moderate intermolecular forces (hydrogen bonds). Now click on the ALCOHOL bottle - alcohol has much weaker forces, so molecules escape more easily into vapor!");
+            toast({ title: '✅ Water Collected', description: 'Medium evaporation rate' });
         }
     };
     
     const handleCollectAlcohol = () => {
         if (waterCollected && !alcoholCollected) {
             setAlcoholCollected(true);
-            setTeacherMessage("Excellent! Finally, click on the OIL bottle - oil evaporates very slowly!");
-            toast({ title: '✅ Alcohol Collected' });
+            setTeacherMessage("Excellent! Alcohol collected. Alcohol molecules have weak intermolecular forces - they need less energy to escape the liquid surface. This makes alcohol evaporate fastest! Finally, click on the OIL bottle - you'll see a big difference!");
+            toast({ title: '✅ Alcohol Collected', description: 'Fast evaporation rate' });
         }
     };
     
@@ -134,8 +134,8 @@ export function EvaporationLabEnhanced() {
         if (alcoholCollected && !oilCollected) {
             setOilCollected(true);
             setShowSupplies(false);
-            setTeacherMessage("All supplies collected! Now click on each beaker to fill it with its liquid.");
-            toast({ title: '✅ All Supplies Collected!' });
+            setTeacherMessage("Perfect! Oil collected. Oil has the strongest intermolecular forces - large molecules hold together tightly, making it evaporate very slowly. All supplies ready! Now click on each beaker to fill it with its liquid. Watch how the liquids fill the containers!");
+            toast({ title: '✅ All Supplies Collected!', description: 'Ready to compare evaporation' });
             setPendingTransition(() => () => {
                 setCurrentStep('setup-beakers');
             });
@@ -145,8 +145,8 @@ export function EvaporationLabEnhanced() {
     const handleFillBeakers = () => {
         if (!beakersFilled) {
             setBeakersFilled(true);
-            setTeacherMessage("Beakers filled! Now you can choose conditions to test. Try turning on the FAN (airflow) or HEAT to see how they affect evaporation speed!");
-            toast({ title: '✅ All Beakers Filled!' });
+            setTeacherMessage("Beakers filled! Each has the same amount of liquid. Now you can control conditions to speed up evaporation. Try the FAN (increases airflow, removes vapor molecules) or HEAT (gives molecules more kinetic energy). Or try both together to see combined effects!");
+            toast({ title: '✅ All Beakers Filled!', description: 'Equal volumes ready to compare' });
             setPendingTransition(() => () => {
                 setCurrentStep('add-conditions');
             });
@@ -154,19 +154,35 @@ export function EvaporationLabEnhanced() {
     };
     
     const handleToggleFan = () => {
-        setFanOn(!fanOn);
-        toast({ title: fanOn ? '💨 Fan Turned OFF' : '💨 Fan Turned ON' });
+        const newFanState = !fanOn;
+        setFanOn(newFanState);
+        if (newFanState) {
+            setTeacherMessage("Fan turned ON! Airflow removes water vapor molecules from above the liquid surface, allowing more molecules to escape. This speeds up evaporation significantly!");
+        } else {
+            setTeacherMessage("Fan turned OFF. Without airflow, vapor molecules stay near the liquid surface, slowing down evaporation.");
+        }
+        toast({ title: newFanState ? '💨 Fan Turned ON' : '💨 Fan Turned OFF', description: newFanState ? 'Airflow increases evaporation' : 'Still air slows evaporation' });
     };
     
     const handleToggleHeat = () => {
-        setHeatOn(!heatOn);
-        toast({ title: heatOn ? '🔥 Heat Turned OFF' : '🔥 Heat Turned ON' });
+        const newHeatState = !heatOn;
+        setHeatOn(newHeatState);
+        if (newHeatState) {
+            setTeacherMessage("Heat turned ON! Thermal energy increases molecular kinetic energy - molecules move faster and escape the liquid surface more easily. Notice how evaporation speeds up dramatically!");
+        } else {
+            setTeacherMessage("Heat turned OFF. Cooler molecules move slower and need more time to gain enough energy to escape.");
+        }
+        toast({ title: newHeatState ? '🔥 Heat Turned ON' : '🔥 Heat Turned OFF', description: newHeatState ? 'Higher temperature = faster evaporation' : 'Lower temperature = slower evaporation' });
     };
     
     const handleStartObservation = () => {
         setObserving(true);
-        setTeacherMessage("Observation started! Watch the liquid levels drop. Which one evaporates fastest?");
-        toast({ title: '👁️ Observing Evaporation...' });
+        const conditions = [];
+        if (fanOn) conditions.push('airflow');
+        if (heatOn) conditions.push('heat');
+        const conditionText = conditions.length > 0 ? ` with ${conditions.join(' and ')}` : ' at room conditions';
+        setTeacherMessage(`Observation started${conditionText}! Watch the liquid levels carefully. Alcohol should disappear first (weak forces), then water (medium forces), and oil last (strong forces). The rate depends on intermolecular forces and the conditions you chose!`);
+        toast({ title: '👁️ Observing Evaporation...', description: 'Watch the levels drop' });
         setPendingTransition(() => () => {
             setCurrentStep('observing');
         });
@@ -200,6 +216,7 @@ export function EvaporationLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand evaporation! +${earnedXP} XP`);
+            setTeacherMessage(`Outstanding! Perfect score! You've mastered evaporation completely! You understand that alcohol evaporates fastest due to weak intermolecular forces, heat increases molecular kinetic energy speeding up evaporation, and factors like temperature and airflow significantly affect evaporation rates. You observed alcohol evaporating first, then water, then oil - exactly as predicted by molecular theory. Excellent work! +${earnedXP} XP earned!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -208,8 +225,10 @@ export function EvaporationLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review which liquid evaporates fastest and try again!`);
+            setTeacherMessage(`Good effort! You got ${correctCount} out of 3 correct. Remember the key concepts: Alcohol has the weakest intermolecular forces so it evaporates fastest. Heat increases kinetic energy, making molecules move faster and escape more easily. Review your observations - did you notice alcohol disappearing first? Try the quiz again!`);
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: alcohol has weak intermolecular forces, so it evaporates quickest!`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me help: Evaporation rate depends on intermolecular forces. Alcohol (weakest forces) > Water (medium) > Oil (strongest). Heat adds energy to molecules, helping them escape the liquid surface faster. Think about what you observed in the experiment - which liquid disappeared first? Give it another go!`);
         }
     };
 
@@ -239,34 +258,21 @@ export function EvaporationLabEnhanced() {
 
     return (
         <div className="space-y-6 pb-20">
-            {/* Draggable Teacher Voice */}
-            <motion.div
-                drag
-                dragMomentum={false}
-                dragElastic={0}
-                dragConstraints={{ left: -300, right: 300, top: -100, bottom: 400 }}
-                onDragEnd={(_, info) => {
-                    setTeacherPosition({ x: info.offset.x, y: info.offset.y });
+            {/* Teacher Voice */}
+            <TeacherVoice 
+                message={teacherMessage}
+                onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : currentStep === 'observing' ? 'explaining' : 'happy'}
+                context={{
+                    attempts: timeElapsed,
+                    correctStreak: Math.round(100 - Math.min(liquidLevels.water, liquidLevels.alcohol, liquidLevels.oil))
                 }}
-                initial={{ x: 0, y: 0 }}
-                style={{ x: teacherPosition.x, y: teacherPosition.y }}
-                className="fixed bottom-16 left-2 right-2 md:left-auto md:right-4 md:w-96 max-w-md z-50 touch-none"
-            >
-                <Card className="shadow-2xl border-2 border-blue-400 dark:border-blue-600 cursor-move">
-                    <CardHeader className="pb-2 py-2 md:py-4">
-                        <div className="flex items-center gap-2">
-                            <GripVertical className="h-4 w-4 text-muted-foreground" />
-                            <CardTitle className="text-xs md:text-sm">Teacher Guide (Drag to Move)</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <TeacherVoice 
-                            message={teacherMessage}
-                            onComplete={handleTeacherComplete}
-                        />
-                    </CardContent>
-                </Card>
-            </motion.div>
+                quickActions={[
+                    { label: 'Reset Lab', icon: '🔄', onClick: handleRestart },
+                    { label: 'View Theory', icon: '📖', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', icon: '🛡️', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
+            />
 
             {isCompleted && (
                 <motion.div

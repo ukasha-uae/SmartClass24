@@ -222,16 +222,31 @@ export function WorkEnergyLabEnhanced() {
     setShowQuizFeedback(true);
 
     if (score === quizQuestions.length) {
-      setTeacherMessage("Perfect score! You've mastered the Law of Conservation of Energy! You understand how PE transforms to KE while total energy stays constant. Excellent work!");
+      setTeacherMessage(
+        "Perfect score! 🏆 You've mastered the Law of Conservation of Energy - one of the most fundamental laws in all of physics! " +
+        "Here's the profound truth you now understand: Energy cannot be created or destroyed, only transformed from one form to another. " +
+        "In your experiment: Potential Energy (PE = mgh) at the top converted to Kinetic Energy (KE = ½mv²) at the bottom. " +
+        "Total energy remained constant: PEinitial = KEfinal (ignoring friction). The beautiful formula v = √(2gh) emerges from this! " +
+        "Notice something amazing: MASS DOESN'T AFFECT FINAL SPEED! A 1kg object and 10kg object reach the same speed from the same height. " +
+        "Why? Because PE depends on mass (mgh) AND KE depends on mass (½mv²) - the mass cancels out mathematically! " +
+        "Real-world applications everywhere: Roller coasters convert PE to KE for thrilling rides. Hydroelectric dams use falling water's " +
+        "PE to spin turbines (KE) generating electricity. Pendulums swing by trading PE and KE back and forth. Even springs store elastic PE! " +
+        "This law, established by Émilie du Châtelet and James Joule, governs everything from atomic reactions to the entire universe. " +
+        "You're thinking like Einstein now! Phenomenal work!"
+      );
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
       });
     } else if (score >= quizQuestions.length / 2) {
-      setTeacherMessage(`Good effort! You got ${score} out of ${quizQuestions.length} correct. Review the explanations below and think about how energy transforms from PE to KE.`);
+      setTeacherMessage(
+        `Good effort! You got ${score} out of ${quizQuestions.length} correct. Let me clarify the core concepts: Conservation of Energy means the TOTAL energy stays constant - it just changes forms. In your experiment: At the TOP of the ramp: Maximum PE (mgh), Zero KE (object at rest, v=0). SLIDING DOWN: PE decreases (height decreasing), KE increases (speed increasing). Energy is transforming! At the BOTTOM: Zero PE (height=0), Maximum KE (fastest speed). All PE became KE! The formulas: PE = mgh (mass × gravity × height), KE = ½mv² (half × mass × velocity squared). Setting them equal: mgh = ½mv², we can solve for v: v = √(2gh). Notice mass (m) cancels! That's why a bowling ball and marble reach the same speed - height determines speed, not mass! In real life, friction converts some energy to heat (that's why surfaces warm up), but the TOTAL energy including heat is still conserved. Review your data: higher starting height → higher PE → higher final KE → faster speed. The relationship is mathematical and precise. Keep studying - you're close to mastery!`
+      );
     } else {
-      setTeacherMessage(`You got ${score} out of ${quizQuestions.length}. Don't worry! Review the concepts and try the experiment again to see how energy transforms.`);
+      setTeacherMessage(
+        `You got ${score} out of ${quizQuestions.length}. Don't worry - energy concepts take time to grasp! Let's start simple: ENERGY is the ability to do work or cause change. It comes in many forms: kinetic (motion), potential (position), thermal (heat), chemical (food, batteries), electrical, nuclear, etc. Two key types in this lab: POTENTIAL ENERGY (PE): Stored energy due to POSITION/HEIGHT. Formula: PE = mgh (mass × 9.81 × height in meters). Higher up = more PE. A book on a high shelf has more PE than on the floor. KINETIC ENERGY (KE): Energy of MOTION. Formula: KE = ½mv² (half × mass × velocity squared). Faster moving = more KE. A speeding car has more KE than a parked one. THE LAW: Energy cannot vanish or appear from nothing - it TRANSFORMS. Your experiment: Object starts HIGH (lots of PE, no KE) → slides down → ends LOW (no PE, lots of KE). The PE didn't disappear - it BECAME KE! That's why the object speeds up as it descends. Think of it like money: you can exchange dollars for euros, but the total value stays the same. Energy exchanges forms but the total amount is conserved. Watch the experiment again: as height (PE) decreases, speed (KE) increases proportionally. The energy is transforming before your eyes! This principle applies to EVERYTHING in the universe. Keep practicing - you're learning the most important law in physics!`
+      );
     }
   };
 
@@ -273,6 +288,42 @@ export function WorkEnergyLabEnhanced() {
       <TeacherVoice 
         message={teacherMessage}
         onComplete={handleTeacherComplete}
+        emotion={step === 'complete' ? 'celebrating' : measurements.length >= 3 ? 'happy' : 'explaining'}
+        context={{ attempts: measurements.length, correctStreak: measurements.length }}
+        quickActions={[
+          {
+            label: 'Reset Lab',
+            onClick: () => {
+              setStep('intro');
+              setHeight(5);
+              setMass(2);
+              setMeasurements([]);
+              setIsRunning(false);
+              setCurrentPosition(100);
+              setRampCollected(false);
+              setMassesCollected(false);
+              setRulerCollected(false);
+              setStopwatchCollected(false);
+            },
+            icon: 'refresh'
+          },
+          {
+            label: 'View Theory',
+            onClick: () => {
+              const accordion = document.querySelector('[data-state="closed"]') as HTMLElement;
+              accordion?.click();
+            },
+            icon: 'book'
+          },
+          {
+            label: 'Safety Tips',
+            onClick: () => {
+              const safetyAccordion = document.querySelectorAll('[data-state="closed"]')[1] as HTMLElement;
+              safetyAccordion?.click();
+            },
+            icon: 'shield'
+          }
+        ]}
       />
 
       <Card className="border-2">

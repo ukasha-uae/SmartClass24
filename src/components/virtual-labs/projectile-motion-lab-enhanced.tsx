@@ -186,6 +186,16 @@ export function ProjectileMotionLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand projectile motion! +${earnedXP} XP`);
+            setTeacherMessage(
+                "Outstanding work! 🎯 You've mastered projectile motion! Here's what makes this important: " +
+                "A 45° angle maximizes range because it balances horizontal and vertical velocity components optimally. " +
+                "The parabolic trajectory occurs because horizontal velocity remains constant (no air resistance) while " +
+                "vertical velocity changes due to gravity's constant downward acceleration (-9.81 m/s²). " +
+                "In real-world applications, this principle helps engineers design everything from water fountains to " +
+                "missile defense systems. Athletes use it in sports like basketball, football, and javelin throwing. " +
+                "Remember: range = (v²sin2θ)/g, maximum height = (v²sin²θ)/(2g), and time of flight = (2vsinθ)/g. " +
+                "These equations work for ANY projectile in a vacuum! Keep exploring physics - you're doing brilliantly!"
+            );
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -194,8 +204,28 @@ export function ProjectileMotionLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the trajectory patterns.`);
+            setTeacherMessage(
+                "Good progress! You're on the right track. Let me clarify the key concepts: " +
+                "The 45° angle is special because it gives equal time for the projectile to go up and come down " +
+                "while maximizing horizontal distance. Think of it like this - too steep and it goes high but not far, " +
+                "too shallow and it doesn't stay airborne long enough. The parabolic (curved) path happens because " +
+                "gravity constantly pulls down while horizontal motion continues unchanged. Both components (angle AND velocity) " +
+                "matter because a higher velocity increases both height and range. Try the experiment again and watch " +
+                "how changing each variable affects the trajectory. You're almost there!"
+            );
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: projectiles follow parabolic paths due to gravity.`);
+            setTeacherMessage(
+                "Let's review the fundamentals together. Projectile motion has two independent components: " +
+                "horizontal (constant velocity) and vertical (accelerated by gravity). Here's what's crucial: " +
+                "1) Gravity ONLY affects vertical motion, pulling down at 9.81 m/s². " +
+                "2) Horizontal velocity stays constant because there's no horizontal force (ignoring air resistance). " +
+                "3) These two motions combine to create a parabola - the curved path you observed. " +
+                "The 45° angle maximizes range because it balances vertical and horizontal components perfectly. " +
+                "Go back to the experiment: launch at 30°, then 45°, then 60° with the same velocity. " +
+                "Notice which goes farthest? That's 45°! Both angle AND initial velocity determine the outcome. " +
+                "Don't worry - this is challenging! Review the theory accordion and try again. You've got this!"
+            );
         }
     };
 
@@ -232,6 +262,39 @@ export function ProjectileMotionLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : launches.length >= 3 ? 'happy' : 'explaining'}
+                context={{ attempts: launches.length, correctStreak: launches.length }}
+                quickActions={[
+                    {
+                        label: 'Reset Lab',
+                        onClick: () => {
+                            setCurrentStep('intro');
+                            setAngle(45);
+                            setVelocity(20);
+                            setLaunches([]);
+                            setIsLaunching(false);
+                            setCurrentTrajectory([]);
+                            setAnimationProgress(0);
+                        },
+                        icon: 'refresh'
+                    },
+                    {
+                        label: 'View Theory',
+                        onClick: () => {
+                            const accordion = document.querySelector('[data-state="closed"]') as HTMLElement;
+                            accordion?.click();
+                        },
+                        icon: 'book'
+                    },
+                    {
+                        label: 'Safety Tips',
+                        onClick: () => {
+                            const safetyAccordion = document.querySelectorAll('[data-state="closed"]')[1] as HTMLElement;
+                            safetyAccordion?.click();
+                        },
+                        icon: 'shield'
+                    }
+                ]}
             />
 
             {isCompleted && (

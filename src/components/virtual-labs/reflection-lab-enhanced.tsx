@@ -130,6 +130,17 @@ export function ReflectionLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand reflection! +${earnedXP} XP`);
+            setTeacherMessage(
+                "Brilliant! 🌟 You've completely understood the Law of Reflection! Here's the beauty of what you discovered: " +
+                "The angle of incidence ALWAYS equals the angle of reflection when measured from the normal (the perpendicular line). " +
+                "This is true for ALL types of reflection - not just mirrors! The normal line is crucial because it provides " +
+                "a consistent reference point. In real-world applications, this law explains how periscopes work in submarines, " +
+                "how fiber optic cables transmit data through total internal reflection, and how architects design concert halls " +
+                "for optimal acoustics. Plane mirrors give the clearest reflections because every point on the surface has the " +
+                "same orientation. Curved mirrors (concave and convex) follow the same law but at each point locally, creating " +
+                "interesting effects like magnification or wide-angle views. This principle, discovered over 2000 years ago, " +
+                "remains fundamental to modern optics, photography, telescopes, and even laser technology. Excellent work!"
+            );
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -138,8 +149,32 @@ export function ReflectionLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the law of reflection.`);
+            setTeacherMessage(
+                "You're doing well! Let me clarify the key concepts: The Law of Reflection states that the angle of " +
+                "incidence (incoming ray) equals the angle of reflection (outgoing ray), but here's the critical part - " +
+                "both angles are measured from the NORMAL line, not from the mirror surface. The normal is an imaginary " +
+                "line perpendicular (90°) to the surface. This is important because it gives us a standard reference point. " +
+                "For plane (flat) mirrors, this relationship is consistent across the entire surface, giving us clear, " +
+                "undistorted reflections. That's why bathroom mirrors are flat - they preserve the actual proportions of your face! " +
+                "Curved mirrors follow the same law, but the normal changes at each point. Review your measurements - " +
+                "notice how i = r in every case? That's the law in action. Try again and you'll nail it!"
+            );
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: angle in = angle out, measured from the normal.`);
+            setTeacherMessage(
+                "Let's build a strong foundation in reflection. Here are the essentials: " +
+                "1) Light travels in straight lines (rays) until it hits a surface. " +
+                "2) When light bounces off a surface, we call it reflection. " +
+                "3) The NORMAL line is perpendicular (90°) to the surface - imagine a line sticking straight out of the mirror. " +
+                "4) The angle between the incoming ray and the normal is the angle of incidence (i). " +
+                "5) The angle between the reflected ray and the normal is the angle of reflection (r). " +
+                "6) The Law: i = r, ALWAYS! They're equal! " +
+                "Why measure from the normal? Because surfaces can be tilted any way, but the normal gives us a consistent " +
+                "reference. Plane mirrors work best for clear reflections because the normal is the same everywhere on the surface. " +
+                "Go back to the experiment: set the incident angle to 30° and observe - the reflected angle is also 30°! " +
+                "Try 45° - it reflects at 45°! This pattern never fails. Don't give up - understanding this opens doors to " +
+                "advanced optics, lasers, and so much more. You're learning fundamental physics!"
+            );
         }
     };
 
@@ -184,6 +219,38 @@ export function ReflectionLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : measurements.length >= 3 ? 'happy' : 'explaining'}
+                context={{ attempts: measurements.length, correctStreak: measurements.length }}
+                quickActions={[
+                    {
+                        label: 'Reset Lab',
+                        onClick: () => {
+                            setCurrentStep('intro');
+                            setIncidentAngle(30);
+                            setSurfaceType('plane');
+                            setMeasurements([]);
+                            setShowNormal(true);
+                            setShowAngles(true);
+                        },
+                        icon: 'refresh'
+                    },
+                    {
+                        label: 'View Theory',
+                        onClick: () => {
+                            const accordion = document.querySelector('[data-state="closed"]') as HTMLElement;
+                            accordion?.click();
+                        },
+                        icon: 'book'
+                    },
+                    {
+                        label: 'Safety Tips',
+                        onClick: () => {
+                            const safetyAccordion = document.querySelectorAll('[data-state="closed"]')[1] as HTMLElement;
+                            safetyAccordion?.click();
+                        },
+                        icon: 'shield'
+                    }
+                ]}
             />
 
             {isCompleted && (

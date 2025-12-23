@@ -294,7 +294,20 @@ export function LitmusTestLab() {
             </AnimatePresence>
 
             {/* Teacher Voice */}
-            <TeacherVoice message={teacherMessage} onComplete={handleTeacherComplete} />
+            <TeacherVoice 
+                message={teacherMessage} 
+                onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : quizIsCorrect ? 'happy' : 'explaining'}
+                context={{
+                    attempts: quizAttempts,
+                    correctStreak: quizIsCorrect ? 1 : 0
+                }}
+                quickActions={[
+                    { label: 'Reset Lab', icon: '🔄', onClick: handleReset },
+                    { label: 'View Theory', icon: '📖', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', icon: '🛡️', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
+            />
 
             {/* Objective Section */}
             <Card className="border-2 border-blue-200 dark:border-blue-800">

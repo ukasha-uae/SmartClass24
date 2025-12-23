@@ -18,7 +18,7 @@ export const englishSHS1Lessons: Lesson[] = [
       'Evaluate the effectiveness of different listening techniques',
       'Use listening skills to improve comprehension in academic settings'
     ],
-    introduction: `Listening is one of the most powerful communication skills you can develop. In Ghana, we say "Tie wo to ma 'tie asɛm" (Twi: "Lend your ears to hear the matter") - emphasizing the importance of attentive listening in our culture. 
+    introduction: `Listening is one of the most powerful communication skills you can develop. In {{country}}, we value attentive listening in our culture - emphasizing the importance of listening in communication and community engagement. 
 
 While hearing is a passive physiological process where sound waves enter your ears, **listening** is an active mental process that requires concentration, interpretation, and response. Effective listening is crucial for:
 
@@ -27,7 +27,7 @@ While hearing is a passive physiological process where sound waves enter your ea
 💼 **Career Development:** Job interviews, workplace collaboration, customer service
 🏛️ **Civic Engagement:** Understanding community issues, participating in town hall meetings
 
-In the Ghanaian context, good listening skills help you understand diverse accents (Ghanaian English, various regional accents), follow traditional storytelling, and engage respectfully with elders during community meetings. This lesson will transform you from a passive hearer into an active, strategic listener.`,
+In the {{country:adjective}} context, good listening skills help you understand diverse accents and engage respectfully with your community. This lesson will transform you from a passive hearer into an active, strategic listener.`,
 
     keyConcepts: [
       {
@@ -65,7 +65,7 @@ In the Ghanaian context, good listening skills help you understand diverse accen
 ✓ We spend 45-50% of our communication time listening (more than speaking, reading, or writing!)
 ✓ Poor listening causes misunderstandings, conflicts, and mistakes
 ✓ Good listeners are perceived as intelligent, respectful, and trustworthy
-✓ WASSCE Oral English tests listening comprehension skills`
+✓ {{exam:secondary}} Oral English tests listening comprehension skills`
       },
       {
         title: '2. Types of Listening',
@@ -176,7 +176,7 @@ In the Ghanaian context, good listening skills help you understand diverse accen
 ❌ **Planning Your Response:** Thinking about what you'll say instead of listening
    *Solution:* Listen fully first; pause before responding
 
-**CULTURAL BARRIERS (Ghanaian Context):**
+**ENVIRONMENTAL BARRIERS IN {{country:adjective}} CLASSROOMS:**
 
 🌍 **Different Communication Styles:** Direct vs. indirect communication
    *Example:* Some cultures are more direct; others use proverbs and indirect language
@@ -314,11 +314,11 @@ In the Ghanaian context, good listening skills help you understand diverse accen
 4. Ask about anything unclear
 5. Confirm deadline and format
 
-**LISTENING IN ORAL EXAMINATIONS (WASSCE/BECE):**
+**LISTENING IN ORAL EXAMINATIONS ({{exam:secondary}}):**
 
 **Preparation:**
 ▫️ Practice with audio materials (BBC Learning English, VOA Learning English)
-▫️ Listen to various Ghanaian accents (news programs, radio discussions)
+▫️ Listen to various {{country:adjective}} accents (news programs, radio discussions)
 ▫️ Time yourself answering questions after listening passages
 
 **During Exam:**
@@ -335,8 +335,8 @@ In the Ghanaian context, good listening skills help you understand diverse accen
 ▫️ Vocabulary in context: What does [word] mean in this passage?`
       },
       {
-        title: '6. Cultural Listening in Ghana',
-        content: `**TRADITIONAL GHANAIAN LISTENING CONTEXTS:**
+        title: '6. Cultural Listening in {{country}}',
+        content: `**TRADITIONAL {{country:adjective}} LISTENING CONTEXTS:**
 
 **1. STORYTELLING (Ananse Stories, Folk Tales)**
 **Listening Skills:**
@@ -528,7 +528,7 @@ After listening activities, ask yourself:
           },
           {
             type: 'mcq',
-            question: 'In the Ghanaian cultural context, what is the most respectful way to seek clarification from an elder or teacher during a talk?',
+            question: 'In the {{country:adjective}} cultural context, what is the most respectful way to seek clarification from an elder or teacher during a talk?',
             options: [
               'Interrupt immediately when you don\'t understand',
               'Wait for a pause and politely ask: "Excuse me, sir/madam, may I ask a question?"',
@@ -536,7 +536,7 @@ After listening activities, ask yourself:
               'Raise your voice to get attention'
             ],
             answer: 'Wait for a pause and politely ask: "Excuse me, sir/madam, may I ask a question?"',
-            explanation: 'In Ghanaian culture, respect for elders and teachers is very important. The appropriate way to seek clarification is to wait for a natural pause in the speaker\'s presentation, then politely request permission to ask a question using respectful language and titles.'
+            explanation: 'In {{country:adjective}} culture, respect for elders and teachers is very important. The appropriate way to seek clarification is to wait for a natural pause in the speaker\'s presentation, then politely request permission to ask a question using respectful language and titles.'
           },
           {
             type: 'mcq',
@@ -588,7 +588,7 @@ After listening activities, ask yourself:
           },
           {
             type: 'mcq',
-            question: 'Which of the following is NOT recommended when listening in a WASSCE/BECE oral examination?',
+            question: 'Which of the following is NOT recommended when listening in a {{exam:secondary}} oral examination?',
             options: [
               'Skim the questions before the passage is read',
               'Try to answer questions during the first listening',
@@ -621,11 +621,11 @@ After class, I would compare notes with classmates to ensure we all understood t
 These strategies demonstrate active listening, verification, and collaborative learning - essential skills for academic success and effective communication.`
       },
       {
-        question: 'Explain THREE barriers to effective listening that students commonly face in Ghanaian classrooms and suggest practical solutions for each.',
-        answer: `**Three Common Listening Barriers in Ghanaian Classrooms and Solutions:**
+        question: 'Explain THREE barriers to effective listening that students commonly face in {{country:adjective}} classrooms and suggest practical solutions for each.',
+        answer: `**Three Common Listening Barriers in {{country:adjective}} Classrooms and Solutions:**
 
 **1. Environmental Noise (Physical Barrier)**
-**Problem:** Many Ghanaian classrooms face challenges with environmental noise - traffic from nearby roads, construction work, noise from adjacent classes, vendors outside, or students playing during class time. This makes it difficult to hear the teacher clearly, especially in schools with open-window designs for ventilation.
+**Problem:** Many {{country:adjective}} classrooms face challenges with environmental noise - traffic from nearby roads, construction work, noise from adjacent classes, vendors outside, or students playing during class time. This makes it difficult to hear the teacher clearly, especially in schools with open-window designs for ventilation.
 
 **Solutions:**
 - **Student Action:** Request a seat closer to the teacher where sound is clearer; close windows partially when traffic is loud; politely ask the teacher to speak louder if necessary.
@@ -834,5 +834,162 @@ Listening comprehension is directly tested in Oral English examinations. Strong 
         explanation: 'Research shows we spend 45-50% of our communication time listening - more than speaking, reading, or writing. However, listening skills are rarely taught formally in schools despite being our most frequently used communication skill. This creates a gap between the importance of listening and the training we receive.'
       }
     ]
+  },
+  // STRAND 1: Listening & Speaking (Lesson 2)
+  {
+    id: 'eng-shs1-ls-2',
+    slug: 'eng-ls-oral-presentations',
+    title: 'Oral Presentations and Discussions',
+    objectives: [
+      'Understand the structure and purpose of effective oral presentations',
+      'Prepare and deliver well-organized presentations on various topics',
+      'Analyze audience needs and adapt presentation content and delivery accordingly',
+      'Use effective body language, facial expressions, and vocal techniques during presentations',
+      'Handle questions confidently and engage in meaningful discussions',
+      'Overcome presentation anxiety and build confidence in public speaking',
+      'Participate actively in group discussions and debates',
+      'Apply cultural awareness and respect in formal speaking situations'
+    ],
+    introduction: `Welcome to Oral Presentations and Discussions! Public speaking is one of the most valued skills in education, careers, and civic life. In {{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}}, effective communication is celebrated – from school assemblies to community meetings to workplace presentations. Whether you're presenting a school project, leading a discussion in class, or speaking at a community event, the ability to express your ideas clearly and confidently is essential.\n\n**What is an Oral Presentation?**\nAn oral presentation is a structured talk given to an audience where you share information, ideas, or arguments on a specific topic. It combines careful planning, organized content, engaging delivery, and audience interaction.\n\n**Why Does It Matter?**\n- 📚 **Academic**: Many subjects require presentations; {{exam:secondary}} includes oral components\n- 💼 **Career**: Most jobs require presentations to colleagues, clients, or management\n- 🗣️ **Communication**: Develops confidence and articulation skills\n- 🤝 **Leadership**: Strong speakers become leaders in their communities\n- 🌍 **Civic Engagement**: Speaking up for your ideas and community\n\nIn this lesson, you'll master the structure of presentations, learn delivery techniques, practice audience engagement, and build confidence in public speaking. Let's transform you from a nervous speaker into a confident communicator!`,
+    keyConcepts: [
+      {
+        title: '1. Structure of an Effective Oral Presentation',
+        content: `A successful presentation follows a clear three-part structure:\n\n**INTRODUCTION (First 1-2 minutes)**\n**Purpose:** Capture attention and set expectations\n**Components:**\n- Hook: Start with a question, surprising fact, or relevant story\n  Example: "Did you know that 75% of people fear public speaking more than death?"\n- Welcome: Greet the audience warmly\n  Example: "Good morning everyone. I'm delighted to be here today."\n- Topic Introduction: State your topic clearly\n  Example: "Today, I'll discuss three ways climate change affects {{country:ghana=Ghana's agriculture|nigeria=Nigeria's agriculture|sierra-leone=Sierra Leone's agriculture|liberia=Liberia's agriculture|gambia=The Gambia's agriculture}}."\n- Thesis/Main Idea: Preview your key points (usually 3-5 points)\n  Example: "I'll cover rising temperatures, changing rainfall patterns, and solutions farmers are using."\n- Benefit Statement: Explain why the audience should listen\n  Example: "Understanding this helps us make informed decisions about our {{country:ghana=food security|nigeria=food security|sierra-leone=food security|liberia=food security|gambia=food security}}."\n\n**BODY (Main 5-15 minutes)**\n**Purpose:** Develop your ideas with evidence and examples\n**Structure:**\n- Organize into 3-5 main points (people remember this number best)\n- Use clear transitions between points\n  Example: "First, let's examine... Now, moving to the second point... Finally..."\n- Support each point with: Evidence (statistics, research), Examples (real-world cases), Stories (anecdotes), Visuals\n- {{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}}-specific examples increase relevance\n\n**CONCLUSION (Final 1-2 minutes)**\n**Purpose:** Reinforce main ideas and motivate action\n**Components:**\n- Summary: Briefly restate your 3-5 main points\n- Key Takeaway: One powerful statement the audience will remember\n- Call to Action: What do you want the audience to do?\n- Thank You: Express gratitude`
+      },
+      {
+        title: '2. Audience Analysis and Adaptation',
+        content: `Before you present, analyze your audience to tailor your content and delivery.\n\n**Questions to Ask About Your Audience:**\n- WHO Are They? (Age, education level, background, culture)\n- WHAT Do They Know? (Prior knowledge, interests, concerns)\n- WHAT Do They Expect? (Formality level, content depth, time, participation)\n- WHAT Are Their Values? (Cultural, professional, social values)\n\n**ADAPTATION STRATEGIES:**\nBy Audience Level:\n- General/Non-Expert: Explain jargon, use relatable examples\n- Expert: Use technical terms, focus on new insights\n- Mixed: Offer both overview and detailed information\n\nBy Cultural Context ({{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}}-Specific):\n- Acknowledge respect for the forum\n- Use proverbs and cultural references\n- Show awareness of {{country:ghana=Ghanaian|nigeria=Nigerian|sierra-leone=Sierra Leonean|liberia=Liberian|gambia=Gambian}} context and values\n\nBy Content Complexity:\n- Simple topics: More examples, storytelling, visuals\n- Complex topics: Build from basics to advanced\n- Mixed: Label sections as "essential" vs. "detailed"`
+      },
+      {
+        title: '3. Delivery Techniques: Voice and Vocal Variety',
+        content: `How you deliver matters as much as what you say. Vocal techniques create interest and emphasis.\n\n**PACING (Speed of Delivery)**\n- Optimal speed: 100-130 words per minute (slower than conversation)\n- Slow down for: Important points, complex ideas, key terms, powerful statements\n- Speed up for: Transitions, background info, building energy\n\n**VOLUME (Loudness and Projection)**\n- Project to the back row\n- Increase volume for: Main points, powerful statements, audience questions\n- Decrease volume for: Intimate moments, suspense, reflection\n\n**PITCH (Highness or Lowness)**\n- Rising pitch at end = sounds uncertain (question)\n- Falling pitch at end = sounds confident (statement)\n- Varied pitch throughout = engaging and interesting\n\n**PAUSES (Strategic Silence)**\n- Short pause (1-2 sec): Between thoughts\n- Medium pause (2-3 sec): After important statements\n- Long pause (3+ sec): Dramatic effect, before announcements\n- Benefits: Shows confidence, gives audience time, eliminates filler words`
+      },
+      {
+        title: '4. Body Language and Nonverbal Communication',
+        content: `Communication is 55% body language, 38% tone, and 7% words. Your physical presence dramatically impacts your message.\n\n**POSTURE**\n- Stand upright with shoulders back\n- Distribute weight evenly on both feet\n- Avoid swaying, shifting, bouncing, slouching, or folding arms\n\n**EYE CONTACT**\n- Make eye contact with different individuals throughout room\n- Hold 3-5 seconds per person\n- Scan: front, middle, back; left, center, right\n- Shows trust, confidence, and connection\n\n**GESTURES (Hand and Arm Movements)**\n- Keep at chest-to-shoulder level (visible to all)\n- Descriptive: Show size, shape, distance\n- Emphatic: Stress importance with both hands\n- Directional: Show movement or relationships\n- Avoid: Repetitive gestures, folded arms, hands in pockets\n\n**FACIAL EXPRESSIONS**\n- Smile: Warmth, confidence, approachability\n- Thoughtful: Seriousness, consideration\n- Surprised: Engagement, curiosity\n- Match expressions to emotional content\n\n**MOVEMENT**\n- Move with purpose (not randomly)\n- Transition between major points\n- Stop moving when making key points (stillness = emphasis)`
+      },
+      {
+        title: '5. Managing Presentation Anxiety and Building Confidence',
+        content: `Even experienced speakers feel nervous. The key is managing anxiety and channeling energy into enthusiasm.\n\n**WHY NERVOUSNESS HAPPENS**\n- Fear of judgment or criticism\n- Worry about forgetting content\n- Concern about appearing foolish\n- Social anxiety in front of groups\n\n**IS NERVOUSNESS NORMAL?**\n- YES! 75% of people experience presentation anxiety\n- Even famous speakers get nervous (Oprah, Steve Jobs)\n- A little nervousness is good – keeps you focused and energized\n\n**ANXIETY MANAGEMENT STRATEGIES**\nBefore:\n- Know your content thoroughly (but don't memorize word-for-word)\n- Practice multiple times (5-10 full run-throughs)\n- Time yourself; practice in actual room if possible\n- Visualization; get feedback\n\nDuring:\n- Deep breathing (4-7-8 technique)\n- Convert nervous energy into excitement\n- Focus on purpose (communicating ideas), not perfection\n- Remember: Audience wants you to succeed\n\n**BUILDING LONG-TERM CONFIDENCE**\n- Start small; practice in low-stakes environments\n- Seek positive feedback; focus on strengths\n- Join speaking organizations (Toastmasters, debate clubs)\n- Celebrate successes; notice improvements\n- Reframe self-talk from negative to positive`
+      },
+      {
+        title: '6. Handling Questions and Audience Engagement',
+        content: `Questions and interaction make presentations dynamic. Handling them skillfully shows expertise and builds credibility.\n\n**INVITING QUESTIONS**\n- Usually at end of presentation\n- For longer presentations, can break into sections\n- Use positive language: "What questions do you have?"\n- Create safe environment; thank people for questions\n\n**ANSWERING QUESTIONS WELL (SQA Technique)**\n1. SMILE – Show appreciation for the question\n2. QUIET – Pause briefly (don't rush)\n3. ANSWER – Give clear, concise response\n\n**TYPES OF QUESTIONS**\n- Clarifying: Provide clear definition with examples\n- Challenging: Stay calm, acknowledge legitimacy, explain your perspective\n- Personal: Brief story, then redirect to topic\n- Technical/Difficult: Be honest! "I'll look that up and get back to you"\n- Hostile: Stay professional; address concern, not tone\n\n**ENGAGEMENT TECHNIQUES**\n- Rhetorical questions: Pause for audience to think\n- Show of hands: Gauge understanding and create participation\n- Pair-and-share: Discuss with neighbor for 1-2 minutes\n- Polls or surveys: Create two-way conversation\n- Solicit ideas: Show respect for audience knowledge`
+      },
+      {
+        title: '7. Presentation Technology and Visual Aids',
+        content: `Visual aids should support your message, not replace or distract from it. Technology should enhance, not dominate.\n\n**TYPES OF VISUAL AIDS**\n- Slides/Projections: Professional, organized, good for data/diagrams\n- Handouts: Audience can keep info; distribute before or after, not during\n- Props and Demonstrations: Concrete, memorable, engaging\n- Whiteboard/Flip Chart: Interactive, can write live\n\n**SLIDE DESIGN PRINCIPLES**\n- ONE main idea per slide\n- Minimal text (key words, not sentences)\n- Large, readable font (32pt minimum for titles)\n- High-contrast colors; consistent design\n- Professional images; subtle transitions\n- {{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}}-Appropriate Visuals: Images of {{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}}, {{country:ghana=Ghanaian|nigeria=Nigerian|sierra-leone=Sierra Leonean|liberia=Liberian|gambia=Gambian}} data, case studies\n\n**TECHNOLOGY BEST PRACTICES**\nBefore:\n- Test all technology in actual room\n- Have backup plan if tech fails\n- Bring backup on USB or email\n- Arrive 15 min early to test\n- Know how to use the technology\n\nDuring:\n- Don't let slide dominate your delivery\n- Keep eye contact with audience, not screen\n- Refer to slides, don't read from them\n- Give audience 30 seconds minimum for complex slides\n- Move to next slide only after point is made`
+      },
+      {
+        title: '8. Cultural Considerations in {{country:ghana=Ghanaian|nigeria=Nigerian|sierra-leone=Sierra Leonean|liberia=Liberian|gambia=Gambian}} Public Speaking',
+        content: `Public speaking in {{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}} is deeply connected to culture, respect, and community values.\n\n**RESPECT AND FORMALITY**\n- Show particular respect to elders and authority figures\n- Use appropriate titles (Honorable, Chief, Professor)\n- Maintain eye contact (shows honesty and respect)\n- Don't point aggressively; use open hands\n\n**CULTURAL VALUES**\n- Ubuntu/"I am because we are": Emphasize community benefit\n- Respect for elders' wisdom: Reference traditional knowledge\n- Spiritual and religious values: Acknowledge when appropriate\n\n**{{country:ghana=GHANAIAN|nigeria=NIGERIAN|sierra-leone=SIERRA LEONEAN|liberia=LIBERIAN|gambia=GAMBIAN}} COMMUNICATION STYLE**\n- Indirect communication: Avoid public confrontation\n- Proverbs and sayings: Add authenticity and connection\n- Storytelling tradition: Connect abstract concepts to human stories\n\n**LANGUAGE CHOICES**\n- Own your accent – {{country:ghana=Ghanaian|nigeria=Nigerian|sierra-leone=Sierra Leonean|liberia=Liberian|gambia=Gambian}} English is valid\n- Code-switching: Use {{country:ghana=Twi, Fante|nigeria=Hausa, Yoruba, Igbo|sierra-leone=Krio, Temne|liberia=Liberian English|gambia=Mandinka, Wolof}} for emphasis (ensure audience understands)\n- Inclusive language: Include all audience members\n\n**OPENING YOUR PRESENTATION ({{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}}-Specific)**\n- Greet respectfully: "Good morning. I greet everyone assembled here."\n- Acknowledge significant people: "I particularly acknowledge our Chief/Elder"\n- Set cultural context: "This matters to our community because..."\n- Connect to shared values\n\n**PRACTICAL APPLICATION**\n- Balance formality with warmth and authenticity\n- Use cultural references and examples\n- Show respect for audience's time and intelligence\n- Thank audience respectfully and invite dialogue`
+      }
+    ],
+    summary: `**Lesson Summary: Oral Presentations and Discussions**\n\nPublic speaking combines clear structure, engaging delivery, and authentic connection. Effective presentations follow a three-part structure: compelling introduction, well-organized body with evidence and examples, memorable conclusion.\n\n**Key Takeaways:**\n1. **Structure Matters**: Introduction (5-10%), Body (80-85%), Conclusion (5-10%)\n2. **Delivery is Everything**: Vary pace, volume, use pauses, make eye contact, use purposeful gestures\n3. **Manage Anxiety**: Preparation reduces uncertainty; channel nervous energy into enthusiasm\n4. **Engage Your Audience**: Ask questions, handle Q&A professionally, use interactive techniques\n5. **Use Technology Wisely**: Support your message, not replace it\n6. **Respect Cultural Context**: In {{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}}, acknowledge authorities, use proverbs, balance formality with warmth\n7. **Practice, Practice, Practice**: 5-10 full run-throughs; get feedback\n\n**Real-World Applications**: School presentations, debates, community meetings, job interviews, leadership roles, {{exam:secondary}} oral components\n\n**{{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}}-Specific Strengths**: {{country:ghana=Ghana|nigeria=Nigeria|sierra-leone=Sierra Leone|liberia=Liberia|gambia=The Gambia}} has a rich tradition of orators and communicators. Your unique {{country:ghana=Ghanaian|nigeria=Nigerian|sierra-leone=Sierra Leonean|liberia=Liberian|gambia=Gambian}} perspective, accent, and cultural understanding are assets. Effective communication serves your community and opens doors to leadership.`,
+    activities: {
+      type: 'quiz',
+      questions: []
+    },
+    pastQuestions: [],
+    endOfLessonQuiz: [
+      {
+        type: 'mcq',
+        question: 'In the three-part structure of an effective oral presentation, what percentage of total time should be devoted to the body?',
+        options: [
+          '5-10%',
+          '25-30%',
+          '80-85%',
+          '50%'
+        ],
+        answer: '80-85%',
+        explanation: 'The body contains your main content and evidence, so it should take up the bulk of your presentation time (80-85%). The introduction and conclusion together comprise only 10-20% of total time. For a 10-minute presentation, allocate approximately 1 minute for introduction, 8 minutes for body, and 1 minute for conclusion.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which vocal technique is MOST important for emphasizing key points during a presentation?',
+        options: [
+          'Maintaining a constant, steady tone throughout',
+          'Speaking at maximum volume at all times',
+          'Using strategic pauses after important statements',
+          'Speaking as quickly as possible'
+        ],
+        answer: 'Using strategic pauses after important statements',
+        explanation: 'Strategic pauses (2-3 seconds) allow key points to sink in, signal confidence, and create dramatic effect. They show you\'re not rushing and give the audience time to absorb information. While all vocal techniques are important, pauses are particularly effective for emphasis and helping audiences retain key messages.'
+      },
+      {
+        type: 'mcq',
+        question: 'How should you handle a question that directly contradicts your main argument?',
+        options: [
+          'Dismiss it quickly and move to the next question',
+          'Become defensive and argue why the questioner is wrong',
+          'Stay calm, acknowledge the concern, and explain your perspective with evidence',
+          'Refuse to answer the question'
+        ],
+        answer: 'Stay calm, acknowledge the concern, and explain your perspective with evidence',
+        explanation: 'Professional handling of challenging questions strengthens your credibility. Acknowledge the legitimacy of the concern, explain why you hold your position, and support it with evidence. This demonstrates both confidence and intellectual honesty, which audiences respect far more than defensiveness.'
+      },
+      {
+        type: 'mcq',
+        question: 'Which body language mistake most clearly signals low confidence or defensiveness to your audience?',
+        options: [
+          'Making frequent eye contact with audience members',
+          'Using descriptive hand gestures at chest level',
+          'Folding your arms across your chest',
+          'Standing upright with weight evenly distributed'
+        ],
+        answer: 'Folding your arms across your chest',
+        explanation: 'Folded arms signal defensiveness, discomfort, or lack of engagement. Professional body language includes open posture, varied gestures, good eye contact, and upright stance. These communicate confidence, openness, and connection with the audience, making presentations more effective.'
+      },
+      {
+        type: 'mcq',
+        question: 'In a {{country:ghana=Ghanaian|nigeria=Nigerian|sierra-leone=Sierra Leonean|liberia=Liberian|gambia=Gambian}} cultural context, what is the most appropriate way to begin a formal presentation?',
+        options: [
+          'Jump immediately into your content without acknowledgments',
+          'Apologize for your accent and English ability',
+          'Acknowledge respected people present and show awareness of community values',
+          'Ask the audience to introduce themselves first'
+        ],
+        answer: 'Acknowledge respected people present and show awareness of community values',
+        explanation: 'In {{country:ghana=Ghanaian|nigeria=Nigerian|sierra-leone=Sierra Leonean|liberia=Liberian|gambia=Gambian}} culture, showing respect to authorities, elders, and the community is essential. A strong opening acknowledges these individuals appropriately ("I greet the Chief, the Elder, our teachers") and demonstrates awareness of cultural values like Ubuntu (communal interdependence). This sets a respectful tone and builds connection with the audience.'
+      },
+      {
+        type: 'mcq',
+        question: 'What should you do if you don\'t know the answer to a question during the Q&A session?',
+        options: [
+          'Guess or make something up to sound knowledgeable',
+          'Admit you don\'t know and offer to research and follow up',
+          'Change the subject to something you do know about',
+          'Tell the questioner to look it up themselves'
+        ],
+        answer: 'Admit you don\'t know and offer to research and follow up',
+        explanation: 'Honesty and integrity build credibility more than fabricated answers. Admitting uncertainty while showing willingness to find accurate information demonstrates professionalism and respect for your audience. Most people trust speakers who are honest about knowledge limitations.'
+      },
+      {
+        type: 'mcq',
+        question: 'Why is experiencing some nervousness before a presentation considered normal and even beneficial?',
+        options: [
+          'It means you don\'t understand your topic',
+          'It signals that you\'re taking the presentation seriously and motivates focus and energy',
+          'It indicates you\'re not ready to present',
+          'It means you should cancel the presentation'
+        ],
+        answer: 'It signals that you\'re taking the presentation seriously and motivates focus and energy',
+        explanation: 'Approximately 75% of speakers experience presentation anxiety, including famous presenters. The key is recognizing that nervous energy can be channeled into enthusiasm and engagement. Preparation, visualization, and breathing techniques help manage anxiety while maintaining the beneficial adrenaline boost that keeps you alert and engaged.'
+      },
+      {
+        type: 'mcq',
+        question: 'What is the primary purpose of using visual aids in a presentation?',
+        options: [
+          'To replace the speaker and deliver all the content',
+          'To distract the audience from any speaker mistakes',
+          'To support and reinforce the spoken message, not dominate it',
+          'To make the presentation longer and more impressive'
+        ],
+        answer: 'To support and reinforce the spoken message, not dominate it',
+        explanation: 'Visual aids should support your presentation by highlighting key points, showing data, or illustrating concepts. They should never replace your spoken words or dominate audience attention. Slides with minimal text, clear visuals, and professional design work best. Remember: your voice and presence matter more than fancy graphics.'
+      }
+    ]
   }
 ];
+
+export const englishSHS1QuizzesAndPastQuestions: Quiz[] = [];

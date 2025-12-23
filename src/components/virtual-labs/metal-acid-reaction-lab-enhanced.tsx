@@ -4,13 +4,17 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Trophy, Award, GripVertical, TestTube, Flame, Droplets, Sparkles, AlertTriangle } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Trophy, Award, TestTube, Flame, Droplets, Sparkles, AlertTriangle, Package, Zap, Wind } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Label } from '../ui/label';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
+import { TextToSpeech } from '../text-to-speech';
+import { LabNotes } from './LabNotes';
 
 type Step = 'intro' | 'setup' | 'experiment' | 'results' | 'quiz' | 'complete';
 type Metal = 'Magnesium' | 'Zinc' | 'Iron' | 'Copper';
@@ -45,13 +49,16 @@ export function MetalAcidReactionLabEnhanced() {
     // XP and completion
     const [xpEarned, setXpEarned] = React.useState(0);
     const [showCelebration, setShowCelebration] = React.useState(false);
-    const { markLabComplete, isLabCompleted, getLabCompletion } = useLabProgress();
+    const { markLabComplete, isLabCompleted, getLabCompletion, totalXP } = useLabProgress();
     const labId = 'metal-acid-reaction';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const alreadyCompleted = completion !== null;
 
-    // Draggable teacher
-    const [teacherPosition, setTeacherPosition] = React.useState({ x: 0, y: 0 });
+    // UI state
+    const [showSupplies, setShowSupplies] = React.useState(false);
+    const [showPractice, setShowPractice] = React.useState(false);
+    const [practiceInteraction, setPracticeInteraction] = React.useState<string | null>(null);
 
     React.useEffect(() => {
         if (currentStep === 'intro') {
@@ -87,7 +94,7 @@ export function MetalAcidReactionLabEnhanced() {
     };
 
     const handleStartExperiment = () => {
-        setTeacherMessage("Perfect! Let's set up our test tubes with hydrochloric acid. You'll test different metals to see which react and how fast!");
+        setTeacherMessage("Perfect! Let's begin! You'll test metals with hydrochloric acid. Select a metal, add it to the acid, and observe carefully. Look for bubbles (that's hydrogen gas!), heat production, and how fast the metal dissolves. This reveals the reactivity series!");
         setPendingTransition(() => () => {
             setCurrentStep('setup');
         });
@@ -100,6 +107,16 @@ export function MetalAcidReactionLabEnhanced() {
         }
         
         setSelectedMetal(metal);
+        
+        // Teacher provides context about the selected metal
+        const metalInfo = {
+            Magnesium: "Good choice! Magnesium is a very reactive metal. Watch for vigorous bubbling and heat!",
+            Zinc: "Excellent! Zinc is moderately reactive. You'll see steady bubbling as hydrogen gas is released.",
+            Iron: "Interesting! Iron reacts slowly with acid. Be patient and watch for gradual changes.",
+            Copper: "Smart selection! Copper is below hydrogen in the reactivity series. Let's see what happens!"
+        };
+        
+        setTeacherMessage(metalInfo[metal]);
         toast({ title: '🔬 Metal Selected', description: `${metal} ready to test` });
     };
 
@@ -110,12 +127,27 @@ export function MetalAcidReactionLabEnhanced() {
         }
         
         if (observations.some(obs => obs.metal === selectedMetal)) {
-            toast({ title: 'Already Tested', description: `${selectedMetal} already observed`, variant: 'destructive' });
+            // Find untested metals
+            const allMetals: Metal[] = ['Magnesium', 'Zinc', 'Iron', 'Copper'];
+            const untestedMetals = allMetals.filter(m => !observations.some(obs => obs.metal === m));
+            const untestedList = untestedMetals.length > 0 
+                ? ` Try ${untestedMetals.join(', ')} to compare!` 
+                : '';
+            
+            toast({ 
+                title: '🔬 Already Explored!', 
+                description: `You've tested ${selectedMetal}.${untestedList}`,
+                duration: 4000
+            });
+            setTeacherMessage(`Good observation! You've already tested ${selectedMetal}. ${untestedMetals.length > 0 ? `Let's explore ${untestedMetals.length === 1 ? untestedMetals[0] : 'different metals'} to see how reactivity varies!` : 'You\'ve tested all metals - great job!'}`);
             return;
         }
         
         setIsReacting(true);
         const reaction = metalReactivity[selectedMetal];
+        
+        // Teacher announces reaction start
+        setTeacherMessage(`Watch carefully! Adding ${selectedMetal} to hydrochloric acid. Observe the bubbles, heat, and how fast the metal dissolves!`);
         
         // Animate reaction
         const duration = reaction.speed === 'very-fast' ? 2000 : 
@@ -146,9 +178,13 @@ export function MetalAcidReactionLabEnhanced() {
             setIsReacting(false);
             
             if (observations.length === 0) {
-                setTeacherMessage(`${selectedMetal} tested! ${reaction.description} Try another metal to compare!`);
+                setTeacherMessage(`Excellent first observation! ${selectedMetal} shows ${reaction.speed.replace('-', ' ')} reaction. ${reaction.description} Now try a different metal to compare reactivity!`);
+            } else if (observations.length === 1) {
+                setTeacherMessage(`Good progress! You've tested 2 metals now. Notice the differences in reaction speeds? This is the reactivity series in action! Test one more to complete your analysis.`);
             } else if (observations.length === 2) {
-                setTeacherMessage("Great work! You're seeing the reactivity series in action. Test one more metal!");
+                setTeacherMessage(`Fantastic! You've tested 3 metals! You can see clear patterns now. ${reaction.description} Ready to analyze your results? Or test another metal if you're curious!`);
+            } else {
+                setTeacherMessage(`Another excellent observation! ${reaction.description} You're building a comprehensive understanding of metal reactivity!`);
             }
             
             toast({ 
@@ -176,7 +212,7 @@ export function MetalAcidReactionLabEnhanced() {
             return;
         }
         
-        setTeacherMessage("Excellent observations! Let's analyze the reactivity series and see why different metals react differently!");
+        setTeacherMessage("Excellent observations! Now let's analyze your results. You'll see the reactivity series clearly: more reactive metals produce more vigorous reactions and bubbles of hydrogen gas. This explains why some metals are used in batteries and why copper is safe for cooking pots!");
         setPendingTransition(() => () => {
             setCurrentStep('results');
         });
@@ -202,6 +238,7 @@ export function MetalAcidReactionLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand metal reactivity! +${earnedXP} XP`);
+            setTeacherMessage(`Outstanding! Perfect score! You've mastered the reactivity series. You understand why magnesium reacts vigorously, why copper doesn't react, and how hydrogen gas is produced. Excellent work! +${earnedXP} XP earned!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -210,8 +247,10 @@ export function MetalAcidReactionLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the reactivity series.`);
+            setTeacherMessage(`Good effort! You got ${correctCount} out of 3 correct. Remember: more reactive metals like magnesium displace hydrogen from acids, while less reactive metals like copper don't react. Review your observations and try again!`);
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: more reactive metals displace hydrogen from acids.`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me help: The reactivity series goes Magnesium > Zinc > Iron > Copper. Reactive metals produce hydrogen gas (H₂) when added to acid. Review your experiment observations and give it another go!`);
         }
     };
 
@@ -228,39 +267,26 @@ export function MetalAcidReactionLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setPendingTransition(null);
-        setTeacherMessage("Ready to explore metal reactivity again!");
+        setTeacherMessage("Welcome back! Let's explore metal reactivity again. Remember what you learned: the reactivity series, hydrogen gas production, and why different metals behave differently with acids. Ready to start?");
     };
 
     return (
         <div className="space-y-6 pb-20">
-            {/* Draggable Teacher Voice */}
-            <motion.div
-                drag
-                dragMomentum={false}
-                dragElastic={0}
-                dragConstraints={{ left: -300, right: 300, top: -100, bottom: 400 }}
-                onDragEnd={(_, info) => {
-                    setTeacherPosition({ x: info.offset.x, y: info.offset.y });
+            {/* Teacher Voice */}
+            <TeacherVoice 
+                message={teacherMessage}
+                onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : observations.length >= 3 ? 'happy' : 'explaining'}
+                context={{
+                    attempts: observations.length,
+                    correctStreak: observations.filter(obs => obs.bubbles).length
                 }}
-                initial={{ x: 0, y: 0 }}
-                style={{ x: teacherPosition.x, y: teacherPosition.y }}
-                className="fixed bottom-16 left-2 right-2 md:left-auto md:right-4 md:w-96 max-w-md z-50 touch-none"
-            >
-                <Card className="shadow-2xl border-2 border-orange-400 dark:border-orange-600 cursor-move">
-                    <CardHeader className="pb-2 py-2 md:py-4">
-                        <div className="flex items-center gap-2">
-                            <GripVertical className="h-4 w-4 text-muted-foreground" />
-                            <CardTitle className="text-xs md:text-sm">Teacher Guide (Drag to Move)</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <TeacherVoice 
-                            message={teacherMessage}
-                            onComplete={handleTeacherComplete}
-                        />
-                    </CardContent>
-                </Card>
-            </motion.div>
+                quickActions={[
+                    { label: 'Reset Lab', icon: '🔄', onClick: handleRestart },
+                    { label: 'View Theory', icon: '📖', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', icon: '🛡️', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
+            />
 
             {isCompleted && (
                 <motion.div
@@ -283,50 +309,98 @@ export function MetalAcidReactionLabEnhanced() {
                 </motion.div>
             )}
 
-            {showCelebration && (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
-                >
-                    <Card className="w-full max-w-md mx-4">
-                        <CardHeader className="text-center">
+            {/* Celebration Overlay */}
+            <AnimatePresence>
+                {showCelebration && xpEarned !== null && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.5, rotate: -10 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            exit={{ scale: 0.5, rotate: 10 }}
+                            className="bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-500 text-white rounded-3xl p-8 shadow-2xl max-w-md mx-4"
+                        >
                             <motion.div
-                                animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
-                                transition={{ duration: 0.5 }}
-                                className="flex justify-center mb-4"
+                                animate={{ 
+                                    scale: [1, 1.2, 1],
+                                    rotate: [0, 5, -5, 0]
+                                }}
+                                transition={{ 
+                                    repeat: Infinity,
+                                    duration: 2
+                                }}
+                                className="text-8xl text-center mb-4"
                             >
-                                <Trophy className="h-20 w-20 text-yellow-500" />
+                                🎉
                             </motion.div>
-                            <CardTitle className="text-2xl">Congratulations!</CardTitle>
-                            <CardDescription>You've mastered metal reactivity!</CardDescription>
-                        </CardHeader>
-                        <CardContent className="text-center space-y-4">
-                            <div className="flex items-center justify-center gap-2 text-3xl font-bold text-orange-600">
-                                <Award className="h-8 w-8" />
-                                +{xpEarned} XP
+                            <h2 className="text-3xl font-bold text-center mb-2">Lab Completed!</h2>
+                            <div className="text-center">
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.2, type: "spring" }}
+                                    className="text-6xl font-black mb-2"
+                                >
+                                    +{xpEarned} XP
+                                </motion.div>
+                                <p className="text-xl opacity-90">Total XP: {totalXP + xpEarned}</p>
+                                {!alreadyCompleted && (
+                                    <p className="text-sm mt-2 opacity-75">First time completion bonus!</p>
+                                )}
                             </div>
-                            <p className="text-sm text-muted-foreground">
-                                You understand the reactivity series!
-                            </p>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-            )}
+                            <div className="flex gap-2 justify-center mt-4">
+                                {[...Array(5)].map((_, i) => (
+                                    <motion.span
+                                        key={i}
+                                        animate={{ 
+                                            y: [0, -20, 0],
+                                            rotate: [0, 360]
+                                        }}
+                                        transition={{ 
+                                            delay: i * 0.1,
+                                            repeat: Infinity,
+                                            duration: 1.5
+                                        }}
+                                        className="text-3xl"
+                                    >
+                                        ⭐
+                                    </motion.span>
+                                ))}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            <Card>
+            <Card className="border-2 border-orange-200 dark:border-orange-800">
                 <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <TestTube className="h-5 w-5 text-orange-600" />
-                        Metal-Acid Reaction Lab
-                    </CardTitle>
-                    <CardDescription>Investigate how different metals react with hydrochloric acid</CardDescription>
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                        <CardTitle className="flex items-center gap-2">
+                            <TestTube className="h-5 w-5 text-orange-600" />
+                            Objective
+                        </CardTitle>
+                        <div className="flex items-center gap-2">
+                            {alreadyCompleted && (
+                                <span className="text-xs sm:text-sm bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-full font-medium flex items-center gap-1">
+                                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                                    Completed
+                                </span>
+                            )}
+                            <TextToSpeech textToSpeak="To investigate and observe how different metals react with hydrochloric acid and understand the reactivity series of metals." />
+                        </div>
+                    </div>
+                    <CardDescription>To investigate and observe how different metals react with hydrochloric acid and understand the reactivity series of metals.</CardDescription>
                 </CardHeader>
             </Card>
 
             <Card>
                 <CardHeader>
                     <CardTitle>Lab Information</CardTitle>
+                    <CardDescription>Essential background and safety guidelines</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
@@ -338,28 +412,36 @@ export function MetalAcidReactionLabEnhanced() {
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <p><strong>Metal-Acid Reactions</strong> occur when reactive metals displace hydrogen from acids.</p>
-                                <p className="mt-2"><strong>General Equation:</strong></p>
-                                <p className="font-mono text-xs">Metal + Acid → Salt + Hydrogen Gas</p>
-                                <p className="mt-2"><strong>The Reactivity Series (Most to Least Reactive):</strong></p>
-                                <ul>
-                                    <li><strong>Potassium:</strong> Most reactive</li>
-                                    <li><strong>Sodium:</strong> Very reactive</li>
-                                    <li><strong>Calcium:</strong> Very reactive</li>
-                                    <li><strong>Magnesium:</strong> Reactive (vigorous with acids)</li>
-                                    <li><strong>Zinc:</strong> Moderately reactive</li>
-                                    <li><strong>Iron:</strong> Slowly reactive</li>
-                                    <li><strong>Lead:</strong> Very slowly reactive</li>
-                                    <li><strong>Copper:</strong> Does not react with dilute acids</li>
-                                    <li><strong>Silver, Gold:</strong> Least reactive</li>
-                                </ul>
-                                <p className="mt-2"><strong>Key Observations:</strong></p>
-                                <ul>
-                                    <li>More reactive metals produce more vigorous reactions</li>
-                                    <li>Hydrogen gas bubbles are produced in successful reactions</li>
-                                    <li>Heat is often released (exothermic reaction)</li>
-                                    <li>A salt is formed when the metal dissolves</li>
-                                </ul>
+                                <div className="flex items-start gap-2">
+                                    <div className="flex-grow">
+                                        <p><strong>Metal-Acid Reactions</strong> occur when reactive metals displace hydrogen from acids.</p>
+                                        <p className="mt-2"><strong>General Equation:</strong></p>
+                                        <p className="font-mono text-xs">Metal + Acid → Salt + Hydrogen Gas</p>
+                                        <p className="mt-2"><strong>The Reactivity Series (Most to Least Reactive):</strong></p>
+                                        <ul>
+                                            <li><strong>Potassium:</strong> Most reactive</li>
+                                            <li><strong>Sodium:</strong> Very reactive</li>
+                                            <li><strong>Calcium:</strong> Very reactive</li>
+                                            <li><strong>Magnesium:</strong> Reactive (vigorous with acids)</li>
+                                            <li><strong>Zinc:</strong> Moderately reactive</li>
+                                            <li><strong>Iron:</strong> Slowly reactive</li>
+                                            <li><strong>Lead:</strong> Very slowly reactive</li>
+                                            <li><strong>Copper:</strong> Does not react with dilute acids</li>
+                                            <li><strong>Silver, Gold:</strong> Least reactive</li>
+                                        </ul>
+                                        <p className="mt-2"><strong>Key Observations:</strong></p>
+                                        <ul>
+                                            <li>More reactive metals produce more vigorous reactions</li>
+                                            <li>Hydrogen gas bubbles are produced in successful reactions</li>
+                                            <li>Heat is often released (exothermic reaction)</li>
+                                            <li>A salt is formed when the metal dissolves</li>
+                                        </ul>
+                                    </div>
+                                    <TextToSpeech 
+                                        textToSpeak="Metal-Acid Reactions occur when reactive metals displace hydrogen from acids. The general equation is: Metal plus Acid gives Salt plus Hydrogen Gas. The Reactivity Series from most to least reactive: Potassium, Sodium, Calcium, Magnesium, Zinc, Iron, Lead, Copper, Silver, Gold. Key observations: More reactive metals produce more vigorous reactions, hydrogen gas bubbles are produced, heat is released, and a salt is formed."
+                                        className="flex-shrink-0" 
+                                    />
+                                </div>
                             </AccordionContent>
                         </AccordionItem>
                         <AccordionItem value="safety">
@@ -370,17 +452,25 @@ export function MetalAcidReactionLabEnhanced() {
                                 </div>
                             </AccordionTrigger>
                             <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <ul>
-                                    <li><strong>CRITICAL:</strong> Always wear safety goggles - acids can cause eye damage</li>
-                                    <li>Wear protective gloves when handling acids</li>
-                                    <li>Work in a well-ventilated area or fume hood</li>
-                                    <li>Never add water to concentrated acid - add acid to water</li>
-                                    <li>If acid spills on skin, rinse immediately with lots of water</li>
-                                    <li>Keep long hair tied back</li>
-                                    <li>Hydrogen gas is flammable - keep away from flames</li>
-                                    <li>Dispose of chemicals properly - never pour down sink without permission</li>
-                                    <li>Report any accidents immediately to teacher</li>
-                                </ul>
+                                <div className="flex items-start gap-2">
+                                    <div className="flex-grow">
+                                        <ul>
+                                            <li><strong>CRITICAL:</strong> Always wear safety goggles - acids can cause eye damage</li>
+                                            <li>Wear protective gloves when handling acids</li>
+                                            <li>Work in a well-ventilated area or fume hood</li>
+                                            <li>Never add water to concentrated acid - add acid to water</li>
+                                            <li>If acid spills on skin, rinse immediately with lots of water</li>
+                                            <li>Keep long hair tied back</li>
+                                            <li>Hydrogen gas is flammable - keep away from flames</li>
+                                            <li>Dispose of chemicals properly - never pour down sink without permission</li>
+                                            <li>Report any accidents immediately to teacher</li>
+                                        </ul>
+                                    </div>
+                                    <TextToSpeech 
+                                        textToSpeak="Safety precautions: Always wear safety goggles as acids can cause eye damage. Wear protective gloves when handling acids. Work in a well-ventilated area. Never add water to concentrated acid, add acid to water instead. If acid spills on skin, rinse immediately with lots of water. Keep long hair tied back. Hydrogen gas is flammable, keep away from flames. Dispose of chemicals properly. Report any accidents immediately to teacher."
+                                        className="flex-shrink-0" 
+                                    />
+                                </div>
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>
@@ -448,11 +538,35 @@ export function MetalAcidReactionLabEnhanced() {
                     >
                         <Card className="border-2 border-orange-200 dark:border-orange-800">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <TestTube className="h-5 w-5 text-orange-600" />
-                                    Test Metal Reactivity
-                                </CardTitle>
-                                <CardDescription>Metals tested: {observations.length}/3+</CardDescription>
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <TestTube className="h-5 w-5 text-orange-600" />
+                                            Test Metal Reactivity
+                                        </CardTitle>
+                                        <CardDescription>Metals tested: {observations.length}/3+</CardDescription>
+                                    </div>
+                                    <div className="flex gap-2 flex-wrap">
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => setShowSupplies(!showSupplies)}
+                                            className="text-xs sm:text-sm"
+                                        >
+                                            <Package className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                            {showSupplies ? 'Hide' : 'Show'} Supplies
+                                        </Button>
+                                        <Button 
+                                            variant="outline" 
+                                            size="sm"
+                                            onClick={() => setShowPractice(!showPractice)}
+                                            className="text-xs sm:text-sm"
+                                        >
+                                            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                            {showPractice ? 'Hide' : 'Show'} Practice
+                                        </Button>
+                                    </div>
+                                </div>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Metal Selection */}
@@ -633,6 +747,136 @@ export function MetalAcidReactionLabEnhanced() {
                                 </Button>
                             </CardFooter>
                         </Card>
+
+                        {/* Lab Supplies Drawer */}
+                        {showSupplies && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2 text-lg">
+                                            <Package className="h-5 w-5 text-amber-600" />
+                                            Lab Supplies - Equipment Information
+                                        </CardTitle>
+                                        <CardDescription>Learn about the equipment used in this experiment</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border-2 border-gray-200 dark:border-gray-700">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <TestTube className="h-8 w-8 text-blue-600" />
+                                                    <h4 className="font-semibold">Test Tubes</h4>
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Glass containers for holding small amounts of chemicals during reactions. Resistant to heat and most acids.
+                                                </p>
+                                            </div>
+                                            
+                                            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border-2 border-gray-200 dark:border-gray-700">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <Droplets className="h-8 w-8 text-blue-400" />
+                                                    <h4 className="font-semibold">Hydrochloric Acid (HCl)</h4>
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    A strong acid that reacts with most metals to produce hydrogen gas and metal salts. Handle with care!
+                                                </p>
+                                            </div>
+
+                                            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border-2 border-gray-200 dark:border-gray-700">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <Shield className="h-8 w-8 text-orange-600" />
+                                                    <h4 className="font-semibold">Safety Goggles</h4>
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Essential eye protection when working with acids. Protects against splashes and fumes.
+                                                </p>
+                                            </div>
+
+                                            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border-2 border-gray-200 dark:border-gray-700">
+                                                <div className="flex items-center gap-3 mb-2">
+                                                    <Wind className="h-8 w-8 text-cyan-600" />
+                                                    <h4 className="font-semibold">Fume Hood</h4>
+                                                </div>
+                                                <p className="text-sm text-muted-foreground">
+                                                    Ventilation system that removes harmful fumes and gases from the work area. Always work in a ventilated space!
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        )}
+
+                        {/* Practice Mode */}
+                        {showPractice && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                            >
+                                <Card className="border-2 border-violet-200 dark:border-violet-800 bg-violet-50/50 dark:bg-violet-950/20">
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Sparkles className="h-5 w-5 text-violet-600" />
+                                            Practice Mode - Explore & Learn
+                                        </CardTitle>
+                                        <CardDescription>Click on cards to learn more about metal reactivity</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid md:grid-cols-3 gap-4">
+                                            <Card 
+                                                className="cursor-pointer hover:shadow-lg transition-shadow border-2"
+                                                onClick={() => setPracticeInteraction('reactivity')}
+                                            >
+                                                <CardHeader>
+                                                    <CardTitle className="text-base">⚡ Reactivity Series</CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {practiceInteraction === 'reactivity'
+                                                            ? "The reactivity series ranks metals from most to least reactive. Magnesium > Zinc > Iron > Copper. More reactive metals displace less reactive metals from solutions!"
+                                                            : "Tap to learn about metal reactivity order"}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+
+                                            <Card 
+                                                className="cursor-pointer hover:shadow-lg transition-shadow border-2"
+                                                onClick={() => setPracticeInteraction('hydrogen')}
+                                            >
+                                                <CardHeader>
+                                                    <CardTitle className="text-base">💨 Hydrogen Gas (H₂)</CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {practiceInteraction === 'hydrogen'
+                                                            ? "Hydrogen gas is produced when reactive metals displace hydrogen from acids. It's colorless, odorless, and highly flammable! The 'pop test' confirms its presence."
+                                                            : "Tap to learn about hydrogen gas"}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+
+                                            <Card 
+                                                className="cursor-pointer hover:shadow-lg transition-shadow border-2"
+                                                onClick={() => setPracticeInteraction('realworld')}
+                                            >
+                                                <CardHeader>
+                                                    <CardTitle className="text-base">🌍 Real-World Applications</CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {practiceInteraction === 'realworld'
+                                                            ? "Reactivity series explains why: copper pots are used in cooking (safe with acidic foods), zinc is used for galvanization, and magnesium is used in fireworks!"
+                                                            : "Tap to see practical applications"}
+                                                    </p>
+                                                </CardContent>
+                                            </Card>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        )}
                     </motion.div>
                 )}
 
@@ -971,6 +1215,9 @@ export function MetalAcidReactionLabEnhanced() {
                                 </Button>
                             </CardFooter>
                         </Card>
+
+                        {/* Lab Notes */}
+                        <LabNotes labId="metal-acid-reaction-lab" labTitle="Metal-Acid Reaction Lab" />
                     </motion.div>
                 )}
             </AnimatePresence>

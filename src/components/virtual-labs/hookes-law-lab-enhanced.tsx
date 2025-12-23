@@ -185,6 +185,7 @@ export function HookesLawLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand Hooke's Law! +${earnedXP} XP`);
+            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered Hooke's Law! Let me explain what you discovered: HOOKE'S LAW states F = kx, where F is the applied force, x is extension, and k is the spring constant (stiffness). From your graph: when force doubled from 5N to 10N, extension doubled from 0.25m to 0.50m - that's LINEAR relationship! The spring constant k = F/x = 10N ÷ 0.50m = 20 N/m. This tells us how stiff the spring is. A stiffer spring (higher k) needs more force for the same extension. The relationship is LINEAR only in the elastic region - if you stretch too far, the spring deforms permanently (plastic deformation). Real applications: car suspension (springs absorb bumps), weighing scales (force stretches spring, scale measures extension), door closers, shock absorbers, trampolines. You understand force, extension, proportionality, and material properties! +${earnedXP} XP earned!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -193,8 +194,10 @@ export function HookesLawLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Remember Hooke's Law: F = kx.`);
+            setTeacherMessage(`Good effort! You got 2 out of 3 correct. Let me clarify Hooke's Law: The relationship between force and extension is LINEAR - when you double the force, extension doubles too. The formula is F = kx, where k is the spring constant (stiffness). From your data: extension = 0.50m when force = 10N, so k = F/x = 10N ÷ 0.50m = 20 N/m. The spring constant measures STIFFNESS - how much force is needed to stretch the spring by 1 meter. Higher k = stiffer spring. Plot your data and you'll see a straight line through the origin! Review the measurements and try again.`);
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. The spring constant k is a measure of stiffness - stiffer springs have larger k values.`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me help you understand Hooke's Law: When you applied 10N force, the spring extended 0.50m (50cm). That means k = F/x = 10N ÷ 0.50m = 20 N/m. The relationship is LINEAR - doubling force doubles extension. Plot force (y-axis) vs. extension (x-axis) and you get a straight line. The slope of this line is the spring constant k, which measures STIFFNESS. A stiff spring (high k) barely stretches under force. A soft spring (low k) stretches easily. This only works in the elastic limit - stretch too far and the spring breaks! Try calculating k from your measurements again.`);
         }
     };
 
@@ -220,34 +223,20 @@ export function HookesLawLabEnhanced() {
 
     return (
         <div className="space-y-6 pb-20">
-            {/* Draggable Teacher Voice */}
-            <motion.div
-                drag
-                dragMomentum={false}
-                dragElastic={0}
-                dragConstraints={{ left: -300, right: 300, top: -100, bottom: 400 }}
-                onDragEnd={(_, info) => {
-                    setTeacherPosition({ x: info.offset.x, y: info.offset.y });
+            {/* Teacher Voice */}
+            <TeacherVoice 
+                message={teacherMessage}
+                onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : data.length >= 3 ? 'happy' : 'explaining'}
+                context={{
+                    attempts: data.length
                 }}
-                initial={{ x: 0, y: 0 }}
-                style={{ x: teacherPosition.x, y: teacherPosition.y }}
-                className="fixed bottom-16 left-2 right-2 md:left-auto md:right-4 md:w-96 max-w-md z-50 touch-none"
-            >
-                <Card className="shadow-2xl border-2 border-blue-400 dark:border-blue-600 cursor-move">
-                    <CardHeader className="pb-2 py-2 md:py-4">
-                        <div className="flex items-center gap-2">
-                            <GripVertical className="h-4 w-4 text-muted-foreground" />
-                            <CardTitle className="text-xs md:text-sm">Teacher Guide (Drag to Move)</CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                        <TeacherVoice 
-                            message={teacherMessage}
-                            onComplete={handleTeacherComplete}
-                        />
-                    </CardContent>
-                </Card>
-            </motion.div>
+                quickActions={[
+                    { label: 'Reset Lab', onClick: handleRestart },
+                    { label: 'View Theory', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
+            />
 
             {isCompleted && (
                 <motion.div

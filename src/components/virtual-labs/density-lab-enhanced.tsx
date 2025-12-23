@@ -193,6 +193,7 @@ export function DensityLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand density and buoyancy! +${earnedXP} XP`);
+            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered density and buoyancy! Here's what you discovered: DENSITY is mass per unit volume (density = mass ÷ volume). Objects with density LESS THAN water (1 g/cm³) will FLOAT. Objects with density GREATER THAN water will SINK. You tested: Wood floats (~0.6 g/cm³), Cork floats (~0.25 g/cm³), Plastic varies (~0.9 g/cm³ floats), but METAL sinks (~7-8 g/cm³ for iron/steel). This follows ARCHIMEDES' PRINCIPLE: an object experiences an upward buoyant force equal to the weight of water it displaces. If buoyant force > object's weight, it floats! If buoyant force < object's weight, it sinks. Ships float because their overall density (including air inside) is less than water, even though steel is denser. Submarines control buoyancy by filling/emptying ballast tanks with water. You understand mass, volume, density calculations, buoyant force, and Archimedes' Principle! Real applications: ship design, submarines, hot air balloons (air density), hydrometers, life jackets. Perfect understanding! +${earnedXP} XP earned!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -201,8 +202,10 @@ export function DensityLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Think about buoyancy and density!`);
+            setTeacherMessage(`Good effort! You got 2 out of 3 correct. Let me clarify: Objects float when their density is LESS THAN the liquid's density. Water has density 1 g/cm³. Wood (0.6 g/cm³) and cork (0.25 g/cm³) float because they're less dense. METAL like steel (7.8 g/cm³) sinks because it's much denser than water. This is ARCHIMEDES' PRINCIPLE - the buoyant force equals the weight of displaced water. If the object weighs less than the water it displaces, it floats! Density = mass/volume. Denser objects sink, less dense objects float. Review your test results and compare densities!`);
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: objects float if their density is less than the liquid!`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me explain density and buoyancy: DENSITY = mass ÷ volume (g/cm³). Water's density is 1 g/cm³. Objects with density LESS THAN 1 g/cm³ FLOAT (wood, cork, most plastics). Objects with density MORE THAN 1 g/cm³ SINK (metal, stone). When you drop an object in water, it displaces water equal to its volume. The displaced water pushes up with buoyant force. If buoyant force > object's weight → FLOAT. If buoyant force < object's weight → SINK. This is ARCHIMEDES' PRINCIPLE. Metal like steel has density ~7.8 g/cm³, so it sinks. Try testing materials again and compare their densities to water!`);
         }
     };
 
@@ -235,6 +238,16 @@ export function DensityLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : testedMaterials.length >= 2 ? 'happy' : 'explaining'}
+                context={{
+                    attempts: testedMaterials.length,
+                    correctStreak: testedMaterials.length >= 3 ? 100 : 0
+                }}
+                quickActions={[
+                    { label: 'Reset Lab', onClick: handleRestart },
+                    { label: 'View Theory', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
+                    { label: 'Safety Tips', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
+                ]}
             />
 
             {isCompleted && (

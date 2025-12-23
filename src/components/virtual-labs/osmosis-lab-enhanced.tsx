@@ -38,10 +38,11 @@ export function OsmosisLabEnhanced() {
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Quiz
-    const [quizAnswer, setQuizAnswer] = React.useState<string>('');
-    const [quizFeedback, setQuizFeedback] = React.useState<string | null>(null);
-    const [quizAttempts, setQuizAttempts] = React.useState(0);
-    const [quizIsCorrect, setQuizIsCorrect] = React.useState<boolean | null>(null);
+    const [selectedAnswer1, setSelectedAnswer1] = React.useState<string | null>(null);
+    const [selectedAnswer2, setSelectedAnswer2] = React.useState<string | null>(null);
+    const [selectedAnswer3, setSelectedAnswer3] = React.useState<string | null>(null);
+    const [quizFeedback, setQuizFeedback] = React.useState<string>('');
+    const [quizSubmitted, setQuizSubmitted] = React.useState(false);
     
     // XP & Celebration
     const { markLabComplete, isLabCompleted, getLabCompletion, totalXP } = useLabProgress();
@@ -163,21 +164,29 @@ export function OsmosisLabEnhanced() {
     };
 
     const handleQuizSubmit = () => {
-        if (quizIsCorrect !== null) return;
+        if (quizSubmitted) return;
         
-        const correctAnswer = 'low-to-high';
-        const isCorrect = quizAnswer === correctAnswer;
-        const newAttempts = quizAttempts + 1;
-        setQuizAttempts(newAttempts);
+        setQuizSubmitted(true);
         
-        if (isCorrect) {
-            setQuizIsCorrect(true);
-            setQuizFeedback("Perfect! Water moves from LOW solute concentration (more water) to HIGH solute concentration (less water) across a semi-permeable membrane. ✅");
+        const correctAnswers = {
+            q1: 'low-to-high',
+            q2: 'semi-permeable',
+            q3: setup === 'sugar-in-water' ? 'swelled' : 'shrank'
+        };
+        
+        const isCorrect1 = selectedAnswer1 === correctAnswers.q1;
+        const isCorrect2 = selectedAnswer2 === correctAnswers.q2;
+        const isCorrect3 = selectedAnswer3 === correctAnswers.q3;
+        const correctCount = [isCorrect1, isCorrect2, isCorrect3].filter(Boolean).length;
+        
+        if (correctCount === 3) {
+            // Perfect - all 3 correct
+            setQuizFeedback(`Perfect! You got all 3 correct! 🎉 Excellent understanding of osmosis!`);
+            setTeacherMessage(`Outstanding! Perfect score! You truly understand OSMOSIS! 🎉 Let me summarize what you learned: (1) Water moves from LOW solute concentration (more water) to HIGH solute concentration (less water) - this is the fundamental rule of osmosis! Water goes where it can DILUTE concentrated solutions. (2) The SEMI-PERMEABLE MEMBRANE (dialysis tubing) has tiny pores that let water molecules pass through but block larger solute molecules like sugar. This selective permeability is KEY to osmosis! (3) In your experiment, ${setup === 'sugar-in-water' ? 'the tubing SWELLED because water moved from the beaker (pure water = low solute) INTO the tubing (sugar solution = high solute)' : 'the tubing SHRANK because water moved from inside the tubing (pure water = low solute) OUT to the beaker (sugar solution = high solute)'}. This demonstrates TURGOR PRESSURE in plant cells (swelling) and PLASMOLYSIS (shrinking) when cells lose water. Osmosis is essential for life: plants absorb water from soil, kidneys filter blood, cells maintain water balance. You've mastered this concept!`);
             
             if (!hasCompleted) {
                 const timeSpent = Math.floor((Date.now() - startTime) / 1000);
-                const score = newAttempts === 1 ? 100 : 75;
-                const earnedXP = markLabComplete('osmosis', score, timeSpent);
+                const earnedXP = markLabComplete('osmosis', 100, timeSpent);
                 
                 confetti({
                     particleCount: 100,
@@ -188,19 +197,30 @@ export function OsmosisLabEnhanced() {
                 setXpEarned(earnedXP);
                 setShowCelebration(true);
                 setTimeout(() => setShowCelebration(false), 5000);
-                
-                setTeacherMessage(`Outstanding! You've mastered osmosis and earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Remember: Water goes from MORE water to LESS water!`);
-            } else {
-                setTeacherMessage('Correct! You understand how osmosis works. This is crucial for understanding how cells maintain water balance!');
+            }
+        } else if (correctCount === 2) {
+            // Good effort - 2 out of 3 correct
+            setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Let me clarify the concepts you missed.`);
+            setTeacherMessage(`Good effort! You got 2 out of 3 correct. Let me clarify the key concepts: (1) DIRECTION OF WATER MOVEMENT: Water moves from LOW solute concentration (where there's MORE water) to HIGH solute concentration (where there's LESS water). Think of it as water trying to EQUALIZE concentrations - it goes where it can dilute! Pure water = 100% water (LOW solute). Sugar solution = maybe 90% water + 10% sugar (HIGH solute). Water moves from pure → sugar solution. (2) SEMI-PERMEABLE MEMBRANE: The dialysis tubing (or cell membrane in living organisms) has microscopic PORES that allow SMALL molecules like water (H₂O) to pass through but BLOCK LARGE molecules like sugar (C₁₂H₂₂O₁₁). This selective permeability is what makes osmosis possible! Without it, sugar would also move and there'd be no NET water movement. (3) RESULT: ${setup === 'sugar-in-water' ? 'When sugar solution is INSIDE the tubing and pure water is OUTSIDE, water moves INTO the tubing. More water inside = tubing SWELLS (increases in size). This is like plant cells in pure water - they swell with turgor pressure!' : 'When pure water is INSIDE the tubing and sugar solution is OUTSIDE, water moves OUT of the tubing. Less water inside = tubing SHRINKS (decreases in size). This is like plant cells in salt water - they lose water and wilt!'}. Review these concepts and try the quiz again!`);
+            
+            if (!hasCompleted) {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                const earnedXP = markLabComplete('osmosis', 75, timeSpent);
+                setXpEarned(earnedXP);
+                setShowCelebration(true);
+                setTimeout(() => setShowCelebration(false), 5000);
             }
         } else {
-            if (newAttempts === 1) {
-                setQuizFeedback("Not quite. Think about it: water wants to dilute concentrated solutions. Where does water go? Try again! 🔄");
-                setTeacherMessage('Remember: Water moves TO where there is MORE solute (less water). Think dilution!');
-            } else {
-                setQuizIsCorrect(false);
-                setQuizFeedback("The correct answer is: Water moves from LOW solute to HIGH solute concentration. This means from more water to less water. 🧠");
-                setTeacherMessage('Water always moves down its concentration gradient - from where there is MORE water to where there is LESS water!');
+            // Needs work - 0 or 1 correct
+            setQuizFeedback(`You got ${correctCount} out of 3 correct. Don't worry! Let me explain osmosis from the beginning.`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Let me explain OSMOSIS step by step from the very beginning: OSMOSIS is the NET movement of WATER across a SEMI-PERMEABLE MEMBRANE from HIGH water concentration to LOW water concentration. But here's the trick that confuses many students - we often describe it using SOLUTE concentration instead of water concentration! Here's the key relationship: HIGH water concentration = LOW solute concentration (not much dissolved stuff - mostly water). LOW water concentration = HIGH solute concentration (lots of dissolved stuff - less water). So water moves from LOW solute → HIGH solute. Why does this happen? The MEMBRANE has tiny pores that let water molecules through but block larger solute molecules (like sugar, salt, starch). Water molecules are always moving randomly (kinetic energy), but there's a NET flow in one direction. Where there's MORE water (low solute), more water molecules bump into the membrane and cross through. Where there's LESS water (high solute), fewer water molecules are available to cross back. The result? NET movement of water from low solute → high solute until concentrations equalize! It's like a crowded room (high water) where people spread out to an empty room (low water) through a doorway (membrane). In your experiment: You ${setup === 'sugar-in-water' ? 'put sugar solution INSIDE the tubing and pure water OUTSIDE in the beaker' : 'put pure water INSIDE the tubing and sugar solution OUTSIDE in the beaker'}. The dialysis tubing acted as a SEMI-PERMEABLE MEMBRANE - water could pass through but sugar could not (sugar molecules are too big for the pores). Pure water = 100% water = LOW solute concentration. Sugar solution = maybe 90% water + 10% sugar = HIGH solute concentration. NET movement of water? From low solute → high solute. ${setup === 'sugar-in-water' ? 'Water moved from the beaker (low solute) INTO the tubing (high solute). Result: tubing SWELLED because it gained water!' : 'Water moved from inside the tubing (low solute) OUT to the beaker (high solute). Result: tubing SHRANK because it lost water!'}. Real-world applications: PLANT CELLS in pure water swell with turgor pressure (keeps plants firm). PLANT CELLS in salty water shrink and wilt (plasmolysis). KIDNEY CELLS filter blood using osmosis. RED BLOOD CELLS maintain shape through osmotic balance. Remember: Water goes where it can DILUTE - from low solute → high solute. The membrane blocks solute but allows water. Review the experiment and try the quiz again!`);
+            
+            if (!hasCompleted) {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                const earnedXP = markLabComplete('osmosis', 50, timeSpent);
+                setXpEarned(earnedXP);
+                setShowCelebration(true);
+                setTimeout(() => setShowCelebration(false), 5000);
             }
         }
     };
@@ -211,12 +231,14 @@ export function OsmosisLabEnhanced() {
         setOsmosisProgress(0);
         setTubingScale(1);
         setShowArrows(false);
-        setQuizAnswer('');
-        setQuizFeedback(null);
-        setQuizAttempts(0);
-        setQuizIsCorrect(null);
+        setSelectedAnswer1(null);
+        setSelectedAnswer2(null);
+        setSelectedAnswer3(null);
+        setQuizFeedback('');
+        setQuizSubmitted(false);
         setXpEarned(0);
         setShowCelebration(false);
+        setPendingTransition(null);
         setTeacherMessage('Ready to observe osmosis again? You can try both setups to see water movement in different directions! Click Start Experiment when ready.');
     };
 
@@ -256,6 +278,34 @@ export function OsmosisLabEnhanced() {
                 <TeacherVoice 
                     message={teacherMessage}
                     onComplete={handleTeacherComplete}
+                    emotion={currentStep === 'result' || quizSubmitted ? 'celebrating' : osmosisProgress > 50 ? 'happy' : 'explaining'}
+                    context={{
+                        attempts: osmosisProgress,
+                        correctStreak: quizSubmitted ? 1 : 0
+                    }}
+                    quickActions={[
+                        {
+                            label: 'Reset Lab',
+                            icon: '🔄',
+                            onClick: handleReset
+                        },
+                        {
+                            label: 'View Theory',
+                            icon: '📖',
+                            onClick: () => {
+                                const theorySection = document.querySelector('[data-theory-section]');
+                                theorySection?.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        },
+                        {
+                            label: 'Safety Tips',
+                            icon: '🛡️',
+                            onClick: () => {
+                                const safetySection = document.querySelector('[data-safety-section]');
+                                safetySection?.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }
+                    ]}
                 />
             )}
 
@@ -272,7 +322,7 @@ export function OsmosisLabEnhanced() {
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
+                        <AccordionItem value="item-1" data-theory-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <BookOpen className="h-4 w-4" />
@@ -283,7 +333,7 @@ export function OsmosisLabEnhanced() {
                                 <p>{theoryText}</p>
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="item-2">
+                        <AccordionItem value="item-2" data-safety-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <Shield className="h-4 w-4" />
@@ -589,49 +639,89 @@ export function OsmosisLabEnhanced() {
                             <CardTitle>Post-Lab Quiz</CardTitle>
                             <CardDescription>Test your understanding of the experiment</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="font-medium">
-                                In osmosis, water moves from _______ solute concentration to _______ solute concentration.
-                            </p>
-                            <RadioGroup 
-                                value={quizAnswer} 
-                                onValueChange={setQuizAnswer}
-                                disabled={quizIsCorrect !== null}
-                            >
-                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                    <RadioGroupItem value="low-to-high" id="q-1" />
-                                    <Label htmlFor="q-1" className="flex-1 cursor-pointer">Low to High (more water → less water)</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                    <RadioGroupItem value="high-to-low" id="q-2" />
-                                    <Label htmlFor="q-2" className="flex-1 cursor-pointer">High to Low (less water → more water)</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                    <RadioGroupItem value="no-movement" id="q-3" />
-                                    <Label htmlFor="q-3" className="flex-1 cursor-pointer">No movement occurs</Label>
-                                </div>
-                            </RadioGroup>
+                        <CardContent className="space-y-6">
+                            {/* Question 1 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    1. In osmosis, water moves from _______ solute concentration to _______ solute concentration.
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer1 || ''} 
+                                    onValueChange={setSelectedAnswer1}
+                                    disabled={quizSubmitted}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="low-to-high" id="q1-1" />
+                                        <Label htmlFor="q1-1" className="flex-1 cursor-pointer">Low to High (more water → less water)</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="high-to-low" id="q1-2" />
+                                        <Label htmlFor="q1-2" className="flex-1 cursor-pointer">High to Low (less water → more water)</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="no-movement" id="q1-3" />
+                                        <Label htmlFor="q1-3" className="flex-1 cursor-pointer">No movement occurs</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
+                            
+                            {/* Question 2 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    2. What type of membrane allows water to pass but blocks larger solute molecules?
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer2 || ''} 
+                                    onValueChange={setSelectedAnswer2}
+                                    disabled={quizSubmitted}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="fully-permeable" id="q2-1" />
+                                        <Label htmlFor="q2-1" className="flex-1 cursor-pointer">Fully permeable membrane</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="semi-permeable" id="q2-2" />
+                                        <Label htmlFor="q2-2" className="flex-1 cursor-pointer">Semi-permeable (selectively permeable) membrane</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="impermeable" id="q2-3" />
+                                        <Label htmlFor="q2-3" className="flex-1 cursor-pointer">Impermeable membrane</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
+                            
+                            {/* Question 3 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    3. In your experiment, what happened to the dialysis tubing?
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer3 || ''} 
+                                    onValueChange={setSelectedAnswer3}
+                                    disabled={quizSubmitted}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="swelled" id="q3-1" />
+                                        <Label htmlFor="q3-1" className="flex-1 cursor-pointer">It swelled (increased in size)</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="shrank" id="q3-2" />
+                                        <Label htmlFor="q3-2" className="flex-1 cursor-pointer">It shrank (decreased in size)</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="no-change" id="q3-3" />
+                                        <Label htmlFor="q3-3" className="flex-1 cursor-pointer">No change in size</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
                             
                             {quizFeedback && (
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className={cn(
-                                        "p-4 rounded-lg border-2 flex items-start gap-3",
-                                        quizIsCorrect 
-                                            ? "bg-green-50 dark:bg-green-950/30 border-green-500 text-green-900 dark:text-green-100"
-                                            : quizIsCorrect === false
-                                            ? "bg-red-50 dark:bg-red-950/30 border-red-500 text-red-900 dark:text-red-100"
-                                            : "bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
-                                    )}
+                                    className="p-4 rounded-lg border-2 flex items-start gap-3 bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
                                 >
-                                    {quizIsCorrect ? (
-                                        <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : quizIsCorrect === false ? (
-                                        <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : (
-                                        <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    )}
+                                    <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
                                     <p className="text-sm font-medium">{quizFeedback}</p>
                                 </motion.div>
                             )}
@@ -639,10 +729,11 @@ export function OsmosisLabEnhanced() {
                         <CardFooter>
                             <Button 
                                 onClick={handleQuizSubmit} 
-                                disabled={!quizAnswer || quizIsCorrect !== null}
+                                disabled={!selectedAnswer1 || !selectedAnswer2 || !selectedAnswer3 || quizSubmitted}
+                                className="w-full"
                                 size="lg"
                             >
-                                {quizIsCorrect === true ? "Correct! ✓" : quizIsCorrect === false ? "Review Answer" : quizAttempts === 1 ? "Try Again" : "Submit Answer"}
+                                {quizSubmitted ? "Quiz Completed ✓" : "Submit Answers"}
                             </Button>
                         </CardFooter>
                     </Card>

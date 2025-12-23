@@ -138,6 +138,18 @@ export function RefractionLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand refraction! +${earnedXP} XP`);
+            setTeacherMessage(
+                "Exceptional! 💎 You've mastered Snell's Law and refraction! Here's the profound insight you've grasped: " +
+                "Light bends when entering a different medium because it changes speed! In denser materials (glass, water), " +
+                "light slows down and bends TOWARD the normal line. In less dense materials (air), it speeds up and bends " +
+                "AWAY from the normal. Snell's Law (n₁sinθ₁ = n₂sinθ₂) quantifies this precisely. The refractive index (n) " +
+                "tells us how much slower light travels compared to vacuum: glass (n≈1.5) slows light to 2/3 its vacuum speed, " +
+                "water (n≈1.33) to 3/4 speed. This principle enables incredible technologies: eyeglasses correct vision by " +
+                "refracting light to focus properly on the retina, cameras use multiple lenses to form sharp images, " +
+                "fiber optic cables use total internal reflection (extreme refraction) to transmit internet data at light speed, " +
+                "and prisms split white light into rainbows because different colors refract differently (dispersion). " +
+                "Even the 'bent straw' illusion in water demonstrates this! You're thinking like a true physicist!"
+            );
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -146,8 +158,33 @@ export function RefractionLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review Snell's Law.`);
+            setTeacherMessage(
+                "Great work! You understand most of refraction. Let me clarify the remaining concepts: " +
+                "Refraction means light BENDS when crossing from one material to another - it doesn't just bounce like reflection. " +
+                "The key rule: entering a DENSER medium (like going from air into glass or water), light bends TOWARD the normal. " +
+                "Why? Because light slows down in denser materials. Think of it like a car driving from pavement onto sand - " +
+                "one wheel hits sand first and slows down, causing the car to turn. Light does the same thing! " +
+                "Snell's Law (n₁sinθ₁ = n₂sinθ₂) is the mathematical formula that predicts exactly how much bending occurs. " +
+                "The refractive index (n) compares light's speed in a material to its speed in vacuum: nair = 1.0, nwater = 1.33, nglass = 1.5. " +
+                "Go back to your data - notice how the refracted angle is always SMALLER than the incident angle when light enters " +
+                "glass or water? That's bending toward the normal! Review and try again - you're almost there!"
+            );
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: light bends toward the normal when entering a denser medium.`);
+            setTeacherMessage(
+                "Let's start with the basics of refraction - this is fascinating stuff! " +
+                "When light crosses from one material to another (air to water, air to glass), two things can happen: " +
+                "1) Reflection - some light bounces back " +
+                "2) Refraction - most light BENDS and continues through at a different angle. " +
+                "WHY does it bend? Because light travels at different speeds in different materials! " +
+                "Fast in air (300,000 km/s), slower in water (225,000 km/s), even slower in glass (200,000 km/s). " +
+                "The rule: entering a denser/slower medium → bends TOWARD the normal line. Entering a less dense/faster medium → bends AWAY. " +
+                "The normal is that perpendicular reference line (just like in reflection). " +
+                "Real example: Put a straw in water - it looks bent! That's refraction. Your eyes see the bent light rays. " +
+                "Snell's Law is the formula scientists use: n₁sinθ₁ = n₂sinθ₂. Don't worry about the math yet - just remember " +
+                "the concept: light bends because it changes speed. Go back to the experiment and watch carefully - " +
+                "light enters at one angle and continues at a SMALLER angle. That's the bending! Keep practicing!"
+            );
         }
     };
 
@@ -190,6 +227,38 @@ export function RefractionLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : measurements.length >= 3 ? 'happy' : 'explaining'}
+                context={{ attempts: measurements.length, correctStreak: measurements.length }}
+                quickActions={[
+                    {
+                        label: 'Reset Lab',
+                        onClick: () => {
+                            setCurrentStep('intro');
+                            setIncidentAngle(30);
+                            setMedium('air-to-glass');
+                            setMeasurements([]);
+                            setShowNormal(true);
+                            setShowAngles(true);
+                        },
+                        icon: 'refresh'
+                    },
+                    {
+                        label: 'View Theory',
+                        onClick: () => {
+                            const accordion = document.querySelector('[data-state="closed"]') as HTMLElement;
+                            accordion?.click();
+                        },
+                        icon: 'book'
+                    },
+                    {
+                        label: 'Safety Tips',
+                        onClick: () => {
+                            const safetyAccordion = document.querySelectorAll('[data-state="closed"]')[1] as HTMLElement;
+                            safetyAccordion?.click();
+                        },
+                        icon: 'shield'
+                    }
+                ]}
             />
 
             {isCompleted && (

@@ -232,6 +232,18 @@ export function SimpleCircuitLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand circuit configurations! +${earnedXP} XP`);
+            setTeacherMessage(
+                "Outstanding! ⚡ You've mastered series and parallel circuits! Here's why this knowledge is crucial: " +
+                "SERIES circuits have ONE path for current - all components share the same current, like water flowing through " +
+                "a single pipe. If one bulb breaks, the circuit opens and ALL bulbs go out. Current: I = I₁ = I₂ = I₃. " +
+                "Voltage splits across components: Vtotal = V₁ + V₂ + V₃. This means more bulbs = dimmer light (voltage divides). " +
+                "PARALLEL circuits have MULTIPLE paths - current splits at junctions like a river branching into streams. " +
+                "If one bulb breaks, others stay lit because current has alternate paths! Each bulb gets full battery voltage, " +
+                "so they shine BRIGHTEST. Voltage: V = V₁ = V₂ = V₃. Current splits: Itotal = I₁ + I₂ + I₃. " +
+                "Real-world applications: Home wiring uses parallel circuits so turning off one light doesn't affect others! " +
+                "Holiday lights are series (one breaks, all go dark - frustrating!). Car headlights are parallel (safety requirement). " +
+                "This fundamental principle powers everything from smartphones to power grids. Excellent understanding!"
+            );
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -276,6 +288,43 @@ export function SimpleCircuitLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : completedCircuits >= 2 ? 'happy' : 'explaining'}
+                context={{ attempts: completedCircuits, correctStreak: completedCircuits }}
+                quickActions={[
+                    {
+                        label: 'Reset Lab',
+                        onClick: () => {
+                            setCurrentStep('intro');
+                            setBatteryCollected(false);
+                            setBulbsCollected(false);
+                            setWiresCollected(false);
+                            setSwitchesCollected(false);
+                            setCircuits([
+                                { name: 'Series Circuit', type: 'series', bulbs: 0, switches: 0, brightness: 0, allLit: false },
+                                { name: 'Parallel Circuit', type: 'parallel', bulbs: 0, switches: 0, brightness: 0, allLit: false }
+                            ]);
+                            setActiveCircuit(null);
+                            setCompletedCircuits(0);
+                        },
+                        icon: 'refresh'
+                    },
+                    {
+                        label: 'View Theory',
+                        onClick: () => {
+                            const accordion = document.querySelector('[data-state="closed"]') as HTMLElement;
+                            accordion?.click();
+                        },
+                        icon: 'book'
+                    },
+                    {
+                        label: 'Safety Tips',
+                        onClick: () => {
+                            const safetyAccordion = document.querySelectorAll('[data-state="closed"]')[1] as HTMLElement;
+                            safetyAccordion?.click();
+                        },
+                        icon: 'shield'
+                    }
+                ]}
             />
 
             {isCompleted && (

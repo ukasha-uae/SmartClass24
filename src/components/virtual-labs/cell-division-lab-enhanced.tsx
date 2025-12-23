@@ -41,10 +41,11 @@ export function CellDivisionLabEnhanced() {
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Quiz
-    const [quizAnswer, setQuizAnswer] = React.useState<string>('');
-    const [quizFeedback, setQuizFeedback] = React.useState<string | null>(null);
-    const [quizAttempts, setQuizAttempts] = React.useState(0);
-    const [quizIsCorrect, setQuizIsCorrect] = React.useState<boolean | null>(null);
+    const [selectedAnswer1, setSelectedAnswer1] = React.useState<string | null>(null);
+    const [selectedAnswer2, setSelectedAnswer2] = React.useState<string | null>(null);
+    const [selectedAnswer3, setSelectedAnswer3] = React.useState<string | null>(null);
+    const [quizFeedback, setQuizFeedback] = React.useState<string>('');
+    const [quizSubmitted, setQuizSubmitted] = React.useState(false);
     
     // XP & Celebration
     const { markLabComplete, isLabCompleted, getLabCompletion, totalXP } = useLabProgress();
@@ -148,24 +149,28 @@ export function CellDivisionLabEnhanced() {
     };
 
     const handleQuizSubmit = () => {
-        if (quizIsCorrect !== null) return;
+        if (quizSubmitted) return;
         
-        const correctAnswer = divisionType === 'mitosis' ? 'Two identical daughter cells' : 'Four unique gametes';
-        const isCorrect = quizAnswer === correctAnswer;
-        const newAttempts = quizAttempts + 1;
-        setQuizAttempts(newAttempts);
+        setQuizSubmitted(true);
         
-        if (isCorrect) {
-            setQuizIsCorrect(true);
-            const feedback = divisionType === 'mitosis' 
-                ? "Perfect! Mitosis produces 2 identical daughter cells with the same chromosome number as the parent. ✅"
-                : "Excellent! Meiosis produces 4 unique gametes, each with half the chromosomes of the parent cell. ✅";
-            setQuizFeedback(feedback);
+        const correctAnswers = {
+            q1: divisionType === 'mitosis' ? 'two-identical' : 'four-gametes',
+            q2: divisionType === 'mitosis' ? 'growth-repair' : 'reproduction',
+            q3: divisionType === 'mitosis' ? 'same' : 'half'
+        };
+        
+        const isCorrect1 = selectedAnswer1 === correctAnswers.q1;
+        const isCorrect2 = selectedAnswer2 === correctAnswers.q2;
+        const isCorrect3 = selectedAnswer3 === correctAnswers.q3;
+        const correctCount = [isCorrect1, isCorrect2, isCorrect3].filter(Boolean).length;
+        
+        if (correctCount === 3) {
+            // Perfect - all 3 correct
+            setQuizFeedback(`Perfect! You got all 3 correct! 🎉 Excellent understanding of ${divisionType}!`);
             
             if (!hasCompleted) {
                 const timeSpent = Math.floor((Date.now() - startTime) / 1000);
-                const score = newAttempts === 1 ? 100 : 75;
-                const earnedXP = markLabComplete('cell-division', score, timeSpent);
+                const earnedXP = markLabComplete('cell-division', 100, timeSpent);
                 
                 confetti({
                     particleCount: 100,
@@ -177,21 +182,45 @@ export function CellDivisionLabEnhanced() {
                 setShowCelebration(true);
                 setTimeout(() => setShowCelebration(false), 5000);
                 
-                setTeacherMessage(`Outstanding work! You've mastered cell division and earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Remember: Mitosis = 2 identical, Meiosis = 4 unique!`);
+                if (divisionType === 'mitosis') {
+                    setTeacherMessage(`Outstanding! Perfect understanding of MITOSIS! 🎉 You watched the cell go through Prophase (chromatin condenses), Metaphase (chromosomes align), Anaphase (chromatids separate), and Telophase (nuclear membranes reform). The result: 2 IDENTICAL daughter cells with the SAME chromosome number (diploid). This is how your body grows, heals wounds, and replaces dead cells. Every cell in your skin, muscles, and organs was created through mitosis! Mitosis is used for GROWTH and REPAIR - maintaining genetic stability with no variation. +${earnedXP} XP earned!`);
+                } else {
+                    setTeacherMessage(`Excellent work! You've mastered MEIOSIS! 🎉 You observed TWO successive divisions: Meiosis I (homologous pairs separate) and Meiosis II (sister chromatids separate). The result: 4 UNIQUE gametes with HALF the chromosomes (haploid). This is how sperm and egg cells are made! Meiosis is used for SEXUAL REPRODUCTION - creating genetic diversity. When two gametes fuse during fertilization, the diploid number is restored. Meiosis creates variation through crossing-over and independent assortment - that's why siblings look different! +${earnedXP} XP earned!`);
+                }
             } else {
                 setTeacherMessage('Correct! You clearly understand how cells reproduce. Well done!');
             }
-        } else {
-            if (newAttempts === 1) {
-                const hint = divisionType === 'mitosis'
-                    ? "Think about growth and repair - do you need identical copies or variety? Try again! 🔄"
-                    : "Think about reproduction - genetic variety needs how many different cells? Try again! 🔄";
-                setQuizFeedback(hint);
-                setTeacherMessage(hint);
+        } else if (correctCount === 2) {
+            // Good effort - 2 out of 3 correct
+            setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Let me clarify the concepts you missed.`);
+            if (divisionType === 'mitosis') {
+                setTeacherMessage(`Good effort! You got 2 out of 3 correct about MITOSIS. Let me clarify: (1) RESULT: Mitosis produces 2 IDENTICAL daughter cells - exact clones with the same DNA. Not 4 cells (that's meiosis). (2) PURPOSE: Mitosis is used for GROWTH and REPAIR in your body. When you grow taller, your cells divide by mitosis. When you cut your finger and it heals, mitosis replaces damaged cells. NOT for reproduction - that needs different cells (gametes from meiosis). (3) CHROMOSOME NUMBER: The daughter cells have the SAME number of chromosomes as the parent cell. If the parent is diploid (46 chromosomes in humans), both daughters are also diploid (46). This maintains genetic stability! Think: Mitosis = 2 identical cells, same chromosomes, for growth/repair. Review the animation and try the quiz again!`);
             } else {
-                setQuizIsCorrect(false);
-                setQuizFeedback(`The correct answer is ${correctAnswer}. ${divisionType === 'mitosis' ? 'Mitosis creates identical twins of the parent cell.' : 'Meiosis creates diversity through two divisions.'} 🧠`);
-                setTeacherMessage(`Remember: ${divisionType === 'mitosis' ? 'Mitosis = 2 identical for growth' : 'Meiosis = 4 unique for reproduction'}!`);
+                setTeacherMessage(`Good try! You got 2 out of 3 correct about MEIOSIS. Let me clarify: (1) RESULT: Meiosis produces 4 UNIQUE gametes (sex cells) - not 2 like mitosis. You saw TWO divisions: Meiosis I and Meiosis II. Each produces more cells, ending with 4 total. (2) PURPOSE: Meiosis is used for SEXUAL REPRODUCTION - making sperm in males and eggs in females. NOT for growth or repair (that's mitosis). Sexual reproduction needs special cells (gametes) with half the chromosomes. (3) CHROMOSOME NUMBER: Gametes have HALF the chromosomes of the parent cell. If the parent is diploid (46), each gamete is haploid (23). When sperm meets egg, 23 + 23 = 46, restoring the diploid number! This is why you inherit half your DNA from each parent. Meiosis also creates genetic variation through crossing-over. Review the stages and try again!`);
+            }
+            
+            if (!hasCompleted) {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                const earnedXP = markLabComplete('cell-division', 75, timeSpent);
+                setXpEarned(earnedXP);
+                setShowCelebration(true);
+                setTimeout(() => setShowCelebration(false), 5000);
+            }
+        } else {
+            // Needs work - 0 or 1 correct
+            setQuizFeedback(`You got ${correctCount} out of 3 correct. Don't worry! Let me explain ${divisionType} from the beginning.`);
+            if (divisionType === 'mitosis') {
+                setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct about MITOSIS. Let me break it down from the very beginning: MITOSIS is the process by which ONE parent cell divides to create TWO IDENTICAL daughter cells. Here's how it works step by step: STEP 1: The parent cell copies its DNA (chromosomes duplicate) - now there are TWO copies of everything. STEP 2: The cell goes through 4 phases you observed: PROPHASE - chromatin condenses into visible X-shaped chromosomes (each X is 2 sister chromatids joined at the centromere). METAPHASE - chromosomes line up along the cell's equator (middle). Nuclear membrane disappears. ANAPHASE - sister chromatids separate and move to opposite poles. Now you have two sets of chromosomes. TELOPHASE - nuclear membranes reform around each set. Cell membrane pinches in (cytokinesis). RESULT: 2 IDENTICAL daughter cells! Each has the SAME number of chromosomes as the parent (diploid = 46 in humans). They're genetic clones - perfect copies! PURPOSE: GROWTH and REPAIR. Your body uses mitosis to: grow from baby to adult (add more cells), replace dead skin cells every few weeks, heal wounds (make new tissue), replace red blood cells. KEY POINTS: 1 parent → 2 daughters. Same chromosomes (diploid). Identical copies. Used for growth/repair. NO genetic variation! Review the animation stages and understand that mitosis maintains genetic stability. Try the quiz again!`);
+            } else {
+                setTeacherMessage(`Keep learning! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct about MEIOSIS. Let me explain this important process from scratch: MEIOSIS is the process by which ONE parent cell divides TWICE to create FOUR UNIQUE gametes (sex cells). This is more complex than mitosis! Here's the full story: STARTING POINT: One diploid parent cell (46 chromosomes in humans) in reproductive organs (testes or ovaries). MEIOSIS I (First Division): Homologous pairs separate. Prophase I - chromosomes pair up (synapsis). CROSSING-OVER occurs - segments swap between paired chromosomes! This creates new genetic combinations. Metaphase I - pairs line up at equator. Anaphase I - WHOLE chromosomes (not chromatids) separate. Telophase I → Result: 2 cells with HALF the chromosomes (23 in humans). MEIOSIS II (Second Division): Sister chromatids separate. Similar to mitosis but starting with half the chromosomes. Prophase II → Metaphase II → Anaphase II → Telophase II. Result: Each of the 2 cells divides → creates 4 total cells. FINAL COUNT: 1 parent → 2 after Meiosis I → 4 after Meiosis II. FINAL RESULT: 4 UNIQUE GAMETES! Each has HALF the chromosomes (haploid = 23 in humans). All four are genetically DIFFERENT due to crossing-over and independent assortment! PURPOSE: SEXUAL REPRODUCTION. Makes sperm (males) and eggs (females). When sperm meets egg: 23 + 23 = 46 chromosomes restored! You inherit 23 from mom, 23 from dad. This is why you're unique (except identical twins). Meiosis creates genetic DIVERSITY - that's why siblings look different! KEY POINTS: 1 parent → 4 gametes. Half chromosomes (haploid). Unique (variation). Used for reproduction. Creates diversity! Review the two divisions and understand that meiosis creates new combinations. Try again!`);
+            }
+            
+            if (!hasCompleted) {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                const earnedXP = markLabComplete('cell-division', 50, timeSpent);
+                setXpEarned(earnedXP);
+                setShowCelebration(true);
+                setTimeout(() => setShowCelebration(false), 5000);
             }
         }
     };
@@ -201,12 +230,14 @@ export function CellDivisionLabEnhanced() {
         setDivisionType(null);
         setCurrentStage(0);
         setIsPlaying(false);
-        setQuizAnswer('');
-        setQuizFeedback(null);
-        setQuizAttempts(0);
-        setQuizIsCorrect(null);
+        setSelectedAnswer1(null);
+        setSelectedAnswer2(null);
+        setSelectedAnswer3(null);
+        setQuizFeedback('');
+        setQuizSubmitted(false);
         setXpEarned(0);
         setShowCelebration(false);
+        setPendingTransition(null);
         setTeacherMessage('Ready to observe cell division again? You can watch both mitosis and meiosis to compare them! Click Start Experiment when ready.');
     };
 
@@ -249,6 +280,34 @@ export function CellDivisionLabEnhanced() {
                 <TeacherVoice 
                     message={teacherMessage}
                     onComplete={handleTeacherComplete}
+                    emotion={currentStep === 'quiz' && quizSubmitted ? 'celebrating' : divisionType ? 'happy' : 'explaining'}
+                    context={{
+                        attempts: currentStage,
+                        correctStreak: quizSubmitted ? 1 : 0
+                    }}
+                    quickActions={[
+                        {
+                            label: 'Reset Lab',
+                            icon: '🔄',
+                            onClick: handleReset
+                        },
+                        {
+                            label: 'View Theory',
+                            icon: '📖',
+                            onClick: () => {
+                                const theorySection = document.querySelector('[data-theory-section]');
+                                theorySection?.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        },
+                        {
+                            label: 'Safety Tips',
+                            icon: '🛡️',
+                            onClick: () => {
+                                const safetySection = document.querySelector('[data-safety-section]');
+                                safetySection?.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }
+                    ]}
                 />
             )}
 
@@ -265,7 +324,7 @@ export function CellDivisionLabEnhanced() {
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
+                        <AccordionItem value="item-1" data-theory-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <BookOpen className="h-4 w-4" />
@@ -276,7 +335,7 @@ export function CellDivisionLabEnhanced() {
                                 <p>{theoryText}</p>
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="item-2">
+                        <AccordionItem value="item-2" data-safety-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <Shield className="h-4 w-4" />
@@ -473,53 +532,89 @@ export function CellDivisionLabEnhanced() {
                             <CardTitle>Post-Lab Quiz</CardTitle>
                             <CardDescription>Test your understanding of the experiment</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="font-medium">
-                                What is the result of {divisionType}?
-                            </p>
-                            <RadioGroup 
-                                value={quizAnswer} 
-                                onValueChange={setQuizAnswer}
-                                disabled={quizIsCorrect !== null}
-                            >
-                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                    <RadioGroupItem value="Two identical daughter cells" id="q-1" />
-                                    <Label htmlFor="q-1" className="flex-1 cursor-pointer">Two identical daughter cells</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                    <RadioGroupItem value="Four unique gametes" id="q-2" />
-                                    <Label htmlFor="q-2" className="flex-1 cursor-pointer">Four unique gametes</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                    <RadioGroupItem value="One large cell" id="q-3" />
-                                    <Label htmlFor="q-3" className="flex-1 cursor-pointer">One large cell</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                    <RadioGroupItem value="Eight cells" id="q-4" />
-                                    <Label htmlFor="q-4" className="flex-1 cursor-pointer">Eight cells</Label>
-                                </div>
-                            </RadioGroup>
+                        <CardContent className="space-y-6">
+                            {/* Question 1 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    1. What is the result of {divisionType}?
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer1 || ''} 
+                                    onValueChange={setSelectedAnswer1}
+                                    disabled={quizSubmitted}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="two-identical" id="q1-1" />
+                                        <Label htmlFor="q1-1" className="flex-1 cursor-pointer">Two identical daughter cells</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="four-gametes" id="q1-2" />
+                                        <Label htmlFor="q1-2" className="flex-1 cursor-pointer">Four unique gametes</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="one-large" id="q1-3" />
+                                        <Label htmlFor="q1-3" className="flex-1 cursor-pointer">One large cell</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
+                            
+                            {/* Question 2 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    2. What is the primary purpose of {divisionType}?
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer2 || ''} 
+                                    onValueChange={setSelectedAnswer2}
+                                    disabled={quizSubmitted}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="growth-repair" id="q2-1" />
+                                        <Label htmlFor="q2-1" className="flex-1 cursor-pointer">Growth and repair of body tissues</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="reproduction" id="q2-2" />
+                                        <Label htmlFor="q2-2" className="flex-1 cursor-pointer">Sexual reproduction (making sex cells)</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="digestion" id="q2-3" />
+                                        <Label htmlFor="q2-3" className="flex-1 cursor-pointer">Digestion of food</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
+                            
+                            {/* Question 3 */}
+                            <div className="space-y-3">
+                                <p className="font-medium">
+                                    3. How many chromosomes do the daughter cells have compared to the parent cell?
+                                </p>
+                                <RadioGroup 
+                                    value={selectedAnswer3 || ''} 
+                                    onValueChange={setSelectedAnswer3}
+                                    disabled={quizSubmitted}
+                                >
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="same" id="q3-1" />
+                                        <Label htmlFor="q3-1" className="flex-1 cursor-pointer">Same number (diploid)</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="half" id="q3-2" />
+                                        <Label htmlFor="q3-2" className="flex-1 cursor-pointer">Half the number (haploid)</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                        <RadioGroupItem value="double" id="q3-3" />
+                                        <Label htmlFor="q3-3" className="flex-1 cursor-pointer">Double the number</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
                             
                             {quizFeedback && (
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
-                                    className={cn(
-                                        "p-4 rounded-lg border-2 flex items-start gap-3",
-                                        quizIsCorrect 
-                                            ? "bg-green-50 dark:bg-green-950/30 border-green-500 text-green-900 dark:text-green-100"
-                                            : quizIsCorrect === false
-                                            ? "bg-red-50 dark:bg-red-950/30 border-red-500 text-red-900 dark:text-red-100"
-                                            : "bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
-                                    )}
+                                    className="p-4 rounded-lg border-2 flex items-start gap-3 bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
                                 >
-                                    {quizIsCorrect ? (
-                                        <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : quizIsCorrect === false ? (
-                                        <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : (
-                                        <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    )}
+                                    <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
                                     <p className="text-sm font-medium">{quizFeedback}</p>
                                 </motion.div>
                             )}
@@ -527,10 +622,11 @@ export function CellDivisionLabEnhanced() {
                         <CardFooter>
                             <Button 
                                 onClick={handleQuizSubmit} 
-                                disabled={!quizAnswer || quizIsCorrect !== null}
+                                disabled={!selectedAnswer1 || !selectedAnswer2 || !selectedAnswer3 || quizSubmitted}
+                                className="w-full"
                                 size="lg"
                             >
-                                {quizIsCorrect === true ? "Correct! ✓" : quizIsCorrect === false ? "Review Answer" : quizAttempts === 1 ? "Try Again" : "Submit Answer"}
+                                {quizSubmitted ? "Quiz Completed ✓" : "Submit Answers"}
                             </Button>
                         </CardFooter>
                     </Card>

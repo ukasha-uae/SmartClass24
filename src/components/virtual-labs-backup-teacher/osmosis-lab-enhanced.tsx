@@ -1,0 +1,677 @@
+'use client';
+
+import * as React from 'react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Label } from '../ui/label';
+import { 
+    CheckCircle, XCircle, RefreshCw, BookOpen, Shield, 
+    ArrowRightLeft, Droplets, Beaker, TestTube,
+    Sparkles, Trophy, Award, Eye, EyeOff, Timer
+} from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { cn } from '@/lib/utils';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TeacherVoice } from './TeacherVoice';
+import { useLabProgress } from '@/stores/lab-progress-store';
+import confetti from 'canvas-confetti';
+
+type TestStep = 'intro' | 'select-setup' | 'observing' | 'result' | 'quiz';
+type SetupType = 'sugar-in-water' | 'water-in-sugar' | null;
+
+export function OsmosisLabEnhanced() {
+    const { toast } = useToast();
+    
+    // Lab state
+    const [currentStep, setCurrentStep] = React.useState<TestStep>('intro');
+    const [setup, setSetup] = React.useState<SetupType>(null);
+    const [osmosisProgress, setOsmosisProgress] = React.useState(0);
+    const [tubingScale, setTubingScale] = React.useState(1);
+    const [showArrows, setShowArrows] = React.useState(false);
+    const [showSafety, setShowSafety] = React.useState(true);
+    
+    // Teacher voice
+    const [teacherMessage, setTeacherMessage] = React.useState('');
+    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    
+    // Quiz
+    const [quizAnswer, setQuizAnswer] = React.useState<string>('');
+    const [quizFeedback, setQuizFeedback] = React.useState<string | null>(null);
+    const [quizAttempts, setQuizAttempts] = React.useState(0);
+    const [quizIsCorrect, setQuizIsCorrect] = React.useState<boolean | null>(null);
+    
+    // XP & Celebration
+    const { markLabComplete, isLabCompleted, getLabCompletion, totalXP } = useLabProgress();
+    const [xpEarned, setXpEarned] = React.useState(0);
+    const [showCelebration, setShowCelebration] = React.useState(false);
+    const [startTime] = React.useState(Date.now());
+    const hasCompleted = isLabCompleted('osmosis');
+    const labProgress = getLabCompletion('osmosis');
+    
+    // Osmosis progress effect
+    React.useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (currentStep === 'observing' && osmosisProgress < 100) {
+            interval = setInterval(() => {
+                setOsmosisProgress(prev => Math.min(prev + 5, 100));
+            }, 150);
+        }
+        return () => clearInterval(interval);
+    }, [currentStep, osmosisProgress]);
+
+    // Update tubing scale based on setup
+    React.useEffect(() => {
+        if (currentStep === 'observing' && setup) {
+            const targetScale = setup === 'sugar-in-water' ? 1.15 : 0.85;
+            const scaleInterval = setInterval(() => {
+                setTubingScale(prev => {
+                    const diff = targetScale - prev;
+                    if (Math.abs(diff) < 0.01) {
+                        clearInterval(scaleInterval);
+                        return targetScale;
+                    }
+                    return prev + diff * 0.1;
+                });
+            }, 50);
+            return () => clearInterval(scaleInterval);
+        }
+    }, [currentStep, setup]);
+
+    // Show arrows when osmosis progresses
+    React.useEffect(() => {
+        if (osmosisProgress > 20) {
+            setShowArrows(true);
+        }
+    }, [osmosisProgress]);
+
+    // Complete observation when progress reaches 100
+    React.useEffect(() => {
+        if (osmosisProgress >= 100 && currentStep === 'observing' && setup) {
+            setTimeout(() => {
+                setCurrentStep('result');
+                const resultMessages = {
+                    'sugar-in-water': 'Excellent observation! Water moved INTO the tubing by osmosis. The tubing swelled because water went from low solute concentration (pure water outside) to high solute concentration (sugar solution inside). The dialysis membrane let water pass but not sugar molecules!',
+                    'water-in-sugar': 'Great observation! Water moved OUT OF the tubing by osmosis. The tubing shrank because water went from low solute concentration (pure water inside) to high solute concentration (sugar solution outside). This is what happens to cells in a hypertonic solution!'
+                };
+                setTeacherMessage(resultMessages[setup]);
+                
+                setPendingTransition(() => () => {
+                    setTimeout(() => {
+                        const quizSection = document.querySelector('[data-quiz-section]');
+                        quizSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                });
+            }, 500);
+        }
+    }, [osmosisProgress, currentStep, setup]);
+
+    // Teacher message callbacks
+    const handleTeacherComplete = React.useCallback(() => {
+        if (pendingTransition) {
+            const transition = pendingTransition;
+            setPendingTransition(null);
+            transition();
+        }
+    }, [pendingTransition]);
+
+    // Initial intro
+    React.useEffect(() => {
+        if (currentStep === 'intro') {
+            setTeacherMessage('Welcome to the Osmosis Lab! Osmosis is the movement of WATER across a semi-permeable membrane. Water always moves from where there is MORE water (low solute) to where there is LESS water (high solute). Think of it like water trying to dilute concentrated solutions! Ready to see it happen?');
+        }
+    }, [currentStep]);
+
+    const handleStartExperiment = () => {
+        setCurrentStep('select-setup');
+        setTeacherMessage('Choose your experimental setup. Option 1: Sugar solution INSIDE the tubing, pure water OUTSIDE. Option 2: Pure water INSIDE the tubing, sugar solution OUTSIDE. Which setup do you want to observe?');
+    };
+
+    const handleSelectSetup = (setupType: SetupType) => {
+        if (!setupType) return;
+        setSetup(setupType);
+        
+        const messages = {
+            'sugar-in-water': 'Perfect! You have sugar solution inside the tubing and pure water in the beaker. The tubing membrane is semi-permeable - water can pass through, but sugar molecules are too big. Water will move to dilute the sugar. Ready to start?',
+            'water-in-sugar': 'Excellent choice! You have pure water inside the tubing and sugar solution in the beaker. The membrane lets water pass but blocks sugar. Water will move out to dilute the sugar solution outside. Ready to observe?'
+        };
+        
+        setTeacherMessage(messages[setupType]);
+        setPendingTransition(() => () => {
+            setTimeout(() => {
+                const actionButton = document.querySelector('[data-action-button]');
+                actionButton?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        });
+    };
+
+    const handleStartOsmosis = () => {
+        if (!setup) return;
+        
+        setCurrentStep('observing');
+        setOsmosisProgress(0);
+        setShowArrows(false);
+        
+        const messages = {
+            'sugar-in-water': 'Osmosis is happening! Watch the tubing carefully. Water molecules from the beaker are passing through the membrane into the tubing. The tubing will swell as more water enters. This is because water moves from high water concentration (pure water) to low water concentration (sugar solution).',
+            'water-in-sugar': 'Osmosis is in progress! Observe the tubing. Water molecules are leaving the tubing and entering the sugar solution in the beaker. The tubing will shrink as water moves out. Water always goes where it can dilute a concentrated solution!'
+        };
+        
+        setTeacherMessage(messages[setup]);
+    };
+
+    const handleQuizSubmit = () => {
+        if (quizIsCorrect !== null) return;
+        
+        const correctAnswer = 'low-to-high';
+        const isCorrect = quizAnswer === correctAnswer;
+        const newAttempts = quizAttempts + 1;
+        setQuizAttempts(newAttempts);
+        
+        if (isCorrect) {
+            setQuizIsCorrect(true);
+            setQuizFeedback("Perfect! Water moves from LOW solute concentration (more water) to HIGH solute concentration (less water) across a semi-permeable membrane. ✅");
+            
+            if (!hasCompleted) {
+                const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+                const score = newAttempts === 1 ? 100 : 75;
+                const earnedXP = markLabComplete('osmosis', score, timeSpent);
+                
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+                
+                setXpEarned(earnedXP);
+                setShowCelebration(true);
+                setTimeout(() => setShowCelebration(false), 5000);
+                
+                setTeacherMessage(`Outstanding! You've mastered osmosis and earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Remember: Water goes from MORE water to LESS water!`);
+            } else {
+                setTeacherMessage('Correct! You understand how osmosis works. This is crucial for understanding how cells maintain water balance!');
+            }
+        } else {
+            if (newAttempts === 1) {
+                setQuizFeedback("Not quite. Think about it: water wants to dilute concentrated solutions. Where does water go? Try again! 🔄");
+                setTeacherMessage('Remember: Water moves TO where there is MORE solute (less water). Think dilution!');
+            } else {
+                setQuizIsCorrect(false);
+                setQuizFeedback("The correct answer is: Water moves from LOW solute to HIGH solute concentration. This means from more water to less water. 🧠");
+                setTeacherMessage('Water always moves down its concentration gradient - from where there is MORE water to where there is LESS water!');
+            }
+        }
+    };
+
+    const handleReset = () => {
+        setCurrentStep('intro');
+        setSetup(null);
+        setOsmosisProgress(0);
+        setTubingScale(1);
+        setShowArrows(false);
+        setQuizAnswer('');
+        setQuizFeedback(null);
+        setQuizAttempts(0);
+        setQuizIsCorrect(null);
+        setXpEarned(0);
+        setShowCelebration(false);
+        setTeacherMessage('Ready to observe osmosis again? You can try both setups to see water movement in different directions! Click Start Experiment when ready.');
+    };
+
+    const objectiveText = "To observe osmosis through a semi-permeable membrane using dialysis tubing, demonstrating how water moves based on solute concentration gradients.";
+    const theoryText = "Osmosis is the net movement of water molecules across a selectively permeable (semi-permeable) membrane from a region of HIGHER water concentration to a region of LOWER water concentration. This can also be described as movement from LOW solute concentration to HIGH solute concentration. The membrane allows water to pass freely but blocks larger solute molecules like sugar. This process is passive (requires no energy) and continues until equilibrium is reached. Osmosis is vital for life: plant cells use it to take up water from soil, animal cells regulate water balance through osmosis, and it's how kidneys filter blood. In this lab, dialysis tubing acts as an artificial semi-permeable membrane.";
+    const safetyText = "In a real laboratory: Handle glassware (beakers, test tubes) carefully to prevent breakage and cuts. Ensure dialysis tubing is properly sealed with clips or ties to prevent leaks. Wipe up any water spills immediately to prevent slipping hazards. Wash hands before and after handling materials. If using starch or other indicators, avoid contact with eyes and mouth. Always wear safety goggles when working with liquids. Dispose of solutions properly according to lab protocols.";
+
+    return (
+        <div className="space-y-6">
+            {/* Completion Badge */}
+            {hasCompleted && labProgress && (
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 rounded-xl border-2 border-blue-300 dark:border-blue-700"
+                >
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-blue-500 rounded-full">
+                            <Trophy className="h-6 w-6 text-white" />
+                        </div>
+                        <div>
+                            <div className="font-bold text-blue-900 dark:text-blue-100">Lab Completed!</div>
+                            <div className="text-sm text-blue-700 dark:text-blue-300">
+                                Score: {labProgress.score}%
+                            </div>
+                        </div>
+                    </div>
+                    <Badge variant="secondary" className="bg-blue-200 text-blue-900">
+                        <Award className="h-3 w-3 mr-1" />
+                        {labProgress.xpEarned} XP
+                    </Badge>
+                </motion.div>
+            )}
+
+            {/* Teacher Voice */}
+            {teacherMessage && (
+                <TeacherVoice 
+                    message={teacherMessage}
+                    onComplete={handleTeacherComplete}
+                />
+            )}
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Objective</CardTitle>
+                    <CardDescription>{objectiveText}</CardDescription>
+                </CardHeader>
+            </Card>
+
+            <Card>
+                <CardHeader>
+                    <CardTitle>Lab Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Accordion type="single" collapsible className="w-full">
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger>
+                                <div className="flex items-center gap-2">
+                                    <BookOpen className="h-4 w-4" />
+                                    <span>Background Theory</span>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                <p>{theoryText}</p>
+                            </AccordionContent>
+                        </AccordionItem>
+                        <AccordionItem value="item-2">
+                            <AccordionTrigger>
+                                <div className="flex items-center gap-2">
+                                    <Shield className="h-4 w-4" />
+                                    <span>Safety Precautions</span>
+                                </div>
+                            </AccordionTrigger>
+                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                <p>{safetyText}</p>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                </CardContent>
+            </Card>
+
+            {/* Main Lab Interface */}
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                        <span className="flex items-center gap-2">
+                            <Droplets className="h-6 w-6" />
+                            Interactive Osmosis Experiment
+                        </span>
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setShowSafety(!showSafety)}
+                            className={cn("transition-colors", showSafety && "border-green-500 text-green-600")}
+                        >
+                            {showSafety ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
+                            Safety {showSafety ? 'ON' : 'OFF'}
+                        </Button>
+                    </CardTitle>
+                    <CardDescription>Watch water move across a semi-permeable membrane</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    {/* Start Button */}
+                    {currentStep === 'intro' && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="flex flex-col items-center justify-center py-12 space-y-4"
+                        >
+                            <Beaker className="h-24 w-24 text-blue-500" />
+                            <Button 
+                                size="lg" 
+                                onClick={handleStartExperiment}
+                                className="text-lg px-8"
+                            >
+                                Start Experiment 💧
+                            </Button>
+                        </motion.div>
+                    )}
+
+                    {/* Setup Selection */}
+                    {currentStep === 'select-setup' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="space-y-4"
+                        >
+                            <Label className="text-lg font-semibold flex items-center gap-2">
+                                <TestTube className="h-5 w-5" />
+                                Select Experimental Setup
+                            </Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                                    <Button 
+                                        variant={setup === 'sugar-in-water' ? 'default' : 'outline'}
+                                        onClick={() => handleSelectSetup('sugar-in-water')}
+                                        className="h-auto w-full flex-col gap-3 py-6"
+                                    >
+                                        <div className="text-center">
+                                            <div className="font-bold text-base mb-2">Setup A</div>
+                                            <div className="text-sm">
+                                                <div className="text-blue-600 dark:text-blue-400 font-semibold">Tubing: Sugar Solution</div>
+                                                <div className="text-muted-foreground text-xs my-2">↕️</div>
+                                                <div className="text-cyan-600 dark:text-cyan-400 font-semibold">Beaker: Pure Water</div>
+                                            </div>
+                                            <div className="text-xs text-muted-foreground mt-3">
+                                                Water enters tubing → Swelling
+                                            </div>
+                                        </div>
+                                    </Button>
+                                </motion.div>
+
+                                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                                    <Button 
+                                        variant={setup === 'water-in-sugar' ? 'default' : 'outline'}
+                                        onClick={() => handleSelectSetup('water-in-sugar')}
+                                        className="h-auto w-full flex-col gap-3 py-6"
+                                    >
+                                        <div className="text-center">
+                                            <div className="font-bold text-base mb-2">Setup B</div>
+                                            <div className="text-sm">
+                                                <div className="text-cyan-600 dark:text-cyan-400 font-semibold">Tubing: Pure Water</div>
+                                                <div className="text-muted-foreground text-xs my-2">↕️</div>
+                                                <div className="text-blue-600 dark:text-blue-400 font-semibold">Beaker: Sugar Solution</div>
+                                            </div>
+                                            <div className="text-xs text-muted-foreground mt-3">
+                                                Water leaves tubing → Shrinking
+                                            </div>
+                                        </div>
+                                    </Button>
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* Osmosis Visualization */}
+                    {(currentStep === 'observing' || currentStep === 'result') && setup && (
+                        <div className="relative aspect-[4/3] max-w-2xl mx-auto bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 rounded-xl border-2 p-4 sm:p-8">
+                            {/* Beaker */}
+                            <div className="relative w-full h-full border-x-4 border-b-4 border-gray-400 rounded-b-3xl bg-gradient-to-b from-transparent to-blue-200/30 dark:to-blue-800/30 flex items-end justify-center pb-12 overflow-hidden">
+                                {/* Water level */}
+                                <div className="absolute bottom-0 left-0 right-0 h-3/5 bg-blue-400/20 dark:bg-blue-600/20" />
+                                
+                                {/* Labels */}
+                                <div className="absolute top-2 left-2 sm:left-4 bg-white/90 dark:bg-gray-800/90 px-2 sm:px-3 py-1 sm:py-2 rounded-lg border text-xs sm:text-sm">
+                                    <div className="font-semibold text-blue-600">Beaker:</div>
+                                    <div className="text-[10px] sm:text-xs">{setup === 'sugar-in-water' ? 'Pure Water' : 'Sugar Solution'}</div>
+                                </div>
+                                
+                                <div className="absolute top-2 right-2 sm:right-4 bg-white/90 dark:bg-gray-800/90 px-2 sm:px-3 py-1 sm:py-2 rounded-lg border text-xs sm:text-sm">
+                                    <div className="font-semibold text-purple-600">Tubing:</div>
+                                    <div className="text-[10px] sm:text-xs">{setup === 'sugar-in-water' ? 'Sugar Solution' : 'Pure Water'}</div>
+                                </div>
+
+                                {/* Dialysis Tubing */}
+                                <motion.div 
+                                    className="relative w-20 sm:w-32 h-36 sm:h-48 rounded-[3rem] border-4 border-purple-500 bg-gradient-to-b from-purple-200/40 to-purple-300/40 dark:from-purple-800/40 dark:to-purple-900/40 flex items-center justify-center z-10"
+                                    animate={{ 
+                                        scaleX: tubingScale,
+                                        scaleY: tubingScale
+                                    }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <div className="text-xs sm:text-sm font-bold text-purple-700 dark:text-purple-300">
+                                        Dialysis<br/>Tubing
+                                    </div>
+                                    
+                                    {/* Semi-permeable membrane texture */}
+                                    <div className="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iMSIgZmlsbD0iYmxhY2siLz48L3N2Zz4=')] rounded-[3rem]" />
+                                </motion.div>
+
+                                {/* Water movement arrows */}
+                                <AnimatePresence>
+                                    {showArrows && (
+                                        <>
+                                            {setup === 'sugar-in-water' && (
+                                                <>
+                                                    {[...Array(4)].map((_, i) => (
+                                                        <motion.div
+                                                            key={i}
+                                                            initial={{ opacity: 0, x: -50 }}
+                                                            animate={{ 
+                                                                opacity: [0, 1, 0],
+                                                                x: [-50, 0, 0]
+                                                            }}
+                                                            transition={{
+                                                                repeat: Infinity,
+                                                                duration: 2,
+                                                                delay: i * 0.5
+                                                            }}
+                                                            className="absolute left-[calc(50%-60px)] top-[calc(50%+20px)]"
+                                                        >
+                                                            <ArrowRightLeft className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
+                                                        </motion.div>
+                                                    ))}
+                                                </>
+                                            )}
+                                            {setup === 'water-in-sugar' && (
+                                                <>
+                                                    {[...Array(4)].map((_, i) => (
+                                                        <motion.div
+                                                            key={i}
+                                                            initial={{ opacity: 0, x: 0 }}
+                                                            animate={{ 
+                                                                opacity: [0, 1, 0],
+                                                                x: [0, 50, 50]
+                                                            }}
+                                                            transition={{
+                                                                repeat: Infinity,
+                                                                duration: 2,
+                                                                delay: i * 0.5
+                                                            }}
+                                                            className="absolute left-[calc(50%+30px)] top-[calc(50%+20px)]"
+                                                        >
+                                                            <ArrowRightLeft className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600 rotate-180" />
+                                                        </motion.div>
+                                                    ))}
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                </AnimatePresence>
+
+                                {/* Progress indicator */}
+                                {currentStep === 'observing' && (
+                                    <div className="absolute bottom-4 left-4 right-4">
+                                        <div className="flex items-center gap-2 bg-white/90 dark:bg-gray-800/90 px-3 py-2 rounded-lg">
+                                            <Timer className="h-4 w-4 text-blue-600" />
+                                            <div className="flex-1">
+                                                <div className="text-xs font-semibold mb-1">Osmosis Progress</div>
+                                                <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                                    <motion.div 
+                                                        className="h-full bg-blue-500"
+                                                        style={{ width: `${osmosisProgress}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Safety indicator */}
+                                {showSafety && (
+                                    <div className="absolute top-1/2 left-4 bg-green-100 dark:bg-green-900/30 px-3 py-2 rounded-lg border border-green-500 flex items-center gap-2">
+                                        <div className="text-2xl">🥽</div>
+                                        <div className="text-xs font-semibold text-green-700 dark:text-green-400">Safety ON</div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Result Display */}
+                    <AnimatePresence>
+                        {currentStep === 'result' && setup && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 rounded-xl border-2 border-blue-200 dark:border-blue-800"
+                            >
+                                <div className="flex items-start gap-4">
+                                    <div className="p-3 bg-blue-500 rounded-full flex-shrink-0">
+                                        <CheckCircle className="h-6 w-6 text-white" />
+                                    </div>
+                                    <div className="flex-1 space-y-3">
+                                        <h3 className="font-bold text-lg text-blue-900 dark:text-blue-100">
+                                            Osmosis Complete! ✓
+                                        </h3>
+                                        <p className="font-medium text-blue-800 dark:text-blue-200">
+                                            {setup === 'sugar-in-water' 
+                                                ? 'The tubing SWELLED as water moved IN from the beaker'
+                                                : 'The tubing SHRANK as water moved OUT into the beaker'
+                                            }
+                                        </p>
+                                        <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
+                                            <div>
+                                                <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">Water Movement</div>
+                                                <div className="text-sm font-bold text-blue-900 dark:text-blue-100">
+                                                    {setup === 'sugar-in-water' ? 'Into Tubing' : 'Out of Tubing'}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">Result</div>
+                                                <div className="text-sm font-bold text-blue-900 dark:text-blue-100">
+                                                    {setup === 'sugar-in-water' ? 'Swelling' : 'Shrinking'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </CardContent>
+                <CardFooter className="flex flex-col gap-3">
+                    {currentStep === 'select-setup' && setup && (
+                        <Button 
+                            size="lg" 
+                            className="w-full bg-blue-600 hover:bg-blue-700"
+                            onClick={handleStartOsmosis}
+                            data-action-button
+                        >
+                            <Droplets className="h-5 w-5 mr-2" />
+                            Begin Osmosis Observation
+                        </Button>
+                    )}
+                    
+                    {currentStep !== 'intro' && (
+                        <Button 
+                            variant="outline" 
+                            onClick={handleReset}
+                            className="w-full"
+                        >
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Reset & Try Other Setup
+                        </Button>
+                    )}
+                </CardFooter>
+            </Card>
+
+            {/* Quiz Section */}
+            {currentStep === 'result' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    data-quiz-section
+                >
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Post-Lab Quiz</CardTitle>
+                            <CardDescription>Test your understanding of the experiment</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <p className="font-medium">
+                                In osmosis, water moves from _______ solute concentration to _______ solute concentration.
+                            </p>
+                            <RadioGroup 
+                                value={quizAnswer} 
+                                onValueChange={setQuizAnswer}
+                                disabled={quizIsCorrect !== null}
+                            >
+                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                    <RadioGroupItem value="low-to-high" id="q-1" />
+                                    <Label htmlFor="q-1" className="flex-1 cursor-pointer">Low to High (more water → less water)</Label>
+                                </div>
+                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                    <RadioGroupItem value="high-to-low" id="q-2" />
+                                    <Label htmlFor="q-2" className="flex-1 cursor-pointer">High to Low (less water → more water)</Label>
+                                </div>
+                                <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
+                                    <RadioGroupItem value="no-movement" id="q-3" />
+                                    <Label htmlFor="q-3" className="flex-1 cursor-pointer">No movement occurs</Label>
+                                </div>
+                            </RadioGroup>
+                            
+                            {quizFeedback && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className={cn(
+                                        "p-4 rounded-lg border-2 flex items-start gap-3",
+                                        quizIsCorrect 
+                                            ? "bg-green-50 dark:bg-green-950/30 border-green-500 text-green-900 dark:text-green-100"
+                                            : quizIsCorrect === false
+                                            ? "bg-red-50 dark:bg-red-950/30 border-red-500 text-red-900 dark:text-red-100"
+                                            : "bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
+                                    )}
+                                >
+                                    {quizIsCorrect ? (
+                                        <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                    ) : quizIsCorrect === false ? (
+                                        <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                    ) : (
+                                        <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                    )}
+                                    <p className="text-sm font-medium">{quizFeedback}</p>
+                                </motion.div>
+                            )}
+                        </CardContent>
+                        <CardFooter>
+                            <Button 
+                                onClick={handleQuizSubmit} 
+                                disabled={!quizAnswer || quizIsCorrect !== null}
+                                size="lg"
+                            >
+                                {quizIsCorrect === true ? "Correct! ✓" : quizIsCorrect === false ? "Review Answer" : quizAttempts === 1 ? "Try Again" : "Submit Answer"}
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                </motion.div>
+            )}
+
+            {/* XP Celebration */}
+            <AnimatePresence>
+                {showCelebration && xpEarned > 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        className="fixed bottom-8 right-8 z-50"
+                    >
+                        <div className="bg-gradient-to-br from-blue-500 to-cyan-600 text-white p-6 rounded-2xl shadow-2xl border-4 border-blue-300">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-white/20 rounded-full">
+                                    <Sparkles className="h-8 w-8" />
+                                </div>
+                                <div>
+                                    <div className="text-2xl font-bold">+{xpEarned} XP</div>
+                                    <div className="text-sm opacity-90">Lab Complete!</div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}

@@ -114,6 +114,7 @@ export const FEATURE_FLAGS = {
       'is-im-environmental-chemistry-waste-management', // NEW: Waste Management
       // English Language SHS1 Topics
       'eng-ls-effective-listening',
+      'eng-ls-oral-presentations', // NEW: Oral Presentations and Discussions
     ], // Support multiple topic formats
     lessons: [
       'quadratic-equations',
@@ -219,7 +220,8 @@ export const FEATURE_FLAGS = {
       'is-im-environmental-chemistry-waste-management', // Environmental Chemistry: Waste Management
       // English Language SHS1 Lessons
       'eng-ls-effective-listening', // Effective Listening Strategies
-    ], // SHS3 (29) + SHS2 (12) + SHS1 (16) + Science SHS1 (22) + Science SHS2 (10) + Science SHS3 (5) + English SHS1 (1) = 95 lessons total
+      'eng-ls-oral-presentations', // Oral Presentations and Discussions
+    ], // SHS3 (29) + SHS2 (12) + SHS1 (16) + Science SHS1 (22) + Science SHS2 (10) + Science SHS3 (5) + English SHS1 (2) = 96 lessons total
   },
 };
 

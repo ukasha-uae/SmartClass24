@@ -175,9 +175,102 @@ export function localizeString(text: string, country: CountryConfig): string {
     // Replace {{food:rice}}, {{food:staple}}, {{food:popular}} with actual foods
     const foodMatches = result.match(/\{\{food:([^}]+)\}\}/gi);
     if (foodMatches) {
-      foodMatches.forEach((match, index) => {
-        const food = foods[index % foods.length]; // Cycle through available foods
-        result = result.replace(match, food);
+      const foodMap: Record<string, number> = {};
+      foodMatches.forEach((match) => {
+        const typeMatch = match.match(/\{\{food:([^}]+)\}\}/i);
+        if (typeMatch) {
+          const type = typeMatch[1].toLowerCase();
+          if (!foodMap[type]) {
+            foodMap[type] = 0;
+          }
+          const index = (foodMap[type]++) % foods.length;
+          result = result.replace(match, foods[index], 'g');
+        }
+      });
+    }
+  }
+
+  // Festivals (cultural celebrations)
+  if (country.culturalContext?.festivals && country.culturalContext.festivals.length > 0) {
+    const festivals = country.culturalContext.festivals;
+    const festivalMatches = result.match(/\{\{festival:([^}]+)\}\}/gi);
+    if (festivalMatches) {
+      festivalMatches.forEach((match) => {
+        const typeMatch = match.match(/\{\{festival:([^}]+)\}\}/i);
+        if (typeMatch) {
+          const type = typeMatch[1].toLowerCase();
+          // Find a festival that matches the type or use random one
+          const festival = festivals.find(f => 
+            f.name.toLowerCase().includes(type) || 
+            f.description.toLowerCase().includes(type) ||
+            (type === 'harvest' && f.description.toLowerCase().includes('harvest')) ||
+            (type === 'independence' && f.name.toLowerCase().includes('independence'))
+          ) || festivals[Math.floor(Math.random() * festivals.length)];
+          result = result.replace(match, festival.name);
+        }
+      });
+    }
+  }
+
+  // Landmarks
+  if (country.culturalContext?.landmarks && country.culturalContext.landmarks.length > 0) {
+    const landmarks = country.culturalContext.landmarks;
+    const landmarkMatches = result.match(/\{\{landmark:([^}]+)\}\}/gi);
+    if (landmarkMatches) {
+      landmarkMatches.forEach((match) => {
+        const typeMatch = match.match(/\{\{landmark:([^}]+)\}\}/i);
+        if (typeMatch) {
+          const type = typeMatch[1].toLowerCase();
+          // Find a landmark that matches the type or use first one
+          const landmark = landmarks.find(l => 
+            l.type === type || 
+            l.name.toLowerCase().includes(type) ||
+            l.significance.toLowerCase().includes(type)
+          ) || landmarks[0];
+          result = result.replace(match, landmark.name);
+        }
+      });
+    }
+  }
+
+  // Resources (natural resources, minerals, agricultural products)
+  if (country.culturalContext?.resources && country.culturalContext.resources.length > 0) {
+    const resources = country.culturalContext.resources;
+    const resourceMatches = result.match(/\{\{resource:([^}]+)\}\}/gi);
+    if (resourceMatches) {
+      const resourceMap: Record<string, number> = {};
+      resourceMatches.forEach((match) => {
+        const typeMatch = match.match(/\{\{resource:([^}]+)\}\}/i);
+        if (typeMatch) {
+          const type = typeMatch[1].toLowerCase();
+          // Map common resource keys to actual resources
+          let selectedResource;
+          switch (type) {
+            case 'mineral':
+              selectedResource = resources.find(r => r.type === 'mineral') || resources[0];
+              break;
+            case 'agricultural':
+            case 'agricultural_product':
+            case 'cash_crop':
+              selectedResource = resources.find(r => r.type === 'agricultural') || resources[0];
+              break;
+            case 'energy':
+              selectedResource = resources.find(r => r.type === 'energy') || resources[0];
+              break;
+            case 'forest':
+            case 'timber':
+              selectedResource = resources.find(r => r.type === 'forest') || resources[0];
+              break;
+            default:
+              // Find resource matching the type name or use random
+              if (!resourceMap[type]) {
+                resourceMap[type] = 0;
+              }
+              const index = (resourceMap[type]++) % resources.length;
+              selectedResource = resources[index];
+          }
+          result = result.replace(match, selectedResource.name);
+        }
       });
     }
   }
@@ -198,6 +291,27 @@ export function localizeString(text: string, country: CountryConfig): string {
             f.achievement.toLowerCase().includes(type)
           ) || figures[0];
           result = result.replace(match, figure.name);
+        }
+      });
+    }
+  }
+
+  // Institutions
+  if (country.culturalContext?.institutions && country.culturalContext.institutions.length > 0) {
+    const institutions = country.culturalContext.institutions;
+    const institutionMatches = result.match(/\{\{institution:([^}]+)\}\}/gi);
+    if (institutionMatches) {
+      institutionMatches.forEach((match) => {
+        const typeMatch = match.match(/\{\{institution:([^}]+)\}\}/i);
+        if (typeMatch) {
+          const type = typeMatch[1].toLowerCase();
+          // Find an institution that matches the type or use first one
+          const institution = institutions.find(i => 
+            i.type === type || 
+            i.name.toLowerCase().includes(type) ||
+            i.abbreviation?.toLowerCase().includes(type)
+          ) || institutions[0];
+          result = result.replace(match, institution.name);
         }
       });
     }

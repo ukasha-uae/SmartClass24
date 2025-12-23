@@ -11,6 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 import { cn } from '@/lib/utils';
 import { TextToSpeech } from '../text-to-speech';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TeacherVoice } from './TeacherVoice';
 
 // --- Type Definitions ---
 type FoodType = 'Bread' | 'Egg White' | 'Milk' | 'Groundnut Paste';
@@ -136,6 +137,7 @@ const HighlightedText = ({ text, sectionId, highlightedSentenceIndex }: {
 export function FoodTestLab() {
     const { toast } = useToast();
     const [selectedFood, setSelectedFood] = React.useState<FoodType | null>(null);
+  const [teacherMessage, setTeacherMessage] = useState('Welcome to this experiment! Let\'s explore together.');
     const [selectedReagent, setSelectedReagent] = React.useState<ReagentType | null>(null);
     const [currentStep, setCurrentStep] = React.useState<TestStep>('prepare');
     const [result, setResult] = React.useState<Result | null>(null);
@@ -703,6 +705,25 @@ export function FoodTestLab() {
                 <CardHeader><CardTitle>Lab Report</CardTitle></CardHeader>
                 <CardFooter><Button variant="secondary" onClick={handleGenerateReport}>Generate Report</Button></CardFooter>
             </Card>
+
+        {/* Enhanced Teacher Voice with Phase 2 Features */}
+        <TeacherVoice 
+          message={teacherMessage}
+          autoPlay={true}
+          theme="science"
+          teacherName="Dr. Lab Instructor"
+          emotion="explaining"
+          quickActions={[
+            {
+              label: 'Reset Experiment',
+              onClick: () => {
+                // Add reset logic here
+                setTeacherMessage('Experiment reset! Ready to start fresh.');
+              }
+            }
+          ]}
+        />
+
         </div>
     );
 }

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, XCircle, Lightbulb, BookOpen, Shield, Sparkles } from 'lucide-react';
+import { CheckCircle, XCircle, Lightbulb, BookOpen, Shield, Sparkles, RefreshCw } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -222,14 +222,19 @@ export function PhotosynthesisLabEnhanced() {
                 origin: { y: 0.6 }
             });
             
-            setTeacherMessage(`Congratulations! You've completed the Photosynthesis Lab with a perfect score! You earned ${earnedXP} XP. You now understand how plants use light energy to produce oxygen through photosynthesis. This process is essential for all life on Earth!`);
+            // 3-tier feedback: Perfect score
+            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered photosynthesis! Let me summarize what you discovered: (1) OXYGEN (O₂) is the gas produced during photosynthesis - plants release oxygen as a byproduct when they make glucose from CO₂ and H₂O. We breathe this oxygen to stay alive! The bubbles you saw rising from the plant were pure oxygen. (2) LIGHT INTENSITY was the variable we tested. Light provides the ENERGY needed for photosynthesis. The light-dependent reactions in chloroplasts capture light energy to split water molecules and produce ATP. (3) When light intensity INCREASES, photosynthesis rate INCREASES - more bubbles form faster! Why? More photons = more energy = more reactions. The equation: 6CO₂ + 6H₂O + Light Energy → C₆H₁₂O₆ + 6O₂. You tested ${testedIntensities.size} light intensit${testedIntensities.size === 1 ? 'y' : 'ies'} and saw the direct relationship. This is why plants grow better in sunlight than shade! Photosynthesis feeds the world and produces all our oxygen. Excellent work! +${earnedXP} XP earned!`);
             setPendingTransition(() => () => {
                 setCurrentStep('complete');
             });
         } else if (correctCount === 2) {
+            // Good effort - 2 out of 3 correct
             setQuizFeedback(`Good effort! You got ${correctCount} out of 3 correct. Review the feedback and try again to master photosynthesis!`);
+            setTeacherMessage(`Good try! You got 2 out of 3 correct. Let me clarify the key points: (1) Plants produce OXYGEN (O₂) during photosynthesis - those bubbles you saw were oxygen gas! Plants take in CO₂ and release O₂. (2) We varied LIGHT INTENSITY in this experiment - low, medium, and high light levels. Light is the ENERGY source for photosynthesis. Chlorophyll in chloroplasts captures light photons. (3) When light intensity INCREASES, the rate of photosynthesis INCREASES. More light = more energy = faster reactions = more bubbles! Up to a limiting point. Think about what you observed: high light produced many rapid bubbles, low light produced few slow bubbles. That's the relationship between light and photosynthesis rate. The formula is 6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂. Review your observations and try the quiz again!`);
         } else {
+            // Needs work - 0 or 1 correct
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Don't worry! Review the experiment and try again. Think about how light helps plants make food.`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Let me explain photosynthesis carefully: PHOTOSYNTHESIS is how plants make food (glucose) using light energy. The word breaks down: "photo" = light, "synthesis" = to make. Here's what happens: Plants absorb LIGHT ENERGY with chlorophyll (green pigment) in chloroplasts. They take in CARBON DIOXIDE (CO₂) from air through stomata and WATER (H₂O) from roots. Using light energy, they combine these to make GLUCOSE (C₆H₁₂O₆) - their food. OXYGEN (O₂) is released as waste - those bubbles you saw! The equation: 6CO₂ + 6H₂O + Light Energy → C₆H₁₂O₆ + 6O₂. Key points: (1) The GAS in bubbles is OXYGEN - we breathe it! (2) We tested LIGHT INTENSITY - how bright the light was. (3) MORE LIGHT = FASTER photosynthesis = MORE BUBBLES. When you increased light from low to high, did you see more bubbles? That's because light provides energy! Without enough light, photosynthesis slows down. Review the experiment, watch the bubbles, and think about what causes them. Then try the quiz again!`);
         }
     };
 
@@ -272,6 +277,34 @@ export function PhotosynthesisLabEnhanced() {
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
+                emotion={currentStep === 'complete' ? 'celebrating' : plantPlaced ? 'happy' : 'explaining'}
+                context={{
+                    attempts: testedIntensities.size,
+                    correctStreak: testedIntensities.size
+                }}
+                quickActions={[
+                    {
+                        label: 'Reset Lab',
+                        icon: '🔄',
+                        onClick: handleRestart
+                    },
+                    {
+                        label: 'View Theory',
+                        icon: '📖',
+                        onClick: () => {
+                            const theorySection = document.querySelector('[data-theory-section]');
+                            theorySection?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    },
+                    {
+                        label: 'Safety Tips',
+                        icon: '🛡️',
+                        onClick: () => {
+                            const safetySection = document.querySelector('[data-safety-section]');
+                            safetySection?.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                ]}
             />
 
             {isCompleted && (
@@ -306,7 +339,7 @@ export function PhotosynthesisLabEnhanced() {
                 </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
+                        <AccordionItem value="item-1" data-theory-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <BookOpen className="h-4 w-4" />
@@ -324,7 +357,7 @@ export function PhotosynthesisLabEnhanced() {
                                 <p className="mt-2"><strong>Why It Matters:</strong> Photosynthesis is the foundation of most food chains and produces the oxygen we breathe. Understanding how environmental factors affect it helps us appreciate plant life and address environmental challenges.</p>
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="item-2">
+                        <AccordionItem value="item-2" data-safety-section>
                             <AccordionTrigger>
                                 <div className="flex items-center gap-2">
                                     <Shield className="h-4 w-4" />

@@ -1,14 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Droplets, Leaf, TreePine, ArrowUp, ArrowDown, Play, Pause, Volume2, VolumeX, GraduationCap, Sun, Waves, Factory, ChevronLeft, ChevronRight, Sprout } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocalization } from '@/hooks/useLocalization';
+import { localizeString } from '@/lib/localization/content-localizer';
+import type { CountryConfig } from '@/lib/localization/country-config';
 
 interface LessonIntroProps {
   onComplete?: () => void;
 }
 
 const PlantSystemsTransportIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
+  const { country } = useLocalization();
   const [stage, setStage] = useState(0);
   
   // Interactive state for demonstrations
@@ -53,7 +57,7 @@ const PlantSystemsTransportIntro: React.FC<LessonIntroProps> = ({ onComplete }) 
     {
       title: "🌳 The Plant's Plumbing System!",
       content: "How do plants move water 100 meters up without a heart? Let's find out!",
-      narration: "Welcome to the amazing world of plant transport! Imagine you're standing next to a giant odum tree in Ghana. That tree might be 50 meters tall, yet water from its roots reaches every single leaf at the top. How? Plants don't have hearts to pump like we do. Instead, they use two incredible transport tissues: XYLEM carries water UP from roots to leaves, and PHLOEM carries sugars from leaves to wherever the plant needs them. This is essential knowledge for Ghanaian farmers - understanding how water and nutrients move helps grow better cocoa, maize, and cassava!",
+      narration: country ? localizeString("Welcome to the amazing world of plant transport! Imagine you're standing next to a giant odum tree in {{country}}. That tree might be 50 meters tall, yet water from its roots reaches every single leaf at the top. How? Plants don't have hearts to pump like we do. Instead, they use two incredible transport tissues: XYLEM carries water UP from roots to leaves, and PHLOEM carries sugars from leaves to wherever the plant needs them. This is essential knowledge for {{country:adjective}} farmers - understanding how water and nutrients move helps grow better cocoa, maize, and cassava!", country as CountryConfig) : "Welcome to the amazing world of plant transport! Imagine you're standing next to a giant tree. Plants don't have hearts to pump like we do. Instead, they use two incredible transport tissues: XYLEM carries water UP from roots to leaves, and PHLOEM carries sugars from leaves to wherever the plant needs them. Understanding plant transport is essential for farmers.",
       highlightWords: ['transport', 'xylem', 'phloem', 'water', 'sugars', 'roots', 'leaves', 'farmers']
     },
     {
@@ -75,9 +79,9 @@ const PlantSystemsTransportIntro: React.FC<LessonIntroProps> = ({ onComplete }) 
       highlightWords: ['phloem', 'alive', 'energy', 'translocation', 'sources', 'sinks', 'loaded', 'pressure']
     },
     {
-      title: "🌾 Transport & Ghana Agriculture",
-      content: "Why this knowledge matters for Ghanaian farmers and the environment.",
-      narration: "Why should Ghanaian farmers care about plant transport? WATER MANAGEMENT is crucial - knowing that transpiration increases in hot, dry conditions helps farmers time irrigation. When it's very hot, plants lose water faster than roots can absorb it, causing WILTING. Understanding xylem helps explain why cutting stems underwater keeps flowers fresh - no air bubbles break the water chain! For CROP YIELDS, remember that fruits are SINKS. The more efficiently a plant translocates sugars to its cocoa pods, mangoes, or cassava roots, the bigger your harvest! Plant hormones can even redirect sugar flow. Finally, DROUGHT-RESISTANT crops have special adaptations - smaller leaves, sunken stomata, and waxy coatings all reduce water loss. This knowledge is POWER for food security in Ghana!",
+      title: country ? localizeString("🌾 Transport & {{country:adjective|uppercase=first}} Agriculture", country as CountryConfig) : "🌾 Transport & Agriculture",
+      content: country ? localizeString("Why this knowledge matters for {{country:adjective}} farmers and the environment.", country as CountryConfig) : "Why this knowledge matters for farmers and the environment.",
+      narration: country ? localizeString("Why should {{country:adjective}} farmers care about plant transport? WATER MANAGEMENT is crucial - knowing that transpiration increases in hot, dry conditions helps farmers time irrigation. When it's very hot, plants lose water faster than roots can absorb it, causing WILTING. Understanding xylem helps explain why cutting stems underwater keeps flowers fresh - no air bubbles break the water chain! For CROP YIELDS, remember that fruits are SINKS. The more efficiently a plant translocates sugars to its cocoa pods, mangoes, or cassava roots, the bigger your harvest! Plant hormones can even redirect sugar flow. Finally, DROUGHT-RESISTANT crops have special adaptations - smaller leaves, sunken stomata, and waxy coatings all reduce water loss. This knowledge is POWER for food security in {{country}}!", country as CountryConfig) : "Why should farmers care about plant transport? Water management is crucial for crop yields. Understanding plant transport helps grow food more efficiently and sustainably.",
       highlightWords: ['irrigation', 'transpiration', 'wilting', 'crop yields', 'sinks', 'drought-resistant', 'food security']
     }
   ];

@@ -348,6 +348,8 @@ export default function CashPettyCashBookWorkshop({ onComplete }: LessonIntroPro
             <TeacherVoice 
               message={teacherMessage}
               autoPlay={true}
+              theme="accounting"
+              teacherName="Accounting Teacher"
             />
           )}
         </AnimatePresence>
