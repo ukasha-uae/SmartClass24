@@ -247,6 +247,9 @@ export function getCountryStats(): {
  * Export individual country configs for direct access
  */
 export { ghanaConfig, nigeriaConfig };
+export { sierraLeoneConfig } from './sierra-leone';
+export { liberiaConfig } from './liberia';
+export { gambiaConfig } from './gambia';
 
 /**
  * Export default as country registry

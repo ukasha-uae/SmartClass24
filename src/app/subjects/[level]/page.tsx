@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, BookOpen, Trophy, Zap, Gamepad2, Users } from 'lucide-react';
 import { useCollection, useFirebase } from '@/firebase';
 import { collection } from 'firebase/firestore';
@@ -17,7 +17,9 @@ import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
 
 import { subjects as localSubjects } from '@/lib/jhs-data';
 import { primarySubjects } from '@/lib/primary-data';
-import { coreSubjects as shsSubjects } from '@/lib/shs-data';
+import { coreSubjects as shsSubjects, shsProgrammes } from '@/lib/shs-data';
+import { Badge } from '@/components/ui/badge';
+import { GraduationCap } from 'lucide-react';
 
 type EducationLevel = 'primary' | 'jhs' | 'shs';
 type PrimaryClass = 'Class 1' | 'Class 2' | 'Class 3' | 'Class 4' | 'Class 5' | 'Class 6' | 'All';
@@ -209,41 +211,181 @@ export default function LevelSubjectsPage() {
               <Skeleton className="h-64 w-full" />
             </>
           )}
-          {displaySubjects && displaySubjects.map((subject, index) => (
-            <Link key={subject.id} href={`/subjects/${educationLevel}/${subject.slug}`} passHref>
+          {displaySubjects && displaySubjects.map((subject, index) => {
+            // Check if subject is coming soon (Social Studies or Core English)
+            const isComingSoon = educationLevel === 'shs' && 
+              (subject.slug === 'social-studies' || subject.slug === 'english-language');
+            
+            return (
               <Card 
-                className="h-full flex flex-col hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer group relative overflow-hidden border-2 hover:border-primary/50 animate-fadeInUp"
+                key={subject.id} 
+                className={`h-full flex flex-col transition-all duration-500 relative overflow-hidden border-2 animate-fadeInUp ${
+                  isComingSoon 
+                    ? 'opacity-75 cursor-not-allowed' 
+                    : 'hover:shadow-2xl transform hover:-translate-y-2 cursor-pointer group hover:border-primary/50'
+                }`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {/* Gradient overlay on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${colors.primary} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-                
-                <CardHeader className="flex-grow relative z-10">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className={`p-3 rounded-xl bg-gradient-to-br ${colors.primary} shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
-                      <BookOpen className="h-6 w-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="font-headline text-xl group-hover:text-primary transition-colors">
-                        {subject.name}
-                      </CardTitle>
-                    </div>
+                {/* Coming Soon Badge */}
+                {isComingSoon && (
+                  <div className="absolute top-4 right-4 z-10">
+                    <Badge className="bg-amber-500 text-white font-semibold shadow-lg">
+                      Coming Soon
+                    </Badge>
                   </div>
-                  <CardDescription className="text-base leading-relaxed">
-                    {subject.description}
-                  </CardDescription>
-                </CardHeader>
+                )}
+
+                {/* Gradient overlay on hover - only if not coming soon */}
+                {!isComingSoon && (
+                  <div className={`absolute inset-0 bg-gradient-to-br ${colors.primary} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                )}
                 
-                <div className="p-6 pt-0 mt-auto relative z-10">
-                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${colors.accent} text-white font-semibold group-hover:gap-4 transition-all duration-300`}>
-                    <span>View Topics</span>
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </div>
+                {isComingSoon ? (
+                  <>
+                    <CardHeader className="flex-grow relative z-10">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className={`p-3 rounded-xl bg-gradient-to-br ${colors.primary} shadow-lg opacity-60`}>
+                          <BookOpen className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <CardTitle className="font-headline text-xl">
+                            {subject.name}
+                          </CardTitle>
+                        </div>
+                      </div>
+                      <CardDescription className="text-base leading-relaxed">
+                        {subject.description}
+                      </CardDescription>
+                    </CardHeader>
+                    
+                    <div className="p-6 pt-0 mt-auto relative z-10">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-400 font-semibold">
+                        <span>Coming Soon</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <Link href={`/subjects/${educationLevel}/${subject.slug}`} className="block h-full">
+                    <CardHeader className="flex-grow relative z-10">
+                      <div className="flex items-start gap-4 mb-4">
+                        <div className={`p-3 rounded-xl bg-gradient-to-br ${colors.primary} shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
+                          <BookOpen className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <CardTitle className="font-headline text-xl group-hover:text-primary transition-colors">
+                            {subject.name}
+                          </CardTitle>
+                        </div>
+                      </div>
+                      <CardDescription className="text-base leading-relaxed">
+                        {subject.description}
+                      </CardDescription>
+                    </CardHeader>
+                    
+                    <div className="p-6 pt-0 mt-auto relative z-10">
+                      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${colors.accent} text-white font-semibold group-hover:gap-4 transition-all duration-300`}>
+                        <span>View Topics</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </Link>
+                )}
               </Card>
-            </Link>
-          ))}
+            );
+          })}
         </div>
+
+        {/* SHS Programmes Section - Only for SHS */}
+        {educationLevel === 'shs' && (
+          <div className="mb-12">
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className={`h-10 w-1 bg-gradient-to-b ${colors.accent} rounded-full`}></div>
+                <h2 className="text-3xl font-bold">Academic Programmes</h2>
+                <Badge className="bg-amber-500 text-white">Coming Soon</Badge>
+              </div>
+              <p className="text-muted-foreground ml-7">
+                Explore programme-specific elective subjects (Available soon)
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {shsProgrammes.slice(0, 6).map((programme, index) => {
+                const programmeGradients: Record<string, string> = {
+                  'general-science': 'from-blue-500 to-cyan-500',
+                  'general-arts': 'from-purple-500 to-pink-500',
+                  'business': 'from-green-500 to-emerald-500',
+                  'agricultural-science': 'from-yellow-500 to-orange-500',
+                  'visual-arts': 'from-rose-500 to-red-500',
+                  'home-economics': 'from-pink-500 to-rose-500',
+                  'technical-studies': 'from-gray-600 to-gray-800',
+                  'ict-computing': 'from-indigo-500 to-blue-500',
+                };
+                const gradient = programmeGradients[programme.slug] || 'from-violet-500 to-purple-500';
+                
+                return (
+                  <Card 
+                    key={programme.id}
+                    className="h-full transition-all duration-300 border-2 opacity-75 relative"
+                  >
+                    {/* Coming Soon Badge */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <Badge className="bg-amber-500 text-white font-semibold shadow-lg">
+                        Coming Soon
+                      </Badge>
+                    </div>
+
+                    <CardHeader>
+                      <div className={`inline-block p-3 rounded-xl bg-gradient-to-br ${gradient} mb-3 w-fit opacity-60`}>
+                        <GraduationCap className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg">{programme.name}</CardTitle>
+                      <CardDescription className="line-clamp-2 text-sm">
+                        {programme.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {/* Elective subjects preview */}
+                        <div className="flex flex-wrap gap-1.5">
+                          {programme.electiveSubjects.slice(0, 3).map((subject) => (
+                            <Badge key={subject.id} variant="outline" className="text-xs opacity-60">
+                              {subject.name}
+                            </Badge>
+                          ))}
+                          {programme.electiveSubjects.length > 3 && (
+                            <Badge variant="outline" className="text-xs opacity-60">
+                              +{programme.electiveSubjects.length - 3} more
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center justify-between pt-2 border-t">
+                          <span className="text-sm text-muted-foreground">
+                            {programme.electiveSubjects.length} Electives
+                          </span>
+                          <span className="text-xs text-amber-600 font-semibold">Coming Soon</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* View All Programmes Link */}
+            {shsProgrammes.length > 6 && (
+              <div className="text-center mt-6">
+                <Link href="/shs-programmes">
+                  <Button size="lg" className={`bg-gradient-to-r ${colors.accent}`}>
+                    View All {shsProgrammes.length} Programmes
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Challenge Arena Section */}
         <div className="mt-12 max-w-4xl mx-auto">

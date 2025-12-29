@@ -138,7 +138,7 @@ export default function StudentProfileSetup({ onSave }: { onSave?: () => void })
         <CardHeader>
           <CardTitle>Welcome — Set up your student profile</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 overflow-y-auto max-h-[70vh]">
+        <CardContent className="space-y-3 overflow-y-auto max-h-[70vh] pb-24">
           <div className="text-xs text-muted-foreground">
             Firebase Project: <span className="font-mono text-sm">{firebaseApp?.options?.projectId || 'unknown'}</span>
             {firebaseApp?.options?.projectId && (
@@ -190,7 +190,7 @@ export default function StudentProfileSetup({ onSave }: { onSave?: () => void })
             <Label className="text-sm">School Address (optional)</Label>
             <Input value={schoolAddress} onChange={(e: any) => setSchoolAddress(e.target.value)} />
           </div>
-          <div>
+          <div className="pb-4">
             <Label className="text-sm">Parent / Guardian Phone Number</Label>
             <Input value={parentPhoneNumber} onChange={(e: any) => setParentPhoneNumber(e.target.value)} />
           </div>

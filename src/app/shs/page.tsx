@@ -126,29 +126,68 @@ export default function SHSHubPage() {
           {coreSubjects.map((subject) => {
             const IconComponent = subjectIcons[subject.slug] || BookOpen;
             const topicCount = subject.topics?.length || 0;
+            const isComingSoon = subject.slug === 'english-language' || subject.slug === 'social-studies';
 
             return (
-              <Link key={subject.id} href={`/subjects/shs/${subject.slug}`}>
-                <Card className="h-full group hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50">
-                  <CardHeader>
-                    <div className={`inline-block p-3 rounded-xl bg-gradient-to-br ${colors.primary} mb-3 w-fit group-hover:scale-110 transition-transform`}>
-                      <IconComponent className="h-6 w-6 text-white" />
-                    </div>
-                    <CardTitle className="text-lg">{subject.name}</CardTitle>
-                    <CardDescription className="line-clamp-2 text-sm">
-                      {subject.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        {topicCount} Topics
-                      </span>
-                      <ArrowRight className="h-4 w-4 text-primary group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+              <Card 
+                key={subject.id} 
+                className={`h-full group transition-all duration-300 border-2 ${
+                  isComingSoon 
+                    ? 'opacity-75 cursor-not-allowed' 
+                    : 'hover:shadow-2xl hover:scale-105 cursor-pointer hover:border-primary/50'
+                } relative`}
+              >
+                {/* Coming Soon Badge */}
+                {isComingSoon && (
+                  <div className="absolute top-4 right-4 z-10">
+                    <Badge className="bg-amber-500 text-white font-semibold shadow-lg">
+                      Coming Soon
+                    </Badge>
+                  </div>
+                )}
+
+                {isComingSoon ? (
+                  <>
+                    <CardHeader>
+                      <div className={`inline-block p-3 rounded-xl bg-gradient-to-br ${colors.primary} mb-3 w-fit opacity-60`}>
+                        <IconComponent className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg">{subject.name}</CardTitle>
+                      <CardDescription className="line-clamp-2 text-sm">
+                        {subject.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {topicCount} Topics
+                        </span>
+                        <span className="text-xs text-amber-600 font-semibold">Coming Soon</span>
+                      </div>
+                    </CardContent>
+                  </>
+                ) : (
+                  <Link href={`/subjects/shs/${subject.slug}`} className="block">
+                    <CardHeader>
+                      <div className={`inline-block p-3 rounded-xl bg-gradient-to-br ${colors.primary} mb-3 w-fit group-hover:scale-110 transition-transform`}>
+                        <IconComponent className="h-6 w-6 text-white" />
+                      </div>
+                      <CardTitle className="text-lg">{subject.name}</CardTitle>
+                      <CardDescription className="line-clamp-2 text-sm">
+                        {subject.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {topicCount} Topics
+                        </span>
+                        <ArrowRight className="h-4 w-4 text-primary group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Link>
+                )}
+              </Card>
             );
           })}
         </div>
@@ -185,43 +224,51 @@ export default function SHSHubPage() {
             const electiveCount = programme.electiveSubjects.length;
 
             return (
-              <Link key={programme.id} href={`/shs-programmes/${programme.slug}`}>
-                <Card className="h-full group hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-primary/50">
-                  <CardHeader>
-                    <div className={`inline-block p-3 rounded-xl bg-gradient-to-br ${gradient} mb-3 w-fit group-hover:scale-110 transition-transform`}>
-                      <GraduationCap className="h-6 w-6 text-white" />
+              <Card 
+                key={programme.id} 
+                className="h-full group transition-all duration-300 border-2 opacity-75 relative"
+              >
+                {/* Coming Soon Badge */}
+                <div className="absolute top-4 right-4 z-10">
+                  <Badge className="bg-amber-500 text-white font-semibold shadow-lg">
+                    Coming Soon
+                  </Badge>
+                </div>
+
+                <CardHeader>
+                  <div className={`inline-block p-3 rounded-xl bg-gradient-to-br ${gradient} mb-3 w-fit opacity-60`}>
+                    <GraduationCap className="h-6 w-6 text-white" />
+                  </div>
+                  <CardTitle className="text-lg">{programme.name}</CardTitle>
+                  <CardDescription className="line-clamp-2 text-sm">
+                    {programme.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {/* Elective subjects preview */}
+                    <div className="flex flex-wrap gap-1.5">
+                      {programme.electiveSubjects.slice(0, 3).map((subject) => (
+                        <Badge key={subject.id} variant="outline" className="text-xs opacity-60">
+                          {subject.name}
+                        </Badge>
+                      ))}
+                      {electiveCount > 3 && (
+                        <Badge variant="outline" className="text-xs opacity-60">
+                          +{electiveCount - 3} more
+                        </Badge>
+                      )}
                     </div>
-                    <CardTitle className="text-lg">{programme.name}</CardTitle>
-                    <CardDescription className="line-clamp-2 text-sm">
-                      {programme.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {/* Elective subjects preview */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {programme.electiveSubjects.slice(0, 3).map((subject) => (
-                          <Badge key={subject.id} variant="outline" className="text-xs">
-                            {subject.name}
-                          </Badge>
-                        ))}
-                        {electiveCount > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{electiveCount - 3} more
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center justify-between pt-2 border-t">
-                        <span className="text-sm text-muted-foreground">
-                          {electiveCount} Electives
-                        </span>
-                        <ArrowRight className="h-4 w-4 text-primary group-hover:translate-x-1 transition-transform" />
-                      </div>
+                    
+                    <div className="flex items-center justify-between pt-2 border-t">
+                      <span className="text-sm text-muted-foreground">
+                        {electiveCount} Electives
+                      </span>
+                      <span className="text-xs text-amber-600 font-semibold">Coming Soon</span>
                     </div>
-                  </CardContent>
-                </Card>
-              </Link>
+                  </div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>

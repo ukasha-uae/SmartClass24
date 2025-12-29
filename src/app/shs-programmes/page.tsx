@@ -75,10 +75,17 @@ export default function SHSProgrammesPage() {
           return (
             <Card 
               key={programme.id}
-              className="group hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-violet-500"
+              className="group transition-all duration-300 border-2 opacity-75 relative"
             >
+              {/* Coming Soon Badge */}
+              <div className="absolute top-4 right-4 z-10">
+                <Badge className="bg-amber-500 text-white font-semibold shadow-lg">
+                  Coming Soon
+                </Badge>
+              </div>
+
               <CardHeader>
-                <div className={`inline-block p-3 rounded-xl bg-gradient-to-br ${gradient} mb-4 w-fit`}>
+                <div className={`inline-block p-3 rounded-xl bg-gradient-to-br ${gradient} mb-4 w-fit opacity-60`}>
                   <GraduationCap className="h-8 w-8 text-white" />
                 </div>
                 <CardTitle className="text-xl">{programme.name}</CardTitle>
@@ -94,26 +101,25 @@ export default function SHSProgrammesPage() {
                 {/* Subject Pills */}
                 <div className="flex flex-wrap gap-2">
                   {programme.electiveSubjects.slice(0, 3).map((subject) => (
-                    <Badge key={subject.id} variant="secondary" className="text-xs">
+                    <Badge key={subject.id} variant="secondary" className="text-xs opacity-60">
                       {subject.name}
                     </Badge>
                   ))}
                   {programme.electiveSubjects.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs opacity-60">
                       +{programme.electiveSubjects.length - 3} more
                     </Badge>
                   )}
                 </div>
 
-                {/* Action Button */}
-                <Link href={`/shs-programmes/${programme.slug}`}>
-                  <Button 
-                    className={`w-full bg-gradient-to-r ${gradient} hover:opacity-90 transition-opacity`}
-                  >
-                    View Electives
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
+                {/* Action Button - Disabled */}
+                <Button 
+                  className={`w-full bg-gradient-to-r ${gradient} opacity-50 cursor-not-allowed`}
+                  disabled
+                >
+                  Coming Soon
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
               </CardContent>
             </Card>
           );
@@ -133,26 +139,36 @@ export default function SHSProgrammesPage() {
                 In addition to your electives, all SHS students study these 4 core subjects:
               </p>
               <div className="flex flex-wrap gap-2">
-                <Link href="/shs-subjects/english-language">
-                  <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
+                {/* Core English - Coming Soon */}
+                <div className="relative">
+                  <Badge variant="secondary" className="cursor-not-allowed opacity-75">
                     Core English Language
                   </Badge>
-                </Link>
+                  <Badge className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs px-1.5 py-0.5">
+                    Soon
+                  </Badge>
+                </div>
+                {/* Core Mathematics - Available */}
                 <Link href="/shs-subjects/core-mathematics">
                   <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
                     Core Mathematics
                   </Badge>
                 </Link>
+                {/* Integrated Science - Available */}
                 <Link href="/shs-subjects/integrated-science">
                   <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
                     Integrated Science
                   </Badge>
                 </Link>
-                <Link href="/shs-subjects/social-studies">
-                  <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
+                {/* Social Studies - Coming Soon */}
+                <div className="relative">
+                  <Badge variant="secondary" className="cursor-not-allowed opacity-75">
                     Social Studies
                   </Badge>
-                </Link>
+                  <Badge className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs px-1.5 py-0.5">
+                    Soon
+                  </Badge>
+                </div>
               </div>
             </div>
           </div>

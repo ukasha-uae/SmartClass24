@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { User, BrainCircuit, Swords, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
 
 /**
  * BottomNav Component - Mobile-only bottom navigation
@@ -13,16 +14,22 @@ import { cn } from '@/lib/utils';
 export default function BottomNav() {
   const pathname = usePathname();
 
+  // V1: Conditionally show nav items
+  const showStudyGroups = FEATURE_FLAGS.V1_LAUNCH.showStudyGroups;
+  
   const navItems = [
-    { href: '/past-questions', label: 'Practice', icon: BrainCircuit },
-    { href: '/challenge-arena', label: 'Arena', icon: Swords },
-    { href: '/study-groups', label: 'Social', icon: Users },
-    { href: '/profile', label: 'Profile', icon: User },
-  ];
+    { href: '/past-questions', label: 'Practice', icon: BrainCircuit, show: true },
+    { href: '/challenge-arena/ghana', label: 'Arena', icon: Swords, show: true },
+    ...(showStudyGroups ? [{ href: '/study-groups', label: 'Social', icon: Users, show: true }] : []),
+    { href: '/profile', label: 'Profile', icon: User, show: true },
+  ].filter(item => item.show);
+  
+  // Adjust grid columns based on number of items
+  const gridCols = navItems.length === 3 ? 'grid-cols-3' : 'grid-cols-4';
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur-sm md:hidden">
-      <div className="grid h-16 grid-cols-4 max-w-2xl mx-auto">
+      <div className={`grid h-16 ${gridCols} max-w-2xl mx-auto`}>
         {navItems.map(({ href, label, icon: Icon }) => {
           const isActive = (pathname === '/' && href === '/') || (pathname !== '/' && href !== '/' && pathname.startsWith(href));
           return (

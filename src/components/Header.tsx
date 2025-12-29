@@ -37,6 +37,7 @@ import { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useV1FeatureAccess } from '@/components/V1RouteGuard';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
 
 export default function Header() {
   const { user, firestore } = useFirebase();
@@ -52,6 +53,12 @@ export default function Header() {
   // V1: Check feature access based on user's education level
   const { hasAccess: hasLessonsAccess } = useV1FeatureAccess('lessons');
   const { hasAccess: hasVirtualLabsAccess } = useV1FeatureAccess('virtualLabs');
+  
+  // V1: Check if community/study groups should be shown
+  const showCommunity = FEATURE_FLAGS.V1_LAUNCH.showCommunity;
+  const showStudyGroups = FEATURE_FLAGS.V1_LAUNCH.showStudyGroups;
+  const showTeacher = FEATURE_FLAGS.V1_LAUNCH.showTeacher;
+  const showParent = FEATURE_FLAGS.V1_LAUNCH.showParent;
   
   return (
     <header 
@@ -136,7 +143,7 @@ export default function Header() {
                   <div className="h-px bg-border" />
                   
                   {/* Profile Link - Only when signed in */}
-                  {user && profile?.profilePictureUrl && (
+                  {user && (
                     <>
                       <Link 
                         href="/profile" 
@@ -144,12 +151,16 @@ export default function Header() {
                         className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
                       >
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
-                          <AvatarFallback>{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>
+                          <AvatarImage src={profile?.profilePictureUrl} alt={profile?.studentName || user.email || 'Student'} />
+                          <AvatarFallback>
+                            {profile?.studentName?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'S'}
+                          </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
-                          <span className="font-medium">{profile.studentName || 'Profile'}</span>
-                          <span className="text-xs text-muted-foreground">View Profile</span>
+                          <span className="font-medium">{profile?.studentName || user.email || 'Profile'}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {profile?.studentName ? 'View Profile' : 'Complete Profile'}
+                          </span>
                         </div>
                       </Link>
                       
@@ -201,91 +212,90 @@ export default function Header() {
                           <span className="font-medium">Study Schedule</span>
                         </Link>
                         
-                        <Link 
-                          href="/wassce-questions" 
-                          onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
-                        >
-                          <BookOpen className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-                          <span className="font-medium">WASSCE Questions</span>
-                        </Link>
+                        {hasLessonsAccess && (
+                          <Link 
+                            href="/wassce-questions" 
+                            onClick={() => setSheetOpen(false)}
+                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          >
+                            <BookOpen className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                            <span className="font-medium">WASSCE Questions</span>
+                          </Link>
+                        )}
                       </nav>
                       
-                      <div className="h-px bg-border" />
+                      {/* V1: Hide Community section */}
+                      {showCommunity && (
+                        <>
+                          <div className="h-px bg-border" />
+                          <div className="space-y-1">
+                            <p className="px-3 text-sm font-medium text-muted-foreground">Community</p>
+                            
+                            {showStudyGroups && (
+                              <Link 
+                                href="/study-groups" 
+                                onClick={() => setSheetOpen(false)}
+                                className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                              >
+                                <MessagesSquare className="h-5 w-5" />
+                                <span>Study Groups</span>
+                              </Link>
+                            )}
+                            
+                            <Link 
+                              href="/achievements-feed" 
+                              onClick={() => setSheetOpen(false)}
+                              className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                            >
+                              <Trophy className="h-5 w-5" />
+                              <span>Achievements</span>
+                            </Link>
+                            
+                            <Link 
+                              href="/community" 
+                              onClick={() => setSheetOpen(false)}
+                              className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                            >
+                              <HelpCircle className="h-5 w-5" />
+                              <span>Q&A Community</span>
+                            </Link>
+                          </div>
+                        </>
+                      )}
                       
-                      {/* Community Links */}
-                      <div className="space-y-1">
-                        <p className="px-3 text-sm font-medium text-muted-foreground">Community</p>
-                        
-                        <Link 
-                          href="/study-groups" 
-                          onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
-                        >
-                          <MessagesSquare className="h-5 w-5" />
-                          <span>Study Groups</span>
-                        </Link>
-                        
-                        <Link 
-                          href="/achievements-feed" 
-                          onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
-                        >
-                          <Trophy className="h-5 w-5" />
-                          <span>Achievements</span>
-                        </Link>
-                        
-                        <Link 
-                          href="/community" 
-                          onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
-                        >
-                          <HelpCircle className="h-5 w-5" />
-                          <span>Q&A Community</span>
-                        </Link>
-                      </div>
-                      
-                      <div className="h-px bg-border" />
-                      
-                      {/* Other Portals */}
-                      <div className="space-y-1">
-                        <p className="px-3 text-sm font-medium text-muted-foreground">Portals</p>
-                        
-                        <Link 
-                          href="/teacher/dashboard" 
-                          onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
-                        >
-                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                          </svg>
-                          <span>Teacher Dashboard</span>
-                        </Link>
-                        
-                        <Link 
-                          href="/parent/dashboard" 
-                          onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
-                        >
-                          <Users className="h-5 w-5" />
-                          <span>Parent Portal</span>
-                        </Link>
-                      </div>
-                      
-                      {/* PWA Test Link */}
-                      <>
-                        <div className="h-px bg-border" />
-                        <Link 
-                          href="/pwa-test" 
-                          onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
-                        >
-                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                          </svg>
-                          <span>PWA Test</span>
-                        </Link>
-                      </>
+                      {/* V1: Hide Portals section */}
+                      {(showTeacher || showParent) && (
+                        <>
+                          <div className="h-px bg-border" />
+                          <div className="space-y-1">
+                            <p className="px-3 text-sm font-medium text-muted-foreground">Portals</p>
+                            
+                            {showTeacher && (
+                              <Link 
+                                href="/teacher/dashboard" 
+                                onClick={() => setSheetOpen(false)}
+                                className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                              >
+                                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                </svg>
+                                <span>Teacher Dashboard</span>
+                              </Link>
+                            )}
+                            
+                            {showParent && (
+                              <Link 
+                                href="/parent/dashboard" 
+                                onClick={() => setSheetOpen(false)}
+                                className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                              >
+                                <Users className="h-5 w-5" />
+                                <span>Parent Portal</span>
+                              </Link>
+                            )}
+                          </div>
+                        </>
+                      )}
                 </div>
               </SheetContent>
             </Sheet>
@@ -330,33 +340,42 @@ export default function Header() {
                       </DropdownMenuItem>
                     </Link>
                   )}
-                  <Link href="/wassce-questions">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Trophy className="h-4 w-4 mr-2" />
-                      WASSCE Questions
-                    </DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuLabel>Community</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <Link href="/study-groups">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <MessagesSquare className="h-4 w-4 mr-2" />
-                      Study Groups
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link href="/achievements-feed">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Trophy className="h-4 w-4 mr-2" />
-                      Achievements
-                    </DropdownMenuItem>
-                  </Link>
-                  <Link href="/community">
-                    <DropdownMenuItem className="cursor-pointer">
-                      <HelpCircle className="h-4 w-4 mr-2" />
-                      Q&A Community
-                    </DropdownMenuItem>
-                  </Link>
+                  {hasLessonsAccess && (
+                    <Link href="/wassce-questions">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <Trophy className="h-4 w-4 mr-2" />
+                        WASSCE Questions
+                      </DropdownMenuItem>
+                    </Link>
+                  )}
+                  {/* V1: Hide Community section */}
+                  {showCommunity && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel>Community</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {showStudyGroups && (
+                        <Link href="/study-groups">
+                          <DropdownMenuItem className="cursor-pointer">
+                            <MessagesSquare className="h-4 w-4 mr-2" />
+                            Study Groups
+                          </DropdownMenuItem>
+                        </Link>
+                      )}
+                      <Link href="/achievements-feed">
+                        <DropdownMenuItem className="cursor-pointer">
+                          <Trophy className="h-4 w-4 mr-2" />
+                          Achievements
+                        </DropdownMenuItem>
+                      </Link>
+                      <Link href="/community">
+                        <DropdownMenuItem className="cursor-pointer">
+                          <HelpCircle className="h-4 w-4 mr-2" />
+                          Q&A Community
+                        </DropdownMenuItem>
+                      </Link>
+                    </>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -389,11 +408,13 @@ export default function Header() {
                   <span>Parent Portal</span>
                 </Button>
               </Link>
-              {profile?.profilePictureUrl && (
+              {user && (
                 <Link href="/profile" className="hidden sm:block">
                   <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity">
-                    <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
-                    <AvatarFallback>{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>
+                    <AvatarImage src={profile?.profilePictureUrl} alt={profile?.studentName || user.email || 'Student'} />
+                    <AvatarFallback>
+                      {profile?.studentName?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'S'}
+                    </AvatarFallback>
                   </Avatar>
                 </Link>
               )}

@@ -9,42 +9,42 @@ const FractionsDecimalsPercentagesIntro = ({ onComplete }: { onComplete?: () => 
     {
       id: 0,
       icon: Slice,
-      narration: "Fractions show parts of a whole! Three-quarters means 3 parts out of 4 equal parts. The top number is the numerator - what you have. The bottom is the denominator - total equal parts. Fractions are everywhere - half a loaf, quarter tank of fuel!",
-      visualContent: "Fraction = Numerator/Denominator | ¾ = 3 parts of 4",
-      highlightWords: ['Fractions', 'numerator', 'denominator', 'parts', 'whole'],
-      teacherTip: "Use pizza or bread slices to visualize fractions practically."
+      narration: "Welcome to fractions, decimals, and percentages! These three ways of expressing parts are everywhere in Ghana - from sharing a loaf of bread equally among family members, to calculating prices at the market, to understanding discounts and sales. Master these conversions and you'll unlock a powerful tool for everyday life and mathematics!",
+      visualContent: "Welcome to Fractions, Decimals & Percentages",
+      highlightWords: ['fractions', 'decimals', 'percentages', 'Ghana', 'everyday life'],
+      teacherTip: "Start with a real example: If you buy half a loaf of bread, how do you write that as a fraction, decimal, and percentage?"
     },
     {
       id: 1,
       icon: Calculator,
-      narration: "Decimals are another way to write fractions! One-half equals 0.5. One-quarter equals 0.25. To convert, divide the numerator by the denominator. Three-quarters? Divide 3 by 4 to get 0.75!",
-      visualContent: "½ = 0.5 | ¼ = 0.25 | ¾ = 0.75 | Divide top by bottom",
-      highlightWords: ['Decimals', 'divide', 'numerator', 'denominator', 'convert'],
-      teacherTip: "Practice division to convert common fractions to decimals."
+      narration: "Fractions show parts of a whole! When you share a loaf of bread among four people, each person gets one-quarter. The top number is the numerator - what you have. The bottom is the denominator - total equal parts. Decimals are another way to write fractions - one-half equals 0.5, one-quarter equals 0.25. To convert, simply divide the numerator by the denominator!",
+      visualContent: "Fractions & Decimals",
+      highlightWords: ['fractions', 'numerator', 'denominator', 'decimals', 'divide'],
+      teacherTip: "Use Ghanaian examples: sharing kenkey, dividing market produce, splitting mobile money."
     },
     {
       id: 2,
       icon: Percent,
-      narration: "Percentages mean 'per hundred'! 50% is 50 out of 100, which equals one-half. To convert decimal to percent, multiply by 100. So 0.75 times 100 equals 75 percent. Easy!",
-      visualContent: "% = per 100 | 50% = ½ | 0.75 × 100 = 75%",
-      highlightWords: ['Percentages', 'per hundred', 'multiply by 100', '50%', '75%'],
-      teacherTip: "Relate to discounts: 25% off means you pay 75% of the price."
+      narration: "Percentages mean 'per hundred' - they show how many out of 100! When a shop in Accra offers 25% discount, that means 25 out of every 100 cedis is saved. To convert decimal to percent, multiply by 100. So 0.75 times 100 equals 75 percent. Percentages are used everywhere - exam scores, discounts, interest rates, and population statistics!",
+      visualContent: "Understanding Percentages",
+      highlightWords: ['percentages', 'per hundred', 'discount', 'multiply by 100', 'Ghana'],
+      teacherTip: "Connect to real Ghanaian scenarios: Black Friday sales, mobile money charges, exam pass rates."
     },
     {
       id: 3,
       icon: ArrowLeftRight,
-      narration: "Master all conversions! Fraction to decimal: divide. Decimal to percent: multiply by 100. Percent to fraction: write over 100 and simplify. 25% equals 25 over 100, which simplifies to one-quarter!",
-      visualContent: "F → D: divide | D → %: ×100 | % → F: over 100, simplify",
-      highlightWords: ['conversions', 'divide', 'multiply', 'simplify', 'over 100'],
-      teacherTip: "Create a conversion triangle showing all three forms."
+      narration: "The magic is in converting between all three forms! Fraction to decimal: divide numerator by denominator. Decimal to percent: multiply by 100. Percent to fraction: write over 100 and simplify. For example, 25% equals 25 over 100, which simplifies to one-quarter, which equals 0.25 as a decimal. Master these conversions and you can work with any problem!",
+      visualContent: "Mastering Conversions",
+      highlightWords: ['conversions', 'divide', 'multiply', 'simplify', 'master'],
+      teacherTip: "Create a conversion triangle diagram showing all three forms connected."
     },
     {
       id: 4,
       icon: Trophy,
-      narration: "WASSCE tests these conversions every year! Calculate percentage increase, find fractions of amounts, convert between forms. Always show your working - write the conversion step by step. These are guaranteed marks!",
-      visualContent: "WASSCE: Conversions, % increase/decrease, fractions of amounts",
-      highlightWords: ['WASSCE', 'percentage increase', 'conversions', 'guaranteed marks'],
-      teacherTip: "Practice real-world problems: discounts, interest, population growth."
+      narration: "By the end of this lesson, you'll confidently convert between fractions, decimals, and percentages, solve real-world problems involving discounts and percentages, calculate percentage increases and decreases, and apply these skills to everyday situations in Ghana. These skills are essential for WASSCE and for managing money, shopping, and understanding statistics!",
+      visualContent: "Your Goal Today",
+      highlightWords: ['convert', 'solve problems', 'WASSCE', 'everyday situations', 'Ghana'],
+      teacherTip: "This topic appears in almost every WASSCE paper - it's high-value content!"
     }
   ];
 
