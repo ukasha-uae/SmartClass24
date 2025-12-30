@@ -1,38 +1,20 @@
-/**
- * Firebase Configuration
- * 
- * IMPORTANT: This file uses environment variables for security.
- * 
- * For local development:
- * 1. Copy .env.example to .env.local
- * 2. Fill in your Firebase credentials from Firebase Console
- * 3. .env.local is already in .gitignore and will NOT be committed
- * 
- * For production:
- * Set these environment variables in your hosting platform (Vercel, etc.)
- */
+// Firebase configuration using environment variables
+// NEVER commit API keys to the repository!
+// Add these to your .env.local file:
+// NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key_here
+// NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain_here
+// NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id_here
+// NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket_here
+// NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id_here
+// NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id_here
+// NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id_here
 
 export const firebaseConfig = {
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || ""
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '',
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || '',
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || '',
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || '',
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '',
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || '',
 };
-
-// Validate that required environment variables are set (in production)
-if (process.env.NODE_ENV === 'production') {
-  const requiredVars = [
-    'NEXT_PUBLIC_FIREBASE_API_KEY',
-    'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-    'NEXT_PUBLIC_FIREBASE_APP_ID'
-  ];
-  
-  const missingVars = requiredVars.filter(varName => !process.env[varName]);
-  if (missingVars.length > 0) {
-    console.error('⚠️ Missing required Firebase environment variables:', missingVars);
-    console.error('Please set these in your production environment.');
-  }
-}

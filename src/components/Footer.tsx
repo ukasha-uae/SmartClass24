@@ -5,9 +5,7 @@ import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'luci
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocalization } from '@/lib/localization/localization-context';
-import { useState, useEffect } from 'react';
-import { FEATURE_FLAGS } from '@/lib/featureFlags';
-import { useV1FeatureAccess } from '@/components/V1RouteGuard';
+import { useState } from 'react';
 
 /**
  * Footer Component - Traditional website footer
@@ -17,21 +15,7 @@ import { useV1FeatureAccess } from '@/components/V1RouteGuard';
 export default function Footer() {
   const { country } = useLocalization();
   const [email, setEmail] = useState('');
-  const [mounted, setMounted] = useState(false);
   const currentYear = new Date().getFullYear();
-  
-  // V1: Check feature access - only after client-side hydration
-  const { hasAccess: hasLessonsAccess } = useV1FeatureAccess('lessons');
-  const { hasAccess: hasVirtualLabsAccess } = useV1FeatureAccess('virtualLabs');
-  const showCommunity = FEATURE_FLAGS.V1_LAUNCH.showCommunity;
-  const showStudyGroups = FEATURE_FLAGS.V1_LAUNCH.showStudyGroups;
-  const showTeacher = FEATURE_FLAGS.V1_LAUNCH.showTeacher;
-  const showParent = FEATURE_FLAGS.V1_LAUNCH.showParent;
-
-  // Ensure we only render client-side values after hydration
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,40 +24,31 @@ export default function Footer() {
     setEmail('');
   };
 
-  // V1: Build footer sections conditionally
-  // Use mounted state to prevent hydration mismatch - only use client-side values after mount
   const footerSections = {
     quickLinks: [
-      { label: 'Challenge Arena', href: '/challenge-arena/ghana', show: true },
-      // Only include conditional links after client-side hydration
-      ...(mounted && hasLessonsAccess ? [
-        { label: `${country?.academicStructure.seniorSecondary.name} Campus`, href: '/subjects/shs', show: true },
-        { label: 'Programme Guide', href: '/shs-programmes', show: true },
-      ] : []),
-      ...(mounted && hasVirtualLabsAccess ? [
-        { label: 'Virtual Labs', href: '/virtual-labs', show: true },
-      ] : []),
-      { label: 'Past Questions', href: '/past-questions', show: true },
-      { label: 'Study Schedule', href: '/study-schedule', show: true },
-    ].filter(item => item.show),
-    community: showCommunity ? [
-      ...(showStudyGroups ? [{ label: 'Study Groups', href: '/study-groups', show: true }] : []),
-      { label: 'Q&A Community', href: '/community', show: true },
-      { label: 'Challenge Arena', href: '/challenge-arena/ghana', show: true },
-      { label: 'Achievements', href: '/achievements-feed', show: true },
-    ].filter(item => item.show) : [],
+      { label: 'Browse Subjects', href: '/subjects/jhs' },
+      { label: `${country?.academicStructure.seniorSecondary.name} Campus`, href: '/shs' },
+      { label: 'Virtual Labs', href: '/virtual-labs' },
+      { label: 'Past Questions', href: '/past-questions' },
+      { label: 'Study Schedule', href: '/study-schedule' },
+    ],
+    community: [
+      { label: 'Study Groups', href: '/study-groups' },
+      { label: 'Q&A Community', href: '/community' },
+      { label: 'Challenge Arena', href: '/challenge-arena' },
+      { label: 'Achievements', href: '/achievements-feed' },
+    ],
     resources: [
-      ...(showTeacher ? [{ label: 'Teacher Portal', href: '/teacher/dashboard', show: true }] : []),
-      ...(showParent ? [{ label: 'Parent Portal', href: '/parent/dashboard', show: true }] : []),
-      ...(mounted && hasLessonsAccess ? [
-        { label: `${country?.examSystem.secondary} Prep`, href: '/wassce-questions', show: true },
-      ] : []),
-    ].filter(item => item.show),
+      { label: 'Teacher Portal', href: '/teacher/dashboard' },
+      { label: 'Parent Portal', href: '/parent/dashboard' },
+      { label: `${country?.examSystem.secondary} Prep`, href: '/wassce-questions' },
+      { label: 'Programme Guide', href: '/shs-programmes' },
+    ],
     legal: [
-      { label: 'About Us', href: '/about', show: true },
-      { label: 'Privacy Policy', href: '/privacy', show: true },
-      { label: 'Terms of Service', href: '/terms', show: true },
-      { label: 'Contact Us', href: '/contact', show: true },
+      { label: 'About Us', href: '/about' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Service', href: '/terms' },
+      { label: 'Contact Us', href: '/contact' },
     ],
   };
 
@@ -88,7 +63,7 @@ export default function Footer() {
     <footer className="hidden md:block border-t bg-muted/30 mt-auto">
       <div className="container mx-auto px-4 md:px-6 py-12">
         {/* Main Footer Content */}
-        <div className={`grid grid-cols-2 md:grid-cols-${showCommunity && footerSections.community.length > 0 ? '4' : '3'} lg:grid-cols-${showCommunity && footerSections.community.length > 0 ? '5' : '4'} gap-8 mb-8`}>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-8">
           
           {/* Brand & Newsletter - Takes 2 columns on large screens */}
           <div className="col-span-2 md:col-span-4 lg:col-span-2">
@@ -160,24 +135,22 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Community - Only show if enabled */}
-          {showCommunity && footerSections.community.length > 0 && (
-            <div>
-              <h4 className="text-sm font-semibold mb-4">Community</h4>
-              <ul className="space-y-2.5">
-                {footerSections.community.map((link) => (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* Community */}
+          <div>
+            <h4 className="text-sm font-semibold mb-4">Community</h4>
+            <ul className="space-y-2.5">
+              {footerSections.community.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* Resources & Legal Combined on mobile */}
           <div className="col-span-2 md:col-span-1">

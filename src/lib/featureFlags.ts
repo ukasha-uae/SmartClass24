@@ -21,9 +21,7 @@ export const FEATURE_FLAGS = {
     shsHasVirtualLabs: true,       // SHS: virtual labs access
     shsHasArena: true,            // SHS: Arena Challenge access
     // Global Settings
-    // Note: All African countries are accessible via CountrySelector
-    // V1 launch focuses on Ghana, but other countries can use the app
-    showNigeria: true,             // All countries accessible (V1 focuses on Ghana marketing)
+    showNigeria: false,            // Ghana only for V1
     showCarousel: true,           // Carousel mode for SHS lessons
     showTraditionalLesson: false, // Hide traditional view
     showAdmin: false,              // Hide admin

@@ -50,11 +50,6 @@ export function IntelligentLessonIntro({
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
 
-  // Safety check: ensure scenes array exists and has items
-  if (!scenes || !Array.isArray(scenes) || scenes.length === 0) {
-    return <div className="p-4 text-center">No intro content available.</div>;
-  }
-
   // Safety check: ensure currentScene is valid
   const safeCurrentScene = Math.min(currentScene, scenes.length - 1);
   const currentNarration = scenes[safeCurrentScene];

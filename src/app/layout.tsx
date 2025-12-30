@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import BottomNav from '@/components/BottomNav';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
-import ProfileSetupDialog from '@/components/ProfileSetupDialog';
+import StudentProfileSetup from '@/components/StudentProfileSetup';
 import { PWAInstallPrompt, PWAUpdatePrompt } from '@/components/PWAPrompts';
 import { LocalizationProvider } from '@/lib/localization/localization-context';
 
@@ -39,7 +39,6 @@ export default function RootLayout({
               <Header />
               <main className="flex-1 pb-20 md:pb-8 pt-16">{children}</main>
               <Footer />
-              <ProfileSetupDialog />
               <PWAInstallPrompt />
               <PWAUpdatePrompt />
               <BottomNav />

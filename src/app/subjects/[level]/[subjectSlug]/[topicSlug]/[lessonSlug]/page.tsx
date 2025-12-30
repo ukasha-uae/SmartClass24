@@ -33,9 +33,8 @@ import { collection, getDocs } from 'firebase/firestore';
 import { useLocalization } from '@/hooks/useLocalization';
 import type { Lesson } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useEffect, useState, useMemo, useRef } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
-import { logger } from '@/lib/logger';
 import { QuadraticEquationsIntro } from '@/components/QuadraticEquationsIntro';
 import FactorizationIntro from '@/components/intros/FactorizationIntro';
 import CompletingSquareIntro from '@/components/intros/CompletingSquareIntro';
@@ -76,9 +75,8 @@ import CircleGeometryIntro from '@/components/intros/CircleGeometryIntro';
 import TransformationGeometryIntro from '@/components/intros/TransformationGeometryIntro';
 import StatisticsMeasuresIntro from '@/components/intros/StatisticsMeasuresIntro';
 import ProbabilityCombinedIntro from '@/components/intros/ProbabilityCombinedIntro';
-// SHS1 Intro Components - Core Mathematics (New Pattern)
-import TypesOfNumbersIntro from '@/components/lesson-intros/core-mathematics/shs1/TypesOfNumbersIntro';
-// Old pattern (to be migrated):
+// SHS1 Intro Components
+import TypesOfNumbersIntro from '@/components/intros/TypesOfNumbersIntro';
 import FractionsDecimalsPercentagesIntro from '@/components/intros/FractionsDecimalsPercentagesIntro';
 import SetsVennDiagramsIntro from '@/components/intros/SetsVennDiagramsIntro';
 import AlgebraicExpressionsIntro from '@/components/intros/AlgebraicExpressionsIntro';
@@ -192,7 +190,6 @@ export default function LessonPage() {
   const [carouselEligible, setCarouselEligible] = useState(false);
   const [validationResult, setValidationResult] = useState<any>(null);
   const [hasCheckedAutostart, setHasCheckedAutostart] = useState(false);
-  const hasCheckedAutostartRef = useRef(false);
   const [jhsLesson, setJhsLesson] = useState<Lesson | null>(null);
   const [isJhsLoading, setIsJhsLoading] = useState(true);
   
@@ -241,7 +238,7 @@ export default function LessonPage() {
               setIsJhsLoading(false);
             })
             .catch((error) => {
-              logger.error('Error loading JHS subject for backward compatibility', error as Error);
+              console.error('Error loading JHS subject for backward compatibility:', error);
               setIsJhsLoading(false);
             });
         });
@@ -253,7 +250,7 @@ export default function LessonPage() {
             setIsJhsLoading(false);
           })
           .catch((error) => {
-            logger.error('Error loading JHS lesson', error as Error);
+            console.error('Error loading JHS lesson:', error);
             setIsJhsLoading(false);
           });
       }
@@ -283,8 +280,20 @@ export default function LessonPage() {
     // SHS subjects have topics array directly (similar to Primary)
     localTopic = (subjectInfo as any).topics?.find((t: any) => t.slug === topicSlug);
     
-    // Log lesson loading in development only
-    logger.debug('SHS Lesson Loading', { subjectSlug, topicSlug, lessonSlug });
+    // Debug: Log the parameters
+    console.log('SHS Lesson Loading:', { subjectSlug, topicSlug, lessonSlug, localTopic });
+    
+    // Use the detailed lesson from useLocalizedLesson (called at top level)
+    console.log('Detailed lesson from useLocalizedLesson:', detailedLesson);
+    if (detailedLesson) {
+      console.log('Lesson has activities?', !!detailedLesson.activities);
+      const activities = detailedLesson.activities as any;
+      if (activities && !Array.isArray(activities)) {
+        console.log('Activities type:', activities.type);
+        console.log('Activities has questions?', !!activities.questions);
+        console.log('Questions count:', activities.questions?.length || 0);
+      }
+    }
     
     if (detailedLesson) {
       // Use the detailed lesson from shs-lessons-data.ts
@@ -380,7 +389,7 @@ export default function LessonPage() {
         lessonSlug
       );
       
-      logger.debug('Carousel eligibility check', {
+      console.log('🎠 CAROUSEL CHECK:', {
         level,
         subjectSlug,
         topicSlug,
@@ -399,7 +408,17 @@ export default function LessonPage() {
         const validation = validateLessonForCarousel(lesson);
         setValidationResult(validation);
         
-        logger.debug('Carousel validation', {
+        console.log('🎠 CAROUSEL CHECK DETAILS:', {
+          'level (normalized)': level.toLowerCase(),
+          'subject (normalized)': subjectSlug.toLowerCase(),
+          'topic (normalized)': topicSlug.toLowerCase(),
+          'lesson (normalized)': lessonSlug.toLowerCase(),
+          'Expected lesson slug': 'is-sy-ecosystems-energy-flow-food-chains',
+          'Match?': lessonSlug.toLowerCase() === 'is-sy-ecosystems-energy-flow-food-chains',
+          'eligible': carouselEligible
+        });
+        
+        console.log('✅ CAROUSEL VALIDATION:', {
           isValid: validation.isValid,
           errors: validation.errors,
           warnings: validation.warnings,
@@ -416,11 +435,11 @@ export default function LessonPage() {
         });
         
         // Log validation results in development
-        logger.debug('Carousel validation complete', {
-          eligible: carouselEligible,
-          isValid: validation.isValid,
-          lessonId: lesson?.id
-        });
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Carousel Eligibility:', carouselEligible);
+          console.log('Lesson Validation:', validation);
+          console.log('Lesson data:', lesson);
+        }
         
         // Track validation errors only if there are actual errors with content
         if (!validation.isValid && validation.errors.length > 0) {
@@ -436,40 +455,32 @@ export default function LessonPage() {
           }
         }
       } catch (error) {
-        logger.error('Error during carousel validation', error as Error);
+        console.error('Error during carousel validation:', error);
       }
     }
   }, [carouselEligible, lesson?.id, level, subjectSlug, topicSlug, lessonSlug]);
 
   // Autostart carousel mode if enabled in feature flags
-  // This must run AFTER both carouselEligible and validationResult are set
-  // Use validationIsValid as a stable dependency instead of the whole object
-  const validationIsValid = validationResult?.isValid ?? false;
-  
   useEffect(() => {
-    // Skip if already checked and started
-    if (hasCheckedAutostartRef.current) {
-      return;
-    }
-    
-    // Wait for both conditions to be ready
-    if (carouselEligible && validationIsValid) {
-      logger.debug('Autostarting carousel mode', {
-        carouselEligible,
-        validationIsValid
+    if (carouselEligible && validationResult?.isValid && !hasCheckedAutostart) {
+      // Import FEATURE_FLAGS to check autostart
+      import('@/lib/featureFlags').then(({ FEATURE_FLAGS }) => {
+        if (FEATURE_FLAGS.CAROUSEL_MODE.autostart) {
+          console.log('🚀 AUTO-STARTING CAROUSEL MODE');
+          setUseCarouselMode(true);
+        }
+        setHasCheckedAutostart(true);
       });
-      
-      // Mark as checked immediately to prevent duplicate runs
-      hasCheckedAutostartRef.current = true;
-      
-      // Check autostart flag directly (no async import needed)
-      // FEATURE_FLAGS is already imported at the top of the file via isCarouselEnabled
-      // Autostart is enabled by default in feature flags
-      setUseCarouselMode(true);
-      setHasCheckedAutostart(true);
     }
-  }, [carouselEligible, validationIsValid]);
+  }, [carouselEligible, validationResult?.isValid, hasCheckedAutostart]);
 
+  // Debug: Log lesson slug - use lessonSlug to prevent infinite loops
+  useEffect(() => {
+    if (lesson?.slug) {
+      console.log('Current lesson slug:', lesson.slug);
+      console.log('Should show carousel button:', lesson.slug === 'shs3-quadratic-equations');
+    }
+  }, [lesson?.slug]);
 
   // Memoize the localQuizzes to prevent infinite loops
   const localQuizzes = useMemo(() => {
@@ -515,7 +526,7 @@ export default function LessonPage() {
             setFirestoreLesson(found);
         }
       } catch (error) {
-        logger.error("Error fetching lesson from Firestore", error as Error);
+        console.error("Error fetching lesson from Firestore:", error);
       } finally {
         setIsFirestoreLoading(false);
       }
@@ -669,14 +680,8 @@ export default function LessonPage() {
     <V1RouteGuard campus={campus} feature="lessons">
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
       {/* Use Carousel Mode if eligible and enabled */}
-      {(() => {
-        // Determine if carousel should be active
-        const shouldUseCarousel = carouselEligible && validationResult?.isValid && useCarouselMode;
-        
-        // Only show carousel if lesson is loaded and conditions are met
-        if (shouldUseCarousel && lesson) {
-          return (
-            <CarouselLesson
+      {carouselEligible && validationResult?.isValid && useCarouselMode ? (
+        <CarouselLesson
           lesson={lesson}
           subjectSlug={subjectSlug}
           topicSlug={topicSlug}
@@ -901,15 +906,8 @@ export default function LessonPage() {
             )
           }
           onExit={() => setUseCarouselMode(false)}
-            />
-          );
-        }
-        // Show traditional view only if carousel is NOT active
-        return null;
-      })()}
-      
-      {/* Traditional Lesson View - Only show if carousel is NOT active */}
-      {!useCarouselMode && lesson ? (
+        />
+      ) : (
         <>
           <Link
             href={`/subjects/${level}/${subjectSlug}`}
@@ -919,9 +917,8 @@ export default function LessonPage() {
             Back to {subjectInfo.name}
           </Link>
 
-          {/* Add Carousel Mode Toggle if eligible - Show button if carousel is eligible */}
-          {/* Carousel Mode Toggle - Show button if carousel is eligible but not yet started */}
-          {carouselEligible && !useCarouselMode && (
+          {/* Add Carousel Mode Toggle if eligible */}
+          {carouselEligible && validationResult?.isValid && (
             <div className="mb-4 md:mb-6">
               <Card className="border-2 border-violet-300 dark:border-violet-700 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30">
                 <CardContent className="p-3 md:p-4">
@@ -933,10 +930,7 @@ export default function LessonPage() {
                       </p>
                     </div>
                     <Button
-                      onClick={() => {
-                        logger.track('carousel_mode_manual_start', { lessonSlug });
-                        setUseCarouselMode(true);
-                      }}
+                      onClick={() => setUseCarouselMode(true)}
                       className="w-full sm:w-auto bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 h-10 md:h-auto"
                     >
                       Start Carousel Mode
@@ -1261,8 +1255,8 @@ export default function LessonPage() {
             </Card>
           </div>
         </div>
-        </>
-      ) : null}
+      </>
+      )}
       </div>
     </V1RouteGuard>
   );
