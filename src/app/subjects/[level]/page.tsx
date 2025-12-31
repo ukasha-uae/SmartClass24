@@ -137,12 +137,13 @@ export default function LevelSubjectsPage() {
   // V1 Route Guard: Wrap content to check access
   return (
     <V1RouteGuard campus={campus} feature="lessons">
-      <div className="relative min-h-screen">
-      {/* Decorative Background Elements */}
+      <div className="relative min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-violet-950/30 dark:to-indigo-950/30">
+      {/* Premium Animated Background Elements */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className={`absolute top-20 -right-20 w-96 h-96 bg-gradient-to-br ${colors.primary} opacity-10 rounded-full blur-3xl animate-float`} />
-        <div className={`absolute -bottom-20 -left-20 w-96 h-96 bg-gradient-to-tr ${colors.accent} opacity-10 rounded-full blur-3xl`} style={{ animationDelay: '1s' }} />
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br ${colors.secondary} opacity-5 rounded-full blur-3xl`} />
+        <div className={`absolute top-20 -right-20 w-[600px] h-[600px] bg-gradient-to-br ${colors.primary} opacity-20 rounded-full blur-3xl animate-pulse`} />
+        <div className={`absolute -bottom-20 -left-20 w-[600px] h-[600px] bg-gradient-to-tr ${colors.accent} opacity-20 rounded-full blur-3xl animate-pulse`} style={{ animationDelay: '1s' }} />
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br ${colors.secondary} opacity-10 rounded-full blur-3xl animate-pulse`} style={{ animationDelay: '2s' }} />
+        <div className={`absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-br ${colors.accent} opacity-15 rounded-full blur-3xl animate-pulse`} style={{ animationDelay: '0.5s' }} />
       </div>
 
       <div className="container mx-auto p-4 md:p-6 lg:p-8">
@@ -200,7 +201,7 @@ export default function LevelSubjectsPage() {
           </div>
         )}
         
-        {/* Modern Subject Cards Grid */}
+        {/* Premium Subject Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {isLoading && (!displaySubjects || displaySubjects.length === 0) && (
             <>
@@ -212,32 +213,34 @@ export default function LevelSubjectsPage() {
           {displaySubjects && displaySubjects.map((subject, index) => (
             <Link key={subject.id} href={`/subjects/${educationLevel}/${subject.slug}`} passHref>
               <Card 
-                className="h-full flex flex-col hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 cursor-pointer group relative overflow-hidden border-2 hover:border-primary/50 animate-fadeInUp"
+                className="h-full flex flex-col hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.02] cursor-pointer group relative overflow-hidden border-2 border-slate-200/50 dark:border-slate-700/50 hover:border-violet-400 dark:hover:border-violet-600 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl animate-fadeInUp"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                {/* Gradient overlay on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${colors.primary} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                {/* Premium Gradient overlay on hover */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${colors.primary} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-300/20 to-indigo-300/20 rounded-full blur-3xl group-hover:scale-150 transition-transform"></div>
                 
                 <CardHeader className="flex-grow relative z-10">
                   <div className="flex items-start gap-4 mb-4">
-                    <div className={`p-3 rounded-xl bg-gradient-to-br ${colors.primary} shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500`}>
-                      <BookOpen className="h-6 w-6 text-white" />
+                    <div className={`p-4 rounded-2xl bg-gradient-to-br ${colors.primary} shadow-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 relative`}>
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-2xl"></div>
+                      <BookOpen className="h-6 w-6 text-white relative z-10" />
                     </div>
                     <div className="flex-1">
-                      <CardTitle className="font-headline text-xl group-hover:text-primary transition-colors">
+                      <CardTitle className="font-headline text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent group-hover:from-violet-600 group-hover:to-indigo-600 dark:group-hover:from-violet-400 dark:group-hover:to-indigo-400 transition-all">
                         {subject.name}
                       </CardTitle>
                     </div>
                   </div>
-                  <CardDescription className="text-base leading-relaxed">
+                  <CardDescription className="text-base leading-relaxed text-slate-600 dark:text-slate-400">
                     {subject.description}
                   </CardDescription>
                 </CardHeader>
                 
                 <div className="p-6 pt-0 mt-auto relative z-10">
-                  <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${colors.accent} text-white font-semibold group-hover:gap-4 transition-all duration-300`}>
+                  <div className={`inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r ${colors.accent} text-white font-bold shadow-lg hover:shadow-xl group-hover:gap-4 transition-all duration-300 hover:scale-105`}>
                     <span>View Topics</span>
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               </Card>
