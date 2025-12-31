@@ -1360,6 +1360,7 @@ export default function QuizBattlePage() {
               </div>
             </CardContent>
           </Card>
+        </div>
       </div>
     </div>
   );
