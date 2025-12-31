@@ -17,6 +17,15 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [numberLinePosition, setNumberLinePosition] = useState(0);
   
+  // Fixed positions for floating elements to prevent re-render issues
+  const floatingPositions = useRef([
+    { x: [20, 150], y: [10, 80] },
+    { x: [80, 250], y: [30, 120] },
+    { x: [150, 280], y: [50, 100] },
+    { x: [200, 320], y: [20, 90] },
+    { x: [250, 350], y: [40, 110] }
+  ]);
+  
   // Teacher narration states
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -232,27 +241,30 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
     <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-blue-900/30 via-gray-900 to-purple-900/30 rounded-2xl p-4 sm:p-6 md:p-8 pb-20 sm:pb-28 overflow-hidden">
       {/* Floating number elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {['1', '2', '3', 'π', '√'].map((symbol, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-2xl text-blue-400/30"
-            initial={{ opacity: 0 }}
-            animate={{ 
-              opacity: [0, 0.4, 0],
-              x: [Math.random() * 100, Math.random() * 300],
-              y: [Math.random() * 50, Math.random() * 200]
-            }}
-            transition={{ 
-              duration: 4,
-              delay: i * 1.5,
-              repeat: Infinity as number,
-              repeatType: "loop" as const,
-              repeatDelay: 2
-            }}
-          >
-            {symbol}
-          </motion.div>
-        ))}
+        {['1', '2', '3', 'π', '√'].map((symbol, i) => {
+          const pos = floatingPositions.current[i] || { x: [0, 100], y: [0, 50] };
+          return (
+            <motion.div
+              key={i}
+              className="absolute text-2xl text-blue-400/30"
+              initial={{ opacity: 0 }}
+              animate={{ 
+                opacity: [0, 0.4, 0],
+                x: pos.x,
+                y: pos.y
+              }}
+              transition={{ 
+                duration: 4,
+                delay: i * 1.5,
+                repeat: Infinity as number,
+                repeatType: "loop" as const,
+                repeatDelay: 2
+              }}
+            >
+              {symbol}
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* Header */}
@@ -459,14 +471,14 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                         key={num}
                         className="absolute top-1/2 transform -translate-y-1/2"
                         style={{ left: `${((num + 10) / 20) * 100}%` }}
-                        animate={isAt ? { 
+                        animate={isAt && isAnimating ? { 
                           scale: [1, 1.3, 1] 
-                        } : isNear ? { 
+                        } : isNear && isAnimating ? { 
                           scale: 1.1 
                         } : { 
                           scale: 1 
                         }}
-                        transition={isAt ? {
+                        transition={isAt && isAnimating ? {
                           duration: 0.5,
                           repeat: Infinity as number,
                           repeatType: "loop" as const,
@@ -480,10 +492,10 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                           className={`w-1 h-6 sm:h-8 transition-colors ${
                             isAt ? 'bg-yellow-400' : isNear ? 'bg-blue-400' : 'bg-gray-400'
                           }`}
-                          animate={isAt ? { 
+                          animate={isAt && isAnimating ? { 
                             height: ['1.5rem', '2rem', '1.5rem'] 
                           } : {}}
-                          transition={isAt ? {
+                          transition={isAt && isAnimating ? {
                             duration: 0.5,
                             repeat: Infinity as number,
                             repeatType: "loop" as const,
@@ -524,44 +536,52 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                       y: [0, -8, 0],
                       scale: [1, 1.2, 1]
                     } : {
-                      y: [0, -5, 0]
+                      y: 0,
+                      scale: 1
                     }}
-                    transition={{ 
-                      duration: isAnimating ? 0.8 : 1,
+                    transition={isAnimating ? { 
+                      duration: 0.8,
                       repeat: Infinity as number,
                       ease: "easeInOut",
                       repeatType: "loop" as const
+                    } : {
+                      duration: 0.3,
+                      repeat: 0
                     }}
                   >
-                    {/* Glow effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-blue-400 rounded-full blur-lg opacity-50"
-                      animate={{ 
-                        scale: [1, 1.5, 1], 
-                        opacity: [0.5, 0.8, 0.5] 
-                      }}
-                      transition={{ 
-                        duration: 1, 
-                        repeat: Infinity as number,
-                        repeatType: "loop" as const,
-                        ease: "easeInOut"
-                      }}
-                    />
-                    {/* Main indicator */}
-                    <div className="relative w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full border-2 border-white shadow-lg">
-                      <motion.div 
-                        className="absolute inset-0 bg-blue-300 rounded-full opacity-75"
+                    {/* Glow effect - only animate when active */}
+                    {isAnimating && (
+                      <motion.div
+                        className="absolute inset-0 bg-blue-400 rounded-full blur-lg opacity-50"
                         animate={{ 
-                          scale: [1, 1.5, 1],
-                          opacity: [0.75, 0, 0.75]
+                          scale: [1, 1.5, 1], 
+                          opacity: [0.5, 0.8, 0.5] 
                         }}
-                        transition={{
-                          duration: 1.5,
+                        transition={{ 
+                          duration: 1, 
                           repeat: Infinity as number,
                           repeatType: "loop" as const,
-                          ease: "easeOut"
+                          ease: "easeInOut"
                         }}
                       />
+                    )}
+                    {/* Main indicator */}
+                    <div className="relative w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full border-2 border-white shadow-lg">
+                      {isAnimating && (
+                        <motion.div 
+                          className="absolute inset-0 bg-blue-300 rounded-full opacity-75"
+                          animate={{ 
+                            scale: [1, 1.5, 1],
+                            opacity: [0.75, 0, 0.75]
+                          }}
+                          transition={{
+                            duration: 1.5,
+                            repeat: Infinity as number,
+                            repeatType: "loop" as const,
+                            ease: "easeOut"
+                          }}
+                        />
+                      )}
                     </div>
                     {/* Trail effect */}
                     {isAnimating && (
