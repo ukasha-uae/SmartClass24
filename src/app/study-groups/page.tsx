@@ -118,85 +118,94 @@ export default function StudyGroupsPage() {
   );
 
   return (
-    <div className="container mx-auto p-4 md:p-6 lg:p-8 pb-20">
-      <div className="mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-          <div>
-            <h1 className="text-4xl font-bold font-headline mb-2 flex items-center gap-3">
-              <Users className="h-10 w-10 text-primary" />
-              Study Groups
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Learn together with your classmates
-            </p>
-          </div>
-          <CampusSelector onLevelChange={setEducationLevel} defaultLevel={educationLevel} />
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-blue-950/30 dark:to-indigo-950/30 relative overflow-hidden">
+      {/* Premium Animated Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-300/20 via-indigo-300/20 to-purple-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-300/20 via-blue-300/20 to-indigo-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <Users className="h-8 w-8 text-primary" />
-              <div>
-                <p className="text-2xl font-bold">{levelFilteredMyGroups.length}</p>
-                <p className="text-sm text-muted-foreground">My Groups</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <MessageCircle className="h-8 w-8 text-blue-500" />
-              <div>
-                <p className="text-2xl font-bold">
-                  {levelFilteredMyGroups.reduce((sum, g) => sum + g.members.length, 0)}
-                </p>
-                <p className="text-sm text-muted-foreground">Total Members</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <Trophy className="h-8 w-8 text-yellow-500" />
-              <div>
-                <p className="text-2xl font-bold">{levelFilteredAllGroups.length}</p>
-                <p className="text-sm text-muted-foreground">Available Groups</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <Button onClick={() => setShowCreateModal(true)} className="w-full sm:w-auto">
-          <Plus className="h-4 w-4 mr-2" />
-          Create Group
-        </Button>
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search groups..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
-
-      {/* My Groups */}
-      {levelFilteredMyGroups.length > 0 && (
+      <div className="container mx-auto p-4 md:p-6 lg:p-8 pb-20 relative z-10">
+        {/* Premium Header */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">My Groups</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {levelFilteredMyGroups.map((group) => (
-              <Card key={group.id} className="hover:shadow-lg transition-shadow">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="text-5xl sm:text-6xl animate-pulse">👥</div>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-headline bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                  Study Groups
+                </h1>
+              </div>
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400">
+                Learn together with your classmates
+              </p>
+            </div>
+            <CampusSelector onLevelChange={setEducationLevel} defaultLevel={educationLevel} />
+          </div>
+        </div>
+
+        {/* Premium Stats */}
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+          <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 backdrop-blur-sm rounded-2xl border-2 border-blue-200/30 dark:border-blue-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+            <div className="relative">
+              <Users className="h-8 w-8 sm:h-10 sm:w-10 text-blue-600 dark:text-blue-400 mb-3 group-hover:scale-110 transition-transform" />
+              <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-1">{levelFilteredMyGroups.length}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">My Groups</p>
+            </div>
+          </div>
+          <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 backdrop-blur-sm rounded-2xl border-2 border-cyan-200/30 dark:border-cyan-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-cyan-400/20 to-blue-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+            <div className="relative">
+              <MessageCircle className="h-8 w-8 sm:h-10 sm:w-10 text-cyan-600 dark:text-cyan-400 mb-3 group-hover:scale-110 transition-transform" />
+              <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-1">
+                {levelFilteredMyGroups.reduce((sum, g) => sum + g.members.length, 0)}
+              </p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Total Members</p>
+            </div>
+          </div>
+          <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-2xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+            <div className="relative">
+              <Trophy className="h-8 w-8 sm:h-10 sm:w-10 text-purple-600 dark:text-purple-400 mb-3 group-hover:scale-110 transition-transform" />
+              <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">{levelFilteredAllGroups.length}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Available Groups</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Premium Actions */}
+        <Card className="mb-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-blue-200/30 dark:border-blue-800/30 shadow-xl">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button 
+                onClick={() => setShowCreateModal(true)} 
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Create Group
+              </Button>
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <Input
+                  placeholder="Search groups..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-12 border-2 border-blue-200 dark:border-blue-800 focus:border-blue-500 dark:focus:border-blue-400"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Premium My Groups */}
+        {levelFilteredMyGroups.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">My Groups</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {levelFilteredMyGroups.map((group) => (
+                <Card key={group.id} className="group hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border-2 border-blue-200/50 dark:border-blue-800/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -275,20 +284,21 @@ export default function StudyGroupsPage() {
         </div>
       )}
 
-      {/* Discover Groups */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Discover Groups</h2>
-        {availableGroups.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center text-muted-foreground">
-              <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p>No available groups found. Create one to get started!</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {availableGroups.map((group) => (
-              <Card key={group.id} className="hover:shadow-lg transition-shadow">
+        {/* Premium Discover Groups */}
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">Discover Groups</h2>
+          {availableGroups.length === 0 ? (
+            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-xl">
+              <CardContent className="p-12 text-center">
+                <div className="text-6xl mb-4 opacity-50">👥</div>
+                <p className="text-slate-600 dark:text-slate-400 font-medium">No available groups found. Create one to get started!</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {availableGroups.map((group) => (
+                <Card key={group.id} className="group hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border-2 border-purple-200/50 dark:border-purple-800/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden">
+                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     {group.isPrivate && <Lock className="h-4 w-4" />}
@@ -321,7 +331,7 @@ export default function StudyGroupsPage() {
                         handleJoinGroup(group.id);
                       }
                     }}
-                    className="w-full"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
                   >
                     <UserPlus className="h-4 w-4 mr-2" />
                     Join Group
@@ -333,14 +343,14 @@ export default function StudyGroupsPage() {
         )}
       </div>
 
-      {/* Create Group Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <Card className="w-full max-w-lg my-8">
-            <CardHeader>
-              <CardTitle>Create Study Group</CardTitle>
-              <CardDescription>Start a new group to study with classmates</CardDescription>
-            </CardHeader>
+        {/* Premium Create Group Modal */}
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+            <Card className="w-full max-w-lg my-8 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-2 border-blue-200/30 dark:border-blue-800/30 shadow-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Create Study Group</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Start a new group to study with classmates</CardDescription>
+              </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="group-name">Group Name *</Label>
@@ -386,7 +396,10 @@ export default function StudyGroupsPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-2 pt-4">
-                <Button onClick={handleCreateGroup} className="flex-1">
+                <Button 
+                  onClick={handleCreateGroup} 
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                >
                   Create Group
                 </Button>
                 <Button
@@ -395,7 +408,7 @@ export default function StudyGroupsPage() {
                     setNewGroup({ name: '', description: '', subject: '', isPrivate: false, createdBy: '', createdByName: '', educationLevel: 'JHS' });
                   }}
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 border-2 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   Cancel
                 </Button>
@@ -405,14 +418,14 @@ export default function StudyGroupsPage() {
         </div>
       )}
 
-      {/* Join Private Group Modal */}
-      {showJoinModal && selectedGroup && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <Card className="w-full max-w-md">
-            <CardHeader>
-              <CardTitle>Join {selectedGroup.name}</CardTitle>
-              <CardDescription>Enter the invite code to join this private group</CardDescription>
-            </CardHeader>
+        {/* Premium Join Private Group Modal */}
+        {showJoinModal && selectedGroup && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-md bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl">
+              <CardHeader>
+                <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">Join {selectedGroup.name}</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400">Enter the invite code to join this private group</CardDescription>
+              </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="invite-code">Invite Code</Label>
@@ -428,7 +441,7 @@ export default function StudyGroupsPage() {
               <div className="flex gap-2 pt-4">
                 <Button
                   onClick={() => handleJoinGroup(selectedGroup.id, true)}
-                  className="flex-1"
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   disabled={joinCode.length !== 6}
                 >
                   Join Group
@@ -440,7 +453,7 @@ export default function StudyGroupsPage() {
                     setJoinCode('');
                   }}
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 border-2 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   Cancel
                 </Button>
