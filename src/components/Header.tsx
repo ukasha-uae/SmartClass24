@@ -90,47 +90,59 @@ export default function Header() {
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle className="flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-                    Menu
+              <SheetContent side="left" className="w-[300px] overflow-y-auto p-0 bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-purple-950/30 dark:to-indigo-950/30 border-r-2 border-purple-200/30 dark:border-purple-800/30">
+                {/* Premium Animated Background */}
+                <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+                  <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-br from-purple-300/20 via-violet-300/20 to-indigo-300/20 rounded-full blur-3xl animate-pulse"></div>
+                  <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-indigo-300/20 via-blue-300/20 to-cyan-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                </div>
+                
+                <SheetHeader className="relative z-10 p-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b-2 border-purple-200/30 dark:border-purple-800/30">
+                  <SheetTitle className="flex items-center gap-3">
+                    <div className="p-2 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-xl">
+                      <GraduationCap className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Menu</span>
                   </SheetTitle>
                 </SheetHeader>
-                <div className="mt-6 flex flex-col gap-4">
-                  {/* Dark Mode & Auth Section */}
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-accent/50">
-                    <div className="flex items-center gap-2">
-                      <ThemeToggle />
-                      <span className="text-sm font-medium">Dark Mode</span>
+                <div className="mt-0 flex flex-col gap-2 p-4 relative z-10">
+                  {/* Premium Dark Mode & Auth Section */}
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 backdrop-blur-sm border-2 border-purple-200/50 dark:border-purple-800/50 shadow-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-lg">
+                        <ThemeToggle />
+                      </div>
+                      <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Dark Mode</span>
                     </div>
                     <AuthModal />
                   </div>
                   
-                  <div className="h-px bg-border" />
+                  <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                   
-                  {/* Country Selector - Collapsible */}
+                  {/* Premium Country Selector - Collapsible */}
                   <Collapsible open={countryOpen} onOpenChange={setCountryOpen}>
                     <CollapsibleTrigger className="w-full">
-                      <div className="flex items-center justify-between p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors group">
+                      <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] group shadow-md">
                         <div className="flex items-center gap-3">
-                          <Globe className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                          <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg">
+                            <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                          </div>
                           <div className="flex flex-col items-start">
-                            <span className="text-sm font-medium text-foreground">Country</span>
-                            <span className="text-xs text-muted-foreground group-hover:text-foreground/70 flex items-center gap-1.5 transition-colors">
+                            <span className="text-sm font-bold text-slate-700 dark:text-slate-300">Country</span>
+                            <span className="text-xs text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 flex items-center gap-1.5 transition-colors font-medium">
                               {country?.iso2 && <FlagIcon countryCode={country.iso2} size="sm" />}
                               {country?.name || 'Select country'}
                             </span>
                           </div>
                         </div>
                         <ChevronRight className={cn(
-                          "h-4 w-4 text-muted-foreground group-hover:text-foreground transition-all",
+                          "h-5 w-5 text-blue-600 dark:text-blue-400 transition-all",
                           countryOpen && "rotate-90"
                         )} />
                       </div>
                     </CollapsibleTrigger>
-                    <CollapsibleContent className="px-3 pb-3">
-                      <div className="mt-2 space-y-2">
+                    <CollapsibleContent className="px-2 pb-3 pt-2">
+                      <div className="mt-2 p-3 rounded-xl bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border border-blue-200/30 dark:border-blue-800/30">
                         <CountrySelector 
                           variant="default" 
                           showSearch={true} 
@@ -140,40 +152,47 @@ export default function Header() {
                     </CollapsibleContent>
                   </Collapsible>
                   
-                  <div className="h-px bg-border" />
+                  <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                   
-                  {/* Profile Link - Only when signed in */}
+                  {/* Premium Profile Link - Only when signed in */}
                   {user && profile?.profilePictureUrl && (
                     <>
                       <Link 
                         href="/profile" 
                         onClick={() => setSheetOpen(false)}
-                        className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                        className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 backdrop-blur-sm border-2 border-purple-200/50 dark:border-purple-800/50 hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:scale-[1.02] shadow-md group"
                       >
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
-                          <AvatarFallback>{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                          <span className="font-medium">{profile.studentName || 'Profile'}</span>
-                          <span className="text-xs text-muted-foreground">View Profile</span>
+                        <div className="relative">
+                          <Avatar className="h-12 w-12 border-2 border-purple-300 dark:border-purple-700 shadow-lg">
+                            <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
+                            <AvatarFallback className="bg-gradient-to-br from-purple-500 to-violet-600 text-white font-bold">{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>
+                          </Avatar>
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
                         </div>
+                        <div className="flex flex-col flex-1">
+                          <span className="font-bold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-violet-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">{profile.studentName || 'Profile'}</span>
+                          <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">View Profile</span>
+                        </div>
+                        <ChevronRight className="h-5 w-5 text-purple-600 dark:text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
                       
-                      <div className="h-px bg-border" />
+                      <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                     </>
                   )}
                       
-                  {/* Main Navigation Links */}
-                  <nav className="flex flex-col gap-1">
+                  {/* Premium Main Navigation Links */}
+                  <nav className="flex flex-col gap-2">
                         {hasLessonsAccess && (
                           <Link 
                             href="/shs-programmes" 
                             onClick={() => setSheetOpen(false)}
-                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                            className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 backdrop-blur-sm border-2 border-purple-200/50 dark:border-purple-800/50 hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:scale-[1.02] shadow-md"
                           >
-                            <GraduationCap className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-                            <span className="font-medium">SHS Programmes</span>
+                            <div className="p-2 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-lg group-hover:from-purple-500/30 group-hover:to-violet-500/30 transition-all">
+                              <GraduationCap className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                            </div>
+                            <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-violet-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">SHS Programmes</span>
+                            <ChevronRight className="h-4 w-4 text-purple-600 dark:text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                           </Link>
                         )}
                         
@@ -181,116 +200,146 @@ export default function Header() {
                           <Link 
                             href="/virtual-labs" 
                             onClick={() => setSheetOpen(false)}
-                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                            className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] shadow-md"
                           >
-                            <svg className="h-5 w-5 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                            </svg>
-                            <span className="font-medium">Virtual Labs</span>
+                            <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg group-hover:from-blue-500/30 group-hover:to-indigo-500/30 transition-all">
+                              <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                              </svg>
+                            </div>
+                            <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Virtual Labs</span>
+                            <ChevronRight className="h-4 w-4 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                           </Link>
                         )}
                         
                         <Link 
                           href="/challenge-arena" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 backdrop-blur-sm border-2 border-amber-200/50 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <Trophy className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-                          <span className="font-medium">Challenge Arena</span>
+                          <div className="p-2 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-lg group-hover:from-amber-500/30 group-hover:to-orange-500/30 transition-all">
+                            <Trophy className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-amber-600 group-hover:to-orange-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Challenge Arena</span>
+                          <ChevronRight className="h-4 w-4 text-amber-600 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                         
                         <Link 
                           href="/study-schedule" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 backdrop-blur-sm border-2 border-green-200/50 dark:border-green-800/50 hover:border-green-300 dark:hover:border-green-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <Calendar className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-                          <span className="font-medium">Study Schedule</span>
+                          <div className="p-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all">
+                            <Calendar className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-green-600 group-hover:to-emerald-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Study Schedule</span>
+                          <ChevronRight className="h-4 w-4 text-green-600 dark:text-green-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                         
                         <Link 
                           href="/wassce-questions" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/30 dark:to-purple-950/30 backdrop-blur-sm border-2 border-indigo-200/50 dark:border-indigo-800/50 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <BookOpen className="h-5 w-5 text-violet-600 dark:text-violet-400" />
-                          <span className="font-medium">WASSCE Questions</span>
+                          <div className="p-2 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-lg group-hover:from-indigo-500/30 group-hover:to-purple-500/30 transition-all">
+                            <BookOpen className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-purple-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">WASSCE Questions</span>
+                          <ChevronRight className="h-4 w-4 text-indigo-600 dark:text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                       </nav>
                       
-                      <div className="h-px bg-border" />
+                      <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                       
-                      {/* Community Links */}
-                      <div className="space-y-1">
-                        <p className="px-3 text-sm font-medium text-muted-foreground">Community</p>
+                      {/* Premium Community Links */}
+                      <div className="space-y-2">
+                        <p className="px-4 text-sm font-bold bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Community</p>
                         
                         <Link 
                           href="/study-groups" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/30 dark:to-blue-950/30 backdrop-blur-sm border-2 border-cyan-200/50 dark:border-cyan-800/50 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <MessagesSquare className="h-5 w-5" />
-                          <span>Study Groups</span>
+                          <div className="p-2 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-lg group-hover:from-cyan-500/30 group-hover:to-blue-500/30 transition-all">
+                            <MessagesSquare className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-cyan-600 group-hover:to-blue-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Study Groups</span>
+                          <ChevronRight className="h-4 w-4 text-cyan-600 dark:text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                         
                         <Link 
                           href="/achievements-feed" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/30 backdrop-blur-sm border-2 border-yellow-200/50 dark:border-yellow-800/50 hover:border-yellow-300 dark:hover:border-yellow-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <Trophy className="h-5 w-5" />
-                          <span>Achievements</span>
+                          <div className="p-2 bg-gradient-to-br from-yellow-500/20 to-amber-500/20 rounded-lg group-hover:from-yellow-500/30 group-hover:to-amber-500/30 transition-all">
+                            <Trophy className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-yellow-600 group-hover:to-amber-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Achievements</span>
+                          <ChevronRight className="h-4 w-4 text-yellow-600 dark:text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                         
                         <Link 
                           href="/community" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30 backdrop-blur-sm border-2 border-teal-200/50 dark:border-teal-800/50 hover:border-teal-300 dark:hover:border-teal-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <HelpCircle className="h-5 w-5" />
-                          <span>Q&A Community</span>
+                          <div className="p-2 bg-gradient-to-br from-teal-500/20 to-cyan-500/20 rounded-lg group-hover:from-teal-500/30 group-hover:to-cyan-500/30 transition-all">
+                            <HelpCircle className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-teal-600 group-hover:to-cyan-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Q&A Community</span>
+                          <ChevronRight className="h-4 w-4 text-teal-600 dark:text-teal-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                       </div>
                       
-                      <div className="h-px bg-border" />
+                      <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                       
-                      {/* Other Portals */}
-                      <div className="space-y-1">
-                        <p className="px-3 text-sm font-medium text-muted-foreground">Portals</p>
+                      {/* Premium Other Portals */}
+                      <div className="space-y-2">
+                        <p className="px-4 text-sm font-bold bg-gradient-to-r from-slate-600 to-slate-700 dark:from-slate-400 dark:to-slate-500 bg-clip-text text-transparent">Portals</p>
                         
                         <Link 
                           href="/teacher/dashboard" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-950/30 dark:to-gray-950/30 backdrop-blur-sm border-2 border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                          </svg>
-                          <span>Teacher Dashboard</span>
+                          <div className="p-2 bg-gradient-to-br from-slate-500/20 to-gray-500/20 rounded-lg group-hover:from-slate-500/30 group-hover:to-gray-500/30 transition-all">
+                            <svg className="h-5 w-5 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-slate-600 group-hover:to-gray-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Teacher Dashboard</span>
+                          <ChevronRight className="h-4 w-4 text-slate-600 dark:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                         
                         <Link 
                           href="/parent/dashboard" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-slate-50 to-gray-50 dark:from-slate-950/30 dark:to-gray-950/30 backdrop-blur-sm border-2 border-slate-200/50 dark:border-slate-800/50 hover:border-slate-300 dark:hover:border-slate-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <Users className="h-5 w-5" />
-                          <span>Parent Portal</span>
+                          <div className="p-2 bg-gradient-to-br from-slate-500/20 to-gray-500/20 rounded-lg group-hover:from-slate-500/30 group-hover:to-gray-500/30 transition-all">
+                            <Users className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-slate-600 group-hover:to-gray-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Parent Portal</span>
+                          <ChevronRight className="h-4 w-4 text-slate-600 dark:text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                       </div>
                       
-                      {/* PWA Test Link */}
+                      {/* Premium PWA Test Link */}
                       <>
-                        <div className="h-px bg-border" />
+                        <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                         <Link 
                           href="/pwa-test" 
                           onClick={() => setSheetOpen(false)}
-                          className="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50 dark:hover:bg-violet-950/30 transition-colors text-foreground"
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-950/30 dark:to-rose-950/30 backdrop-blur-sm border-2 border-pink-200/50 dark:border-pink-800/50 hover:border-pink-300 dark:hover:border-pink-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                          </svg>
-                          <span>PWA Test</span>
+                          <div className="p-2 bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-lg group-hover:from-pink-500/30 group-hover:to-rose-500/30 transition-all">
+                            <svg className="h-5 w-5 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-pink-600 group-hover:to-rose-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">PWA Test</span>
+                          <ChevronRight className="h-4 w-4 text-pink-600 dark:text-pink-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                       </>
                 </div>
