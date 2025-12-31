@@ -136,14 +136,17 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-violet-950/30 dark:to-indigo-950/30 relative overflow-hidden">
+      {/* Premium Animated Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className={`absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br ${colors.primary} opacity-20 rounded-full blur-3xl animate-pulse`}></div>
+        <div className={`absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr ${colors.accent} opacity-20 rounded-full blur-3xl animate-pulse`} style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-violet-300/10 via-indigo-300/10 to-purple-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-amber-300/10 via-orange-300/10 to-yellow-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+      </div>
+
       {/* Hero Section with Country Pride */}
-      <section className="container mx-auto px-4 py-8 md:py-12 relative">
-        {/* Decorative Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className={`absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-br ${colors.primary} opacity-10 rounded-full blur-3xl`}></div>
-          <div className={`absolute -bottom-24 -left-24 w-96 h-96 bg-gradient-to-tr ${colors.accent} opacity-10 rounded-full blur-3xl`}></div>
-        </div>
+      <section className="container mx-auto px-4 py-8 md:py-12 relative z-10">
 
         <div className="text-center mb-12 relative z-10">
           {/* Country Flag Badge */}
@@ -183,20 +186,29 @@ export default function Home() {
             )}
           </p>
           
-          {/* Compact Inline Stats with Country Theme */}
-          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center items-center mt-6 mb-8">
-            <div className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-gradient-to-r ${colors.primary} text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105`}>
-              <Users className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="text-xs sm:text-sm font-bold whitespace-nowrap">27,000+ Students</span>
-            </div>
-            <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-              <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="text-xs sm:text-sm font-bold whitespace-nowrap">96% Success</span>
-            </div>
-            <div className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-gradient-to-r ${colors.accent} text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105`}>
-              <Brain className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              <span className="text-xs sm:text-sm font-bold whitespace-nowrap">AI-Powered</span>
-            </div>
+          {/* Premium Stats Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8 mb-12">
+            {stats.map((stat, index) => {
+              const Icon = stat.icon;
+              const statColors = [
+                { bg: 'from-blue-500/10 to-indigo-500/10', border: 'border-blue-200/30 dark:border-blue-800/30', icon: 'text-blue-600 dark:text-blue-400', text: 'from-blue-600 to-indigo-600' },
+                { bg: 'from-amber-500/10 to-orange-500/10', border: 'border-amber-200/30 dark:border-amber-800/30', icon: 'text-amber-600 dark:text-amber-400', text: 'from-amber-600 to-orange-600' },
+                { bg: 'from-purple-500/10 to-pink-500/10', border: 'border-purple-200/30 dark:border-purple-800/30', icon: 'text-purple-600 dark:text-purple-400', text: 'from-purple-600 to-pink-600' },
+                { bg: 'from-emerald-500/10 to-teal-500/10', border: 'border-emerald-200/30 dark:border-emerald-800/30', icon: 'text-emerald-600 dark:text-emerald-400', text: 'from-emerald-600 to-teal-600' }
+              ];
+              const color = statColors[index % statColors.length];
+              
+              return (
+                <div key={stat.label} className={`group relative p-4 sm:p-5 bg-gradient-to-br ${color.bg} backdrop-blur-sm rounded-2xl border-2 ${color.border} shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden`}>
+                  <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${color.bg.replace('/10', '/20')} rounded-full blur-2xl group-hover:scale-150 transition-transform`}></div>
+                  <div className="relative text-center">
+                    <Icon className={`h-6 w-6 sm:h-8 sm:w-8 mx-auto mb-2 ${color.icon} group-hover:scale-110 transition-transform`} />
+                    <p className={`text-2xl sm:text-3xl font-bold bg-gradient-to-r ${color.text} bg-clip-text text-transparent mb-1`}>{stat.value}</p>
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">{stat.label}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -217,11 +229,12 @@ export default function Home() {
               return (
                 <Card 
                   key={campus.id}
-                  className="group relative hover:shadow-2xl transition-all duration-500 hover:scale-[1.03] cursor-pointer border-2 hover:border-violet-400 dark:hover:border-violet-600 overflow-hidden bg-white dark:bg-gray-900"
+                  className="group relative hover:shadow-2xl transition-all duration-500 hover:scale-[1.03] cursor-pointer border-2 border-slate-200/50 dark:border-slate-700/50 hover:border-violet-400 dark:hover:border-violet-600 overflow-hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  {/* Gradient Background Effect */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${campus.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
+                  {/* Premium Gradient Background Effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${campus.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-violet-300/20 to-indigo-300/20 rounded-full blur-3xl group-hover:scale-150 transition-transform"></div>
                   
                   <CardContent className="p-6 md:p-8 relative z-10">
                     {/* Icon and Emoji Header */}
@@ -327,16 +340,18 @@ export default function Home() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
             {[
-              { href: '/challenge-arena/ghana', label: 'Challenge Arena', icon: '⚔️', desc: 'Battle & Compete', show: true },
-              { href: '/study-groups', label: 'Study Groups', icon: '👥', desc: 'Learn Together', show: false }, // Hidden for V1
-              { href: '/virtual-labs', label: 'Virtual Labs', icon: '🔬', desc: 'Hands-On Science', show: FEATURE_FLAGS.V1_LAUNCH.shsHasVirtualLabs },
-              { href: '/past-questions', label: 'Past Questions', icon: '📝', desc: 'Practice Tests', show: true }
+              { href: '/challenge-arena/ghana', label: 'Challenge Arena', icon: '⚔️', desc: 'Battle & Compete', show: true, gradient: 'from-orange-500 to-red-600' },
+              { href: '/study-groups', label: 'Study Groups', icon: '👥', desc: 'Learn Together', show: false, gradient: 'from-blue-500 to-indigo-600' }, // Hidden for V1
+              { href: '/virtual-labs', label: 'Virtual Labs', icon: '🔬', desc: 'Hands-On Science', show: FEATURE_FLAGS.V1_LAUNCH.shsHasVirtualLabs, gradient: 'from-purple-500 to-pink-600' },
+              { href: '/past-questions', label: 'Past Questions', icon: '📝', desc: 'Practice Tests', show: true, gradient: 'from-green-500 to-emerald-600' }
             ].filter(item => item.show).map((item) => (
               <Link key={item.href} href={item.href}>
-                <Card className="hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer border-2 hover:border-violet-400 dark:hover:border-violet-600 h-full">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-4xl mb-3">{item.icon}</div>
-                    <h4 className="font-bold text-sm mb-1">{item.label}</h4>
+                <Card className="group relative hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 border-slate-200/50 dark:border-slate-700/50 hover:border-violet-400 dark:hover:border-violet-600 h-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity`}></div>
+                  <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20 rounded-full blur-2xl group-hover:scale-150 transition-all`}></div>
+                  <CardContent className="p-6 text-center relative z-10">
+                    <div className="text-4xl sm:text-5xl mb-3 group-hover:scale-110 transition-transform inline-block">{item.icon}</div>
+                    <h4 className="font-bold text-sm sm:text-base mb-1 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">{item.label}</h4>
                     <p className="text-xs text-muted-foreground">{item.desc}</p>
                   </CardContent>
                 </Card>
@@ -344,23 +359,23 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Trust Indicators */}
+          {/* Premium Trust Indicators */}
           <div className="mt-12 text-center">
-            <p className="text-sm text-muted-foreground mb-4">
-              Trusted by schools and students across {country?.name || 'West Africa'}
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-6 font-medium">
+              Trusted by schools and students across <span className="font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{country?.name || 'West Africa'}</span>
             </p>
             <div className="flex flex-wrap gap-4 justify-center items-center">
-              <div className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                <p className="text-xs text-muted-foreground">Curriculum Aligned</p>
-                <p className="font-bold text-sm">{country?.examSystem?.conductor || 'WAEC'} Standard</p>
+              <div className="group px-5 py-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-200/30 dark:border-blue-800/30 backdrop-blur-sm hover:scale-105 transition-all shadow-lg hover:shadow-xl">
+                <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Curriculum Aligned</p>
+                <p className="font-bold text-sm bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">{country?.examSystem?.conductor || 'WAEC'} Standard</p>
               </div>
-              <div className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                <p className="text-xs text-muted-foreground">Updated</p>
-                <p className="font-bold text-sm">Daily Content</p>
+              <div className="group px-5 py-3 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200/30 dark:border-amber-800/30 backdrop-blur-sm hover:scale-105 transition-all shadow-lg hover:shadow-xl">
+                <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Updated</p>
+                <p className="font-bold text-sm bg-gradient-to-r from-amber-600 to-orange-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">Daily Content</p>
               </div>
-              <div className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
-                <p className="text-xs text-muted-foreground">Support</p>
-                <p className="font-bold text-sm">24/7 Available</p>
+              <div className="group px-5 py-3 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-2 border-green-200/30 dark:border-green-800/30 backdrop-blur-sm hover:scale-105 transition-all shadow-lg hover:shadow-xl">
+                <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Support</p>
+                <p className="font-bold text-sm bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">24/7 Available</p>
               </div>
             </div>
           </div>
