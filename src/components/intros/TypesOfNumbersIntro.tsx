@@ -263,9 +263,8 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                   left: `${pos.x[0]}px`,
                   top: `${pos.y[0]}px`
                 }}
-              >
-                {symbol}
-              </div>
+                dangerouslySetInnerHTML={{__html: symbol.replace(/√/g, '&radic;')}}
+              />
             );
           })}
         </div>
@@ -431,7 +430,7 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                       whileHover={{ scale: 1.05 }}
                       className="p-3 bg-gray-700 rounded-lg text-center"
                     >
-                      <div className="text-white font-bold text-lg sm:text-xl">{symbol}</div>
+                      <div className="text-white font-bold text-lg sm:text-xl" dangerouslySetInnerHTML={{__html: symbol.replace(/√/g, '&radic;')}} />
                       <div className="text-gray-400 text-xs sm:text-sm mt-1">
                         {symbol === 'π' && '≈ 3.14159...'}
                         {symbol === '√2' && '≈ 1.41421...'}
@@ -571,7 +570,7 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                     whileHover={{ scale: 1.02 }}
                     className="bg-gradient-to-br from-yellow-900/50 to-orange-900/50 rounded-lg p-3 sm:p-4 border border-yellow-700"
                   >
-                    <div className="text-yellow-300 font-bold text-sm sm:text-base mb-2">{item.q}</div>
+                    <div className="text-yellow-300 font-bold text-sm sm:text-base mb-2" dangerouslySetInnerHTML={{__html: item.q.replace(/√/g, '&radic;')}} />
                     <div className="text-white text-xs sm:text-sm">{item.a}</div>
                   </motion.div>
                 ))}
@@ -596,7 +595,7 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
         <div className="bg-purple-900/50 rounded-lg p-2 sm:p-3 text-center border border-purple-700">
           <Infinity className="w-4 h-4 sm:w-6 sm:h-6 text-purple-400 mx-auto mb-0.5 sm:mb-1" />
           <p className="text-purple-300 text-[10px] sm:text-sm">Irrational</p>
-          <p className="text-white font-mono text-xs sm:text-base">π, √2</p>
+          <p className="text-white font-mono text-xs sm:text-base" dangerouslySetInnerHTML={{__html: 'π, &radic;2'}} />
         </div>
       </div>
 
