@@ -1199,143 +1199,142 @@ export default function QuizBattlePage() {
       <div className="container mx-auto p-3 sm:p-6 pb-20 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* Premium Large Visible Timer - Fixed at Top */}
-          <div className={`sticky top-0 z-50 mb-4 transition-all ${
+          <div className={`fixed top-0 left-0 right-0 z-50 transition-all ${
             timeLeft <= 30 
               ? 'animate-pulse' 
               : ''
           }`}>
-            <Card className={`border-2 shadow-2xl ${
+            <Card className={`border-b-2 rounded-none shadow-2xl ${
               timeLeft <= 30 
                 ? 'bg-gradient-to-r from-red-500/20 to-orange-500/20 dark:from-red-950/50 dark:to-orange-950/50 border-red-500/50 dark:border-red-600/50' 
                 : timeLeft <= 60
                 ? 'bg-gradient-to-r from-orange-500/20 to-yellow-500/20 dark:from-orange-950/50 dark:to-yellow-950/50 border-orange-500/50 dark:border-orange-600/50'
                 : 'bg-gradient-to-r from-blue-500/20 to-indigo-500/20 dark:from-blue-950/50 dark:to-indigo-950/50 border-blue-500/50 dark:border-blue-600/50'
             } backdrop-blur-xl`}>
-              <CardContent className="p-4 sm:p-6">
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  {/* Question Info */}
-                  <div className="flex items-center gap-3">
-                    <div className="text-3xl sm:text-4xl animate-pulse">⚡</div>
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  {/* Question Info - Compact */}
+                  <div className="flex items-center gap-2">
+                    <div className="text-2xl sm:text-3xl">⚡</div>
                     <div>
-                      <span className="font-bold text-lg sm:text-xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                        Question {currentQuestionIndex + 1} of {challenge.questions.length}
+                      <span className="font-bold text-sm sm:text-base bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                        Q{currentQuestionIndex + 1}/{challenge.questions.length}
                       </span>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        {challenge.subject} • {challenge.difficulty}
+                      <div className="text-xs text-muted-foreground">
+                        {challenge.subject}
                       </div>
                     </div>
                   </div>
                   
                   {/* Large Prominent Timer */}
-                  <div className={`flex items-center gap-3 px-6 py-4 rounded-2xl border-2 transition-all shadow-lg ${
+                  <div className={`flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-xl border-2 transition-all shadow-lg ${
                     timeLeft <= 30 
                       ? 'border-red-500 bg-gradient-to-br from-red-500 to-orange-600 animate-pulse scale-105' 
                       : timeLeft <= 60
                       ? 'border-orange-500 bg-gradient-to-br from-orange-500 to-yellow-500'
                       : 'border-blue-500 bg-gradient-to-br from-blue-500 to-indigo-600'
                   }`}>
-                    <Clock className={`h-8 w-8 sm:h-10 sm:w-10 text-white ${
+                    <Clock className={`h-6 w-6 sm:h-8 sm:w-8 text-white ${
                       timeLeft <= 30 ? 'animate-spin' : ''
                     }`} />
                     <div className="flex flex-col">
-                      <span className="text-xs sm:text-sm text-white/80 font-medium">Time Left</span>
-                      <span className="font-mono font-black text-3xl sm:text-4xl lg:text-5xl text-white leading-none">
+                      <span className="text-[10px] sm:text-xs text-white/80 font-medium leading-none">Time</span>
+                      <span className="font-mono font-black text-2xl sm:text-3xl lg:text-4xl text-white leading-none">
                         {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
                       </span>
                     </div>
                   </div>
                   
-                  {/* Sound Toggle */}
+                  {/* Sound Toggle - Compact */}
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-10 w-10 hover:bg-primary/10"
+                    className="h-8 w-8 sm:h-10 sm:w-10 hover:bg-primary/10"
                     onClick={toggleMute}
                     title={isMuted ? "Unmute Sound" : "Mute Sound"}
                   >
                     {isMuted ? (
-                      <VolumeX className="h-5 w-5 text-muted-foreground" />
+                      <VolumeX className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
                     ) : (
-                      <Volume2 className="h-5 w-5 text-primary" />
+                      <Volume2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                     )}
                   </Button>
                 </div>
                 
-                {/* Progress Bars */}
-                <div className="space-y-3 mt-4">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                    <span>Question Progress</span>
-                    <span className="font-semibold">{Math.round(progress)}%</span>
+                {/* Compact Progress Bars */}
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex-1">
+                    <Progress value={progress} className="h-2 bg-slate-200 dark:bg-slate-700" />
+                    <div className="text-[10px] text-muted-foreground mt-0.5">Progress: {Math.round(progress)}%</div>
                   </div>
-                  <Progress value={progress} className="h-3 bg-slate-200 dark:bg-slate-700" />
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                    <span>Time Remaining</span>
-                    <span className={`font-bold ${
+                  <div className="flex-1">
+                    <Progress 
+                      value={timeProgress} 
+                      className={`h-2 bg-slate-200 dark:bg-slate-700 ${
+                        timeLeft <= 30 ? '[&>div]:bg-gradient-to-r [&>div]:from-red-500 [&>div]:to-orange-600' : 
+                        timeLeft <= 60 ? '[&>div]:bg-gradient-to-r [&>div]:from-orange-500 [&>div]:to-yellow-500' : 
+                        '[&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-indigo-600'
+                      }`}
+                    />
+                    <div className={`text-[10px] font-semibold mt-0.5 ${
                       timeLeft <= 30 ? 'text-red-600' : 
                       timeLeft <= 60 ? 'text-orange-600' : 
                       'text-blue-600'
                     }`}>
-                      {Math.round(timeProgress)}%
-                    </span>
+                      Time: {Math.round(timeProgress)}%
+                    </div>
                   </div>
-                  <Progress 
-                    value={timeProgress} 
-                    className={`h-3 bg-slate-200 dark:bg-slate-700 ${
-                      timeLeft <= 30 ? '[&>div]:bg-gradient-to-r [&>div]:from-red-500 [&>div]:to-orange-600' : 
-                      timeLeft <= 60 ? '[&>div]:bg-gradient-to-r [&>div]:from-orange-500 [&>div]:to-yellow-500' : 
-                      '[&>div]:bg-gradient-to-r [&>div]:from-blue-500 [&>div]:to-indigo-600'
-                    }`}
-                  />
                 </div>
               </CardContent>
             </Card>
           </div>
+          
+          {/* Spacer for fixed header */}
+          <div className="h-[140px] sm:h-[160px]"></div>
 
-          {/* Premium Player/Opponent Info */}
-          <Card className="mb-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-slate-200/30 dark:border-slate-700/30 shadow-xl">
-            <CardContent className="p-4 sm:p-6">
+          {/* Premium Player/Opponent Info - Compact */}
+          <Card className="mb-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-slate-200/30 dark:border-slate-700/30 shadow-xl">
+            <CardContent className="p-3 sm:p-4">
               {challenge.type === 'practice' ? (
-                <div className="flex items-center justify-center gap-4">
-                  <Avatar className="h-16 w-16 border-4 border-green-500 shadow-lg">
-                    <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-green-500 to-emerald-600 text-white">
+                <div className="flex items-center justify-center gap-3">
+                  <Avatar className="h-12 w-12 border-2 border-green-500 shadow-lg">
+                    <AvatarFallback className="text-base font-bold bg-gradient-to-br from-green-500 to-emerald-600 text-white">
                       {player.userName.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div className="text-center">
-                    <p className="font-bold text-lg bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{player.userName}</p>
-                    <p className="text-sm text-muted-foreground">Rating: {player.rating}</p>
-                    <Badge variant="secondary" className="mt-2 text-base px-4 py-1 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30">
-                      🧠 Practice Mode
+                    <p className="font-bold text-sm bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{player.userName}</p>
+                    <p className="text-xs text-muted-foreground">Rating: {player.rating}</p>
+                    <Badge variant="secondary" className="mt-1 text-xs px-2 py-0.5 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30">
+                      🧠 Practice
                     </Badge>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Avatar className="h-16 w-16 border-4 border-blue-500 shadow-lg">
-                      <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-12 w-12 border-2 border-blue-500 shadow-lg">
+                      <AvatarFallback className="text-base font-bold bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
                         {player.userName.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-bold text-lg bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{player.userName}</p>
-                      <p className="text-sm text-muted-foreground">Rating: {player.rating}</p>
+                      <p className="font-bold text-sm bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{player.userName}</p>
+                      <p className="text-xs text-muted-foreground">R: {player.rating}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4">
-                    <div className="text-3xl sm:text-4xl animate-pulse">⚔️</div>
-                  </div>
+                  <div className="text-2xl animate-pulse">⚔️</div>
                   
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
                     <div className="text-right">
-                      <p className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">{challenge.opponents[0]?.userName || 'Opponent'}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Rating: {getPlayerProfile(challenge.opponents[0]?.userId)?.rating || '???'}
+                      <p className="font-bold text-sm bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">{challenge.opponents[0]?.userName || 'Opponent'}</p>
+                      <p className="text-xs text-muted-foreground">
+                        R: {getPlayerProfile(challenge.opponents[0]?.userId)?.rating || '???'}
                       </p>
                     </div>
-                    <Avatar className="h-16 w-16 border-4 border-orange-500 shadow-lg">
-                      <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-orange-500 to-red-600 text-white">
+                    <Avatar className="h-12 w-12 border-2 border-orange-500 shadow-lg">
+                      <AvatarFallback className="text-base font-bold bg-gradient-to-br from-orange-500 to-red-600 text-white">
                         {(challenge.opponents[0]?.userName || 'O').split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
@@ -1345,25 +1344,25 @@ export default function QuizBattlePage() {
             </CardContent>
           </Card>
 
-          {/* Premium Question Card */}
-          <Card className="mb-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-primary/30 shadow-2xl">
-            <CardContent className="p-6 sm:p-8 lg:p-10">
-              <div className="mb-6 sm:mb-8">
-                <div className="flex items-center justify-between mb-6">
-                  <Badge className="px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0">
+          {/* Premium Question Card - Compact */}
+          <Card className="mb-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-primary/30 shadow-2xl">
+            <CardContent className="p-4 sm:p-6">
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-3">
+                  <Badge className="px-3 py-1 text-xs bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0">
                     {challenge.subject}
                   </Badge>
-                  <Badge variant="outline" className="px-4 py-2 text-sm border-2 capitalize">
+                  <Badge variant="outline" className="px-3 py-1 text-xs border-2 capitalize">
                     {challenge.difficulty}
                   </Badge>
                 </div>
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 leading-relaxed bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold leading-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
                   {currentQuestion.question}
                 </h2>
               </div>
 
-              {/* Premium Answer Options */}
-              <div className="space-y-4" key={currentQuestionIndex}>
+              {/* Premium Answer Options - Compact */}
+              <div className="space-y-2 sm:space-y-3" key={currentQuestionIndex}>
                 {currentQuestion.options?.map((option, index) => {
                   const isSelected = selectedAnswer === option;
                   const isCorrect = option === currentQuestion.correctAnswer;
@@ -1375,7 +1374,7 @@ export default function QuizBattlePage() {
                       key={index}
                       onClick={() => handleAnswerSelect(option)}
                       disabled={!!selectedAnswer}
-                      className={`group relative w-full p-5 sm:p-6 text-left rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] ${
+                      className={`group relative w-full p-3 sm:p-4 text-left rounded-lg border-2 transition-all duration-300 hover:scale-[1.01] ${
                         isSelected
                           ? (isCorrect 
                               ? 'border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 font-semibold shadow-lg shadow-green-200/50 dark:shadow-green-900/20' 
@@ -1387,8 +1386,8 @@ export default function QuizBattlePage() {
                             : 'border-slate-200 dark:border-slate-700 hover:border-primary hover:bg-gradient-to-r hover:from-primary/5 hover:to-purple-500/5 hover:shadow-md'
                       }`}
                     >
-                      <div className="flex items-center gap-4">
-                        <div className={`flex items-center justify-center w-12 h-12 rounded-xl border-2 font-bold text-lg transition-all ${
+                      <div className="flex items-center gap-3">
+                        <div className={`flex items-center justify-center w-10 h-10 rounded-lg border-2 font-bold text-base transition-all flex-shrink-0 ${
                           isSelected
                             ? (isCorrect 
                                 ? 'border-green-500 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg' 
@@ -1399,14 +1398,14 @@ export default function QuizBattlePage() {
                         }`}>
                           {letter}
                         </div>
-                        <span className="flex-1 text-base sm:text-lg font-medium">{option}</span>
+                        <span className="flex-1 text-sm sm:text-base font-medium leading-tight">{option}</span>
                         {isSelected && (
                           isCorrect 
-                            ? <CheckCircle2 className="h-6 w-6 text-green-500 animate-in zoom-in" />
-                            : <XCircle className="h-6 w-6 text-red-500 animate-in zoom-in" />
+                            ? <CheckCircle2 className="h-5 w-5 text-green-500 animate-in zoom-in flex-shrink-0" />
+                            : <XCircle className="h-5 w-5 text-red-500 animate-in zoom-in flex-shrink-0" />
                         )}
                         {showResult && !isSelected && isCorrect && (
-                          <CheckCircle2 className="h-6 w-6 text-green-500" />
+                          <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
                         )}
                       </div>
                     </button>
@@ -1426,22 +1425,22 @@ export default function QuizBattlePage() {
           ...
         </Button> */}
 
-          {/* Premium Score Preview */}
-          <Card className="mt-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl border-2 border-blue-200/30 dark:border-blue-800/30 shadow-xl">
-            <CardContent className="p-4 sm:p-6">
+          {/* Premium Score Preview - Compact */}
+          <Card className="mt-3 bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl border-2 border-blue-200/30 dark:border-blue-800/30 shadow-xl">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="text-3xl">📊</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl">📊</div>
                   <div>
-                    <p className="font-semibold text-sm text-muted-foreground">Your Progress</p>
-                    <p className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                      {Object.keys(userAnswers).length} / {challenge.questions.length} Questions
+                    <p className="font-semibold text-xs text-muted-foreground">Progress</p>
+                    <p className="text-sm font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      {Object.keys(userAnswers).length}/{challenge.questions.length}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 rounded-full">
-                  <CheckCircle2 className="h-5 w-5 text-green-500" />
-                  <span className="font-bold text-green-600">{Object.keys(userAnswers).length}</span>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-white/80 dark:bg-gray-800/80 rounded-full">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span className="font-bold text-sm text-green-600">{Object.keys(userAnswers).length}</span>
                 </div>
               </div>
             </CardContent>
