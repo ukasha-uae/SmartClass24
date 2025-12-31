@@ -56,20 +56,27 @@ export default function Header() {
   return (
     <header 
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur-sm transition-shadow duration-300",
-        scrolled && "shadow-md"
+        "fixed top-0 left-0 right-0 z-50 border-b-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-r from-white/90 via-violet-50/90 to-indigo-50/90 dark:from-slate-900/90 dark:via-violet-950/90 dark:to-indigo-950/90 backdrop-blur-xl transition-all duration-300",
+        scrolled && "shadow-xl shadow-violet-200/20 dark:shadow-violet-900/20"
       )}
     >
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+      {/* Animated background gradient */}
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-violet-300/10 to-indigo-300/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-purple-300/10 to-pink-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 relative">
         <Link href="/" className="flex items-center gap-2 group shrink-0">
           <div className="relative">
-            <GraduationCap className="h-6 w-6 sm:h-7 sm:w-7 text-violet-600 dark:text-violet-400 transition-transform group-hover:scale-110 duration-200" />
+            <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-indigo-400 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+            <GraduationCap className="h-6 w-6 sm:h-7 sm:w-7 text-violet-600 dark:text-violet-400 relative transition-transform group-hover:scale-110 group-hover:rotate-12 duration-200" />
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-base sm:text-lg md:text-xl font-bold font-headline bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">
+            <span className="text-base sm:text-lg md:text-xl font-bold font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent group-hover:scale-105 transition-transform inline-block">
               SmartC24
             </span>
-            <span className="hidden xs:inline text-[9px] text-muted-foreground -mt-1">Smart Learning</span>
+            <span className="hidden xs:inline text-[9px] text-muted-foreground -mt-1 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">Smart Learning</span>
           </div>
         </Link>
         
@@ -361,9 +368,9 @@ export default function Header() {
               </DropdownMenu>
 
               <Link href="/challenge-arena" className="hidden md:block">
-                <Button variant="ghost" size="sm" className="flex items-center gap-2 text-primary">
+                <Button variant="ghost" size="sm" className="flex items-center gap-2 text-primary hover:bg-gradient-to-r hover:from-violet-500/10 hover:to-indigo-500/10 hover:border-violet-300/50 dark:hover:border-violet-700/50 border border-transparent transition-all hover:scale-105">
                   <Trophy className="h-4 w-4" />
-                  <span className="font-semibold">Arena</span>
+                  <span className="font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Arena</span>
                 </Button>
               </Link>
               <Link href="/study-schedule" className="hidden lg:block">

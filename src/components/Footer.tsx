@@ -60,73 +60,88 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="hidden md:block border-t bg-muted/30 mt-auto">
-      <div className="container mx-auto px-4 md:px-6 py-12">
+    <footer className="hidden md:block border-t-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-br from-slate-50 via-violet-50/50 to-indigo-50/50 dark:from-slate-900 dark:via-violet-950/50 dark:to-indigo-950/50 backdrop-blur-xl mt-auto relative overflow-hidden">
+      {/* Animated background gradient */}
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-violet-300/10 via-indigo-300/10 to-purple-300/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-purple-300/10 via-pink-300/10 to-rose-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <div className="container mx-auto px-4 md:px-6 py-12 relative z-10">
         {/* Main Footer Content */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-8">
           
-          {/* Brand & Newsletter - Takes 2 columns on large screens */}
+          {/* Premium Brand & Newsletter - Takes 2 columns on large screens */}
           <div className="col-span-2 md:col-span-4 lg:col-span-2">
-            <div className="mb-4">
-              <h3 className="text-lg font-bold font-headline bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent mb-2">
-                SmartClass24
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4">
+            <div className="mb-6 p-6 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm rounded-2xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-lg">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="text-4xl animate-pulse">🎓</div>
+                <h3 className="text-2xl font-bold font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                  SmartClass24
+                </h3>
+              </div>
+              <p className="text-sm text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
                 Empowering {country?.name || 'African'} students with smart, interactive learning experiences. 
                 Master {country?.academicStructure.juniorSecondary.name} & {country?.academicStructure.seniorSecondary.name} curriculum 
                 with AI-powered tools.
               </p>
             </div>
 
-            {/* Newsletter Signup */}
-            <div>
-              <h4 className="text-sm font-semibold mb-3">Stay Updated</h4>
+            {/* Premium Newsletter Signup */}
+            <div className="p-4 bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 rounded-xl border border-violet-200/50 dark:border-violet-800/50">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="text-2xl">📧</div>
+                <h4 className="text-sm font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Stay Updated</h4>
+              </div>
               <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
                 <Input
                   type="email"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-9 text-sm"
+                  className="h-10 text-sm bg-white dark:bg-gray-800 border-2 border-violet-200 dark:border-violet-800 focus:border-violet-500 dark:focus:border-violet-400"
                   required
                   aria-label="Email address for newsletter"
                 />
-                <Button type="submit" size="sm" className="shrink-0">
+                <Button type="submit" size="sm" className="shrink-0 h-10 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105">
                   Subscribe
                 </Button>
               </form>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
                 Get updates on new lessons, features, and exam tips.
               </p>
             </div>
 
-            {/* Social Media Links */}
+            {/* Premium Social Media Links */}
             <div className="mt-6">
-              <h4 className="text-sm font-semibold mb-3">Connect With Us</h4>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="text-xl">🌐</div>
+                <h4 className="text-sm font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Connect With Us</h4>
+              </div>
               <div className="flex gap-3">
                 {socialLinks.map(({ icon: Icon, href, label, ariaLabel }) => (
                   <Link
                     key={label}
                     href={href}
-                    className="h-9 w-9 rounded-lg bg-background border hover:bg-accent hover:border-primary transition-colors flex items-center justify-center"
+                    className="group relative h-10 w-10 rounded-xl bg-gradient-to-br from-white to-violet-50 dark:from-gray-800 dark:to-violet-950/50 border-2 border-violet-200/50 dark:border-violet-800/50 hover:border-violet-500 dark:hover:border-violet-400 hover:scale-110 transition-all shadow-md hover:shadow-lg flex items-center justify-center"
                     aria-label={ariaLabel}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-4 w-4 text-violet-600 dark:text-violet-400 group-hover:scale-110 transition-transform" />
                   </Link>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-sm font-semibold mb-4">Quick Links</h4>
+          {/* Premium Quick Links */}
+          <div className="p-4 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm rounded-xl border border-violet-100/50 dark:border-violet-900/50">
+            <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Quick Links</h4>
             <ul className="space-y-2.5">
               {footerSections.quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:translate-x-1 transition-all inline-block"
                   >
                     {link.label}
                   </Link>
@@ -135,15 +150,15 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Community */}
-          <div>
-            <h4 className="text-sm font-semibold mb-4">Community</h4>
+          {/* Premium Community */}
+          <div className="p-4 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm rounded-xl border border-violet-100/50 dark:border-violet-900/50">
+            <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Community</h4>
             <ul className="space-y-2.5">
               {footerSections.community.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:translate-x-1 transition-all inline-block"
                   >
                     {link.label}
                   </Link>
@@ -152,15 +167,15 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Resources & Legal Combined on mobile */}
-          <div className="col-span-2 md:col-span-1">
-            <h4 className="text-sm font-semibold mb-4">Resources</h4>
+          {/* Premium Resources & Legal Combined on mobile */}
+          <div className="col-span-2 md:col-span-1 p-4 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm rounded-xl border border-violet-100/50 dark:border-violet-900/50">
+            <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Resources</h4>
             <ul className="space-y-2.5 mb-6">
               {footerSections.resources.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:translate-x-1 transition-all inline-block"
                   >
                     {link.label}
                   </Link>
@@ -168,13 +183,13 @@ export default function Footer() {
               ))}
             </ul>
 
-            <h4 className="text-sm font-semibold mb-4">Company</h4>
+            <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Company</h4>
             <ul className="space-y-2.5">
               {footerSections.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:translate-x-1 transition-all inline-block"
                   >
                     {link.label}
                   </Link>
@@ -184,36 +199,44 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Contact Info Bar */}
-        <div className="border-t pt-6 mb-6">
-          <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Mail className="h-4 w-4" />
-              <a href="mailto:support@smartclass24.com" className="hover:text-primary transition-colors">
-                support@smartclass24.com
-              </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <Phone className="h-4 w-4" />
-              <span>{country?.supportPhone || '+233 XX XXX XXXX'}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              <span>{country?.capital}, {country?.name}</span>
+        {/* Premium Contact Info Bar */}
+        <div className="border-t-2 border-violet-200/30 dark:border-violet-800/30 pt-6 mb-6">
+          <div className="p-4 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm rounded-xl border border-violet-200/30 dark:border-violet-800/30">
+            <div className="flex flex-wrap gap-6 text-sm">
+              <div className="flex items-center gap-2 group">
+                <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
+                  <Mail className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                </div>
+                <a href="mailto:support@smartclass24.com" className="text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors font-medium">
+                  support@smartclass24.com
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
+                  <Phone className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                </div>
+                <span className="text-slate-700 dark:text-slate-300 font-medium">{country?.supportPhone || '+233 XX XXX XXXX'}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
+                  <MapPin className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                </div>
+                <span className="text-slate-700 dark:text-slate-300 font-medium">{country?.capital}, {country?.name}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar - Copyright & Country */}
-        <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <div>
-            <p>
+        {/* Premium Bottom Bar - Copyright & Country */}
+        <div className="border-t-2 border-violet-200/30 dark:border-violet-800/30 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+          <div className="p-3 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 rounded-xl border border-violet-200/50 dark:border-violet-800/50">
+            <p className="text-slate-700 dark:text-slate-300">
               © {currentYear} SmartClass24. All rights reserved. 
-              <span className="ml-2">Made with ❤️ for {country?.name || 'Africa'}</span>
+              <span className="ml-2 font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Made with ❤️ for {country?.name || 'Africa'}</span>
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <span>Currently serving: {country?.flag} {country?.name}</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 rounded-xl border border-violet-200/50 dark:border-violet-800/50">
+            <span className="text-slate-700 dark:text-slate-300 font-medium">Currently serving: <span className="text-2xl">{country?.flag}</span> <span className="font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{country?.name}</span></span>
           </div>
         </div>
       </div>
