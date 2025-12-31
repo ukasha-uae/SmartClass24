@@ -65,9 +65,9 @@ const MeasuresOfCentralTendencyIntro = ({ onComplete }: { onComplete?: () => voi
     {
       id: 7,
       icon: Globe,
-      narration: "These measures are everywhere in Ghana! Farmers use mean to track crop yields across seasons. Businesses analyze median sales to understand typical performance. Market researchers find the mode to identify popular products. From Accra to Tamale, statistics helps make better decisions!",
-      visualContent: "Real-World: Crop yields | Sales analysis | Market research | Ghana",
-      highlightWords: ['Ghana', 'crop yields', 'sales', 'market research', 'decisions'],
+      narration: "These measures are everywhere! Farmers use mean to track crop yields across seasons. Businesses analyze median sales to understand typical performance. Market researchers find the mode to identify popular products. Statistics helps make better decisions in agriculture, commerce, and research!",
+      visualContent: "Real-World: Crop yields | Sales analysis | Market research",
+      highlightWords: ['crop yields', 'sales', 'market research', 'decisions'],
       teacherTip: "Connect to local examples: cocoa production, market prices, student performance."
     },
     {

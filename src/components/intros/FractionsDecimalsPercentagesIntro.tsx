@@ -3,12 +3,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Slice, Calculator, Percent, ArrowLeftRight, Trophy, Play, Pause, Volume2, VolumeX, GraduationCap, ChevronLeft, ChevronRight, Divide, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCountryProperties } from '@/hooks/useCountryConfig';
 
 interface LessonIntroProps {
   onComplete?: () => void;
 }
 
 const FractionsDecimalsPercentagesIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
+  const { currencyName } = useCountryProperties();
   const [stage, setStage] = useState(0);
   
   // Interactive state for demonstrations
@@ -43,25 +45,25 @@ const FractionsDecimalsPercentagesIntro: React.FC<LessonIntroProps> = ({ onCompl
     {
       title: "🍕 Fractions, Decimals & Percentages!",
       content: "Three ways to express the same thing - parts of a whole!",
-      narration: "Welcome to fractions, decimals, and percentages! In Ghana, we use these every single day - when you buy half a loaf of bread at the market, that's a fraction! When you see a price tag showing 2.50 cedis, that's a decimal! When you get 25% off during a sale, that's a percentage! These are three different ways to express the same concept: parts of a whole. Understanding how to convert between them is essential for shopping, cooking, banking, and most importantly, for your WASSCE examinations!",
-      highlightWords: ['fractions', 'decimals', 'percentages', 'Ghana', 'market', 'cedis', '25%', 'WASSCE', 'convert']
+      narration: `Welcome to fractions, decimals, and percentages! We use these every single day - when you buy half a loaf of bread at the market, that's a fraction! When you see a price tag showing 2.50 ${currencyName}, that's a decimal! When you get 25% off during a sale, that's a percentage! These are three different ways to express the same concept: parts of a whole. Understanding how to convert between them is essential for shopping, cooking, banking, and most importantly, for your WASSCE examinations!`,
+      highlightWords: ['fractions', 'decimals', 'percentages', 'market', '25%', 'WASSCE', 'convert']
     },
     {
       title: "🍰 Understanding Fractions",
       content: "Fractions show parts of a whole! Click to see different fractions.",
-      narration: "A fraction represents parts of a whole! The top number is called the numerator - it tells you how many parts you have. The bottom number is the denominator - it tells you the total number of equal parts. For example, three-quarters means you have 3 parts out of 4 equal parts. In Ghana, fractions are everywhere - half a loaf of bread, quarter tank of fuel, three-quarters of your monthly salary! Fractions help us share things fairly, measure ingredients in cooking, and understand proportions in recipes. The key is that all parts must be equal!",
+      narration: "A fraction represents parts of a whole! The top number is called the numerator - it tells you how many parts you have. The bottom number is the denominator - it tells you the total number of equal parts. For example, three-quarters means you have 3 parts out of 4 equal parts. Fractions are everywhere - half a loaf of bread, quarter tank of fuel, three-quarters of your monthly salary! Fractions help us share things fairly, measure ingredients in cooking, and understand proportions in recipes. The key is that all parts must be equal!",
       highlightWords: ['fraction', 'numerator', 'denominator', 'parts', 'whole', 'three-quarters', 'equal parts', 'share', 'proportions']
     },
     {
       title: "🔢 Decimals - Another Language",
       content: "Decimals are fractions written differently! Click to convert.",
-      narration: "Decimals are just another way to write fractions! One-half equals 0.5. One-quarter equals 0.25. Three-quarters equals 0.75. To convert a fraction to a decimal, simply divide the numerator by the denominator! So three-quarters? Divide 3 by 4 to get 0.75! Decimals are especially useful for money - in Ghana, prices like 2.50 cedis, 15.75 cedis, or 0.50 cedis are all decimals. They're also used in measurements - 0.5 meters, 1.25 liters, 2.75 kilograms. Decimals make calculations easier, especially when using calculators!",
-      highlightWords: ['decimals', 'fractions', '0.5', '0.25', '0.75', 'divide', 'numerator', 'denominator', 'money', 'cedis', 'calculators']
+      narration: `Decimals are just another way to write fractions! One-half equals 0.5. One-quarter equals 0.25. Three-quarters equals 0.75. To convert a fraction to a decimal, simply divide the numerator by the denominator! So three-quarters? Divide 3 by 4 to get 0.75! Decimals are especially useful for money - prices like 2.50 ${currencyName}, 15.75 ${currencyName}, or 0.50 ${currencyName} are all decimals. They're also used in measurements - 0.5 meters, 1.25 liters, 2.75 kilograms. Decimals make calculations easier, especially when using calculators!`,
+      highlightWords: ['decimals', 'fractions', '0.5', '0.25', '0.75', 'divide', 'numerator', 'denominator', 'money', 'calculators']
     },
     {
       title: "% Percentages - Per Hundred",
       content: "Percentages mean 'out of 100'! Perfect for discounts and sales!",
-      narration: "Percentages mean 'per hundred' or 'out of 100'! 50% means 50 out of 100, which equals one-half. 25% means 25 out of 100, which equals one-quarter. To convert a decimal to a percent, multiply by 100! So 0.75 times 100 equals 75 percent. Easy! In Ghana, percentages are everywhere - 15% VAT on purchases, 25% discount during sales, 10% interest on savings, 50% off during clearance! Understanding percentages helps you calculate discounts, understand interest rates, and make smart financial decisions. They're also essential for WASSCE questions on percentage increase and decrease!",
+      narration: "Percentages mean 'per hundred' or 'out of 100'! 50% means 50 out of 100, which equals one-half. 25% means 25 out of 100, which equals one-quarter. To convert a decimal to a percent, multiply by 100! So 0.75 times 100 equals 75 percent. Easy! Percentages are everywhere - 15% VAT on purchases, 25% discount during sales, 10% interest on savings, 50% off during clearance! Understanding percentages helps you calculate discounts, understand interest rates, and make smart financial decisions. They're also essential for WASSCE questions on percentage increase and decrease!",
       highlightWords: ['percentages', 'per hundred', 'out of 100', '50%', '25%', 'multiply by 100', 'VAT', 'discount', 'interest', 'percentage increase', 'decrease']
     },
     {
@@ -71,10 +73,10 @@ const FractionsDecimalsPercentagesIntro: React.FC<LessonIntroProps> = ({ onCompl
       highlightWords: ['conversions', 'divide', 'multiply by 100', 'simplify', '25%', 'one-quarter', '50%', '75%', 'automatic', 'conversion triangle']
     },
     {
-      title: "💰 Real-World Applications in Ghana",
+      title: "💰 Real-World Applications",
       content: "See how fractions, decimals, and percentages are used daily!",
-      narration: "These concepts are used everywhere in Ghana! In COMMERCE, shopkeepers calculate discounts - if something costs 100 cedis and there's a 20% discount, you save 20 cedis! In COOKING, recipes use fractions - half a cup of flour, quarter teaspoon of salt, three-quarters cup of water. In FINANCE, banks use percentages for interest rates - if you save 1000 cedis at 10% interest, you earn 100 cedis! In MEASUREMENTS, we convert between units - 0.5 meters equals half a meter equals 50% of a meter. Even in SPORTS, we use percentages - if a football team wins 3 out of 4 games, that's 75% win rate!",
-      highlightWords: ['commerce', 'discounts', 'cooking', 'recipes', 'finance', 'interest rates', 'measurements', 'sports', 'win rate', 'Ghana']
+      narration: `These concepts are used everywhere! In COMMERCE, shopkeepers calculate discounts - if something costs 100 ${currencyName} and there's a 20% discount, you save 20 ${currencyName}! In COOKING, recipes use fractions - half a cup of flour, quarter teaspoon of salt, three-quarters cup of water. In FINANCE, banks use percentages for interest rates - if you save 1000 ${currencyName} at 10% interest, you earn 100 ${currencyName}! In MEASUREMENTS, we convert between units - 0.5 meters equals half a meter equals 50% of a meter. Even in SPORTS, we use percentages - if a football team wins 3 out of 4 games, that's 75% win rate!`,
+      highlightWords: ['commerce', 'discounts', 'cooking', 'recipes', 'finance', 'interest rates', 'measurements', 'sports', 'win rate']
     },
     {
       title: "🎯 WASSCE Success Tips!",

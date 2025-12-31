@@ -3,12 +3,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Hash, Infinity, Divide, Calculator, Trophy, Play, Pause, Volume2, VolumeX, GraduationCap, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCountryProperties } from '@/hooks/useCountryConfig';
 
 interface LessonIntroProps {
   onComplete?: () => void;
 }
 
 const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
+  const { currencyName } = useCountryProperties();
   const [stage, setStage] = useState(0);
   
   // Interactive state for demonstrations
@@ -47,44 +49,44 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   const stages = [
     {
       title: "🔢 The World of Numbers!",
-      content: "Numbers are everywhere in Ghana - from counting oranges at the market to measuring distances!",
-      narration: "Welcome to the fascinating world of numbers! Every day in Ghana, we use numbers - counting oranges at the market, measuring distances between cities, managing money in cedis, and calculating prices. But did you know numbers come in different types? Just like we classify animals into mammals, birds, and reptiles, we classify numbers into natural, whole, integers, rational, irrational, and real numbers. Understanding these types is like learning the alphabet before reading - it's the foundation of all mathematics!",
-      highlightWords: ['numbers', 'Ghana', 'market', 'cedis', 'classify', 'natural', 'whole', 'integers', 'rational', 'irrational', 'real', 'foundation']
+      content: "Numbers are everywhere - from counting oranges at the market to measuring distances!",
+      narration: "Welcome to the fascinating world of numbers! Every day, we use numbers - counting oranges at the market, measuring distances between cities, managing money, and calculating prices. But did you know numbers come in different types? Just like we classify animals into mammals, birds, and reptiles, we classify numbers into natural, whole, integers, rational, irrational, and real numbers. Understanding these types is like learning the alphabet before reading - it's the foundation of all mathematics!",
+      highlightWords: ['numbers', 'market', 'classify', 'natural', 'whole', 'integers', 'rational', 'irrational', 'real', 'foundation']
     },
     {
       title: "1️⃣ Natural Numbers - Counting Numbers",
       content: "Natural numbers start from 1 and go on forever! Click numbers to see examples.",
-      narration: "Natural numbers are the counting numbers we use every day! They start from 1 and go on forever: 1, 2, 3, 4, 5, and so on. In Ghana, you use natural numbers when counting students in your class, counting oranges at the market, or counting the number of goats on a farm. Natural numbers are positive whole numbers - no negatives, no fractions, no decimals, and traditionally no zero. They're called natural because they come naturally to us - even young children learn to count using natural numbers!",
+      narration: "Natural numbers are the counting numbers we use every day! They start from 1 and go on forever: 1, 2, 3, 4, 5, and so on. You use natural numbers when counting students in your class, counting oranges at the market, or counting the number of goats on a farm. Natural numbers are positive whole numbers - no negatives, no fractions, no decimals, and traditionally no zero. They're called natural because they come naturally to us - even young children learn to count using natural numbers!",
       highlightWords: ['natural numbers', 'counting', '1', 'forever', 'positive', 'whole numbers', 'no negatives', 'no fractions']
     },
     {
       title: "0️⃣ Whole Numbers - Adding Zero",
       content: "Whole numbers include zero! This is important for representing 'nothing'.",
-      narration: "Whole numbers are natural numbers plus zero! So we have 0, 1, 2, 3, 4, 5, and so on. Zero is special - it represents nothing, emptiness, or the absence of something. In Ghana, if you have zero cedis in your wallet, that's a whole number! If you have zero oranges left at the market, that's also a whole number. Zero is crucial in mathematics - it's the starting point on a number line, and it's essential for place value in our number system. Without zero, we couldn't write numbers like 10, 100, or 1000!",
+      narration: `Whole numbers are natural numbers plus zero! So we have 0, 1, 2, 3, 4, 5, and so on. Zero is special - it represents nothing, emptiness, or the absence of something. If you have zero ${currencyName} in your wallet, that's a whole number! If you have zero oranges left at the market, that's also a whole number. Zero is crucial in mathematics - it's the starting point on a number line, and it's essential for place value in our number system. Without zero, we couldn't write numbers like 10, 100, or 1000!`,
       highlightWords: ['whole numbers', 'zero', '0', 'nothing', 'emptiness', 'starting point', 'place value']
     },
     {
       title: "➕➖ Integers - Positive and Negative",
       content: "Integers include negative numbers! Perfect for temperatures, debts, and elevations.",
-      narration: "Integers include all whole numbers plus their negative counterparts! So we have negative 5, negative 3, negative 2, negative 1, zero, 1, 2, 3, 5, and so on. In Ghana, integers are everywhere! When the temperature drops below zero during harmattan season, we use negative integers. If you owe someone 10 cedis, that's negative 10. If you're in a building 5 floors below ground level, that's negative 5. Integers help us represent opposites - above and below sea level, profit and loss, credit and debt!",
+      narration: `Integers include all whole numbers plus their negative counterparts! So we have negative 5, negative 3, negative 2, negative 1, zero, 1, 2, 3, 5, and so on. Integers are everywhere! When the temperature drops below zero during harmattan season, we use negative integers. If you owe someone 10 ${currencyName}, that's negative 10. If you're in a building 5 floors below ground level, that's negative 5. Integers help us represent opposites - above and below sea level, profit and loss, credit and debt!`,
       highlightWords: ['integers', 'negative', 'positive', 'temperature', 'harmattan', 'debt', 'opposites', 'below sea level']
     },
     {
       title: "📊 Rational Numbers - Fractions & Decimals",
       content: "Rational numbers can be written as fractions! Click to see examples.",
-      narration: "Rational numbers are numbers that can be written as a fraction - where the top number (numerator) and bottom number (denominator) are both integers, and the denominator is not zero. This includes fractions like one-half, three-quarters, and two-thirds. It also includes decimals that terminate like 0.5, 0.25, or 0.75, and decimals that repeat like 0.333... which equals one-third. In Ghana, rational numbers appear everywhere - half a loaf of bread costs 2.5 cedis, three-quarters of a tank of fuel, or 0.75 of your monthly salary. If you can write it as p over q where q is not zero, it's rational!",
+      narration: `Rational numbers are numbers that can be written as a fraction - where the top number (numerator) and bottom number (denominator) are both integers, and the denominator is not zero. This includes fractions like one-half, three-quarters, and two-thirds. It also includes decimals that terminate like 0.5, 0.25, or 0.75, and decimals that repeat like 0.333... which equals one-third. Rational numbers appear everywhere - half a loaf of bread costs 2.5 ${currencyName}, three-quarters of a tank of fuel, or 0.75 of your monthly salary. If you can write it as p over q where q is not zero, it's rational!`,
       highlightWords: ['rational numbers', 'fraction', 'numerator', 'denominator', 'terminate', 'repeat', '0.333', 'one-third', 'p over q']
     },
     {
       title: "∞ Irrational Numbers - Never-Ending",
       content: "Irrational numbers cannot be written as simple fractions! They go on forever.",
-      narration: "Irrational numbers are numbers that cannot be written as a simple fraction of two integers. Their decimal representation goes on forever without repeating! The most famous irrational number is pi, approximately 3.14159... which never ends and never repeats. Another is the square root of 2, approximately 1.41421... which also goes on forever. In Ghana, irrational numbers appear in real life - when calculating the circumference of a circular well using pi, or when finding the diagonal of a square field using square root of 2. These numbers are essential in engineering, architecture, and science!",
+      narration: "Irrational numbers are numbers that cannot be written as a simple fraction of two integers. Their decimal representation goes on forever without repeating! The most famous irrational number is pi, approximately 3.14159... which never ends and never repeats. Another is the square root of 2, approximately 1.41421... which also goes on forever. Irrational numbers appear in real life - when calculating the circumference of a circular well using pi, or when finding the diagonal of a square field using square root of 2. These numbers are essential in engineering, architecture, and science!",
       highlightWords: ['irrational numbers', 'cannot be written', 'fraction', 'forever', 'never repeats', 'pi', '3.14159', 'square root of 2', 'circumference']
     },
     {
       title: "📏 Real Numbers - The Complete Picture",
       content: "Real numbers include everything on the number line - rationals and irrationals!",
-      narration: "Real numbers are the complete set - they include all rational numbers and all irrational numbers together! Every point on a number line represents a real number. From negative infinity to positive infinity, every number you can think of is a real number. In Ghana, when you measure anything - the height of a building, the distance to Accra, the weight of cocoa beans, or the temperature - you're using real numbers. The number line is complete with real numbers - there are no gaps! Real numbers form the foundation for all advanced mathematics including algebra, calculus, and beyond.",
+      narration: "Real numbers are the complete set - they include all rational numbers and all irrational numbers together! Every point on a number line represents a real number. From negative infinity to positive infinity, every number you can think of is a real number. When you measure anything - the height of a building, the distance between cities, the weight of produce, or the temperature - you're using real numbers. The number line is complete with real numbers - there are no gaps! Real numbers form the foundation for all advanced mathematics including algebra, calculus, and beyond.",
       highlightWords: ['real numbers', 'complete set', 'rational', 'irrational', 'number line', 'negative infinity', 'positive infinity', 'no gaps', 'foundation']
     },
     {
