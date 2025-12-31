@@ -341,7 +341,7 @@ export default function StudyGroupsPage() {
             ))}
           </div>
         )}
-      </div>
+        </div>
 
         {/* Premium Create Group Modal */}
         {showCreateModal && (
