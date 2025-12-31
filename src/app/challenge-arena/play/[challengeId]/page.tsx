@@ -34,7 +34,6 @@ import { useFirebase } from '@/firebase/provider';
 import { useToast } from '@/hooks/use-toast';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { useFullscreen } from '@/contexts/FullscreenContext';
-import { useEffect } from 'react';
 
 export default function QuizBattlePage() {
   const params = useParams();
