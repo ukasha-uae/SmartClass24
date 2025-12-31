@@ -239,7 +239,7 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-xl">
+        <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <div className="text-2xl">👨‍👩‍👧‍👦</div>
