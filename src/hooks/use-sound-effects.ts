@@ -1,6 +1,6 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 
-type SoundType = 'correct' | 'wrong' | 'click' | 'complete' | 'tick';
+type SoundType = 'correct' | 'wrong' | 'click' | 'complete' | 'tick' | 'matchFound' | 'warning';
 
 export const useSoundEffects = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -113,6 +113,38 @@ export const useSoundEffects = () => {
         gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
         oscillator.start(now);
         oscillator.stop(now + 0.03);
+        break;
+
+      case 'matchFound':
+        // Match found celebration (ascending notes)
+        const matchNotes = [392.00, 493.88, 523.25, 659.25]; // G4, B4, C5, E5
+        matchNotes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gn = ctx.createGain();
+          osc.connect(gn);
+          gn.connect(ctx.destination);
+          
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          
+          const startTime = now + (i * 0.08);
+          gn.gain.setValueAtTime(0.15, startTime);
+          gn.gain.exponentialRampToValueAtTime(0.01, startTime + 0.2);
+          
+          osc.start(startTime);
+          osc.stop(startTime + 0.2);
+        });
+        break;
+
+      case 'warning':
+        // Warning beep (low to high)
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(400, now);
+        oscillator.frequency.exponentialRampToValueAtTime(800, now + 0.15);
+        gainNode.gain.setValueAtTime(0.1, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        oscillator.start(now);
+        oscillator.stop(now + 0.2);
         break;
     }
   }, [isMuted]);

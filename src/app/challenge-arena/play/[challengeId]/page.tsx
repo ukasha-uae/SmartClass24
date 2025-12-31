@@ -53,6 +53,11 @@ export default function QuizBattlePage() {
   const [startTime] = useState(Date.now());
   const [showDetailedStats, setShowDetailedStats] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  
+  // Enhanced timing tracking for anti-cheat
+  const [questionStartTimes, setQuestionStartTimes] = useState<Record<string, number>>({});
+  const [questionTimeSpent, setQuestionTimeSpent] = useState<Record<string, number>>({});
+  const [suspiciousActivity, setSuspiciousActivity] = useState<string[]>([]);
 
   useEffect(() => {
     // Use mock user ID for testing
@@ -69,15 +74,27 @@ export default function QuizBattlePage() {
       setGamePhase('waiting');
     } else {
       setGamePhase('playing');
+      // Track start time for first question
+      if (challengeData.questions.length > 0) {
+        setQuestionStartTimes({ [challengeData.questions[0].id]: Date.now() });
+      }
     }
   }, [challengeId, user, router]);
 
-  // Timer countdown
+  // Enhanced timer countdown with color coding and sound effects
   useEffect(() => {
     if (gamePhase !== 'playing') return;
 
     const timer = setInterval(() => {
       setTimeLeft(prev => {
+        // Play warning sound when time is low
+        if (prev === 10) {
+          playSound('warning', 0.3);
+        }
+        if (prev === 5) {
+          playSound('warning', 0.5);
+        }
+        
         if (prev <= 1) {
           handleNextQuestion();
           return 120;
@@ -87,13 +104,30 @@ export default function QuizBattlePage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [gamePhase, currentQuestionIndex]);
+  }, [gamePhase, currentQuestionIndex, playSound]);
 
   const handleAnswerSelect = (answerId: string) => {
     if (!challenge || selectedAnswer) return; // Prevent changing answer once selected
+    
+    const currentQuestion = challenge.questions[currentQuestionIndex];
+    const questionStartTime = questionStartTimes[currentQuestion.id] || Date.now();
+    const timeSpent = Date.now() - questionStartTime;
+    
+    // Anti-cheat: Validate minimum time (1000ms = 1 second)
+    const MINIMUM_TIME = 1000;
+    if (timeSpent < MINIMUM_TIME) {
+      setSuspiciousActivity(prev => [...prev, `Question ${currentQuestionIndex + 1}: Answered too quickly (${timeSpent}ms)`]);
+      // Still allow the answer but log suspicious activity
+    }
+    
+    // Track time spent on this question
+    setQuestionTimeSpent(prev => ({
+      ...prev,
+      [currentQuestion.id]: timeSpent
+    }));
+    
     setSelectedAnswer(answerId);
 
-    const currentQuestion = challenge.questions[currentQuestionIndex];
     const isCorrect = currentQuestion.correctAnswer === answerId;
     
     if (isCorrect) {
@@ -119,6 +153,13 @@ export default function QuizBattlePage() {
     }));
 
     if (currentQuestionIndex < challenge.questions.length - 1) {
+      // Track start time for next question
+      const nextQuestion = challenge.questions[currentQuestionIndex + 1];
+      setQuestionStartTimes(prev => ({
+        ...prev,
+        [nextQuestion.id]: Date.now()
+      }));
+      
       setCurrentQuestionIndex(prev => prev + 1);
       setSelectedAnswer(null);
       setTimeLeft(120);
@@ -139,18 +180,34 @@ export default function QuizBattlePage() {
     // Use mock user ID for testing
     const userId = user?.uid || 'test-user-1';
 
-    // Convert to PlayerAnswer[]
+    // Convert to PlayerAnswer[] with proper timing tracking
     const playerAnswers: PlayerAnswer[] = challenge.questions.map(q => {
       const answer = answersMap[q.id];
       const isCorrect = answer === q.correctAnswer;
+      const timeSpent = questionTimeSpent[q.id] || (Date.now() - (questionStartTimes[q.id] || startTime));
+      
       return {
         questionId: q.id,
         answer,
         isCorrect,
-        timeSpent: 0, // We don't track per-question time yet
+        timeSpent, // Now properly tracked per question
         points: isCorrect ? q.points : 0
       };
     });
+    
+    // Anti-cheat: Detect suspicious patterns
+    const averageTime = playerAnswers.reduce((sum, a) => sum + a.timeSpent, 0) / playerAnswers.length;
+    const correctCount = playerAnswers.filter(a => a.isCorrect).length;
+    
+    // Flag if average time is suspiciously low (< 2 seconds)
+    if (averageTime < 2000) {
+      setSuspiciousActivity(prev => [...prev, `Average time per question: ${Math.round(averageTime)}ms (suspiciously fast)`]);
+    }
+    
+    // Flag if perfect score with minimal time (< 3 seconds average)
+    if (correctCount === playerAnswers.length && averageTime < 3000) {
+      setSuspiciousActivity(prev => [...prev, `Perfect score with very fast average time: ${Math.round(averageTime)}ms`]);
+    }
 
     // Calculate total time taken
     const totalTimeTaken = Date.now() - startTime;

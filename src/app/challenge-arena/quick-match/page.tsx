@@ -26,10 +26,12 @@ import {
   Player,
 } from '@/lib/challenge';
 import { useFirebase } from '@/firebase/provider';
+import { useSoundEffects } from '@/hooks/use-sound-effects';
 
 export default function QuickMatchPage() {
   const router = useRouter();
   const { user } = useFirebase();
+  const { playSound } = useSoundEffects();
   
   const [player, setPlayer] = useState<Player | null>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -135,19 +137,34 @@ export default function QuickMatchPage() {
     const userId = user?.uid || 'test-user-1';
     const allPlayers = getAllPlayers().filter(p => p.userId !== userId);
     
-    // Smart matching algorithm
-    // 1. Try to find opponent within ±100 rating
+    // Enhanced SmartClassUAE-style matching algorithm
+    const RATING_THRESHOLD = 200; // ±200 rating threshold (like SmartClassUAE)
+    
+    // 1. Try to find opponent within ±200 rating (SmartClassUAE standard)
     let matched = allPlayers.filter(p => 
-      Math.abs(p.rating - player.rating) <= 100
+      Math.abs(p.rating - player.rating) <= RATING_THRESHOLD
     );
     
-    // 2. Prefer same school for rivalry
+    // 2. If no match within threshold, expand to ±300
+    if (matched.length === 0) {
+      matched = allPlayers.filter(p => 
+        Math.abs(p.rating - player.rating) <= 300
+      );
+    }
+    
+    // 3. Prefer same school for rivalry (if available in threshold)
     const sameSchool = matched.filter(p => p.school === player.school);
     if (sameSchool.length > 0) {
       matched = sameSchool;
     }
     
-    // 3. Fallback to any opponent
+    // 4. Prefer similar level (JHS vs SHS)
+    const sameLevel = matched.filter(p => p.level === player.level);
+    if (sameLevel.length > 0) {
+      matched = sameLevel;
+    }
+    
+    // 5. Fallback to any opponent if still no match
     if (matched.length === 0) {
       matched = allPlayers;
     }
@@ -158,6 +175,8 @@ export default function QuickMatchPage() {
       setOpponent(randomOpponent);
       setMatchFound(true);
       setCountdown(10);
+      // Play match found sound
+      playSound('matchFound');
     } else {
       // No opponents available
       setIsSearching(false);
