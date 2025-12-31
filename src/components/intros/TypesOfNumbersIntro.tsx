@@ -237,23 +237,6 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
     return 'rational';
   };
 
-  // Helper to render text with square root symbol properly
-  const renderWithSqrt = (text: string) => {
-    const parts = text.split(/(√\d+)/g);
-    return parts.map((part, i) => {
-      if (part.match(/^√\d+$/)) {
-        const num = part.substring(1);
-        return (
-          <span key={i}>
-            <span style={{ textDecoration: 'overline' }}>{num}</span>
-            <span style={{ fontSize: '0.7em', verticalAlign: 'super' }}>√</span>
-          </span>
-        );
-      }
-      return <span key={i}>{part}</span>;
-    });
-  };
-
   return (
     <>
       <style dangerouslySetInnerHTML={{__html: `
