@@ -86,94 +86,116 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container mx-auto p-4 md:p-6 lg:p-8 pb-20">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-        <CampusSelector onLevelChange={setEducationLevel} defaultLevel={educationLevel} />
-        <div className="flex flex-wrap gap-2 w-full sm:w-auto">
-          <Link href="/settings" className="flex-1 sm:flex-initial">
-            <Button variant="outline" size="sm" className="w-full sm:w-auto">
-              <svg className="h-4 w-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
-              Settings
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-violet-950/30 dark:to-indigo-950/30 relative overflow-hidden">
+      {/* Premium Animated Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-violet-300/20 via-indigo-300/20 to-purple-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-blue-300/20 via-cyan-300/20 to-teal-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <div className="container mx-auto p-4 md:p-6 lg:p-8 pb-20 relative z-10">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <CampusSelector onLevelChange={setEducationLevel} defaultLevel={educationLevel} />
+          <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+            <Link href="/settings" className="flex-1 sm:flex-initial">
+              <Button variant="outline" size="sm" className="w-full sm:w-auto hover:bg-gradient-to-r hover:from-violet-500/10 hover:to-indigo-500/10 border-2">
+                <svg className="h-4 w-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Settings
+              </Button>
+            </Link>
+            <Button variant="default" size="sm" onClick={() => setEditMode((v) => !v)} className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105">
+              {editMode ? 'Close Edit' : 'Edit Profile'}
             </Button>
-          </Link>
-          <Button variant="default" size="sm" onClick={() => setEditMode((v) => !v)}>
-            {editMode ? 'Close Edit' : 'Edit Profile'}
-          </Button>
+          </div>
         </div>
-      </div>
-      {editMode && <StudentProfileSetup onSave={() => setEditMode(false)} />}
-      
-      <div className="flex flex-col items-center space-y-4 mb-8">
-        <Avatar className="h-24 w-24">
-          <AvatarImage src={profile?.profilePictureUrl || "https://placehold.co/100x100.png"} alt={profile?.studentName || "Student Name"} />
-          <AvatarFallback>{profile?.studentName?.charAt(0)?.toUpperCase() || 'SN'}</AvatarFallback>
-        </Avatar>
-        <div className="text-center">
-          <h1 className="text-2xl font-bold font-headline">{profile?.studentName || 'Student Name'}</h1>
-          <p className="text-muted-foreground">{profile?.studentClass || 'JHS student'}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Level</CardTitle>
-            <Star className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{(progress as any).level || 1}</div>
-            <p className="text-xs text-muted-foreground">{(progress as any).totalXP || 0} XP</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Lessons Completed</CardTitle>
-            <BookCheck className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{progress.lessonsCompleted}</div>
-            <p className="text-xs text-muted-foreground">+10 XP each</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Quiz Score</CardTitle>
-            <Target className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{progress.averageQuizScore}%</div>
-            <p className="text-xs text-muted-foreground">{progress.quizzesTaken} quizzes</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Study Streak</CardTitle>
-            <Star className="h-4 w-4 text-orange-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{(progress as any).currentStreak || 0} 🔥</div>
-            <p className="text-xs text-muted-foreground">Best: {(progress as any).longestStreak || 0} days</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center">
-                <Award className="mr-2 h-6 w-6 text-primary" />
-                Achievements
-              </CardTitle>
-              <Badge variant="secondary">
-                {achievements.filter(a => a.unlocked).length}/{achievements.length}
-              </Badge>
+        {editMode && <StudentProfileSetup onSave={() => setEditMode(false)} />}
+        
+        {/* Premium Profile Header */}
+        <Card className="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-2xl">
+          <CardContent className="p-6 sm:p-8">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-violet-400 to-indigo-400 rounded-full blur-2xl opacity-50 animate-pulse"></div>
+                <Avatar className="h-28 w-28 sm:h-32 sm:w-32 border-4 border-violet-500 shadow-xl relative">
+                  <AvatarImage src={profile?.profilePictureUrl || "https://placehold.co/100x100.png"} alt={profile?.studentName || "Student Name"} />
+                  <AvatarFallback className="text-3xl font-bold bg-gradient-to-br from-violet-500 to-indigo-600 text-white">{profile?.studentName?.charAt(0)?.toUpperCase() || 'SN'}</AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="text-center">
+                <h1 className="text-3xl sm:text-4xl font-bold font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent mb-2">
+                  {profile?.studentName || 'Student Name'}
+                </h1>
+                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-medium">{profile?.studentClass || 'JHS student'}</p>
+              </div>
             </div>
-            <CardDescription>Unlock badges by completing challenges</CardDescription>
-          </CardHeader>
+          </CardContent>
+        </Card>
+
+        {/* Premium Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-2xl border-2 border-amber-200/30 dark:border-amber-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-amber-400/20 to-orange-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Level</span>
+                <Star className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-1">{(progress as any).level || 1}</div>
+              <p className="text-xs text-slate-600 dark:text-slate-400">{(progress as any).totalXP || 0} XP</p>
+            </div>
+          </div>
+          <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 backdrop-blur-sm rounded-2xl border-2 border-blue-200/30 dark:border-blue-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Lessons</span>
+                <BookCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-1">{progress.lessonsCompleted}</div>
+              <p className="text-xs text-slate-600 dark:text-slate-400">+10 XP each</p>
+            </div>
+          </div>
+          <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-sm rounded-2xl border-2 border-green-200/30 dark:border-green-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-400/20 to-emerald-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Quiz Score</span>
+                <Target className="h-5 w-5 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1">{progress.averageQuizScore}%</div>
+              <p className="text-xs text-slate-600 dark:text-slate-400">{progress.quizzesTaken} quizzes</p>
+            </div>
+          </div>
+          <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-orange-500/10 to-red-500/10 backdrop-blur-sm rounded-2xl border-2 border-orange-200/30 dark:border-orange-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-400/20 to-red-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+            <div className="relative">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Streak</span>
+                <div className="text-2xl">🔥</div>
+              </div>
+              <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-1">{(progress as any).currentStreak || 0}</div>
+              <p className="text-xs text-slate-600 dark:text-slate-400">Best: {(progress as any).longestStreak || 0} days</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-xl">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <div className="text-2xl">🏆</div>
+                  <span className="bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Achievements</span>
+                </CardTitle>
+                <Badge variant="secondary" className="bg-gradient-to-r from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 border-2 border-violet-200 dark:border-violet-800">
+                  {achievements.filter(a => a.unlocked).length}/{achievements.length}
+                </Badge>
+              </div>
+              <CardDescription className="text-slate-600 dark:text-slate-400">Unlock badges by completing challenges</CardDescription>
+            </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-2 mb-4">
               <Button asChild variant="outline" size="sm">
@@ -217,28 +239,28 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Users className="mr-2 h-6 w-6 text-primary" />
-              Link to Parent/Guardian
-            </CardTitle>
-            <CardDescription>
-              Allow your parents to monitor your progress
-            </CardDescription>
-          </CardHeader>
+          <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-xl">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <div className="text-2xl">👨‍👩‍👧‍👦</div>
+                <span className="bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Link to Parent/Guardian</span>
+              </CardTitle>
+              <CardDescription className="text-slate-600 dark:text-slate-400">
+                Allow your parents to monitor your progress
+              </CardDescription>
+            </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Your Linking Code</label>
+              <label className="text-sm font-semibold mb-2 block text-slate-700 dark:text-slate-300">Your Linking Code</label>
               <div className="flex gap-2">
-                <div className="flex-1 p-4 bg-muted rounded-lg font-mono text-2xl font-bold text-center tracking-wider">
-                  {linkingCode}
+                <div className="flex-1 p-4 bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 rounded-xl font-mono text-2xl font-bold text-center tracking-wider border-2 border-violet-200/50 dark:border-violet-800/50">
+                  <span className="bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{linkingCode}</span>
                 </div>
-                <Button onClick={copyLinkingCode} size="icon" variant="outline">
-                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                <Button onClick={copyLinkingCode} size="icon" variant="outline" className="h-12 w-12 border-2 hover:bg-gradient-to-r hover:from-violet-500/10 hover:to-indigo-500/10 hover:border-violet-500 transition-all hover:scale-105">
+                  {copied ? <Check className="h-5 w-5 text-green-600" /> : <Copy className="h-5 w-5" />}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
                 Share this code with your parent/guardian to link accounts
               </p>
             </div>
@@ -253,24 +275,25 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-2 block">Invite via Email</label>
+              <label className="text-sm font-semibold mb-2 block text-slate-700 dark:text-slate-300">Invite via Email</label>
               <div className="flex gap-2">
                 <Input
                   type="email"
                   placeholder="parent@example.com"
                   value={parentEmail}
                   onChange={(e) => setParentEmail(e.target.value)}
+                  className="h-12 border-2 border-violet-200 dark:border-violet-800 focus:border-violet-500 dark:focus:border-violet-400"
                 />
-                <Button onClick={sendLinkInvite}>
+                <Button onClick={sendLinkInvite} className="h-12 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105">
                   <UserPlus className="mr-2 h-4 w-4" />
                   Invite
                 </Button>
               </div>
             </div>
 
-            <div className="p-4 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+            <div className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl border-2 border-blue-200/50 dark:border-blue-800/50 backdrop-blur-sm">
               <p className="text-sm text-blue-900 dark:text-blue-100">
-                <strong>Privacy:</strong> Parents can only see your study progress, quiz scores, and lesson completion. Your personal messages and profile details remain private.
+                <strong className="font-bold">Privacy:</strong> Parents can only see your study progress, quiz scores, and lesson completion. Your personal messages and profile details remain private.
               </p>
             </div>
 
