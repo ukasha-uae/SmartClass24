@@ -474,20 +474,35 @@ export default function QuizBattlePage() {
     };
 
     return (
-      <div className="container mx-auto p-3 sm:p-6 pb-20">
-        <div className="max-w-4xl mx-auto">
-          {/* Epic Results Header with Performance Grade */}
-          <Card 
-            id="results-card"
-            className={`mb-6 overflow-hidden border-2 ${
-            isBossBattle ? 'border-purple-400 shadow-purple-200 shadow-xl' :
-            isSchoolBattle ? 'border-blue-400 shadow-blue-200 shadow-xl' :
-            isTournament ? 'border-pink-400 shadow-pink-200 shadow-xl' :
-            isPractice ? 'border-orange-400 shadow-orange-200 shadow-xl' :
-            isWin ? 'border-yellow-400 shadow-yellow-200 shadow-xl' :
-            isPodium ? 'border-green-400 shadow-green-200 shadow-xl' :
-            'border-gray-400'
-          }`}>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 relative overflow-hidden">
+        {/* Premium Animated Background */}
+        <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className={`absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br ${
+            isWin ? 'from-yellow-300/20 via-orange-300/20 to-amber-300/20' :
+            isPodium ? 'from-green-300/20 via-emerald-300/20 to-teal-300/20' :
+            'from-blue-300/20 via-purple-300/20 to-pink-300/20'
+          } rounded-full blur-3xl animate-pulse`}></div>
+          <div className={`absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr ${
+            isWin ? 'from-amber-300/20 via-yellow-300/20 to-orange-300/20' :
+            isPodium ? 'from-teal-300/20 via-cyan-300/20 to-blue-300/20' :
+            'from-indigo-300/20 via-purple-300/20 to-pink-300/20'
+          } rounded-full blur-3xl animate-pulse`} style={{ animationDelay: '1s' }}></div>
+        </div>
+
+        <div className="container mx-auto p-3 sm:p-6 pb-20 relative z-10">
+          <div className="max-w-4xl mx-auto">
+            {/* Epic Results Header with Performance Grade */}
+            <Card 
+              id="results-card"
+              className={`mb-6 overflow-hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 shadow-2xl ${
+              isBossBattle ? 'border-purple-400 shadow-purple-200/50' :
+              isSchoolBattle ? 'border-blue-400 shadow-blue-200/50' :
+              isTournament ? 'border-pink-400 shadow-pink-200/50' :
+              isPractice ? 'border-orange-400 shadow-orange-200/50' :
+              isWin ? 'border-yellow-400 shadow-yellow-200/50' :
+              isPodium ? 'border-green-400 shadow-green-200/50' :
+              'border-gray-400'
+            }`}>
             <div className={`h-2 bg-gradient-to-r ${performance.color}`} />
             <CardContent className="p-6 sm:p-8 text-center relative overflow-hidden">
               {/* App Branding Header - for sharing */}
@@ -628,50 +643,63 @@ export default function QuizBattlePage() {
                   </div>
                 </div>
 
-                {/* Main Stats Grid */}
+                {/* Premium Main Stats Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
-                  <div className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/20">
-                    <Trophy className="h-6 w-6 text-primary mx-auto mb-2" />
-                    <p className="text-2xl font-bold">{myResult?.score}</p>
-                    <p className="text-xs text-muted-foreground">Points</p>
+                  <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-2xl border-2 border-amber-200/30 dark:border-amber-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-amber-400/20 to-orange-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div className="relative text-center">
+                      <div className="text-4xl mb-2 group-hover:scale-110 transition-transform inline-block">🏆</div>
+                      <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">{myResult?.score}</p>
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">Points</p>
+                    </div>
                   </div>
                   
-                  <div className="p-4 bg-gradient-to-br from-green-500/10 to-green-500/5 rounded-xl border border-green-500/20">
-                    <Target className="h-6 w-6 text-green-500 mx-auto mb-2" />
-                    <p className="text-2xl font-bold">{accuracy}%</p>
-                    <p className="text-xs text-muted-foreground">Accuracy</p>
+                  <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-sm rounded-2xl border-2 border-green-200/30 dark:border-green-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-400/20 to-emerald-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div className="relative text-center">
+                      <div className="text-4xl mb-2 group-hover:scale-110 transition-transform inline-block">🎯</div>
+                      <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{accuracy}%</p>
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">Accuracy</p>
+                    </div>
                   </div>
 
-                  <div className="p-4 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-xl border border-blue-500/20">
-                    <Clock className="h-6 w-6 text-blue-500 mx-auto mb-2" />
-                    <p className="text-2xl font-bold">{avgTimePerQuestion}s</p>
-                    <p className="text-xs text-muted-foreground">Avg/Question</p>
+                  <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 backdrop-blur-sm rounded-2xl border-2 border-blue-200/30 dark:border-blue-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div className="relative text-center">
+                      <div className="text-4xl mb-2 group-hover:scale-110 transition-transform inline-block">⏱️</div>
+                      <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{avgTimePerQuestion}s</p>
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">Avg/Question</p>
+                    </div>
                   </div>
 
-                  <div className="p-4 bg-gradient-to-br from-orange-500/10 to-orange-500/5 rounded-xl border border-orange-500/20">
-                    <Flame className="h-6 w-6 text-orange-500 mx-auto mb-2" />
-                    <p className="text-2xl font-bold">{mockStreak}</p>
-                    <p className="text-xs text-muted-foreground">Day Streak</p>
+                  <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-orange-500/10 to-red-500/10 backdrop-blur-sm rounded-2xl border-2 border-orange-200/30 dark:border-orange-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-400/20 to-red-400/20 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                    <div className="relative text-center">
+                      <div className="text-4xl mb-2 group-hover:scale-110 transition-transform inline-block">🔥</div>
+                      <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">{mockStreak}</p>
+                      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">Day Streak</p>
+                    </div>
                   </div>
                 </div>
 
-                {/* Rating change for competitive modes */}
+                {/* Premium Rating change for competitive modes */}
                 {!isPractice && (
-                  <div className="mt-6 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl border border-purple-500/20">
-                    <div className="flex items-center justify-center gap-3">
-                      <BarChart3 className="h-6 w-6 text-purple-500" />
-                      <div>
-                        <p className="text-sm text-muted-foreground">Rating Change</p>
-                        <p className={`text-3xl font-bold ${
+                  <div className="mt-6 p-6 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-indigo-500/10 backdrop-blur-sm rounded-2xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-xl">
+                    <div className="flex items-center justify-center gap-6">
+                      <div className="text-5xl">📈</div>
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground mb-1">Rating Change</p>
+                        <p className={`text-4xl sm:text-5xl font-bold ${
                           ratingChange > 0 ? 'text-green-600' :
                           ratingChange < 0 ? 'text-red-600' : 'text-gray-600'
                         }`}>
                           {ratingChange > 0 ? '+' : ''}{ratingChange}
                         </p>
                       </div>
-                      <div className="text-left">
-                        <p className="text-sm text-muted-foreground">New Rating</p>
-                        <p className="text-xl font-bold">{player?.rating || 1000}</p>
+                      <div className="h-16 w-px bg-slate-300 dark:bg-slate-700"></div>
+                      <div className="text-center">
+                        <p className="text-sm text-muted-foreground mb-1">New Rating</p>
+                        <p className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">{player?.rating || 1000}</p>
                       </div>
                     </div>
                   </div>
@@ -1102,150 +1130,203 @@ export default function QuizBattlePage() {
   }
 
   return (
-    <div className="container mx-auto p-3 sm:p-6 pb-20">
-      <div className="max-w-4xl mx-auto">
-        {/* Progress Header */}
-        <Card className="mb-4">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-primary" />
-                <span className="font-semibold">
-                  Question {currentQuestionIndex + 1} of {challenge.questions.length}
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={toggleMute}
-                  title={isMuted ? "Unmute Sound" : "Mute Sound"}
-                >
-                  {isMuted ? (
-                    <VolumeX className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Volume2 className="h-4 w-4 text-primary" />
-                  )}
-                </Button>
-                <div className="flex items-center gap-2">
-                  <Clock className={`h-5 w-5 ${timeLeft <= 30 ? 'text-red-500 animate-pulse' : 'text-muted-foreground'}`} />
-                  <span className={`font-mono font-bold ${timeLeft <= 30 ? 'text-red-500' : ''}`}>
-                    {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <Progress value={progress} className="h-2 mb-2" />
-            <Progress 
-              value={timeProgress} 
-              className={`h-1 ${timeLeft <= 30 ? '[&>div]:bg-red-500' : ''}`}
-            />
-          </CardContent>
-        </Card>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 relative overflow-hidden">
+      {/* Premium Animated Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-300/20 via-purple-300/20 to-pink-300/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-orange-300/20 via-red-300/20 to-yellow-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-indigo-300/10 via-purple-300/10 to-pink-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
 
-        {/* Opponent Info */}
-        <Card className="mb-4">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarFallback>
-                    {player.userName.split(' ').map(n => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-semibold">{player.userName}</p>
-                  <p className="text-sm text-muted-foreground">Rating: {player.rating}</p>
+      <div className="container mx-auto p-3 sm:p-6 pb-20 relative z-10">
+        <div className="max-w-4xl mx-auto">
+          {/* Premium Progress Header */}
+          <Card className="mb-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-primary/20 shadow-xl">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl sm:text-4xl animate-pulse">⚡</div>
+                  <div>
+                    <span className="font-bold text-lg sm:text-xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                      Question {currentQuestionIndex + 1} of {challenge.questions.length}
+                    </span>
+                    <div className="text-xs text-muted-foreground mt-0.5">
+                      {challenge.subject} • {challenge.difficulty}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 hover:bg-primary/10"
+                    onClick={toggleMute}
+                    title={isMuted ? "Unmute Sound" : "Mute Sound"}
+                  >
+                    {isMuted ? (
+                      <VolumeX className="h-5 w-5 text-muted-foreground" />
+                    ) : (
+                      <Volume2 className="h-5 w-5 text-primary" />
+                    )}
+                  </Button>
+                  <div className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 transition-all ${
+                    timeLeft <= 30 
+                      ? 'border-red-500 bg-red-50 dark:bg-red-950/30 animate-pulse' 
+                      : timeLeft <= 60
+                      ? 'border-orange-500 bg-orange-50 dark:bg-orange-950/30'
+                      : 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                  }`}>
+                    <Clock className={`h-5 w-5 ${timeLeft <= 30 ? 'text-red-500 animate-pulse' : timeLeft <= 60 ? 'text-orange-500' : 'text-blue-500'}`} />
+                    <span className={`font-mono font-bold text-lg ${timeLeft <= 30 ? 'text-red-600' : timeLeft <= 60 ? 'text-orange-600' : 'text-blue-600'}`}>
+                      {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                    </span>
+                  </div>
                 </div>
               </div>
-              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                  <span>Progress</span>
+                  <span>{Math.round(progress)}%</span>
+                </div>
+                <Progress value={progress} className="h-3 bg-slate-200 dark:bg-slate-700" />
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                  <span>Time Remaining</span>
+                  <span>{Math.round(timeProgress)}%</span>
+                </div>
+                <Progress 
+                  value={timeProgress} 
+                  className={`h-2 bg-slate-200 dark:bg-slate-700 ${
+                    timeLeft <= 30 ? '[&>div]:bg-red-500' : 
+                    timeLeft <= 60 ? '[&>div]:bg-orange-500' : 
+                    '[&>div]:bg-blue-500'
+                  }`}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Premium Player/Opponent Info */}
+          <Card className="mb-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-slate-200/30 dark:border-slate-700/30 shadow-xl">
+            <CardContent className="p-4 sm:p-6">
               {challenge.type === 'practice' ? (
-                <Badge variant="secondary" className="text-lg px-4 py-1">
-                  Practice Mode
-                </Badge>
+                <div className="flex items-center justify-center gap-4">
+                  <Avatar className="h-16 w-16 border-4 border-green-500 shadow-lg">
+                    <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-green-500 to-emerald-600 text-white">
+                      {player.userName.split(' ').map(n => n[0]).join('')}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="text-center">
+                    <p className="font-bold text-lg bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{player.userName}</p>
+                    <p className="text-sm text-muted-foreground">Rating: {player.rating}</p>
+                    <Badge variant="secondary" className="mt-2 text-base px-4 py-1 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30">
+                      🧠 Practice Mode
+                    </Badge>
+                  </div>
+                </div>
               ) : (
-                <>
-                  <Badge variant="outline" className="text-lg">VS</Badge>
-                  <div className="flex items-center gap-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <Avatar className="h-16 w-16 border-4 border-blue-500 shadow-lg">
+                      <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-blue-500 to-indigo-600 text-white">
+                        {player.userName.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-bold text-lg bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{player.userName}</p>
+                      <p className="text-sm text-muted-foreground">Rating: {player.rating}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <div className="text-3xl sm:text-4xl animate-pulse">⚔️</div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <p className="font-semibold">{challenge.opponents[0]?.userName || 'Opponent'}</p>
+                      <p className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">{challenge.opponents[0]?.userName || 'Opponent'}</p>
                       <p className="text-sm text-muted-foreground">
                         Rating: {getPlayerProfile(challenge.opponents[0]?.userId)?.rating || '???'}
                       </p>
                     </div>
-                    <Avatar className="h-10 w-10">
-                      <AvatarFallback>
+                    <Avatar className="h-16 w-16 border-4 border-orange-500 shadow-lg">
+                      <AvatarFallback className="text-xl font-bold bg-gradient-to-br from-orange-500 to-red-600 text-white">
                         {(challenge.opponents[0]?.userName || 'O').split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                   </div>
-                </>
+                </div>
               )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Question Card */}
-        <Card className="mb-6">
-          <CardContent className="p-6 sm:p-8">
-            <div className="mb-6">
-              <div className="flex items-start justify-between mb-4">
-                <Badge variant="secondary">{challenge.subject}</Badge>
-                <Badge variant="outline">{challenge.difficulty}</Badge>
+          {/* Premium Question Card */}
+          <Card className="mb-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-primary/30 shadow-2xl">
+            <CardContent className="p-6 sm:p-8 lg:p-10">
+              <div className="mb-6 sm:mb-8">
+                <div className="flex items-center justify-between mb-6">
+                  <Badge className="px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-indigo-600 text-white border-0">
+                    {challenge.subject}
+                  </Badge>
+                  <Badge variant="outline" className="px-4 py-2 text-sm border-2 capitalize">
+                    {challenge.difficulty}
+                  </Badge>
+                </div>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 leading-relaxed bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
+                  {currentQuestion.question}
+                </h2>
               </div>
-              <h2 className="text-xl sm:text-2xl font-semibold mb-4 leading-relaxed">
-                {currentQuestion.question}
-              </h2>
-            </div>
 
-            {/* Answer Options */}
-            <div className="space-y-3" key={currentQuestionIndex}>
-              {currentQuestion.options?.map((option, index) => {
-                const isSelected = selectedAnswer === option;
-                const isCorrect = option === currentQuestion.correctAnswer;
-                const showResult = !!selectedAnswer;
+              {/* Premium Answer Options */}
+              <div className="space-y-4" key={currentQuestionIndex}>
+                {currentQuestion.options?.map((option, index) => {
+                  const isSelected = selectedAnswer === option;
+                  const isCorrect = option === currentQuestion.correctAnswer;
+                  const showResult = !!selectedAnswer;
+                  const letter = String.fromCharCode(65 + index);
 
-                return (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswerSelect(option)}
-                    disabled={!!selectedAnswer}
-                    className={`w-full p-4 text-left rounded-lg border-2 transition-all ${
-                      isSelected
-                        ? (isCorrect 
-                            ? 'border-green-500 bg-green-50 dark:bg-green-950/20 font-semibold' 
-                            : 'border-red-500 bg-red-50 dark:bg-red-950/20 font-semibold')
-                        : showResult
-                          ? (isCorrect 
-                              ? 'border-green-500 bg-green-50 dark:bg-green-950/20' // Reveal correct answer
-                              : 'border-border opacity-50 cursor-not-allowed')
-                          : 'border-border hover:border-primary/50 hover:bg-muted'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => handleAnswerSelect(option)}
+                      disabled={!!selectedAnswer}
+                      className={`group relative w-full p-5 sm:p-6 text-left rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] ${
                         isSelected
                           ? (isCorrect 
-                              ? 'border-green-500 bg-green-500 text-white' 
-                              : 'border-red-500 bg-red-500 text-white')
-                          : showResult && isCorrect
-                            ? 'border-green-500 bg-green-500 text-white'
-                            : 'border-muted-foreground'
-                      }`}>
-                        {String.fromCharCode(65 + index)}
+                              ? 'border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 font-semibold shadow-lg shadow-green-200/50 dark:shadow-green-900/20' 
+                              : 'border-red-500 bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30 font-semibold shadow-lg shadow-red-200/50 dark:shadow-red-900/20')
+                          : showResult
+                            ? (isCorrect 
+                                ? 'border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 shadow-md' 
+                                : 'border-slate-200 dark:border-slate-700 opacity-50 cursor-not-allowed')
+                            : 'border-slate-200 dark:border-slate-700 hover:border-primary hover:bg-gradient-to-r hover:from-primary/5 hover:to-purple-500/5 hover:shadow-md'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`flex items-center justify-center w-12 h-12 rounded-xl border-2 font-bold text-lg transition-all ${
+                          isSelected
+                            ? (isCorrect 
+                                ? 'border-green-500 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg' 
+                                : 'border-red-500 bg-gradient-to-br from-red-500 to-rose-600 text-white shadow-lg')
+                            : showResult && isCorrect
+                              ? 'border-green-500 bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg'
+                              : 'border-slate-300 dark:border-slate-600 bg-slate-100 dark:bg-slate-800 group-hover:border-primary group-hover:bg-primary/10'
+                        }`}>
+                          {letter}
+                        </div>
+                        <span className="flex-1 text-base sm:text-lg font-medium">{option}</span>
+                        {isSelected && (
+                          isCorrect 
+                            ? <CheckCircle2 className="h-6 w-6 text-green-500 animate-in zoom-in" />
+                            : <XCircle className="h-6 w-6 text-red-500 animate-in zoom-in" />
+                        )}
+                        {showResult && !isSelected && isCorrect && (
+                          <CheckCircle2 className="h-6 w-6 text-green-500" />
+                        )}
                       </div>
-                      <span className="flex-1">{option}</span>
-                      {isSelected && (
-                        isCorrect 
-                          ? <CheckCircle2 className="h-5 w-5 text-green-500" />
-                          : <XCircle className="h-5 w-5 text-red-500" />
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                    </button>
+                  );
+                })}
+              </div>
           </CardContent>
         </Card>
 
@@ -1259,20 +1340,26 @@ export default function QuizBattlePage() {
           ...
         </Button> */}
 
-        {/* Score Preview */}
-        <Card className="mt-4">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Your Progress</span>
-              <div className="flex gap-4">
-                <span>
-                  <CheckCircle2 className="h-4 w-4 inline text-green-500 mr-1" />
-                  {Object.keys(userAnswers).length} answered
-                </span>
+          {/* Premium Score Preview */}
+          <Card className="mt-4 bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-xl border-2 border-blue-200/30 dark:border-blue-800/30 shadow-xl">
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl">📊</div>
+                  <div>
+                    <p className="font-semibold text-sm text-muted-foreground">Your Progress</p>
+                    <p className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      {Object.keys(userAnswers).length} / {challenge.questions.length} Questions
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 px-4 py-2 bg-white/80 dark:bg-gray-800/80 rounded-full">
+                  <CheckCircle2 className="h-5 w-5 text-green-500" />
+                  <span className="font-bold text-green-600">{Object.keys(userAnswers).length}</span>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
       </div>
     </div>
   );
