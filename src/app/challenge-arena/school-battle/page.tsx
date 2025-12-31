@@ -34,6 +34,7 @@ import { useLocalization } from '@/hooks/useLocalization';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
 
 // Get subjects based on education level
 const getSubjectsForLevel = (level: 'Primary' | 'JHS' | 'SHS') => {
@@ -48,6 +49,18 @@ const getSubjectsForLevel = (level: 'Primary' | 'JHS' | 'SHS') => {
 
 export default function SchoolBattlePage() {
   const router = useRouter();
+  
+  // V1 Route Guard: Redirect to practice if school battles are disabled
+  useEffect(() => {
+    if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool) {
+      router.replace('/challenge-arena/practice');
+    }
+  }, [router]);
+  
+  // Don't render if feature is disabled
+  if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool) {
+    return null;
+  }
   const { toast } = useToast();
   const { country } = useLocalization();
   const { user } = useFirebase();

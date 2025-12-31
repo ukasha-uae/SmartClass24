@@ -26,6 +26,24 @@ import {
 import { createChallenge, Challenge, getAllPlayers, Player } from '@/lib/challenge';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
+
+// V1 Route Guard: Redirect to practice if create challenge is disabled
+export default function CreateChallengePage() {
+  const router = useRouter();
+  
+  useEffect(() => {
+    // V1: Create challenge is not available - redirect to practice
+    router.replace('/challenge-arena/practice');
+  }, [router]);
+  
+  return null;
+}
+
+// Original component code below (commented out for V1)
+/*
+export default function CreateChallengePage() {
+  const router = useRouter();
 
 const SUBJECTS = [
   { id: 'math', name: 'Maths', icon: Calculator, color: 'text-blue-500', bg: 'bg-blue-500/10' },

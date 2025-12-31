@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,9 +18,28 @@ import {
   Swords
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
 
-// Mock Tournament Data
-const TOURNAMENTS = [
+// V1 Route Guard: Redirect to practice if tournaments are disabled
+export default function TournamentsPage() {
+  const router = useRouter();
+  
+  useEffect(() => {
+    if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
+      router.replace('/challenge-arena/practice');
+    }
+  }, [router]);
+  
+  // Don't render if feature is disabled
+  if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
+    return null;
+  }
+
+  const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('upcoming');
+
+  // Mock Tournament Data
+  const TOURNAMENTS = [
   {
     id: 't1',
     title: 'Weekly Math Whiz',
@@ -61,11 +80,6 @@ const TOURNAMENTS = [
     icon: Trophy
   }
 ];
-
-export default function TournamentsPage() {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState('upcoming');
 
   const handleRegister = (tournamentId: string) => {
     toast({

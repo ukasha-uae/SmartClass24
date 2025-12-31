@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,9 +25,22 @@ import {
 import type { Player } from '@/lib/challenge';
 import { useFirebase } from '@/firebase/provider';
 import { useToast } from '@/hooks/use-toast';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
 
 export default function BossBattlePage() {
   const router = useRouter();
+  
+  // V1 Route Guard: Redirect to practice if boss battles are disabled
+  useEffect(() => {
+    if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss) {
+      router.replace('/challenge-arena/practice');
+    }
+  }, [router]);
+  
+  // Don't render if feature is disabled
+  if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss) {
+    return null;
+  }
   const { user } = useFirebase();
   const { toast } = useToast();
   
