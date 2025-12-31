@@ -136,7 +136,7 @@ export default function PracticeModePage() {
           </div>
         </div>
 
-      <Card className="overflow-hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-green-200/30 dark:border-green-800/30 shadow-2xl">
+        <Card className="overflow-hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-green-200/30 dark:border-green-800/30 shadow-2xl">
         {/* Step 1: Subject */}
         {step === 1 && (
           <div className="animate-in fade-in duration-200">
@@ -299,6 +299,7 @@ export default function PracticeModePage() {
           <span className="bg-muted px-2 py-1 rounded-full">{selectedDiff?.questions} questions</span>
         </div>
       )}
+      </div>
     </div>
   );
 }
