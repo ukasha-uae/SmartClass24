@@ -236,34 +236,41 @@ export function ThermalExpansionLabEnhanced() {
     const handleHeatMaterial = (material: 'metal' | 'water' | 'alcohol') => {
         setHeatingMaterial(material);
         
-        // Simulate heating
+        // Simulate gradual heating with visible expansion
         const heatInterval = setInterval(() => {
             setTemperatures(prev => {
-                const newTemp = prev[material] + 5;
+                const newTemp = prev[material] + 2; // Slower temperature increase for visibility
+                
+                // Trigger expansion at certain temperatures for visual effect
+                if (material === 'metal' && newTemp >= 50 && !metalExpanded) {
+                    setMetalExpanded(true);
+                } else if (material === 'water' && newTemp >= 50 && !waterExpanded) {
+                    setWaterExpanded(true);
+                } else if (material === 'alcohol' && newTemp >= 50 && !alcoholExpanded) {
+                    setAlcoholExpanded(true);
+                }
+                
                 if (newTemp >= 80) {
                     clearInterval(heatInterval);
                     setHeatingMaterial(null);
                     
                     if (material === 'metal') {
-                        setMetalExpanded(true);
-                        setTeacherMessage("Wow! The metal rod expanded! Notice it grew slightly. Now let's heat the water!");
-                        setCurrentStep('heat-water');
+                        setTeacherMessage("Wow! The metal rod expanded by 15%! Notice how it grew. Solids expand the least. Now let's heat the water!");
+                        setTimeout(() => setCurrentStep('heat-water'), 2000); // Give time to observe
                     } else if (material === 'water') {
-                        setWaterExpanded(true);
-                        setTeacherMessage("The water expanded more than the metal! Liquids expand more than solids. Now let's try alcohol!");
-                        setCurrentStep('heat-alcohol');
+                        setTeacherMessage("The water expanded by 30%! Much more than the metal! Liquids expand more than solids. Now let's try alcohol!");
+                        setTimeout(() => setCurrentStep('heat-alcohol'), 2000);
                     } else if (material === 'alcohol') {
-                        setAlcoholExpanded(true);
-                        setTeacherMessage("Amazing! Alcohol expanded the MOST! This shows different materials have different expansion rates!");
-                        setCurrentStep('results');
+                        setTeacherMessage("Amazing! Alcohol expanded by 40% - the MOST! This clearly shows different materials have different expansion rates!");
+                        setTimeout(() => setCurrentStep('results'), 2000);
                     }
                     return prev;
                 }
                 return { ...prev, [material]: newTemp };
             });
-        }, 300);
+        }, 200); // Slower interval for more visible changes
         
-        toast({ title: `🔥 Heating ${material}...` });
+        toast({ title: `🔥 Heating ${material}... Watch it expand!` });
     };
     
     const handleViewResults = () => {
@@ -582,15 +589,35 @@ export function ThermalExpansionLabEnhanced() {
                                                 )}
                                             >
                                                 <span className="text-xs md:text-sm font-medium">Metal Rod</span>
-                                                <div className="relative h-40 md:h-48 flex items-end">
+                                                <div className="relative h-40 md:h-48 flex items-end justify-center">
+                                                    {/* Measurement scale */}
+                                                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600" />
+                                                    <div className="absolute left-0 top-0 w-8 h-0.5 bg-gray-300 dark:bg-gray-600" />
+                                                    <div className="absolute left-0 bottom-0 w-8 h-0.5 bg-gray-300 dark:bg-gray-600" />
+                                                    
+                                                    {/* Metal rod with expansion */}
                                                     <motion.div
-                                                        animate={{ scaleX: metalExpanded ? 1.08 : 1 }}
-                                                        transition={{ duration: 0.5 }}
-                                                        className="w-4 md:w-6 h-32 md:h-40 bg-gradient-to-r from-gray-400 to-gray-600 rounded-sm origin-left"
-                                                    />
+                                                        animate={{ 
+                                                            scaleX: metalExpanded ? 1.15 : 1,
+                                                            width: metalExpanded ? '120%' : '100%'
+                                                        }}
+                                                        transition={{ duration: 2, ease: "easeOut" }}
+                                                        className="relative w-4 md:w-6 h-32 md:h-40 bg-gradient-to-r from-gray-400 to-gray-600 rounded-sm origin-left shadow-lg"
+                                                    >
+                                                        {/* Expansion indicator */}
+                                                        {metalExpanded && (
+                                                            <motion.div
+                                                                initial={{ opacity: 0, scale: 0 }}
+                                                                animate={{ opacity: 1, scale: 1 }}
+                                                                className="absolute -right-8 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                                                            >
+                                                                +15%
+                                                            </motion.div>
+                                                        )}
+                                                    </motion.div>
                                                 </div>
                                                 {suppliesReady && (
-                                                    <div className="text-xs text-muted-foreground">
+                                                    <div className="text-sm font-semibold bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
                                                         {temperatures.metal}°C
                                                     </div>
                                                 )}
@@ -616,17 +643,44 @@ export function ThermalExpansionLabEnhanced() {
                                                 )}
                                             >
                                                 <span className="text-xs md:text-sm font-medium">Water</span>
-                                                <div className="relative w-14 md:w-20 h-40 md:h-48 border-2 border-blue-400 rounded-lg bg-blue-50/30 dark:bg-blue-900/20 overflow-hidden">
+                                                <div className="relative w-14 md:w-20 h-40 md:h-48 border-2 border-blue-400 rounded-lg bg-blue-50/30 dark:bg-blue-900/20 overflow-visible">
+                                                    {/* Measurement scale */}
+                                                    <div className="absolute -left-6 top-0 bottom-0 w-0.5 bg-blue-300 dark:bg-blue-700" />
+                                                    <div className="absolute -left-6 top-0 w-4 h-0.5 bg-blue-300 dark:bg-blue-700" />
+                                                    <div className="absolute -left-6 bottom-0 w-4 h-0.5 bg-blue-300 dark:bg-blue-700" />
+                                                    
                                                     {suppliesReady && (
-                                                        <motion.div
-                                                            className="absolute bottom-0 w-full bg-blue-400/70 dark:bg-blue-500/70"
-                                                            animate={{ height: waterExpanded ? '75%' : '50%' }}
-                                                            transition={{ duration: 0.8 }}
-                                                        />
+                                                        <>
+                                                            {/* Initial level marker */}
+                                                            <div className="absolute left-0 right-0 h-0.5 bg-blue-600/50 dark:bg-blue-400/50" style={{ bottom: '50%' }} />
+                                                            
+                                                            {/* Water level with dramatic expansion */}
+                                                            <motion.div
+                                                                className="absolute bottom-0 w-full bg-gradient-to-t from-blue-600 to-blue-400 dark:from-blue-700 dark:to-blue-500 rounded-b-lg shadow-inner"
+                                                                animate={{ 
+                                                                    height: waterExpanded ? '80%' : '50%',
+                                                                }}
+                                                                transition={{ duration: 2, ease: "easeOut" }}
+                                                            >
+                                                                {/* Water surface shine */}
+                                                                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-b from-blue-200/80 to-transparent" />
+                                                            </motion.div>
+                                                            
+                                                            {/* Expansion indicator */}
+                                                            {waterExpanded && (
+                                                                <motion.div
+                                                                    initial={{ opacity: 0, y: -10 }}
+                                                                    animate={{ opacity: 1, y: 0 }}
+                                                                    className="absolute -right-12 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                                                                >
+                                                                    +30%
+                                                                </motion.div>
+                                                            )}
+                                                        </>
                                                     )}
                                                 </div>
                                                 {suppliesReady && (
-                                                    <div className="text-xs text-muted-foreground">
+                                                    <div className="text-sm font-semibold bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
                                                         {temperatures.water}°C
                                                     </div>
                                                 )}
@@ -652,17 +706,44 @@ export function ThermalExpansionLabEnhanced() {
                                                 )}
                                             >
                                                 <span className="text-xs md:text-sm font-medium">Alcohol</span>
-                                                <div className="relative w-14 md:w-20 h-40 md:h-48 border-2 border-purple-400 rounded-lg bg-purple-50/30 dark:bg-purple-900/20 overflow-hidden">
+                                                <div className="relative w-14 md:w-20 h-40 md:h-48 border-2 border-purple-400 rounded-lg bg-purple-50/30 dark:bg-purple-900/20 overflow-visible">
+                                                    {/* Measurement scale */}
+                                                    <div className="absolute -left-6 top-0 bottom-0 w-0.5 bg-purple-300 dark:bg-purple-700" />
+                                                    <div className="absolute -left-6 top-0 w-4 h-0.5 bg-purple-300 dark:bg-purple-700" />
+                                                    <div className="absolute -left-6 bottom-0 w-4 h-0.5 bg-purple-300 dark:bg-purple-700" />
+                                                    
                                                     {suppliesReady && (
-                                                        <motion.div
-                                                            className="absolute bottom-0 w-full bg-purple-400/70 dark:bg-purple-500/70"
-                                                            animate={{ height: alcoholExpanded ? '85%' : '50%' }}
-                                                            transition={{ duration: 0.8 }}
-                                                        />
+                                                        <>
+                                                            {/* Initial level marker */}
+                                                            <div className="absolute left-0 right-0 h-0.5 bg-purple-600/50 dark:bg-purple-400/50" style={{ bottom: '50%' }} />
+                                                            
+                                                            {/* Alcohol level with most dramatic expansion */}
+                                                            <motion.div
+                                                                className="absolute bottom-0 w-full bg-gradient-to-t from-purple-600 to-purple-400 dark:from-purple-700 dark:to-purple-500 rounded-b-lg shadow-inner"
+                                                                animate={{ 
+                                                                    height: alcoholExpanded ? '90%' : '50%',
+                                                                }}
+                                                                transition={{ duration: 2, ease: "easeOut" }}
+                                                            >
+                                                                {/* Liquid surface shine */}
+                                                                <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-b from-purple-200/80 to-transparent" />
+                                                            </motion.div>
+                                                            
+                                                            {/* Expansion indicator */}
+                                                            {alcoholExpanded && (
+                                                                <motion.div
+                                                                    initial={{ opacity: 0, y: -10 }}
+                                                                    animate={{ opacity: 1, y: 0 }}
+                                                                    className="absolute -right-12 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                                                                >
+                                                                    +40%
+                                                                </motion.div>
+                                                            )}
+                                                        </>
                                                     )}
                                                 </div>
                                                 {suppliesReady && (
-                                                    <div className="text-xs text-muted-foreground">
+                                                    <div className="text-sm font-semibold bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
                                                         {temperatures.alcohol}°C
                                                     </div>
                                                 )}
@@ -703,26 +784,44 @@ export function ThermalExpansionLabEnhanced() {
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 p-6 rounded-lg border-2 border-red-200 dark:border-red-800">
                                     <h3 className="font-semibold text-lg mb-4">Key Observations:</h3>
-                                    <ul className="space-y-3">
-                                        <li className="flex items-start gap-3">
-                                            <CheckCircle className="h-5 w-5 text-gray-600 mt-0.5 flex-shrink-0" />
-                                            <div>
-                                                <strong>Metal Rod expanded SLIGHTLY:</strong> Solids have tight atomic structure, so expansion is minimal (~5%)
+                                    <div className="space-y-4">
+                                        <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg border-2 border-gray-300 dark:border-gray-600">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <CheckCircle className="h-6 w-6 text-gray-600 flex-shrink-0" />
+                                                <div className="flex-1">
+                                                    <strong className="text-lg">Metal Rod expanded by 15%</strong>
+                                                    <p className="text-sm text-muted-foreground">Solids have tight atomic structure, so expansion is minimal</p>
+                                                </div>
+                                                <div className="bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full font-bold text-gray-700 dark:text-gray-300">
+                                                    15%
+                                                </div>
                                             </div>
-                                        </li>
-                                        <li className="flex items-start gap-3">
-                                            <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-                                            <div>
-                                                <strong>Water expanded MORE:</strong> Liquids have looser structure, allowing greater expansion (~25%)
+                                        </div>
+                                        <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg border-2 border-blue-300 dark:border-blue-600">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <CheckCircle className="h-6 w-6 text-blue-600 flex-shrink-0" />
+                                                <div className="flex-1">
+                                                    <strong className="text-lg">Water expanded by 30%</strong>
+                                                    <p className="text-sm text-muted-foreground">Liquids have looser structure, allowing greater expansion</p>
+                                                </div>
+                                                <div className="bg-blue-100 dark:bg-blue-900 px-3 py-1 rounded-full font-bold text-blue-700 dark:text-blue-300">
+                                                    30%
+                                                </div>
                                             </div>
-                                        </li>
-                                        <li className="flex items-start gap-3">
-                                            <CheckCircle className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                                            <div>
-                                                <strong>Alcohol expanded MOST:</strong> Weak intermolecular forces allow maximum expansion (~35%)
+                                        </div>
+                                        <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg border-2 border-purple-300 dark:border-purple-600">
+                                            <div className="flex items-center gap-3 mb-2">
+                                                <CheckCircle className="h-6 w-6 text-purple-600 flex-shrink-0" />
+                                                <div className="flex-1">
+                                                    <strong className="text-lg">Alcohol expanded by 40% - MOST!</strong>
+                                                    <p className="text-sm text-muted-foreground">Weak intermolecular forces allow maximum expansion</p>
+                                                </div>
+                                                <div className="bg-purple-100 dark:bg-purple-900 px-3 py-1 rounded-full font-bold text-purple-700 dark:text-purple-300">
+                                                    40%
+                                                </div>
                                             </div>
-                                        </li>
-                                    </ul>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="bg-orange-50 dark:bg-orange-950/20 p-6 rounded-lg border border-orange-200 dark:border-orange-800">
