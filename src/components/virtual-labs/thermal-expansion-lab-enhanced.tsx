@@ -614,31 +614,90 @@ export function ThermalExpansionLabEnhanced() {
                                             >
                                                 <span className="text-xs md:text-sm font-medium">Metal Rod</span>
                                                 <div className="relative h-40 md:h-48 flex items-end justify-center">
-                                                    {/* Measurement scale */}
-                                                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600" />
-                                                    <div className="absolute left-0 top-0 w-8 h-0.5 bg-gray-300 dark:bg-gray-600" />
-                                                    <div className="absolute left-0 bottom-0 w-8 h-0.5 bg-gray-300 dark:bg-gray-600" />
-                                                    
-                                                    {/* Metal rod with expansion */}
-                                                    <motion.div
-                                                        animate={{ 
-                                                            scaleX: metalExpanded ? 1.15 : 1,
-                                                            width: metalExpanded ? '120%' : '100%'
-                                                        }}
-                                                        transition={{ duration: 2, ease: "easeOut" }}
-                                                        className="relative w-4 md:w-6 h-32 md:h-40 bg-gradient-to-r from-gray-400 to-gray-600 rounded-sm origin-left shadow-lg"
-                                                    >
-                                                        {/* Expansion indicator */}
-                                                        {metalExpanded && (
-                                                            <motion.div
-                                                                initial={{ opacity: 0, scale: 0 }}
-                                                                animate={{ opacity: 1, scale: 1 }}
-                                                                className="absolute -right-8 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                                                    {/* Measurement Ruler Scale */}
+                                                    <div className="absolute -left-12 top-0 bottom-0 w-8 flex flex-col items-center">
+                                                        {/* Ruler background */}
+                                                        <div className="w-6 h-full bg-white dark:bg-gray-800 border-2 border-gray-400 dark:border-gray-600 rounded-sm shadow-md" />
+                                                        {/* Ruler markings */}
+                                                        {[...Array(9)].map((_, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="absolute left-0 w-6 flex items-center justify-between px-1"
+                                                                style={{ top: `${(i * 12.5)}%` }}
                                                             >
-                                                                +15%
-                                                            </motion.div>
-                                                        )}
-                                                    </motion.div>
+                                                                <div className="w-2 h-0.5 bg-gray-600 dark:bg-gray-400" />
+                                                                <span className="text-[8px] font-bold text-gray-700 dark:text-gray-300">
+                                                                    {8 - i}
+                                                                </span>
+                                                                <div className="w-2 h-0.5 bg-gray-600 dark:bg-gray-400" />
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    
+                                                    {/* Metal rod - 3D cylindrical design */}
+                                                    <div className="relative flex items-end">
+                                                        {/* Rod shadow/ground */}
+                                                        <div className="absolute -bottom-2 left-0 right-0 h-2 bg-gray-800/30 dark:bg-gray-200/30 rounded-full blur-sm" />
+                                                        
+                                                        {/* Metal rod with expansion */}
+                                                        <motion.div
+                                                            animate={{ 
+                                                                scaleX: metalExpanded ? 1.15 : 1,
+                                                                width: metalExpanded ? '120%' : '100%'
+                                                            }}
+                                                            transition={{ duration: 2, ease: "easeOut" }}
+                                                            className="relative origin-left"
+                                                            style={{ width: '60px', height: '160px' }}
+                                                        >
+                                                            {/* 3D Cylindrical Rod */}
+                                                            <div className="relative w-full h-full">
+                                                                {/* Main cylinder body */}
+                                                                <div className="absolute inset-0 bg-gradient-to-r from-gray-500 via-gray-400 to-gray-500 dark:from-gray-600 dark:via-gray-500 dark:to-gray-600 rounded-full shadow-xl" />
+                                                                
+                                                                {/* Top cap */}
+                                                                <div className="absolute top-0 left-0 right-0 h-4 bg-gradient-to-b from-gray-300 to-gray-500 dark:from-gray-500 dark:to-gray-700 rounded-t-full" />
+                                                                
+                                                                {/* Bottom cap */}
+                                                                <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-gray-600 to-gray-400 dark:from-gray-700 dark:to-gray-500 rounded-b-full" />
+                                                                
+                                                                {/* Shine/highlight */}
+                                                                <div className="absolute top-2 left-2 right-4 h-3/4 bg-gradient-to-r from-white/40 to-transparent rounded-full" />
+                                                                
+                                                                {/* Metallic rings */}
+                                                                {[...Array(3)].map((_, i) => (
+                                                                    <div
+                                                                        key={i}
+                                                                        className="absolute left-0 right-0 h-0.5 bg-gray-600/50 dark:bg-gray-400/50"
+                                                                        style={{ top: `${25 + i * 25}%` }}
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                            
+                                                            {/* Expansion indicator */}
+                                                            {metalExpanded && (
+                                                                <motion.div
+                                                                    initial={{ opacity: 0, scale: 0 }}
+                                                                    animate={{ opacity: 1, scale: 1 }}
+                                                                    className="absolute -right-12 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10"
+                                                                >
+                                                                    +15%
+                                                                </motion.div>
+                                                            )}
+                                                            
+                                                            {/* Length measurement line */}
+                                                            <div className="absolute -bottom-6 left-0 right-0 flex items-center justify-center">
+                                                                <div className="relative">
+                                                                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-red-500" />
+                                                                    <div className="absolute right-0 top-0 bottom-0 w-0.5 bg-red-500" />
+                                                                    <div className="absolute inset-x-0 top-0 h-0.5 bg-red-500" />
+                                                                    <div className="absolute inset-x-0 bottom-0 h-0.5 bg-red-500" />
+                                                                    <span className="text-[10px] font-bold text-red-600 dark:text-red-400 px-1 bg-white dark:bg-gray-800">
+                                                                        {metalExpanded ? '115mm' : '100mm'}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </motion.div>
+                                                    </div>
                                                 </div>
                                                 {suppliesReady && (
                                                     <div className="text-sm font-semibold bg-red-100 dark:bg-red-900 px-2 py-1 rounded">
@@ -668,10 +727,25 @@ export function ThermalExpansionLabEnhanced() {
                                             >
                                                 <span className="text-xs md:text-sm font-medium">Water</span>
                                                 <div className="relative w-14 md:w-20 h-40 md:h-48 border-2 border-blue-400 rounded-lg bg-blue-50/30 dark:bg-blue-900/20 overflow-visible">
-                                                    {/* Measurement scale */}
-                                                    <div className="absolute -left-6 top-0 bottom-0 w-0.5 bg-blue-300 dark:bg-blue-700" />
-                                                    <div className="absolute -left-6 top-0 w-4 h-0.5 bg-blue-300 dark:bg-blue-700" />
-                                                    <div className="absolute -left-6 bottom-0 w-4 h-0.5 bg-blue-300 dark:bg-blue-700" />
+                                                    {/* Measurement Ruler Scale */}
+                                                    <div className="absolute -left-12 top-0 bottom-0 w-8 flex flex-col items-center">
+                                                        {/* Ruler background */}
+                                                        <div className="w-6 h-full bg-white dark:bg-gray-800 border-2 border-blue-400 dark:border-blue-600 rounded-sm shadow-md" />
+                                                        {/* Ruler markings */}
+                                                        {[...Array(9)].map((_, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="absolute left-0 w-6 flex items-center justify-between px-1"
+                                                                style={{ top: `${(i * 12.5)}%` }}
+                                                            >
+                                                                <div className="w-2 h-0.5 bg-blue-600 dark:bg-blue-400" />
+                                                                <span className="text-[8px] font-bold text-blue-700 dark:text-blue-300">
+                                                                    {8 - i}
+                                                                </span>
+                                                                <div className="w-2 h-0.5 bg-blue-600 dark:bg-blue-400" />
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                     
                                                     {suppliesReady && (
                                                         <>
@@ -695,11 +769,18 @@ export function ThermalExpansionLabEnhanced() {
                                                                 <motion.div
                                                                     initial={{ opacity: 0, y: -10 }}
                                                                     animate={{ opacity: 1, y: 0 }}
-                                                                    className="absolute -right-12 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                                                                    className="absolute -right-12 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10"
                                                                 >
                                                                     +30%
                                                                 </motion.div>
                                                             )}
+                                                            
+                                                            {/* Level measurement */}
+                                                            <div className="absolute -right-16 top-0 bottom-0 flex flex-col items-center justify-between py-2">
+                                                                <div className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-white dark:bg-gray-800 px-1 rounded">
+                                                                    {waterExpanded ? '80%' : '50%'}
+                                                                </div>
+                                                            </div>
                                                         </>
                                                     )}
                                                 </div>
@@ -722,14 +803,14 @@ export function ThermalExpansionLabEnhanced() {
                                                     <motion.div
                                                         initial={{ opacity: 0, y: 10 }}
                                                         animate={{ opacity: 1, y: 0 }}
-                                                        className="mt-2"
+                                                        className="mt-3 w-full"
                                                     >
                                                         <Button
                                                             onClick={handleContinueAfterWater}
-                                                            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"
-                                                            size="sm"
+                                                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
+                                                            size="lg"
                                                         >
-                                                            Continue
+                                                            Continue to Alcohol
                                                         </Button>
                                                     </motion.div>
                                                 )}
@@ -746,10 +827,25 @@ export function ThermalExpansionLabEnhanced() {
                                             >
                                                 <span className="text-xs md:text-sm font-medium">Alcohol</span>
                                                 <div className="relative w-14 md:w-20 h-40 md:h-48 border-2 border-purple-400 rounded-lg bg-purple-50/30 dark:bg-purple-900/20 overflow-visible">
-                                                    {/* Measurement scale */}
-                                                    <div className="absolute -left-6 top-0 bottom-0 w-0.5 bg-purple-300 dark:bg-purple-700" />
-                                                    <div className="absolute -left-6 top-0 w-4 h-0.5 bg-purple-300 dark:bg-purple-700" />
-                                                    <div className="absolute -left-6 bottom-0 w-4 h-0.5 bg-purple-300 dark:bg-purple-700" />
+                                                    {/* Measurement Ruler Scale */}
+                                                    <div className="absolute -left-12 top-0 bottom-0 w-8 flex flex-col items-center">
+                                                        {/* Ruler background */}
+                                                        <div className="w-6 h-full bg-white dark:bg-gray-800 border-2 border-purple-400 dark:border-purple-600 rounded-sm shadow-md" />
+                                                        {/* Ruler markings */}
+                                                        {[...Array(9)].map((_, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className="absolute left-0 w-6 flex items-center justify-between px-1"
+                                                                style={{ top: `${(i * 12.5)}%` }}
+                                                            >
+                                                                <div className="w-2 h-0.5 bg-purple-600 dark:bg-purple-400" />
+                                                                <span className="text-[8px] font-bold text-purple-700 dark:text-purple-300">
+                                                                    {8 - i}
+                                                                </span>
+                                                                <div className="w-2 h-0.5 bg-purple-600 dark:bg-purple-400" />
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                     
                                                     {suppliesReady && (
                                                         <>
@@ -773,11 +869,18 @@ export function ThermalExpansionLabEnhanced() {
                                                                 <motion.div
                                                                     initial={{ opacity: 0, y: -10 }}
                                                                     animate={{ opacity: 1, y: 0 }}
-                                                                    className="absolute -right-12 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg"
+                                                                    className="absolute -right-12 top-1/2 -translate-y-1/2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg z-10"
                                                                 >
                                                                     +40%
                                                                 </motion.div>
                                                             )}
+                                                            
+                                                            {/* Level measurement */}
+                                                            <div className="absolute -right-16 top-0 bottom-0 flex flex-col items-center justify-between py-2">
+                                                                <div className="text-[10px] font-bold text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 px-1 rounded">
+                                                                    {alcoholExpanded ? '90%' : '50%'}
+                                                                </div>
+                                                            </div>
                                                         </>
                                                     )}
                                                 </div>
