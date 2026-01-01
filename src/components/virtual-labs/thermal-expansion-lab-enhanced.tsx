@@ -704,7 +704,7 @@ export function ThermalExpansionLabEnhanced() {
                                                         {temperatures.metal}°C
                                                     </div>
                                                 )}
-                                                {currentStep === 'heat-metal' && suppliesReady && !heatingMaterial && (
+                                                {currentStep === 'heat-metal' && suppliesReady && !heatingMaterial && !metalHeatingComplete && (
                                                     <p className="text-xs md:text-sm font-medium bg-orange-100 dark:bg-orange-900 px-2 py-1 rounded">
                                                         Click to Heat
                                                     </p>
@@ -713,6 +713,21 @@ export function ThermalExpansionLabEnhanced() {
                                                     <div className="absolute -bottom-8 left-1/2 -translate-x-1/2">
                                                         <EnhancedFlame isHeating={true} />
                                                     </div>
+                                                )}
+                                                {metalHeatingComplete && currentStep === 'heat-metal' && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className="mt-3 w-full"
+                                                    >
+                                                        <Button
+                                                            onClick={handleContinueAfterMetal}
+                                                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
+                                                            size="lg"
+                                                        >
+                                                            Continue to Water
+                                                        </Button>
+                                                    </motion.div>
                                                 )}
                                             </motion.div>
                                             
@@ -907,8 +922,8 @@ export function ThermalExpansionLabEnhanced() {
                                                     >
                                                         <Button
                                                             onClick={handleContinueAfterAlcohol}
-                                                            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg"
-                                                            size="sm"
+                                                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl transition-all"
+                                                            size="lg"
                                                         >
                                                             Continue to Results
                                                         </Button>
