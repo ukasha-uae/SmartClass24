@@ -4,7 +4,7 @@ import { QuestionDifficulty } from './bece-questions';
 import { getChallengeQuestions, getAvailableSubjects, type EducationLevel } from './challenge-questions';
 import { createInAppNotification } from './in-app-notifications';
 import { calculateXP, calculateCoins, checkAchievements } from './gamification';
-import { getCoinMultiplier } from './monetization';
+import { getCoinMultiplier, getQuestionLimit } from './monetization';
 
 export interface Player {
   userId: string;
@@ -352,6 +352,9 @@ export const createChallenge = (challenge: Omit<Challenge, 'id' | 'createdAt' | 
   
   // Generate questions based on education level (Primary, JHS, or SHS) with STRICT level filtering
   // Each level ONLY gets questions from their own level - no cross-level access
+  // Question bank limiting is handled inside getChallengeQuestions (freemium model)
+  // Free users: Limited question bank (10 questions per subject - they see same questions repeating)
+  // Premium users: Full question bank (all available questions)
   const questions = generateGameQuestions(challenge.level, challenge.subject, challenge.difficulty, challenge.questionCount, challenge.creatorId);
   
   // Validate that questions were generated (should never be empty with proper question banks)
@@ -778,6 +781,9 @@ export const createBossChallenge = (
   const boss = AI_BOSSES.find(b => b.id === bossId);
   if (!boss) return null;
 
+  // Question bank limiting is handled inside getChallengeQuestions (freemium model)
+  // Free users: Limited question bank (10 questions per subject - they see same questions repeating)
+  // Premium users: Full question bank (all available questions)
   const questions = generateGameQuestions(player.level, subject, boss.difficulty === 'easy' ? 'easy' : boss.difficulty === 'medium' ? 'medium' : 'hard', 10, userId);
 
   const challenge: Challenge = {

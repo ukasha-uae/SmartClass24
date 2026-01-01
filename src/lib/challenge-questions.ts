@@ -1898,7 +1898,22 @@ export function getChallengeQuestions(
   const legacyDifficulty = isClassLevel ? undefined : (difficulty as QuestionDifficulty);
   const sessionKey = `${userId}-${level}`;
   
+  // Check premium status for question bank limit
+  // Import here to avoid circular dependency
+  let isPremium = false;
+  let freeBankLimit = 5; // Free users get 5 questions per subject (optimized for conversion)
+  if (typeof window !== 'undefined') {
+    try {
+      const { isPremiumUser } = require('./monetization');
+      isPremium = isPremiumUser(userId);
+    } catch (e) {
+      // If monetization module not available, default to free
+      isPremium = false;
+    }
+  }
+  
   // STRICT LEVEL FILTERING - Each level only gets their own questions
+  // Primary students can ONLY see Primary questions, JHS only JHS, SHS only SHS
   if (level === 'Primary') {
     // Primary questions only
     let filtered = primaryQuestionBank.filter(q => q.level === 'Primary');
@@ -1929,6 +1944,14 @@ export function getChallengeQuestions(
         ...q,
         classLevel: q.classLevel || assignClassLevel(q.level, q.difficulty, idx)
       }));
+    }
+    
+    // Apply question bank limit for free users (freemium model)
+    // Free users: Limited question bank (e.g., 10 questions per subject - they see same questions repeating)
+    // Premium users: Full question bank (all available questions)
+    if (!isPremium && filtered.length > freeBankLimit) {
+      // Limit the question bank for free users - they'll see the same questions repeating
+      filtered = filtered.slice(0, freeBankLimit);
     }
     
     // Filter out recently used questions
@@ -1992,13 +2015,22 @@ export function getChallengeQuestions(
     // const pastQuestions = getPastQuestionsAsChallengeQuestions('JHS', subject, Math.floor(count * 0.2));
     // converted.push(...pastQuestions);
     
+    // Apply question bank limit for free users (freemium model)
+    // Free users: Limited question bank (e.g., 10 questions per subject - they see same questions repeating)
+    // Premium users: Full question bank (all available questions)
+    let limitedConverted = converted;
+    if (!isPremium && converted.length > freeBankLimit) {
+      // Limit the question bank for free users - they'll see the same questions repeating
+      limitedConverted = converted.slice(0, freeBankLimit);
+    }
+    
     // Filter out recently used questions
-    const fresh = filterFreshQuestions(converted, sessionKey);
+    const fresh = filterFreshQuestions(limitedConverted, sessionKey);
     
     // If we don't have enough fresh questions, supplement with some used ones
     const finalQuestions = fresh.length >= count 
       ? fresh.slice(0, count)
-      : [...fresh, ...converted.filter(q => !fresh.includes(q))].slice(0, count);
+      : [...fresh, ...limitedConverted.filter(q => !fresh.includes(q))].slice(0, count);
     
     // Mark these questions as used
     markQuestionsUsed(sessionKey, finalQuestions.map(q => q.id));
@@ -2043,6 +2075,14 @@ export function getChallengeQuestions(
     const pastQuestions = getPastQuestionsAsChallengeQuestions('SHS', subject, pastQuestionsCount);
     if (pastQuestions.length > 0) {
       filtered = [...filtered, ...pastQuestions];
+    }
+    
+    // Apply question bank limit for free users (freemium model)
+    // Free users: Limited question bank (e.g., 10 questions per subject - they see same questions repeating)
+    // Premium users: Full question bank (all available questions)
+    if (!isPremium && filtered.length > freeBankLimit) {
+      // Limit the question bank for free users - they'll see the same questions repeating
+      filtered = filtered.slice(0, freeBankLimit);
     }
     
     // Filter out recently used questions

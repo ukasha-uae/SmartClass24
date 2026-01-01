@@ -261,3 +261,42 @@ export function getCoinMultiplier(userId: string): number {
   return 1.0;
 }
 
+/**
+ * Get question bank limit based on premium status
+ * Free users: Limited question bank (e.g., 10 questions per subject - they see same questions repeating)
+ * Premium users: Full question bank (all available questions for their level/subject)
+ * 
+ * @param userId - User ID to check premium status
+ * @param freeBankLimit - Maximum questions in bank for free users (default: 10 per subject)
+ * @returns Maximum number of questions available in the bank for this user
+ */
+export function getQuestionBankLimit(
+  userId: string,
+  freeBankLimit: number = 10
+): number {
+  const isPremium = isPremiumUser(userId);
+  // Premium users get unlimited (return a very large number to indicate full access)
+  // Free users get limited bank
+  return isPremium ? 999999 : freeBankLimit;
+}
+
+/**
+ * Check if user has premium access to full question bank
+ */
+export function hasFullQuestionBank(userId: string): boolean {
+  return isPremiumUser(userId);
+}
+
+/**
+ * @deprecated Use getQuestionBankLimit instead
+ * Kept for backward compatibility
+ */
+export function getQuestionLimit(
+  userId: string,
+  defaultLimit: number = 10,
+  freeLimit: number = 5
+): number {
+  const isPremium = isPremiumUser(userId);
+  return isPremium ? defaultLimit : Math.min(freeLimit, defaultLimit);
+}
+

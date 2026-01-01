@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { User, BrainCircuit, Swords, Users } from 'lucide-react';
+import { User, FlaskConical, Swords, Coins } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useFullscreen } from '@/contexts/FullscreenContext';
 
@@ -20,10 +20,11 @@ export default function BottomNav() {
     return null;
   }
 
+  // V1: Only Challenge Arena, Virtual Labs (for SHS), and Profile
   const navItems = [
-    { href: '/past-questions', label: 'Practice', icon: BrainCircuit },
     { href: '/challenge-arena', label: 'Arena', icon: Swords },
-    { href: '/study-groups', label: 'Social', icon: Users },
+    { href: '/virtual-labs', label: 'Labs', icon: FlaskConical },
+    { href: '/pricing', label: 'Pricing', icon: Coins },
     { href: '/profile', label: 'Profile', icon: User },
   ];
 

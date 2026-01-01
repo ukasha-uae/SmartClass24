@@ -4,20 +4,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { virtualLabExperiments, getAllVirtualLabs } from '@/lib/virtual-labs-data';
-import { FlaskConical, Atom, Dna, Zap, CheckCircle2, Lock, Trophy, Clock, Star } from 'lucide-react';
+import { FlaskConical, Atom, Dna, Zap, CheckCircle2, Lock, Trophy, Clock, Star, Crown } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { Progress } from "@/components/ui/progress";
 import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
+import { useFirebase } from '@/firebase/provider';
+import { isPremiumUser } from '@/lib/monetization';
+import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 
 export default function VirtualLabsPage() {
   // V1 Route Guard: Check if user has access to virtual labs
   const { hasAccess, campus } = useV1FeatureAccess('virtualLabs');
+  const { user } = useFirebase();
   const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics'>('All');
   const [difficultyFilter, setDifficultyFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
   const { completedLabs, totalXP, streak, isLabCompleted } = useLabProgress();
   const [mounted, setMounted] = useState(false);
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
+  
+  const userId = user?.uid || 'guest';
+  const isPremium = isPremiumUser(userId);
 
   useEffect(() => {
     setMounted(true);
@@ -52,8 +60,15 @@ export default function VirtualLabsPage() {
     return labDifficulty[slug] || 'Medium';
   };
 
-  const allLabs = getAllVirtualLabs(); // Get V1-filtered labs
+  // Get labs based on premium status
+  const allLabs = getAllVirtualLabs(userId);
+  const allLabsTotal = virtualLabExperiments.experiments.length; // Total labs available
   const filteredExperiments = allLabs
+    .filter(exp => filter === 'All' || exp.subject === filter)
+    .filter(exp => difficultyFilter === 'All' || getDifficulty(exp.slug) === difficultyFilter);
+  
+  // Get all labs (including locked ones) for display
+  const allLabsIncludingLocked = virtualLabExperiments.experiments
     .filter(exp => filter === 'All' || exp.subject === filter)
     .filter(exp => difficultyFilter === 'All' || getDifficulty(exp.slug) === difficultyFilter);
 
@@ -84,7 +99,17 @@ export default function VirtualLabsPage() {
               </h1>
             </div>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-              Master science through hands-on experiments. <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{getAllVirtualLabs().length}</span> interactive labs await!
+              Master science through hands-on experiments.{' '}
+              {!isPremium ? (
+                <>
+                  <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{allLabs.length}</span> labs free,{' '}
+                  <span className="font-bold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">{allLabsTotal - allLabs.length}</span> more with Premium!
+                </>
+              ) : (
+                <>
+                  <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{allLabsTotal}</span> interactive labs unlocked!
+                </>
+              )}
             </p>
           </div>
 
@@ -187,7 +212,8 @@ export default function VirtualLabsPage() {
           {/* Premium Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {Object.entries(subjectIcons).map(([subject, Icon]) => {
-              const count = getAllVirtualLabs().filter(exp => exp.subject === subject).length;
+              const availableCount = allLabs.filter(exp => exp.subject === subject).length;
+              const totalCount = virtualLabExperiments.experiments.filter(exp => exp.subject === subject).length;
               const colors = {
                 Biology: { bg: 'from-green-500/10 to-emerald-500/10', border: 'border-green-200/30 dark:border-green-800/30', icon: 'text-green-600 dark:text-green-400', text: 'from-green-600 to-emerald-600' },
                 Chemistry: { bg: 'from-orange-500/10 to-amber-500/10', border: 'border-orange-200/30 dark:border-orange-800/30', icon: 'text-orange-600 dark:text-orange-400', text: 'from-orange-600 to-amber-600' },
@@ -200,8 +226,15 @@ export default function VirtualLabsPage() {
                   <div className="relative flex items-center gap-3">
                     <Icon className={`h-8 w-8 ${color.icon} group-hover:scale-110 transition-transform`} />
                     <div>
-                      <p className={`text-3xl font-bold bg-gradient-to-r ${color.text} bg-clip-text text-transparent`}>{count}</p>
+                      <p className={`text-3xl font-bold bg-gradient-to-r ${color.text} bg-clip-text text-transparent`}>
+                        {isPremium ? totalCount : `${availableCount}/${totalCount}`}
+                      </p>
                       <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">{subject}</p>
+                      {!isPremium && availableCount < totalCount && (
+                        <p className="text-xs text-yellow-600 dark:text-yellow-400 font-semibold mt-1">
+                          Upgrade for {totalCount - availableCount} more
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -209,9 +242,35 @@ export default function VirtualLabsPage() {
             })}
           </div>
 
+          {/* Premium Info Banner for Free Users */}
+          {!isPremium && allLabs.length < allLabsTotal && (
+            <Card className="mb-6 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/30 border-2 border-yellow-200/50 dark:border-yellow-800/50">
+              <CardContent className="p-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <Crown className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                  <div>
+                    <p className="font-bold text-yellow-900 dark:text-yellow-100">
+                      Unlock All {allLabsTotal} Labs with Premium!
+                    </p>
+                    <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                      You're currently viewing {allLabs.length} free labs. Upgrade to access all {allLabsTotal} interactive experiments.
+                    </p>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => setShowUnlockModal(true)}
+                  className="bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white"
+                >
+                  Upgrade Now
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Premium Experiments Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredExperiments.map((experiment) => {
+            {allLabsIncludingLocked.map((experiment) => {
+              const isLocked = !allLabs.some(lab => lab.slug === experiment.slug);
               const Icon = subjectIcons[experiment.subject as keyof typeof subjectIcons];
               const colorClass = subjectColors[experiment.subject as keyof typeof subjectColors];
               const isCompleted = mounted && isLabCompleted(experiment.id);
@@ -226,12 +285,30 @@ export default function VirtualLabsPage() {
               const diffColor = difficultyColors[difficulty];
               
               return (
-                <Link key={experiment.id} href={`/virtual-labs/${experiment.slug}`}>
-                  <Card className={`group h-full hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer border-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden ${
-                    isCompleted 
-                      ? 'border-green-400/50 dark:border-green-600/50 bg-green-50/50 dark:bg-green-950/20' 
-                      : 'border-purple-200/50 dark:border-purple-800/50 hover:border-purple-400 dark:hover:border-purple-600'
-                  }`}>
+                <div key={experiment.id} className="relative">
+                  {isLocked && (
+                    <div className="absolute inset-0 z-20 bg-black/40 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                      <div className="text-center p-4">
+                        <Crown className="h-8 w-8 text-yellow-400 mx-auto mb-2" />
+                        <p className="text-white font-bold mb-2">Premium Only</p>
+                        <Button 
+                          size="sm"
+                          onClick={() => setShowUnlockModal(true)}
+                          className="bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-700 hover:to-amber-700 text-white"
+                        >
+                          Unlock
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  <Link href={isLocked ? '#' : `/virtual-labs/${experiment.slug}`} onClick={(e) => isLocked && (e.preventDefault(), setShowUnlockModal(true))}>
+                    <Card className={`group h-full hover:shadow-2xl transition-all duration-300 ${isLocked ? 'cursor-not-allowed opacity-60' : 'hover:scale-[1.02] cursor-pointer'} border-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden ${
+                      isCompleted 
+                        ? 'border-green-400/50 dark:border-green-600/50 bg-green-50/50 dark:bg-green-950/20' 
+                        : isLocked
+                        ? 'border-gray-300/50 dark:border-gray-700/50'
+                        : 'border-purple-200/50 dark:border-purple-800/50 hover:border-purple-400 dark:hover:border-purple-600'
+                    }`}>
                     <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-full blur-3xl group-hover:scale-150 transition-transform"></div>
                     <CardHeader className="relative z-10">
                       <div className="flex items-start justify-between mb-3">
@@ -249,12 +326,19 @@ export default function VirtualLabsPage() {
                           <Badge className={`${colorClass} border-2 font-semibold`}>
                             {experiment.subject}
                           </Badge>
-                          <Badge 
-                            variant="outline" 
-                            className={`text-xs border-2 bg-gradient-to-br ${diffColor.bg} ${diffColor.border} font-semibold`}
-                          >
-                            <span className={`bg-gradient-to-r ${diffColor.text} bg-clip-text text-transparent`}>{difficulty}</span>
-                          </Badge>
+                          {isLocked ? (
+                            <Badge className="bg-gradient-to-r from-yellow-500 to-amber-600 text-white border-0 font-semibold">
+                              <Crown className="h-3 w-3 mr-1" />
+                              Premium
+                            </Badge>
+                          ) : (
+                            <Badge 
+                              variant="outline" 
+                              className={`text-xs border-2 bg-gradient-to-br ${diffColor.bg} ${diffColor.border} font-semibold`}
+                            >
+                              <span className={`bg-gradient-to-r ${diffColor.text} bg-clip-text text-transparent`}>{difficulty}</span>
+                            </Badge>
+                          )}
                         </div>
                       </div>
                       <CardTitle className="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent group-hover:from-purple-600 group-hover:to-violet-600 dark:group-hover:from-purple-400 dark:group-hover:to-violet-400 transition-all">{experiment.title}</CardTitle>
@@ -293,6 +377,7 @@ export default function VirtualLabsPage() {
                     </CardContent>
                   </Card>
                 </Link>
+                </div>
               );
             })}
           </div>
@@ -307,6 +392,17 @@ export default function VirtualLabsPage() {
           )}
         </div>
       </div>
+      
+      {/* Premium Unlock Modal */}
+      <PremiumUnlockModal
+        open={showUnlockModal}
+        onClose={() => setShowUnlockModal(false)}
+        feature="virtual-labs"
+        onSuccess={() => {
+          setShowUnlockModal(false);
+          window.location.reload();
+        }}
+      />
     </V1RouteGuard>
   );
 }

@@ -32,24 +32,11 @@ export default function Footer() {
   };
 
   const footerSections = {
-    quickLinks: [
-      { label: 'Browse Subjects', href: '/subjects/jhs' },
-      { label: `${country?.academicStructure.seniorSecondary.name} Campus`, href: '/shs' },
-      { label: 'Virtual Labs', href: '/virtual-labs' },
-      { label: 'Past Questions', href: '/past-questions' },
-      { label: 'Study Schedule', href: '/study-schedule' },
-    ],
-    community: [
-      { label: 'Study Groups', href: '/study-groups' },
-      { label: 'Q&A Community', href: '/community' },
+    // V1: Only Challenge Arena and Virtual Labs
+    features: [
       { label: 'Challenge Arena', href: '/challenge-arena' },
-      { label: 'Achievements', href: '/achievements-feed' },
-    ],
-    resources: [
-      { label: 'Teacher Portal', href: '/teacher/dashboard' },
-      { label: 'Parent Portal', href: '/parent/dashboard' },
-      { label: `${country?.examSystem.secondary} Prep`, href: '/wassce-questions' },
-      { label: 'Programme Guide', href: '/shs-programmes' },
+      { label: 'Virtual Labs', href: '/virtual-labs' },
+      { label: 'Pricing', href: '/pricing' },
     ],
     legal: [
       { label: 'About Us', href: '/about' },
@@ -76,10 +63,10 @@ export default function Footer() {
 
       <div className="container mx-auto px-4 md:px-6 py-12 relative z-10">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-8">
           
           {/* Premium Brand & Newsletter - Takes 2 columns on large screens */}
-          <div className="col-span-2 md:col-span-4 lg:col-span-2">
+          <div className="col-span-2 md:col-span-2 lg:col-span-2">
             <div className="mb-6 p-6 bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm rounded-2xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-lg">
               <div className="flex items-center gap-3 mb-4">
                 {/* Premium Logo with Enhanced Design */}
@@ -153,11 +140,11 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Premium Quick Links */}
+          {/* V1 Features */}
           <div className="p-4 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm rounded-xl border border-violet-100/50 dark:border-violet-900/50">
-            <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Quick Links</h4>
+            <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Features</h4>
             <ul className="space-y-2.5">
-              {footerSections.quickLinks.map((link) => (
+              {footerSections.features.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -170,39 +157,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Premium Community */}
+          {/* Company & Legal */}
           <div className="p-4 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm rounded-xl border border-violet-100/50 dark:border-violet-900/50">
-            <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Community</h4>
-            <ul className="space-y-2.5">
-              {footerSections.community.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:translate-x-1 transition-all inline-block"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Premium Resources & Legal Combined on mobile */}
-          <div className="col-span-2 md:col-span-1 p-4 bg-white/40 dark:bg-gray-900/40 backdrop-blur-sm rounded-xl border border-violet-100/50 dark:border-violet-900/50">
-            <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Resources</h4>
-            <ul className="space-y-2.5 mb-6">
-              {footerSections.resources.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:translate-x-1 transition-all inline-block"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-
             <h4 className="text-sm font-bold mb-4 bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Company</h4>
             <ul className="space-y-2.5">
               {footerSections.legal.map((link) => (

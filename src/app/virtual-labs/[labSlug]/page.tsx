@@ -1,6 +1,8 @@
 "use client";
 
 import { getVirtualLabBySlug } from '@/lib/virtual-labs-data';
+import { useFirebase } from '@/firebase/provider';
+import { isPremiumUser } from '@/lib/monetization';
 import { ArrowLeft, FlaskConical, CheckCircle2, ArrowRight, Trophy, Star, Zap, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -24,6 +26,7 @@ interface QuizQuestion {
 export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: string }> }) {
   // V1 Route Guard: Check if user has access to virtual labs
   const { hasAccess, campus } = useV1FeatureAccess('virtualLabs');
+  const { user } = useFirebase();
   
   const [mounted, setMounted] = useState(false);
   const [experimentCompleted, setExperimentCompleted] = useState(false);
@@ -41,7 +44,8 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
 
   if (!mounted) return null;
 
-  const experiment = getVirtualLabBySlug(resolvedParams.labSlug);
+  const userId = user?.uid || 'guest';
+  const experiment = getVirtualLabBySlug(resolvedParams.labSlug, userId);
   
   if (!experiment) {
     notFound();

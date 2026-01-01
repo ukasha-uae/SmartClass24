@@ -47,3 +47,4 @@ Set the environment variable `NEXT_PUBLIC_WHATSAPP_NUMBER` in your hosting platf
 ## Fallback
 If the environment variable is not set, the code will use a fallback number. However, you should always set it properly in production.
 
+

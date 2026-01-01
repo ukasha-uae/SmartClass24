@@ -40,8 +40,8 @@ import { getAvailableSubjects } from '@/lib/challenge-questions';
 import CoinStore from '@/components/premium/CoinStore';
 import TransactionHistory from '@/components/premium/TransactionHistory';
 import SubscriptionManagement from '@/components/premium/SubscriptionManagement';
-import { isPremiumUser, hasPremiumFeature } from '@/lib/monetization';
-import { Crown, Lock, Coins } from 'lucide-react';
+import { isPremiumUser, hasPremiumFeature, getQuestionBankLimit } from '@/lib/monetization';
+import { Coins } from 'lucide-react';
 
 export default function LocalizedChallengeArenaPage() {
   const params = useParams();
@@ -686,24 +686,12 @@ export default function LocalizedChallengeArenaPage() {
               {/* Premium Game Modes */}
               {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss && (
                 <Link href="/challenge-arena/boss-battle">
-                  <Card className={`relative bg-gradient-to-br ${isPremium ? 'from-red-500 to-orange-600' : 'from-red-400/80 to-orange-500/80'} p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0`}>
-                    {!isPremium && (
-                      <>
-                        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-10"></div>
-                        <div className="absolute top-3 right-3 z-20">
-                          <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 shadow-lg animate-pulse">
-                            <Crown className="h-3 w-3 mr-1" />
-                            Premium
-                          </Badge>
-                        </div>
-                      </>
-                    )}
+                  <Card className="relative bg-gradient-to-br from-red-500 to-orange-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-0">
                       <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">👹</div>
-                      <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
+                      <h3 className="text-2xl sm:text-3xl font-bold mb-2">
                         Boss Battle
-                        {!isPremium && <Lock className="h-5 w-5" />}
                       </h3>
                       <p className="text-base sm:text-lg mb-3 sm:mb-4 opacity-90">
                         Challenge the top-ranked players in {country?.name}
@@ -721,15 +709,19 @@ export default function LocalizedChallengeArenaPage() {
                           <span className="text-white/80 mr-2">🏆</span>
                           <span className="text-sm sm:text-base">AI Bosses</span>
                         </div>
-                        {!isPremium && (
-                          <div className="flex items-center">
-                            <span className="text-white/80 mr-2">👑</span>
-                            <span className="text-sm sm:text-base font-semibold">Premium Only</span>
-                          </div>
-                        )}
+                        <div className="flex items-center">
+                          <span className="text-white/80 mr-2">📝</span>
+                          <span className="text-sm sm:text-base">
+                            {!isPremium ? (
+                              <span>Limited question bank <span className="text-yellow-300">(10 questions per subject)</span></span>
+                            ) : (
+                              <span>Full question bank <span className="text-green-300">(All questions available)</span></span>
+                            )}
+                          </span>
+                        </div>
                       </div>
-                      <div className={`w-full ${isPremium ? 'bg-white text-red-600' : 'bg-white/50 text-red-600/70'} text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold ${isPremium ? 'hover:bg-gray-100' : 'cursor-not-allowed'} transition-colors`}>
-                        {isPremium ? 'Start Battle' : 'Unlock Premium'}
+                      <div className="w-full bg-white text-red-600 text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold hover:bg-gray-100 transition-colors">
+                        Start Battle
                       </div>
                     </div>
                   </Card>
@@ -738,24 +730,12 @@ export default function LocalizedChallengeArenaPage() {
 
               {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament && (
                 <Link href="/challenge-arena/tournaments">
-                  <Card className={`relative bg-gradient-to-br ${isPremium ? 'from-yellow-500 to-amber-600' : 'from-yellow-400/80 to-amber-500/80'} p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0`}>
-                    {!isPremium && (
-                      <>
-                        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-10"></div>
-                        <div className="absolute top-3 right-3 z-20">
-                          <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 shadow-lg animate-pulse">
-                            <Crown className="h-3 w-3 mr-1" />
-                            Premium
-                          </Badge>
-                        </div>
-                      </>
-                    )}
+                  <Card className="relative bg-gradient-to-br from-yellow-500 to-amber-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-0">
                       <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">🏆</div>
-                      <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
+                      <h3 className="text-2xl sm:text-3xl font-bold mb-2">
                         Tournaments
-                        {!isPremium && <Lock className="h-5 w-5" />}
                       </h3>
                       <p className="text-base sm:text-lg mb-3 sm:mb-4 opacity-90">
                         Join competitive tournaments and win prizes
@@ -773,15 +753,19 @@ export default function LocalizedChallengeArenaPage() {
                           <span className="text-white/80 mr-2">📅</span>
                           <span className="text-sm sm:text-base">Weekly</span>
                         </div>
-                        {!isPremium && (
-                          <div className="flex items-center">
-                            <span className="text-white/80 mr-2">👑</span>
-                            <span className="text-sm sm:text-base font-semibold">Premium Only</span>
-                          </div>
-                        )}
+                        <div className="flex items-center">
+                          <span className="text-white/80 mr-2">📝</span>
+                          <span className="text-sm sm:text-base">
+                            {!isPremium ? (
+                              <span>Limited question bank <span className="text-yellow-300">(10 questions per subject)</span></span>
+                            ) : (
+                              <span>Full question bank <span className="text-green-300">(All questions available)</span></span>
+                            )}
+                          </span>
+                        </div>
                       </div>
-                      <div className={`w-full ${isPremium ? 'bg-white text-yellow-600' : 'bg-white/50 text-yellow-600/70'} text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold ${isPremium ? 'hover:bg-gray-100' : 'cursor-not-allowed'} transition-colors`}>
-                        {isPremium ? 'Join Tournament' : 'Unlock Premium'}
+                      <div className="w-full bg-white text-yellow-600 text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold hover:bg-gray-100 transition-colors">
+                        Join Tournament
                       </div>
                     </div>
                   </Card>
@@ -790,25 +774,13 @@ export default function LocalizedChallengeArenaPage() {
 
               {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool && (
                 <Link href="/challenge-arena/school-battle">
-                  <Card className={`relative bg-gradient-to-br ${isPremium ? 'from-purple-500 to-pink-600' : 'from-purple-400/80 to-pink-500/80'} p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0`}>
-                    {!isPremium && (
-                      <>
-                        <div className="absolute inset-0 bg-black/20 backdrop-blur-sm z-10"></div>
-                        <div className="absolute top-3 right-3 z-20">
-                          <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 shadow-lg animate-pulse">
-                            <Crown className="h-3 w-3 mr-1" />
-                            Premium
-                          </Badge>
-                        </div>
-                      </>
-                    )}
+                  <Card className="relative bg-gradient-to-br from-purple-500 to-pink-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-0">
                       <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">🏫</div>
                       <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
                         School vs School
                         <Badge className="text-xs bg-green-500/30 text-white border border-green-400/50">5 Countries</Badge>
-                        {!isPremium && <Lock className="h-5 w-5" />}
                       </h3>
                       <p className="text-base sm:text-lg mb-3 sm:mb-4 opacity-90">
                         Represent your school in inter-school battles across {country?.name || 'West Africa'}
@@ -826,15 +798,19 @@ export default function LocalizedChallengeArenaPage() {
                           <span className="text-white/80 mr-2">{country?.flag || '🌍'}</span>
                           <span className="text-sm sm:text-base">5 Countries</span>
                         </div>
-                        {!isPremium && (
-                          <div className="flex items-center">
-                            <span className="text-white/80 mr-2">👑</span>
-                            <span className="text-sm sm:text-base font-semibold">Premium Only</span>
-                          </div>
-                        )}
+                        <div className="flex items-center">
+                          <span className="text-white/80 mr-2">📝</span>
+                          <span className="text-sm sm:text-base">
+                            {!isPremium ? (
+                              <span>Limited question bank <span className="text-yellow-300">(10 questions per subject)</span></span>
+                            ) : (
+                              <span>Full question bank <span className="text-green-300">(All questions available)</span></span>
+                            )}
+                          </span>
+                        </div>
                       </div>
-                      <div className={`w-full ${isPremium ? 'bg-white text-purple-600' : 'bg-white/50 text-purple-600/70'} text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold ${isPremium ? 'hover:bg-gray-100' : 'cursor-not-allowed'} transition-colors`}>
-                        {isPremium ? 'Start Battle' : 'Unlock Premium'}
+                      <div className="w-full bg-white text-purple-600 text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold hover:bg-gray-100 transition-colors">
+                        Start Battle
                       </div>
                     </div>
                   </Card>

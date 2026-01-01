@@ -373,36 +373,58 @@ export const virtualLabExperiments = {
 };
 
 /**
- * Get all virtual labs, filtered by V1 feature flags
+ * Get available virtual labs based on premium status
+ * Free users: 1 lab per subject (3 total) - Try before you buy
+ * Premium users: All labs unlocked (20+ labs)
  */
-export const getAllVirtualLabs = (): VirtualLabExperiment[] => {
+export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperiment[] => {
     const allLabs = virtualLabExperiments.experiments;
     
-    // If V1 is enabled, filter to only show selected labs
-    if (FEATURE_FLAGS.V1_LAUNCH.enabled && FEATURE_FLAGS.V1_LAUNCH.v1VirtualLabs) {
-        const allowedSlugs = FEATURE_FLAGS.V1_LAUNCH.v1VirtualLabs;
-        return allLabs.filter(lab => allowedSlugs.includes(lab.slug));
-    }
-    
-    return allLabs;
-};
-
-export const getVirtualLabBySlug = (slug: string): VirtualLabExperiment | undefined => {
-    const experiment = virtualLabExperiments.experiments.find(exp => exp.slug === slug);
-    if (!experiment) return undefined;
-    
-    // If V1 is enabled, check if this lab is in the allowed list
-    if (FEATURE_FLAGS.V1_LAUNCH.enabled && FEATURE_FLAGS.V1_LAUNCH.v1VirtualLabs) {
-        const allowedSlugs = FEATURE_FLAGS.V1_LAUNCH.v1VirtualLabs;
-        if (!allowedSlugs.includes(experiment.slug)) {
-            return undefined; // Lab not available in V1
+    // Check premium status
+    let isPremium = false;
+    if (typeof window !== 'undefined') {
+        try {
+            const { isPremiumUser } = require('./monetization');
+            isPremium = isPremiumUser(userId);
+        } catch (e) {
+            // Fallback for server-side rendering
+            console.warn("Could not determine premium status:", e);
         }
     }
+    
+    // Premium users get all labs
+    if (isPremium) {
+        return allLabs;
+    }
+    
+    // Free users: 1 lab per subject (3 total)
+    // Selected labs: Most popular/fundamental from each subject
+    const freeLabs = [
+        'food-tests',        // Biology - Most popular
+        'litmus-test',       // Chemistry - Fundamental
+        'simple-circuits',   // Physics - Engaging
+    ];
+    
+    return allLabs.filter(lab => freeLabs.includes(lab.slug));
+};
+
+export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): VirtualLabExperiment | undefined => {
+    const experiment = virtualLabExperiments.experiments.find(exp => exp.slug === slug);
+    if (!experiment) return undefined;
     
     // Ensure the subject matches the expected union type
     const validSubjects: Array<'Biology' | 'Chemistry' | 'Physics' | 'Science'> = ['Biology', 'Chemistry', 'Physics', 'Science'];
     if (!validSubjects.includes(experiment.subject as any)) {
         return undefined;
     }
+    
+    // Check if user has access to this lab
+    const availableLabs = getAllVirtualLabs(userId);
+    const hasAccess = availableLabs.some(lab => lab.slug === slug);
+    
+    if (!hasAccess) {
+        return undefined; // Lab not available for this user
+    }
+    
     return experiment as VirtualLabExperiment;
 };

@@ -118,13 +118,13 @@ export default function Home() {
       description: `Conquer ${seniorExam} & Beyond`,
       gradient: colors.secondary,
       icon: GraduationCap,
-      features: ['Interactive Lessons', 'Virtual Labs', 'Arena Challenge', `${seniorExam} Prep`],
-      href: '/subjects/shs',
+      features: ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', `${seniorExam} Prep`],
+      href: '/challenge-arena/ghana',
       studentCount: '10,000+',
       classes: seniorClasses,
       emoji: '🎓',
       tagline: 'Your Path to University',
-      v1Note: 'V1: Full Access'
+      v1Note: 'V1: Arena + Virtual Labs'
     }
   ];
 

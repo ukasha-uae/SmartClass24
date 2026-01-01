@@ -148,3 +148,4 @@ All core monetization features are implemented and ready for V1 launch:
 - ✅ Coin multiplier
 - ✅ Premium badges and indicators
 
+
