@@ -11,18 +11,19 @@ import {
     Utensils, TestTube, Beaker, FlaskConical, Flame, Droplets, 
     Eye, EyeOff, Shield, BookOpen, Clock, ThermometerSun,
     CheckCircle, XCircle, Wheat, Egg, Milk, Nut, 
-    Sparkles, Trophy, Award
+    Sparkles, Trophy, Award, Pipette
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { TeacherVoice } from '@/components/virtual-labs/TeacherVoice';
+import { LabSupplies, SupplyItem } from '@/components/virtual-labs/LabSupplies';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
 
 type FoodType = 'Bread' | 'Egg White' | 'Milk' | 'Groundnut Paste';
 type ReagentType = 'Iodine Solution' | "Benedict's Solution" | 'Biuret Solution' | 'Ethanol';
-type TestStep = 'intro' | 'select-food' | 'select-reagent' | 'add-reagent' | 'heating' | 'observe' | 'result' | 'quiz';
+type TestStep = 'intro' | 'collect-supplies' | 'select-food' | 'select-reagent' | 'add-reagent' | 'heating' | 'observe' | 'result' | 'quiz' | 'complete';
 
 interface TestResult {
     nutrient: string;
@@ -161,6 +162,9 @@ export function FoodTestLabEnhanced() {
     const [temperature, setTemperature] = React.useState(20);
     const [isHeating, setIsHeating] = React.useState(false);
     const [showSafetyGear, setShowSafetyGear] = React.useState(true);
+    const [collectedItems, setCollectedItems] = React.useState<string[]>([]);
+    const [showSupplies, setShowSupplies] = React.useState(true);
+    const [colorChangeProgress, setColorChangeProgress] = React.useState(0); // 0-1 for gradual color change
     
     // Teacher voice
     const [teacherMessage, setTeacherMessage] = React.useState('');
@@ -194,23 +198,46 @@ export function FoodTestLabEnhanced() {
 
     // Complete heating when temp reaches 100
     React.useEffect(() => {
-        if (temperature >= 100 && currentStep === 'heating') {
+        // Only run if all conditions are met and we're actually heating
+        if (temperature >= 100 && 
+            currentStep === 'heating' && 
+            selectedFood !== null && 
+            selectedReagent !== null && 
+            isHeating) {
+            
             setIsHeating(false);
+            const testResult = resultsMap[selectedFood][selectedReagent];
+            setResult(testResult);
+            
+            // Start gradual color change animation during heating completion
+            setColorChangeProgress(0);
+            const colorChangeDuration = 3000; // 3 seconds
+            const startTime = Date.now();
+            
+            const animateColor = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / colorChangeDuration, 1);
+                setColorChangeProgress(progress);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateColor);
+                } else {
+                    setCurrentStep('observe');
+                    setTeacherMessage(`The heating is complete! The color has changed to ${testResult.colorChange}. This indicates ${testResult.nutrient}! Click "View Test Result" to see the details.`);
+                }
+            };
+            
             setTimeout(() => {
-                setCurrentStep('observe');
-                setTeacherMessage('The heating is complete! Now carefully observe any color changes in the test tube. What do you see?');
+                requestAnimationFrame(animateColor);
             }, 500);
         }
-    }, [temperature, currentStep]);
+    }, [temperature, currentStep, selectedFood, selectedReagent, isHeating]);
 
     // Teacher message callbacks
     const handleTeacherComplete = React.useCallback(() => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null); // Clear BEFORE executing
-            transition();
-        }
-    }, [pendingTransition]);
+        // All transitions now happen immediately, no pending transitions needed
+        // This callback is kept for compatibility but doesn't block anything
+    }, []);
 
     // Initial intro
     React.useEffect(() => {
@@ -220,9 +247,31 @@ export function FoodTestLabEnhanced() {
     }, [currentStep]);
 
     const handleStartExperiment = () => {
-        setCurrentStep('select-food');
-        setTeacherMessage('First, choose a food sample you want to test. We have bread, egg white, milk, and groundnut paste. Each food contains different nutrients. Which one would you like to test?');
+        // Transition to supplies collection first
+        setCurrentStep('collect-supplies');
+        setTeacherMessage('Before we begin, let\'s collect all the supplies we need for the experiment. Click on each item to collect it!');
     };
+
+    const handleCollect = (itemId: string) => {
+        setCollectedItems((prev) => [...prev, itemId]);
+    };
+
+    const handleAllSuppliesCollected = () => {
+        setShowSupplies(false);
+        setTeacherMessage('Excellent! All supplies collected. Now let\'s choose a food sample to test. We have bread, egg white, milk, and groundnut paste. Each food contains different nutrients. Which one would you like to test?');
+        setCurrentStep('select-food');
+    };
+
+    // Define lab supplies
+    const supplies: SupplyItem[] = [
+        { id: 'test-tubes', name: 'Test Tubes', emoji: '🧪', description: 'For holding food samples and reagents', required: true, icon: TestTube },
+        { id: 'iodine', name: 'Iodine Solution', emoji: '🧴', description: 'Tests for starch', required: true, icon: Beaker },
+        { id: 'benedict', name: "Benedict's Solution", emoji: '🧪', description: 'Tests for reducing sugars', required: true, icon: FlaskConical },
+        { id: 'biuret', name: 'Biuret Solution', emoji: '💧', description: 'Tests for proteins', required: true, icon: Droplets },
+        { id: 'ethanol', name: 'Ethanol', emoji: '🍶', description: 'Tests for fats', required: true, icon: Beaker },
+        { id: 'water-bath', name: 'Water Bath', emoji: '🔥', description: 'For heating tests', required: true, icon: Flame },
+        { id: 'pipette', name: 'Pipette', emoji: '🔬', description: 'For adding reagents', required: true, icon: Pipette },
+    ];
 
     const handleFoodSelect = (food: FoodType) => {
         setSelectedFood(food);
@@ -235,9 +284,8 @@ export function FoodTestLabEnhanced() {
         };
         
         setTeacherMessage(messages[food]);
-        setPendingTransition(() => () => {
-            setCurrentStep('select-reagent');
-        });
+        // Transition immediately to reagent selection
+        setCurrentStep('select-reagent');
     };
 
     const handleReagentSelect = (reagent: ReagentType) => {
@@ -251,32 +299,54 @@ export function FoodTestLabEnhanced() {
         };
         
         setTeacherMessage(messages[reagent]);
-        setPendingTransition(() => () => {
-            // Auto-scroll to action button
-            setTimeout(() => {
-                const actionButton = document.querySelector('[data-action-button]');
-                actionButton?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
-        });
+        // Auto-scroll to action button after a brief delay
+        setTimeout(() => {
+            const actionButton = document.querySelector('[data-action-button]');
+            actionButton?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
     };
 
     const handleAddReagent = () => {
+        if (!selectedFood || !selectedReagent) return;
+        
         setCurrentStep('add-reagent');
         setShowDroplets(true);
+        setColorChangeProgress(0); // Reset color change progress
         setTeacherMessage(`Adding ${selectedReagent} to ${selectedFood}... Watch carefully as the reagent mixes with the food sample.`);
+        
+        // Calculate result but don't show color immediately
+        const testResult = resultsMap[selectedFood][selectedReagent];
+        setResult(testResult);
         
         setTimeout(() => {
             setShowDroplets(false);
             
-            // Check if heating is needed
+            // Start gradual color change animation (simulate real lab reaction)
             const needsHeat = selectedReagent === "Benedict's Solution";
             
             if (needsHeat) {
                 setCurrentStep('heating');
                 setTeacherMessage("Benedict's test requires heating! Click the Start Heating button to heat the test tube in a water bath to about 100 degrees Celsius.");
+                // Color will change during heating
             } else {
-                setCurrentStep('observe');
-                setTeacherMessage('Now observe the test tube carefully. Do you see any color changes? This is the key to identifying which nutrient is present!');
+                // For non-heating tests, animate color change gradually over 3 seconds
+                const colorChangeDuration = 3000; // 3 seconds
+                const startTime = Date.now();
+                
+                const animateColor = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / colorChangeDuration, 1);
+                    setColorChangeProgress(progress);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animateColor);
+                    } else {
+                        setCurrentStep('observe');
+                        setTeacherMessage(`Now observe the test tube carefully. The color has changed to show ${testResult.colorChange}. This indicates ${testResult.nutrient}! Click "View Test Result" to see the details.`);
+                    }
+                };
+                
+                requestAnimationFrame(animateColor);
             }
         }, 2500);
     };
@@ -289,8 +359,12 @@ export function FoodTestLabEnhanced() {
     const handleShowResult = () => {
         if (!selectedFood || !selectedReagent) return;
         
-        const testResult = resultsMap[selectedFood][selectedReagent];
-        setResult(testResult);
+        // Result should already be set from handleAddReagent or heating completion
+        const testResult = result || resultsMap[selectedFood][selectedReagent];
+        if (!result) {
+            setResult(testResult);
+        }
+        
         setCurrentStep('result');
         
         const isPositive = !testResult.nutrient.includes('No ') && !testResult.nutrient.includes('trace');
@@ -300,14 +374,14 @@ export function FoodTestLabEnhanced() {
         } else {
             setTeacherMessage(`Test complete! The ${selectedReagent} shows ${testResult.colorChange}. This means ${testResult.nutrient} in this food sample. Good work! Now try the quiz to check your understanding.`);
         }
-        
-        setPendingTransition(() => () => {
-            setCurrentStep('quiz');
-            setTimeout(() => {
-                const quizSection = document.querySelector('[data-quiz-section]');
-                quizSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        });
+    };
+
+    const handleViewQuiz = () => {
+        setCurrentStep('quiz');
+        setTimeout(() => {
+            const quizSection = document.querySelector('[data-quiz-section]');
+            quizSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
     };
 
     const handleQuizSubmit = () => {
@@ -338,6 +412,7 @@ export function FoodTestLabEnhanced() {
                 markLabComplete('food-tests', score, 180);
                 setXpEarned(totalXP);
                 setShowCelebration(true);
+                setCurrentStep('complete');
                 
                 // Confetti
                 confetti({
@@ -375,6 +450,9 @@ export function FoodTestLabEnhanced() {
         setShowDroplets(false);
         setTemperature(20);
         setIsHeating(false);
+        setCollectedItems([]);
+        setShowSupplies(true);
+        setColorChangeProgress(0);
         setQuizAnswer('');
         setQuizFeedback(null);
         setQuizAttempts(0);
@@ -391,7 +469,13 @@ export function FoodTestLabEnhanced() {
     const FoodIcon = selectedFood ? foodIcons[selectedFood] : Utensils;
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pb-20 relative">
+            {/* Premium animated background */}
+            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-green-300/20 via-amber-300/20 to-orange-300/20 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-orange-300/20 via-amber-300/20 to-yellow-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            </div>
+            
             {/* Premium Completion Badge */}
             {hasCompleted && labProgress && (
                 <motion.div
@@ -468,29 +552,35 @@ export function FoodTestLabEnhanced() {
             )}
 
             {/* Premium Objective Card */}
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-xl">
+            <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/5 via-pink-400/5 to-indigo-400/5"></div>
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
-                <CardHeader className="relative z-10">
-                    <CardTitle className="flex items-center gap-3 text-xl">
-                        <div className="text-3xl">🎯</div>
+                <CardHeader className="relative z-10 bg-gradient-to-r from-purple-50/80 to-indigo-50/80 dark:from-purple-950/40 dark:to-indigo-950/40 border-b border-purple-200/50 dark:border-purple-800/50">
+                    <CardTitle className="flex items-center gap-3 text-xl font-bold">
+                        <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg shadow-lg">
+                            <span className="text-2xl">🎯</span>
+                        </div>
                         <span className="bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Objective</span>
                     </CardTitle>
-                    <CardDescription className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">
+                    <CardDescription className="text-slate-600 dark:text-slate-400 text-base leading-relaxed mt-2">
                         {objectiveText}
                     </CardDescription>
                 </CardHeader>
             </Card>
 
             {/* Premium Lab Information Card */}
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-xl">
+            <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-indigo-400/5 to-purple-400/5"></div>
                 <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
-                <CardHeader className="relative z-10">
-                    <CardTitle className="flex items-center gap-3 text-xl">
-                        <div className="text-3xl">📚</div>
+                <CardHeader className="relative z-10 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 dark:from-blue-950/40 dark:to-indigo-950/40 border-b border-blue-200/50 dark:border-blue-800/50">
+                    <CardTitle className="flex items-center gap-3 text-xl font-bold">
+                        <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-lg">
+                            <span className="text-2xl">📚</span>
+                        </div>
                         <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Lab Information</span>
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="relative z-10">
+                <CardContent className="relative z-10 pt-6">
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1" className="border-2 border-purple-200/30 dark:border-purple-800/30 rounded-xl mb-3 px-4">
                             <AccordionTrigger className="hover:no-underline">
@@ -523,12 +613,15 @@ export function FoodTestLabEnhanced() {
             </Card>
 
             {/* Premium Main Lab Interface */}
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl overflow-hidden">
+            <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/5 via-violet-400/5 to-indigo-400/5"></div>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
-                <CardHeader className="relative z-10">
+                <CardHeader className="relative z-10 bg-gradient-to-r from-purple-50/80 to-indigo-50/80 dark:from-purple-950/40 dark:to-indigo-950/40 border-b border-purple-200/50 dark:border-purple-800/50">
                     <CardTitle className="flex items-center justify-between flex-wrap gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="text-4xl">🧪</div>
+                            <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg shadow-lg">
+                                <span className="text-3xl">🧪</span>
+                            </div>
                             <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 dark:from-purple-400 dark:via-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Interactive Food Test Lab</span>
                         </div>
                         <Button 
@@ -548,13 +641,13 @@ export function FoodTestLabEnhanced() {
                     </CardTitle>
                     <CardDescription className="text-slate-600 dark:text-slate-400 text-base">Follow the teacher's guidance to perform food nutrient tests</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 relative z-10">
                     {/* Premium Start Button (intro step) */}
                     {currentStep === 'intro' && (
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="flex flex-col items-center justify-center py-16 space-y-6"
+                            className="flex flex-col items-center justify-center py-16 space-y-6 relative z-10"
                         >
                             <div className="relative">
                                 <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-violet-400 rounded-full blur-2xl opacity-50 animate-pulse"></div>
@@ -563,11 +656,24 @@ export function FoodTestLabEnhanced() {
                             <Button 
                                 size="lg" 
                                 onClick={handleStartExperiment}
-                                className="text-lg px-10 py-6 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-bold"
+                                className="text-lg px-10 py-6 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-bold relative z-10"
                             >
                                 Start Experiment 🧪
                             </Button>
                         </motion.div>
+                    )}
+
+                    {/* Supplies Collection */}
+                    {currentStep === 'collect-supplies' && (
+                        <LabSupplies
+                            supplies={supplies}
+                            collectedItems={collectedItems}
+                            onCollect={handleCollect}
+                            onAllCollected={handleAllSuppliesCollected}
+                            showSupplies={showSupplies}
+                            title="Lab Supplies - Click to Collect"
+                            description="Collect all the supplies needed for food testing experiments"
+                        />
                     )}
 
                     {/* Premium Food Selection */}
@@ -593,11 +699,21 @@ export function FoodTestLabEnhanced() {
                                                     "h-auto w-full flex-col gap-3 py-6 border-2 transition-all",
                                                     selectedFood === food
                                                         ? "bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg hover:shadow-xl"
-                                                        : "hover:bg-purple-50 dark:hover:bg-purple-950/30 hover:border-purple-300 dark:hover:border-purple-700"
+                                                        : "text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-purple-950/30 hover:border-purple-300 dark:hover:border-purple-700 hover:text-purple-700 dark:hover:text-purple-300 border-slate-300 dark:border-slate-700"
                                                 )}
                                             >
-                                                <Icon className="h-12 w-12" />
-                                                <span className="text-base font-semibold">{food}</span>
+                                                <Icon className={cn(
+                                                    "h-12 w-12",
+                                                    selectedFood === food 
+                                                        ? "text-white" 
+                                                        : "text-slate-700 dark:text-slate-300"
+                                                )} />
+                                                <span className={cn(
+                                                    "text-base font-semibold",
+                                                    selectedFood === food 
+                                                        ? "text-white" 
+                                                        : "text-slate-700 dark:text-slate-300"
+                                                )}>{food}</span>
                                             </Button>
                                         </motion.div>
                                     );
@@ -637,7 +753,7 @@ export function FoodTestLabEnhanced() {
                                                 "h-auto w-full flex items-center gap-3 py-5 px-4 text-left border-2 transition-all",
                                                 selectedReagent === reagent
                                                     ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl"
-                                                    : "hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:border-blue-300 dark:hover:border-blue-700"
+                                                    : "text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-950/30 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-700 dark:hover:text-blue-300"
                                             )}
                                         >
                                             <TestTube className="h-6 w-6 flex-shrink-0" />
@@ -678,10 +794,26 @@ export function FoodTestLabEnhanced() {
                                                         opacity: 1
                                                     }}
                                                     className={cn(
-                                                        "absolute inset-x-2 bottom-2 rounded-b-2xl transition-all duration-2000",
-                                                        result ? result.colorClass : 'bg-gradient-to-b from-amber-100 to-amber-200'
+                                                        "absolute inset-x-2 bottom-2 rounded-b-2xl",
+                                                        // Base color (initial amber)
+                                                        'bg-gradient-to-b from-amber-100 to-amber-200'
                                                     )}
                                                 >
+                                                    {/* Overlay that gradually reveals the final color */}
+                                                    {result && (
+                                                        <motion.div
+                                                            className={cn(
+                                                                "absolute inset-0 rounded-b-2xl",
+                                                                result.colorClass
+                                                            )}
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ 
+                                                                opacity: colorChangeProgress
+                                                            }}
+                                                            transition={{ duration: 0.1, ease: "linear" }}
+                                                        />
+                                                    )}
+                                                    
                                                     {/* Particles */}
                                                     <div className="absolute inset-0 overflow-hidden rounded-b-2xl">
                                                         {[...Array(5)].map((_, i) => (
@@ -845,7 +977,7 @@ export function FoodTestLabEnhanced() {
                         )}
                     </AnimatePresence>
                 </CardContent>
-                <CardFooter className="flex flex-col gap-4 relative z-10">
+                <CardFooter className="flex flex-col gap-4 relative z-10 bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-950/30 dark:to-indigo-950/30 border-t border-purple-200/50 dark:border-purple-800/50">
                     {/* Premium Action buttons */}
                     {currentStep === 'select-reagent' && selectedReagent && (
                         <Button 
@@ -882,12 +1014,24 @@ export function FoodTestLabEnhanced() {
                             View Test Result
                         </Button>
                     )}
+
+                    {currentStep === 'result' && (
+                        <Button 
+                            size="lg" 
+                            className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 hover:from-purple-700 hover:via-pink-700 hover:to-indigo-700 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 font-bold py-6"
+                            onClick={handleViewQuiz}
+                            data-action-button
+                        >
+                            <BookOpen className="h-5 w-5 mr-2" />
+                            Take the Quiz
+                        </Button>
+                    )}
                     
                     {currentStep !== 'intro' && (
                         <Button 
                             variant="outline" 
                             onClick={handleReset}
-                            className="w-full border-2 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold py-6"
+                            className="w-full border-2 border-purple-300 dark:border-purple-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-950/30 dark:hover:to-indigo-950/30 hover:text-purple-700 dark:hover:text-purple-300 font-semibold py-6 transition-all duration-300 text-slate-700 dark:text-slate-300"
                         >
                             Reset & Try Another Test
                         </Button>
@@ -909,16 +1053,19 @@ export function FoodTestLabEnhanced() {
                     animate={{ opacity: 1, y: 0 }}
                     data-quiz-section
                 >
-                    <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl overflow-hidden">
+                    <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-400/5 via-pink-400/5 to-indigo-400/5"></div>
                         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-violet-400/20 rounded-full blur-3xl"></div>
-                        <CardHeader className="relative z-10">
-                            <CardTitle className="text-2xl flex items-center gap-3">
-                                <div className="text-3xl">📝</div>
+                        <CardHeader className="relative z-10 bg-gradient-to-r from-purple-50/80 to-indigo-50/80 dark:from-purple-950/40 dark:to-indigo-950/40 border-b border-purple-200/50 dark:border-purple-800/50">
+                            <CardTitle className="text-2xl flex items-center gap-3 font-bold">
+                                <div className="p-2 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg shadow-lg">
+                                    <span className="text-2xl">📝</span>
+                                </div>
                                 <span className="bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Post-Lab Quiz</span>
                             </CardTitle>
-                            <CardDescription className="text-slate-600 dark:text-slate-400 text-base">Test your understanding of the experiment</CardDescription>
+                            <CardDescription className="text-slate-600 dark:text-slate-400 text-base mt-2">Test your understanding of the experiment</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6 relative z-10">
+                        <CardContent className="space-y-6 relative z-10 pt-6">
                             <p className="font-bold text-lg text-slate-700 dark:text-slate-300">
                                 Which reagent is specifically used to test for the presence of proteins in a food sample?
                             </p>
@@ -987,13 +1134,13 @@ export function FoodTestLabEnhanced() {
                                 </motion.div>
                             )}
                         </CardContent>
-                        <CardFooter className="relative z-10">
+                        <CardFooter className="relative z-10 bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-950/30 dark:to-indigo-950/30 border-t border-purple-200/50 dark:border-purple-800/50">
                             <Button 
                                 onClick={handleQuizSubmit} 
                                 disabled={!quizAnswer || quizIsCorrect !== null}
                                 size="lg"
                                 className={cn(
-                                    "w-full font-bold py-6 transition-all hover:scale-105",
+                                    "w-full font-bold py-6 transition-all hover:scale-105 shadow-lg hover:shadow-xl text-white",
                                     quizIsCorrect === true
                                         ? "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
                                         : quizIsCorrect === false
@@ -1008,26 +1155,98 @@ export function FoodTestLabEnhanced() {
                 </motion.div>
             )}
 
-            {/* XP Celebration */}
+            {/* Lab Complete Section */}
             <AnimatePresence>
-                {showCelebration && xpEarned > 0 && (
+                {currentStep === 'complete' && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="fixed bottom-8 right-8 z-50"
+                        key="complete"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
                     >
-                        <div className="bg-gradient-to-br from-amber-500 to-yellow-600 text-white p-6 rounded-2xl shadow-2xl border-4 border-yellow-300">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-white/20 rounded-full">
-                                    <Sparkles className="h-8 w-8" />
+                        <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-400/5 via-pink-400/5 to-indigo-400/5"></div>
+                            <CardHeader className="text-center relative z-10 bg-gradient-to-r from-purple-50/80 to-indigo-50/80 dark:from-purple-950/40 dark:to-indigo-950/40 border-b border-purple-200/50 dark:border-purple-800/50">
+                                <motion.div
+                                    animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.1, 1] }}
+                                    transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
+                                    className="flex justify-center mb-4"
+                                >
+                                    <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-4 rounded-full shadow-2xl">
+                                        <Trophy className="h-16 w-16 text-white" />
+                                    </div>
+                                </motion.div>
+                                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 dark:from-purple-400 dark:via-pink-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                                    Lab Complete! 🎉
+                                </CardTitle>
+                                <CardDescription className="text-base mt-2">
+                                    You've mastered food nutrient testing!
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4 relative z-10 pt-6">
+                                <div className="bg-gradient-to-br from-purple-50/80 via-pink-50/80 to-indigo-50/80 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-indigo-950/30 p-6 rounded-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-lg backdrop-blur-sm relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-2xl"></div>
+                                    <div className="relative z-10">
+                                        <h3 className="font-bold text-center text-lg mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                                            What You've Learned:
+                                        </h3>
+                                        <ul className="space-y-3 text-sm">
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">How to use Iodine Solution to test for starch (blue-black color change)</span>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">How to use Benedict's Solution to test for reducing sugars (requires heating)</span>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">How to use Biuret Solution to test for proteins (purple color change)</span>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">How to use Ethanol for the emulsion test to detect fats and oils</span>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">How different foods contain different nutrients and how to identify them</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div className="text-2xl font-bold">+{xpEarned} XP</div>
-                                    <div className="text-sm opacity-90">Lab Complete!</div>
-                                </div>
-                            </div>
-                        </div>
+                                {xpEarned > 0 && (
+                                    <div className="text-center p-4 bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 rounded-xl border-2 border-amber-300/50 dark:border-amber-700/50">
+                                        <div className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-yellow-600 dark:from-amber-400 dark:to-yellow-400 bg-clip-text text-transparent">
+                                            +{xpEarned} XP Earned!
+                                        </div>
+                                        <div className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                                            Score: {labProgress?.score || 0}%
+                                        </div>
+                                    </div>
+                                )}
+                            </CardContent>
+                            <CardFooter className="relative z-10 bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-950/30 dark:to-indigo-950/30 border-t border-purple-200/50 dark:border-purple-800/50">
+                                <Button 
+                                    onClick={handleReset} 
+                                    variant="outline" 
+                                    className="w-full border-2 border-purple-300 dark:border-purple-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-950/30 dark:hover:to-indigo-950/30 hover:text-purple-700 dark:hover:text-purple-300 text-slate-700 dark:text-slate-300 font-semibold transition-all duration-300" 
+                                    size="lg"
+                                >
+                                    <Sparkles className="h-5 w-5 mr-2" />
+                                    Restart Lab
+                                </Button>
+                            </CardFooter>
+                        </Card>
                     </motion.div>
                 )}
             </AnimatePresence>

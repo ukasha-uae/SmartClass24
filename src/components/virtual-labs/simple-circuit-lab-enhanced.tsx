@@ -236,16 +236,14 @@ export function SimpleCircuitLabEnhanced() {
             return;
         }
         setTeacherMessage("Excellent! You've built and compared series and parallel circuits. Let's analyze the key differences and why they matter!");
-        setPendingTransition(() => () => {
-            setCurrentStep('results');
-        });
+        // Transition immediately to results
+        setCurrentStep('results');
     };
 
     const handleViewQuiz = () => {
         setTeacherMessage("Let's test your understanding of series and parallel circuits!");
-        setPendingTransition(() => () => {
-            setCurrentStep('quiz');
-        });
+        // Transition immediately to quiz
+        setCurrentStep('quiz');
     };
 
     const handleQuizSubmit = () => {
@@ -994,28 +992,29 @@ export function SimpleCircuitLabEnhanced() {
                                         <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-2xl"></div>
                                         <div className="relative z-10">
                                             <h3 className="font-bold text-lg mb-3 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Series Circuit</h3>
-                                        <ul className="text-sm space-y-2 text-blue-800 dark:text-blue-200">
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>One loop for current</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>Same current everywhere</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>Bulbs are dimmer</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <XCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>If one breaks, all stop</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>Voltage divides</span>
-                                            </li>
-                                        </ul>
+                                            <ul className="text-sm space-y-2 text-blue-800 dark:text-blue-200">
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>One loop for current</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>Same current everywhere</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>Bulbs are dimmer</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <XCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>If one breaks, all stop</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>Voltage divides</span>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
 
                                     {/* Parallel */}
@@ -1023,28 +1022,29 @@ export function SimpleCircuitLabEnhanced() {
                                         <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-green-400/20 to-emerald-400/20 rounded-full blur-2xl"></div>
                                         <div className="relative z-10">
                                             <h3 className="font-bold text-lg mb-3 bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">Parallel Circuit</h3>
-                                        <ul className="text-sm space-y-2 text-green-800 dark:text-green-200">
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>Multiple branches</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>Current splits at junctions</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>Bulbs are brighter</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>If one breaks, others work</span>
-                                            </li>
-                                            <li className="flex items-start gap-2">
-                                                <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                                                <span>Same voltage everywhere</span>
-                                            </li>
-                                        </ul>
+                                            <ul className="text-sm space-y-2 text-green-800 dark:text-green-200">
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>Multiple branches</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>Current splits at junctions</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>Bulbs are brighter</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>If one breaks, others work</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                                                    <span>Same voltage everywhere</span>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1052,12 +1052,13 @@ export function SimpleCircuitLabEnhanced() {
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-2xl"></div>
                                     <div className="relative z-10">
                                         <h3 className="font-bold text-lg mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">Real-World Applications:</h3>
-                                    <ul className="text-sm space-y-2">
-                                        <li>• <strong>Home Wiring:</strong> Parallel circuits - each outlet has full voltage, and one broken circuit doesn't affect others</li>
-                                        <li>• <strong>Holiday Lights:</strong> Series strings vs parallel lights explain why old strings went dark when one broke</li>
-                                        <li>• <strong>Battery-Powered Devices:</strong> Batteries in series add voltage; parallel adds capacity</li>
-                                        <li>• <strong>Car Lights:</strong> Parallel circuits ensure all lights stay on if one fails</li>
-                                    </ul>
+                                        <ul className="text-sm space-y-2">
+                                            <li>• <strong>Home Wiring:</strong> Parallel circuits - each outlet has full voltage, and one broken circuit doesn't affect others</li>
+                                            <li>• <strong>Holiday Lights:</strong> Series strings vs parallel lights explain why old strings went dark when one broke</li>
+                                            <li>• <strong>Battery-Powered Devices:</strong> Batteries in series add voltage; parallel adds capacity</li>
+                                            <li>• <strong>Car Lights:</strong> Parallel circuits ensure all lights stay on if one fails</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </CardContent>
                             <CardFooter className="relative z-10 bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-950/30 dark:to-indigo-950/30 border-t border-purple-200/50 dark:border-purple-800/50">
@@ -1274,43 +1275,69 @@ export function SimpleCircuitLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-purple-200 dark:border-purple-800">
-                            <CardHeader className="text-center">
+                        <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-400/5 via-pink-400/5 to-indigo-400/5"></div>
+                            <CardHeader className="text-center relative z-10 bg-gradient-to-r from-purple-50/80 to-indigo-50/80 dark:from-purple-950/40 dark:to-indigo-950/40 border-b border-purple-200/50 dark:border-purple-800/50">
                                 <motion.div
-                                    animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
-                                    transition={{ duration: 0.5 }}
+                                    animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.1, 1] }}
+                                    transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 2 }}
                                     className="flex justify-center mb-4"
                                 >
-                                    <Trophy className="h-16 w-16 text-yellow-500" />
+                                    <div className="bg-gradient-to-br from-yellow-400 to-orange-500 p-4 rounded-full shadow-2xl">
+                                        <Trophy className="h-16 w-16 text-white" />
+                                    </div>
                                 </motion.div>
-                                <CardTitle>Lab Complete!</CardTitle>
-                                <CardDescription>You've mastered circuit configurations!</CardDescription>
+                                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 dark:from-purple-400 dark:via-pink-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                                    Lab Complete! 🎉
+                                </CardTitle>
+                                <CardDescription className="text-base mt-2">
+                                    You've mastered circuit configurations!
+                                </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-6 rounded-lg border-2 border-purple-200 dark:border-purple-800">
-                                    <h3 className="font-semibold text-center text-lg mb-4">What You've Learned:</h3>
-                                    <ul className="space-y-2 text-sm">
-                                        <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                                            <span>How series circuits work and their limitations</span>
-                                        </li>
-                                        <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                                            <span>How parallel circuits work and their advantages</span>
-                                        </li>
-                                        <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                                            <span>Why homes use parallel wiring</span>
-                                        </li>
-                                        <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-purple-600 mt-0.5 flex-shrink-0" />
-                                            <span>Current and voltage distribution in circuits</span>
-                                        </li>
-                                    </ul>
+                            <CardContent className="space-y-4 relative z-10 pt-6">
+                                <div className="bg-gradient-to-br from-purple-50/80 via-pink-50/80 to-indigo-50/80 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-indigo-950/30 p-6 rounded-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-lg backdrop-blur-sm relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-2xl"></div>
+                                    <div className="relative z-10">
+                                        <h3 className="font-bold text-center text-lg mb-4 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+                                            What You've Learned:
+                                        </h3>
+                                        <ul className="space-y-3 text-sm">
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">How series circuits work and their limitations</span>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">How parallel circuits work and their advantages</span>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">Why homes use parallel wiring</span>
+                                            </li>
+                                            <li className="flex items-start gap-3">
+                                                <div className="p-1 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mt-0.5 flex-shrink-0">
+                                                    <CheckCircle className="h-4 w-4 text-white" />
+                                                </div>
+                                                <span className="text-purple-800 dark:text-purple-200">Current and voltage distribution in circuits</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </CardContent>
-                            <CardFooter>
-                                <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
+                            <CardFooter className="relative z-10 bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-950/30 dark:to-indigo-950/30 border-t border-purple-200/50 dark:border-purple-800/50">
+                                <Button 
+                                    onClick={handleRestart} 
+                                    variant="outline" 
+                                    className="w-full border-2 border-purple-300 dark:border-purple-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 dark:hover:from-purple-950/30 dark:hover:to-indigo-950/30 font-semibold transition-all duration-300" 
+                                    size="lg"
+                                >
+                                    <RefreshCw className="h-5 w-5 mr-2" />
                                     Restart Lab
                                 </Button>
                             </CardFooter>

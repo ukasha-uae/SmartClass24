@@ -380,6 +380,9 @@ export const virtualLabExperiments = {
 export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperiment[] => {
     const allLabs = virtualLabExperiments.experiments;
     
+    // TEMPORARILY UNLOCK ALL LABS FOR UPGRADE - Remove this after upgrading all labs
+    return allLabs;
+    
     // Check premium status
     let isPremium = false;
     if (typeof window !== 'undefined') {
