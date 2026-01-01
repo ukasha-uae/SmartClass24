@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
 type Step = 'intro' | 'collect-supplies' | 'add-starch' | 'add-amylase' | 'waiting' | 'add-iodine' | 'results' | 'quiz' | 'complete';
 
@@ -20,12 +21,41 @@ export function EnzymeStarchLabEnhanced() {
     const [teacherMessage, setTeacherMessage] = React.useState('');
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
-    // Supplies tracking
+    // Supplies tracking - using standardized component
     const [showSupplies, setShowSupplies] = React.useState(true);
-    const [tubeCollected, setTubeCollected] = React.useState(false);
-    const [starchCollected, setStarchCollected] = React.useState(false);
-    const [amylaseCollected, setAmylaseCollected] = React.useState(false);
-    const [iodineCollected, setIodineCollected] = React.useState(false);
+    const [collectedItems, setCollectedItems] = React.useState<string[]>([]);
+    
+    // Define supplies for the lab
+    const supplies: SupplyItem[] = [
+        {
+            id: 'test-tube',
+            name: 'Test Tube',
+            emoji: '🧪',
+            description: 'Container for the experiment',
+            required: true
+        },
+        {
+            id: 'starch',
+            name: 'Starch Solution',
+            emoji: '💧',
+            description: 'Complex carbohydrate substrate',
+            required: true
+        },
+        {
+            id: 'amylase',
+            name: 'Amylase Enzyme',
+            emoji: '⚗️',
+            description: 'Biological catalyst',
+            required: true
+        },
+        {
+            id: 'iodine',
+            name: 'Iodine Solution',
+            emoji: '🧪',
+            description: 'Starch indicator test',
+            required: true
+        }
+    ];
     
     // Experiment state
     const [starchAdded, setStarchAdded] = React.useState(false);
@@ -78,102 +108,59 @@ export function EnzymeStarchLabEnhanced() {
     }, [currentStep]);
 
     const handleStartExperiment = () => {
-        setTeacherMessage("Perfect! Let's gather our supplies. Start by clicking on the TEST TUBE - this will hold our experiment!");
-        setPendingTransition(() => () => {
-            setCurrentStep('collect-supplies');
-        });
+        setCurrentStep('collect-supplies');
+        setTeacherMessage("Perfect! Let's gather our supplies. We need a test tube, starch solution, amylase enzyme, and iodine solution. Click on each item to collect them!");
     };
     
-    const handleCollectTube = () => {
-        if (!tubeCollected) {
-            setTubeCollected(true);
-            setTeacherMessage("Great! Now click on the STARCH SOLUTION - starch is a complex carbohydrate found in foods like bread, rice, and potatoes.");
-            toast({ title: '✅ Test Tube Collected' });
+    // Supplies collection handlers
+    const handleCollect = React.useCallback((itemId: string) => {
+        if (!collectedItems.includes(itemId)) {
+            setCollectedItems(prev => [...prev, itemId]);
         }
-    };
-    
-    const handleCollectStarch = () => {
-        if (tubeCollected && !starchCollected) {
-            setStarchCollected(true);
-            setTeacherMessage("Excellent! Now click on AMYLASE - this is the enzyme that will break down the starch. It's found naturally in your saliva!");
-            toast({ title: '✅ Starch Solution Collected' });
-        }
-    };
-    
-    const handleCollectAmylase = () => {
-        if (starchCollected && !amylaseCollected) {
-            setAmylaseCollected(true);
-            setTeacherMessage("Perfect! Finally, click on IODINE - we'll use this to test whether starch is present. Iodine turns blue-black when it meets starch!");
-            toast({ title: '✅ Amylase Enzyme Collected' });
-        }
-    };
-    
-    const handleCollectIodine = () => {
-        if (amylaseCollected && !iodineCollected) {
-            setIodineCollected(true);
-            setShowSupplies(false);
-            setTeacherMessage("All supplies collected! Now click on the test tube to pour in the starch solution first.");
-            toast({ title: '✅ All Supplies Collected!' });
-            setPendingTransition(() => () => {
-                setCurrentStep('add-starch');
-            });
-        }
-    };
+    }, [collectedItems]);
+
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        setCurrentStep('add-starch');
+        setTeacherMessage("All supplies collected! Now click on the test tube to pour in the starch solution first.");
+    }, []);
     
     const handleAddStarch = () => {
-        if (iodineCollected && !starchAdded) {
+        if (collectedItems.includes('iodine') && !starchAdded) {
             setStarchAdded(true);
             setTeacherMessage("Good! The test tube now contains starch solution. Click the amylase dropper to add the enzyme!");
-            toast({ title: '✅ Starch Added to Tube' });
-            setPendingTransition(() => () => {
-                setCurrentStep('add-amylase');
-            });
+            setCurrentStep('add-amylase');
         }
     };
-    
+
     const handleAddAmylase = () => {
         if (starchAdded && !amylaseAdded) {
             setAmylaseAdded(true);
             setTeacherMessage("Excellent! The amylase enzyme is now breaking down the starch molecules into simpler sugars. This takes about 10 seconds in our simulation. Watch the timer!");
-            toast({ title: '⏳ Enzyme Reaction Started!' });
-            setPendingTransition(() => () => {
-                setCurrentStep('waiting');
-                setTimePassed(0);
-            });
+            setCurrentStep('waiting');
+            setTimePassed(0);
         }
     };
-    
+
     const handleReactionComplete = () => {
         setTeacherMessage("Time's up! The enzyme has broken down most of the starch. Now click the iodine dropper to test if any starch remains!");
-        setPendingTransition(() => () => {
-            setCurrentStep('add-iodine');
-        });
+        setCurrentStep('add-iodine');
     };
-    
+
     const handleAddIodine = () => {
         if (!iodineAdded) {
             setIodineAdded(true);
             setTeacherMessage("Look at that! The solution stayed orange/amber - no blue-black color! This proves the starch has been broken down by the enzyme. If starch was still there, we'd see a blue-black color. Enzymes are amazing catalysts!");
-            toast({ title: '🎉 Experiment Complete!' });
-            setPendingTransition(() => () => {
-                setCurrentStep('results');
-            });
+            setCurrentStep('results');
         }
     };
-    
+
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // No pending transitions - immediate responsiveness
     };
 
     const handleViewResults = () => {
         setTeacherMessage("Great work! You've successfully demonstrated enzyme action. Now let's test your understanding with a quick quiz!");
-        setPendingTransition(() => () => {
-            setCurrentStep('quiz');
-        });
+        setCurrentStep('quiz');
     };
 
     const handleQuizSubmit = () => {
@@ -194,9 +181,7 @@ export function EnzymeStarchLabEnhanced() {
             
             // 3-tier feedback: Perfect score
             setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered enzyme action! Here's what you discovered: (1) STARCH is the SUBSTRATE - the complex carbohydrate molecule that gets broken down. Starch is a polysaccharide made of many glucose units linked together. It's found in foods like bread, rice, potatoes, and pasta. (2) AMYLASE is the ENZYME - the biological catalyst that speeds up the reaction. Amylase has an active site with a specific shape that binds to starch molecules. It breaks the glycosidic bonds between glucose units, splitting starch into MALTOSE (a disaccharide) and eventually GLUCOSE (a monosaccharide). Enzymes work by LOWERING the activation energy needed for the reaction - they make it easier for the reaction to happen! (3) IODINE is the INDICATOR - the chemical test for starch. Iodine (I₂) reacts with starch to form a blue-black starch-iodine complex. When starch is broken down into sugars, there's NO starch left to react with iodine, so the solution stays ORANGE/AMBER. This proves the enzyme worked! The key enzyme properties: (a) SPECIFIC - each enzyme only works on certain substrates (amylase only breaks down starch, not proteins or fats), (b) REUSABLE - enzymes aren't consumed in the reaction, they can be used again and again, (c) AFFECTED BY CONDITIONS - temperature and pH affect enzyme activity. This happens in YOUR MOUTH right now - salivary amylase begins digesting starch as soon as you chew bread! Enzymes are essential for life - they control ALL chemical reactions in cells. +${earnedXP} XP earned!`);
-            setTimeout(() => {
-                setCurrentStep('complete');
-            }, 2000);
+            setCurrentStep('complete');
         } else if (correctCount === 2) {
             // Good effort - 2 out of 3 correct
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the experiment and try again. Think about what each substance does!`);
@@ -211,11 +196,7 @@ export function EnzymeStarchLabEnhanced() {
     const handleRestart = () => {
         if (timerRef.current) clearInterval(timerRef.current);
         setCurrentStep('intro');
-        setShowSupplies(true);
-        setTubeCollected(false);
-        setStarchCollected(false);
-        setAmylaseCollected(false);
-        setIodineCollected(false);
+        setCollectedItems([]);
         setStarchAdded(false);
         setAmylaseAdded(false);
         setTimePassed(0);
@@ -226,7 +207,7 @@ export function EnzymeStarchLabEnhanced() {
         setQuizFeedback('');
         setQuizSubmitted(false);
         setShowCelebration(false);
-        setPendingTransition(null);
+        setXpEarned(0);
         setTeacherMessage("Welcome back! Ready to explore enzyme action again? Let's discover how enzymes speed up chemical reactions!");
     };
 
@@ -240,7 +221,35 @@ export function EnzymeStarchLabEnhanced() {
     const stage = getVisualStage();
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="relative min-h-screen pb-20 overflow-hidden">
+            {/* Premium Animated Background */}
+            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/20 dark:via-emerald-950/20 dark:to-teal-950/20" />
+                {[...Array(6)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-r from-green-200/30 to-emerald-200/30 dark:from-green-800/20 dark:to-emerald-800/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 100}px`,
+                            height: `${200 + i * 100}px`,
+                            left: `${(i * 15) % 100}%`,
+                            top: `${(i * 20) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 50, 0],
+                            y: [0, 30, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative z-10 space-y-6 pb-20">
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
@@ -295,51 +304,35 @@ export function EnzymeStarchLabEnhanced() {
                 </motion.div>
             )}
 
-            {showCelebration && (
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
-                >
-                    <Card className="w-full max-w-md mx-4">
-                        <CardHeader className="text-center">
-                            <motion.div
-                                animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
-                                transition={{ duration: 0.5 }}
-                                className="flex justify-center mb-4"
-                            >
-                                <Trophy className="h-20 w-20 text-yellow-500" />
-                            </motion.div>
-                            <CardTitle className="text-2xl">Congratulations!</CardTitle>
-                            <CardDescription>You've completed the Enzyme Action Lab!</CardDescription>
-                        </CardHeader>
-                        <CardContent className="text-center space-y-4">
-                            <div className="flex items-center justify-center gap-2 text-3xl font-bold text-green-600">
-                                <Award className="h-8 w-8" />
-                                +{xpEarned} XP
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                                You've mastered enzyme catalysis!
-                            </p>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-            )}
+            {/* Premium Objective Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-green-300/50 dark:border-green-700/50 bg-gradient-to-br from-green-50/80 via-emerald-50/80 to-teal-50/80 dark:from-green-950/30 dark:via-emerald-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 border-b border-green-200/50 dark:border-green-800/50">
+                        <CardTitle className="flex items-center gap-2">
+                            <Droplets className="h-5 w-5 text-green-600 dark:text-green-400" />
+                            Enzyme Action on Starch
+                        </CardTitle>
+                        <CardDescription className="text-green-900/80 dark:text-green-100/80">Observe how enzymes catalyze the breakdown of starch</CardDescription>
+                    </CardHeader>
+                </Card>
+            </motion.div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Droplets className="h-5 w-5 text-green-600" />
-                        Enzyme Action on Starch
-                    </CardTitle>
-                    <CardDescription>Observe how enzymes catalyze the breakdown of starch</CardDescription>
-                </CardHeader>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                </CardHeader>
+            {/* Premium Lab Information Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <Card className="border-2 border-green-300/50 dark:border-green-700/50 bg-gradient-to-br from-green-50/80 via-emerald-50/80 to-teal-50/80 dark:from-green-950/30 dark:via-emerald-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 border-b border-green-200/50 dark:border-green-800/50">
+                        <CardTitle className="flex items-center gap-2">
+                            <BookOpen className="h-5 w-5 text-green-600 dark:text-green-400" />
+                            Lab Information
+                        </CardTitle>
+                    </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="theory" data-theory-section>
@@ -376,6 +369,26 @@ export function EnzymeStarchLabEnhanced() {
                     </Accordion>
                 </CardContent>
             </Card>
+            </motion.div>
+
+            {/* Supplies Collection Step */}
+            {currentStep === 'collect-supplies' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <LabSupplies
+                        supplies={supplies}
+                        collectedItems={collectedItems}
+                        onCollect={handleCollect}
+                        showSupplies={showSupplies}
+                        title="Lab Supplies - Click to Collect"
+                        description="Collect all the supplies needed to observe enzyme action"
+                        onAllCollected={handleAllSuppliesCollected}
+                    />
+                </motion.div>
+            )}
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (
@@ -407,7 +420,11 @@ export function EnzymeStarchLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleStartExperiment} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleStartExperiment} 
+                                    className="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold" 
+                                    size="lg"
+                                >
                                     Start Experiment
                                 </Button>
                             </CardFooter>
@@ -415,137 +432,6 @@ export function EnzymeStarchLabEnhanced() {
                     </motion.div>
                 )}
 
-                {currentStep === 'collect-supplies' && (
-                    <motion.div
-                        key="collect-supplies"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                    >
-                        <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-lg">
-                                    <Sparkles className="h-5 w-5 text-amber-600" />
-                                    Lab Supplies - Click to Collect
-                                </CardTitle>
-                                <CardDescription>Click on each item in order to collect them</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex gap-6 justify-center flex-wrap">
-                                    {/* Test Tube */}
-                                    {!tubeCollected && (
-                                        <motion.div
-                                            onClick={handleCollectTube}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-gray-300 dark:border-gray-700 hover:border-gray-500 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="w-16 h-24 bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-800/30 rounded-b-lg border-2 border-gray-400" />
-                                                <span className="text-sm font-medium">Test Tube</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Starch Solution */}
-                                    {tubeCollected && !starchCollected && (
-                                        <motion.div
-                                            onClick={handleCollectStarch}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-blue-300 dark:border-blue-700 hover:border-blue-500 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="relative w-16 h-24">
-                                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-100 to-blue-200 dark:from-transparent dark:via-blue-900 dark:to-blue-800 rounded-lg border-2 border-blue-400" />
-                                                </div>
-                                                <span className="text-sm font-medium">Starch Solution</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Amylase Enzyme */}
-                                    {starchCollected && !amylaseCollected && (
-                                        <motion.div
-                                            onClick={handleCollectAmylase}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-green-300 dark:border-green-700 hover:border-green-500 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <Droplets className="h-20 w-20 text-green-600" />
-                                                <span className="text-sm font-medium">Amylase Enzyme</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Iodine */}
-                                    {amylaseCollected && !iodineCollected && (
-                                        <motion.div
-                                            onClick={handleCollectIodine}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-amber-300 dark:border-amber-700 hover:border-amber-500 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <Droplets className="h-20 w-20 text-amber-700" />
-                                                <span className="text-sm font-medium">Iodine Solution</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Collected Items Display */}
-                                    <div className="w-full mt-4 flex gap-4 justify-center flex-wrap">
-                                        {tubeCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-gray-100 dark:bg-gray-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-gray-600" />
-                                                <span className="text-sm">Test Tube</span>
-                                            </motion.div>
-                                        )}
-                                        {starchCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-blue-600" />
-                                                <span className="text-sm">Starch</span>
-                                            </motion.div>
-                                        )}
-                                        {amylaseCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                                <span className="text-sm">Amylase</span>
-                                            </motion.div>
-                                        )}
-                                        {iodineCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-amber-600" />
-                                                <span className="text-sm">Iodine</span>
-                                            </motion.div>
-                                        )}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                )}
 
                 {(currentStep === 'add-starch' || currentStep === 'add-amylase' || currentStep === 'waiting' || currentStep === 'add-iodine') && (
                     <motion.div
@@ -745,7 +631,11 @@ export function EnzymeStarchLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleViewResults} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleViewResults} 
+                                    className="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold" 
+                                    size="lg"
+                                >
                                     Continue to Quiz
                                 </Button>
                             </CardFooter>
@@ -760,10 +650,13 @@ export function EnzymeStarchLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Knowledge Check</CardTitle>
-                                <CardDescription>Answer these questions about enzyme action</CardDescription>
+                        <Card className="border-2 border-green-300/50 dark:border-green-700/50 bg-gradient-to-br from-green-50/80 via-emerald-50/80 to-teal-50/80 dark:from-green-950/30 dark:via-emerald-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                            <CardHeader className="relative z-10 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 border-b border-green-200/50 dark:border-green-800/50">
+                                <CardTitle className="flex items-center gap-2">
+                                    <BookOpen className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                    Knowledge Check
+                                </CardTitle>
+                                <CardDescription className="text-green-900/80 dark:text-green-100/80">Answer these questions about enzyme action</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Question 1 */}
@@ -907,24 +800,29 @@ export function EnzymeStarchLabEnhanced() {
                                     </motion.div>
                                 )}
                             </CardContent>
-                            <CardFooter className="flex gap-3">
+                            <CardFooter className="relative z-10 flex gap-3 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/30 dark:to-emerald-950/30 border-t border-green-200/50 dark:border-green-800/50">
                                 <Button 
                                     onClick={handleQuizSubmit} 
                                     disabled={!selectedAnswer1 || !selectedAnswer2 || !selectedAnswer3 || quizSubmitted}
-                                    className="flex-1"
+                                    className="flex-1 bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
                                     size="lg"
                                 >
                                     Submit Answers
                                 </Button>
                                 {quizSubmitted && !quizFeedback.includes('Perfect') && (
-                                    <Button onClick={() => {
-                                        setSelectedAnswer1(null);
-                                        setSelectedAnswer2(null);
-                                        setSelectedAnswer3(null);
-                                        setQuizFeedback('');
-                                        setQuizSubmitted(false);
-                                    }} variant="outline" size="lg">
-                                        Try Again
+                                    <Button 
+                                        onClick={() => {
+                                            setSelectedAnswer1(null);
+                                            setSelectedAnswer2(null);
+                                            setSelectedAnswer3(null);
+                                            setQuizFeedback('');
+                                            setQuizSubmitted(false);
+                                        }} 
+                                        variant="outline" 
+                                        size="lg"
+                                        className="text-slate-700 dark:text-slate-300 hover:text-green-700 dark:hover:text-green-300 hover:bg-green-50 dark:hover:bg-green-950/20 border-green-300 dark:border-green-700"
+                                    >
+                                        <span>Try Again</span>
                                     </Button>
                                 )}
                             </CardFooter>
@@ -932,57 +830,103 @@ export function EnzymeStarchLabEnhanced() {
                     </motion.div>
                 )}
 
-                {currentStep === 'complete' && (
+            </AnimatePresence>
+
+            {/* Lab Complete Section */}
+            {currentStep === 'complete' && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                >
                     <motion.div
-                        key="complete"
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ delay: 0.2 }}
                     >
-                        <Card className="border-2 border-green-200 dark:border-green-800">
-                            <CardHeader className="text-center">
-                                <motion.div
-                                    animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
-                                    transition={{ duration: 0.5 }}
-                                    className="flex justify-center mb-4"
-                                >
-                                    <Trophy className="h-16 w-16 text-yellow-500" />
-                                </motion.div>
-                                <CardTitle>Lab Complete!</CardTitle>
-                                <CardDescription>You've mastered enzyme action</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-6 rounded-lg border-2 border-green-200 dark:border-green-800">
-                                    <h3 className="font-semibold text-center text-lg mb-4">What You've Learned:</h3>
-                                    <ul className="space-y-2 text-sm">
+                        <Card className="border-2 border-green-300/50 dark:border-green-700/50 bg-gradient-to-br from-green-50/95 via-emerald-50/95 to-teal-50/95 dark:from-green-950/95 dark:via-emerald-950/95 dark:to-teal-950/95 backdrop-blur-md shadow-2xl max-w-2xl w-full mx-4">
+                            <CardContent className="p-8 space-y-6">
+                                <div className="flex flex-col items-center text-center space-y-4">
+                                    <motion.div
+                                        animate={{ 
+                                            rotate: [0, 10, -10, 0],
+                                            scale: [1, 1.1, 1]
+                                        }}
+                                        transition={{ 
+                                            duration: 2,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }}
+                                    >
+                                        <Trophy className="h-20 w-20 text-green-500 dark:text-green-400" />
+                                    </motion.div>
+                                    <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                                        Lab Complete!
+                                    </h2>
+                                    <p className="text-lg text-green-900/80 dark:text-green-100/80">
+                                        You've mastered enzyme action!
+                                    </p>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t border-green-200 dark:border-green-800">
+                                    <h3 className="font-semibold text-lg text-green-900 dark:text-green-100 flex items-center gap-2">
+                                        <Award className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                        What You've Learned:
+                                    </h3>
+                                    <ul className="space-y-2 text-green-800 dark:text-green-200">
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                                             <span>Enzymes are biological catalysts that speed up reactions</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                                             <span>Amylase breaks down starch into simpler sugars</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                                             <span>Iodine test detects the presence of starch</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
                                             <span>This process is essential for digestion in living organisms</span>
                                         </li>
                                     </ul>
                                 </div>
-                            </CardContent>
-                            <CardFooter>
-                                <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
+
+                                {xpEarned > 0 && (
+                                    <div className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-lg border border-green-300/50 dark:border-green-700/50">
+                                        <Award className="h-6 w-6 text-green-600 dark:text-green-400" />
+                                        <span className="text-xl font-bold text-green-900 dark:text-green-100">
+                                            +{xpEarned} XP Earned!
+                                        </span>
+                                    </div>
+                                )}
+
+                                <Button
+                                    onClick={handleRestart}
+                                    size="lg"
+                                    className="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+                                >
+                                    <RefreshCw className="h-5 w-5 mr-2" />
                                     Restart Lab
                                 </Button>
-                            </CardFooter>
+                            </CardContent>
                         </Card>
                     </motion.div>
-                )}
-            </AnimatePresence>
+                </motion.div>
+            )}
+
+            {showCelebration && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
+                >
+                    <div className="text-6xl">⚗️✨</div>
+                </motion.div>
+            )}
+            </div>
         </div>
     );
 }
