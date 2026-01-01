@@ -11,6 +11,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
+import { LabSupplies, SupplyItem } from './LabSupplies';
+import { Trophy, Award } from 'lucide-react';
 
 // Simple SVG for seeds
 const SeedIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -30,12 +32,41 @@ export function RespirationLabEnhanced() {
     const [teacherMessage, setTeacherMessage] = React.useState('');
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
-    // Supplies tracking
+    // Supplies tracking - using standardized component
     const [showSupplies, setShowSupplies] = React.useState(true);
-    const [flaskACollected, setFlaskACollected] = React.useState(false);
-    const [flaskBCollected, setFlaskBCollected] = React.useState(false);
-    const [thermometerCollected, setThermometerCollected] = React.useState(false);
-    const [limewaterCollected, setLimewaterCollected] = React.useState(false);
+    const [collectedItems, setCollectedItems] = React.useState<string[]>([]);
+    
+    // Define supplies for the lab
+    const supplies: SupplyItem[] = [
+        {
+            id: 'flask-a',
+            name: 'Flask A (Germinating Seeds)',
+            emoji: '🌱',
+            description: 'Living seeds actively respiring',
+            required: true
+        },
+        {
+            id: 'flask-b',
+            name: 'Flask B (Boiled Seeds)',
+            emoji: '🔬',
+            description: 'Dead seeds for control',
+            required: true
+        },
+        {
+            id: 'thermometer',
+            name: 'Thermometer',
+            emoji: '🌡️',
+            description: 'To detect heat energy',
+            required: true
+        },
+        {
+            id: 'limewater',
+            name: 'Limewater Tubes',
+            emoji: '💧',
+            description: 'To detect carbon dioxide',
+            required: true
+        }
+    ];
     
     // Quiz state
     const [selectedAnswer1, setSelectedAnswer1] = React.useState<string | null>(null);
@@ -89,81 +120,42 @@ export function RespirationLabEnhanced() {
     }, [currentStep]);
 
     const handleStartExperiment = () => {
-        setTeacherMessage("Great! Let's begin. First, we need to collect our supplies. Start by clicking on FLASK A with germinating seeds - these are living, growing seeds that are actively respiring!");
-        setPendingTransition(() => () => {
-            setCurrentStep('collect-supplies');
-        });
+        setCurrentStep('collect-supplies');
+        setTeacherMessage("Great! Let's begin. First, we need to collect our supplies. We need Flask A with germinating seeds (living seeds), Flask B with boiled seeds (dead control), a thermometer to detect heat, and limewater tubes to detect carbon dioxide. Click on each item to collect them!");
     };
     
-    const handleCollectFlaskA = () => {
-        if (!flaskACollected) {
-            setFlaskACollected(true);
-            setTeacherMessage("Perfect! Now click on FLASK B with boiled seeds - these are dead seeds that serve as our control group to compare.");
-            toast({ title: '✅ Flask A Collected - Living Seeds' });
+    // Supplies collection handlers
+    const handleCollect = React.useCallback((itemId: string) => {
+        if (!collectedItems.includes(itemId)) {
+            setCollectedItems(prev => [...prev, itemId]);
         }
-    };
-    
-    const handleCollectFlaskB = () => {
-        if (flaskACollected && !flaskBCollected) {
-            setFlaskBCollected(true);
-            setTeacherMessage("Excellent! Now click on the THERMOMETER - we'll use this to detect heat energy produced by respiration.");
-            toast({ title: '✅ Flask B Collected - Dead Seeds' });
-        }
-    };
-    
-    const handleCollectThermometer = () => {
-        if (flaskBCollected && !thermometerCollected) {
-            setThermometerCollected(true);
-            setTeacherMessage("Great! Finally, click on the LIMEWATER tubes - limewater turns milky when carbon dioxide gas is present, proving respiration is occurring!");
-            toast({ title: '✅ Thermometer Collected' });
-        }
-    };
-    
-    const handleCollectLimewater = () => {
-        if (thermometerCollected && !limewaterCollected) {
-            setLimewaterCollected(true);
-            setShowSupplies(false);
-            setTeacherMessage("Perfect! All supplies collected! Now let's set up the experiment and begin our 24-hour observation.");
-            toast({ title: '✅ All Supplies Collected!' });
-            setPendingTransition(() => () => {
-                setCurrentStep('setup');
-            });
-        }
-    };
+    }, [collectedItems]);
+
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        setCurrentStep('setup');
+        setTeacherMessage("Perfect! All supplies collected! Now let's set up the experiment and begin our 24-hour observation.");
+    }, []);
     
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // No pending transitions - immediate responsiveness
     };
 
     const handleBeginObservation = () => {
         setTeacherMessage("Observation starting! We're monitoring both flasks over 24 hours (simulated as a few seconds here). Watch closely for changes in temperature and limewater color. Living seeds need energy to grow, so they respire!");
-        setPendingTransition(() => () => {
-            setCurrentStep('observing');
-            setObservationProgress(0);
-            setTemperatureA(50);
-            setLimewaterA(0);
-        });
+        setCurrentStep('observing');
+        setObservationProgress(0);
+        setTemperatureA(50);
+        setLimewaterA(0);
     };
 
     const handleObservationComplete = () => {
         setTeacherMessage("Observation complete! Look at the results: Flask A (germinating seeds) shows temperature rise and milky limewater - clear evidence of respiration! Flask B (boiled seeds) shows NO changes - dead seeds don't respire. This proves that respiration is a life process!");
-        setPendingTransition(() => () => {
-            setCurrentStep('results');
-        });
+        setCurrentStep('results');
     };
 
     const handleProceedToQuiz = () => {
         setTeacherMessage("Excellent observations! Now let's test your understanding of cellular respiration. Think about what we saw: heat production, carbon dioxide release, and the difference between living and dead seeds.");
-        setPendingTransition(() => () => {
-            setCurrentStep('quiz');
-            setTimeout(() => {
-                document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-        });
+        setCurrentStep('quiz');
     };
 
     const handleQuizSubmit = () => {
@@ -196,9 +188,7 @@ export function RespirationLabEnhanced() {
             
             // 3-tier feedback: Perfect score
             setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered cellular respiration! Here's what you discovered: (1) FLASK A (germinating seeds) showed BOTH heat production and milky limewater - these are the two key products of respiration! Living seeds respire to release energy for growth. Flask B (boiled seeds) showed NO changes because boiling KILLED the seeds - dead cells cannot respire. (2) CARBON DIOXIDE (CO₂) is the gas that turned limewater milky. This is the waste product of respiration. The chemical test: Ca(OH)₂ + CO₂ → CaCO₃ (white precipitate) + H₂O. (3) Seeds release HEAT ENERGY during respiration because breaking down glucose releases energy in two forms: ATP (for cell work) and HEAT (thermal energy). The equation: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ENERGY (ATP + Heat). Germinating seeds use stored starch, convert it to glucose, and respire aerobically to fuel rapid cell division and growth. Temperature rose from 50°F to 80°F in Flask A! This same process happens in YOUR cells right now - you're respiring to power your muscles, brain, and heart. Every breath you take provides oxygen for respiration. Excellent work! +${earnedXP} XP earned!`);
-            setPendingTransition(() => () => {
-                setCurrentStep('complete');
-            });
+            setCurrentStep('complete');
         } else if (correctCount === 2) {
             // Good effort - 2 out of 3 correct
             setQuizFeedback(`Good effort! You got ${correctCount} out of 3 correct. Review the experiment results and try again!`);
@@ -222,17 +212,40 @@ export function RespirationLabEnhanced() {
         setQuizSubmitted(false);
         setXpEarned(0);
         setShowCelebration(false);
-        setShowSupplies(true);
-        setFlaskACollected(false);
-        setFlaskBCollected(false);
-        setThermometerCollected(false);
-        setLimewaterCollected(false);
-        setPendingTransition(null);
+        setCollectedItems([]);
         setTeacherMessage("Welcome back! Ready to explore cellular respiration again? Let's observe how living seeds release energy through respiration!");
     };
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="relative min-h-screen pb-20 overflow-hidden">
+            {/* Premium Animated Background */}
+            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-950/20 dark:via-emerald-950/20 dark:to-teal-950/20" />
+                {[...Array(6)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-r from-green-200/30 to-emerald-200/30 dark:from-green-800/20 dark:to-emerald-800/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 100}px`,
+                            height: `${200 + i * 100}px`,
+                            left: `${(i * 15) % 100}%`,
+                            top: `${(i * 20) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 50, 0],
+                            y: [0, 30, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative z-10 space-y-6 pb-20">
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
@@ -284,18 +297,36 @@ export function RespirationLabEnhanced() {
                 </motion.div>
             )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>🌱 Respiration Lab - Detecting Life's Energy</CardTitle>
-                    <CardDescription>Observe how germinating seeds release heat and carbon dioxide during cellular respiration.</CardDescription>
-                </CardHeader>
-            </Card>
+            {/* Premium Objective Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-green-300/50 dark:border-green-700/50 bg-gradient-to-br from-green-50/80 via-emerald-50/80 to-teal-50/80 dark:from-green-950/30 dark:via-emerald-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 border-b border-green-200/50 dark:border-green-800/50">
+                        <CardTitle className="flex items-center gap-2">
+                            <Sprout className="h-5 w-5 text-green-600 dark:text-green-400" />
+                            Respiration Lab - Detecting Life's Energy
+                        </CardTitle>
+                        <CardDescription className="text-green-900/80 dark:text-green-100/80">Observe how germinating seeds release heat and carbon dioxide during cellular respiration.</CardDescription>
+                    </CardHeader>
+                </Card>
+            </motion.div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                    <CardDescription>Background theory and safety tips for this experiment.</CardDescription>
-                </CardHeader>
+            {/* Premium Lab Information Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <Card className="border-2 border-green-300/50 dark:border-green-700/50 bg-gradient-to-br from-green-50/80 via-emerald-50/80 to-teal-50/80 dark:from-green-950/30 dark:via-emerald-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 border-b border-green-200/50 dark:border-green-800/50">
+                        <CardTitle className="flex items-center gap-2">
+                            <BookOpen className="h-5 w-5 text-green-600 dark:text-green-400" />
+                            Lab Information
+                        </CardTitle>
+                        <CardDescription className="text-green-900/80 dark:text-green-100/80">Background theory and safety tips for this experiment.</CardDescription>
+                    </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1" data-theory-section>
@@ -344,6 +375,26 @@ export function RespirationLabEnhanced() {
                     </Accordion>
                 </CardContent>
             </Card>
+            </motion.div>
+
+            {/* Supplies Collection Step */}
+            {currentStep === 'collect-supplies' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <LabSupplies
+                        supplies={supplies}
+                        collectedItems={collectedItems}
+                        onCollect={handleCollect}
+                        showSupplies={showSupplies}
+                        title="Lab Supplies - Click to Collect"
+                        description="Collect all the supplies needed to observe cellular respiration"
+                        onAllCollected={handleAllSuppliesCollected}
+                    />
+                </motion.div>
+            )}
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (
@@ -375,7 +426,11 @@ export function RespirationLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleStartExperiment} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleStartExperiment} 
+                                    className="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold" 
+                                    size="lg"
+                                >
                                     Start Experiment
                                 </Button>
                             </CardFooter>
@@ -383,152 +438,6 @@ export function RespirationLabEnhanced() {
                     </motion.div>
                 )}
 
-                {currentStep === 'collect-supplies' && (
-                    <motion.div
-                        key="collect-supplies"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                    >
-                        <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-lg">
-                                    <Sparkles className="h-5 w-5 text-amber-600" />
-                                    Lab Supplies - Click to Collect
-                                </CardTitle>
-                                <CardDescription>Click on each item in order to collect them for the experiment</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex gap-6 justify-center flex-wrap">
-                                    {/* Flask A - Germinating Seeds */}
-                                    {!flaskACollected && (
-                                        <motion.div
-                                            onClick={handleCollectFlaskA}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-green-300 dark:border-green-700 hover:border-green-500 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="relative w-20 h-24">
-                                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-green-100 dark:to-green-900/30 rounded-lg border-2 border-green-400" />
-                                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-                                                        <Sprout className="h-4 w-4 text-green-600" />
-                                                        <Sprout className="h-4 w-4 text-green-600" />
-                                                    </div>
-                                                </div>
-                                                <span className="text-sm font-medium">Flask A</span>
-                                                <span className="text-xs text-green-600 font-medium">Germinating Seeds</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Flask B - Boiled Seeds */}
-                                    {flaskACollected && !flaskBCollected && (
-                                        <motion.div
-                                            onClick={handleCollectFlaskB}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-gray-300 dark:border-gray-700 hover:border-gray-500 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="relative w-20 h-24">
-                                                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-100 dark:to-gray-900/30 rounded-lg border-2 border-gray-400" />
-                                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-                                                        <SeedIcon className="h-4 w-4 text-gray-600" />
-                                                        <SeedIcon className="h-4 w-4 text-gray-600" />
-                                                    </div>
-                                                </div>
-                                                <span className="text-sm font-medium">Flask B</span>
-                                                <span className="text-xs text-gray-600 font-medium">Boiled Seeds (Control)</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Thermometer */}
-                                    {flaskBCollected && !thermometerCollected && (
-                                        <motion.div
-                                            onClick={handleCollectThermometer}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-red-300 dark:border-red-700 hover:border-red-500 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <Thermometer className="h-20 w-20 text-red-600" />
-                                                <span className="text-sm font-medium">Thermometer</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Limewater */}
-                                    {thermometerCollected && !limewaterCollected && (
-                                        <motion.div
-                                            onClick={handleCollectLimewater}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-blue-300 dark:border-blue-700 hover:border-blue-500 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="flex gap-2">
-                                                    <Droplet className="h-20 w-20 text-blue-400" />
-                                                    <Droplet className="h-20 w-20 text-blue-400" />
-                                                </div>
-                                                <span className="text-sm font-medium">Limewater Tubes</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Collected Items Display */}
-                                    <div className="w-full mt-4 flex gap-4 justify-center flex-wrap">
-                                        {flaskACollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                                <span className="text-sm">Flask A Collected</span>
-                                            </motion.div>
-                                        )}
-                                        {flaskBCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-gray-100 dark:bg-gray-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-gray-600" />
-                                                <span className="text-sm">Flask B Collected</span>
-                                            </motion.div>
-                                        )}
-                                        {thermometerCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-red-100 dark:bg-red-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-red-600" />
-                                                <span className="text-sm">Thermometer Collected</span>
-                                            </motion.div>
-                                        )}
-                                        {limewaterCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-blue-600" />
-                                                <span className="text-sm">Limewater Collected</span>
-                                            </motion.div>
-                                        )}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                )}
 
                 {currentStep === 'setup' && (
                     <motion.div
@@ -606,7 +515,11 @@ export function RespirationLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleBeginObservation} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleBeginObservation} 
+                                    className="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold" 
+                                    size="lg"
+                                >
                                     Begin Observation (24 hours)
                                 </Button>
                             </CardFooter>
@@ -775,7 +688,11 @@ export function RespirationLabEnhanced() {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                     >
-                                        <Button onClick={handleProceedToQuiz} className="w-full" size="lg">
+                                        <Button 
+                                            onClick={handleProceedToQuiz} 
+                                            className="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold" 
+                                            size="lg"
+                                        >
                                             Continue to Quiz
                                         </Button>
                                     </motion.div>
@@ -793,10 +710,13 @@ export function RespirationLabEnhanced() {
                         exit={{ opacity: 0, y: -20 }}
                         id="quiz-section"
                     >
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Post-Lab Quiz</CardTitle>
-                                <CardDescription>Test your understanding of the experiment</CardDescription>
+                        <Card className="border-2 border-green-300/50 dark:border-green-700/50 bg-gradient-to-br from-green-50/80 via-emerald-50/80 to-teal-50/80 dark:from-green-950/30 dark:via-emerald-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                            <CardHeader className="relative z-10 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 border-b border-green-200/50 dark:border-green-800/50">
+                                <CardTitle className="flex items-center gap-2">
+                                    <BookOpen className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                    Post-Lab Quiz
+                                </CardTitle>
+                                <CardDescription className="text-green-900/80 dark:text-green-100/80">Test your understanding of the experiment</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Question 1 */}
@@ -930,45 +850,107 @@ export function RespirationLabEnhanced() {
                                     </motion.div>
                                 )}
                             </CardContent>
-                            <CardFooter className="flex flex-col gap-3">
+                            <CardFooter className="relative z-10 flex flex-col gap-3 bg-gradient-to-r from-green-50/50 to-emerald-50/50 dark:from-green-950/30 dark:to-emerald-950/30 border-t border-green-200/50 dark:border-green-800/50">
                                 {!quizSubmitted && (
                                     <Button 
                                         onClick={handleQuizSubmit}
                                         disabled={!selectedAnswer1 || !selectedAnswer2 || !selectedAnswer3}
-                                        className="w-full"
+                                        className="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
                                         size="lg"
                                     >
                                         Submit Quiz
                                     </Button>
-                                )}
-                                {currentStep === 'complete' && (
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="w-full"
-                                    >
-                                        <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 border-2 border-orange-500 rounded-lg p-6 text-center mb-3">
-                                            <Sparkles className="h-12 w-12 text-orange-600 dark:text-orange-400 mx-auto mb-3" />
-                                            <h3 className="text-xl font-bold text-orange-900 dark:text-orange-100 mb-2">
-                                                Lab Complete! 🎉
-                                            </h3>
-                                            <p className="text-orange-700 dark:text-orange-300 mb-3">
-                                                You've mastered cellular respiration and earned <strong>{xpEarned} XP</strong>!
-                                            </p>
-                                            <p className="text-sm text-muted-foreground">
-                                                You now understand how living organisms release energy from food through respiration.
-                                            </p>
-                                        </div>
-                                        <Button onClick={handleRestart} variant="outline" className="w-full">
-                                            Restart Experiment
-                                        </Button>
-                                    </motion.div>
                                 )}
                             </CardFooter>
                         </Card>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Lab Complete Section */}
+            {currentStep === 'complete' && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                >
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <Card className="border-2 border-green-300/50 dark:border-green-700/50 bg-gradient-to-br from-green-50/95 via-emerald-50/95 to-teal-50/95 dark:from-green-950/95 dark:via-emerald-950/95 dark:to-teal-950/95 backdrop-blur-md shadow-2xl max-w-2xl w-full mx-4">
+                            <CardContent className="p-8 space-y-6">
+                                <div className="flex flex-col items-center text-center space-y-4">
+                                    <motion.div
+                                        animate={{ 
+                                            rotate: [0, 10, -10, 0],
+                                            scale: [1, 1.1, 1]
+                                        }}
+                                        transition={{ 
+                                            duration: 2,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }}
+                                    >
+                                        <Trophy className="h-20 w-20 text-green-500 dark:text-green-400" />
+                                    </motion.div>
+                                    <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                                        Lab Complete!
+                                    </h2>
+                                    <p className="text-lg text-green-900/80 dark:text-green-100/80">
+                                        You've mastered cellular respiration!
+                                    </p>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t border-green-200 dark:border-green-800">
+                                    <h3 className="font-semibold text-lg text-green-900 dark:text-green-100 flex items-center gap-2">
+                                        <Award className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                        What You've Learned:
+                                    </h3>
+                                    <ul className="space-y-2 text-green-800 dark:text-green-200">
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                            <span>Living seeds respire to release energy for growth</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                            <span>Respiration produces heat energy and carbon dioxide</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                            <span>Limewater turns milky when CO₂ is present</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                            <span>Dead seeds cannot respire - respiration is a life process</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                {xpEarned > 0 && (
+                                    <div className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-green-100/50 to-emerald-100/50 dark:from-green-900/30 dark:to-emerald-900/30 rounded-lg border border-green-300/50 dark:border-green-700/50">
+                                        <Award className="h-6 w-6 text-green-600 dark:text-green-400" />
+                                        <span className="text-xl font-bold text-green-900 dark:text-green-100">
+                                            +{xpEarned} XP Earned!
+                                        </span>
+                                    </div>
+                                )}
+
+                                <Button
+                                    onClick={handleRestart}
+                                    size="lg"
+                                    className="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+                                >
+                                    <RefreshCw className="h-5 w-5 mr-2" />
+                                    Restart Lab
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                </motion.div>
+            )}
 
             {showCelebration && (
                 <motion.div
@@ -979,6 +961,7 @@ export function RespirationLabEnhanced() {
                     <div className="text-6xl">🌱🔥</div>
                 </motion.div>
             )}
+            </div>
         </div>
     );
 }

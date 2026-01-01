@@ -18,8 +18,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TeacherVoice } from './TeacherVoice';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
-type TestStep = 'intro' | 'selecting' | 'watching' | 'quiz';
+type TestStep = 'intro' | 'collect-supplies' | 'selecting' | 'watching' | 'quiz' | 'complete';
 type DivisionType = 'mitosis' | 'meiosis';
 type MitosisStage = 0 | 1 | 2 | 3 | 4; // Prophase, Metaphase, Anaphase, Telophase, Result
 type MeiosisStage = 0 | 1 | 2; // Meiosis I, Meiosis II, Result
@@ -36,9 +37,44 @@ export function CellDivisionLabEnhanced() {
     const [currentStage, setCurrentStage] = React.useState(0);
     const [isPlaying, setIsPlaying] = React.useState(false);
     
+    // Supplies tracking
+    const [showSupplies, setShowSupplies] = React.useState(true);
+    const [collectedItems, setCollectedItems] = React.useState<string[]>([]);
+    
+    // Define supplies for the lab
+    const supplies: SupplyItem[] = [
+        {
+            id: 'microscope',
+            name: 'Microscope',
+            emoji: '🔬',
+            description: 'To observe cell division',
+            required: true
+        },
+        {
+            id: 'cell-samples',
+            name: 'Cell Samples',
+            emoji: '🧬',
+            description: 'Prepared cell slides',
+            required: true
+        },
+        {
+            id: 'stain',
+            name: 'Cell Stain',
+            emoji: '🎨',
+            description: 'To visualize chromosomes',
+            required: true
+        },
+        {
+            id: 'timer',
+            name: 'Timer',
+            emoji: '⏱️',
+            description: 'To track division stages',
+            required: true
+        }
+    ];
+    
     // Teacher voice
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Quiz
     const [selectedAnswer1, setSelectedAnswer1] = React.useState<string | null>(null);
@@ -75,12 +111,20 @@ export function CellDivisionLabEnhanced() {
 
     // Teacher message callbacks
     const handleTeacherComplete = React.useCallback(() => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
+        // No pending transitions - immediate responsiveness
+    }, []);
+
+    // Supplies collection handlers
+    const handleCollect = React.useCallback((itemId: string) => {
+        if (!collectedItems.includes(itemId)) {
+            setCollectedItems(prev => [...prev, itemId]);
         }
-    }, [pendingTransition]);
+    }, [collectedItems]);
+
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        setCurrentStep('selecting');
+        setTeacherMessage('Great! Now choose which type of cell division you want to observe. Mitosis is for body cells - it makes identical copies. Meiosis is for sex cells - it creates genetic variety. Which one interests you?');
+    }, []);
 
     // Initial intro
     React.useEffect(() => {
@@ -90,8 +134,8 @@ export function CellDivisionLabEnhanced() {
     }, [currentStep]);
 
     const handleStartExperiment = () => {
-        setCurrentStep('selecting');
-        setTeacherMessage('Choose which type of cell division you want to observe. Mitosis is for body cells - it makes identical copies. Meiosis is for sex cells - it creates genetic variety. Which one interests you?');
+        setCurrentStep('collect-supplies');
+        setTeacherMessage('First, let\'s gather our supplies. We need a microscope to observe cells, prepared cell samples, cell stain to visualize chromosomes, and a timer to track the division stages. Click on each item to collect them!');
     };
 
     const handleSelectDivision = (type: DivisionType) => {
@@ -134,13 +178,9 @@ export function CellDivisionLabEnhanced() {
         }
         
         if (currentStage === maxStage - 1) {
-            setPendingTransition(() => () => {
-                setTimeout(() => {
-                    setCurrentStep('quiz');
-                    const quizSection = document.querySelector('[data-quiz-section]');
-                    quizSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-            });
+            setTimeout(() => {
+                setCurrentStep('quiz');
+            }, 500);
         }
     };
 
@@ -179,8 +219,7 @@ export function CellDivisionLabEnhanced() {
                 });
                 
                 setXpEarned(earnedXP);
-                setShowCelebration(true);
-                setTimeout(() => setShowCelebration(false), 5000);
+                setCurrentStep('complete');
                 
                 if (divisionType === 'mitosis') {
                     setTeacherMessage(`Outstanding! Perfect understanding of MITOSIS! 🎉 You watched the cell go through Prophase (chromatin condenses), Metaphase (chromosomes align), Anaphase (chromatids separate), and Telophase (nuclear membranes reform). The result: 2 IDENTICAL daughter cells with the SAME chromosome number (diploid). This is how your body grows, heals wounds, and replaces dead cells. Every cell in your skin, muscles, and organs was created through mitosis! Mitosis is used for GROWTH and REPAIR - maintaining genetic stability with no variation. +${earnedXP} XP earned!`);
@@ -203,8 +242,7 @@ export function CellDivisionLabEnhanced() {
                 const timeSpent = Math.floor((Date.now() - startTime) / 1000);
                 const earnedXP = markLabComplete('cell-division', 75, timeSpent);
                 setXpEarned(earnedXP);
-                setShowCelebration(true);
-                setTimeout(() => setShowCelebration(false), 5000);
+                setCurrentStep('complete');
             }
         } else {
             // Needs work - 0 or 1 correct
@@ -219,8 +257,7 @@ export function CellDivisionLabEnhanced() {
                 const timeSpent = Math.floor((Date.now() - startTime) / 1000);
                 const earnedXP = markLabComplete('cell-division', 50, timeSpent);
                 setXpEarned(earnedXP);
-                setShowCelebration(true);
-                setTimeout(() => setShowCelebration(false), 5000);
+                setCurrentStep('complete');
             }
         }
     };
@@ -237,8 +274,12 @@ export function CellDivisionLabEnhanced() {
         setQuizSubmitted(false);
         setXpEarned(0);
         setShowCelebration(false);
-        setPendingTransition(null);
+        setCollectedItems([]);
         setTeacherMessage('Ready to observe cell division again? You can watch both mitosis and meiosis to compare them! Click Start Experiment when ready.');
+    };
+    
+    const handleViewQuiz = () => {
+        setCurrentStep('quiz');
     };
 
     const objectiveText = "To observe and understand the processes of mitosis and meiosis, including their phases, outcomes, and biological significance in growth, repair, and reproduction.";
@@ -249,7 +290,35 @@ export function CellDivisionLabEnhanced() {
     const stageNames = divisionType === 'mitosis' ? mitosisStageNames : meiosisStageNames;
 
     return (
-        <div className="space-y-6">
+        <div className="relative min-h-screen pb-20 overflow-hidden">
+            {/* Premium Animated Background */}
+            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-indigo-950/20" />
+                {[...Array(6)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-r from-purple-200/30 to-blue-200/30 dark:from-purple-800/20 dark:to-blue-800/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 100}px`,
+                            height: `${200 + i * 100}px`,
+                            left: `${(i * 15) % 100}%`,
+                            top: `${(i * 20) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 50, 0],
+                            y: [0, 30, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative z-10 space-y-6 pb-20">
             {/* Completion Badge */}
             {hasCompleted && labProgress && (
                 <motion.div
@@ -311,55 +380,99 @@ export function CellDivisionLabEnhanced() {
                 />
             )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Objective</CardTitle>
-                    <CardDescription>{objectiveText}</CardDescription>
-                </CardHeader>
-            </Card>
+            {/* Premium Objective Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-purple-300/50 dark:border-purple-700/50 bg-gradient-to-br from-purple-50/80 via-blue-50/80 to-indigo-50/80 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm shadow-lg">
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-purple-100/50 to-blue-100/50 dark:from-purple-900/30 dark:to-blue-900/30 border-b border-purple-200/50 dark:border-purple-800/50">
+                        <CardTitle className="flex items-center gap-2">
+                            <Trophy className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                            Objective
+                        </CardTitle>
+                        <CardDescription className="text-purple-900/80 dark:text-purple-100/80">{objectiveText}</CardDescription>
+                    </CardHeader>
+                </Card>
+            </motion.div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1" data-theory-section>
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <BookOpen className="h-4 w-4" />
-                                    <span>Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <p>{theoryText}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-2" data-safety-section>
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <Shield className="h-4 w-4" />
-                                    <span>Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <p>{safetyText}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
+            {/* Premium Lab Information Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <Card className="border-2 border-purple-300/50 dark:border-purple-700/50 bg-gradient-to-br from-purple-50/80 via-blue-50/80 to-indigo-50/80 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm shadow-lg">
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-purple-100/50 to-blue-100/50 dark:from-purple-900/30 dark:to-blue-900/30 border-b border-purple-200/50 dark:border-purple-800/50">
+                        <CardTitle className="flex items-center gap-2">
+                            <BookOpen className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                            Lab Information
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="item-1" data-theory-section>
+                                <AccordionTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <BookOpen className="h-4 w-4" />
+                                        <span>Background Theory</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                    <p>{theoryText}</p>
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-2" data-safety-section>
+                                <AccordionTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <Shield className="h-4 w-4" />
+                                        <span>Safety Precautions</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                    <p>{safetyText}</p>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            </motion.div>
+
+            {/* Supplies Collection Step */}
+            {currentStep === 'collect-supplies' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <LabSupplies
+                        supplies={supplies}
+                        collectedItems={collectedItems}
+                        onCollect={handleCollect}
+                        showSupplies={showSupplies}
+                        title="Lab Supplies - Click to Collect"
+                        description="Collect all the supplies needed to observe cell division"
+                        onAllCollected={handleAllSuppliesCollected}
+                    />
+                </motion.div>
+            )}
 
             {/* Main Lab Interface */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Microscope className="h-6 w-6" />
-                        Interactive Cell Division Viewer
-                    </CardTitle>
-                    <CardDescription>Watch cells divide in real-time animation</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
+            {(currentStep !== 'collect-supplies' && currentStep !== 'complete') && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                >
+                    <Card className="border-2 border-purple-300/50 dark:border-purple-700/50 bg-gradient-to-br from-purple-50/80 via-blue-50/80 to-indigo-50/80 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm shadow-lg">
+                        <CardHeader className="relative z-10 bg-gradient-to-r from-purple-100/50 to-blue-100/50 dark:from-purple-900/30 dark:to-blue-900/30 border-b border-purple-200/50 dark:border-purple-800/50">
+                            <CardTitle className="flex items-center gap-2">
+                                <Microscope className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                                Interactive Cell Division Viewer
+                            </CardTitle>
+                            <CardDescription className="text-purple-900/80 dark:text-purple-100/80">Watch cells divide in real-time animation</CardDescription>
+                        </CardHeader>
+                        <CardContent className="relative z-10 space-y-6 pt-6">
                     {/* Start Button */}
                     {currentStep === 'intro' && (
                         <motion.div
@@ -382,7 +495,7 @@ export function CellDivisionLabEnhanced() {
                             <Button 
                                 size="lg" 
                                 onClick={handleStartExperiment}
-                                className="text-lg px-8"
+                                className="text-lg px-8 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
                             >
                                 Start Experiment 🔬
                             </Button>
@@ -402,7 +515,7 @@ export function CellDivisionLabEnhanced() {
                                     <Button 
                                         variant="outline"
                                         onClick={() => handleSelectDivision('mitosis')}
-                                        className="h-auto w-full flex-col gap-3 py-6"
+                                        className="h-auto w-full flex-col gap-3 py-6 text-slate-700 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20 border-purple-300 dark:border-purple-700 transition-all duration-300"
                                     >
                                         <Users className="h-12 w-12 text-purple-500" />
                                         <div className="text-center">
@@ -422,7 +535,7 @@ export function CellDivisionLabEnhanced() {
                                     <Button 
                                         variant="outline"
                                         onClick={() => handleSelectDivision('meiosis')}
-                                        className="h-auto w-full flex-col gap-3 py-6"
+                                        className="h-auto w-full flex-col gap-3 py-6 text-slate-700 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/20 border-blue-300 dark:border-blue-700 transition-all duration-300"
                                     >
                                         <Dna className="h-12 w-12 text-blue-500" />
                                         <div className="text-center">
@@ -481,58 +594,77 @@ export function CellDivisionLabEnhanced() {
                                     size="sm"
                                     onClick={handlePlayPause}
                                     disabled={currentStage >= maxStage}
+                                    className="text-slate-700 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20 border-purple-300 dark:border-purple-700"
                                 >
                                     {isPlaying ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
-                                    {isPlaying ? 'Pause' : 'Auto-Play'}
+                                    <span>{isPlaying ? 'Pause' : 'Auto-Play'}</span>
                                 </Button>
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={handleNextStage}
                                     disabled={currentStage >= maxStage}
+                                    className="text-slate-700 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20 border-purple-300 dark:border-purple-700"
                                 >
                                     <SkipForward className="h-4 w-4 mr-2" />
-                                    Next Stage
+                                    <span>Next Stage</span>
                                 </Button>
                                 <Button
                                     variant="outline"
                                     size="sm"
                                     onClick={() => setCurrentStage(0)}
+                                    className="text-slate-700 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20 border-purple-300 dark:border-purple-700"
                                 >
                                     <RotateCcw className="h-4 w-4 mr-2" />
-                                    Restart
+                                    <span>Restart</span>
                                 </Button>
                             </div>
                         </div>
                     )}
-                </CardContent>
-                <CardFooter className="flex flex-col gap-3">
-                    {currentStep !== 'intro' && (
-                        <Button 
-                            variant="outline" 
-                            onClick={handleReset}
-                            className="w-full"
-                        >
-                            <RefreshCw className="h-4 w-4 mr-2" />
-                            Reset & Try Other Type
-                        </Button>
-                    )}
-                </CardFooter>
-            </Card>
+                        </CardContent>
+                        <CardFooter className="relative z-10 flex flex-col gap-3 bg-gradient-to-r from-purple-50/50 to-blue-50/50 dark:from-purple-950/30 dark:to-blue-950/30 border-t border-purple-200/50 dark:border-purple-800/50">
+                            {currentStep === 'watching' && currentStage >= maxStage && (
+                                <Button 
+                                    size="lg" 
+                                    className="w-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+                                    onClick={handleViewQuiz}
+                                >
+                                    <BookOpen className="h-5 w-5 mr-2" />
+                                    Take Quiz
+                                </Button>
+                            )}
+                            {currentStep !== 'intro' && currentStep !== 'collect-supplies' && (
+                                <Button 
+                                    variant="outline" 
+                                    onClick={handleReset}
+                                    className="w-full text-slate-700 dark:text-slate-300 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20 border-purple-300 dark:border-purple-700"
+                                >
+                                    <RefreshCw className="h-4 w-4 mr-2" />
+                                    <span>Reset & Try Other Type</span>
+                                </Button>
+                            )}
+                        </CardFooter>
+                    </Card>
+                </motion.div>
+            )}
 
             {/* Quiz Section */}
             {currentStep === 'quiz' && divisionType && (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
                     data-quiz-section
                 >
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Post-Lab Quiz</CardTitle>
-                            <CardDescription>Test your understanding of the experiment</CardDescription>
+                    <Card className="border-2 border-purple-300/50 dark:border-purple-700/50 bg-gradient-to-br from-purple-50/80 via-blue-50/80 to-indigo-50/80 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm shadow-lg">
+                        <CardHeader className="relative z-10 bg-gradient-to-r from-purple-100/50 to-blue-100/50 dark:from-purple-900/30 dark:to-blue-900/30 border-b border-purple-200/50 dark:border-purple-800/50">
+                            <CardTitle className="flex items-center gap-2">
+                                <BookOpen className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                Post-Lab Quiz
+                            </CardTitle>
+                            <CardDescription className="text-purple-900/80 dark:text-purple-100/80">Test your understanding of the experiment</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-6">
+                        <CardContent className="relative z-10 space-y-6 pt-6">
                             {/* Question 1 */}
                             <div className="space-y-3">
                                 <p className="font-medium">
@@ -543,17 +675,17 @@ export function CellDivisionLabEnhanced() {
                                     onValueChange={setSelectedAnswer1}
                                     disabled={quizSubmitted}
                                 >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="two-identical" id="q1-1" />
-                                        <Label htmlFor="q1-1" className="flex-1 cursor-pointer">Two identical daughter cells</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="two-identical" id="q1-1" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q1-1" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">Two identical daughter cells</Label>
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="four-gametes" id="q1-2" />
-                                        <Label htmlFor="q1-2" className="flex-1 cursor-pointer">Four unique gametes</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="four-gametes" id="q1-2" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q1-2" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">Four unique gametes</Label>
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="one-large" id="q1-3" />
-                                        <Label htmlFor="q1-3" className="flex-1 cursor-pointer">One large cell</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="one-large" id="q1-3" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q1-3" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">One large cell</Label>
                                     </div>
                                 </RadioGroup>
                             </div>
@@ -568,17 +700,17 @@ export function CellDivisionLabEnhanced() {
                                     onValueChange={setSelectedAnswer2}
                                     disabled={quizSubmitted}
                                 >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="growth-repair" id="q2-1" />
-                                        <Label htmlFor="q2-1" className="flex-1 cursor-pointer">Growth and repair of body tissues</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="growth-repair" id="q2-1" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q2-1" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">Growth and repair of body tissues</Label>
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="reproduction" id="q2-2" />
-                                        <Label htmlFor="q2-2" className="flex-1 cursor-pointer">Sexual reproduction (making sex cells)</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="reproduction" id="q2-2" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q2-2" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">Sexual reproduction (making sex cells)</Label>
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="digestion" id="q2-3" />
-                                        <Label htmlFor="q2-3" className="flex-1 cursor-pointer">Digestion of food</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="digestion" id="q2-3" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q2-3" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">Digestion of food</Label>
                                     </div>
                                 </RadioGroup>
                             </div>
@@ -593,17 +725,17 @@ export function CellDivisionLabEnhanced() {
                                     onValueChange={setSelectedAnswer3}
                                     disabled={quizSubmitted}
                                 >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="same" id="q3-1" />
-                                        <Label htmlFor="q3-1" className="flex-1 cursor-pointer">Same number (diploid)</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="same" id="q3-1" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q3-1" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">Same number (diploid)</Label>
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="half" id="q3-2" />
-                                        <Label htmlFor="q3-2" className="flex-1 cursor-pointer">Half the number (haploid)</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="half" id="q3-2" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q3-2" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">Half the number (haploid)</Label>
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="double" id="q3-3" />
-                                        <Label htmlFor="q3-3" className="flex-1 cursor-pointer">Double the number</Label>
+                                    <div className="flex items-center space-x-2 py-3 px-4 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50 hover:bg-purple-50/50 dark:hover:bg-purple-950/20 hover:border-purple-400 dark:hover:border-purple-600 transition-all duration-200">
+                                        <RadioGroupItem value="double" id="q3-3" className="border-purple-400 dark:border-purple-600" />
+                                        <Label htmlFor="q3-3" className="flex-1 cursor-pointer text-purple-900 dark:text-purple-100 font-medium">Double the number</Label>
                                     </div>
                                 </RadioGroup>
                             </div>
@@ -619,11 +751,11 @@ export function CellDivisionLabEnhanced() {
                                 </motion.div>
                             )}
                         </CardContent>
-                        <CardFooter>
+                        <CardFooter className="relative z-10 flex flex-col gap-3 bg-gradient-to-r from-purple-50/50 to-blue-50/50 dark:from-purple-950/30 dark:to-blue-950/30 border-t border-purple-200/50 dark:border-purple-800/50">
                             <Button 
                                 onClick={handleQuizSubmit} 
                                 disabled={!selectedAnswer1 || !selectedAnswer2 || !selectedAnswer3 || quizSubmitted}
-                                className="w-full"
+                                className="w-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
                                 size="lg"
                             >
                                 {quizSubmitted ? "Quiz Completed ✓" : "Submit Answers"}
@@ -633,29 +765,124 @@ export function CellDivisionLabEnhanced() {
                 </motion.div>
             )}
 
-            {/* XP Celebration */}
-            <AnimatePresence>
-                {showCelebration && xpEarned > 0 && (
+            {/* Lab Complete Section */}
+            {currentStep === 'complete' && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                >
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="fixed bottom-8 right-8 z-50"
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
                     >
-                        <div className="bg-gradient-to-br from-purple-500 to-blue-600 text-white p-6 rounded-2xl shadow-2xl border-4 border-purple-300">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-white/20 rounded-full">
-                                    <Sparkles className="h-8 w-8" />
+                        <Card className="border-2 border-purple-300/50 dark:border-purple-700/50 bg-gradient-to-br from-purple-50/95 via-blue-50/95 to-indigo-50/95 dark:from-purple-950/95 dark:via-blue-950/95 dark:to-indigo-950/95 backdrop-blur-md shadow-2xl max-w-2xl w-full mx-4">
+                            <CardContent className="p-8 space-y-6">
+                                <div className="flex flex-col items-center text-center space-y-4">
+                                    <motion.div
+                                        animate={{ 
+                                            rotate: [0, 10, -10, 0],
+                                            scale: [1, 1.1, 1]
+                                        }}
+                                        transition={{ 
+                                            duration: 2,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }}
+                                    >
+                                        <Trophy className="h-20 w-20 text-purple-500 dark:text-purple-400" />
+                                    </motion.div>
+                                    <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                                        Lab Complete!
+                                    </h2>
+                                    <p className="text-lg text-purple-900/80 dark:text-purple-100/80">
+                                        You've mastered {divisionType === 'mitosis' ? 'mitosis' : 'meiosis'}!
+                                    </p>
                                 </div>
-                                <div>
-                                    <div className="text-2xl font-bold">+{xpEarned} XP</div>
-                                    <div className="text-sm opacity-90">Lab Complete!</div>
+
+                                <div className="space-y-4 pt-4 border-t border-purple-200 dark:border-purple-800">
+                                    <h3 className="font-semibold text-lg text-purple-900 dark:text-purple-100 flex items-center gap-2">
+                                        <Award className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                        What You've Learned:
+                                    </h3>
+                                    <ul className="space-y-2 text-purple-800 dark:text-purple-200">
+                                        {divisionType === 'mitosis' ? (
+                                            <>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>Mitosis produces 2 identical daughter cells with the same chromosome number</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>The four phases: Prophase, Metaphase, Anaphase, and Telophase</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>Mitosis is used for growth and repair of body tissues</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>Daughter cells are genetic clones of the parent cell</span>
+                                                </li>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>Meiosis produces 4 unique gametes with half the chromosome number</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>Meiosis involves two divisions: Meiosis I and Meiosis II</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>Meiosis is used for sexual reproduction</span>
+                                                </li>
+                                                <li className="flex items-start gap-2">
+                                                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>Crossing-over creates genetic diversity in gametes</span>
+                                                </li>
+                                            </>
+                                        )}
+                                    </ul>
                                 </div>
-                            </div>
-                        </div>
+
+                                {xpEarned > 0 && (
+                                    <div className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-purple-100/50 to-blue-100/50 dark:from-purple-900/30 dark:to-blue-900/30 rounded-lg border border-purple-300/50 dark:border-purple-700/50">
+                                        <Award className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                                        <span className="text-xl font-bold text-purple-900 dark:text-purple-100">
+                                            +{xpEarned} XP Earned!
+                                        </span>
+                                    </div>
+                                )}
+
+                                <Button
+                                    onClick={handleReset}
+                                    size="lg"
+                                    className="w-full bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 hover:from-purple-700 hover:via-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+                                >
+                                    <RefreshCw className="h-5 w-5 mr-2" />
+                                    Restart Lab
+                                </Button>
+                            </CardContent>
+                        </Card>
                     </motion.div>
-                )}
-            </AnimatePresence>
+                </motion.div>
+            )}
+
+            {showCelebration && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
+                >
+                    <div className="text-6xl">🧬✨</div>
+                </motion.div>
+            )}
+            </div>
         </div>
     );
 }
