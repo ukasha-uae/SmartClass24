@@ -4,23 +4,42 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, XCircle, Sun, Wind, BookOpen, Shield, Sparkles, Droplets, Leaf } from 'lucide-react';
+import { CheckCircle, XCircle, Sun, Wind, BookOpen, Shield, Sparkles, Droplets, Leaf, RefreshCw } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
+import { LabSupplies, SupplyItem } from './LabSupplies';
+import { Trophy, Award } from 'lucide-react';
 
-type Step = 'intro' | 'setup' | 'place-bag' | 'tie-bag' | 'select-conditions' | 'observing' | 'results' | 'quiz' | 'complete';
+type Step = 'intro' | 'collect-supplies' | 'place-bag' | 'tie-bag' | 'select-conditions' | 'observing' | 'results' | 'quiz' | 'complete';
 
 export function TranspirationLabEnhanced() {
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [showSupplies, setShowSupplies] = React.useState(true);
-    const [bagCollected, setBagCollected] = React.useState(false);
-    const [stringCollected, setStringCollected] = React.useState(false);
+    const [collectedItems, setCollectedItems] = React.useState<string[]>([]);
     const [isBagPlaced, setIsBagPlaced] = React.useState(false);
+    
+    // Define supplies for the lab
+    const supplies: SupplyItem[] = [
+        {
+            id: 'plastic-bag',
+            name: 'Clear Plastic Bag',
+            emoji: '📦',
+            description: 'To trap water vapor',
+            required: true
+        },
+        {
+            id: 'string',
+            name: 'String',
+            emoji: '🎀',
+            description: 'To tie the bag securely',
+            required: true
+        }
+    ];
     const [sunlight, setSunlight] = React.useState(false);
     const [wind, setWind] = React.useState(false);
     const [observationTime, setObservationTime] = React.useState(0);
@@ -77,49 +96,33 @@ export function TranspirationLabEnhanced() {
     }, [currentStep, sunlight, wind]);
 
     const handleStartExperiment = () => {
-        setTeacherMessage("Great! First, we need to collect our supplies. Click on the PLASTIC BAG from the supplies drawer. We'll use it to trap water vapor released by the plant.");
-        setPendingTransition(() => () => {
-            setCurrentStep('setup');
-        });
+        setCurrentStep('collect-supplies');
+        setTeacherMessage("Great! First, we need to collect our supplies. We need a clear plastic bag to trap water vapor and a string to tie it securely. Click on each item to collect them!");
     };
-
-    const handleCollectBag = () => {
-        if (!bagCollected) {
-            setBagCollected(true);
-            setTeacherMessage("Perfect! You've got the plastic bag. Now click on the STRING to collect it. We'll need this to tie the bag securely around the branch.");
-            toast({ title: '✅ Plastic Bag Collected', description: 'Ready to trap water vapor!' });
+    
+    // Supplies collection handlers
+    const handleCollect = React.useCallback((itemId: string) => {
+        if (!collectedItems.includes(itemId)) {
+            setCollectedItems(prev => [...prev, itemId]);
         }
-    };
+    }, [collectedItems]);
 
-    const handleCollectString = () => {
-        if (bagCollected && !stringCollected) {
-            setStringCollected(true);
-            setShowSupplies(false);
-            setTeacherMessage("Excellent! You now have both supplies. Now click on the plant's leafy branch to place the plastic bag over it.");
-            setPendingTransition(() => () => {
-                setCurrentStep('place-bag');
-            });
-            toast({ title: '✅ String Collected', description: 'All supplies ready!' });
-        }
-    };
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        setCurrentStep('place-bag');
+        setTeacherMessage("Excellent! You now have both supplies. Now click on the plant's leafy branch to place the plastic bag over it.");
+    }, []);
 
     const handlePlaceBag = () => {
         if (!isBagPlaced) {
             setIsBagPlaced(true);
             setTeacherMessage("Good work! The plastic bag is now over the branch. Click the STRING at the bottom to tie it securely. This will seal the bag so water vapor can't escape!");
-            setPendingTransition(() => () => {
-                setCurrentStep('tie-bag');
-            });
-            toast({ title: '📦 Bag Placed', description: 'Covering the leafy branch' });
+            setCurrentStep('tie-bag');
         }
     };
 
     const handleTieBag = () => {
         setTeacherMessage("Perfect seal! The bag will now trap water vapor from transpiration. Now we need to set environmental conditions. Will sunlight and wind affect how much water the plant releases? Let's choose!");
-        setPendingTransition(() => () => {
-            setCurrentStep('select-conditions');
-        });
-        toast({ title: '🎀 Bag Secured!', description: 'Ready for observation' });
+        setCurrentStep('select-conditions');
     };
 
     const handleSelectConditions = (sun: boolean, windOn: boolean) => {
@@ -138,11 +141,9 @@ export function TranspirationLabEnhanced() {
         }
         
         setTeacherMessage(message);
-        setPendingTransition(() => () => {
-            setCurrentStep('observing');
-            setObservationTime(0);
-            setWaterDroplets(0);
-        });
+        setCurrentStep('observing');
+        setObservationTime(0);
+        setWaterDroplets(0);
     };
 
     const handleObservationComplete = () => {
@@ -151,19 +152,12 @@ export function TranspirationLabEnhanced() {
                                    "some water droplets";
         
         setTeacherMessage(`Observation complete! Look at the bag—${dropletDescription} have collected inside! This water came from inside the plant's leaves through transpiration. The plant absorbed water from soil through roots, transported it up through xylem vessels, and released it as vapor through stomata. Now you can see what was invisible!`);
-        setPendingTransition(() => () => {
-            setCurrentStep('results');
-        });
+        setCurrentStep('results');
     };
 
     const handleProceedToQuiz = () => {
         setTeacherMessage("Excellent observations! Now let's test your understanding. Think about: Where did the water come from? How do environmental conditions affect transpiration? Why is this process important for plants?");
-        setPendingTransition(() => () => {
-            setCurrentStep('quiz');
-            setTimeout(() => {
-                document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-        });
+        setCurrentStep('quiz');
     };
 
     const handleQuizSubmit = () => {
@@ -195,9 +189,7 @@ export function TranspirationLabEnhanced() {
             });
             
             setTeacherMessage(`Congratulations! You've completed the Transpiration Lab with a perfect score! You earned ${earnedXP} XP. You now understand how plants move water through transpiration—a process crucial for nutrient transport, cooling, and maintaining water flow from roots to leaves!`);
-            setPendingTransition(() => () => {
-                setCurrentStep('complete');
-            });
+            setCurrentStep('complete');
         } else if (correctCount === 2) {
             setQuizFeedback(`Good effort! You got ${correctCount} out of 3 correct. Review how stomata work and the effects of environmental conditions!`);
         } else {
@@ -207,9 +199,7 @@ export function TranspirationLabEnhanced() {
 
     const handleRestart = () => {
         setCurrentStep('intro');
-        setShowSupplies(true);
-        setBagCollected(false);
-        setStringCollected(false);
+        setCollectedItems([]);
         setIsBagPlaced(false);
         setSunlight(false);
         setWind(false);
@@ -222,17 +212,12 @@ export function TranspirationLabEnhanced() {
         setQuizSubmitted(false);
         setXpEarned(0);
         setShowCelebration(false);
-        setPendingTransition(null);
         setTeacherMessage("Welcome back! Ready to explore transpiration again? Let's discover how plants move water from roots to air!");
     };
 
     // Handle teacher voice completion
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // No pending transitions - immediate responsiveness
     };
 
     // Generate random droplet positions
@@ -246,7 +231,35 @@ export function TranspirationLabEnhanced() {
     }, []);
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="relative min-h-screen pb-20 overflow-hidden">
+            {/* Premium Animated Background */}
+            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 dark:from-blue-950/20 dark:via-cyan-950/20 dark:to-teal-950/20" />
+                {[...Array(6)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-r from-blue-200/30 to-cyan-200/30 dark:from-blue-800/20 dark:to-cyan-800/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 100}px`,
+                            height: `${200 + i * 100}px`,
+                            left: `${(i * 15) % 100}%`,
+                            top: `${(i * 20) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 50, 0],
+                            y: [0, 30, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative z-10 space-y-6 pb-20">
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
@@ -270,18 +283,36 @@ export function TranspirationLabEnhanced() {
                 </motion.div>
             )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>💧 Transpiration Lab - Plants Releasing Water</CardTitle>
-                    <CardDescription>Observe how plants release water vapor through their leaves and detect factors affecting the rate.</CardDescription>
-                </CardHeader>
-            </Card>
+            {/* Premium Objective Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-blue-300/50 dark:border-blue-700/50 bg-gradient-to-br from-blue-50/80 via-cyan-50/80 to-teal-50/80 dark:from-blue-950/30 dark:via-cyan-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-blue-100/50 to-cyan-100/50 dark:from-blue-900/30 dark:to-cyan-900/30 border-b border-blue-200/50 dark:border-blue-800/50">
+                        <CardTitle className="flex items-center gap-2">
+                            <Droplets className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                            Transpiration Lab - Plants Releasing Water
+                        </CardTitle>
+                        <CardDescription className="text-blue-900/80 dark:text-blue-100/80">Observe how plants release water vapor through their leaves and detect factors affecting the rate.</CardDescription>
+                    </CardHeader>
+                </Card>
+            </motion.div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                    <CardDescription>Background theory and safety tips for this experiment.</CardDescription>
-                </CardHeader>
+            {/* Premium Lab Information Card */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <Card className="border-2 border-blue-300/50 dark:border-blue-700/50 bg-gradient-to-br from-blue-50/80 via-cyan-50/80 to-teal-50/80 dark:from-blue-950/30 dark:via-cyan-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-blue-100/50 to-cyan-100/50 dark:from-blue-900/30 dark:to-cyan-900/30 border-b border-blue-200/50 dark:border-blue-800/50">
+                        <CardTitle className="flex items-center gap-2">
+                            <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                            Lab Information
+                        </CardTitle>
+                        <CardDescription className="text-blue-900/80 dark:text-blue-100/80">Background theory and safety tips for this experiment.</CardDescription>
+                    </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1">
@@ -332,6 +363,26 @@ export function TranspirationLabEnhanced() {
                     </Accordion>
                 </CardContent>
             </Card>
+            </motion.div>
+
+            {/* Supplies Collection Step */}
+            {currentStep === 'collect-supplies' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                >
+                    <LabSupplies
+                        supplies={supplies}
+                        collectedItems={collectedItems}
+                        onCollect={handleCollect}
+                        showSupplies={showSupplies}
+                        title="Lab Supplies - Click to Collect"
+                        description="Collect all the supplies needed to observe transpiration"
+                        onAllCollected={handleAllSuppliesCollected}
+                    />
+                </motion.div>
+            )}
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (
@@ -363,7 +414,11 @@ export function TranspirationLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleStartExperiment} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleStartExperiment} 
+                                    className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold" 
+                                    size="lg"
+                                >
                                     Start Experiment
                                 </Button>
                             </CardFooter>
@@ -371,7 +426,7 @@ export function TranspirationLabEnhanced() {
                     </motion.div>
                 )}
 
-                {(currentStep === 'setup' || currentStep === 'place-bag' || currentStep === 'tie-bag') && (
+                {(currentStep === 'place-bag' || currentStep === 'tie-bag') && (
                     <motion.div
                         key="setup"
                         initial={{ opacity: 0, y: 20 }}
@@ -468,83 +523,6 @@ export function TranspirationLabEnhanced() {
                                 </div>
                             </CardContent>
                         </Card>
-                        
-                        {/* Lab Supplies Drawer */}
-                        {showSupplies && currentStep === 'setup' && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                            >
-                                <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-lg">
-                                            <Sparkles className="h-5 w-5 text-amber-600" />
-                                            Lab Supplies - Click to Collect
-                                            </CardTitle>
-                                        <CardDescription>Click on each item in order to collect them</CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="flex gap-6 justify-center flex-wrap">
-                                            {/* Plastic Bag */}
-                                            {!bagCollected && (
-                                                <motion.div
-                                                    onClick={handleCollectBag}
-                                                    whileHover={{ scale: 1.05, y: -5 }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                    className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-blue-300 dark:border-blue-700 hover:border-blue-500 hover:shadow-xl transition-all"
-                                                >
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        <div className="w-20 h-24 bg-gradient-to-b from-blue-100 to-blue-200 dark:from-blue-900 dark:to-blue-800 rounded-lg border-2 border-blue-300 opacity-60" />
-                                                        <span className="text-sm font-medium">Clear Plastic Bag</span>
-                                                        <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                            
-                                            {/* String */}
-                                            {bagCollected && !stringCollected && (
-                                                <motion.div
-                                                    onClick={handleCollectString}
-                                                    whileHover={{ scale: 1.05, y: -5 }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                    className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-yellow-300 dark:border-yellow-700 hover:border-yellow-500 hover:shadow-xl transition-all"
-                                                >
-                                                    <div className="flex flex-col items-center gap-2">
-                                                        <div className="w-20 h-4 bg-gradient-to-r from-yellow-600 to-yellow-800 rounded-full" />
-                                                        <span className="text-sm font-medium">String</span>
-                                                        <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                            
-                                            {/* Collected Items Display */}
-                                            <div className="w-full mt-4 flex gap-4 justify-center">
-                                                {bagCollected && (
-                                                    <motion.div
-                                                        initial={{ scale: 0 }}
-                                                        animate={{ scale: 1 }}
-                                                        className="flex items-center gap-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full"
-                                                    >
-                                                        <CheckCircle className="h-4 w-4 text-green-600" />
-                                                        <span className="text-sm">Bag Collected</span>
-                                                    </motion.div>
-                                                )}
-                                                {stringCollected && (
-                                                    <motion.div
-                                                        initial={{ scale: 0 }}
-                                                        animate={{ scale: 1 }}
-                                                        className="flex items-center gap-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full"
-                                                    >
-                                                        <CheckCircle className="h-4 w-4 text-green-600" />
-                                                        <span className="text-sm">String Collected</span>
-                                                    </motion.div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )}
                     </motion.div>
                 )}
 
@@ -756,7 +734,11 @@ export function TranspirationLabEnhanced() {
                                 )}
 
                                 {currentStep === 'results' && (
-                                    <Button onClick={handleProceedToQuiz} className="w-full" size="lg">
+                                    <Button 
+                                        onClick={handleProceedToQuiz} 
+                                        className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold" 
+                                        size="lg"
+                                    >
                                         Continue to Quiz
                                     </Button>
                                 )}
@@ -773,10 +755,13 @@ export function TranspirationLabEnhanced() {
                         exit={{ opacity: 0, y: -20 }}
                         id="quiz-section"
                     >
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Post-Lab Quiz</CardTitle>
-                                <CardDescription>Test your understanding of the experiment</CardDescription>
+                        <Card className="border-2 border-blue-300/50 dark:border-blue-700/50 bg-gradient-to-br from-blue-50/80 via-cyan-50/80 to-teal-50/80 dark:from-blue-950/30 dark:via-cyan-950/30 dark:to-teal-950/30 backdrop-blur-sm shadow-lg">
+                            <CardHeader className="relative z-10 bg-gradient-to-r from-blue-100/50 to-cyan-100/50 dark:from-blue-900/30 dark:to-cyan-900/30 border-b border-blue-200/50 dark:border-blue-800/50">
+                                <CardTitle className="flex items-center gap-2">
+                                    <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                    Post-Lab Quiz
+                                </CardTitle>
+                                <CardDescription className="text-blue-900/80 dark:text-blue-100/80">Test your understanding of the experiment</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Question 1 */}
@@ -909,45 +894,107 @@ export function TranspirationLabEnhanced() {
                                     </motion.div>
                                 )}
                             </CardContent>
-                            <CardFooter className="flex flex-col gap-3">
+                            <CardFooter className="relative z-10 flex flex-col gap-3 bg-gradient-to-r from-blue-50/50 to-cyan-50/50 dark:from-blue-950/30 dark:to-cyan-950/30 border-t border-blue-200/50 dark:border-blue-800/50">
                                 {!quizSubmitted && (
                                     <Button 
                                         onClick={handleQuizSubmit}
                                         disabled={!selectedAnswer1 || !selectedAnswer2 || !selectedAnswer3}
-                                        className="w-full"
+                                        className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
                                         size="lg"
                                     >
                                         Submit Quiz
                                     </Button>
-                                )}
-                                {currentStep === 'complete' && (
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="w-full"
-                                    >
-                                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 border-2 border-blue-500 rounded-lg p-6 text-center mb-3">
-                                            <Sparkles className="h-12 w-12 text-blue-600 dark:text-blue-400 mx-auto mb-3" />
-                                            <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 mb-2">
-                                                Lab Complete! 🎉
-                                            </h3>
-                                            <p className="text-blue-700 dark:text-blue-300 mb-3">
-                                                You've mastered transpiration and earned <strong>{xpEarned} XP</strong>!
-                                            </p>
-                                            <p className="text-sm text-muted-foreground">
-                                                You now understand how plants move water and regulate their internal environment.
-                                            </p>
-                                        </div>
-                                        <Button onClick={handleRestart} variant="outline" className="w-full">
-                                            Try Different Conditions
-                                        </Button>
-                                    </motion.div>
                                 )}
                             </CardFooter>
                         </Card>
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Lab Complete Section */}
+            {currentStep === 'complete' && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                >
+                    <motion.div
+                        initial={{ opacity: 0, y: 50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <Card className="border-2 border-blue-300/50 dark:border-blue-700/50 bg-gradient-to-br from-blue-50/95 via-cyan-50/95 to-teal-50/95 dark:from-blue-950/95 dark:via-cyan-950/95 dark:to-teal-950/95 backdrop-blur-md shadow-2xl max-w-2xl w-full mx-4">
+                            <CardContent className="p-8 space-y-6">
+                                <div className="flex flex-col items-center text-center space-y-4">
+                                    <motion.div
+                                        animate={{ 
+                                            rotate: [0, 10, -10, 0],
+                                            scale: [1, 1.1, 1]
+                                        }}
+                                        transition={{ 
+                                            duration: 2,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }}
+                                    >
+                                        <Trophy className="h-20 w-20 text-blue-500 dark:text-blue-400" />
+                                    </motion.div>
+                                    <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 bg-clip-text text-transparent">
+                                        Lab Complete!
+                                    </h2>
+                                    <p className="text-lg text-blue-900/80 dark:text-blue-100/80">
+                                        You've mastered transpiration!
+                                    </p>
+                                </div>
+
+                                <div className="space-y-4 pt-4 border-t border-blue-200 dark:border-blue-800">
+                                    <h3 className="font-semibold text-lg text-blue-900 dark:text-blue-100 flex items-center gap-2">
+                                        <Award className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                        What You've Learned:
+                                    </h3>
+                                    <ul className="space-y-2 text-blue-800 dark:text-blue-200">
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                            <span>Plants release water vapor through stomata in their leaves</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                            <span>Sunlight and wind increase the rate of transpiration</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                            <span>Transpiration helps transport water and nutrients from roots to leaves</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                                            <span>Water droplets in the bag prove transpiration is occurring</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                {xpEarned > 0 && (
+                                    <div className="flex items-center justify-center gap-3 p-4 bg-gradient-to-r from-blue-100/50 to-cyan-100/50 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-lg border border-blue-300/50 dark:border-blue-700/50">
+                                        <Award className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                                        <span className="text-xl font-bold text-blue-900 dark:text-blue-100">
+                                            +{xpEarned} XP Earned!
+                                        </span>
+                                    </div>
+                                )}
+
+                                <Button
+                                    onClick={handleRestart}
+                                    size="lg"
+                                    className="w-full bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 hover:from-blue-700 hover:via-cyan-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 font-semibold"
+                                >
+                                    <RefreshCw className="h-5 w-5 mr-2" />
+                                    Try Different Conditions
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                </motion.div>
+            )}
 
             {showCelebration && (
                 <motion.div
@@ -958,6 +1005,7 @@ export function TranspirationLabEnhanced() {
                     <div className="text-6xl">💧🌿</div>
                 </motion.div>
             )}
+            </div>
         </div>
     );
 }
