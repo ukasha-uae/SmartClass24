@@ -1126,6 +1126,7 @@ export function HeatTransferLabEnhanced() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            </div>
         </div>
     );
 }
