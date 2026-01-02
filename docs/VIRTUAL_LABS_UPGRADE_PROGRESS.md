@@ -130,6 +130,20 @@
     - Full "Lab Complete!" section with XP display
     - Premium quiz section with enhanced styling
     - Status: Complete
+
+15. ✅ **Density & Buoyancy** (`density-buoyancy`)
+    - Premium animated background (purple/blue physics theme with 8 animated orbs)
+    - LabSupplies component integration
+    - **Enhanced beaker visualization** with water animations and shine effects
+    - **Enhanced material drop animations** with rotation and ripples
+    - **Improved floating/sinking visualization** with drop shadows
+    - Student-controlled progression (Continue buttons)
+    - Enhanced material buttons with gradient styling
+    - Better visual feedback for tested materials
+    - Enhanced results section with clear observations
+    - Full "Lab Complete!" section with XP display
+    - Premium quiz section with enhanced styling
+    - Status: Complete
 - ❌ **Other Physics labs** (check `src/lib/virtual-labs-data.ts`)
 
 ### Chemistry Labs
