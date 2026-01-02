@@ -5,10 +5,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from '../ui/button';
 import { Slider } from '../ui/slider';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, Award, Trophy, Sparkles, ArrowDown, BarChart3, CheckCircle, XCircle, Move, Scale, Ruler, GripVertical } from 'lucide-react';
+import { Zap, Award, Trophy, Sparkles, ArrowDown, BarChart3, CheckCircle, XCircle, Move, Scale, Ruler, GripVertical, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -36,13 +37,16 @@ export function WorkEnergyLabEnhanced() {
 
   // Teacher voice
   const [teacherMessage, setTeacherMessage] = React.useState('');
-  const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
 
   // Supplies tracking
-  const [rampCollected, setRampCollected] = React.useState(false);
-  const [massesCollected, setMassesCollected] = React.useState(false);
-  const [rulerCollected, setRulerCollected] = React.useState(false);
-  const [stopwatchCollected, setStopwatchCollected] = React.useState(false);
+  const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+  
+  const labSupplies: SupplyItem[] = [
+    { id: 'ramp', name: 'Inclined Ramp', emoji: '📐', description: 'Ramp for the object to slide down' },
+    { id: 'masses', name: 'Masses', emoji: '⚖️', description: 'Objects of different masses (1-5 kg)' },
+    { id: 'ruler', name: 'Ruler', emoji: '📏', description: 'Measure height accurately' },
+    { id: 'stopwatch', name: 'Stopwatch', emoji: '⏱️', description: 'Measure time of descent' },
+  ];
 
   const { markLabComplete, isLabCompleted } = useLabProgress();
   const labId = 'work-energy';
@@ -62,49 +66,35 @@ export function WorkEnergyLabEnhanced() {
   }, [step]);
 
   const handleStartExperiment = () => {
-    setTeacherMessage("Great! Let's gather our supplies. Start by clicking on the INCLINED RAMP - this is where our object will slide down!");
-    setPendingTransition(() => () => {
-      setStep('collect-supplies');
-    });
+    setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
+    setStep('collect-supplies');
   };
 
   const handleTeacherComplete = () => {
-    if (pendingTransition) {
-      pendingTransition();
-      setPendingTransition(null);
+    // Direct state updates - no pending transitions
+  };
+
+  const handleCollectSupply = (itemId: string) => {
+    if (!collectedSupplies.includes(itemId)) {
+      setCollectedSupplies(prev => {
+        const newCollected = [...prev, itemId];
+        if (newCollected.length === 1) {
+          setTeacherMessage("Perfect! Now click on the MASSES - we'll use different masses to see if mass affects the final speed!");
+        } else if (newCollected.length === 2) {
+          setTeacherMessage("Excellent! Now click on the RULER - we need to measure the height accurately!");
+        } else if (newCollected.length === 3) {
+          setTeacherMessage("Great! Finally, click on the STOPWATCH - we'll measure the time it takes for the object to reach the bottom!");
+        } else if (newCollected.length === 4) {
+          setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
+        }
+        return newCollected;
+      });
+      toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
     }
   };
 
-  const handleCollectRamp = () => {
-    if (!rampCollected) {
-      setRampCollected(true);
-      setTeacherMessage("Perfect! Now click on the MASSES - we'll use different masses to see if mass affects the final speed!");
-      toast({ title: '✅ Ramp Collected' });
-    }
-  };
-
-  const handleCollectMasses = () => {
-    if (rampCollected && !massesCollected) {
-      setMassesCollected(true);
-      setTeacherMessage("Excellent! Now click on the RULER - we need to measure the height accurately!");
-      toast({ title: '✅ Masses Collected' });
-    }
-  };
-
-  const handleCollectRuler = () => {
-    if (massesCollected && !rulerCollected) {
-      setRulerCollected(true);
-      setTeacherMessage("Great! Finally, click on the STOPWATCH - we'll measure the time it takes for the object to reach the bottom!");
-      toast({ title: '✅ Ruler Collected' });
-    }
-  };
-
-  const handleCollectStopwatch = () => {
-    if (rulerCollected && !stopwatchCollected) {
-      setStopwatchCollected(true);
-      setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
-      toast({ title: '✅ Stopwatch Collected' });
-    }
+  const handleAllSuppliesCollected = () => {
+    setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
   };
 
   const handleContinueToSetup = () => {
@@ -272,11 +262,7 @@ export function WorkEnergyLabEnhanced() {
     setQuizAnswers({});
     setShowQuizFeedback(false);
     setQuizScore(0);
-    setRampCollected(false);
-    setMassesCollected(false);
-    setRulerCollected(false);
-    setStopwatchCollected(false);
-    setPendingTransition(null);
+    setCollectedSupplies([]);
     setTeacherMessage("Ready to explore Work & Energy again!");
   };
 
@@ -284,7 +270,35 @@ export function WorkEnergyLabEnhanced() {
   const currentPotentialEnergy = mass * GRAVITY * height * (currentPosition / 100);
 
   return (
-    <div className="max-w-5xl mx-auto p-4 space-y-6">
+    <div className="relative min-h-screen pb-20">
+      {/* Premium Animated Background - Purple/Blue Physics Theme */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30" />
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-gradient-to-br from-purple-200/40 to-blue-300/40 dark:from-purple-800/20 dark:to-blue-900/20 blur-3xl"
+            style={{
+              width: `${200 + i * 50}px`,
+              height: `${200 + i * 50}px`,
+              left: `${(i * 12.5) % 100}%`,
+              top: `${(i * 15) % 100}%`,
+            }}
+            animate={{
+              x: [0, 100, 0],
+              y: [0, 50, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 10 + i * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative max-w-5xl mx-auto p-4 space-y-6">
       <TeacherVoice 
         message={teacherMessage}
         onComplete={handleTeacherComplete}
@@ -300,10 +314,7 @@ export function WorkEnergyLabEnhanced() {
               setMeasurements([]);
               setIsRunning(false);
               setCurrentPosition(100);
-              setRampCollected(false);
-              setMassesCollected(false);
-              setRulerCollected(false);
-              setStopwatchCollected(false);
+              setCollectedSupplies([]);
             },
             icon: 'refresh'
           },
@@ -326,16 +337,20 @@ export function WorkEnergyLabEnhanced() {
         ]}
       />
 
-      <Card className="border-2">
-        <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
-          <CardTitle className="flex items-center gap-2 text-2xl">
-            <Zap className="w-8 h-8 text-purple-600" />
-            Work and Energy - Conservation of Energy
-          </CardTitle>
-          <CardDescription className="text-base">
-            Explore how potential energy converts to kinetic energy
-          </CardDescription>
-        </CardHeader>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
+          <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Zap className="w-8 h-8 text-purple-600" />
+              Work and Energy - Conservation of Energy
+            </CardTitle>
+            <CardDescription className="text-base">
+              Explore how potential energy converts to kinetic energy
+            </CardDescription>
+          </CardHeader>
 
         <CardContent className="p-6">
           <AnimatePresence mode="wait">
@@ -472,7 +487,7 @@ export function WorkEnergyLabEnhanced() {
                 <Button
                   onClick={handleStartExperiment}
                   size="lg"
-                  className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
                   Start Experiment
@@ -488,144 +503,24 @@ export function WorkEnergyLabEnhanced() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
-                <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Sparkles className="h-5 w-5 text-amber-600" />
-                      Lab Supplies - Click to Collect
-                    </CardTitle>
-                    <CardDescription>Click on each item in order to collect them</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex gap-6 justify-center flex-wrap">
-                      {/* Inclined Ramp */}
-                      {!rampCollected && (
-                        <motion.div
-                          onClick={handleCollectRamp}
-                          whileHover={{ scale: 1.05, y: -5 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-purple-400 dark:border-purple-600 hover:border-purple-600 hover:shadow-xl transition-all"
-                        >
-                          <div className="flex flex-col items-center gap-2">
-                            <svg width="80" height="60" viewBox="0 0 80 60" className="text-purple-500">
-                              <path d="M 10 50 L 70 10 L 70 50 Z" fill="currentColor" opacity="0.3" stroke="currentColor" strokeWidth="2"/>
-                              <line x1="10" y1="50" x2="70" y2="50" stroke="currentColor" strokeWidth="3"/>
-                            </svg>
-                            <span className="text-sm font-medium">Inclined Ramp</span>
-                            <span className="text-xs text-muted-foreground">Click to Collect</span>
-                          </div>
-                        </motion.div>
-                      )}
-                      
-                      {/* Masses */}
-                      {rampCollected && !massesCollected && (
-                        <motion.div
-                          onClick={handleCollectMasses}
-                          whileHover={{ scale: 1.05, y: -5 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-blue-400 dark:border-blue-600 hover:border-blue-600 hover:shadow-xl transition-all"
-                        >
-                          <div className="flex flex-col items-center gap-2">
-                            <div className="flex gap-1">
-                              {[0, 1, 2].map((i) => (
-                                <div key={i} className="w-6 h-8 bg-gradient-to-b from-gray-600 to-gray-800 rounded-sm" />
-                              ))}
-                            </div>
-                            <span className="text-sm font-medium">Masses (1-5 kg)</span>
-                            <span className="text-xs text-muted-foreground">Click to Collect</span>
-                          </div>
-                        </motion.div>
-                      )}
-                      
-                      {/* Ruler */}
-                      {massesCollected && !rulerCollected && (
-                        <motion.div
-                          onClick={handleCollectRuler}
-                          whileHover={{ scale: 1.05, y: -5 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-green-400 dark:border-green-600 hover:border-green-600 hover:shadow-xl transition-all"
-                        >
-                          <div className="flex flex-col items-center gap-2">
-                            <Ruler className="w-12 h-12 text-green-600" />
-                            <span className="text-sm font-medium">Ruler (meters)</span>
-                            <span className="text-xs text-muted-foreground">Click to Collect</span>
-                          </div>
-                        </motion.div>
-                      )}
-                      
-                      {/* Stopwatch */}
-                      {rulerCollected && !stopwatchCollected && (
-                        <motion.div
-                          onClick={handleCollectStopwatch}
-                          whileHover={{ scale: 1.05, y: -5 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-red-400 dark:border-red-600 hover:border-red-600 hover:shadow-xl transition-all"
-                        >
-                          <div className="flex flex-col items-center gap-2">
-                            <svg width="48" height="48" viewBox="0 0 48 48" className="text-red-600">
-                              <circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" strokeWidth="2"/>
-                              <line x1="24" y1="24" x2="24" y2="10" stroke="currentColor" strokeWidth="2"/>
-                              <line x1="24" y1="24" x2="34" y2="24" stroke="currentColor" strokeWidth="2"/>
-                            </svg>
-                            <span className="text-sm font-medium">Stopwatch</span>
-                            <span className="text-xs text-muted-foreground">Click to Collect</span>
-                          </div>
-                        </motion.div>
-                      )}
-                      
-                      {/* Collected Items Display */}
-                      <div className="w-full mt-4 flex gap-4 justify-center flex-wrap">
-                        {rampCollected && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="flex items-center gap-2 bg-purple-100 dark:bg-purple-900 px-4 py-2 rounded-full"
-                          >
-                            <CheckCircle className="h-4 w-4 text-purple-600" />
-                            <span className="text-sm">Ramp</span>
-                          </motion.div>
-                        )}
-                        {massesCollected && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-4 py-2 rounded-full"
-                          >
-                            <CheckCircle className="h-4 w-4 text-blue-600" />
-                            <span className="text-sm">Masses</span>
-                          </motion.div>
-                        )}
-                        {rulerCollected && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="flex items-center gap-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full"
-                          >
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            <span className="text-sm">Ruler</span>
-                          </motion.div>
-                        )}
-                        {stopwatchCollected && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="flex items-center gap-2 bg-red-100 dark:bg-red-900 px-4 py-2 rounded-full"
-                          >
-                            <CheckCircle className="h-4 w-4 text-red-600" />
-                            <span className="text-sm">Stopwatch</span>
-                          </motion.div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                  {stopwatchCollected && (
-                    <CardFooter>
-                      <Button onClick={handleContinueToSetup} className="w-full" size="lg">
-                        Continue to Setup
-                      </Button>
-                    </CardFooter>
-                  )}
-                </Card>
+                <LabSupplies
+                  supplies={labSupplies}
+                  collectedItems={collectedSupplies}
+                  onCollect={handleCollectSupply}
+                  onAllCollected={handleAllSuppliesCollected}
+                  requiredCount={4}
+                />
+                {collectedSupplies.length === 4 && (
+                  <CardFooter className="mt-4">
+                    <Button 
+                      onClick={handleContinueToSetup} 
+                      className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg" 
+                      size="lg"
+                    >
+                      Continue to Setup
+                    </Button>
+                  </CardFooter>
+                )}
               </motion.div>
             )}
 
@@ -691,7 +586,7 @@ export function WorkEnergyLabEnhanced() {
                     setTeacherMessage("Now it's time for the experiment! Use the sliders to adjust mass and height. When ready, click 'Release Object' to watch the energy transformation. Try different combinations!");
                   }}
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                 >
                   Begin Measurements
                 </Button>
@@ -766,7 +661,7 @@ export function WorkEnergyLabEnhanced() {
                       <Button
                         onClick={runSimulation}
                         disabled={isRunning}
-                        className="flex-1"
+                        className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg disabled:opacity-50"
                       >
                         <ArrowDown className="w-4 h-4 mr-2" />
                         Release
@@ -775,61 +670,93 @@ export function WorkEnergyLabEnhanced() {
                         onClick={handleReset}
                         variant="outline"
                         disabled={isRunning}
-                        className="flex-1"
+                        className="flex-1 border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20"
                       >
                         Reset
                       </Button>
                     </div>
                   </div>
 
-                  {/* Visualization */}
+                  {/* Enhanced Realistic Visualization */}
                   <div className="space-y-4">
-                    <div className="bg-gradient-to-b from-sky-200 to-green-100 dark:from-sky-900 dark:to-green-900 rounded-lg p-6 h-80 relative overflow-hidden border-2">
-                      {/* Ramp */}
+                    <div className="bg-gradient-to-b from-sky-200 via-blue-100 to-green-100 dark:from-sky-900 dark:via-blue-900 dark:to-green-900 rounded-lg p-6 h-80 relative overflow-hidden border-2 border-purple-200/50 dark:border-purple-800/50 shadow-inner">
+                      {/* Enhanced 3D Ramp */}
                       <svg className="absolute inset-0 w-full h-full" viewBox="0 0 200 200">
+                        <defs>
+                          <linearGradient id="rampGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#9ca3af" stopOpacity="0.9" />
+                            <stop offset="50%" stopColor="#6b7280" stopOpacity="0.8" />
+                            <stop offset="100%" stopColor="#4b5563" stopOpacity="0.9" />
+                          </linearGradient>
+                          <linearGradient id="groundGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stopColor="#86efac" stopOpacity="0.6" />
+                            <stop offset="100%" stopColor="#4ade80" stopOpacity="0.8" />
+                          </linearGradient>
+                          <filter id="shadow">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+                            <feOffset dx="2" dy="2" result="offsetblur" />
+                            <feComponentTransfer>
+                              <feFuncA type="linear" slope="0.3" />
+                            </feComponentTransfer>
+                            <feMerge>
+                              <feMergeNode />
+                              <feMergeNode in="SourceGraphic" />
+                            </feMerge>
+                          </filter>
+                        </defs>
+                        
+                        {/* Ground */}
+                        <rect x="0" y="180" width="200" height="20" fill="url(#groundGradient)" />
+                        <rect x="0" y="180" width="200" height="2" fill="#22c55e" opacity="0.5" />
+                        
+                        {/* 3D Ramp surface */}
+                        <path
+                          d={`M 20 ${200 - 20 - (height * 10)} L 180 180 L 180 190 L 20 ${200 - 10 - (height * 10)} Z`}
+                          fill="url(#rampGradient)"
+                          stroke="#374151"
+                          strokeWidth="1"
+                        />
+                        {/* Ramp top edge highlight */}
                         <line
                           x1="20"
                           y1={200 - 20 - (height * 10)}
                           x2="180"
                           y2="180"
-                          stroke="currentColor"
-                          strokeWidth="3"
-                          className="text-gray-700 dark:text-gray-300"
+                          stroke="#d1d5db"
+                          strokeWidth="2"
                         />
-                        <line
-                          x1="20"
-                          y1="180"
-                          x2="180"
-                          y2="180"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          className="text-gray-800 dark:text-gray-400"
+                        {/* Ramp side shadow */}
+                        <path
+                          d={`M 180 180 L 180 190 L 20 ${200 - 10 - (height * 10)} L 20 ${200 - 20 - (height * 10)} Z`}
+                          fill="#1f2937"
+                          opacity="0.3"
                         />
                         
-                        {/* Height marker */}
+                        {/* Height marker with ruler */}
                         <line
                           x1="15"
                           y1={200 - 20 - (height * 10)}
                           x2="15"
                           y2="180"
-                          stroke="currentColor"
-                          strokeWidth="1"
+                          stroke="#3b82f6"
+                          strokeWidth="2"
                           strokeDasharray="3,3"
-                          className="text-blue-500"
                         />
+                        <rect x="10" y={200 - 20 - (height * 10)} width="10" height="2" fill="#3b82f6" />
+                        <rect x="10" y="178" width="10" height="2" fill="#3b82f6" />
                         <text
                           x="8"
                           y={200 - 20 - (height * 5)}
-                          className="text-xs fill-blue-600 dark:fill-blue-400"
-                          fontSize="10"
+                          className="text-xs fill-blue-600 dark:fill-blue-400 font-bold"
+                          fontSize="11"
                         >
                           {height}m
                         </text>
                       </svg>
 
-                      {/* Object */}
+                      {/* Enhanced 3D Object with shadow */}
                       <motion.div
-                        className="absolute w-12 h-12 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 shadow-lg flex items-center justify-center text-white font-bold border-2 border-red-700"
+                        className="absolute"
                         style={{
                           left: `${20 + (180 - 20) * (1 - currentPosition / 100)}%`,
                           top: `${20 + (height * 10) * (currentPosition / 100)}%`,
@@ -839,7 +766,22 @@ export function WorkEnergyLabEnhanced() {
                         } : {}}
                         transition={{ duration: 2, ease: "easeInOut" }}
                       >
-                        {mass}kg
+                        {/* Shadow */}
+                        <motion.div
+                          className="absolute w-10 h-4 bg-black rounded-full opacity-30 blur-sm"
+                          style={{
+                            left: '50%',
+                            top: '100%',
+                            transform: 'translateX(-50%)',
+                            scale: 1 + (currentPosition / 100) * 0.3,
+                          }}
+                        />
+                        {/* 3D Object */}
+                        <div className="relative w-14 h-14 rounded-lg bg-gradient-to-br from-red-500 via-red-600 to-orange-600 shadow-xl flex items-center justify-center text-white font-bold border-2 border-red-700">
+                          {/* Shine effect */}
+                          <div className="absolute top-1 left-1 w-4 h-4 bg-white/30 rounded-full blur-sm" />
+                          <div className="relative z-10 text-xs">{mass}kg</div>
+                        </div>
                       </motion.div>
 
                       {/* Speed indicator */}
@@ -946,7 +888,7 @@ export function WorkEnergyLabEnhanced() {
                       setTeacherMessage("Fantastic work! You've collected excellent data. Now let's analyze the results. Look at the graph - do you see the relationship between height and final speed? This proves the Law of Conservation of Energy!");
                     }}
                     size="lg"
-                    className="w-full"
+                    className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                   >
                     Analyze Results
                   </Button>
@@ -1115,7 +1057,7 @@ export function WorkEnergyLabEnhanced() {
                     setTeacherMessage("Time to test your understanding! Answer these questions based on what you observed in the experiment. Think about how PE and KE transformed. Good luck!");
                   }}
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                 >
                   Take the Quiz
                 </Button>
@@ -1200,7 +1142,7 @@ export function WorkEnergyLabEnhanced() {
                   <Button
                     onClick={handleQuizSubmit}
                     size="lg"
-                    className="w-full"
+                    className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg disabled:opacity-50"
                     disabled={
                       Object.keys(quizAnswers).length < quizQuestions.length
                     }
@@ -1215,7 +1157,7 @@ export function WorkEnergyLabEnhanced() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="text-center space-y-4"
                   >
-                    <div className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 rounded-lg border-2">
+                    <div className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50">
                       <h3 className="text-2xl font-bold mb-2">
                         Your Score: {quizScore} / {quizQuestions.length}
                       </h3>
@@ -1231,7 +1173,7 @@ export function WorkEnergyLabEnhanced() {
                     <Button
                       onClick={handleComplete}
                       size="lg"
-                      className="w-full"
+                      className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                     >
                       Complete Lab
                     </Button>
@@ -1264,12 +1206,18 @@ export function WorkEnergyLabEnhanced() {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-center gap-2 text-2xl font-bold text-purple-600">
-                  <Award className="w-8 h-8" />
-                  <span>+100 XP</span>
-                </div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-gradient-to-r from-purple-400 to-blue-400 dark:from-purple-600 dark:to-blue-600 p-6 rounded-lg text-center"
+                >
+                  <div className="flex items-center justify-center gap-3 text-3xl font-bold text-white">
+                    <Award className="h-8 w-8" />
+                    +100 XP Earned!
+                  </div>
+                </motion.div>
 
-                <div className="prose dark:prose-invert max-w-none text-left bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 p-6 rounded-lg">
+                <div className="prose dark:prose-invert max-w-none text-left bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 p-6 rounded-lg border-2 border-purple-200/50 dark:border-purple-800/50">
                   <h4 className="text-lg font-semibold mb-3">What You Learned:</h4>
                   <ul className="space-y-2">
                     <li>✓ Energy cannot be created or destroyed, only transformed</li>
@@ -1280,14 +1228,22 @@ export function WorkEnergyLabEnhanced() {
                   </ul>
                 </div>
 
-                <Button onClick={resetLab} size="lg" variant="outline">
-                  Try Again
+                <Button 
+                  onClick={resetLab} 
+                  size="lg" 
+                  variant="outline"
+                  className="border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20"
+                >
+                  <RefreshCw className="h-5 w-5 mr-2" />
+                  Restart Lab
                 </Button>
               </motion.div>
             )}
           </AnimatePresence>
         </CardContent>
       </Card>
+      </motion.div>
+      </div>
     </div>
   );
 }
