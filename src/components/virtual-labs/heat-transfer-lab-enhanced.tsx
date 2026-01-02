@@ -110,6 +110,12 @@ export function HeatTransferLabEnhanced() {
     // Supplies tracking
     const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
     
+    // Computed supply checks (for compatibility)
+    const metalRodCollected = collectedSupplies.includes('metal-rod');
+    const beakerCollected = collectedSupplies.includes('beaker');
+    const heatSourceCollected = collectedSupplies.includes('heat-source');
+    const thermometerCollected = collectedSupplies.includes('thermometer');
+    
     // Experiment state
     const [suppliesReady, setSuppliesReady] = React.useState(false);
     const [conductionTested, setConductionTested] = React.useState(false);
@@ -463,6 +469,7 @@ export function HeatTransferLabEnhanced() {
                     </Accordion>
                 </CardContent>
             </Card>
+            </motion.div>
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (

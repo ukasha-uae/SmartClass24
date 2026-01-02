@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
 interface DataPoint {
     mass: number;
@@ -34,14 +35,9 @@ export function HookesLawLabEnhanced() {
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Supplies tracking
-    const [showSupplies, setShowSupplies] = React.useState(true);
-    const [springCollected, setSpringCollected] = React.useState(false);
-    const [massesCollected, setMassesCollected] = React.useState(false);
-    const [rulerCollected, setRulerCollected] = React.useState(false);
-    const [dataTableCollected, setDataTableCollected] = React.useState(false);
+    const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
     
     // Experiment state
     const [data, setData] = React.useState<DataPoint[]>([]);
@@ -64,11 +60,16 @@ export function HookesLawLabEnhanced() {
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
 
-    // Draggable teacher
-    const [teacherPosition, setTeacherPosition] = React.useState({ x: 0, y: 0 });
-
     const currentExtension = totalMass > 0 ? (totalMass / 1000 * GRAVITY_g) / SPRING_CONSTANT_K : 0;
     const currentForce = totalMass / 1000 * GRAVITY_g;
+
+    // Supplies definition
+    const supplies: SupplyItem[] = [
+        { id: 'spring', name: 'Spring', emoji: '🔩', description: 'For testing Hooke\'s Law' },
+        { id: 'masses', name: 'Masses (50-250g)', emoji: '⚖️', description: 'To apply different forces' },
+        { id: 'ruler', name: 'Ruler', emoji: '📏', description: 'To measure extension' },
+        { id: 'data-table', name: 'Data Table', emoji: '📊', description: 'To record measurements' },
+    ];
 
     // Intro message
     React.useEffect(() => {
@@ -78,46 +79,20 @@ export function HookesLawLabEnhanced() {
     }, [currentStep]);
 
     const handleStartExperiment = () => {
-        setTeacherMessage("Great! Let's gather our supplies. Start by clicking on the SPRING - this is what we'll test!");
-        setPendingTransition(() => () => {
-            setCurrentStep('collect-supplies');
-        });
+        setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
+        setCurrentStep('collect-supplies');
     };
-    
-    const handleCollectSpring = () => {
-        if (!springCollected) {
-            setSpringCollected(true);
-            setTeacherMessage("Perfect! Now click on the MASSES - we'll use these to apply different forces!");
-            toast({ title: '✅ Spring Collected' });
+
+    const handleCollectSupply = (itemId: string) => {
+        if (!collectedSupplies.includes(itemId)) {
+            setCollectedSupplies(prev => [...prev, itemId]);
+            toast({ title: `✅ ${supplies.find(s => s.id === itemId)?.name} Collected` });
         }
     };
-    
-    const handleCollectMasses = () => {
-        if (springCollected && !massesCollected) {
-            setMassesCollected(true);
-            setTeacherMessage("Excellent! Now click on the RULER - we need to measure the extension accurately!");
-            toast({ title: '✅ Masses Collected' });
-        }
-    };
-    
-    const handleCollectRuler = () => {
-        if (massesCollected && !rulerCollected) {
-            setRulerCollected(true);
-            setTeacherMessage("Great! Finally, click on the DATA TABLE - we'll record our measurements!");
-            toast({ title: '✅ Ruler Collected' });
-        }
-    };
-    
-    const handleCollectDataTable = () => {
-        if (rulerCollected && !dataTableCollected) {
-            setDataTableCollected(true);
-            setShowSupplies(false);
-            setTeacherMessage("Perfect! All supplies ready. Now we'll add masses to the spring and measure how far it extends. Let's verify Hooke's Law!");
-            toast({ title: '✅ All Supplies Collected!' });
-            setPendingTransition(() => () => {
-                setCurrentStep('experiment');
-            });
-        }
+
+    const handleAllSuppliesCollected = () => {
+        setTeacherMessage("Perfect! All supplies ready. Now we'll add masses to the spring and measure how far it extends. Let's verify Hooke's Law!");
+        setCurrentStep('experiment');
     };
     
     const handleAddMass = (mass: MassValue) => {
@@ -146,30 +121,18 @@ export function HookesLawLabEnhanced() {
         }, 1500);
     };
     
-    const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
-    };
-
     const handleViewResults = () => {
         if (data.length === 0) {
             toast({ title: 'No Data', description: 'Please add at least one mass first', variant: 'destructive' });
             return;
         }
-        setTeacherMessage("Excellent! You've collected data demonstrating Hooke's Law. Notice how the extension increases linearly with force - the spring constant remains constant! Now test your understanding with the quiz.");
-        setPendingTransition(() => () => {
-            setCurrentStep('results');
-        });
+        setTeacherMessage("Excellent! You've collected data demonstrating Hooke's Law. Notice how the extension increases linearly with force - the spring constant remains constant! Click 'Continue to Quiz' when you're ready to test your understanding!");
+        setCurrentStep('results');
     };
 
     const handleViewQuiz = () => {
         setTeacherMessage("Let's test your understanding of Hooke's Law with these questions!");
-        setPendingTransition(() => () => {
-            setCurrentStep('quiz');
-        });
+        setCurrentStep('quiz');
     };
 
     const handleQuizSubmit = () => {
@@ -200,11 +163,7 @@ export function HookesLawLabEnhanced() {
 
     const handleRestart = () => {
         setCurrentStep('intro');
-        setShowSupplies(true);
-        setSpringCollected(false);
-        setMassesCollected(false);
-        setRulerCollected(false);
-        setDataTableCollected(false);
+        setCollectedSupplies([]);
         setData([]);
         setTotalMass(0);
         setSelectedMass(null);
@@ -214,26 +173,51 @@ export function HookesLawLabEnhanced() {
         setQuizFeedback('');
         setQuizSubmitted(false);
         setShowCelebration(false);
-        setPendingTransition(null);
         setTeacherMessage("Ready to explore Hooke's Law again!");
     };
 
     return (
-        <div className="space-y-6 pb-20">
-            {/* Teacher Voice */}
-            <TeacherVoice 
-                message={teacherMessage}
-                onComplete={handleTeacherComplete}
-                emotion={currentStep === 'complete' ? 'celebrating' : data.length >= 3 ? 'happy' : 'explaining'}
-                context={{
-                    attempts: data.length
-                }}
-                quickActions={[
-                    { label: 'Reset Lab', icon: '🔄', onClick: handleRestart },
-                    { label: 'View Theory', icon: '📖', onClick: () => {} },
-                    { label: 'Safety Tips', icon: '🛡️', onClick: () => {} }
-                ]}
-            />
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Physics Theme (Blue/Indigo) */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/30 dark:via-indigo-950/30 dark:to-purple-950/30" />
+                {Array.from({ length: 8 }).map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-blue-400/20 to-indigo-400/20 dark:from-blue-600/10 dark:to-indigo-600/10 blur-3xl"
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 100, 0],
+                            scale: [1, 1.2, 1],
+                            opacity: [0.3, 0.6, 0.3],
+                        }}
+                        transition={{
+                            duration: 20 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: i * 0.5,
+                        }}
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative space-y-6">
+                {/* Teacher Voice */}
+                <TeacherVoice 
+                    message={teacherMessage}
+                    emotion={currentStep === 'complete' ? 'celebrating' : (data.length >= 3 ? 'happy' : 'explaining')}
+                    quickActions={[
+                        { label: 'Reset Lab', icon: '🔄', onClick: handleRestart },
+                        { label: 'View Theory', icon: '📖', onClick: () => {} },
+                        { label: 'Safety Tips', icon: '🛡️', onClick: () => {} }
+                    ]}
+                />
 
             {isCompleted && (
                 <motion.div
@@ -262,7 +246,7 @@ export function HookesLawLabEnhanced() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
                 >
-                    <Card className="w-full max-w-md mx-4">
+                    <Card className="w-full max-w-md mx-4 border-2 border-yellow-400 bg-gradient-to-br from-yellow-50 to-blue-50 dark:from-yellow-950/30 dark:to-blue-950/30 shadow-2xl">
                         <CardHeader className="text-center">
                             <motion.div
                                 animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
@@ -287,20 +271,35 @@ export function HookesLawLabEnhanced() {
                 </motion.div>
             )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Scale className="h-5 w-5 text-blue-600" />
-                        Hooke's Law Lab
-                    </CardTitle>
-                    <CardDescription>Explore the relationship between force and spring extension</CardDescription>
-                </CardHeader>
-            </Card>
+                {/* Objective Card - Premium Design */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                >
+                    <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-blue-50/80 via-indigo-50/80 to-purple-50/80 dark:from-blue-950/40 dark:via-indigo-950/40 dark:to-purple-950/40 backdrop-blur-sm shadow-xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-xl">
+                                <Scale className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                                Hooke's Law Lab
+                            </CardTitle>
+                            <CardDescription className="text-base">Explore the relationship between force and spring extension</CardDescription>
+                        </CardHeader>
+                    </Card>
+                </motion.div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                </CardHeader>
+                {/* Lab Information Card - Premium Design */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                >
+                    <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <BookOpen className="h-5 w-5 text-blue-600" />
+                                Lab Information
+                            </CardTitle>
+                        </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="theory">
@@ -348,6 +347,7 @@ export function HookesLawLabEnhanced() {
                     </Accordion>
                 </CardContent>
             </Card>
+            </motion.div>
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (
@@ -357,10 +357,10 @@ export function HookesLawLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle>Welcome to Hooke's Law Lab!</CardTitle>
-                                <CardDescription>Discover the linear relationship between force and spring extension</CardDescription>
+                                <CardTitle className="text-xl">Welcome to Hooke's Law Lab!</CardTitle>
+                                <CardDescription className="text-base">Discover the linear relationship between force and spring extension</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
@@ -380,7 +380,11 @@ export function HookesLawLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleStartExperiment} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleStartExperiment} 
+                                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg" 
+                                    size="lg"
+                                >
                                     Start Experiment
                                 </Button>
                             </CardFooter>
@@ -395,140 +399,13 @@ export function HookesLawLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-lg">
-                                    <Sparkles className="h-5 w-5 text-amber-600" />
-                                    Lab Supplies - Click to Collect
-                                </CardTitle>
-                                <CardDescription>Click on each item in order to collect them</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex gap-6 justify-center flex-wrap">
-                                    {/* Spring */}
-                                    {!springCollected && (
-                                        <motion.div
-                                            onClick={handleCollectSpring}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-blue-400 dark:border-blue-600 hover:border-blue-600 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <svg width="48" height="80" viewBox="0 0 48 80" className="text-blue-500">
-                                                    <path d="M 24 0 C 16 8, 32 8, 24 16 C 16 24, 32 24, 24 32 C 16 40, 32 40, 24 48 C 16 56, 32 56, 24 64 M 24 64 L 24 80" stroke="currentColor" fill="none" strokeWidth="2"/>
-                                                </svg>
-                                                <span className="text-sm font-medium">Spring</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Masses */}
-                                    {springCollected && !massesCollected && (
-                                        <motion.div
-                                            onClick={handleCollectMasses}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-amber-400 dark:border-amber-600 hover:border-amber-600 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="flex gap-1">
-                                                    {[0, 1, 2].map((i) => (
-                                                        <div key={i} className="w-6 h-8 bg-gradient-to-b from-gray-600 to-gray-800 rounded-sm" />
-                                                    ))}
-                                                </div>
-                                                <span className="text-sm font-medium">Masses (50-250g)</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Ruler */}
-                                    {massesCollected && !rulerCollected && (
-                                        <motion.div
-                                            onClick={handleCollectRuler}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-green-400 dark:border-green-600 hover:border-green-600 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="w-32 h-4 bg-yellow-100 border-2 border-yellow-800 rounded flex">
-                                                    {Array.from({ length: 16 }).map((_, i) => (
-                                                        <div key={i} className={cn("flex-1 border-r border-yellow-800", i % 4 === 0 && "h-full", i % 4 !== 0 && "h-2/3")} />
-                                                    ))}
-                                                </div>
-                                                <span className="text-sm font-medium">Ruler (cm)</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Data Table */}
-                                    {rulerCollected && !dataTableCollected && (
-                                        <motion.div
-                                            onClick={handleCollectDataTable}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-purple-400 dark:border-purple-600 hover:border-purple-600 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <div className="w-24 space-y-1">
-                                                    {Array.from({ length: 3 }).map((_, i) => (
-                                                        <div key={i} className="w-full h-3 bg-purple-200 rounded-sm" />
-                                                    ))}
-                                                </div>
-                                                <span className="text-sm font-medium">Data Table</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Collected Items Display */}
-                                    <div className="w-full mt-4 flex gap-4 justify-center flex-wrap">
-                                        {springCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-blue-600" />
-                                                <span className="text-sm">Spring</span>
-                                            </motion.div>
-                                        )}
-                                        {massesCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-amber-100 dark:bg-amber-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-amber-600" />
-                                                <span className="text-sm">Masses</span>
-                                            </motion.div>
-                                        )}
-                                        {rulerCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                                <span className="text-sm">Ruler</span>
-                                            </motion.div>
-                                        )}
-                                        {dataTableCollected && (
-                                            <motion.div
-                                                initial={{ scale: 0 }}
-                                                animate={{ scale: 1 }}
-                                                className="flex items-center gap-2 bg-purple-100 dark:bg-purple-900 px-4 py-2 rounded-full"
-                                            >
-                                                <CheckCircle className="h-4 w-4 text-purple-600" />
-                                                <span className="text-sm">Data Table</span>
-                                            </motion.div>
-                                        )}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <LabSupplies
+                            supplies={supplies}
+                            collectedItems={collectedSupplies}
+                            onCollect={handleCollectSupply}
+                            onAllCollected={handleAllSuppliesCollected}
+                            showSupplies={true}
+                        />
                     </motion.div>
                 )}
 
@@ -539,13 +416,13 @@ export function HookesLawLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Move className="h-5 w-5 text-blue-600" />
+                                <CardTitle className="flex items-center gap-2 text-xl">
+                                    <Move className="h-6 w-6 text-blue-600" />
                                     Experiment: Add Masses to Spring
                                 </CardTitle>
-                                <CardDescription>Click each mass to add it to the spring and record the extension</CardDescription>
+                                <CardDescription className="text-base">Click each mass to add it to the spring and record the extension</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -573,7 +450,7 @@ export function HookesLawLabEnhanced() {
                                         <Button 
                                             onClick={() => selectedMass && handleAddMass(selectedMass)}
                                             disabled={!selectedMass || isSimulating || totalMass + (selectedMass || 0) > 250}
-                                            className="w-full"
+                                            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg disabled:opacity-50"
                                         >
                                             {isSimulating ? 'Adding...' : 'Add Selected Mass'}
                                         </Button>
@@ -736,10 +613,15 @@ export function HookesLawLabEnhanced() {
                                 )}
                             </CardContent>
                             <CardFooter className="flex gap-3">
-                                <Button onClick={handleViewResults} disabled={data.length === 0} className="flex-1">
+                                <Button 
+                                    onClick={handleViewResults} 
+                                    disabled={data.length === 0} 
+                                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg disabled:opacity-50"
+                                    size="lg"
+                                >
                                     View Results
                                 </Button>
-                                <Button onClick={handleRestart} variant="outline">
+                                <Button onClick={handleRestart} variant="outline" size="lg">
                                     Reset
                                 </Button>
                             </CardFooter>
@@ -754,13 +636,13 @@ export function HookesLawLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <CheckCircle className="h-5 w-5 text-blue-600" />
+                                <CardTitle className="flex items-center gap-2 text-xl">
+                                    <CheckCircle className="h-6 w-6 text-blue-600" />
                                     Experiment Results & Analysis
                                 </CardTitle>
-                                <CardDescription>Summary of your Hooke's Law verification</CardDescription>
+                                <CardDescription className="text-base">Summary of your Hooke's Law verification</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
@@ -801,8 +683,12 @@ export function HookesLawLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleViewQuiz} className="w-full" size="lg">
-                                    Take the Quiz
+                                <Button 
+                                    onClick={handleViewQuiz} 
+                                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg" 
+                                    size="lg"
+                                >
+                                    Continue to Quiz
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -816,10 +702,10 @@ export function HookesLawLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle>Knowledge Check</CardTitle>
-                                <CardDescription>Test your understanding of Hooke's Law</CardDescription>
+                                <CardTitle className="text-xl">Knowledge Check</CardTitle>
+                                <CardDescription className="text-base">Test your understanding of Hooke's Law</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Question 1 */}
@@ -964,7 +850,7 @@ export function HookesLawLabEnhanced() {
                                 <Button 
                                     onClick={handleQuizSubmit} 
                                     disabled={!quizAnswer || !quizAnswer2 || !quizAnswer3 || quizSubmitted}
-                                    className="flex-1"
+                                    className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg disabled:opacity-50"
                                     size="lg"
                                 >
                                     Submit Answers
@@ -992,20 +878,24 @@ export function HookesLawLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
+                        <Card className="border-2 border-yellow-400/50 dark:border-yellow-600/50 bg-gradient-to-br from-yellow-50/90 via-blue-50/90 to-indigo-50/90 dark:from-yellow-950/40 dark:via-blue-950/40 dark:to-indigo-950/40 backdrop-blur-sm shadow-2xl">
                             <CardHeader className="text-center">
                                 <motion.div
                                     animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
                                     transition={{ duration: 0.5 }}
                                     className="flex justify-center mb-4"
                                 >
-                                    <Trophy className="h-16 w-16 text-yellow-500" />
+                                    <Trophy className="h-20 w-20 text-yellow-500" />
                                 </motion.div>
-                                <CardTitle>Lab Complete!</CardTitle>
-                                <CardDescription>You've mastered Hooke's Law!</CardDescription>
+                                <CardTitle className="text-2xl">Lab Complete!</CardTitle>
+                                <CardDescription className="text-base">You've mastered Hooke's Law!</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
+                                    <div className="flex items-center justify-center gap-2 mb-4">
+                                        <Award className="h-8 w-8 text-blue-600" />
+                                        <span className="text-2xl font-bold text-blue-600">+{xpEarned} XP</span>
+                                    </div>
                                     <h3 className="font-semibold text-center text-lg mb-4">What You've Learned:</h3>
                                     <ul className="space-y-2 text-sm">
                                         <li className="flex items-start gap-2">
@@ -1028,7 +918,13 @@ export function HookesLawLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleRestart} 
+                                    variant="outline" 
+                                    className="w-full border-2 bg-white/50 hover:bg-white/80 dark:bg-gray-900/50 dark:hover:bg-gray-900/80" 
+                                    size="lg"
+                                >
+                                    <RefreshCw className="h-4 w-4 mr-2" />
                                     Restart Lab
                                 </Button>
                             </CardFooter>
@@ -1036,6 +932,7 @@ export function HookesLawLabEnhanced() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            </div>
         </div>
     );
 }
