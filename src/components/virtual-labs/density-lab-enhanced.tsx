@@ -584,8 +584,8 @@ export function DensityLabEnhanced() {
                                                     className={cn(
                                                         "w-full border-2 transition-all",
                                                         testedMaterials.includes(material.id)
-                                                            ? "bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border-green-400 text-green-700 dark:text-green-300"
-                                                            : "bg-gradient-to-r from-white to-purple-50 dark:from-gray-800 dark:to-purple-950/30 border-purple-300 dark:border-purple-700 hover:border-purple-500 hover:shadow-md"
+                                                            ? "bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border-green-400 text-green-700 dark:text-green-300 hover:text-green-800 dark:hover:text-green-200"
+                                                            : "bg-gradient-to-r from-white to-purple-50 dark:from-gray-800 dark:to-purple-950/30 border-purple-300 dark:border-purple-700 hover:border-purple-500 hover:shadow-md text-gray-900 dark:text-gray-100 hover:text-gray-900 dark:hover:text-gray-100"
                                                     )}
                                                     variant={testedMaterials.includes(material.id) ? "secondary" : "outline"}
                                                 >
