@@ -26,7 +26,6 @@ export function RefractionLabEnhanced() {
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Experiment state
     const [incidentAngle, setIncidentAngle] = React.useState(30);
@@ -66,9 +65,7 @@ export function RefractionLabEnhanced() {
 
     const handleStartExperiment = () => {
         setTeacherMessage("Perfect! Let's set up our refraction apparatus. You'll see how light bends as it enters different materials!");
-        setPendingTransition(() => () => {
-            setCurrentStep('setup');
-        });
+        setCurrentStep('setup');
     };
 
     const handleTakeMeasurement = () => {
@@ -96,11 +93,7 @@ export function RefractionLabEnhanced() {
     };
 
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // Direct state updates - no pending transitions
     };
 
     const handleViewResults = () => {
@@ -113,16 +106,12 @@ export function RefractionLabEnhanced() {
             return;
         }
         setTeacherMessage("Perfect data! Let's analyze how light bends according to Snell's Law!");
-        setPendingTransition(() => () => {
-            setCurrentStep('results');
-        });
+        setCurrentStep('results');
     };
 
     const handleViewQuiz = () => {
         setTeacherMessage("Time to test your understanding of refraction!");
-        setPendingTransition(() => () => {
-            setCurrentStep('quiz');
-        });
+        setCurrentStep('quiz');
     };
 
     const handleQuizSubmit = () => {
@@ -201,7 +190,6 @@ export function RefractionLabEnhanced() {
         setQuizFeedback('');
         setQuizSubmitted(false);
         setShowCelebration(false);
-        setPendingTransition(null);
         setTeacherMessage("Ready to explore refraction again!");
     };
 
@@ -223,7 +211,35 @@ export function RefractionLabEnhanced() {
     };
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Blue/Cyan Physics Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-50 dark:from-blue-950/30 dark:via-cyan-950/30 dark:to-indigo-950/30" />
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-blue-200/40 to-cyan-300/40 dark:from-blue-800/20 dark:to-cyan-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative space-y-6">
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
@@ -288,7 +304,7 @@ export function RefractionLabEnhanced() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
                 >
-                    <Card className="w-full max-w-md mx-4">
+                    <Card className="w-full max-w-md mx-4 border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/95 to-blue-50/95 dark:from-gray-900/95 dark:to-blue-950/95 backdrop-blur-sm shadow-2xl">
                         <CardHeader className="text-center">
                             <motion.div
                                 animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
@@ -298,11 +314,11 @@ export function RefractionLabEnhanced() {
                                 <Trophy className="h-20 w-20 text-yellow-500" />
                             </motion.div>
                             <CardTitle className="text-2xl">Congratulations!</CardTitle>
-                            <CardDescription>You've mastered refraction!</CardDescription>
+                            <CardDescription className="text-base">You've mastered refraction!</CardDescription>
                         </CardHeader>
                         <CardContent className="text-center space-y-4">
-                            <div className="flex items-center justify-center gap-2 text-3xl font-bold text-blue-600">
-                                <Award className="h-8 w-8" />
+                            <div className="flex items-center justify-center gap-2 text-3xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                                <Award className="h-8 w-8 text-blue-500" />
                                 +{xpEarned} XP
                             </div>
                             <p className="text-sm text-muted-foreground">
@@ -313,20 +329,30 @@ export function RefractionLabEnhanced() {
                 </motion.div>
             )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Waves className="h-5 w-5 text-blue-600" />
-                        Refraction of Light Lab
-                    </CardTitle>
-                    <CardDescription>Investigate how light bends when passing through different media</CardDescription>
-                </CardHeader>
-            </Card>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-xl">
+                            <Waves className="h-6 w-6 text-blue-600" />
+                            Refraction of Light Lab
+                        </CardTitle>
+                        <CardDescription className="text-base">Investigate how light bends when passing through different media</CardDescription>
+                    </CardHeader>
+                </Card>
+            </motion.div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                </CardHeader>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
+                    <CardHeader>
+                        <CardTitle className="text-lg">Lab Information</CardTitle>
+                    </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="theory">
@@ -377,6 +403,7 @@ export function RefractionLabEnhanced() {
                     </Accordion>
                 </CardContent>
             </Card>
+            </motion.div>
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (
@@ -386,10 +413,10 @@ export function RefractionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle>Welcome to Refraction Lab!</CardTitle>
-                                <CardDescription>Discover how light bends through different materials</CardDescription>
+                                <CardTitle className="text-xl">Welcome to Refraction Lab!</CardTitle>
+                                <CardDescription className="text-base">Discover how light bends through different materials</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
@@ -409,7 +436,11 @@ export function RefractionLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleStartExperiment} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleStartExperiment} 
+                                    className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
                                     Start Experiment
                                 </Button>
                             </CardFooter>
@@ -425,13 +456,13 @@ export function RefractionLabEnhanced() {
                         exit={{ opacity: 0, y: -20 }}
                         className="space-y-6"
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Lightbulb className="h-5 w-5 text-blue-600" />
+                                <CardTitle className="flex items-center gap-2 text-xl">
+                                    <Lightbulb className="h-6 w-6 text-blue-600" />
                                     Refraction Apparatus
                                 </CardTitle>
-                                <CardDescription>Measurements taken: {measurements.length}/3</CardDescription>
+                                <CardDescription className="text-base">Measurements taken: {measurements.length}/3</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Medium Selection */}
@@ -441,7 +472,10 @@ export function RefractionLabEnhanced() {
                                         <Button
                                             variant={medium === 'air-to-glass' ? 'default' : 'outline'}
                                             onClick={() => setMedium('air-to-glass')}
-                                            className="h-auto py-4"
+                                            className={cn(
+                                                "h-auto py-4",
+                                                medium === 'air-to-glass' && "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                                            )}
                                         >
                                             <div className="text-center">
                                                 <div className="font-semibold">Glass Block</div>
@@ -451,7 +485,10 @@ export function RefractionLabEnhanced() {
                                         <Button
                                             variant={medium === 'air-to-water' ? 'default' : 'outline'}
                                             onClick={() => setMedium('air-to-water')}
-                                            className="h-auto py-4"
+                                            className={cn(
+                                                "h-auto py-4",
+                                                medium === 'air-to-water' && "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                                            )}
                                         >
                                             <div className="text-center">
                                                 <div className="font-semibold">Water</div>
@@ -484,27 +521,91 @@ export function RefractionLabEnhanced() {
                                     </div>
                                 </div>
 
-                                {/* Visual Ray Diagram */}
-                                <div className="bg-gradient-to-b from-blue-50 to-blue-100 dark:from-gray-900 dark:to-blue-950/20 p-4 rounded-lg border-2 border-blue-200 dark:border-blue-700">
+                                {/* Enhanced Realistic Visual Ray Diagram */}
+                                <div className="bg-gradient-to-b from-slate-100 via-blue-50 to-slate-100 dark:from-slate-950 dark:via-gray-900 dark:to-slate-950 p-6 rounded-lg border-2 border-blue-200/50 dark:border-blue-800/50 shadow-inner">
                                     <svg width={width} height={height} className="w-full h-auto">
-                                        {/* Air region (top) */}
-                                        <rect x={0} y={0} width={width} height={boundary} fill="url(#airGradient)" />
-                                        <text x={10} y={20} fill="gray" fontSize="12" fontWeight="bold">AIR (n=1.0)</text>
+                                        {/* Background grid */}
+                                        <defs>
+                                            <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,0,0,0.05)" strokeWidth="1" />
+                                            </pattern>
+                                            <filter id="glow">
+                                                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                                                <feMerge>
+                                                    <feMergeNode in="coloredBlur"/>
+                                                    <feMergeNode in="SourceGraphic"/>
+                                                </feMerge>
+                                            </filter>
+                                            <filter id="rayGlow">
+                                                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                                <feMerge>
+                                                    <feMergeNode in="coloredBlur"/>
+                                                    <feMergeNode in="SourceGraphic"/>
+                                                </feMerge>
+                                            </filter>
+                                        </defs>
+                                        <rect width={width} height={height} fill="url(#grid)" opacity="0.3" />
                                         
-                                        {/* Medium region (bottom) */}
+                                        {/* Enhanced Air region (top) with depth */}
+                                        <rect x={0} y={0} width={width} height={boundary} fill="url(#airGradient)" />
+                                        <rect x={0} y={0} width={width} height={boundary} fill="url(#airShine)" opacity="0.3" />
+                                        <text x={10} y={20} fill="#1e40af" fontSize="13" fontWeight="bold" stroke="white" strokeWidth="0.5">AIR (n=1.0)</text>
+                                        
+                                        {/* Enhanced Medium region (bottom) with realistic appearance */}
                                         <rect x={0} y={boundary} width={width} height={height - boundary} fill={medium === 'air-to-glass' ? "url(#glassGradient)" : "url(#waterGradient)"} />
-                                        <text x={10} y={boundary + 25} fill="white" fontSize="12" fontWeight="bold">
+                                        {/* Medium depth effect */}
+                                        <rect x={0} y={boundary} width={width} height={height - boundary} fill={medium === 'air-to-glass' ? "url(#glassShine)" : "url(#waterShine)"} opacity="0.4" />
+                                        {/* Medium texture */}
+                                        {medium === 'air-to-water' && (
+                                            <>
+                                                {[...Array(15)].map((_, i) => (
+                                                    <motion.circle
+                                                        key={i}
+                                                        cx={20 + (i % 5) * 80}
+                                                        cy={boundary + 30 + Math.floor(i / 5) * 40}
+                                                        r="2"
+                                                        fill="rgba(255,255,255,0.2)"
+                                                        animate={{
+                                                            cy: [boundary + 30 + Math.floor(i / 5) * 40, boundary + 50 + Math.floor(i / 5) * 40, boundary + 30 + Math.floor(i / 5) * 40],
+                                                        }}
+                                                        transition={{
+                                                            duration: 3 + Math.random() * 2,
+                                                            repeat: Infinity,
+                                                            ease: "easeInOut",
+                                                            delay: i * 0.1,
+                                                        }}
+                                                    />
+                                                ))}
+                                            </>
+                                        )}
+                                        <text x={10} y={boundary + 25} fill="white" fontSize="13" fontWeight="bold" stroke="#1e40af" strokeWidth="0.5">
                                             {medium === 'air-to-glass' ? 'GLASS (n=1.5)' : 'WATER (n=1.33)'}
                                         </text>
                                         
-                                        {/* Boundary line */}
+                                        {/* Enhanced Boundary line with 3D effect */}
                                         <line
                                             x1={0}
                                             y1={boundary}
                                             x2={width}
                                             y2={boundary}
-                                            stroke="black"
-                                            strokeWidth="3"
+                                            stroke="rgba(0,0,0,0.4)"
+                                            strokeWidth="4"
+                                        />
+                                        <line
+                                            x1={0}
+                                            y1={boundary}
+                                            x2={width}
+                                            y2={boundary}
+                                            stroke="rgba(255,255,255,0.6)"
+                                            strokeWidth="2"
+                                        />
+                                        <line
+                                            x1={0}
+                                            y1={boundary}
+                                            x2={width}
+                                            y2={boundary}
+                                            stroke="rgba(0,0,0,0.2)"
+                                            strokeWidth="1"
                                             strokeDasharray="8,4"
                                         />
                                         
@@ -521,47 +622,102 @@ export function RefractionLabEnhanced() {
                                             />
                                         )}
                                         
-                                        {/* Incident ray */}
+                                        {/* Enhanced Incident ray with glow */}
+                                        <motion.line
+                                            x1={incidentStart.x}
+                                            y1={incidentStart.y}
+                                            x2={width / 2}
+                                            y2={boundary}
+                                            stroke="#ff6b6b"
+                                            strokeWidth="8"
+                                            opacity="0.3"
+                                            filter="url(#glow)"
+                                            initial={{ pathLength: 0 }}
+                                            animate={{ pathLength: 1 }}
+                                            transition={{ duration: 0.8 }}
+                                        />
                                         <motion.line
                                             x1={incidentStart.x}
                                             y1={incidentStart.y}
                                             x2={width / 2}
                                             y2={boundary}
                                             stroke="#ef4444"
-                                            strokeWidth="3"
+                                            strokeWidth="4"
+                                            filter="url(#rayGlow)"
+                                            initial={{ pathLength: 0, opacity: 0 }}
+                                            animate={{ pathLength: 1, opacity: 1 }}
+                                            transition={{ duration: 0.8 }}
+                                        />
+                                        {/* Enhanced Light source */}
+                                        <motion.g
+                                            initial={{ scale: 0, opacity: 0 }}
+                                            animate={{ scale: [0, 1.2, 1], opacity: 1 }}
+                                            transition={{ duration: 0.5, delay: 0.3 }}
+                                        >
+                                            <circle
+                                                cx={incidentStart.x}
+                                                cy={incidentStart.y}
+                                                r="12"
+                                                fill="url(#lightSourceGradient)"
+                                                filter="url(#glow)"
+                                            />
+                                            <circle
+                                                cx={incidentStart.x}
+                                                cy={incidentStart.y}
+                                                r="8"
+                                                fill="#ff4444"
+                                            />
+                                            <circle
+                                                cx={incidentStart.x - 2}
+                                                cy={incidentStart.y - 2}
+                                                r="3"
+                                                fill="white"
+                                                opacity="0.9"
+                                            />
+                                        </motion.g>
+                                        
+                                        {/* Enhanced Refracted ray with glow */}
+                                        <motion.line
+                                            x1={width / 2}
+                                            y1={boundary}
+                                            x2={refractedEnd.x}
+                                            y2={refractedEnd.y}
+                                            stroke="#60a5fa"
+                                            strokeWidth="8"
+                                            opacity="0.3"
+                                            filter="url(#glow)"
                                             initial={{ pathLength: 0 }}
                                             animate={{ pathLength: 1 }}
-                                            transition={{ duration: 0.5 }}
+                                            transition={{ duration: 0.8, delay: 0.3 }}
                                         />
-                                        <motion.circle
-                                            cx={incidentStart.x}
-                                            cy={incidentStart.y}
-                                            r="6"
-                                            fill="#ef4444"
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: [0, 1.2, 1] }}
-                                            transition={{ duration: 0.5, delay: 0.3 }}
-                                        />
-                                        
-                                        {/* Refracted ray */}
                                         <motion.line
                                             x1={width / 2}
                                             y1={boundary}
                                             x2={refractedEnd.x}
                                             y2={refractedEnd.y}
                                             stroke="#3b82f6"
-                                            strokeWidth="3"
-                                            initial={{ pathLength: 0 }}
-                                            animate={{ pathLength: 1 }}
-                                            transition={{ duration: 0.5, delay: 0.5 }}
+                                            strokeWidth="4"
+                                            filter="url(#rayGlow)"
+                                            initial={{ pathLength: 0, opacity: 0 }}
+                                            animate={{ pathLength: 1, opacity: 1 }}
+                                            transition={{ duration: 0.8, delay: 0.3 }}
                                         />
-                                        <motion.polygon
-                                            points={`${refractedEnd.x},${refractedEnd.y} ${refractedEnd.x - 8},${refractedEnd.y - 10} ${refractedEnd.x + 8},${refractedEnd.y - 10}`}
-                                            fill="#3b82f6"
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: [0, 1.2, 1] }}
-                                            transition={{ duration: 0.5, delay: 0.8 }}
-                                        />
+                                        {/* Enhanced Refracted ray arrow */}
+                                        <motion.g
+                                            initial={{ scale: 0, opacity: 0 }}
+                                            animate={{ scale: [0, 1.2, 1], opacity: 1 }}
+                                            transition={{ duration: 0.5, delay: 1.1 }}
+                                        >
+                                            <polygon
+                                                points={`${refractedEnd.x},${refractedEnd.y} ${refractedEnd.x - 10},${refractedEnd.y - 12} ${refractedEnd.x + 10},${refractedEnd.y - 12}`}
+                                                fill="#3b82f6"
+                                                filter="url(#glow)"
+                                            />
+                                            <polygon
+                                                points={`${refractedEnd.x},${refractedEnd.y} ${refractedEnd.x - 6},${refractedEnd.y - 8} ${refractedEnd.x + 6},${refractedEnd.y - 8}`}
+                                                fill="#60a5fa"
+                                            />
+                                        </motion.g>
                                         
                                         {/* Angle arcs */}
                                         {showAngles && (
@@ -602,23 +758,61 @@ export function RefractionLabEnhanced() {
                                             </>
                                         )}
                                         
-                                        {/* Refraction point */}
-                                        <circle cx={width / 2} cy={boundary} r="5" fill="yellow" />
+                                        {/* Enhanced Refraction point with pulsing glow */}
+                                        <motion.circle
+                                            cx={width / 2}
+                                            cy={boundary}
+                                            r="8"
+                                            fill="yellow"
+                                            filter="url(#glow)"
+                                            animate={{
+                                                scale: [1, 1.3, 1],
+                                                opacity: [0.8, 1, 0.8],
+                                            }}
+                                            transition={{
+                                                duration: 1.5,
+                                                repeat: Infinity,
+                                                ease: "easeInOut",
+                                            }}
+                                        />
+                                        <circle cx={width / 2} cy={boundary} r="5" fill="#ffd700" />
                                         
-                                        {/* Gradient definitions */}
+                                        {/* Enhanced Gradient definitions */}
                                         <defs>
                                             <linearGradient id="airGradient" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stopColor="#E0F2FE" />
-                                                <stop offset="100%" stopColor="#BAE6FD" />
+                                                <stop offset="0%" stopColor="#E0F2FE" stopOpacity="0.95" />
+                                                <stop offset="50%" stopColor="#BAE6FD" stopOpacity="0.9" />
+                                                <stop offset="100%" stopColor="#93C5FD" stopOpacity="0.85" />
+                                            </linearGradient>
+                                            <linearGradient id="airShine" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stopColor="white" stopOpacity="0.4" />
+                                                <stop offset="100%" stopColor="white" stopOpacity="0" />
                                             </linearGradient>
                                             <linearGradient id="glassGradient" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stopColor="#1e3a8a" stopOpacity="0.6" />
-                                                <stop offset="100%" stopColor="#1e40af" stopOpacity="0.8" />
+                                                <stop offset="0%" stopColor="#1e3a8a" stopOpacity="0.7" />
+                                                <stop offset="50%" stopColor="#1e40af" stopOpacity="0.8" />
+                                                <stop offset="100%" stopColor="#1e3a8a" stopOpacity="0.9" />
+                                            </linearGradient>
+                                            <linearGradient id="glassShine" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stopColor="rgba(255,255,255,0.3)" />
+                                                <stop offset="50%" stopColor="rgba(255,255,255,0.1)" />
+                                                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
                                             </linearGradient>
                                             <linearGradient id="waterGradient" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.6" />
-                                                <stop offset="100%" stopColor="#0284c7" stopOpacity="0.8" />
+                                                <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.7" />
+                                                <stop offset="50%" stopColor="#0284c7" stopOpacity="0.8" />
+                                                <stop offset="100%" stopColor="#0369a1" stopOpacity="0.9" />
                                             </linearGradient>
+                                            <linearGradient id="waterShine" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stopColor="rgba(255,255,255,0.4)" />
+                                                <stop offset="50%" stopColor="rgba(255,255,255,0.2)" />
+                                                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                                            </linearGradient>
+                                            <radialGradient id="lightSourceGradient">
+                                                <stop offset="0%" stopColor="#ff8888" stopOpacity="1" />
+                                                <stop offset="50%" stopColor="#ff4444" stopOpacity="0.8" />
+                                                <stop offset="100%" stopColor="#cc0000" stopOpacity="0.4" />
+                                            </radialGradient>
                                         </defs>
                                     </svg>
                                     
@@ -657,7 +851,10 @@ export function RefractionLabEnhanced() {
                                         variant={showNormal ? 'default' : 'outline'}
                                         size="sm"
                                         onClick={() => setShowNormal(!showNormal)}
-                                        className="flex-1"
+                                        className={cn(
+                                            "flex-1",
+                                            showNormal && "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                                        )}
                                     >
                                         {showNormal ? 'Hide' : 'Show'} Normal
                                     </Button>
@@ -665,7 +862,10 @@ export function RefractionLabEnhanced() {
                                         variant={showAngles ? 'default' : 'outline'}
                                         size="sm"
                                         onClick={() => setShowAngles(!showAngles)}
-                                        className="flex-1"
+                                        className={cn(
+                                            "flex-1",
+                                            showAngles && "bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                                        )}
                                     >
                                         {showAngles ? 'Hide' : 'Show'} Angles
                                     </Button>
@@ -674,7 +874,7 @@ export function RefractionLabEnhanced() {
                                 {/* Measurement Button */}
                                 <Button 
                                     onClick={handleTakeMeasurement}
-                                    className="w-full"
+                                    className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg"
                                     size="lg"
                                 >
                                     <Ruler className="h-5 w-5 mr-2" />
@@ -714,8 +914,7 @@ export function RefractionLabEnhanced() {
                                 <Button 
                                     onClick={handleViewResults} 
                                     disabled={measurements.length < 3}
-                                    variant="outline"
-                                    className="w-full"
+                                    className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     size="lg"
                                 >
                                     View Results ({measurements.length}/3 measurements)
@@ -732,13 +931,13 @@ export function RefractionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <CheckCircle className="h-5 w-5 text-blue-600" />
+                                <CardTitle className="flex items-center gap-2 text-xl">
+                                    <CheckCircle className="h-6 w-6 text-blue-600" />
                                     Analysis & Results
                                 </CardTitle>
-                                <CardDescription>Verification of Snell's Law</CardDescription>
+                                <CardDescription className="text-base">Verification of Snell's Law</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Results Summary */}
@@ -799,7 +998,11 @@ export function RefractionLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleViewQuiz} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleViewQuiz} 
+                                    className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
                                     Take the Quiz
                                 </Button>
                             </CardFooter>
@@ -814,10 +1017,10 @@ export function RefractionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle>Knowledge Check</CardTitle>
-                                <CardDescription>Test your understanding of refraction</CardDescription>
+                                <CardTitle className="text-xl">Knowledge Check</CardTitle>
+                                <CardDescription className="text-base">Test your understanding of refraction</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Question 1 */}
@@ -962,19 +1165,24 @@ export function RefractionLabEnhanced() {
                                 <Button 
                                     onClick={handleQuizSubmit} 
                                     disabled={!quizAnswer1 || !quizAnswer2 || !quizAnswer3 || quizSubmitted}
-                                    className="flex-1"
+                                    className="flex-1 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg disabled:opacity-50"
                                     size="lg"
                                 >
                                     Submit Answers
                                 </Button>
                                 {quizSubmitted && !quizFeedback.includes('all 3') && (
-                                    <Button onClick={() => {
-                                        setQuizAnswer1(undefined);
-                                        setQuizAnswer2(undefined);
-                                        setQuizAnswer3(undefined);
-                                        setQuizFeedback('');
-                                        setQuizSubmitted(false);
-                                    }} variant="outline" size="lg">
+                                    <Button 
+                                        onClick={() => {
+                                            setQuizAnswer1(undefined);
+                                            setQuizAnswer2(undefined);
+                                            setQuizAnswer3(undefined);
+                                            setQuizFeedback('');
+                                            setQuizSubmitted(false);
+                                        }} 
+                                        variant="outline" 
+                                        size="lg"
+                                        className="border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/20"
+                                    >
                                         Try Again
                                     </Button>
                                 )}
@@ -990,19 +1198,31 @@ export function RefractionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader className="text-center">
                                 <motion.div
-                                    animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
+                                    animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.1, 1] }}
                                     transition={{ duration: 0.5 }}
                                     className="flex justify-center mb-4"
                                 >
-                                    <Trophy className="h-16 w-16 text-yellow-500" />
+                                    <Trophy className="h-20 w-20 text-yellow-500" />
                                 </motion.div>
-                                <CardTitle>Lab Complete!</CardTitle>
-                                <CardDescription>You've mastered refraction!</CardDescription>
+                                <CardTitle className="text-2xl">Lab Complete! 🎉</CardTitle>
+                                <CardDescription className="text-base">You've mastered refraction!</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                {xpEarned > 0 && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="bg-gradient-to-r from-blue-400 to-cyan-400 dark:from-blue-600 dark:to-cyan-600 p-6 rounded-lg text-center"
+                                    >
+                                        <div className="flex items-center justify-center gap-3 text-3xl font-bold text-white">
+                                            <Award className="h-8 w-8" />
+                                            +{xpEarned} XP Earned!
+                                        </div>
+                                    </motion.div>
+                                )}
                                 <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
                                     <h3 className="font-semibold text-center text-lg mb-4">What You've Learned:</h3>
                                     <ul className="space-y-2 text-sm">
@@ -1026,7 +1246,13 @@ export function RefractionLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleRestart} 
+                                    variant="outline" 
+                                    className="w-full border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/20" 
+                                    size="lg"
+                                >
+                                    <RefreshCw className="h-5 w-5 mr-2" />
                                     Restart Lab
                                 </Button>
                             </CardFooter>
@@ -1034,6 +1260,7 @@ export function RefractionLabEnhanced() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            </div>
         </div>
     );
 }
