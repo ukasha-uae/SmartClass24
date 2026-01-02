@@ -32,21 +32,23 @@ export function V1RouteGuard({
   const pathname = usePathname();
   const hasAccess = hasCampusFeature(campus, feature);
 
-  useEffect(() => {
-    if (!hasAccess && typeof window !== 'undefined') {
-      // Default redirect to Arena Challenge for Primary/JHS
-      const defaultRedirect = '/challenge-arena/ghana';
-      const redirect = redirectTo || defaultRedirect;
-      
-      // Only redirect if we're not already on the redirect path
-      // Check both exact match and if pathname includes the redirect path
-      const currentPath = pathname || window.location.pathname;
-      if (currentPath !== redirect && !currentPath.includes('/challenge-arena')) {
-        console.log(`[V1RouteGuard] Redirecting ${campus} from ${currentPath} to ${redirect} (no access to ${feature})`);
-        router.replace(redirect);
-      }
-    }
-  }, [hasAccess, redirectTo, router, pathname, campus, feature]);
+  // Removed auto-redirect - let users see the access message instead
+  // This allows users to understand why they don't have access
+  // useEffect(() => {
+  //   if (!hasAccess && typeof window !== 'undefined') {
+  //     // Default redirect to Arena Challenge for Primary/JHS
+  //     const defaultRedirect = '/challenge-arena/ghana';
+  //     const redirect = redirectTo || defaultRedirect;
+  //     
+  //     // Only redirect if we're not already on the redirect path
+  //     // Check both exact match and if pathname includes the redirect path
+  //     const currentPath = pathname || window.location.pathname;
+  //     if (currentPath !== redirect && !currentPath.includes('/challenge-arena')) {
+  //       console.log(`[V1RouteGuard] Redirecting ${campus} from ${currentPath} to ${redirect} (no access to ${feature})`);
+  //       router.replace(redirect);
+  //     }
+  //   }
+  // }, [hasAccess, redirectTo, router, pathname, campus, feature]);
 
   if (!hasAccess) {
     const featureName = feature === 'lessons' ? 'lessons' : 

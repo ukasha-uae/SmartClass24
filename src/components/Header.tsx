@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { GraduationCap, Users, MessagesSquare, Trophy, HelpCircle, ChevronDown, Menu, Calendar, BookOpen, Globe, ChevronRight, MessageCircle } from 'lucide-react';
+import { GraduationCap, Users, MessagesSquare, Trophy, HelpCircle, ChevronDown, Menu, Calendar, BookOpen, Globe, ChevronRight, MessageCircle, Lock } from 'lucide-react';
 import AuthModal from './AuthModal';
 import { ThemeToggle } from './ThemeToggle';
 import CountrySelector from './CountrySelector';
@@ -269,22 +269,28 @@ export default function Header() {
                           <ChevronRight className="h-4 w-4 text-amber-600 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                         
-                        {/* Virtual Labs - SHS Only */}
-                        {hasVirtualLabsAccess && (
-                          <Link 
-                            href="/virtual-labs" 
-                            onClick={() => setSheetOpen(false)}
-                            className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] shadow-md"
-                          >
-                            <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg group-hover:from-blue-500/30 group-hover:to-indigo-500/30 transition-all">
-                              <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                              </svg>
-                            </div>
-                            <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Virtual Labs</span>
-                            <ChevronRight className="h-4 w-4 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
-                          </Link>
-                        )}
+                        {/* Virtual Labs - Always Visible (with lock icon if no access) */}
+                        <Link 
+                          href="/virtual-labs" 
+                          onClick={() => setSheetOpen(false)}
+                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] shadow-md"
+                        >
+                          <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg group-hover:from-blue-500/30 group-hover:to-indigo-500/30 transition-all relative">
+                            <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                            {!hasVirtualLabsAccess && (
+                              <Lock className="h-3 w-3 text-amber-600 dark:text-amber-400 absolute -top-1 -right-1" />
+                            )}
+                          </div>
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:bg-clip-text group-hover:text-transparent transition-all flex items-center gap-2">
+                            Virtual Labs
+                            {!hasVirtualLabsAccess && (
+                              <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full">SHS Only</span>
+                            )}
+                          </span>
+                          <ChevronRight className="h-4 w-4 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
+                        </Link>
                         
                         {/* Pricing */}
                         <Link 
@@ -320,17 +326,18 @@ export default function Header() {
           </div>
           {hasMounted && user && (
             <>
-              {/* V1: Simplified Resources Menu - Virtual Labs Only */}
-              {hasVirtualLabsAccess && (
-                <Link href="/virtual-labs" className="hidden md:block">
-                  <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                    </svg>
-                    <span>Virtual Labs</span>
-                  </Button>
-                </Link>
-              )}
+              {/* V1: Simplified Resources Menu - Virtual Labs Always Visible */}
+              <Link href="/virtual-labs" className="hidden md:block">
+                <Button variant="ghost" size="sm" className="flex items-center gap-2 relative">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  </svg>
+                  <span>Virtual Labs</span>
+                  {!hasVirtualLabsAccess && (
+                    <Lock className="h-3 w-3 text-amber-600 dark:text-amber-400 absolute -top-1 -right-1" />
+                  )}
+                </Button>
+              </Link>
 
               <Link href="/pricing" className="hidden md:block">
                 <Button variant="ghost" size="sm" className="flex items-center gap-2 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-gradient-to-r hover:from-green-500/10 hover:to-emerald-500/10 hover:border-green-300/50 dark:hover:border-green-700/50 border border-transparent transition-all hover:scale-105">
