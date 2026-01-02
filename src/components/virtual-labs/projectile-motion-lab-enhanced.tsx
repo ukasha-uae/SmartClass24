@@ -25,13 +25,14 @@ interface ProjectileData {
 }
 
 const GRAVITY = 9.81; // m/s²
-const SCALE = 3; // pixels per meter
+const SCALE = 4; // pixels per meter (increased for better visibility)
+const CANVAS_HEIGHT = 384; // Height of the visualization canvas
+const GROUND_LEVEL = 64; // Ground height from bottom
 
 export function ProjectileMotionLabEnhanced() {
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Experiment state
     const [angle, setAngle] = React.useState(45);
@@ -96,9 +97,7 @@ export function ProjectileMotionLabEnhanced() {
 
     const handleStartExperiment = () => {
         setTeacherMessage("Great! Let's set up our projectile launcher. We can adjust the angle and initial velocity to see how they affect the motion. Science in action!");
-        setPendingTransition(() => () => {
-            setCurrentStep('setup');
-        });
+        setCurrentStep('setup');
     };
 
     const handleLaunch = () => {
@@ -144,11 +143,7 @@ export function ProjectileMotionLabEnhanced() {
     };
 
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // Direct state updates - no pending transitions
     };
 
     const handleViewResults = () => {
@@ -161,16 +156,12 @@ export function ProjectileMotionLabEnhanced() {
             return;
         }
         setTeacherMessage("Excellent data collection! Let's analyze the results and discover the relationships between angle, velocity, and motion!");
-        setPendingTransition(() => () => {
-            setCurrentStep('results');
-        });
+        setCurrentStep('results');
     };
 
     const handleViewQuiz = () => {
         setTeacherMessage("Time to test your understanding of projectile motion!");
-        setPendingTransition(() => () => {
-            setCurrentStep('quiz');
-        });
+        setCurrentStep('quiz');
     };
 
     const handleQuizSubmit = () => {
@@ -243,7 +234,6 @@ export function ProjectileMotionLabEnhanced() {
         setQuizFeedback('');
         setQuizSubmitted(false);
         setShowCelebration(false);
-        setPendingTransition(null);
         setTeacherMessage("Ready to explore projectile motion again!");
     };
 
@@ -258,7 +248,35 @@ export function ProjectileMotionLabEnhanced() {
         : null;
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Purple/Pink Physics Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-50 dark:from-purple-950/30 dark:via-pink-950/30 dark:to-indigo-950/30" />
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-purple-200/40 to-pink-300/40 dark:from-purple-800/20 dark:to-pink-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative space-y-6">
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
@@ -324,7 +342,7 @@ export function ProjectileMotionLabEnhanced() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
                 >
-                    <Card className="w-full max-w-md mx-4">
+                    <Card className="w-full max-w-md mx-4 border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/95 to-purple-50/95 dark:from-gray-900/95 dark:to-purple-950/95 backdrop-blur-sm shadow-2xl">
                         <CardHeader className="text-center">
                             <motion.div
                                 animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
@@ -334,11 +352,11 @@ export function ProjectileMotionLabEnhanced() {
                                 <Trophy className="h-20 w-20 text-yellow-500" />
                             </motion.div>
                             <CardTitle className="text-2xl">Congratulations!</CardTitle>
-                            <CardDescription>You've mastered projectile motion!</CardDescription>
+                            <CardDescription className="text-base">You've mastered projectile motion!</CardDescription>
                         </CardHeader>
                         <CardContent className="text-center space-y-4">
-                            <div className="flex items-center justify-center gap-2 text-3xl font-bold text-purple-600">
-                                <Award className="h-8 w-8" />
+                            <div className="flex items-center justify-center gap-2 text-3xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+                                <Award className="h-8 w-8 text-purple-500" />
                                 +{xpEarned} XP
                             </div>
                             <p className="text-sm text-muted-foreground">
@@ -349,20 +367,30 @@ export function ProjectileMotionLabEnhanced() {
                 </motion.div>
             )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Rocket className="h-5 w-5 text-purple-600" />
-                        Projectile Motion Lab
-                    </CardTitle>
-                    <CardDescription>Explore how angle and velocity affect projectile trajectories</CardDescription>
-                </CardHeader>
-            </Card>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-xl">
+                            <Rocket className="h-6 w-6 text-purple-600" />
+                            Projectile Motion Lab
+                        </CardTitle>
+                        <CardDescription className="text-base">Explore how angle and velocity affect projectile trajectories</CardDescription>
+                    </CardHeader>
+                </Card>
+            </motion.div>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                </CardHeader>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
+                    <CardHeader>
+                        <CardTitle className="text-lg">Lab Information</CardTitle>
+                    </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="theory">
@@ -413,6 +441,7 @@ export function ProjectileMotionLabEnhanced() {
                     </Accordion>
                 </CardContent>
             </Card>
+            </motion.div>
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (
@@ -422,10 +451,10 @@ export function ProjectileMotionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
+                        <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle>Welcome to Projectile Motion Lab!</CardTitle>
-                                <CardDescription>Discover the physics of objects in flight</CardDescription>
+                                <CardTitle className="text-xl">Welcome to Projectile Motion Lab!</CardTitle>
+                                <CardDescription className="text-base">Discover the physics of objects in flight</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-6 rounded-lg border-2 border-purple-200 dark:border-purple-800">
@@ -445,7 +474,11 @@ export function ProjectileMotionLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleStartExperiment} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleStartExperiment} 
+                                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
                                     Start Experiment
                                 </Button>
                             </CardFooter>
@@ -461,13 +494,13 @@ export function ProjectileMotionLabEnhanced() {
                         exit={{ opacity: 0, y: -20 }}
                         className="space-y-6"
                     >
-                        <Card className="border-2 border-purple-200 dark:border-purple-800">
+                        <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Target className="h-5 w-5 text-purple-600" />
+                                <CardTitle className="flex items-center gap-2 text-xl">
+                                    <Target className="h-6 w-6 text-purple-600" />
                                     Projectile Launcher Setup
                                 </CardTitle>
-                                <CardDescription>Launches completed: {launches.length}/3</CardDescription>
+                                <CardDescription className="text-base">Launches completed: {launches.length}/3</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Launch Angle Control */}
@@ -522,63 +555,209 @@ export function ProjectileMotionLabEnhanced() {
                                     </div>
                                 </div>
 
-                                {/* Visual Launcher */}
-                                <div className="bg-gradient-to-b from-blue-50 to-green-50 dark:from-blue-950/20 dark:to-green-950/20 p-8 rounded-lg border-2 border-blue-200 dark:border-blue-800 relative overflow-hidden h-64">
-                                    {/* Ground */}
-                                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-green-600 dark:bg-green-800"></div>
+                                {/* Enhanced Realistic Visual Launcher */}
+                                <div className="bg-gradient-to-b from-sky-100 via-blue-50 to-green-100 dark:from-sky-950/30 dark:via-blue-950/20 dark:to-green-950/30 p-8 rounded-lg border-2 border-blue-200/50 dark:border-blue-800/50 relative overflow-hidden h-96 shadow-inner">
+                                    {/* Sky with clouds */}
+                                    <div className="absolute inset-0 bg-gradient-to-b from-sky-200/50 to-blue-100/50 dark:from-sky-900/30 dark:to-blue-950/30">
+                                        {[...Array(3)].map((_, i) => (
+                                            <motion.div
+                                                key={i}
+                                                className="absolute rounded-full bg-white/30 dark:bg-white/10 blur-xl"
+                                                style={{
+                                                    width: `${60 + i * 20}px`,
+                                                    height: `${40 + i * 15}px`,
+                                                    left: `${20 + i * 30}%`,
+                                                    top: `${10 + i * 15}%`,
+                                                }}
+                                                animate={{
+                                                    x: [0, 20, 0],
+                                                }}
+                                                transition={{
+                                                    duration: 8 + i * 2,
+                                                    repeat: Infinity,
+                                                    ease: "easeInOut",
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
                                     
-                                    {/* Launcher */}
-                                    <div className="absolute bottom-8 left-12">
+                                    {/* Ground with texture */}
+                                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-green-700 via-green-600 to-green-500 dark:from-green-900 dark:via-green-800 dark:to-green-700">
+                                        {/* Ground texture lines */}
+                                        <div className="absolute top-0 left-0 right-0 h-px bg-green-800/30 dark:bg-green-700/30"></div>
+                                        <div className="absolute top-2 left-0 right-0 h-px bg-green-800/20 dark:bg-green-700/20"></div>
+                                        {/* Grass details */}
+                                        {[...Array(20)].map((_, i) => (
+                                            <div
+                                                key={i}
+                                                className="absolute bottom-0 w-px bg-green-800/40 dark:bg-green-700/40"
+                                                style={{
+                                                    left: `${i * 5}%`,
+                                                    height: `${8 + Math.random() * 4}px`,
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                    
+                                    {/* Enhanced Launcher - Cannon style */}
+                                    <div className="absolute bottom-16 left-12">
+                                        {/* Launcher base */}
+                                        <div className="absolute -bottom-2 -left-2 w-20 h-4 bg-gray-800 dark:bg-gray-600 rounded-sm shadow-lg"></div>
+                                        {/* Launcher barrel */}
                                         <motion.div
                                             style={{ rotate: -angle }}
-                                            className="origin-bottom-left"
+                                            className="origin-bottom-left relative"
                                         >
-                                            <div className="w-16 h-3 bg-gray-700 dark:bg-gray-300 rounded-r-full"></div>
+                                            {/* Barrel shadow */}
+                                            <div className="absolute top-1 left-1 w-20 h-4 bg-black/20 rounded-r-full blur-sm"></div>
+                                            {/* Barrel */}
+                                            <div className="relative w-20 h-4 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-700 dark:from-gray-500 dark:via-gray-400 dark:to-gray-500 rounded-r-full shadow-lg border border-gray-800/50 dark:border-gray-300/50">
+                                                {/* Barrel rings */}
+                                                <div className="absolute left-4 top-0 w-1 h-full bg-gray-800/50 dark:bg-gray-300/50"></div>
+                                                <div className="absolute left-12 top-0 w-1 h-full bg-gray-800/50 dark:bg-gray-300/50"></div>
+                                                {/* Muzzle flash effect when launching */}
+                                                {isLaunching && (
+                                                    <motion.div
+                                                        initial={{ opacity: 1, scale: 0.5 }}
+                                                        animate={{ opacity: 0, scale: 1.5 }}
+                                                        className="absolute -right-2 top-1/2 -translate-y-1/2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur-sm"
+                                                    />
+                                                )}
+                                            </div>
                                         </motion.div>
-                                        <div className="w-6 h-6 bg-gray-600 dark:bg-gray-400 rounded-full -mt-1"></div>
+                                        {/* Launcher pivot/base */}
+                                        <div className="absolute -bottom-1 left-0 w-8 h-8 bg-gray-700 dark:bg-gray-500 rounded-full shadow-lg border-2 border-gray-800 dark:border-gray-300"></div>
                                     </div>
 
-                                    {/* Trajectory Path */}
+                                    {/* Previous Trajectory Paths - Enhanced */}
                                     {launches.map((launch, index) => (
-                                        <svg key={index} className="absolute inset-0 w-full h-full pointer-events-none opacity-30">
+                                        <svg key={index} className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
+                                            <defs>
+                                                <linearGradient id={`trail-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                                                    <stop offset="0%" stopColor={index === 0 ? '#ef4444' : index === 1 ? '#3b82f6' : '#10b981'} stopOpacity="0.8" />
+                                                    <stop offset="100%" stopColor={index === 0 ? '#ef4444' : index === 1 ? '#3b82f6' : '#10b981'} stopOpacity="0.2" />
+                                                </linearGradient>
+                                            </defs>
                                             <path
-                                                d={`M ${48} ${256 - 32} ${launch.trajectory.map(p => 
-                                                    `L ${48 + p.x * SCALE} ${256 - 32 - p.y * SCALE}`
+                                                d={`M ${48} ${CANVAS_HEIGHT - GROUND_LEVEL} ${launch.trajectory.map(p => 
+                                                    `L ${48 + p.x * SCALE} ${CANVAS_HEIGHT - GROUND_LEVEL - p.y * SCALE}`
                                                 ).join(' ')}`}
                                                 fill="none"
-                                                stroke={index === 0 ? '#ef4444' : index === 1 ? '#3b82f6' : '#10b981'}
-                                                strokeWidth="2"
-                                                strokeDasharray="4 4"
+                                                stroke={`url(#trail-${index})`}
+                                                strokeWidth="3"
+                                                strokeDasharray="5 5"
                                             />
                                         </svg>
                                     ))}
 
-                                    {/* Current Trajectory */}
+                                    {/* Current Trajectory - Enhanced with trail */}
                                     {isLaunching && currentTrajectory.length > 0 && (
                                         <>
                                             <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                                                <defs>
+                                                    <linearGradient id="current-trail" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                        <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.9" />
+                                                        <stop offset="100%" stopColor="#ec4899" stopOpacity="0.3" />
+                                                    </linearGradient>
+                                                </defs>
                                                 <path
-                                                    d={`M ${48} ${256 - 32} ${currentTrajectory.slice(0, Math.floor(animationProgress * currentTrajectory.length)).map(p => 
-                                                        `L ${48 + p.x * SCALE} ${256 - 32 - p.y * SCALE}`
+                                                    d={`M ${48} ${CANVAS_HEIGHT - GROUND_LEVEL} ${currentTrajectory.slice(0, Math.floor(animationProgress * currentTrajectory.length)).map(p => 
+                                                        `L ${48 + p.x * SCALE} ${CANVAS_HEIGHT - GROUND_LEVEL - p.y * SCALE}`
                                                     ).join(' ')}`}
                                                     fill="none"
-                                                    stroke="#8b5cf6"
-                                                    strokeWidth="3"
+                                                    stroke="url(#current-trail)"
+                                                    strokeWidth="4"
+                                                    strokeLinecap="round"
                                                 />
                                             </svg>
                                             {(() => {
                                                 const pos = getProjectilePosition();
-                                                return pos ? (
-                                                    <motion.div
-                                                        className="absolute w-4 h-4 bg-purple-600 rounded-full shadow-lg"
-                                                        style={{
-                                                            left: 48 + pos.x * SCALE - 8,
-                                                            top: 256 - 32 - pos.y * SCALE - 8
-                                                        }}
-                                                    />
-                                                ) : null;
+                                                if (!pos) return null;
+                                                
+                                                const x = 48 + pos.x * SCALE;
+                                                const y = CANVAS_HEIGHT - GROUND_LEVEL - pos.y * SCALE;
+                                                
+                                                return (
+                                                    <>
+                                                        {/* Projectile shadow on ground */}
+                                                        {y < CANVAS_HEIGHT - GROUND_LEVEL && (
+                                                            <motion.div
+                                                                className="absolute w-6 h-3 bg-black/20 dark:bg-black/40 rounded-full blur-sm"
+                                                                style={{
+                                                                    left: x - 12,
+                                                                    top: CANVAS_HEIGHT - GROUND_LEVEL - 4,
+                                                                    transform: `scale(${1 - (CANVAS_HEIGHT - GROUND_LEVEL - y) / 200})`,
+                                                                }}
+                                                            />
+                                                        )}
+                                                        {/* Projectile with rotation and trail */}
+                                                        <motion.div
+                                                            className="absolute"
+                                                            style={{
+                                                                left: x - 10,
+                                                                top: y - 10,
+                                                            }}
+                                                            animate={{
+                                                                rotate: [0, 360],
+                                                            }}
+                                                            transition={{
+                                                                duration: 0.5,
+                                                                repeat: Infinity,
+                                                                ease: "linear",
+                                                            }}
+                                                        >
+                                                            {/* Projectile body - 3D sphere */}
+                                                            <div className="relative w-5 h-5">
+                                                                <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 rounded-full shadow-lg border border-purple-700/50"></div>
+                                                                <div className="absolute inset-0.5 bg-gradient-to-tr from-white/30 to-transparent rounded-full"></div>
+                                                                {/* Highlight */}
+                                                                <div className="absolute top-1 left-1 w-1.5 h-1.5 bg-white/60 rounded-full"></div>
+                                                            </div>
+                                                        </motion.div>
+                                                        {/* Motion blur trail */}
+                                                        <motion.div
+                                                            className="absolute w-3 h-3 bg-purple-400/50 rounded-full blur-sm"
+                                                            style={{
+                                                                left: x - 6,
+                                                                top: y - 6,
+                                                            }}
+                                                            animate={{
+                                                                scale: [1, 0.5, 0],
+                                                                opacity: [0.5, 0.2, 0],
+                                                            }}
+                                                            transition={{
+                                                                duration: 0.2,
+                                                                repeat: Infinity,
+                                                            }}
+                                                        />
+                                                    </>
+                                                );
                                             })()}
                                         </>
+                                    )}
+                                    
+                                    {/* Impact effect when projectile hits ground */}
+                                    {!isLaunching && launches.length > 0 && (
+                                        launches.map((launch, index) => {
+                                            const impactX = 48 + launch.range * SCALE;
+                                            const impactY = CANVAS_HEIGHT - GROUND_LEVEL;
+                                            return (
+                                                <motion.div
+                                                    key={`impact-${index}`}
+                                                    className="absolute w-8 h-8 rounded-full"
+                                                    style={{
+                                                        left: impactX - 16,
+                                                        top: impactY - 16,
+                                                    }}
+                                                    initial={{ scale: 0, opacity: 0.8 }}
+                                                    animate={{ scale: 1.5, opacity: 0 }}
+                                                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                                                >
+                                                    <div className="absolute inset-0 bg-yellow-400/30 rounded-full blur-md"></div>
+                                                    <div className="absolute inset-2 bg-orange-500/20 rounded-full blur-sm"></div>
+                                                </motion.div>
+                                            );
+                                        })
                                     )}
                                 </div>
 
@@ -586,7 +765,7 @@ export function ProjectileMotionLabEnhanced() {
                                 <Button 
                                     onClick={handleLaunch} 
                                     disabled={isLaunching}
-                                    className="w-full"
+                                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg disabled:opacity-50"
                                     size="lg"
                                 >
                                     <Rocket className="h-5 w-5 mr-2" />
@@ -597,8 +776,7 @@ export function ProjectileMotionLabEnhanced() {
                                 <Button 
                                     onClick={handleViewResults} 
                                     disabled={launches.length < 3}
-                                    variant="outline"
-                                    className="w-full"
+                                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     size="lg"
                                 >
                                     View Results ({launches.length}/3 launches)
@@ -615,13 +793,13 @@ export function ProjectileMotionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-purple-200 dark:border-purple-800">
+                        <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <TrendingUp className="h-5 w-5 text-purple-600" />
+                                <CardTitle className="flex items-center gap-2 text-xl">
+                                    <TrendingUp className="h-6 w-6 text-purple-600" />
                                     Launch Results & Analysis
                                 </CardTitle>
-                                <CardDescription>Compare your launches</CardDescription>
+                                <CardDescription className="text-base">Compare your launches</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Results Table */}
@@ -704,7 +882,11 @@ export function ProjectileMotionLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleViewQuiz} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleViewQuiz} 
+                                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
                                     Take the Quiz
                                 </Button>
                             </CardFooter>
@@ -719,10 +901,10 @@ export function ProjectileMotionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
+                        <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle>Knowledge Check</CardTitle>
-                                <CardDescription>Test your understanding of projectile motion</CardDescription>
+                                <CardTitle className="text-xl">Knowledge Check</CardTitle>
+                                <CardDescription className="text-base">Test your understanding of projectile motion</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Question 1 */}
@@ -867,19 +1049,24 @@ export function ProjectileMotionLabEnhanced() {
                                 <Button 
                                     onClick={handleQuizSubmit} 
                                     disabled={!quizAnswer1 || !quizAnswer2 || !quizAnswer3 || quizSubmitted}
-                                    className="flex-1"
+                                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg disabled:opacity-50"
                                     size="lg"
                                 >
                                     Submit Answers
                                 </Button>
                                 {quizSubmitted && !quizFeedback.includes('all 3') && (
-                                    <Button onClick={() => {
-                                        setQuizAnswer1(undefined);
-                                        setQuizAnswer2(undefined);
-                                        setQuizAnswer3(undefined);
-                                        setQuizFeedback('');
-                                        setQuizSubmitted(false);
-                                    }} variant="outline" size="lg">
+                                    <Button 
+                                        onClick={() => {
+                                            setQuizAnswer1(undefined);
+                                            setQuizAnswer2(undefined);
+                                            setQuizAnswer3(undefined);
+                                            setQuizFeedback('');
+                                            setQuizSubmitted(false);
+                                        }} 
+                                        variant="outline" 
+                                        size="lg"
+                                        className="border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20"
+                                    >
                                         Try Again
                                     </Button>
                                 )}
@@ -895,19 +1082,31 @@ export function ProjectileMotionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-purple-200 dark:border-purple-800">
+                        <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader className="text-center">
                                 <motion.div
-                                    animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
+                                    animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.1, 1] }}
                                     transition={{ duration: 0.5 }}
                                     className="flex justify-center mb-4"
                                 >
-                                    <Trophy className="h-16 w-16 text-yellow-500" />
+                                    <Trophy className="h-20 w-20 text-yellow-500" />
                                 </motion.div>
-                                <CardTitle>Lab Complete!</CardTitle>
-                                <CardDescription>You've mastered projectile motion!</CardDescription>
+                                <CardTitle className="text-2xl">Lab Complete! 🎉</CardTitle>
+                                <CardDescription className="text-base">You've mastered projectile motion!</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
+                                {xpEarned > 0 && (
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className="bg-gradient-to-r from-purple-400 to-pink-400 dark:from-purple-600 dark:to-pink-600 p-6 rounded-lg text-center"
+                                    >
+                                        <div className="flex items-center justify-center gap-3 text-3xl font-bold text-white">
+                                            <Award className="h-8 w-8" />
+                                            +{xpEarned} XP Earned!
+                                        </div>
+                                    </motion.div>
+                                )}
                                 <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-6 rounded-lg border-2 border-purple-200 dark:border-purple-800">
                                     <h3 className="font-semibold text-center text-lg mb-4">What You've Learned:</h3>
                                     <ul className="space-y-2 text-sm">
@@ -931,7 +1130,13 @@ export function ProjectileMotionLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleRestart} 
+                                    variant="outline" 
+                                    className="w-full border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20" 
+                                    size="lg"
+                                >
+                                    <RefreshCw className="h-5 w-5 mr-2" />
                                     Restart Lab
                                 </Button>
                             </CardFooter>
@@ -939,6 +1144,7 @@ export function ProjectileMotionLabEnhanced() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            </div>
         </div>
     );
 }
