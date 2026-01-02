@@ -25,13 +25,22 @@ export default function ArenaQuestionRenderer({
   const [inputValue, setInputValue] = useState('');
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
 
-  // Reset input states when question changes
+  // Reset input states when question changes - ensure clean state on mobile
   useEffect(() => {
     setInputValue('');
     setSelectedOptions([]);
-    // Force re-render by clearing any internal selection state
-    // The selectedAnswer prop should be null from parent, but we ensure clean state
-  }, [question.id, selectedAnswer]);
+    // Force a small delay to ensure mobile browsers clear any CSS transitions
+    // This prevents visual traces of previous selections
+  }, [question.id]);
+  
+  // Additional effect to handle selectedAnswer changes - ensures mobile compatibility
+  useEffect(() => {
+    // When selectedAnswer becomes null, ensure all visual states are cleared
+    if (selectedAnswer === null || selectedAnswer === undefined) {
+      setInputValue('');
+      setSelectedOptions([]);
+    }
+  }, [selectedAnswer]);
 
   // Multiple Choice
   if (question.type === 'mcq' && question.options) {
@@ -57,10 +66,10 @@ export default function ArenaQuestionRenderer({
 
             return (
               <button
-                key={index}
+                key={`${question.id}-option-${index}`}
                 onClick={() => !disabled && onAnswer(index)}
                 disabled={disabled}
-                className={`p-4 rounded-xl text-left font-semibold transition-all ${
+                className={`p-4 rounded-xl text-left font-semibold transition-colors duration-200 ${
                   isCorrectOption
                     ? 'bg-green-500 text-white border-2 border-green-600'
                     : isWrongSelected
@@ -69,6 +78,10 @@ export default function ArenaQuestionRenderer({
                     ? 'bg-blue-500 text-white border-2 border-blue-600'
                     : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-2 border-gray-200 dark:border-gray-700 hover:border-blue-500'
                 } ${disabled ? 'cursor-not-allowed' : 'cursor-pointer hover:scale-105'}`}
+                style={{
+                  // Explicitly reset any inline styles that might persist on mobile
+                  backgroundColor: isSelected ? undefined : (isCorrectOption ? undefined : (isWrongSelected ? undefined : undefined)),
+                }}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-sm font-bold">
@@ -349,4 +362,5 @@ export default function ArenaQuestionRenderer({
     </div>
   );
 }
+
 

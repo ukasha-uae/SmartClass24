@@ -99,10 +99,18 @@ export default function QuizBattlePage() {
     }
   }, [challengeId, user, router]);
 
-  // Reset selected answer when question changes
+  // Reset selected answer when question changes - with explicit null assignment for mobile
   useEffect(() => {
     if (gamePhase === 'playing' && challenge) {
+      // Explicitly set to null to ensure mobile browsers clear state
       setSelectedAnswer(null);
+      // Force a micro-delay on mobile to ensure state is cleared before render
+      if (typeof window !== 'undefined' && 'ontouchstart' in window) {
+        // Mobile device detected - use requestAnimationFrame for smoother reset
+        requestAnimationFrame(() => {
+          setSelectedAnswer(null);
+        });
+      }
     }
   }, [currentQuestionIndex, gamePhase, challenge]);
 
@@ -1407,6 +1415,7 @@ export default function QuizBattlePage() {
               </div>
               
               <ArenaQuestionRenderer
+                key={`question-${currentQuestion.id}-${currentQuestionIndex}`}
                 question={currentQuestion}
                 onAnswer={handleAnswerSelect}
                 selectedAnswer={selectedAnswer}
