@@ -265,7 +265,16 @@ export function HydrogenPopTestLab() {
     };
 
     const handleQuizSubmit = () => {
-        if (quizIsCorrect !== null) return;
+        // If already correct, don't allow resubmission
+        if (quizIsCorrect === true) return;
+        
+        // If wrong and showing answers, allow retry by resetting
+        if (quizIsCorrect === false) {
+            setQuizIsCorrect(null);
+            setQuizFeedback(null);
+            setQuizAnswers({});
+            return;
+        }
         
         const correctAnswers: { [key: number]: string } = {
             1: 'pop',
@@ -1061,7 +1070,7 @@ export function HydrogenPopTestLab() {
                         <CardFooter>
                             <Button 
                                 onClick={handleQuizSubmit} 
-                                disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect !== null}
+                                disabled={(quizIsCorrect === null && Object.keys(quizAnswers).length < 3) || quizIsCorrect === true}
                                 className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                 size="lg"
                             >
