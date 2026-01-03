@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
-import { CheckCircle, XCircle, RefreshCw, TestTube, BookOpen, Shield, Droplets, Beaker, Eye, Sparkles, Package, Zap, Star } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, TestTube, BookOpen, Shield, Droplets, Beaker, Eye, Sparkles, Package, Zap, Star, Award, Trophy } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';
 import { TextToSpeech } from '../text-to-speech';
@@ -16,12 +16,13 @@ import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
 import { LabNotes } from './LabNotes';
 import { Alert, AlertDescription } from '../ui/alert';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
 type Substance = 'Lemon Juice' | 'Soap Solution' | 'Vinegar' | 'Milk of Magnesia' | 'Dilute HCl' | 'Dilute NaOH' | 'Tap Water';
 type LitmusPaper = 'Red' | 'Blue';
 type ResultColor = 'Red' | 'Blue' | 'No Change';
 type SubstanceCategory = 'Acid' | 'Base' | 'Neutral';
-type TestStep = 'select-substance' | 'select-paper' | 'dipping' | 'observing' | 'complete';
+type TestStep = 'intro' | 'collect-supplies' | 'select-substance' | 'select-paper' | 'dipping' | 'observing' | 'quiz' | 'complete';
 
 interface SubstanceInfo {
     type: SubstanceCategory;
@@ -43,7 +44,7 @@ const substances: Record<Substance, SubstanceInfo> = {
 export function LitmusTestLab() {
     const { toast } = useToast();
     const { markLabComplete, isLabCompleted, totalXP } = useLabProgress();
-    const [currentStep, setCurrentStep] = React.useState<TestStep>('select-substance');
+    const [currentStep, setCurrentStep] = React.useState<TestStep>('intro');
     const [selectedSubstance, setSelectedSubstance] = React.useState<Substance | null>(null);
     const [selectedPaper, setSelectedPaper] = React.useState<LitmusPaper | null>(null);
     const [result, setResult] = React.useState<ResultColor | null>(null);
@@ -51,7 +52,13 @@ export function LitmusTestLab() {
     const [showPractice, setShowPractice] = React.useState(false);
     const [practiceInteraction, setPracticeInteraction] = React.useState<'substances' | 'paper' | 'rules' | null>(null);
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+    
+    const labSupplies: SupplyItem[] = [
+        { id: 'litmus-papers', name: 'Litmus Papers', emoji: '📄', description: 'Red and blue litmus papers' },
+        { id: 'test-substances', name: 'Test Substances', emoji: '🧪', description: 'Various acids, bases, and neutral solutions' },
+        { id: 'safety-goggles', name: 'Safety Goggles', emoji: '🥽', description: 'Eye protection' },
+    ];
     const [startTime] = React.useState(Date.now());
     const [xpEarned, setXpEarned] = React.useState<number | null>(null);
     const [showCelebration, setShowCelebration] = React.useState(false);
@@ -67,29 +74,54 @@ export function LitmusTestLab() {
 
     // Show welcome message and guide through steps
     React.useEffect(() => {
-        if (currentStep === 'select-substance') {
-            setTeacherMessage("Welcome to the Litmus Paper Lab! Today you'll learn how to identify acids and bases using colored paper. Let's start by choosing a substance to test. Pick any one that interests you!");
+        if (currentStep === 'intro') {
+            setTeacherMessage("Welcome to the Litmus Paper Lab! Today you'll learn how to identify acids and bases using colored paper. Let's gather our supplies first!");
+        } else if (currentStep === 'select-substance') {
+            setTeacherMessage("Great! Now let's start by choosing a substance to test. Pick any one that interests you!");
         }
     }, [currentStep]);
 
-    // Scroll to quiz when complete
+    // Scroll to quiz when it appears
     React.useEffect(() => {
-        if (currentStep === 'complete') {
+        if (currentStep === 'quiz') {
             setTimeout(() => {
                 const quizElement = document.getElementById('quiz-section');
                 if (quizElement) {
                     quizElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
-            }, 800);
+            }, 500);
         }
     }, [currentStep]);
 
-    const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
+    const handleStartLab = () => {
+        setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
+        setCurrentStep('collect-supplies');
+    };
+
+    const handleCollectSupply = (itemId: string) => {
+        if (!collectedSupplies.includes(itemId)) {
+            setCollectedSupplies(prev => {
+                const newCollected = [...prev, itemId];
+                if (newCollected.length === labSupplies.length) {
+                    setTeacherMessage("Perfect! All supplies collected! Now let's start testing. Click 'Continue to Experiment' to begin!");
+                }
+                return newCollected;
+            });
+            toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
         }
+    };
+
+    const handleAllSuppliesCollected = () => {
+        setTeacherMessage("Perfect! All supplies collected! Now let's start testing. Click 'Continue to Experiment' to begin!");
+    };
+
+    const handleContinueToExperiment = () => {
+        setCurrentStep('select-substance');
+        setTeacherMessage("Great! Now let's start by choosing a substance to test. Pick any one that interests you!");
+    };
+
+    const handleTeacherComplete = () => {
+        // Direct state updates - no pending transitions
     };
 
     const handleSelectSubstance = (substance: Substance) => {
@@ -129,27 +161,28 @@ export function LitmusTestLab() {
                     description: `The litmus paper turned ${testResult}!` 
                 });
                 
-                setPendingTransition(() => () => {
-                    setCurrentStep('complete');
+                // Transition to quiz after showing result - give students time to observe
+                setTimeout(() => {
+                    setCurrentStep('quiz');
                     setIsAnimating(false);
-                    setTeacherMessage("Excellent work! Now scroll down and answer the quiz question to test your understanding and earn XP!");
-                });
+                    setTeacherMessage("Excellent work! Now answer the quiz below to test your understanding and earn XP!");
+                }, 8000); // 8 seconds to observe the result
             }
         }, 2000);
     };
 
     const handleReset = () => {
-        setCurrentStep('select-substance');
+        setCurrentStep('intro');
         setSelectedSubstance(null);
         setSelectedPaper(null);
         setResult(null);
         setIsAnimating(false);
+        setCollectedSupplies([]);
         setQuizAnswers({});
         setQuizFeedback(null);
         setQuizAttempts(0);
         setQuizIsCorrect(null);
-        setPendingTransition(null);
-        setTeacherMessage("Great! Let's test another substance. Choose any substance you want to explore!");
+        setTeacherMessage("Great! Let's start over. Click 'Begin Experiment' when you're ready!");
         toast({ title: '🔄 Lab Reset', description: 'Start a new test' });
     };
 
@@ -161,7 +194,18 @@ export function LitmusTestLab() {
     };
 
     const handleQuizSubmit = () => {
-        if (quizIsCorrect !== null || !selectedSubstance || !result) return;
+        // If already correct, don't allow resubmission
+        if (quizIsCorrect === true) return;
+        
+        // If wrong and showing answers, allow retry by resetting
+        if (quizIsCorrect === false) {
+            setQuizIsCorrect(null);
+            setQuizFeedback(null);
+            setQuizAnswers({});
+            return;
+        }
+        
+        if (!selectedSubstance || !result) return;
         
         // Determine correct answers based on actual results
         const substanceType = substances[selectedSubstance].type.toLowerCase();
@@ -204,6 +248,11 @@ export function LitmusTestLab() {
             setTimeout(() => setShowCelebration(false), 5000);
             
             setTeacherMessage(`Outstanding! You earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Keep experimenting!`);
+            
+            // Transition to complete step after quiz is correct
+            setTimeout(() => {
+                setCurrentStep('complete');
+            }, 2000);
         } else {
             if (newAttempts === 1) {
                 setQuizFeedback(`You got ${correctCount} out of ${totalQuestions} correct. Review the experiment and try again! 🔄`);
@@ -225,7 +274,35 @@ export function LitmusTestLab() {
     const safetyText = "Always wear safety goggles when working with chemicals. Handle acids and bases with care as they can be corrosive. Never taste unknown substances. Add acid to water, never water to acid. Wash hands thoroughly after the experiment.";
 
     return (
-        <div className="space-y-6">
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Violet/Purple Litmus Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-purple-50 to-pink-50 dark:from-violet-950/30 dark:via-purple-950/30 dark:to-pink-950/30" />
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-violet-200/40 to-purple-300/40 dark:from-violet-800/20 dark:to-purple-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative max-w-5xl mx-auto p-4 space-y-6">
             {/* Celebration Overlay */}
             <AnimatePresence>
                 {showCelebration && xpEarned !== null && (
@@ -296,8 +373,12 @@ export function LitmusTestLab() {
             {/* Teacher Voice */}
             <TeacherVoice message={teacherMessage} onComplete={handleTeacherComplete} />
 
-            {/* Objective Section */}
-            <Card className="border-2 border-blue-200 dark:border-blue-800">
+                {/* Objective Section */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                >
+                    <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
@@ -308,10 +389,11 @@ export function LitmusTestLab() {
                     </div>
                     <CardDescription>{objectiveText}</CardDescription>
                 </CardHeader>
-            </Card>
+                    </Card>
+                </motion.div>
 
-            {/* Theory & Safety */}
-            <Card>
+                {/* Theory & Safety */}
+                <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <CardTitle>Lab Information</CardTitle>
                     <CardDescription>Essential background and safety guidelines</CardDescription>
@@ -350,8 +432,8 @@ export function LitmusTestLab() {
                 </CardContent>
             </Card>
 
-            {/* Main Experiment */}
-            <Card className="border-2 border-violet-200 dark:border-violet-800">
+                {/* Main Experiment */}
+                <Card className="border-2 border-violet-200/50 dark:border-violet-800/50 bg-gradient-to-br from-white/90 to-violet-50/90 dark:from-gray-900/90 dark:to-violet-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <CardTitle className="flex items-center gap-2">
@@ -371,7 +453,57 @@ export function LitmusTestLab() {
                     <CardDescription>Click substances and litmus paper to perform the test</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                    {/* Intro Step */}
+                    {currentStep === 'intro' && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="text-center py-12"
+                        >
+                            <div className="text-6xl mb-4">🧪</div>
+                            <h3 className="text-2xl font-bold mb-3">Ready to Start?</h3>
+                            <p className="text-muted-foreground mb-6">Follow the teacher's instructions to test substances with litmus paper</p>
+                            <Button 
+                                onClick={handleStartLab}
+                                size="lg"
+                                className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white shadow-lg"
+                            >
+                                <Sparkles className="w-5 h-5 mr-2" />
+                                Begin Experiment
+                            </Button>
+                        </motion.div>
+                    )}
+
+                    {/* Collect Supplies Step */}
+                    {currentStep === 'collect-supplies' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                        >
+                            <LabSupplies
+                                supplies={labSupplies}
+                                collectedItems={collectedSupplies}
+                                onCollect={handleCollectSupply}
+                                onAllCollected={handleAllSuppliesCollected}
+                                requiredCount={labSupplies.length}
+                            />
+                            {collectedSupplies.length === labSupplies.length && (
+                                <CardFooter className="mt-4">
+                                    <Button 
+                                        onClick={handleContinueToExperiment} 
+                                        className="w-full bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-white shadow-lg" 
+                                        size="lg"
+                                    >
+                                        Continue to Experiment
+                                    </Button>
+                                </CardFooter>
+                            )}
+                        </motion.div>
+                    )}
+
                     {/* Progress Steps */}
+                    {currentStep !== 'intro' && currentStep !== 'collect-supplies' && (
                     <div className="flex items-center justify-between text-sm">
                         <div className={cn("flex items-center gap-2", currentStep === 'select-substance' && "text-violet-600 font-semibold")}>
                             <div className={cn("h-6 w-6 rounded-full flex items-center justify-center text-xs", 
@@ -396,6 +528,7 @@ export function LitmusTestLab() {
                             <span className="hidden sm:inline">Test & Observe</span>
                         </div>
                     </div>
+                    )}
 
                     {/* Step 1: Select Substance */}
                     {currentStep === 'select-substance' && (
@@ -422,7 +555,7 @@ export function LitmusTestLab() {
                                     >
                                         <Button
                                             variant="outline"
-                                            className="w-full h-24 flex-col gap-2 hover:border-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950 transition-all"
+                                            className="w-full h-24 flex-col gap-2 hover:border-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950 transition-all border-2"
                                             onClick={() => handleSelectSubstance(name as Substance)}
                                         >
                                             <span className="text-3xl">{info.emoji}</span>
@@ -458,7 +591,7 @@ export function LitmusTestLab() {
                                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                                     <Button
                                         variant="outline"
-                                        className="w-full h-40 flex-col gap-3 hover:border-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-all"
+                                        className="w-full h-40 flex-col gap-3 hover:border-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-all border-2"
                                         onClick={() => handleSelectPaper('Red')}
                                     >
                                         <div className="w-16 h-20 bg-red-500 rounded border-2 border-red-700 shadow-lg" />
@@ -471,7 +604,7 @@ export function LitmusTestLab() {
                                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                                     <Button
                                         variant="outline"
-                                        className="w-full h-40 flex-col gap-3 hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 transition-all"
+                                        className="w-full h-40 flex-col gap-3 hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 transition-all border-2"
                                         onClick={() => handleSelectPaper('Blue')}
                                     >
                                         <div className="w-16 h-20 bg-blue-500 rounded border-2 border-blue-700 shadow-lg" />
@@ -576,7 +709,7 @@ export function LitmusTestLab() {
                                     animate={{ opacity: 1, y: 0 }}
                                     className="flex gap-3"
                                 >
-                                    <Button onClick={handleReset} variant="outline" className="flex-1">
+                                    <Button onClick={handleReset} variant="outline" className="flex-1 border-2 border-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/20">
                                         <RefreshCw className="h-4 w-4 mr-2" />
                                         Test Another Substance
                                     </Button>
@@ -587,9 +720,9 @@ export function LitmusTestLab() {
                 </CardContent>
             </Card>
 
-            {/* Practice Mode */}
-            {showPractice && (
-                <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+                {/* Practice Mode */}
+                {showPractice && (
+                    <Card className="border-2 border-amber-200/50 dark:border-amber-800/50 bg-gradient-to-br from-white/90 to-amber-50/90 dark:from-gray-900/90 dark:to-amber-950/90 backdrop-blur-sm shadow-xl">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Sparkles className="h-5 w-5 text-amber-600" />
@@ -666,134 +799,282 @@ export function LitmusTestLab() {
                             </Card>
                         </div>
                     </CardContent>
-                </Card>
-            )}
+                    </Card>
+                )}
 
-            {/* Post-Lab Quiz */}
-            {result && currentStep === 'complete' && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                >
-                <Card id="quiz-section" className="border-2 border-green-200 dark:border-green-800">
-                    <CardHeader>
-                        <CardTitle>Post-Lab Assessment</CardTitle>
-                        <CardDescription>Test your understanding of the litmus paper test</CardDescription>
+                {/* Post-Lab Quiz */}
+                {result && (currentStep === 'quiz' || currentStep === 'complete') && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                    >
+                        <Card id="quiz-section" className="border-2 border-green-200/50 dark:border-green-800/50 bg-gradient-to-br from-white/90 to-green-50/90 dark:from-gray-900/90 dark:to-green-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                                Post-Lab Assessment
+                            </CardTitle>
+                            <CardDescription>Test your understanding of the litmus paper test</CardDescription>
                         </CardHeader>
-                    <CardContent>
-                        <div className="space-y-6">
-                            {/* Question 1 */}
-                            <div>
-                                <p className="text-base font-semibold mb-3">1. What type of substance is {selectedSubstance}?</p>
-                                <RadioGroup 
-                                    value={quizAnswers[1]} 
-                                    onValueChange={(value) => handleAnswerChange(1, value)} 
-                                    disabled={quizIsCorrect !== null}
-                                >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="acid" id="q1-acid" />
-                                        <Label htmlFor="q1-acid" className="flex-1 cursor-pointer">Acid</Label>
+                        <CardContent>
+                            <div className="space-y-6">
+                                {/* Question 1 */}
+                                <div className="space-y-3">
+                                    <Label className="text-base font-semibold">1. What type of substance is {selectedSubstance}?</Label>
+                                    <div className="grid gap-3">
+                                        {['acid', 'base', 'neutral'].map((option) => {
+                                            const isSelected = quizAnswers[1] === option;
+                                            const isCorrect = selectedSubstance ? option === substances[selectedSubstance].type.toLowerCase() : false;
+                                            return (
+                                                <motion.div
+                                                    key={option}
+                                                    onClick={() => !quizIsCorrect && handleAnswerChange(1, option)}
+                                                    className={cn(
+                                                        "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                        isSelected && !quizIsCorrect && "border-violet-500 bg-violet-50 dark:bg-violet-950/20",
+                                                        quizIsCorrect === true && isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                        quizIsCorrect === true && isSelected && !isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                        !isSelected && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                    )}
+                                                    whileHover={!quizIsCorrect ? { scale: 1.02 } : {}}
+                                                    whileTap={!quizIsCorrect ? { scale: 0.98 } : {}}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={cn(
+                                                            "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                            isSelected ? "border-violet-500 bg-violet-500" : "border-gray-300"
+                                                        )}>
+                                                            {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                                                        </div>
+                                                        <Label className="cursor-pointer flex-1 capitalize">{option}</Label>
+                                                        {quizIsCorrect === true && isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                        {quizIsCorrect === true && isSelected && !isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="base" id="q1-base" />
-                                        <Label htmlFor="q1-base" className="flex-1 cursor-pointer">Base</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="neutral" id="q1-neutral" />
-                                        <Label htmlFor="q1-neutral" className="flex-1 cursor-pointer">Neutral</Label>
-                                    </div>
-                                </RadioGroup>
-                            </div>
+                                </div>
 
-                            {/* Question 2 */}
-                            <div>
-                                <p className="text-base font-semibold mb-3">2. When {selectedPaper?.toLowerCase()} litmus paper is dipped in {selectedSubstance?.toLowerCase()}, what happens?</p>
-                                <RadioGroup 
-                                    value={quizAnswers[2]} 
-                                    onValueChange={(value) => handleAnswerChange(2, value)} 
-                                    disabled={quizIsCorrect !== null}
-                                >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="turns-red" id="q2-red" />
-                                        <Label htmlFor="q2-red" className="flex-1 cursor-pointer">Turns Red</Label>
+                                {/* Question 2 */}
+                                <div className="space-y-3">
+                                    <Label className="text-base font-semibold">2. When {selectedPaper?.toLowerCase()} litmus paper is dipped in {selectedSubstance?.toLowerCase()}, what happens?</Label>
+                                    <div className="grid gap-3">
+                                        {[
+                                            { value: 'turns-red', label: 'Turns Red' },
+                                            { value: 'turns-blue', label: 'Turns Blue' },
+                                            { value: 'no-change', label: 'No Change' },
+                                            { value: 'disappears', label: 'Disappears' }
+                                        ].map((option) => {
+                                            const isSelected = quizAnswers[2] === option.value;
+                                            const correctColorChange = result === 'Red' ? 'turns-red' : result === 'Blue' ? 'turns-blue' : 'no-change';
+                                            const isCorrect = option.value === correctColorChange;
+                                            return (
+                                                <motion.div
+                                                    key={option.value}
+                                                    onClick={() => !quizIsCorrect && handleAnswerChange(2, option.value)}
+                                                    className={cn(
+                                                        "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                        isSelected && !quizIsCorrect && "border-violet-500 bg-violet-50 dark:bg-violet-950/20",
+                                                        quizIsCorrect === true && isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                        quizIsCorrect === true && isSelected && !isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                        !isSelected && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                    )}
+                                                    whileHover={!quizIsCorrect ? { scale: 1.02 } : {}}
+                                                    whileTap={!quizIsCorrect ? { scale: 0.98 } : {}}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={cn(
+                                                            "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                            isSelected ? "border-violet-500 bg-violet-500" : "border-gray-300"
+                                                        )}>
+                                                            {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                                                        </div>
+                                                        <Label className="cursor-pointer flex-1">{option.label}</Label>
+                                                        {quizIsCorrect === true && isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                        {quizIsCorrect === true && isSelected && !isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="turns-blue" id="q2-blue" />
-                                        <Label htmlFor="q2-blue" className="flex-1 cursor-pointer">Turns Blue</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="no-change" id="q2-nochange" />
-                                        <Label htmlFor="q2-nochange" className="flex-1 cursor-pointer">No Change</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="disappears" id="q2-disappears" />
-                                        <Label htmlFor="q2-disappears" className="flex-1 cursor-pointer">Disappears</Label>
-                                    </div>
-                                </RadioGroup>
-                            </div>
+                                </div>
 
-                            {/* Question 3 */}
-                            <div>
-                                <p className="text-base font-semibold mb-3">3. What is the general rule for litmus paper color changes?</p>
-                                <RadioGroup 
-                                    value={quizAnswers[3]} 
-                                    onValueChange={(value) => handleAnswerChange(3, value)} 
-                                    disabled={quizIsCorrect !== null}
-                                >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="acids-blue-red" id="q3-acids" />
-                                        <Label htmlFor="q3-acids" className="flex-1 cursor-pointer">Acids turn blue litmus red</Label>
+                                {/* Question 3 */}
+                                <div className="space-y-3">
+                                    <Label className="text-base font-semibold">3. What is the general rule for litmus paper color changes?</Label>
+                                    <div className="grid gap-3">
+                                        {[
+                                            { value: 'acids-blue-red', label: 'Acids turn blue litmus red' },
+                                            { value: 'bases-red-blue', label: 'Bases turn red litmus blue' },
+                                            { value: 'both-rules', label: 'Both rules apply' },
+                                            { value: 'neither', label: 'Neither rule applies' }
+                                        ].map((option) => {
+                                            const isSelected = quizAnswers[3] === option.value;
+                                            const isCorrect = option.value === 'both-rules';
+                                            return (
+                                                <motion.div
+                                                    key={option.value}
+                                                    onClick={() => !quizIsCorrect && handleAnswerChange(3, option.value)}
+                                                    className={cn(
+                                                        "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                        isSelected && !quizIsCorrect && "border-violet-500 bg-violet-50 dark:bg-violet-950/20",
+                                                        quizIsCorrect === true && isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                        quizIsCorrect === true && isSelected && !isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                        !isSelected && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                    )}
+                                                    whileHover={!quizIsCorrect ? { scale: 1.02 } : {}}
+                                                    whileTap={!quizIsCorrect ? { scale: 0.98 } : {}}
+                                                >
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={cn(
+                                                            "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                            isSelected ? "border-violet-500 bg-violet-500" : "border-gray-300"
+                                                        )}>
+                                                            {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                                                        </div>
+                                                        <Label className="cursor-pointer flex-1">{option.label}</Label>
+                                                        {quizIsCorrect === true && isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                        {quizIsCorrect === true && isSelected && !isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
                                     </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="bases-red-blue" id="q3-bases" />
-                                        <Label htmlFor="q3-bases" className="flex-1 cursor-pointer">Bases turn red litmus blue</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="both-rules" id="q3-both" />
-                                        <Label htmlFor="q3-both" className="flex-1 cursor-pointer">Both rules apply</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="neither" id="q3-neither" />
-                                        <Label htmlFor="q3-neither" className="flex-1 cursor-pointer">Neither rule applies</Label>
-                                    </div>
-                                </RadioGroup>
-                            </div>
+                                </div>
                         </div>
 
-                        {quizFeedback && (
-                            <motion.p
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className={cn(
-                                    "mt-4 text-sm flex items-center gap-2 p-3 rounded-lg",
-                                    quizIsCorrect === true && "text-green-700 bg-green-100 dark:bg-green-900 dark:text-green-300",
-                                    quizIsCorrect === false && "text-red-700 bg-red-100 dark:bg-red-900 dark:text-red-300",
-                                    quizIsCorrect === null && "text-blue-700 bg-blue-100 dark:bg-blue-900 dark:text-blue-300"
+                                {quizFeedback && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className={cn(
+                                            "p-4 rounded-lg border-2 bg-gradient-to-r",
+                                            quizIsCorrect === true 
+                                                ? "from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-500 text-green-700 dark:text-green-300"
+                                                : "from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 border-amber-500 text-amber-700 dark:text-amber-300"
+                                        )}
+                                    >
+                                        <div className="flex items-start gap-2">
+                                            {quizIsCorrect === true ? (
+                                                <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                            ) : (
+                                                <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                            )}
+                                            <p className="text-sm font-medium">{quizFeedback}</p>
+                                        </div>
+                                    </motion.div>
                                 )}
-                            >
-                                {quizIsCorrect === true ? <CheckCircle className="h-5 w-5" /> : 
-                                 quizIsCorrect === false ? <XCircle className="h-5 w-5" /> :
-                                 <RefreshCw className="h-5 w-5" />}
-                                {quizFeedback}
-                            </motion.p>
-                        )}
-                    </CardContent>
-                    <CardFooter>
-                        <Button 
-                            onClick={handleQuizSubmit} 
-                            disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect !== null}
-                            className="bg-green-600 hover:bg-green-700"
-                        >
-                            {quizIsCorrect === true ? "✓ All Correct!" : quizIsCorrect === false ? "See Answers" : "Submit Answers"}
-                        </Button>
-                    </CardFooter>
-                </Card>
-                </motion.div>
-            )}
 
-            {/* Conclusion - Only shows after quiz is answered */}
-            {currentStep === 'complete' && quizIsCorrect !== null && (
+                                <Button 
+                                    onClick={handleQuizSubmit} 
+                                    className={cn(
+                                        "w-full shadow-lg",
+                                        quizIsCorrect === false 
+                                            ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                                            : "bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600"
+                                    )}
+                                    size="lg"
+                                    disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect === true}
+                                >
+                                    {quizIsCorrect === true ? (
+                                        <>
+                                            <CheckCircle className="mr-2 h-5 w-5" />
+                                            Quiz Completed
+                                        </>
+                                    ) : quizIsCorrect === false ? (
+                                        <>
+                                            <RefreshCw className="mr-2 h-5 w-5" />
+                                            Try Again
+                                        </>
+                                    ) : (
+                                        <>
+                                            <CheckCircle className="mr-2 h-5 w-5" />
+                                            Submit Answers
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        </CardContent>
+                        </Card>
+                    </motion.div>
+                )}
+
+                {/* Lab Complete Section */}
+                {currentStep === 'complete' && quizIsCorrect === true && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="relative"
+                    >
+                        <Card className="border-2 border-yellow-300 dark:border-yellow-700 bg-gradient-to-br from-yellow-50/90 via-orange-50/90 to-pink-50/90 dark:from-yellow-950/90 dark:via-orange-950/90 dark:to-pink-950/90 backdrop-blur-sm shadow-2xl overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-orange-400/20 to-pink-400/20 animate-pulse" />
+                            <CardContent className="relative p-8 text-center space-y-6">
+                                <motion.div
+                                    animate={{ 
+                                        scale: [1, 1.1, 1],
+                                        rotate: [0, 5, -5, 0]
+                                    }}
+                                    transition={{ 
+                                        repeat: Infinity,
+                                        duration: 2
+                                    }}
+                                    className="text-8xl mb-4"
+                                >
+                                    🏆
+                                </motion.div>
+                                <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-orange-600 to-pink-600 bg-clip-text text-transparent">
+                                    Lab Complete!
+                                </h2>
+                                {xpEarned !== null && (
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ delay: 0.2, type: "spring" }}
+                                        className="flex items-center justify-center gap-2 text-3xl font-black text-violet-600 dark:text-violet-400"
+                                    >
+                                        <Award className="h-8 w-8" />
+                                        <span>+{xpEarned} XP</span>
+                                    </motion.div>
+                                )}
+                                <div className="space-y-4 pt-4">
+                                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">What You Learned:</h3>
+                                    <ul className="text-left space-y-2 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>Acids turn blue litmus paper red</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>Bases turn red litmus paper blue</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>Neutral substances cause no color change</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>Litmus paper is a simple pH indicator made from lichens</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <Button 
+                                    onClick={handleReset} 
+                                    variant="outline" 
+                                    className="mt-6 border-2 border-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/20"
+                                    size="lg"
+                                >
+                                    <RefreshCw className="h-4 w-4 mr-2" />
+                                    Restart Lab
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                )}
+
+                {/* Conclusion - Only shows after quiz is answered */}
+                {currentStep === 'complete' && quizIsCorrect !== null && (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -842,10 +1123,10 @@ export function LitmusTestLab() {
                         </CardContent>
                     </Card>
                 </motion.div>
-            )}
+                )}
 
-            {/* Lab Notes - Always Available */}
-            <Card className="border-2 border-amber-200 dark:border-amber-800">
+                {/* Lab Notes - Always Available */}
+                <Card className="border-2 border-amber-200/50 dark:border-amber-800/50 bg-gradient-to-br from-white/90 to-amber-50/90 dark:from-gray-900/90 dark:to-amber-950/90 backdrop-blur-sm shadow-xl">
                 <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="lab-notes" className="border-none">
                         <AccordionTrigger className="px-6 pt-6 hover:no-underline">
@@ -871,6 +1152,7 @@ export function LitmusTestLab() {
                     </AccordionItem>
                 </Accordion>
             </Card>
+            </div>
         </div>
     );
 }
