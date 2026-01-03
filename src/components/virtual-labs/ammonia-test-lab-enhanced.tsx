@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
-import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Flame, TestTube, Wind, Sparkles, Zap, Droplets, Package } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Flame, TestTube, Wind, Sparkles, Zap, Droplets, Package, Award, Trophy } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';
 import { TextToSpeech } from '../text-to-speech';
@@ -16,8 +16,9 @@ import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
 import { LabNotes } from './LabNotes';
 import { Alert, AlertDescription } from '../ui/alert';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
-type TestStep = 'intro' | 'setup' | 'heating' | 'gas-produced' | 'testing' | 'result' | 'complete';
+type TestStep = 'intro' | 'collect-supplies' | 'setup' | 'heating' | 'gas-produced' | 'testing' | 'result' | 'quiz' | 'complete';
 type DragItem = 'bunsen' | 'litmus' | null;
 
 export function AmmoniaTestLab() {
@@ -30,8 +31,14 @@ export function AmmoniaTestLab() {
     const [teacherMessage, setTeacherMessage] = React.useState('');
     const [bunsenPlaced, setBunsenPlaced] = React.useState(false);
     const [litmusPlaced, setLitmusPlaced] = React.useState(false);
-    const [showSupplies, setShowSupplies] = React.useState(true);
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+    
+    const labSupplies: SupplyItem[] = [
+        { id: 'ammonium-chloride', name: 'Ammonium Chloride', emoji: '🧪', description: 'NH₄Cl compound for testing' },
+        { id: 'test-tube', name: 'Test Tube', emoji: '🔬', description: 'Container for the compound' },
+        { id: 'bunsen-burner', name: 'Bunsen Burner', emoji: '🔥', description: 'Heat source for decomposition' },
+        { id: 'red-litmus', name: 'Red Litmus Paper', emoji: '📄', description: 'Indicator paper to test for base' },
+    ];
     const [startTime] = React.useState(Date.now());
     const [xpEarned, setXpEarned] = React.useState<number | null>(null);
     const [showCelebration, setShowCelebration] = React.useState(false);
@@ -65,8 +72,30 @@ export function AmmoniaTestLab() {
     }, [currentStep]);
 
     const handleStartLab = () => {
+        setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
+        setCurrentStep('collect-supplies');
+    };
+
+    const handleCollectSupply = (itemId: string) => {
+        if (!collectedSupplies.includes(itemId)) {
+            setCollectedSupplies(prev => {
+                const newCollected = [...prev, itemId];
+                if (newCollected.length === labSupplies.length) {
+                    setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
+                }
+                return newCollected;
+            });
+            toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
+        }
+    };
+
+    const handleAllSuppliesCollected = () => {
+        setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
+    };
+
+    const handleContinueToSetup = () => {
         setCurrentStep('setup');
-        setTeacherMessage("Great! Now click the Bunsen burner from the supplies drawer to place it under the test tube and start heating.");
+        setTeacherMessage("Great! Now click the Bunsen burner to place it under the test tube and start heating.");
     };
 
     const handleBunsenDrop = () => {
@@ -82,10 +111,9 @@ export function AmmoniaTestLab() {
                 toast({ title: '🔥 Heating Started...', description: 'Ammonium compound is decomposing' });
             }, 500);
             
-            // Set up the pending transition - will execute when teacher finishes speaking
-            setPendingTransition(() => () => {
+            // Transition after heating animation completes
+            setTimeout(() => {
                 setCurrentStep('gas-produced');
-                setShowSupplies(true); // Show supplies again for litmus paper
                 setTeacherMessage("Excellent observation! Ammonia gas is now being released with its characteristic pungent smell. Now click the red litmus paper to test the gas.");
                 toast({ 
                     title: '💨 Ammonia Gas Produced!', 
@@ -93,7 +121,7 @@ export function AmmoniaTestLab() {
                     className: 'bg-blue-100 dark:bg-blue-900 border-blue-500'
                 });
                 setIsAnimating(false);
-            });
+            }, 3000);
         }
     };
 
@@ -106,8 +134,8 @@ export function AmmoniaTestLab() {
             
             toast({ title: '📄 Testing with Litmus...', description: 'Observing color change' });
             
-            // Wait for teacher to finish, then transition to result
-            setPendingTransition(() => () => {
+            // Transition to result after testing animation
+            setTimeout(() => {
                 setCurrentStep('result');
                 setTeacherMessage("Fantastic! The red litmus paper turned blue! This proves that ammonia is a BASE. Remember, bases turn red litmus blue. Well done!");
                 toast({ 
@@ -115,15 +143,14 @@ export function AmmoniaTestLab() {
                     description: 'Red litmus turned BLUE - Base confirmed!',
                     className: 'bg-green-100 dark:bg-green-900 border-green-500'
                 });
+                setIsAnimating(false);
                 
-                // Set up next transition after this message completes
-                setPendingTransition(() => () => {
-                    setCurrentStep('complete');
-                    setTeacherMessage("Excellent work! You have successfully identified ammonia as a base. Now scroll down and try the quiz below to earn your XP!");
-                    setIsAnimating(false);
-                    setPendingTransition(null); // Clear pending transitions
-                });
-            });
+                // Transition to quiz after showing result
+                setTimeout(() => {
+                    setCurrentStep('quiz');
+                    setTeacherMessage("Time to test your understanding! Answer these questions based on what you observed in the experiment. Good luck!");
+                }, 3000);
+            }, 3000);
         }
     };
 
@@ -137,18 +164,13 @@ export function AmmoniaTestLab() {
         setQuizFeedback(null);
         setQuizAttempts(0);
         setQuizIsCorrect(null);
-        setPendingTransition(null);
+        setCollectedSupplies([]);
         setTeacherMessage("Let's do the experiment again! I will guide you through each step. Click Begin Experiment when you are ready.");
         toast({ title: '🔄 Lab Reset', description: 'Ready to start fresh' });
     };
 
-    // Handle teacher voice completion - execute pending transition
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null); // Clear BEFORE executing
-            transition(); // Execute (may set a new pending transition)
-        }
+        // Direct state updates - no pending transitions
     };
 
     const handleQuizSubmit = () => {
@@ -194,6 +216,11 @@ export function AmmoniaTestLab() {
             setTimeout(() => setShowCelebration(false), 5000);
             
             setTeacherMessage(`Outstanding! You earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Keep up the great work!`);
+            
+            // Transition to complete step
+            setTimeout(() => {
+                setCurrentStep('complete');
+            }, 2000);
         } else {
             if (newAttempts === 1) {
                 setQuizFeedback(`You got ${correctCount} out of ${totalQuestions} correct. Review the experiment and try again! 🔄`);
@@ -218,7 +245,35 @@ export function AmmoniaTestLab() {
     const safetyText = "Handle ammonia in a well-ventilated area or fume hood due to its strong, irritating odor. Wear safety goggles to protect your eyes. Avoid directly inhaling the gas. Handle heat sources with care. Do not heat ammonium compounds in closed containers as pressure may build up.";
 
     return (
-        <div className="space-y-6">
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Cyan/Blue Chemistry Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-indigo-950/30" />
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-cyan-200/40 to-blue-300/40 dark:from-cyan-800/20 dark:to-blue-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative max-w-5xl mx-auto p-4 space-y-6">
             {/* Celebration Overlay */}
             <AnimatePresence>
                 {showCelebration && xpEarned !== null && (
@@ -290,7 +345,11 @@ export function AmmoniaTestLab() {
             <TeacherVoice message={teacherMessage} onComplete={handleTeacherComplete} />
 
             {/* Objective */}
-            <Card className="border-2 border-cyan-200 dark:border-cyan-800">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <div className="flex items-center justify-between flex-wrap gap-2">
                         <CardTitle className="flex items-center gap-2">
@@ -312,7 +371,7 @@ export function AmmoniaTestLab() {
             </Card>
 
             {/* Theory & Safety */}
-            <Card>
+            <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <CardTitle>Lab Information</CardTitle>
                     <CardDescription>Essential background and safety guidelines</CardDescription>
@@ -352,7 +411,7 @@ export function AmmoniaTestLab() {
             </Card>
 
             {/* Main Experiment */}
-            <Card className="border-2 border-violet-200 dark:border-violet-800">
+            <Card className="border-2 border-violet-200/50 dark:border-violet-800/50 bg-gradient-to-br from-white/90 to-violet-50/90 dark:from-gray-900/90 dark:to-violet-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <CardTitle className="flex items-center gap-2">
@@ -363,17 +422,8 @@ export function AmmoniaTestLab() {
                             <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => setShowSupplies(!showSupplies)}
-                                className="text-xs sm:text-sm"
-                            >
-                                <Package className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                                {showSupplies ? 'Hide' : 'Show'} Supplies
-                            </Button>
-                            <Button 
-                                variant="outline" 
-                                size="sm"
                                 onClick={() => setShowPractice(!showPractice)}
-                                className="text-xs sm:text-sm"
+                                className="text-xs sm:text-sm border-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
                             >
                                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                                 {showPractice ? 'Hide' : 'Show'} Practice
@@ -396,15 +446,44 @@ export function AmmoniaTestLab() {
                             <Button 
                                 onClick={handleStartLab}
                                 size="lg"
-                                className="bg-violet-600 hover:bg-violet-700"
+                                className="bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white shadow-lg"
                             >
+                                <Sparkles className="w-5 h-5 mr-2" />
                                 Begin Experiment
                             </Button>
                         </motion.div>
                     )}
 
+                    {/* Collect Supplies Step */}
+                    {currentStep === 'collect-supplies' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                        >
+                            <LabSupplies
+                                supplies={labSupplies}
+                                collectedItems={collectedSupplies}
+                                onCollect={handleCollectSupply}
+                                onAllCollected={handleAllSuppliesCollected}
+                                requiredCount={labSupplies.length}
+                            />
+                            {collectedSupplies.length === labSupplies.length && (
+                                <CardFooter className="mt-4">
+                                    <Button 
+                                        onClick={handleContinueToSetup} 
+                                        className="w-full bg-gradient-to-r from-violet-500 to-blue-500 hover:from-violet-600 hover:to-blue-600 text-white shadow-lg" 
+                                        size="lg"
+                                    >
+                                        Continue to Setup
+                                    </Button>
+                                </CardFooter>
+                            )}
+                        </motion.div>
+                    )}
+
                     {/* Progress Steps */}
-                    {currentStep !== 'intro' && (
+                    {currentStep !== 'intro' && currentStep !== 'collect-supplies' && (
                         <div className="flex items-center justify-between text-sm">
                             <div className={cn("flex items-center gap-2", (currentStep === 'setup' || currentStep === 'heating') && "text-violet-600 font-semibold")}>
                                 <div className={cn("h-6 w-6 rounded-full flex items-center justify-center text-xs", 
@@ -920,12 +999,72 @@ export function AmmoniaTestLab() {
                         <Button 
                             onClick={handleQuizSubmit} 
                             disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect !== null}
-                            className="bg-green-600 hover:bg-green-700"
+                            className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
                         >
                             {quizIsCorrect === true ? "✓ All Correct!" : quizIsCorrect === false ? "See Answers" : "Submit Answers"}
                         </Button>
                     </CardFooter>
                 </Card>
+                </motion.div>
+            )}
+
+            {/* Lab Complete Section */}
+            {currentStep === 'complete' && (
+                <motion.div
+                    key="complete"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="text-center space-y-6 py-8"
+                >
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2, type: 'spring' }}
+                    >
+                        <Trophy className="w-24 h-24 text-yellow-500 mx-auto mb-4" />
+                    </motion.div>
+
+                    <div className="space-y-2">
+                        <h3 className="text-3xl font-bold">Congratulations! 🎉</h3>
+                        <p className="text-xl text-muted-foreground">
+                            You've completed the Ammonia Test Lab
+                        </p>
+                    </div>
+
+                    {xpEarned !== null && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-gradient-to-r from-cyan-400 to-blue-400 dark:from-cyan-600 dark:to-blue-600 p-6 rounded-lg text-center"
+                        >
+                            <div className="flex items-center justify-center gap-3 text-3xl font-bold text-white">
+                                <Award className="h-8 w-8" />
+                                +{xpEarned} XP Earned!
+                            </div>
+                        </motion.div>
+                    )}
+
+                    <div className="prose dark:prose-invert max-w-none text-left bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950 p-6 rounded-lg border-2 border-cyan-200/50 dark:border-cyan-800/50">
+                        <h4 className="text-lg font-semibold mb-3">What You Learned:</h4>
+                        <ul className="space-y-2">
+                            <li>✓ Ammonia (NH₃) is a colorless gas with a pungent smell</li>
+                            <li>✓ Ammonia is a base that turns red litmus paper blue</li>
+                            <li>✓ Ammonium salts decompose when heated to release ammonia</li>
+                            <li>✓ Ammonia dissolves in water to form ammonium hydroxide (NH₄OH)</li>
+                            <li>✓ The test confirms the presence of ammonia gas</li>
+                        </ul>
+                    </div>
+
+                    <Button 
+                        onClick={handleReset} 
+                        size="lg" 
+                        variant="outline"
+                        className="border-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
+                    >
+                        <RefreshCw className="h-5 w-5 mr-2" />
+                        Restart Lab
+                    </Button>
                 </motion.div>
             )}
 
@@ -936,7 +1075,7 @@ export function AmmoniaTestLab() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Card className="border-2 border-violet-200 dark:border-violet-800">
+                    <Card className="border-2 border-violet-200/50 dark:border-violet-800/50 bg-gradient-to-br from-white/90 to-violet-50/90 dark:from-gray-900/90 dark:to-violet-950/90 backdrop-blur-sm shadow-xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <CheckCircle className="h-5 w-5 text-green-600" />
@@ -983,7 +1122,7 @@ export function AmmoniaTestLab() {
             )}
 
             {/* Lab Notes - Always Available */}
-            <Card className="border-2 border-amber-200 dark:border-amber-800">
+            <Card className="border-2 border-amber-200/50 dark:border-amber-800/50 bg-gradient-to-br from-white/90 to-amber-50/90 dark:from-gray-900/90 dark:to-amber-950/90 backdrop-blur-sm shadow-xl">
                 <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="lab-notes" className="border-none">
                         <AccordionTrigger className="px-6 pt-6 hover:no-underline">
@@ -1009,6 +1148,8 @@ export function AmmoniaTestLab() {
                     </AccordionItem>
                 </Accordion>
             </Card>
+            </motion.div>
+            </div>
         </div>
     );
 }
