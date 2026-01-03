@@ -1,12 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
-import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, TestTube, Wind, Sparkles, Package, Eye, Droplets } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, TestTube, Wind, Sparkles, Package, Eye, Droplets, Award, Trophy } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Alert, AlertDescription } from '../ui/alert';
 import { cn } from '@/lib/utils';
@@ -16,8 +16,9 @@ import { TeacherVoice } from './TeacherVoice';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
 import { LabNotes } from './LabNotes';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
-type TestStep = 'intro' | 'setup' | 'exhale' | 'observe' | 'result' | 'complete';
+type TestStep = 'intro' | 'collect-supplies' | 'setup' | 'exhale' | 'observe' | 'result' | 'quiz' | 'complete';
 
 export function LimewaterTestLabEnhanced() {
     const { toast } = useToast();
@@ -30,8 +31,13 @@ export function LimewaterTestLabEnhanced() {
     const [gogglesWorn, setGogglesWorn] = React.useState(false);
     const [beakerPlaced, setBeakerPlaced] = React.useState(false);
     const [strawPlaced, setStrawPlaced] = React.useState(false);
-    const [showSupplies, setShowSupplies] = React.useState(true);
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+    
+    const labSupplies: SupplyItem[] = [
+        { id: 'safety-goggles', name: 'Safety Goggles', emoji: '🥽', description: 'Eye protection' },
+        { id: 'limewater-beaker', name: 'Beaker with Limewater', emoji: '🧪', description: 'Ca(OH)₂ solution for testing' },
+        { id: 'drinking-straw', name: 'Drinking Straw', emoji: '🥤', description: 'For breathing CO₂ into limewater' },
+    ];
     const [startTime] = React.useState(Date.now());
     const [xpEarned, setXpEarned] = React.useState<number | null>(null);
     const [showCelebration, setShowCelebration] = React.useState(false);
@@ -57,7 +63,7 @@ export function LimewaterTestLabEnhanced() {
 
     // Scroll to quiz when it appears
     React.useEffect(() => {
-        if (currentStep === 'complete') {
+        if (currentStep === 'quiz') {
             setTimeout(() => {
                 const quizElement = document.getElementById('quiz-section');
                 if (quizElement) {
@@ -86,6 +92,28 @@ export function LimewaterTestLabEnhanced() {
     }, [currentStep, strawPlaced]);
 
     const handleStartLab = () => {
+        setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
+        setCurrentStep('collect-supplies');
+    };
+
+    const handleCollectSupply = (itemId: string) => {
+        if (!collectedSupplies.includes(itemId)) {
+            setCollectedSupplies(prev => {
+                const newCollected = [...prev, itemId];
+                if (newCollected.length === labSupplies.length) {
+                    setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
+                }
+                return newCollected;
+            });
+            toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
+        }
+    };
+
+    const handleAllSuppliesCollected = () => {
+        setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
+    };
+
+    const handleContinueToSetup = () => {
         setCurrentStep('setup');
         setTeacherMessage("Great! Now let's prepare our equipment. First, click the safety goggles to wear them for eye protection.");
     };
@@ -115,7 +143,6 @@ export function LimewaterTestLabEnhanced() {
     const handleStrawClick = () => {
         if (currentStep === 'setup' && gogglesWorn && beakerPlaced && !strawPlaced) {
             setStrawPlaced(true);
-            setShowSupplies(false);
             setTeacherMessage("Perfect setup! Now click the 'Start Breathing' button and blow gently into the straw. Watch what happens to the limewater as you exhale carbon dioxide.");
             
             toast({ 
@@ -136,8 +163,8 @@ export function LimewaterTestLabEnhanced() {
                 description: 'CO₂ from your breath is reacting...' 
             });
 
-            // Set up transition to observe step after teacher finishes
-            setPendingTransition(() => () => {
+            // Transition to observe step after breathing animation
+            setTimeout(() => {
                 setCurrentStep('observe');
                 setTeacherMessage("Excellent observation! The limewater is turning milky white. This happens because the carbon dioxide in your breath is reacting with the calcium hydroxide in the limewater, forming calcium carbonate particles.");
                 
@@ -147,8 +174,8 @@ export function LimewaterTestLabEnhanced() {
                     className: 'bg-blue-100 dark:bg-blue-900 border-blue-500'
                 });
 
-                // Set up next transition to result
-                setPendingTransition(() => () => {
+                // Transition to result after observation
+                setTimeout(() => {
                     setCurrentStep('result');
                     setTeacherMessage("Fantastic! The limewater has turned completely milky white! This is the positive test for carbon dioxide. The reaction is: CO₂ + Ca(OH)₂ → CaCO₃ + H₂O. Well done!");
                     
@@ -159,14 +186,13 @@ export function LimewaterTestLabEnhanced() {
                     });
                     setIsAnimating(false);
 
-                    // Final transition to complete
-                    setPendingTransition(() => () => {
-                        setCurrentStep('complete');
-                        setTeacherMessage("Excellent work! You have successfully tested for carbon dioxide using the limewater test. Now scroll down and try the quiz to earn your XP!");
-                        setPendingTransition(null);
-                    });
-                });
-            });
+                    // Transition to quiz after showing result - give students time to observe
+                    setTimeout(() => {
+                        setCurrentStep('quiz');
+                        setTeacherMessage("Excellent work! You have successfully tested for carbon dioxide using the limewater test. Now answer the quiz below to earn your XP!");
+                    }, 8000); // 8 seconds to observe the milky result
+                }, 4000); // 4 seconds for observation
+            }, 5000); // 5 seconds of breathing animation
         }
     };
 
@@ -176,7 +202,7 @@ export function LimewaterTestLabEnhanced() {
         setGogglesWorn(false);
         setBeakerPlaced(false);
         setStrawPlaced(false);
-        setShowSupplies(true);
+        setCollectedSupplies([]);
         setMilkinessLevel(0);
         setBubbleCount(0);
         setTimer(0);
@@ -184,22 +210,25 @@ export function LimewaterTestLabEnhanced() {
         setQuizFeedback(null);
         setQuizAttempts(0);
         setQuizIsCorrect(null);
-        setPendingTransition(null);
         setTeacherMessage("Let's do the experiment again! I will guide you through each step. Click Begin Experiment when you are ready.");
         toast({ title: '🔄 Lab Reset', description: 'Ready to start fresh' });
     };
 
-    // Handle teacher voice completion - execute pending transition
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // Direct state updates - no pending transitions
     };
 
     const handleQuizSubmit = () => {
-        if (quizIsCorrect !== null) return;
+        // If already correct, don't allow resubmission
+        if (quizIsCorrect === true) return;
+        
+        // If wrong and showing answers, allow retry by resetting
+        if (quizIsCorrect === false) {
+            setQuizIsCorrect(null);
+            setQuizFeedback(null);
+            setQuizAnswers({});
+            return;
+        }
         
         const correctAnswers: { [key: number]: string } = {
             1: 'milky',
@@ -239,6 +268,11 @@ export function LimewaterTestLabEnhanced() {
             setTimeout(() => setShowCelebration(false), 5000);
             
             setTeacherMessage(`Outstanding! You earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Keep up the great work!`);
+            
+            // Transition to complete step after quiz is correct
+            setTimeout(() => {
+                setCurrentStep('complete');
+            }, 2000);
         } else {
             if (newAttempts === 1) {
                 setQuizFeedback(`You got ${correctCount} out of ${totalQuestions} correct. Review the experiment and try again! 🔄`);
@@ -263,7 +297,35 @@ export function LimewaterTestLabEnhanced() {
     const safetyText = "Wear safety goggles to protect your eyes. Do not drink the limewater - calcium hydroxide is caustic. Breathe gently through the straw to avoid inhaling liquid. Ensure good ventilation in the lab. Wash hands after the experiment. Do not share straws between students.";
 
     return (
-        <div className="space-y-6">
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Cyan/Blue CO2 Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-indigo-950/30" />
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-cyan-200/40 to-blue-300/40 dark:from-cyan-800/20 dark:to-blue-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative max-w-5xl mx-auto p-4 space-y-6">
             {/* Celebration Overlay */}
             <AnimatePresence>
                 {showCelebration && xpEarned !== null && (
@@ -335,7 +397,11 @@ export function LimewaterTestLabEnhanced() {
             <TeacherVoice message={teacherMessage} onComplete={handleTeacherComplete} />
 
             {/* Objective */}
-            <Card className="border-2 border-cyan-200 dark:border-cyan-800">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <div className="flex items-center justify-between flex-wrap gap-2">
                         <CardTitle className="flex items-center gap-2">
@@ -357,7 +423,7 @@ export function LimewaterTestLabEnhanced() {
             </Card>
 
             {/* Theory & Safety */}
-            <Card>
+            <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <CardTitle>Lab Information</CardTitle>
                     <CardDescription>Essential background and safety guidelines</CardDescription>
@@ -397,7 +463,7 @@ export function LimewaterTestLabEnhanced() {
             </Card>
 
             {/* Main Experiment */}
-            <Card className="border-2 border-violet-200 dark:border-violet-800">
+            <Card className="border-2 border-violet-200/50 dark:border-violet-800/50 bg-gradient-to-br from-white/90 to-violet-50/90 dark:from-gray-900/90 dark:to-violet-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <CardTitle className="flex items-center gap-2">
@@ -408,17 +474,8 @@ export function LimewaterTestLabEnhanced() {
                             <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => setShowSupplies(!showSupplies)}
-                                className="text-xs sm:text-sm"
-                            >
-                                <Package className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                                {showSupplies ? 'Hide' : 'Show'} Supplies
-                            </Button>
-                            <Button 
-                                variant="outline" 
-                                size="sm"
                                 onClick={() => setShowPractice(!showPractice)}
-                                className="text-xs sm:text-sm"
+                                className="text-xs sm:text-sm border-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
                             >
                                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                                 {showPractice ? 'Hide' : 'Show'} Practice
@@ -441,15 +498,44 @@ export function LimewaterTestLabEnhanced() {
                             <Button 
                                 onClick={handleStartLab}
                                 size="lg"
-                                className="bg-violet-600 hover:bg-violet-700"
+                                className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                             >
+                                <Sparkles className="w-5 h-5 mr-2" />
                                 Begin Experiment
                             </Button>
                         </motion.div>
                     )}
 
+                    {/* Collect Supplies Step */}
+                    {currentStep === 'collect-supplies' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                        >
+                            <LabSupplies
+                                supplies={labSupplies}
+                                collectedItems={collectedSupplies}
+                                onCollect={handleCollectSupply}
+                                onAllCollected={handleAllSuppliesCollected}
+                                requiredCount={labSupplies.length}
+                            />
+                            {collectedSupplies.length === labSupplies.length && (
+                                <CardFooter className="mt-4">
+                                    <Button 
+                                        onClick={handleContinueToSetup} 
+                                        className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg" 
+                                        size="lg"
+                                    >
+                                        Continue to Setup
+                                    </Button>
+                                </CardFooter>
+                            )}
+                        </motion.div>
+                    )}
+
                     {/* Progress Steps */}
-                    {currentStep !== 'intro' && (
+                    {currentStep !== 'intro' && currentStep !== 'collect-supplies' && (
                         <div className="flex items-center justify-between text-sm">
                             <div className={cn("flex items-center gap-2", currentStep === 'setup' && "text-violet-600 font-semibold")}>
                                 <div className={cn("h-6 w-6 rounded-full flex items-center justify-center text-xs", 
@@ -509,6 +595,24 @@ export function LimewaterTestLabEnhanced() {
                                 </motion.div>
                             )}
 
+                            {/* Safety Goggles - Clickable in setup */}
+                            {currentStep === 'setup' && !gogglesWorn && (
+                                <motion.div
+                                    onClick={handleGogglesClick}
+                                    whileHover={{ scale: 1.1 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="absolute top-8 left-1/2 -translate-x-1/2 z-10 cursor-pointer"
+                                >
+                                    <motion.div
+                                        animate={{ y: [0, -5, 0] }}
+                                        transition={{ repeat: Infinity, duration: 1.5 }}
+                                        className="text-6xl"
+                                    >
+                                        🥽
+                                    </motion.div>
+                                </motion.div>
+                            )}
+
                             {/* Safety Goggles (when worn) */}
                             {gogglesWorn && (
                                 <motion.div
@@ -517,6 +621,23 @@ export function LimewaterTestLabEnhanced() {
                                     className="absolute top-8 left-1/2 -translate-x-1/2 z-10"
                                 >
                                     <div className="text-4xl">🥽</div>
+                                </motion.div>
+                            )}
+
+                            {/* Beaker - Clickable in setup */}
+                            {currentStep === 'setup' && gogglesWorn && !beakerPlaced && (
+                                <motion.div
+                                    onClick={handleBeakerClick}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="absolute bottom-32 left-1/2 -translate-x-1/2 z-10 cursor-pointer"
+                                >
+                                    <motion.div
+                                        animate={{ y: [0, -3, 0] }}
+                                        transition={{ repeat: Infinity, duration: 1.5 }}
+                                    >
+                                        <TestTube className="h-32 w-32 text-cyan-500" />
+                                    </motion.div>
                                 </motion.div>
                             )}
 
@@ -586,6 +707,25 @@ export function LimewaterTestLabEnhanced() {
                                             ))}
                                         </div>
 
+                                        {/* Straw - Clickable in setup */}
+                                        {currentStep === 'setup' && beakerPlaced && !strawPlaced && (
+                                            <motion.div
+                                                onClick={handleStrawClick}
+                                                whileHover={{ scale: 1.1 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                className="absolute left-1/2 -translate-x-1/2 top-0 w-3 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-t-lg z-20 cursor-pointer"
+                                                style={{ height: '75%' }}
+                                                initial={{ y: -100, opacity: 0 }}
+                                                animate={{ y: 0, opacity: 1 }}
+                                            >
+                                                <motion.div
+                                                    animate={{ y: [0, -3, 0] }}
+                                                    transition={{ repeat: Infinity, duration: 1.5 }}
+                                                    className="absolute -top-1 left-0 right-0 h-2 bg-yellow-300 rounded-t-lg border border-yellow-500"
+                                                />
+                                            </motion.div>
+                                        )}
+
                                         {/* Straw */}
                                         {strawPlaced && (
                                             <motion.div
@@ -647,7 +787,7 @@ export function LimewaterTestLabEnhanced() {
                                     <Button
                                         onClick={handleStartBreathing}
                                         size="lg"
-                                        className="bg-green-600 hover:bg-green-700 shadow-xl"
+                                        className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-xl"
                                     >
                                         <Wind className="mr-2 h-5 w-5" />
                                         Start Breathing
@@ -668,88 +808,13 @@ export function LimewaterTestLabEnhanced() {
                         </div>
                     )}
 
-                    {/* Reset Button */}
-                    {currentStep === 'complete' && (
-                        <Button onClick={handleReset} variant="outline" className="w-full">
-                            <RefreshCw className="h-4 w-4 mr-2" />
-                            Reset and Try Again
-                        </Button>
-                    )}
                 </CardContent>
             </Card>
 
-            {/* Lab Supplies Drawer */}
-            {showSupplies && currentStep !== 'intro' && currentStep !== 'complete' && currentStep !== 'exhale' && currentStep !== 'observe' && currentStep !== 'result' && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                >
-                    <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg">
-                                <Package className="h-5 w-5 text-amber-600" />
-                                Lab Supplies - Click to Use
-                            </CardTitle>
-                            <CardDescription>Click items to add them to the experiment area</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex gap-6 justify-center flex-wrap">
-                                {/* Safety Goggles */}
-                                {!gogglesWorn && currentStep === 'setup' && (
-                                    <motion.div
-                                        onClick={handleGogglesClick}
-                                        whileHover={{ scale: 1.05, y: -5 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-blue-300 dark:border-blue-700 hover:border-blue-500 hover:shadow-xl transition-all"
-                                    >
-                                        <div className="flex flex-col items-center gap-2">
-                                            <div className="text-5xl">🥽</div>
-                                            <span className="text-sm font-medium">Safety Goggles</span>
-                                            <span className="text-xs text-muted-foreground">Click to Use</span>
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                {/* Beaker with Limewater */}
-                                {!beakerPlaced && gogglesWorn && currentStep === 'setup' && (
-                                    <motion.div
-                                        onClick={handleBeakerClick}
-                                        whileHover={{ scale: 1.05, y: -5 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-green-300 dark:border-green-700 hover:border-green-500 hover:shadow-xl transition-all"
-                                    >
-                                        <div className="flex flex-col items-center gap-2">
-                                            <TestTube className="h-16 w-16 text-cyan-500" />
-                                            <span className="text-sm font-medium">Beaker with Limewater</span>
-                                            <span className="text-xs text-muted-foreground">Click to Use</span>
-                                        </div>
-                                    </motion.div>
-                                )}
-
-                                {/* Drinking Straw */}
-                                {!strawPlaced && beakerPlaced && currentStep === 'setup' && (
-                                    <motion.div
-                                        onClick={handleStrawClick}
-                                        whileHover={{ scale: 1.05, y: -5 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-orange-300 dark:border-orange-700 hover:border-orange-500 hover:shadow-xl transition-all"
-                                    >
-                                        <div className="flex flex-col items-center gap-2">
-                                            <div className="w-3 h-20 bg-gradient-to-b from-yellow-400 to-orange-400 rounded-lg" />
-                                            <span className="text-sm font-medium">Drinking Straw</span>
-                                            <span className="text-xs text-muted-foreground">Click to Use</span>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </motion.div>
-            )}
 
             {/* Practice Mode */}
             {showPractice && (
-                <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+                <Card className="border-2 border-amber-200/50 dark:border-amber-800/50 bg-gradient-to-br from-white/90 to-amber-50/90 dark:from-gray-900/90 dark:to-amber-950/90 backdrop-blur-sm shadow-xl">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Sparkles className="h-5 w-5 text-amber-600" />
@@ -812,7 +877,7 @@ export function LimewaterTestLabEnhanced() {
             )}
 
             {/* Lab Notes - Always Available */}
-            <Card className="border-2 border-amber-200 dark:border-amber-800">
+            <Card className="border-2 border-amber-200/50 dark:border-amber-800/50 bg-gradient-to-br from-white/90 to-amber-50/90 dark:from-gray-900/90 dark:to-amber-950/90 backdrop-blur-sm shadow-xl">
                 <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="lab-notes" className="border-none">
                         <AccordionTrigger className="px-6 pt-6 hover:no-underline">
@@ -840,171 +905,287 @@ export function LimewaterTestLabEnhanced() {
             </Card>
 
             {/* Quiz Section */}
-            {currentStep === 'complete' && (
-                <Card id="quiz-section" className="border-2 border-green-200 dark:border-green-800">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <CheckCircle className="h-5 w-5 text-green-600" />
-                            Lab Quiz - Test Your Knowledge
-                        </CardTitle>
-                        <CardDescription>
-                            Answer these questions to earn your XP points
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        {/* Question 1 */}
-                        <div className="space-y-3">
-                            <Label className="text-base font-semibold">
-                                1. What color does limewater turn when carbon dioxide is bubbled through it?
-                            </Label>
-                            <RadioGroup 
-                                value={quizAnswers[1] || ''} 
-                                onValueChange={(value) => handleAnswerChange(1, value)}
-                                disabled={quizIsCorrect !== null}
-                            >
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="clear" id="q1-clear" />
-                                    <Label htmlFor="q1-clear" className="font-normal cursor-pointer">
-                                        It stays clear
-                                    </Label>
+            {(currentStep === 'quiz' || currentStep === 'complete') && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    id="quiz-section"
+                >
+                    <Card className="border-2 border-green-200/50 dark:border-green-800/50 bg-gradient-to-br from-white/90 to-green-50/90 dark:from-gray-900/90 dark:to-green-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <CheckCircle className="h-5 w-5 text-green-600" />
+                                Lab Quiz - Test Your Knowledge
+                            </CardTitle>
+                            <CardDescription>
+                                Answer these questions to earn your XP points
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            {/* Question 1 */}
+                            <div className="space-y-3">
+                                <Label className="text-base font-semibold">
+                                    1. What color does limewater turn when carbon dioxide is bubbled through it?
+                                </Label>
+                                <div className="grid gap-3">
+                                    {['clear', 'milky', 'blue', 'red'].map((option) => {
+                                        const isSelected = quizAnswers[1] === option;
+                                        const isCorrect = option === 'milky';
+                                        return (
+                                            <motion.div
+                                                key={option}
+                                                onClick={() => !quizIsCorrect && handleAnswerChange(1, option)}
+                                                className={cn(
+                                                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                    isSelected && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20",
+                                                    quizIsCorrect === true && isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                    quizIsCorrect === true && isSelected && !isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                    !isSelected && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                )}
+                                                whileHover={!quizIsCorrect ? { scale: 1.02 } : {}}
+                                                whileTap={!quizIsCorrect ? { scale: 0.98 } : {}}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn(
+                                                        "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                        isSelected ? "border-cyan-500 bg-cyan-500" : "border-gray-300"
+                                                    )}>
+                                                        {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                                                    </div>
+                                                    <Label className="cursor-pointer flex-1">
+                                                        {option === 'clear' && 'It stays clear'}
+                                                        {option === 'milky' && 'It turns milky white'}
+                                                        {option === 'blue' && 'It turns blue'}
+                                                        {option === 'red' && 'It turns red'}
+                                                    </Label>
+                                                    {quizIsCorrect === true && isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                    {quizIsCorrect === true && isSelected && !isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="milky" id="q1-milky" />
-                                    <Label htmlFor="q1-milky" className="font-normal cursor-pointer">
-                                        It turns milky white
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="blue" id="q1-blue" />
-                                    <Label htmlFor="q1-blue" className="font-normal cursor-pointer">
-                                        It turns blue
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="red" id="q1-red" />
-                                    <Label htmlFor="q1-red" className="font-normal cursor-pointer">
-                                        It turns red
-                                    </Label>
-                                </div>
-                            </RadioGroup>
-                        </div>
+                            </div>
 
-                        {/* Question 2 */}
-                        <div className="space-y-3">
-                            <Label className="text-base font-semibold">
-                                2. What substance is formed when CO₂ reacts with limewater, causing the milky appearance?
-                            </Label>
-                            <RadioGroup 
-                                value={quizAnswers[2] || ''} 
-                                onValueChange={(value) => handleAnswerChange(2, value)}
-                                disabled={quizIsCorrect !== null}
-                            >
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="caoh2" id="q2-caoh2" />
-                                    <Label htmlFor="q2-caoh2" className="font-normal cursor-pointer">
-                                        Calcium hydroxide (Ca(OH)₂)
-                                    </Label>
+                            {/* Question 2 */}
+                            <div className="space-y-3">
+                                <Label className="text-base font-semibold">
+                                    2. What substance is formed when CO₂ reacts with limewater, causing the milky appearance?
+                                </Label>
+                                <div className="grid gap-3">
+                                    {[
+                                        { value: 'caoh2', label: 'Calcium hydroxide (Ca(OH)₂)' },
+                                        { value: 'caco3', label: 'Calcium carbonate (CaCO₃)' },
+                                        { value: 'h2co3', label: 'Carbonic acid (H₂CO₃)' },
+                                        { value: 'caco2', label: 'Calcium oxide (CaO)' }
+                                    ].map((option) => {
+                                        const isSelected = quizAnswers[2] === option.value;
+                                        const isCorrect = option.value === 'caco3';
+                                        return (
+                                            <motion.div
+                                                key={option.value}
+                                                onClick={() => !quizIsCorrect && handleAnswerChange(2, option.value)}
+                                                className={cn(
+                                                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                    isSelected && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20",
+                                                    quizIsCorrect === true && isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                    quizIsCorrect === true && isSelected && !isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                    !isSelected && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                )}
+                                                whileHover={!quizIsCorrect ? { scale: 1.02 } : {}}
+                                                whileTap={!quizIsCorrect ? { scale: 0.98 } : {}}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn(
+                                                        "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                        isSelected ? "border-cyan-500 bg-cyan-500" : "border-gray-300"
+                                                    )}>
+                                                        {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                                                    </div>
+                                                    <Label className="cursor-pointer flex-1">{option.label}</Label>
+                                                    {quizIsCorrect === true && isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                    {quizIsCorrect === true && isSelected && !isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="caco3" id="q2-caco3" />
-                                    <Label htmlFor="q2-caco3" className="font-normal cursor-pointer">
-                                        Calcium carbonate (CaCO₃)
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="h2co3" id="q2-h2co3" />
-                                    <Label htmlFor="q2-h2co3" className="font-normal cursor-pointer">
-                                        Carbonic acid (H₂CO₃)
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="caco2" id="q2-caco2" />
-                                    <Label htmlFor="q2-caco2" className="font-normal cursor-pointer">
-                                        Calcium oxide (CaO)
-                                    </Label>
-                                </div>
-                            </RadioGroup>
-                        </div>
+                            </div>
 
-                        {/* Question 3 */}
-                        <div className="space-y-3">
-                            <Label className="text-base font-semibold">
-                                3. What is the chemical name of limewater?
-                            </Label>
-                            <RadioGroup 
-                                value={quizAnswers[3] || ''} 
-                                onValueChange={(value) => handleAnswerChange(3, value)}
-                                disabled={quizIsCorrect !== null}
-                            >
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="cao" id="q3-cao" />
-                                    <Label htmlFor="q3-cao" className="font-normal cursor-pointer">
-                                        Calcium oxide (CaO)
-                                    </Label>
+                            {/* Question 3 */}
+                            <div className="space-y-3">
+                                <Label className="text-base font-semibold">
+                                    3. What is the chemical name of limewater?
+                                </Label>
+                                <div className="grid gap-3">
+                                    {[
+                                        { value: 'cao', label: 'Calcium oxide (CaO)' },
+                                        { value: 'caoh2', label: 'Calcium hydroxide (Ca(OH)₂)' },
+                                        { value: 'caco3', label: 'Calcium carbonate (CaCO₃)' },
+                                        { value: 'cah2', label: 'Calcium hydride (CaH₂)' }
+                                    ].map((option) => {
+                                        const isSelected = quizAnswers[3] === option.value;
+                                        const isCorrect = option.value === 'caoh2';
+                                        return (
+                                            <motion.div
+                                                key={option.value}
+                                                onClick={() => !quizIsCorrect && handleAnswerChange(3, option.value)}
+                                                className={cn(
+                                                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                    isSelected && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20",
+                                                    quizIsCorrect === true && isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                    quizIsCorrect === true && isSelected && !isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                    !isSelected && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                )}
+                                                whileHover={!quizIsCorrect ? { scale: 1.02 } : {}}
+                                                whileTap={!quizIsCorrect ? { scale: 0.98 } : {}}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn(
+                                                        "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                        isSelected ? "border-cyan-500 bg-cyan-500" : "border-gray-300"
+                                                    )}>
+                                                        {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
+                                                    </div>
+                                                    <Label className="cursor-pointer flex-1">{option.label}</Label>
+                                                    {quizIsCorrect === true && isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                    {quizIsCorrect === true && isSelected && !isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="caoh2" id="q3-caoh2" />
-                                    <Label htmlFor="q3-caoh2" className="font-normal cursor-pointer">
-                                        Calcium hydroxide (Ca(OH)₂)
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="caco3" id="q3-caco3" />
-                                    <Label htmlFor="q3-caco3" className="font-normal cursor-pointer">
-                                        Calcium carbonate (CaCO₃)
-                                    </Label>
-                                </div>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="cah2" id="q3-cah2" />
-                                    <Label htmlFor="q3-cah2" className="font-normal cursor-pointer">
-                                        Calcium hydride (CaH₂)
-                                    </Label>
-                                </div>
-                            </RadioGroup>
-                        </div>
+                            </div>
 
-                        {/* Feedback */}
-                        {quizFeedback && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className={cn(
-                                    "p-4 rounded-lg border-2",
-                                    quizIsCorrect 
-                                        ? "bg-green-50 dark:bg-green-950 border-green-500 text-green-700 dark:text-green-300"
-                                        : "bg-amber-50 dark:bg-amber-950 border-amber-500 text-amber-700 dark:text-amber-300"
-                                )}
-                            >
-                                <div className="flex items-start gap-2">
-                                    {quizIsCorrect ? (
-                                        <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : (
-                                        <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                            {/* Feedback */}
+                            {quizFeedback && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className={cn(
+                                        "p-4 rounded-lg border-2 bg-gradient-to-r",
+                                        quizIsCorrect 
+                                            ? "from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-500 text-green-700 dark:text-green-300"
+                                            : "from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 border-amber-500 text-amber-700 dark:text-amber-300"
                                     )}
-                                    <p className="text-sm">{quizFeedback}</p>
-                                </div>
-                            </motion.div>
-                        )}
-
-                        {/* Submit Button */}
-                        <Button 
-                            onClick={handleQuizSubmit} 
-                            className="w-full"
-                            size="lg"
-                            disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect !== null}
-                        >
-                            {quizIsCorrect !== null ? (
-                                <>
-                                    <CheckCircle className="mr-2 h-5 w-5" />
-                                    Quiz Completed
-                                </>
-                            ) : (
-                                'Submit Answers'
+                                >
+                                    <div className="flex items-start gap-2">
+                                        {quizIsCorrect ? (
+                                            <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                        ) : (
+                                            <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                        )}
+                                        <p className="text-sm font-medium">{quizFeedback}</p>
+                                    </div>
+                                </motion.div>
                             )}
-                        </Button>
-                    </CardContent>
-                </Card>
+
+                            {/* Submit Button */}
+                            <Button 
+                                onClick={handleQuizSubmit} 
+                                className={cn(
+                                    "w-full shadow-lg",
+                                    quizIsCorrect === false 
+                                        ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                                        : "bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
+                                )}
+                                size="lg"
+                                disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect === true}
+                            >
+                                {quizIsCorrect === true ? (
+                                    <>
+                                        <CheckCircle className="mr-2 h-5 w-5" />
+                                        Quiz Completed
+                                    </>
+                                ) : quizIsCorrect === false ? (
+                                    <>
+                                        <RefreshCw className="mr-2 h-5 w-5" />
+                                        Try Again
+                                    </>
+                                ) : (
+                                    <>
+                                        <CheckCircle className="mr-2 h-5 w-5" />
+                                        Submit Answers
+                                    </>
+                                )}
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             )}
+
+            {/* Lab Complete Section */}
+            {currentStep === 'complete' && quizIsCorrect === true && (
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="relative"
+                >
+                    <Card className="border-2 border-yellow-300 dark:border-yellow-700 bg-gradient-to-br from-yellow-50/90 via-orange-50/90 to-pink-50/90 dark:from-yellow-950/90 dark:via-orange-950/90 dark:to-pink-950/90 backdrop-blur-sm shadow-2xl overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-orange-400/20 to-pink-400/20 animate-pulse" />
+                        <CardContent className="relative p-8 text-center space-y-6">
+                            <motion.div
+                                animate={{ 
+                                    scale: [1, 1.1, 1],
+                                    rotate: [0, 5, -5, 0]
+                                }}
+                                transition={{ 
+                                    repeat: Infinity,
+                                    duration: 2
+                                }}
+                                className="text-8xl mb-4"
+                            >
+                                🏆
+                            </motion.div>
+                            <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-orange-600 to-pink-600 bg-clip-text text-transparent">
+                                Lab Complete!
+                            </h2>
+                            {xpEarned !== null && (
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.2, type: "spring" }}
+                                    className="flex items-center justify-center gap-2 text-3xl font-black text-cyan-600 dark:text-cyan-400"
+                                >
+                                    <Award className="h-8 w-8" />
+                                    <span>+{xpEarned} XP</span>
+                                </motion.div>
+                            )}
+                            <div className="space-y-4 pt-4">
+                                <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">What You Learned:</h3>
+                                <ul className="text-left space-y-2 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                        <span>Limewater (Ca(OH)₂) turns milky white when CO₂ is bubbled through it</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                        <span>The milky appearance is due to the formation of calcium carbonate (CaCO₃) precipitate</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                        <span>Chemical reaction: CO₂ + Ca(OH)₂ → CaCO₃ + H₂O</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                        <span>This is the definitive test for carbon dioxide gas</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <Button 
+                                onClick={handleReset} 
+                                variant="outline" 
+                                className="mt-6 border-2 border-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
+                                size="lg"
+                            >
+                                <RefreshCw className="h-4 w-4 mr-2" />
+                                Restart Lab
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+            )}
+            </div>
         </div>
     );
 }
