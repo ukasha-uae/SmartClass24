@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
 type Step = 'intro' | 'collect-supplies' | 'experiment' | 'results' | 'quiz' | 'complete';
 
@@ -27,14 +28,14 @@ export function AcidBaseNeutralizationLabEnhanced() {
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
     
-    // Supplies tracking
-    const [showSupplies, setShowSupplies] = React.useState(true);
-    const [hclCollected, setHclCollected] = React.useState(false);
-    const [naohCollected, setNaohCollected] = React.useState(false);
-    const [indicatorCollected, setIndicatorCollected] = React.useState(false);
-    const [burretteCollected, setBurretteCollected] = React.useState(false);
+    const labSupplies: SupplyItem[] = [
+        { id: 'hcl', name: 'HCl Solution', emoji: '⚗️', description: 'Hydrochloric acid' },
+        { id: 'naoh', name: 'NaOH Solution', emoji: '🧪', description: 'Sodium hydroxide' },
+        { id: 'indicator', name: 'pH Indicator', emoji: '💧', description: 'To detect equivalence point' },
+        { id: 'burette', name: 'Burette', emoji: '🔬', description: 'For precise measurement' },
+    ];
     
     // Experiment state
     const [titrations, setTitrations] = React.useState<Record<string, TitrationResult>>({
@@ -73,46 +74,30 @@ export function AcidBaseNeutralizationLabEnhanced() {
     }, [currentStep]);
 
     const handleStartExperiment = () => {
-        setTeacherMessage("Great! Let's gather our supplies. Start by clicking on the HYDROCHLORIC ACID - we'll use this as our test acid!");
-        setPendingTransition(() => () => {
-            setCurrentStep('collect-supplies');
-        });
+        setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
+        setCurrentStep('collect-supplies');
     };
-    
-    const handleCollectHCl = () => {
-        if (!hclCollected) {
-            setHclCollected(true);
-            setTeacherMessage("Perfect! Now click on SODIUM HYDROXIDE - this is our base that will neutralize the acid!");
-            toast({ title: '✅ Hydrochloric Acid Collected' });
-        }
-    };
-    
-    const handleCollectNaOH = () => {
-        if (hclCollected && !naohCollected) {
-            setNaohCollected(true);
-            setTeacherMessage("Excellent! Now click on the pH INDICATOR - we'll use this to detect when neutralization occurs!");
-            toast({ title: '✅ Sodium Hydroxide Collected' });
-        }
-    };
-    
-    const handleCollectIndicator = () => {
-        if (naohCollected && !indicatorCollected) {
-            setIndicatorCollected(true);
-            setTeacherMessage("Good! Finally, click on the BURETTE - we'll use this to precisely measure the base we add!");
-            toast({ title: '✅ pH Indicator Collected' });
-        }
-    };
-    
-    const handleCollectBurette = () => {
-        if (indicatorCollected && !burretteCollected) {
-            setBurretteCollected(true);
-            setShowSupplies(false);
-            setTeacherMessage("All supplies ready! Now we'll perform titration - carefully adding base to acid and watching for the color change that indicates neutralization!");
-            toast({ title: '✅ All Supplies Collected!' });
-            setPendingTransition(() => () => {
-                setCurrentStep('experiment');
+
+    const handleCollectSupply = (itemId: string) => {
+        if (!collectedSupplies.includes(itemId)) {
+            setCollectedSupplies(prev => {
+                const newCollected = [...prev, itemId];
+                if (newCollected.length === labSupplies.length) {
+                    setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
+                }
+                return newCollected;
             });
+            toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
         }
+    };
+
+    const handleAllSuppliesCollected = () => {
+        setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
+    };
+
+    const handleContinueToExperiment = () => {
+        setCurrentStep('experiment');
+        setTeacherMessage("All supplies ready! Now we'll perform titration - carefully adding base to acid and watching for the color change that indicates neutralization!");
     };
     
     const handleStartTitration = (titrationNum: string) => {
@@ -189,11 +174,7 @@ export function AcidBaseNeutralizationLabEnhanced() {
     };
     
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // Direct state updates - no pending transitions
     };
 
     const handleViewResults = () => {
@@ -202,19 +183,31 @@ export function AcidBaseNeutralizationLabEnhanced() {
             return;
         }
         setTeacherMessage("Excellent! You've completed all three titrations. Notice how the results are consistent - each time using approximately 25mL of NaOH to neutralize 25mL of HCl. Let's analyze the results!");
-        setPendingTransition(() => () => {
-            setCurrentStep('results');
-        });
+        setCurrentStep('results');
     };
 
     const handleViewQuiz = () => {
         setTeacherMessage("Let's test your understanding of acid-base chemistry and titration!");
-        setPendingTransition(() => () => {
+        // Transition to quiz after showing results - give students time to observe
+        setTimeout(() => {
             setCurrentStep('quiz');
-        });
+        }, 25000); // 25 seconds to allow teacher to finish explaining
     };
 
     const handleQuizSubmit = () => {
+        // If already correct, don't allow resubmission
+        if (quizSubmitted && quizFeedback.includes('all 3')) return;
+        
+        // If wrong and showing answers, allow retry by resetting
+        if (quizSubmitted && !quizFeedback.includes('all 3')) {
+            setQuizAnswer1(undefined);
+            setQuizAnswer2(undefined);
+            setQuizAnswer3(undefined);
+            setQuizFeedback('');
+            setQuizSubmitted(false);
+            return;
+        }
+        
         let correctCount = 0;
         if (quizAnswer1 === 'both') correctCount++;
         if (quizAnswer2 === 'indicator') correctCount++;
@@ -230,9 +223,10 @@ export function AcidBaseNeutralizationLabEnhanced() {
             setTeacherMessage(`Brilliant! All three answers correct! You've mastered titration and neutralization reactions. You earned ${earnedXP} XP! Understanding these concepts is crucial for pharmacy, environmental science, and industrial chemistry. Excellent work!`);
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            setPendingTransition(() => () => {
+            setTimeout(() => {
+                setShowCelebration(false);
                 setCurrentStep('complete');
-            });
+            }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Remember the key concepts of neutralization.`);
             setTeacherMessage(`Nice effort! You got ${correctCount} out of 3. You're close to mastering this! Remember: neutralization produces salt and water, and indicators help us detect the equivalence point. Review the titration process and try again!`);
@@ -244,11 +238,7 @@ export function AcidBaseNeutralizationLabEnhanced() {
 
     const handleRestart = () => {
         setCurrentStep('intro');
-        setShowSupplies(true);
-        setHclCollected(false);
-        setNaohCollected(false);
-        setIndicatorCollected(false);
-        setBurretteCollected(false);
+        setCollectedSupplies([]);
         setTitrations({
             '1': { acidVolume: 0, baseVolume: 0, equivalencePoint: 0, completed: false },
             '2': { acidVolume: 0, baseVolume: 0, equivalencePoint: 0, completed: false },
@@ -266,12 +256,39 @@ export function AcidBaseNeutralizationLabEnhanced() {
         setQuizFeedback('');
         setQuizSubmitted(false);
         setShowCelebration(false);
-        setPendingTransition(null);
         setTeacherMessage("Wonderful! Let's perform the titration again. Each repetition helps you understand the precision and technique needed for accurate neutralization. Watch how the color changes as you approach the equivalence point!");
     };
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Blue/Purple Acid-Base Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-indigo-950/30" />
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-blue-200/40 to-purple-300/40 dark:from-blue-800/20 dark:to-purple-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative max-w-5xl mx-auto p-4 space-y-6">
             {/* Teacher Voice */}
             <TeacherVoice 
                 message={teacherMessage}
@@ -299,78 +316,25 @@ export function AcidBaseNeutralizationLabEnhanced() {
                 </motion.div>
             )}
 
-            {showCelebration && (
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
-                    onClick={() => {
-                        setShowCelebration(false);
-                        if (pendingTransition) {
-                            const transition = pendingTransition;
-                            setPendingTransition(null);
-                            transition();
-                        }
-                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                 >
-                    <Card className="w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
-                        <CardHeader className="text-center">
-                            <motion.div
-                                animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
-                                transition={{ duration: 0.5 }}
-                                className="flex justify-center mb-4"
-                            >
-                                <Trophy className="h-20 w-20 text-yellow-500" />
-                            </motion.div>
-                            <CardTitle className="text-2xl">Congratulations!</CardTitle>
-                            <CardDescription>You've mastered acid-base titration!</CardDescription>
+                    <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Zap className="h-5 w-5 text-blue-600" />
+                                Acid-Base Neutralization Lab
+                            </CardTitle>
+                            <CardDescription>Master titration and learn about chemical neutralization</CardDescription>
                         </CardHeader>
-                        <CardContent className="text-center space-y-4">
-                            <div className="flex items-center justify-center gap-2 text-3xl font-bold text-blue-600">
-                                <Award className="h-8 w-8" />
-                                +{xpEarned} XP
-                            </div>
-                            <p className="text-sm text-muted-foreground">
-                                You understand neutralization reactions!
-                            </p>
-                        </CardContent>
-                        <CardFooter className="flex flex-col gap-2">
-                            <Button 
-                                onClick={() => {
-                                    setShowCelebration(false);
-                                    if (pendingTransition) {
-                                        const transition = pendingTransition;
-                                        setPendingTransition(null);
-                                        transition();
-                                    }
-                                }} 
-                                className="w-full"
-                            >
-                                Continue
-                            </Button>
-                            <p className="text-xs text-muted-foreground text-center">
-                                Click anywhere to continue
-                            </p>
-                        </CardFooter>
                     </Card>
                 </motion.div>
-            )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Zap className="h-5 w-5 text-blue-600" />
-                        Acid-Base Neutralization Lab
-                    </CardTitle>
-                    <CardDescription>Master titration and learn about chemical neutralization</CardDescription>
-                </CardHeader>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                </CardHeader>
+                <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
+                    <CardHeader>
+                        <CardTitle>Lab Information</CardTitle>
+                    </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="theory">
@@ -432,7 +396,7 @@ export function AcidBaseNeutralizationLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
                                 <CardTitle>Welcome to Acid-Base Neutralization Lab!</CardTitle>
                                 <CardDescription>Learn about titration and chemical neutralization</CardDescription>
@@ -455,7 +419,12 @@ export function AcidBaseNeutralizationLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleStartExperiment} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleStartExperiment} 
+                                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
+                                    <Sparkles className="w-5 h-5 mr-2" />
                                     Start Experiment
                                 </Button>
                             </CardFooter>
@@ -470,110 +439,24 @@ export function AcidBaseNeutralizationLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2 text-lg">
-                                    <Sparkles className="h-5 w-5 text-blue-600" />
-                                    Lab Supplies - Click to Collect
-                                </CardTitle>
-                                <CardDescription>Click on each item in order</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex gap-6 justify-center flex-wrap">
-                                    {/* HCl */}
-                                    {!hclCollected && (
-                                        <motion.div
-                                            onClick={handleCollectHCl}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-red-400 dark:border-red-600 hover:border-red-600 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <TestTube className="h-12 w-12 text-red-500" />
-                                                <span className="text-sm font-medium">HCl Solution</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* NaOH */}
-                                    {hclCollected && !naohCollected && (
-                                        <motion.div
-                                            onClick={handleCollectNaOH}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-green-400 dark:border-green-600 hover:border-green-600 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <TestTube className="h-12 w-12 text-green-500" />
-                                                <span className="text-sm font-medium">NaOH Solution</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Indicator */}
-                                    {naohCollected && !indicatorCollected && (
-                                        <motion.div
-                                            onClick={handleCollectIndicator}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-purple-400 dark:border-purple-600 hover:border-purple-600 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <Droplet className="h-12 w-12 text-purple-500" />
-                                                <span className="text-sm font-medium">pH Indicator</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Burette */}
-                                    {indicatorCollected && !burretteCollected && (
-                                        <motion.div
-                                            onClick={handleCollectBurette}
-                                            whileHover={{ scale: 1.05, y: -5 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            className="cursor-pointer bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-blue-400 dark:border-blue-600 hover:border-blue-600 hover:shadow-xl transition-all"
-                                        >
-                                            <div className="flex flex-col items-center gap-2">
-                                                <Beaker className="h-12 w-12 text-blue-500" />
-                                                <span className="text-sm font-medium">Burette</span>
-                                                <span className="text-xs text-muted-foreground">Click to Collect</span>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                    
-                                    {/* Collected Items */}
-                                    <div className="w-full mt-4 flex gap-4 justify-center flex-wrap">
-                                        {hclCollected && (
-                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2 bg-red-100 dark:bg-red-900 px-4 py-2 rounded-full">
-                                                <CheckCircle className="h-4 w-4 text-red-600" />
-                                                <span className="text-sm">HCl</span>
-                                            </motion.div>
-                                        )}
-                                        {naohCollected && (
-                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2 bg-green-100 dark:bg-green-900 px-4 py-2 rounded-full">
-                                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                                <span className="text-sm">NaOH</span>
-                                            </motion.div>
-                                        )}
-                                        {indicatorCollected && (
-                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2 bg-purple-100 dark:bg-purple-900 px-4 py-2 rounded-full">
-                                                <CheckCircle className="h-4 w-4 text-purple-600" />
-                                                <span className="text-sm">Indicator</span>
-                                            </motion.div>
-                                        )}
-                                        {burretteCollected && (
-                                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900 px-4 py-2 rounded-full">
-                                                <CheckCircle className="h-4 w-4 text-blue-600" />
-                                                <span className="text-sm">Burette</span>
-                                            </motion.div>
-                                        )}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <LabSupplies
+                            supplies={labSupplies}
+                            collectedItems={collectedSupplies}
+                            onCollect={handleCollectSupply}
+                            onAllCollected={handleAllSuppliesCollected}
+                            requiredCount={labSupplies.length}
+                        />
+                        {collectedSupplies.length === labSupplies.length && (
+                            <CardFooter className="mt-4">
+                                <Button 
+                                    onClick={handleContinueToExperiment} 
+                                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
+                                    Continue to Experiment
+                                </Button>
+                            </CardFooter>
+                        )}
                     </motion.div>
                 )}
 
@@ -584,7 +467,7 @@ export function AcidBaseNeutralizationLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Beaker className="h-5 w-5 text-blue-600" />
@@ -696,7 +579,12 @@ export function AcidBaseNeutralizationLabEnhanced() {
                                 )}
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleViewResults} disabled={completedTitrations < 3} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleViewResults} 
+                                    disabled={completedTitrations < 3} 
+                                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg disabled:opacity-50" 
+                                    size="lg"
+                                >
                                     View Results ({completedTitrations}/3)
                                 </Button>
                             </CardFooter>
@@ -711,7 +599,7 @@ export function AcidBaseNeutralizationLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
+                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <CheckCircle className="h-5 w-5 text-blue-600" />
@@ -780,7 +668,11 @@ export function AcidBaseNeutralizationLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleViewQuiz} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleViewQuiz} 
+                                    className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
                                     Take the Quiz
                                 </Button>
                             </CardFooter>
@@ -795,16 +687,19 @@ export function AcidBaseNeutralizationLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
+                        <Card className="border-2 border-green-200/50 dark:border-green-800/50 bg-gradient-to-br from-white/90 to-green-50/90 dark:from-gray-900/90 dark:to-green-950/90 backdrop-blur-sm shadow-xl">
                             <CardHeader>
-                                <CardTitle>Knowledge Check</CardTitle>
+                                <CardTitle className="flex items-center gap-2">
+                                    <CheckCircle className="h-5 w-5 text-green-600" />
+                                    Knowledge Check
+                                </CardTitle>
                                 <CardDescription>Test your understanding of acid-base chemistry</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Question 1 */}
                                 <div className="space-y-3">
-                                    <p className="font-medium">1. In neutralization reactions, what reacts with the acid?</p>
-                                    <div className="space-y-2">
+                                    <Label className="text-base font-semibold">1. In neutralization reactions, what reacts with the acid?</Label>
+                                    <div className="grid gap-3">
                                         {[
                                             { value: 'both', label: 'Both a base and water to form salt and water', isCorrect: true },
                                             { value: 'water', label: 'Only water molecules' },
@@ -812,30 +707,27 @@ export function AcidBaseNeutralizationLabEnhanced() {
                                         ].map((option) => (
                                             <motion.div
                                                 key={option.value}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
+                                                whileHover={!quizSubmitted ? { scale: 1.02 } : {}}
+                                                whileTap={!quizSubmitted ? { scale: 0.98 } : {}}
                                                 onClick={() => !quizSubmitted && setQuizAnswer1(option.value)}
                                                 className={cn(
                                                     "p-4 rounded-lg border-2 cursor-pointer transition-all",
                                                     quizAnswer1 === option.value && !quizSubmitted && "border-blue-500 bg-blue-50 dark:bg-blue-950/20",
-                                                    quizAnswer1 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
-                                                    quizAnswer1 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
-                                                    quizAnswer1 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                    quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                    quizSubmitted && quizAnswer1 === option.value && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                    !quizSubmitted && quizAnswer1 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
                                                 )}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div className={cn(
-                                                        "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                                                        quizAnswer1 === option.value && !quizSubmitted && "border-blue-500 bg-blue-500",
-                                                        quizAnswer1 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-500",
-                                                        quizAnswer1 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-500",
-                                                        quizAnswer1 !== option.value && "border-gray-300"
+                                                        "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                        quizAnswer1 === option.value ? "border-blue-500 bg-blue-500" : "border-gray-300"
                                                     )}>
-                                                        {quizAnswer1 === option.value && (
-                                                            <div className="w-2 h-2 bg-white rounded-full" />
-                                                        )}
+                                                        {quizAnswer1 === option.value && <div className="h-2 w-2 rounded-full bg-white" />}
                                                     </div>
-                                                    <span>{option.label}</span>
+                                                    <Label className="cursor-pointer flex-1">{option.label}</Label>
+                                                    {quizSubmitted && option.isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                    {quizSubmitted && quizAnswer1 === option.value && !option.isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
                                                 </div>
                                             </motion.div>
                                         ))}
@@ -844,8 +736,8 @@ export function AcidBaseNeutralizationLabEnhanced() {
 
                                 {/* Question 2 */}
                                 <div className="space-y-3">
-                                    <p className="font-medium">2. Why is a pH indicator essential in titration?</p>
-                                    <div className="space-y-2">
+                                    <Label className="text-base font-semibold">2. Why is a pH indicator essential in titration?</Label>
+                                    <div className="grid gap-3">
                                         {[
                                             { value: 'indicator', label: 'To visibly show when equivalence point is reached', isCorrect: true },
                                             { value: 'speed', label: 'To make the reaction happen faster' },
@@ -853,30 +745,27 @@ export function AcidBaseNeutralizationLabEnhanced() {
                                         ].map((option) => (
                                             <motion.div
                                                 key={option.value}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
+                                                whileHover={!quizSubmitted ? { scale: 1.02 } : {}}
+                                                whileTap={!quizSubmitted ? { scale: 0.98 } : {}}
                                                 onClick={() => !quizSubmitted && setQuizAnswer2(option.value)}
                                                 className={cn(
                                                     "p-4 rounded-lg border-2 cursor-pointer transition-all",
                                                     quizAnswer2 === option.value && !quizSubmitted && "border-blue-500 bg-blue-50 dark:bg-blue-950/20",
-                                                    quizAnswer2 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
-                                                    quizAnswer2 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
-                                                    quizAnswer2 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                    quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                    quizSubmitted && quizAnswer2 === option.value && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                    !quizSubmitted && quizAnswer2 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
                                                 )}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div className={cn(
-                                                        "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                                                        quizAnswer2 === option.value && !quizSubmitted && "border-blue-500 bg-blue-500",
-                                                        quizAnswer2 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-500",
-                                                        quizAnswer2 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-500",
-                                                        quizAnswer2 !== option.value && "border-gray-300"
+                                                        "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                        quizAnswer2 === option.value ? "border-blue-500 bg-blue-500" : "border-gray-300"
                                                     )}>
-                                                        {quizAnswer2 === option.value && (
-                                                            <div className="w-2 h-2 bg-white rounded-full" />
-                                                        )}
+                                                        {quizAnswer2 === option.value && <div className="h-2 w-2 rounded-full bg-white" />}
                                                     </div>
-                                                    <span>{option.label}</span>
+                                                    <Label className="cursor-pointer flex-1">{option.label}</Label>
+                                                    {quizSubmitted && option.isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                    {quizSubmitted && quizAnswer2 === option.value && !option.isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
                                                 </div>
                                             </motion.div>
                                         ))}
@@ -885,8 +774,8 @@ export function AcidBaseNeutralizationLabEnhanced() {
 
                                 {/* Question 3 */}
                                 <div className="space-y-3">
-                                    <p className="font-medium">3. What is the color of phenolphthalein in the acidic solution before neutralization?</p>
-                                    <div className="space-y-2">
+                                    <Label className="text-base font-semibold">3. What is the color of phenolphthalein in the acidic solution before neutralization?</Label>
+                                    <div className="grid gap-3">
                                         {[
                                             { value: 'pink', label: 'Pink/Red' },
                                             { value: 'colorless', label: 'Colorless', isCorrect: true },
@@ -894,30 +783,27 @@ export function AcidBaseNeutralizationLabEnhanced() {
                                         ].map((option) => (
                                             <motion.div
                                                 key={option.value}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
+                                                whileHover={!quizSubmitted ? { scale: 1.02 } : {}}
+                                                whileTap={!quizSubmitted ? { scale: 0.98 } : {}}
                                                 onClick={() => !quizSubmitted && setQuizAnswer3(option.value)}
                                                 className={cn(
                                                     "p-4 rounded-lg border-2 cursor-pointer transition-all",
                                                     quizAnswer3 === option.value && !quizSubmitted && "border-blue-500 bg-blue-50 dark:bg-blue-950/20",
-                                                    quizAnswer3 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
-                                                    quizAnswer3 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
-                                                    quizAnswer3 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                                                    quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                    quizSubmitted && quizAnswer3 === option.value && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                    !quizSubmitted && quizAnswer3 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
                                                 )}
                                             >
                                                 <div className="flex items-center gap-3">
                                                     <div className={cn(
-                                                        "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                                                        quizAnswer3 === option.value && !quizSubmitted && "border-blue-500 bg-blue-500",
-                                                        quizAnswer3 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-500",
-                                                        quizAnswer3 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-500",
-                                                        quizAnswer3 !== option.value && "border-gray-300"
+                                                        "h-5 w-5 rounded-full border-2 flex items-center justify-center",
+                                                        quizAnswer3 === option.value ? "border-blue-500 bg-blue-500" : "border-gray-300"
                                                     )}>
-                                                        {quizAnswer3 === option.value && (
-                                                            <div className="w-2 h-2 bg-white rounded-full" />
-                                                        )}
+                                                        {quizAnswer3 === option.value && <div className="h-2 w-2 rounded-full bg-white" />}
                                                     </div>
-                                                    <span>{option.label}</span>
+                                                    <Label className="cursor-pointer flex-1">{option.label}</Label>
+                                                    {quizSubmitted && option.isCorrect && <CheckCircle className="h-5 w-5 text-green-600" />}
+                                                    {quizSubmitted && quizAnswer3 === option.value && !option.isCorrect && <XCircle className="h-5 w-5 text-red-600" />}
                                                 </div>
                                             </motion.div>
                                         ))}
@@ -929,37 +815,54 @@ export function AcidBaseNeutralizationLabEnhanced() {
                                         initial={{ opacity: 0, y: -10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         className={cn(
-                                            "p-4 rounded-lg border-2",
-                                            quizFeedback.includes('Perfect') || quizFeedback.includes('all 3') ? "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800 text-green-900 dark:text-green-100" :
-                                            quizFeedback.includes('Good') ? "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-100" :
-                                            "bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-100"
+                                            "p-4 rounded-lg border-2 bg-gradient-to-r",
+                                            quizFeedback.includes('Perfect') || quizFeedback.includes('all 3') 
+                                                ? "from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-500 text-green-700 dark:text-green-300"
+                                                : quizFeedback.includes('Good') 
+                                                ? "from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50 border-blue-500 text-blue-700 dark:text-blue-300"
+                                                : "from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 border-amber-500 text-amber-700 dark:text-amber-300"
                                         )}
                                     >
-                                        {quizFeedback}
+                                        <div className="flex items-start gap-2">
+                                            {quizFeedback.includes('Perfect') || quizFeedback.includes('all 3') ? (
+                                                <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                            ) : (
+                                                <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                            )}
+                                            <p className="text-sm font-medium">{quizFeedback}</p>
+                                        </div>
                                     </motion.div>
                                 )}
-                            </CardContent>
-                            <CardFooter className="flex gap-3">
+
                                 <Button 
                                     onClick={handleQuizSubmit} 
-                                    disabled={!quizAnswer1 || !quizAnswer2 || !quizAnswer3 || quizSubmitted}
-                                    className="flex-1"
+                                    className={cn(
+                                        "w-full shadow-lg",
+                                        quizSubmitted && !quizFeedback.includes('all 3')
+                                            ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                                            : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                                    )}
                                     size="lg"
+                                    disabled={!quizAnswer1 || !quizAnswer2 || !quizAnswer3 || (quizSubmitted && quizFeedback.includes('all 3'))}
                                 >
-                                    Submit Answers
+                                    {quizSubmitted && quizFeedback.includes('all 3') ? (
+                                        <>
+                                            <CheckCircle className="mr-2 h-5 w-5" />
+                                            Quiz Completed
+                                        </>
+                                    ) : quizSubmitted && !quizFeedback.includes('all 3') ? (
+                                        <>
+                                            <RefreshCw className="mr-2 h-5 w-5" />
+                                            Try Again
+                                        </>
+                                    ) : (
+                                        <>
+                                            <CheckCircle className="mr-2 h-5 w-5" />
+                                            Submit Answers
+                                        </>
+                                    )}
                                 </Button>
-                                {quizSubmitted && !quizFeedback.includes('all 3') && (
-                                    <Button onClick={() => {
-                                        setQuizAnswer1(undefined);
-                                        setQuizAnswer2(undefined);
-                                        setQuizAnswer3(undefined);
-                                        setQuizFeedback('');
-                                        setQuizSubmitted(false);
-                                    }} variant="outline" size="lg">
-                                        Try Again
-                                    </Button>
-                                )}
-                            </CardFooter>
+                            </CardContent>
                         </Card>
                     </motion.div>
                 )}
@@ -967,54 +870,77 @@ export function AcidBaseNeutralizationLabEnhanced() {
                 {currentStep === 'complete' && (
                     <motion.div
                         key="complete"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, y: -20 }}
+                        className="relative"
                     >
-                        <Card className="border-2 border-blue-200 dark:border-blue-800">
-                            <CardHeader className="text-center">
+                        <Card className="border-2 border-yellow-300 dark:border-yellow-700 bg-gradient-to-br from-yellow-50/90 via-blue-50/90 to-purple-50/90 dark:from-yellow-950/90 dark:via-blue-950/90 dark:to-purple-950/90 backdrop-blur-sm shadow-2xl overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-blue-400/20 to-purple-400/20 animate-pulse" />
+                            <CardContent className="relative p-8 text-center space-y-6">
                                 <motion.div
-                                    animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
-                                    transition={{ duration: 0.5 }}
-                                    className="flex justify-center mb-4"
+                                    animate={{ 
+                                        scale: [1, 1.1, 1],
+                                        rotate: [0, 5, -5, 0]
+                                    }}
+                                    transition={{ 
+                                        repeat: Infinity,
+                                        duration: 2
+                                    }}
+                                    className="text-8xl mb-4"
                                 >
-                                    <Trophy className="h-16 w-16 text-yellow-500" />
+                                    🏆
                                 </motion.div>
-                                <CardTitle>Lab Complete!</CardTitle>
-                                <CardDescription>You've mastered acid-base titration!</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
-                                    <h3 className="font-semibold text-center text-lg mb-4">What You've Learned:</h3>
-                                    <ul className="space-y-2 text-sm">
+                                <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                    Lab Complete!
+                                </h2>
+                                {xpEarned > 0 && (
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ delay: 0.2, type: "spring" }}
+                                        className="flex items-center justify-center gap-2 text-3xl font-black text-blue-600 dark:text-blue-400"
+                                    >
+                                        <Award className="h-8 w-8" />
+                                        <span>+{xpEarned} XP</span>
+                                    </motion.div>
+                                )}
+                                <div className="space-y-4 pt-4">
+                                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">What You Learned:</h3>
+                                    <ul className="text-left space-y-2 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                                             <span>How to accurately perform titration</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                                             <span>Understanding pH and neutralization reactions</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                                             <span>Using indicators to detect equivalence points</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                                             <span>Stoichiometry and molar ratios in reactions</span>
                                         </li>
                                     </ul>
                                 </div>
-                            </CardContent>
-                            <CardFooter>
-                                <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleRestart} 
+                                    variant="outline" 
+                                    className="mt-6 border-2 border-blue-300 hover:bg-blue-50 dark:hover:bg-blue-950/20"
+                                    size="lg"
+                                >
+                                    <RefreshCw className="h-4 w-4 mr-2" />
                                     Restart Lab
                                 </Button>
-                            </CardFooter>
+                            </CardContent>
                         </Card>
                     </motion.div>
                 )}
             </AnimatePresence>
+            </div>
         </div>
     );
 }
