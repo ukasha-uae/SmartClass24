@@ -161,12 +161,12 @@ export function LitmusTestLab() {
                     description: `The litmus paper turned ${testResult}!` 
                 });
                 
-                // Transition to quiz after showing result - give students time to observe
+                // Transition to quiz after showing result - wait for teacher to finish explaining
                 setTimeout(() => {
                     setCurrentStep('quiz');
                     setIsAnimating(false);
                     setTeacherMessage("Excellent work! Now answer the quiz below to test your understanding and earn XP!");
-                }, 8000); // 8 seconds to observe the result
+                }, 25000); // 25 seconds to allow teacher to finish explaining the observation
             }
         }, 2000);
     };
@@ -1070,58 +1070,6 @@ export function LitmusTestLab() {
                             </CardContent>
                         </Card>
                     </motion.div>
-                )}
-
-                {/* Conclusion - Only shows after quiz is answered */}
-                {currentStep === 'complete' && quizIsCorrect !== null && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                >
-                    <Card className="border-2 border-green-200 dark:border-green-800">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <CheckCircle className="h-5 w-5 text-green-600" />
-                                Key Learning Points
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <ul className="space-y-3">
-                                <li className="flex items-start gap-2">
-                                    <span className="text-xl">🔴</span>
-                                    <span><strong>Acids</strong> turn <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded font-semibold">blue litmus</span> → <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded font-semibold">red</span></span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-xl">🔵</span>
-                                    <span><strong>Bases</strong> turn <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded font-semibold">red litmus</span> → <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded font-semibold">blue</span></span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <span className="text-xl">⚪</span>
-                                    <span><strong>Neutral</strong> substances cause <strong>no color change</strong> in either litmus paper</span>
-                                </li>
-                            </ul>
-                            <div className="mt-4 p-3 bg-violet-50 dark:bg-violet-950/30 rounded-lg border border-violet-200 dark:border-violet-800">
-                                <p className="text-sm font-semibold text-violet-700 dark:text-violet-400 mb-2">
-                                    💡 Did You Know?
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    Litmus is extracted from lichens (organisms formed by algae and fungi living together). 
-                                    The name comes from the Old Norse word "litmosi" meaning "dye moss"!
-                                </p>
-                            </div>
-                            <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
-                                <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-2">
-                                    📝 Exam Tip
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                    Remember the rule: <strong>"Acids Redden Blue"</strong> and <strong>"Bases Bluen Red"</strong>. 
-                                    This mnemonic helps you never forget which direction the color changes!
-                                </p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </motion.div>
                 )}
 
                 {/* Lab Notes - Always Available */}
