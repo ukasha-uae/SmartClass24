@@ -101,7 +101,6 @@ export function AmmoniaTestLab() {
     const handleBunsenDrop = () => {
         if (currentStep === 'setup' && !bunsenPlaced) {
             setBunsenPlaced(true);
-            setShowSupplies(false); // Hide supplies drawer
             setTeacherMessage("Perfect! The Bunsen burner is now heating the ammonium chloride. Watch carefully as the compound decomposes and releases ammonia gas.");
             
             // Small delay before starting heating animation
@@ -159,7 +158,7 @@ export function AmmoniaTestLab() {
         setIsAnimating(false);
         setBunsenPlaced(false);
         setLitmusPlaced(false);
-        setShowSupplies(true);
+        setCollectedSupplies([]);
         setQuizAnswers({});
         setQuizFeedback(null);
         setQuizAttempts(0);
@@ -602,6 +601,41 @@ export function AmmoniaTestLab() {
                                     )}
                                 </div>
 
+                                {/* Bunsen Burner (clickable in setup step) */}
+                                {currentStep === 'setup' && !bunsenPlaced && (
+                                    <motion.div
+                                        onClick={handleBunsenDrop}
+                                        whileHover={{ scale: 1.1, y: -5 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        animate={{ 
+                                            boxShadow: [
+                                                '0 10px 30px rgba(251, 146, 60, 0.3)',
+                                                '0 10px 40px rgba(251, 146, 60, 0.5)',
+                                                '0 10px 30px rgba(251, 146, 60, 0.3)'
+                                            ]
+                                        }}
+                                        transition={{ duration: 2, repeat: Infinity }}
+                                        className="mt-2 cursor-pointer relative"
+                                    >
+                                        <motion.div
+                                            animate={{ 
+                                                scale: [1, 1.15, 1],
+                                                filter: ['hue-rotate(0deg)', 'hue-rotate(20deg)', 'hue-rotate(0deg)']
+                                            }}
+                                            transition={{ duration: 0.5, repeat: Infinity }}
+                                        >
+                                            <Flame className="h-14 w-14 text-orange-500 drop-shadow-[0_0_10px_rgba(255,165,0,0.5)]" />
+                                        </motion.div>
+                                        <motion.div
+                                            className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg"
+                                            animate={{ opacity: [0.7, 1, 0.7] }}
+                                            transition={{ duration: 1.5, repeat: Infinity }}
+                                        >
+                                            Click to Place
+                                        </motion.div>
+                                    </motion.div>
+                                )}
+
                                 {/* Bunsen Burner (placed) */}
                                 {bunsenPlaced && (
                                     <motion.div
@@ -639,6 +673,44 @@ export function AmmoniaTestLab() {
 
                                 <p className="text-sm mt-2 font-medium">Ammonium Chloride</p>
                             </motion.div>
+
+                            {/* Litmus Paper (clickable in gas-produced step) */}
+                            {currentStep === 'gas-produced' && !litmusPlaced && (
+                                <motion.div
+                                    onClick={handleLitmusDrop}
+                                    whileHover={{ scale: 1.1, x: -5 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    animate={{ 
+                                        boxShadow: [
+                                            '0 10px 30px rgba(239, 68, 68, 0.3)',
+                                            '0 10px 40px rgba(239, 68, 68, 0.5)',
+                                            '0 10px 30px rgba(239, 68, 68, 0.3)'
+                                        ]
+                                    }}
+                                    transition={{ duration: 2, repeat: Infinity }}
+                                    className="absolute top-20 right-20 flex flex-col items-center z-20 cursor-pointer"
+                                >
+                                    <motion.div
+                                        className="w-8 h-28 bg-red-500 rounded-sm border-2 border-red-700"
+                                        animate={{ 
+                                            scale: [1, 1.05, 1],
+                                            rotate: [-2, 2, -2]
+                                        }}
+                                        transition={{ duration: 1.5, repeat: Infinity }}
+                                    />
+                                    <div className="mt-2 flex items-center gap-1">
+                                        <Droplets className="h-3 w-3 text-red-600" />
+                                        <span className="text-xs font-medium">Red Litmus</span>
+                                    </div>
+                                    <motion.div
+                                        className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg"
+                                        animate={{ opacity: [0.7, 1, 0.7] }}
+                                        transition={{ duration: 1.5, repeat: Infinity }}
+                                    >
+                                        Click to Test
+                                    </motion.div>
+                                </motion.div>
+                            )}
 
                             {/* Litmus Paper (placed) */}
                             {litmusPlaced && (
