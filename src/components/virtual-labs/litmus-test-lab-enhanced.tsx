@@ -7,14 +7,12 @@ import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
 import { CheckCircle, XCircle, RefreshCw, TestTube, BookOpen, Shield, Droplets, Beaker, Eye, Sparkles, Package, Zap, Star, Award, Trophy } from 'lucide-react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';
 import { TextToSpeech } from '../text-to-speech';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TeacherVoice } from './TeacherVoice';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
-import { LabNotes } from './LabNotes';
 import { Alert, AlertDescription } from '../ui/alert';
 import { LabSupplies, SupplyItem } from './LabSupplies';
 
@@ -1072,33 +1070,6 @@ export function LitmusTestLab() {
                     </motion.div>
                 )}
 
-                {/* Lab Notes - Always Available */}
-                <Card className="border-2 border-amber-200/50 dark:border-amber-800/50 bg-gradient-to-br from-white/90 to-amber-50/90 dark:from-gray-900/90 dark:to-amber-950/90 backdrop-blur-sm shadow-xl">
-                <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="lab-notes" className="border-none">
-                        <AccordionTrigger className="px-6 pt-6 hover:no-underline">
-                            <div className="flex items-center gap-2 text-lg font-semibold">
-                                <BookOpen className="h-5 w-5 text-amber-600" />
-                                Lab Notes
-                            </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="px-6 pb-6">
-                            <p className="text-sm text-muted-foreground mb-4">
-                                Record your observations, findings, and questions as you work through the experiment
-                            </p>
-                            <Alert className="mb-4 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                                <BookOpen className="h-4 w-4 text-amber-600" />
-                                <AlertDescription className="text-sm">
-                                    <strong>📝 Exam Preparation Tip:</strong> Use digital notes to capture your observations quickly, 
-                                    but <strong>remember to copy important points by hand</strong> into your notebook! Handwriting builds 
-                                    muscle memory and prepares you for written exams.
-                                </AlertDescription>
-                            </Alert>
-                            <LabNotes labId="litmus-test-lab" labTitle="Litmus Test for Acids and Bases" />
-                        </AccordionContent>
-                    </AccordionItem>
-                </Accordion>
-            </Card>
             </div>
         </div>
     );
