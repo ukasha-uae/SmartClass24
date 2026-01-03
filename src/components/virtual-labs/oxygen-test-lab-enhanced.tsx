@@ -6,7 +6,7 @@ import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
-import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Flame, Sparkles, Wind, TestTube2, Package } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Flame, Sparkles, Wind, TestTube2, Package, Award, Trophy } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';
 import { TextToSpeech } from '../text-to-speech';
@@ -16,8 +16,9 @@ import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
 import { LabNotes } from './LabNotes';
 import { Alert, AlertDescription } from '../ui/alert';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
-type TestStep = 'intro' | 'setup' | 'select-tube' | 'inserting' | 'result' | 'complete';
+type TestStep = 'intro' | 'collect-supplies' | 'setup' | 'select-tube' | 'inserting' | 'result' | 'quiz' | 'complete';
 type TubeContent = 'Oxygen' | 'Air' | 'Carbon Dioxide';
 
 interface TubeInfo {
@@ -60,10 +61,15 @@ export function OxygenTestLabEnhanced() {
     const [testResult, setTestResult] = React.useState<'relight' | 'nothing' | 'extinguish' | null>(null);
     const [isAnimating, setIsAnimating] = React.useState(false);
     const [showPractice, setShowPractice] = React.useState(false);
-    const [showSupplies, setShowSupplies] = React.useState(true);
+    const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
     const [practiceInteraction, setPracticeInteraction] = React.useState<'oxygen' | 'test' | 'safety' | null>(null);
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    
+    const labSupplies: SupplyItem[] = [
+        { id: 'test-tubes', name: 'Test Tubes', emoji: '🧪', description: 'Containers with different gases' },
+        { id: 'glowing-splint', name: 'Glowing Splint', emoji: '✨', description: 'Wooden splint with glowing ember' },
+        { id: 'safety-goggles', name: 'Safety Goggles', emoji: '🥽', description: 'Eye protection' },
+    ];
     const [startTime] = React.useState(Date.now());
     const [xpEarned, setXpEarned] = React.useState<number | null>(null);
     const [showCelebration, setShowCelebration] = React.useState(false);
@@ -115,16 +121,33 @@ export function OxygenTestLabEnhanced() {
         }
     }, [currentStep]);
 
-    // Handle teacher voice completion - execute pending transition
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // Direct state updates - no pending transitions
     };
 
     const handleStartLab = () => {
+        setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
+        setCurrentStep('collect-supplies');
+    };
+
+    const handleCollectSupply = (itemId: string) => {
+        if (!collectedSupplies.includes(itemId)) {
+            setCollectedSupplies(prev => {
+                const newCollected = [...prev, itemId];
+                if (newCollected.length === labSupplies.length) {
+                    setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
+                }
+                return newCollected;
+            });
+            toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
+        }
+    };
+
+    const handleAllSuppliesCollected = () => {
+        setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
+    };
+
+    const handleContinueToSetup = () => {
         setCurrentStep('setup');
         setTeacherMessage("Perfect! See those three test tubes? One has pure oxygen. Let's test each one and find out which makes the splint burst into flame!");
     };
@@ -132,7 +155,6 @@ export function OxygenTestLabEnhanced() {
     const handleSelectTube = (tube: TubeContent) => {
         setSelectedTube(tube);
         setCurrentStep('select-tube');
-        setShowSupplies(false);
         setTeacherMessage(`Great choice! You've selected the ${tube} tube. Now click 'Insert Glowing Splint' to test it. Watch carefully!`);
         toast({ title: `${tubes[tube].emoji} Tube Selected`, description: tubes[tube].description });
     };
@@ -171,12 +193,11 @@ export function OxygenTestLabEnhanced() {
                 });
             }
             
-            setPendingTransition(() => () => {
-                setTimeout(() => {
-                    setCurrentStep('complete');
-                    setTeacherMessage("Excellent work on the experiment! Now let's check your understanding. Answer the quiz below - you've got this!");
-                }, 800);
-            });
+            // Transition to quiz after showing result
+            setTimeout(() => {
+                setCurrentStep('quiz');
+                setTeacherMessage("Excellent work on the experiment! Now let's check your understanding. Answer the quiz below - you've got this!");
+            }, 3000);
         }, 2000);
     };
 
@@ -185,12 +206,11 @@ export function OxygenTestLabEnhanced() {
         setSelectedTube(null);
         setTestResult(null);
         setIsAnimating(false);
-        setShowSupplies(true);
+        setCollectedSupplies([]);
         setQuizAnswers({});
         setQuizFeedback(null);
         setQuizIsCorrect(null);
         setQuizAttempts(0);
-        setPendingTransition(null);
         setTeacherMessage("Ready to test another gas? Each one reacts differently! Remember - oxygen is the one that makes the splint burst into flame!");
         toast({ title: '🔄 Lab Reset', description: 'Ready to test another gas' });
     };
@@ -203,7 +223,16 @@ export function OxygenTestLabEnhanced() {
     };
 
     const handleQuizSubmit = () => {
-        if (quizIsCorrect !== null) return;
+        // If already correct, don't allow resubmission
+        if (quizIsCorrect === true) return;
+        
+        // If wrong and showing answers, allow retry by resetting
+        if (quizIsCorrect === false) {
+            setQuizIsCorrect(null);
+            setQuizFeedback(null);
+            setQuizAnswers({});
+            return;
+        }
         
         const correctAnswers: { [key: number]: string } = {
             1: 'relight',
@@ -255,7 +284,35 @@ export function OxygenTestLabEnhanced() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Cyan/Blue Oxygen Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-indigo-950/30" />
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-cyan-200/40 to-blue-300/40 dark:from-cyan-800/20 dark:to-blue-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative max-w-5xl mx-auto p-4 space-y-6">
             {/* XP Celebration Overlay */}
             <AnimatePresence>
                 {showCelebration && xpEarned !== null && (
@@ -327,7 +384,11 @@ export function OxygenTestLabEnhanced() {
             <TeacherVoice message={teacherMessage} onComplete={handleTeacherComplete} />
 
             {/* Lab Objective */}
-            <Card className="border-2 border-cyan-200 dark:border-cyan-800">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <CardTitle className="flex items-center gap-2">
@@ -341,7 +402,7 @@ export function OxygenTestLabEnhanced() {
             </Card>
 
             {/* Theory & Safety */}
-            <Card>
+            <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <CardTitle>Lab Information</CardTitle>
                     <CardDescription>Essential background and safety guidelines</CardDescription>
@@ -381,7 +442,7 @@ export function OxygenTestLabEnhanced() {
             </Card>
 
             {/* Main Experiment */}
-            <Card className="border-2 border-cyan-200 dark:border-cyan-800">
+            <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-xl">
                 <CardHeader>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <CardTitle className="flex items-center gap-2">
@@ -392,17 +453,8 @@ export function OxygenTestLabEnhanced() {
                             <Button 
                                 variant="outline" 
                                 size="sm"
-                                onClick={() => setShowSupplies(!showSupplies)}
-                                className="text-xs sm:text-sm"
-                            >
-                                <Package className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                                {showSupplies ? 'Hide' : 'Show'} Supplies
-                            </Button>
-                            <Button 
-                                variant="outline" 
-                                size="sm"
                                 onClick={() => setShowPractice(!showPractice)}
-                                className="text-xs sm:text-sm"
+                                className="text-xs sm:text-sm border-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
                             >
                                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                                 {showPractice ? 'Hide' : 'Show'} Practice
@@ -425,15 +477,44 @@ export function OxygenTestLabEnhanced() {
                             <Button 
                                 onClick={handleStartLab}
                                 size="lg"
-                                className="bg-cyan-600 hover:bg-cyan-700"
+                                className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                             >
+                                <Sparkles className="w-5 h-5 mr-2" />
                                 Begin Experiment
                             </Button>
                         </motion.div>
                     )}
 
+                    {/* Collect Supplies Step */}
+                    {currentStep === 'collect-supplies' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                        >
+                            <LabSupplies
+                                supplies={labSupplies}
+                                collectedItems={collectedSupplies}
+                                onCollect={handleCollectSupply}
+                                onAllCollected={handleAllSuppliesCollected}
+                                requiredCount={labSupplies.length}
+                            />
+                            {collectedSupplies.length === labSupplies.length && (
+                                <CardFooter className="mt-4">
+                                    <Button 
+                                        onClick={handleContinueToSetup} 
+                                        className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg" 
+                                        size="lg"
+                                    >
+                                        Continue to Setup
+                                    </Button>
+                                </CardFooter>
+                            )}
+                        </motion.div>
+                    )}
+
                     {/* Progress Steps */}
-                    {currentStep !== 'intro' && (
+                    {currentStep !== 'intro' && currentStep !== 'collect-supplies' && (
                     <div className="flex items-center justify-between text-sm">
                         <div className={cn("flex items-center gap-2", (currentStep === 'setup' || currentStep === 'select-tube') && "text-cyan-600 font-semibold")}>
                             <div className={cn("h-6 w-6 rounded-full flex items-center justify-center text-xs", 
@@ -600,7 +681,7 @@ export function OxygenTestLabEnhanced() {
                                 {currentStep === 'select-tube' && (
                                     <Button 
                                         onClick={handleInsertSplint}
-                                        className="flex-1 bg-orange-600 hover:bg-orange-700"
+                                        className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                                         disabled={isAnimating}
                                     >
                                         <Sparkles className="h-4 w-4 mr-2" />
@@ -617,50 +698,72 @@ export function OxygenTestLabEnhanced() {
                         </motion.div>
                     )}
 
-                    {/* Lab Supplies Drawer - Only shows when explicitly toggled */}
-                    {showSupplies && currentStep !== 'intro' && currentStep !== 'complete' && currentStep !== 'setup' && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                        >
-                            <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2 text-lg">
-                                        <Package className="h-5 w-5 text-amber-600" />
-                                        Lab Supplies Reference
-                                    </CardTitle>
-                                    <CardDescription>Equipment information for the oxygen test</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="space-y-4">
-                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                            {Object.values(tubes).map((tube) => (
-                                                <div
-                                                    key={tube.content}
-                                                    className="bg-white dark:bg-gray-800 p-4 rounded-lg border-2 border-gray-200 dark:border-gray-700"
-                                                >
-                                                    <div className="flex flex-col items-center gap-2 text-center">
-                                                        <div className="text-4xl">{tube.emoji}</div>
-                                                        <span className="text-sm font-semibold">{tube.content}</span>
-                                                        <span className="text-xs text-muted-foreground">{tube.description}</span>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <div className="text-sm text-muted-foreground bg-blue-50 dark:bg-blue-950 p-3 rounded">
-                                            <strong>Tip:</strong> Pure oxygen will relight a glowing splint, while air (21% O₂) won't have enough oxygen to do so.
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </motion.div>
-                    )}
                 </CardContent>
             </Card>
 
+            {/* Lab Complete Section */}
+            {currentStep === 'complete' && (
+                <motion.div
+                    key="complete"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="text-center space-y-6 py-8"
+                >
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2, type: 'spring' }}
+                    >
+                        <Trophy className="w-24 h-24 text-yellow-500 mx-auto mb-4" />
+                    </motion.div>
+
+                    <div className="space-y-2">
+                        <h3 className="text-3xl font-bold">Congratulations! 🎉</h3>
+                        <p className="text-xl text-muted-foreground">
+                            You've completed the Oxygen Test Lab
+                        </p>
+                    </div>
+
+                    {xpEarned !== null && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-gradient-to-r from-cyan-400 to-blue-400 dark:from-cyan-600 dark:to-blue-600 p-6 rounded-lg text-center"
+                        >
+                            <div className="flex items-center justify-center gap-3 text-3xl font-bold text-white">
+                                <Award className="h-8 w-8" />
+                                +{xpEarned} XP Earned!
+                            </div>
+                        </motion.div>
+                    )}
+
+                    <div className="prose dark:prose-invert max-w-none text-left bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950 p-6 rounded-lg border-2 border-cyan-200/50 dark:border-cyan-800/50">
+                        <h4 className="text-lg font-semibold mb-3">What You Learned:</h4>
+                        <ul className="space-y-2">
+                            <li>✓ Oxygen (O₂) relights a glowing splint by supporting combustion</li>
+                            <li>✓ Pure oxygen has much higher concentration than air (100% vs 21%)</li>
+                            <li>✓ The glowing splint test is a reliable method to identify oxygen gas</li>
+                            <li>✓ Oxygen accelerates burning and must be handled with caution</li>
+                            <li>✓ Different gases react differently with a glowing splint</li>
+                        </ul>
+                    </div>
+
+                    <Button 
+                        onClick={handleReset} 
+                        size="lg" 
+                        variant="outline"
+                        className="border-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
+                    >
+                        <RefreshCw className="h-5 w-5 mr-2" />
+                        Restart Lab
+                    </Button>
+                </motion.div>
+            )}
+
             {/* Practice Mode */}
             {showPractice && (
-                <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+                <Card className="border-2 border-amber-200/50 dark:border-amber-800/50 bg-gradient-to-br from-white/90 to-amber-50/90 dark:from-gray-900/90 dark:to-amber-950/90 backdrop-blur-sm shadow-xl">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <Sparkles className="h-5 w-5 text-amber-600" />
@@ -723,131 +826,234 @@ export function OxygenTestLabEnhanced() {
             )}
 
             {/* Quiz */}
-            {testResult && currentStep === 'complete' && (
+            {(currentStep === 'quiz' || currentStep === 'complete') && testResult && (
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Card className="border-2 border-green-200 dark:border-green-800 scroll-mt-20" id="quiz-section">
+                    <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-xl scroll-mt-20" id="quiz-section">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-700 dark:text-green-300 font-bold">
+                            <CardTitle className="flex items-center gap-3 text-xl">
+                                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold shadow-lg">
                                     ?
                                 </div>
-                                Post-Lab Quiz
+                                <span>Post-Lab Quiz</span>
                             </CardTitle>
-                            <CardDescription>Test your understanding of the experiment</CardDescription>
+                            <CardDescription className="text-base">Test your understanding of the oxygen glowing splint test experiment</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <div className="space-y-6">
-                                {/* Question 1 */}
-                                <div>
-                                    <p className="text-base font-semibold mb-3">1. What happens when a glowing splint is placed in pure oxygen?</p>
-                                    <RadioGroup 
-                                        value={quizAnswers[1]} 
-                                        onValueChange={(value) => handleAnswerChange(1, value)} 
-                                        disabled={quizIsCorrect !== null}
-                                    >
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="extinguish" id="q1-extinguish" />
-                                            <Label htmlFor="q1-extinguish" className="flex-1 cursor-pointer">It goes out immediately</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="relight" id="q1-relight" />
-                                            <Label htmlFor="q1-relight" className="flex-1 cursor-pointer">It relights into a bright flame</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="glow" id="q1-glow" />
-                                            <Label htmlFor="q1-glow" className="flex-1 cursor-pointer">It continues to glow dimly</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="smoke" id="q1-smoke" />
-                                            <Label htmlFor="q1-smoke" className="flex-1 cursor-pointer">It produces smoke</Label>
-                                        </div>
-                                    </RadioGroup>
-                                </div>
-
-                                {/* Question 2 */}
-                                <div>
-                                    <p className="text-base font-semibold mb-3">2. What role does oxygen play in combustion?</p>
-                                    <RadioGroup 
-                                        value={quizAnswers[2]} 
-                                        onValueChange={(value) => handleAnswerChange(2, value)} 
-                                        disabled={quizIsCorrect !== null}
-                                    >
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="prevents" id="q2-prevents" />
-                                            <Label htmlFor="q2-prevents" className="flex-1 cursor-pointer">It prevents burning</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="supports" id="q2-supports" />
-                                            <Label htmlFor="q2-supports" className="flex-1 cursor-pointer">It supports combustion</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="neutral" id="q2-neutral" />
-                                            <Label htmlFor="q2-neutral" className="flex-1 cursor-pointer">It has no effect on burning</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="slows" id="q2-slows" />
-                                            <Label htmlFor="q2-slows" className="flex-1 cursor-pointer">It slows down burning</Label>
-                                        </div>
-                                    </RadioGroup>
-                                </div>
-
-                                {/* Question 3 */}
-                                <div>
-                                    <p className="text-base font-semibold mb-3">3. What percentage of oxygen is in regular air?</p>
-                                    <RadioGroup 
-                                        value={quizAnswers[3]} 
-                                        onValueChange={(value) => handleAnswerChange(3, value)} 
-                                        disabled={quizIsCorrect !== null}
-                                    >
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="air" id="q3-air" />
-                                            <Label htmlFor="q3-air" className="flex-1 cursor-pointer">About 21%</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="50" id="q3-50" />
-                                            <Label htmlFor="q3-50" className="flex-1 cursor-pointer">About 50%</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="78" id="q3-78" />
-                                            <Label htmlFor="q3-78" className="flex-1 cursor-pointer">About 78%</Label>
-                                        </div>
-                                        <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                            <RadioGroupItem value="100" id="q3-100" />
-                                            <Label htmlFor="q3-100" className="flex-1 cursor-pointer">100% (pure oxygen)</Label>
-                                        </div>
-                                    </RadioGroup>
+                        <CardContent className="space-y-6">
+                            {/* Question 1 */}
+                            <div className="p-5 bg-gradient-to-br from-white to-cyan-50/30 dark:from-gray-800 dark:to-cyan-950/30 rounded-lg border-2 border-cyan-200/50 dark:border-cyan-800/50 shadow-sm">
+                                <p className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">1. What happens when a glowing splint is placed in pure oxygen?</p>
+                                <div className="space-y-2">
+                                    {[
+                                        { value: 'extinguish', label: 'It goes out immediately' },
+                                        { value: 'relight', label: 'It relights into a bright flame', isCorrect: true },
+                                        { value: 'glow', label: 'It continues to glow dimly' },
+                                        { value: 'smoke', label: 'It produces smoke' }
+                                    ].map((option) => (
+                                        <motion.div
+                                            key={option.value}
+                                            whileHover={{ scale: 1.02, x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => {
+                                                if (quizIsCorrect === null) {
+                                                    handleAnswerChange(1, option.value);
+                                                }
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                quizAnswers[1] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20 shadow-md",
+                                                quizAnswers[1] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                quizAnswers[1] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                quizAnswers[1] !== option.value && "border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-700"
+                                            )}
+                                        >
+                                            <div className={cn(
+                                                "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
+                                                quizAnswers[1] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-500",
+                                                quizAnswers[1] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-500",
+                                                quizAnswers[1] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-500",
+                                                quizAnswers[1] !== option.value && "border-gray-300 dark:border-gray-600"
+                                            )}>
+                                                {quizAnswers[1] === option.value && (
+                                                    <div className="w-2 h-2 bg-white rounded-full" />
+                                                )}
+                                            </div>
+                                            <Label htmlFor={`q1-${option.value}`} className="flex-1 cursor-pointer text-sm font-medium">
+                                                {option.label}
+                                            </Label>
+                                            {quizIsCorrect !== null && option.isCorrect && (
+                                                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                            )}
+                                            {quizIsCorrect === false && quizAnswers[1] === option.value && !option.isCorrect && (
+                                                <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                                            )}
+                                        </motion.div>
+                                    ))}
                                 </div>
                             </div>
 
+                            {/* Question 2 */}
+                            <div className="p-5 bg-gradient-to-br from-white to-cyan-50/30 dark:from-gray-800 dark:to-cyan-950/30 rounded-lg border-2 border-cyan-200/50 dark:border-cyan-800/50 shadow-sm">
+                                <p className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">2. What role does oxygen play in combustion?</p>
+                                <div className="space-y-2">
+                                    {[
+                                        { value: 'prevents', label: 'It prevents burning' },
+                                        { value: 'supports', label: 'It supports combustion', isCorrect: true },
+                                        { value: 'neutral', label: 'It has no effect on burning' },
+                                        { value: 'slows', label: 'It slows down burning' }
+                                    ].map((option) => (
+                                        <motion.div
+                                            key={option.value}
+                                            whileHover={{ scale: 1.02, x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => {
+                                                if (quizIsCorrect === null) {
+                                                    handleAnswerChange(2, option.value);
+                                                }
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                quizAnswers[2] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20 shadow-md",
+                                                quizAnswers[2] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                quizAnswers[2] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                quizAnswers[2] !== option.value && "border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-700"
+                                            )}
+                                        >
+                                            <div className={cn(
+                                                "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
+                                                quizAnswers[2] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-500",
+                                                quizAnswers[2] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-500",
+                                                quizAnswers[2] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-500",
+                                                quizAnswers[2] !== option.value && "border-gray-300 dark:border-gray-600"
+                                            )}>
+                                                {quizAnswers[2] === option.value && (
+                                                    <div className="w-2 h-2 bg-white rounded-full" />
+                                                )}
+                                            </div>
+                                            <Label htmlFor={`q2-${option.value}`} className="flex-1 cursor-pointer text-sm font-medium">
+                                                {option.label}
+                                            </Label>
+                                            {quizIsCorrect !== null && option.isCorrect && (
+                                                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                            )}
+                                            {quizIsCorrect === false && quizAnswers[2] === option.value && !option.isCorrect && (
+                                                <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                                            )}
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Question 3 */}
+                            <div className="p-5 bg-gradient-to-br from-white to-cyan-50/30 dark:from-gray-800 dark:to-cyan-950/30 rounded-lg border-2 border-cyan-200/50 dark:border-cyan-800/50 shadow-sm">
+                                <p className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">3. What percentage of oxygen is in regular air?</p>
+                                <div className="space-y-2">
+                                    {[
+                                        { value: 'air', label: 'About 21%', isCorrect: true },
+                                        { value: '50', label: 'About 50%' },
+                                        { value: '78', label: 'About 78%' },
+                                        { value: '100', label: '100% (pure oxygen)' }
+                                    ].map((option) => (
+                                        <motion.div
+                                            key={option.value}
+                                            whileHover={{ scale: 1.02, x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => {
+                                                if (quizIsCorrect === null) {
+                                                    handleAnswerChange(3, option.value);
+                                                }
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                quizAnswers[3] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20 shadow-md",
+                                                quizAnswers[3] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                quizAnswers[3] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                quizAnswers[3] !== option.value && "border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-700"
+                                            )}
+                                        >
+                                            <div className={cn(
+                                                "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
+                                                quizAnswers[3] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-500",
+                                                quizAnswers[3] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-500",
+                                                quizAnswers[3] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-500",
+                                                quizAnswers[3] !== option.value && "border-gray-300 dark:border-gray-600"
+                                            )}>
+                                                {quizAnswers[3] === option.value && (
+                                                    <div className="w-2 h-2 bg-white rounded-full" />
+                                                )}
+                                            </div>
+                                            <Label htmlFor={`q3-${option.value}`} className="flex-1 cursor-pointer text-sm font-medium">
+                                                {option.label}
+                                            </Label>
+                                            {quizIsCorrect !== null && option.isCorrect && (
+                                                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                            )}
+                                            {quizIsCorrect === false && quizAnswers[3] === option.value && !option.isCorrect && (
+                                                <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                                            )}
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Feedback Section */}
                             {quizFeedback && (
-                                <motion.p
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
                                     className={cn(
-                                        "mt-4 text-sm flex items-center gap-2 p-3 rounded-lg",
-                                        quizIsCorrect === true && "text-green-700 bg-green-100 dark:bg-green-900 dark:text-green-300",
-                                        quizIsCorrect === false && "text-red-700 bg-red-100 dark:bg-red-900 dark:text-red-300",
-                                        quizIsCorrect === null && "text-blue-700 bg-blue-100 dark:bg-blue-900 dark:text-blue-300"
+                                        "p-5 rounded-lg border-2 shadow-lg",
+                                        quizIsCorrect === true && "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-300 dark:border-green-700",
+                                        quizIsCorrect === false && "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30 border-red-300 dark:border-red-700",
+                                        quizIsCorrect === null && "bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border-blue-300 dark:border-blue-700"
                                     )}
                                 >
-                                    {quizIsCorrect === true ? <CheckCircle className="h-5 w-5" /> : 
-                                     quizIsCorrect === false ? <XCircle className="h-5 w-5" /> :
-                                     <RefreshCw className="h-5 w-5" />}
-                                    {quizFeedback}
-                                </motion.p>
+                                    <div className="flex items-start gap-3">
+                                        {quizIsCorrect === true ? (
+                                            <CheckCircle className="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5" />
+                                        ) : quizIsCorrect === false ? (
+                                            <XCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" />
+                                        ) : (
+                                            <RefreshCw className="h-6 w-6 text-blue-600 flex-shrink-0 mt-0.5 animate-spin" />
+                                        )}
+                                        <p className={cn(
+                                            "text-sm font-medium flex-1",
+                                            quizIsCorrect === true && "text-green-800 dark:text-green-200",
+                                            quizIsCorrect === false && "text-red-800 dark:text-red-200",
+                                            quizIsCorrect === null && "text-blue-800 dark:text-blue-200"
+                                        )}>
+                                            {quizFeedback}
+                                        </p>
+                                    </div>
+                                </motion.div>
                             )}
                         </CardContent>
                         <CardFooter>
                             <Button 
                                 onClick={handleQuizSubmit} 
-                                disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect !== null}
-                                className="bg-green-600 hover:bg-green-700"
+                                disabled={(quizIsCorrect === null && Object.keys(quizAnswers).length < 3) || quizIsCorrect === true}
+                                className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                size="lg"
                             >
-                                {quizIsCorrect === true ? "✓ All Correct!" : quizIsCorrect === false ? "See Answers" : "Submit Answers"}
+                                {quizIsCorrect === true ? (
+                                    <>
+                                        <CheckCircle className="h-5 w-5 mr-2" />
+                                        All Correct! 🎉
+                                    </>
+                                ) : quizIsCorrect === false ? (
+                                    <>
+                                        <RefreshCw className="h-5 w-5 mr-2" />
+                                        Try Again
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="h-5 w-5 mr-2" />
+                                        Submit Answers
+                                    </>
+                                )}
                             </Button>
                         </CardFooter>
                     </Card>
@@ -861,7 +1067,7 @@ export function OxygenTestLabEnhanced() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Card className="border-2 border-cyan-200 dark:border-cyan-800">
+                    <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <CheckCircle className="h-5 w-5 text-green-600" />
@@ -908,7 +1114,7 @@ export function OxygenTestLabEnhanced() {
             )}
 
             {/* Lab Notes - Always Available */}
-            <Card className="border-2 border-amber-200 dark:border-amber-800">
+            <Card className="border-2 border-amber-200/50 dark:border-amber-800/50 bg-gradient-to-br from-white/90 to-amber-50/90 dark:from-gray-900/90 dark:to-amber-950/90 backdrop-blur-sm shadow-xl">
                 <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="lab-notes" className="border-none">
                         <AccordionTrigger className="px-6 pt-6 hover:no-underline">
@@ -934,6 +1140,8 @@ export function OxygenTestLabEnhanced() {
                     </AccordionItem>
                 </Accordion>
             </Card>
+            </motion.div>
+            </div>
         </div>
     );
 }
