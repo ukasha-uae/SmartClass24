@@ -409,7 +409,7 @@ export function WorkEnergyLabEnhanced() {
                         PE = mgh
                       </div>
                       <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
-                        <strong>m</strong> = mass (kg) • <strong>g</strong> = 9.81 m/s² • <strong>h</strong> = height (m)
+                        <strong>m</strong> = mass (kg) • <strong>g</strong> = 9.81 m/s<sup>2</sup> • <strong>h</strong> = height (m)
                       </p>
                     </div>
 
@@ -426,7 +426,7 @@ export function WorkEnergyLabEnhanced() {
                         doubling speed quadruples the energy!
                       </p>
                       <div className="bg-red-100 dark:bg-red-900 p-3 rounded-lg font-mono text-sm text-center font-bold">
-                        KE = ½mv²
+                        KE = ½mv<sup>2</sup>
                       </div>
                       <p className="text-xs text-red-600 dark:text-red-400 mt-2">
                         <strong>m</strong> = mass (kg) • <strong>v</strong> = velocity (m/s)
@@ -1014,12 +1014,12 @@ export function WorkEnergyLabEnhanced() {
                       <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded">
                         <strong>At the bottom (ground level):</strong><br />
                         PE = 0 (no height)<br />
-                        KE = ½mv² (maximum)<br />
-                        Total Energy = ½mv²
+                        KE = ½mv<sup>2</sup> (maximum)<br />
+                        Total Energy = ½mv<sup>2</sup>
                       </div>
                       <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded">
                         <strong>Conservation equation:</strong><br />
-                        mgh = ½mv²<br />
+                        mgh = ½mv<sup>2</sup><br />
                         Solving for v: v = √(2gh)<br />
                         Notice: mass cancels out!
                       </div>
@@ -1222,7 +1222,7 @@ export function WorkEnergyLabEnhanced() {
                   <ul className="space-y-2">
                     <li>✓ Energy cannot be created or destroyed, only transformed</li>
                     <li>✓ Potential energy (PE = mgh) is stored energy due to position</li>
-                    <li>✓ Kinetic energy (KE = ½mv²) is energy of motion</li>
+                    <li>✓ Kinetic energy (KE = ½mv<sup>2</sup>) is energy of motion</li>
                     <li>✓ As objects fall, PE converts to KE while total energy stays constant</li>
                     <li>✓ Final speed depends on height: v = √(2gh)</li>
                   </ul>
