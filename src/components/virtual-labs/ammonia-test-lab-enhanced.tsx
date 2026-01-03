@@ -861,126 +861,233 @@ export function AmmoniaTestLab() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Card className="border-2 border-green-200 dark:border-green-800 scroll-mt-20" id="quiz-section">
+                    <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-xl scroll-mt-20" id="quiz-section">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <div className="h-8 w-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-700 dark:text-green-300 font-bold">
+                            <CardTitle className="flex items-center gap-3 text-xl">
+                                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold shadow-lg">
                                     ?
                                 </div>
-                                Post-Lab Quiz
+                                <span>Post-Lab Quiz</span>
                             </CardTitle>
-                            <CardDescription>Test your understanding of the experiment</CardDescription>
+                            <CardDescription className="text-base">Test your understanding of the ammonia test experiment</CardDescription>
                         </CardHeader>
-                    <CardContent>
-                        <div className="space-y-6">
+                        <CardContent className="space-y-6">
                             {/* Question 1 */}
-                            <div>
-                                <p className="text-base font-semibold mb-3">1. What type of substance is ammonia (NH₃)?</p>
-                                <RadioGroup 
-                                    value={quizAnswers[1]} 
-                                    onValueChange={(value) => handleAnswerChange(1, value)} 
-                                    disabled={quizIsCorrect !== null}
-                                >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="acid" id="q1-acid" />
-                                        <Label htmlFor="q1-acid" className="flex-1 cursor-pointer">Acid</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="base" id="q1-base" />
-                                        <Label htmlFor="q1-base" className="flex-1 cursor-pointer">Base</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="neutral" id="q1-neutral" />
-                                        <Label htmlFor="q1-neutral" className="flex-1 cursor-pointer">Neutral</Label>
-                                    </div>
-                                </RadioGroup>
+                            <div className="p-5 bg-gradient-to-br from-white to-cyan-50/30 dark:from-gray-800 dark:to-cyan-950/30 rounded-lg border-2 border-cyan-200/50 dark:border-cyan-800/50 shadow-sm">
+                                <p className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">1. What type of substance is ammonia (NH₃)?</p>
+                                <div className="space-y-2">
+                                    {[
+                                        { value: 'acid', label: 'Acid' },
+                                        { value: 'base', label: 'Base', isCorrect: true },
+                                        { value: 'neutral', label: 'Neutral' }
+                                    ].map((option) => (
+                                        <motion.div
+                                            key={option.value}
+                                            whileHover={{ scale: 1.02, x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => {
+                                                if (quizIsCorrect === null) {
+                                                    handleAnswerChange(1, option.value);
+                                                }
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                quizAnswers[1] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20 shadow-md",
+                                                quizAnswers[1] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                quizAnswers[1] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                quizAnswers[1] !== option.value && "border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-700"
+                                            )}
+                                        >
+                                            <div className={cn(
+                                                "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
+                                                quizAnswers[1] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-500",
+                                                quizAnswers[1] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-500",
+                                                quizAnswers[1] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-500",
+                                                quizAnswers[1] !== option.value && "border-gray-300 dark:border-gray-600"
+                                            )}>
+                                                {quizAnswers[1] === option.value && (
+                                                    <div className="w-2 h-2 bg-white rounded-full" />
+                                                )}
+                                            </div>
+                                            <Label htmlFor={`q1-${option.value}`} className="flex-1 cursor-pointer text-sm font-medium">
+                                                {option.label}
+                                            </Label>
+                                            {quizIsCorrect !== null && option.isCorrect && (
+                                                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                            )}
+                                            {quizIsCorrect === false && quizAnswers[1] === option.value && !option.isCorrect && (
+                                                <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                                            )}
+                                        </motion.div>
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Question 2 */}
-                            <div>
-                                <p className="text-base font-semibold mb-3">2. What color does red litmus paper turn when exposed to ammonia gas?</p>
-                                <RadioGroup 
-                                    value={quizAnswers[2]} 
-                                    onValueChange={(value) => handleAnswerChange(2, value)} 
-                                    disabled={quizIsCorrect !== null}
-                                >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="red" id="q2-red" />
-                                        <Label htmlFor="q2-red" className="flex-1 cursor-pointer">Stays Red</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="blue" id="q2-blue" />
-                                        <Label htmlFor="q2-blue" className="flex-1 cursor-pointer">Turns Blue</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="green" id="q2-green" />
-                                        <Label htmlFor="q2-green" className="flex-1 cursor-pointer">Turns Green</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="colorless" id="q2-colorless" />
-                                        <Label htmlFor="q2-colorless" className="flex-1 cursor-pointer">Becomes Colorless</Label>
-                                    </div>
-                                </RadioGroup>
+                            <div className="p-5 bg-gradient-to-br from-white to-cyan-50/30 dark:from-gray-800 dark:to-cyan-950/30 rounded-lg border-2 border-cyan-200/50 dark:border-cyan-800/50 shadow-sm">
+                                <p className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">2. What color does red litmus paper turn when exposed to ammonia gas?</p>
+                                <div className="space-y-2">
+                                    {[
+                                        { value: 'red', label: 'Stays Red' },
+                                        { value: 'blue', label: 'Turns Blue', isCorrect: true },
+                                        { value: 'green', label: 'Turns Green' },
+                                        { value: 'colorless', label: 'Becomes Colorless' }
+                                    ].map((option) => (
+                                        <motion.div
+                                            key={option.value}
+                                            whileHover={{ scale: 1.02, x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => {
+                                                if (quizIsCorrect === null) {
+                                                    handleAnswerChange(2, option.value);
+                                                }
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                quizAnswers[2] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20 shadow-md",
+                                                quizAnswers[2] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                quizAnswers[2] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                quizAnswers[2] !== option.value && "border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-700"
+                                            )}
+                                        >
+                                            <div className={cn(
+                                                "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
+                                                quizAnswers[2] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-500",
+                                                quizAnswers[2] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-500",
+                                                quizAnswers[2] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-500",
+                                                quizAnswers[2] !== option.value && "border-gray-300 dark:border-gray-600"
+                                            )}>
+                                                {quizAnswers[2] === option.value && (
+                                                    <div className="w-2 h-2 bg-white rounded-full" />
+                                                )}
+                                            </div>
+                                            <Label htmlFor={`q2-${option.value}`} className="flex-1 cursor-pointer text-sm font-medium">
+                                                {option.label}
+                                            </Label>
+                                            {quizIsCorrect !== null && option.isCorrect && (
+                                                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                            )}
+                                            {quizIsCorrect === false && quizAnswers[2] === option.value && !option.isCorrect && (
+                                                <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                                            )}
+                                        </motion.div>
+                                    ))}
+                                </div>
                             </div>
 
                             {/* Question 3 */}
-                            <div>
-                                <p className="text-base font-semibold mb-3">3. What is the chemical formula for ammonia?</p>
-                                <RadioGroup 
-                                    value={quizAnswers[3]} 
-                                    onValueChange={(value) => handleAnswerChange(3, value)} 
-                                    disabled={quizIsCorrect !== null}
-                                >
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="nh2" id="q3-nh2" />
-                                        <Label htmlFor="q3-nh2" className="flex-1 cursor-pointer">NH₂</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="nh3" id="q3-nh3" />
-                                        <Label htmlFor="q3-nh3" className="flex-1 cursor-pointer">NH₃</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="nh4" id="q3-nh4" />
-                                        <Label htmlFor="q3-nh4" className="flex-1 cursor-pointer">NH₄</Label>
-                                    </div>
-                                    <div className="flex items-center space-x-2 py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
-                                        <RadioGroupItem value="n2h4" id="q3-n2h4" />
-                                        <Label htmlFor="q3-n2h4" className="flex-1 cursor-pointer">N₂H₄</Label>
-                                    </div>
-                                </RadioGroup>
+                            <div className="p-5 bg-gradient-to-br from-white to-cyan-50/30 dark:from-gray-800 dark:to-cyan-950/30 rounded-lg border-2 border-cyan-200/50 dark:border-cyan-800/50 shadow-sm">
+                                <p className="text-base font-semibold mb-4 text-gray-900 dark:text-gray-100">3. What is the chemical formula for ammonia?</p>
+                                <div className="space-y-2">
+                                    {[
+                                        { value: 'nh2', label: 'NH₂' },
+                                        { value: 'nh3', label: 'NH₃', isCorrect: true },
+                                        { value: 'nh4', label: 'NH₄' },
+                                        { value: 'n2h4', label: 'N₂H₄' }
+                                    ].map((option) => (
+                                        <motion.div
+                                            key={option.value}
+                                            whileHover={{ scale: 1.02, x: 4 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => {
+                                                if (quizIsCorrect === null) {
+                                                    handleAnswerChange(3, option.value);
+                                                }
+                                            }}
+                                            className={cn(
+                                                "flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                                                quizAnswers[3] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-50 dark:bg-cyan-950/20 shadow-md",
+                                                quizAnswers[3] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
+                                                quizAnswers[3] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
+                                                quizAnswers[3] !== option.value && "border-gray-200 dark:border-gray-700 hover:border-cyan-300 dark:hover:border-cyan-700"
+                                            )}
+                                        >
+                                            <div className={cn(
+                                                "w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0",
+                                                quizAnswers[3] === option.value && !quizIsCorrect && "border-cyan-500 bg-cyan-500",
+                                                quizAnswers[3] === option.value && quizIsCorrect === true && option.isCorrect && "border-green-500 bg-green-500",
+                                                quizAnswers[3] === option.value && quizIsCorrect === false && !option.isCorrect && "border-red-500 bg-red-500",
+                                                quizAnswers[3] !== option.value && "border-gray-300 dark:border-gray-600"
+                                            )}>
+                                                {quizAnswers[3] === option.value && (
+                                                    <div className="w-2 h-2 bg-white rounded-full" />
+                                                )}
+                                            </div>
+                                            <Label htmlFor={`q3-${option.value}`} className="flex-1 cursor-pointer text-sm font-medium">
+                                                {option.label}
+                                            </Label>
+                                            {quizIsCorrect !== null && option.isCorrect && (
+                                                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                            )}
+                                            {quizIsCorrect === false && quizAnswers[3] === option.value && !option.isCorrect && (
+                                                <XCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                                            )}
+                                        </motion.div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
 
-                        {quizFeedback && (
-                            <motion.p
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className={cn(
-                                    "mt-4 text-sm flex items-center gap-2 p-3 rounded-lg",
-                                    quizIsCorrect === true && "text-green-700 bg-green-100 dark:bg-green-900 dark:text-green-300",
-                                    quizIsCorrect === false && "text-red-700 bg-red-100 dark:bg-red-900 dark:text-red-300",
-                                    quizIsCorrect === null && "text-blue-700 bg-blue-100 dark:bg-blue-900 dark:text-blue-300"
-                                )}
+                            {/* Feedback Section */}
+                            {quizFeedback && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className={cn(
+                                        "p-5 rounded-lg border-2 shadow-lg",
+                                        quizIsCorrect === true && "bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border-green-300 dark:border-green-700",
+                                        quizIsCorrect === false && "bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/30 dark:to-rose-950/30 border-red-300 dark:border-red-700",
+                                        quizIsCorrect === null && "bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 border-blue-300 dark:border-blue-700"
+                                    )}
+                                >
+                                    <div className="flex items-start gap-3">
+                                        {quizIsCorrect === true ? (
+                                            <CheckCircle className="h-6 w-6 text-green-600 flex-shrink-0 mt-0.5" />
+                                        ) : quizIsCorrect === false ? (
+                                            <XCircle className="h-6 w-6 text-red-600 flex-shrink-0 mt-0.5" />
+                                        ) : (
+                                            <RefreshCw className="h-6 w-6 text-blue-600 flex-shrink-0 mt-0.5 animate-spin" />
+                                        )}
+                                        <p className={cn(
+                                            "text-sm font-medium flex-1",
+                                            quizIsCorrect === true && "text-green-800 dark:text-green-200",
+                                            quizIsCorrect === false && "text-red-800 dark:text-red-200",
+                                            quizIsCorrect === null && "text-blue-800 dark:text-blue-200"
+                                        )}>
+                                            {quizFeedback}
+                                        </p>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </CardContent>
+                        <CardFooter>
+                            <Button 
+                                onClick={handleQuizSubmit} 
+                                disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect !== null}
+                                className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                size="lg"
                             >
-                                {quizIsCorrect === true ? <CheckCircle className="h-5 w-5" /> : 
-                                 quizIsCorrect === false ? <XCircle className="h-5 w-5" /> :
-                                 <RefreshCw className="h-5 w-5" />}
-                                {quizFeedback}
-                            </motion.p>
-                        )}
-                    </CardContent>
-                    <CardFooter>
-                        <Button 
-                            onClick={handleQuizSubmit} 
-                            disabled={Object.keys(quizAnswers).length < 3 || quizIsCorrect !== null}
-                            className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
-                        >
-                            {quizIsCorrect === true ? "✓ All Correct!" : quizIsCorrect === false ? "See Answers" : "Submit Answers"}
-                        </Button>
-                    </CardFooter>
-                </Card>
+                                {quizIsCorrect === true ? (
+                                    <>
+                                        <CheckCircle className="h-5 w-5 mr-2" />
+                                        All Correct! 🎉
+                                    </>
+                                ) : quizIsCorrect === false ? (
+                                    <>
+                                        <RefreshCw className="h-5 w-5 mr-2" />
+                                        Try Again
+                                    </>
+                                ) : (
+                                    <>
+                                        <Sparkles className="h-5 w-5 mr-2" />
+                                        Submit Answers
+                                    </>
+                                )}
+                            </Button>
+                        </CardFooter>
+                    </Card>
                 </motion.div>
             )}
 
