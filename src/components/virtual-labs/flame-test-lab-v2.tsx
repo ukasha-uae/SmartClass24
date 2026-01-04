@@ -17,8 +17,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TeacherVoice } from './TeacherVoice';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import confetti from 'canvas-confetti';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
-type TestStep = 'intro' | 'select-salt' | 'load-sample' | 'heating' | 'observe' | 'result' | 'quiz';
+type TestStep = 'intro' | 'collect-supplies' | 'select-salt' | 'load-sample' | 'heating' | 'observe' | 'result' | 'quiz' | 'complete';
 type MetalSalt = 'Lithium Chloride' | 'Sodium Chloride' | 'Potassium Chloride' | 'Copper Sulfate' | 'Calcium Chloride' | 'Barium Chloride';
 
 interface SaltInfo {
@@ -96,7 +97,14 @@ export function FlameTestLabEnhanced() {
     
     // Teacher voice
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+    
+    const labSupplies: SupplyItem[] = [
+        { id: 'bunsen-burner', name: 'Bunsen Burner', emoji: '🔥', description: 'Heat source' },
+        { id: 'wire-loop', name: 'Nichrome Wire Loop', emoji: '🔬', description: 'To hold samples' },
+        { id: 'safety-goggles', name: 'Safety Goggles', emoji: '🥽', description: 'Eye protection' },
+        { id: 'metal-salts', name: 'Metal Salts', emoji: '⚗️', description: 'Test samples' },
+    ];
     
     // Quiz
     const [quizAnswer, setQuizAnswer] = React.useState<string>('');
@@ -139,12 +147,8 @@ export function FlameTestLabEnhanced() {
 
     // Teacher message callbacks
     const handleTeacherComplete = React.useCallback(() => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
-    }, [pendingTransition]);
+        // Direct state updates - no pending transitions
+    }, []);
 
     // Initial intro
     React.useEffect(() => {
@@ -154,6 +158,28 @@ export function FlameTestLabEnhanced() {
     }, [currentStep]);
 
     const handleStartExperiment = () => {
+        setCurrentStep('collect-supplies');
+        setTeacherMessage("Before we begin, let's gather all the equipment we'll need for the flame test. Click each item to collect it!");
+    };
+
+    const handleCollectSupply = (itemId: string) => {
+        if (!collectedSupplies.includes(itemId)) {
+            setCollectedSupplies(prev => {
+                const newCollected = [...prev, itemId];
+                if (newCollected.length === labSupplies.length) {
+                    setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
+                }
+                return newCollected;
+            });
+            toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
+        }
+    };
+
+    const handleAllSuppliesCollected = () => {
+        setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
+    };
+
+    const handleContinueToExperiment = () => {
         setCurrentStep('select-salt');
         setTeacherMessage('First, choose a metal salt to test. We have six different metal salts: Lithium, Sodium, Potassium, Copper, Calcium, and Barium. Each one will produce a different colored flame. Which one would you like to test first?');
     };
@@ -172,12 +198,6 @@ export function FlameTestLabEnhanced() {
         };
         
         setTeacherMessage(messages[salt]);
-        setPendingTransition(() => () => {
-            setTimeout(() => {
-                const actionButton = document.querySelector('[data-action-button="load"]');
-                actionButton?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 100);
-        });
     };
 
     const handleLoadSample = () => {
@@ -204,16 +224,22 @@ export function FlameTestLabEnhanced() {
         setCurrentStep('result');
         setTeacherMessage(`Test complete! The ${currentFlame.colorName} flame confirms the presence of ${currentFlame.ion} ions. This color occurs at a wavelength of ${currentFlame.spectralLine} nanometers. Each metal has a unique electron configuration, producing its own color signature. Ready to test your knowledge with a quiz?`);
         
-        setPendingTransition(() => () => {
+        // Transition to quiz after showing results - give students time to observe
+        setTimeout(() => {
             setCurrentStep('quiz');
-            setTimeout(() => {
-                const quizSection = document.querySelector('[data-quiz-section]');
-                quizSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        });
+        }, 25000); // 25 seconds to allow teacher to finish explaining
     };
 
     const handleQuizSubmit = () => {
+        // If already showing feedback and incorrect, allow retry by resetting
+        if (quizIsCorrect === false) {
+            setQuizAnswer('');
+            setQuizFeedback(null);
+            setQuizAttempts(0);
+            setQuizIsCorrect(null);
+            return;
+        }
+        
         if (quizIsCorrect !== null) return;
         
         const correctAnswer = 'Electrons moving between energy levels';
@@ -238,7 +264,10 @@ export function FlameTestLabEnhanced() {
                 
                 setXpEarned(earnedXP);
                 setShowCelebration(true);
-                setTimeout(() => setShowCelebration(false), 5000);
+                setTimeout(() => {
+                    setShowCelebration(false);
+                    setCurrentStep('complete');
+                }, 5000);
                 
                 setTeacherMessage(`Excellent work! You've mastered flame tests and earned ${earnedXP} XP! You now have ${totalXP + earnedXP} total XP. Remember, flame tests are used by chemists to identify unknown substances!`);
             } else {
@@ -268,6 +297,7 @@ export function FlameTestLabEnhanced() {
         setQuizIsCorrect(null);
         setXpEarned(0);
         setShowCelebration(false);
+        setCollectedSupplies([]);
         setTeacherMessage('Welcome back! Ready to test another metal salt? Each one produces a different color. Click Start Experiment when ready!');
     };
 
@@ -276,114 +306,173 @@ export function FlameTestLabEnhanced() {
     const safetyText = "Safety is paramount in flame test experiments. Always wear safety goggles to protect eyes from flying particles and chemical splashes. Keep long hair tied back and remove loose clothing or jewelry. Handle the Bunsen burner with care, ensuring it's properly connected to the gas supply. The wire loop becomes extremely hot during testing - never touch it until it has cooled completely. Work in a well-ventilated area and know the location of fire extinguishers.";
 
     return (
-        <div className="space-y-6">
-            {/* Completion Badge */}
-            {hasCompleted && labProgress && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 rounded-xl border-2 border-amber-300 dark:border-amber-700"
-                >
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-amber-500 rounded-full">
-                            <Trophy className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                            <div className="font-bold text-amber-900 dark:text-amber-100">Lab Completed!</div>
-                            <div className="text-sm text-amber-700 dark:text-amber-300">
-                                Score: {labProgress.score}%
-                            </div>
-                        </div>
-                    </div>
-                    <Badge variant="secondary" className="bg-amber-200 text-amber-900">
-                        <Award className="h-3 w-3 mr-1" />
-                        {labProgress.xpEarned} XP
-                    </Badge>
-                </motion.div>
-            )}
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Orange/Red Flame Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-red-50 to-amber-50 dark:from-orange-950/30 dark:via-red-950/30 dark:to-amber-950/30" />
+                {[...Array(8)].map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-orange-200/40 to-red-300/40 dark:from-orange-800/20 dark:to-red-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
 
-            {/* Teacher Voice */}
-            {teacherMessage && (
+            <div className="relative max-w-5xl mx-auto p-4 space-y-6">
+                {/* Teacher Voice */}
                 <TeacherVoice 
                     message={teacherMessage}
                     onComplete={handleTeacherComplete}
                 />
-            )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Objective</CardTitle>
-                    <CardDescription>{objectiveText}</CardDescription>
-                </CardHeader>
-            </Card>
+                {/* Completion Badge */}
+                {hasCompleted && labProgress && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border-2 border-orange-200 dark:border-orange-800 rounded-lg p-4"
+                    >
+                        <div className="flex items-center gap-3">
+                            <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded-full">
+                                <Trophy className="h-6 w-6 text-orange-600 dark:text-orange-400" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-semibold text-orange-900 dark:text-orange-100">Lab Completed!</h3>
+                                <p className="text-sm text-orange-700 dark:text-orange-300">
+                                    Completed: {new Date(labProgress.completedAt || '').toLocaleDateString()} • 
+                                    Total XP: {labProgress.xpEarned || 0}
+                                </p>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <BookOpen className="h-4 w-4" />
-                                    <span>Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <p>{theoryText}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-2">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <Shield className="h-4 w-4" />
-                                    <span>Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <p>{safetyText}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                >
+                    <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
+                            <CardTitle className="flex items-center gap-2">
+                                <Flame className="w-6 h-6 text-orange-600" />
+                                Objective
+                            </CardTitle>
+                            <CardDescription>{objectiveText}</CardDescription>
+                        </CardHeader>
+                    </Card>
 
-            {/* Main Lab Interface */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                        <span>🔥 Interactive Flame Test Lab</span>
-                        <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => setShowSafetyGear(!showSafetyGear)}
-                            className={cn("transition-colors", showSafetyGear && "border-green-500 text-green-600")}
-                        >
-                            {showSafetyGear ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
-                            Safety {showSafetyGear ? 'ON' : 'OFF'}
-                        </Button>
-                    </CardTitle>
-                    <CardDescription>Discover the rainbow of flame colors produced by different metal ions</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    {/* Start Button */}
-                    {currentStep === 'intro' && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="flex flex-col items-center justify-center py-12 space-y-4"
-                        >
-                            <Flame className="h-24 w-24 text-orange-500" />
-                            <Button 
-                                size="lg" 
-                                onClick={handleStartExperiment}
-                                className="text-lg px-8"
-                            >
-                                Start Experiment 🔥
-                            </Button>
-                        </motion.div>
-                    )}
+                    <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
+                            <CardTitle>Lab Information</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Accordion type="single" collapsible className="w-full">
+                                <AccordionItem value="item-1">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-2">
+                                            <BookOpen className="h-4 w-4" />
+                                            <span>Background Theory</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                        <p>{theoryText}</p>
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="item-2">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-2">
+                                            <Shield className="h-4 w-4" />
+                                            <span>Safety Precautions</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                        <p>{safetyText}</p>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        </CardContent>
+                    </Card>
+
+                    {/* Main Lab Interface */}
+                    <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
+                            <CardTitle className="flex items-center justify-between">
+                                <span className="flex items-center gap-2">🔥 Interactive Flame Test Lab</span>
+                                <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => setShowSafetyGear(!showSafetyGear)}
+                                    className={cn("transition-colors", showSafetyGear && "border-green-500 text-green-600")}
+                                >
+                                    {showSafetyGear ? <Eye className="h-4 w-4 mr-2" /> : <EyeOff className="h-4 w-4 mr-2" />}
+                                    Safety {showSafetyGear ? 'ON' : 'OFF'}
+                                </Button>
+                            </CardTitle>
+                            <CardDescription>Discover the rainbow of flame colors produced by different metal ions</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            {/* Start Button */}
+                            {currentStep === 'intro' && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="flex flex-col items-center justify-center py-12 space-y-4"
+                                >
+                                    <Flame className="h-24 w-24 text-orange-500" />
+                                    <Button 
+                                        size="lg" 
+                                        onClick={handleStartExperiment}
+                                        className="text-lg px-8 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                                    >
+                                        <Sparkles className="w-5 h-5 mr-2" />
+                                        Start Experiment 🔥
+                                    </Button>
+                                </motion.div>
+                            )}
+
+                            {/* Collect Supplies Step */}
+                            {currentStep === 'collect-supplies' && (
+                                <motion.div
+                                    key="collect-supplies"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    className="space-y-6"
+                                >
+                                    <LabSupplies
+                                        supplies={labSupplies}
+                                        collectedItems={collectedSupplies}
+                                        onCollect={handleCollectSupply}
+                                        onAllCollected={handleAllSuppliesCollected}
+                                        requiredCount={labSupplies.length}
+                                    />
+                                    {collectedSupplies.length === labSupplies.length && (
+                                        <Button
+                                            onClick={handleContinueToExperiment}
+                                            size="lg"
+                                            className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                                        >
+                                            Continue to Experiment
+                                        </Button>
+                                    )}
+                                </motion.div>
+                            )}
 
                     {/* Salt Selection */}
                     {currentStep === 'select-salt' && (
@@ -585,29 +674,29 @@ export function FlameTestLabEnhanced() {
                     </AnimatePresence>
                 </CardContent>
                 <CardFooter className="flex flex-col gap-3">
-                    {currentStep === 'select-salt' && selectedSalt && (
-                        <Button 
-                            size="lg" 
-                            className="w-full"
-                            onClick={handleLoadSample}
-                            data-action-button="load"
-                        >
-                            <TestTube className="h-5 w-5 mr-2" />
-                            Load Sample onto Wire
-                        </Button>
-                    )}
-                    
-                    {currentStep === 'heating' && !isHeating && (
-                        <Button 
-                            size="lg" 
-                            className="w-full bg-orange-600 hover:bg-orange-700"
-                            onClick={handleStartHeating}
-                            data-action-button="heat"
-                        >
-                            <Flame className="h-5 w-5 mr-2" />
-                            Start Heating
-                        </Button>
-                    )}
+                            {currentStep === 'select-salt' && selectedSalt && (
+                                <Button 
+                                    size="lg" 
+                                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                                    onClick={handleLoadSample}
+                                    data-action-button="load"
+                                >
+                                    <TestTube className="h-5 w-5 mr-2" />
+                                    Load Sample onto Wire
+                                </Button>
+                            )}
+                            
+                            {currentStep === 'heating' && !isHeating && (
+                                <Button 
+                                    size="lg" 
+                                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                                    onClick={handleStartHeating}
+                                    data-action-button="heat"
+                                >
+                                    <Flame className="h-5 w-5 mr-2" />
+                                    Start Heating
+                                </Button>
+                            )}
                     
                     {currentStep === 'heating' && isHeating && (
                         <div className="w-full space-y-2">
@@ -621,130 +710,248 @@ export function FlameTestLabEnhanced() {
                         </div>
                     )}
                     
-                    {currentStep === 'observe' && currentFlame && (
-                        <Button 
-                            size="lg" 
-                            className="w-full"
-                            onClick={handleShowResult}
-                            data-action-button="result"
-                        >
-                            <Eye className="h-5 w-5 mr-2" />
-                            View Detailed Result
-                        </Button>
-                    )}
-                    
-                    {currentStep !== 'intro' && (
-                        <Button 
-                            variant="outline" 
-                            onClick={handleReset}
-                            className="w-full"
-                        >
-                            <RefreshCw className="h-4 w-4 mr-2" />
-                            Reset & Try Another Salt
-                        </Button>
-                    )}
-                </CardFooter>
-            </Card>
-
-            {/* Quiz Section */}
-            {currentStep === 'quiz' && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    data-quiz-section
-                >
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Knowledge Check Quiz</CardTitle>
-                            <CardDescription>Test your understanding of flame tests</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="font-medium">
-                                What causes the different colors observed in flame tests?
-                            </p>
-                            <RadioGroup 
-                                value={quizAnswer} 
-                                onValueChange={setQuizAnswer}
-                                disabled={quizIsCorrect !== null}
-                            >
-                                <div className="flex items-center space-x-2 py-2">
-                                    <RadioGroupItem value="The metal burning" id="q-burning" />
-                                    <Label htmlFor="q-burning" className="cursor-pointer">The metal burning at different temperatures</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 py-2">
-                                    <RadioGroupItem value="Electrons moving between energy levels" id="q-electrons" />
-                                    <Label htmlFor="q-electrons" className="cursor-pointer">Electrons moving between energy levels</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 py-2">
-                                    <RadioGroupItem value="Chemical reactions with oxygen" id="q-oxygen" />
-                                    <Label htmlFor="q-oxygen" className="cursor-pointer">Chemical reactions with oxygen in the air</Label>
-                                </div>
-                                <div className="flex items-center space-x-2 py-2">
-                                    <RadioGroupItem value="Reflection of light" id="q-reflection" />
-                                    <Label htmlFor="q-reflection" className="cursor-pointer">Reflection of light by metal crystals</Label>
-                                </div>
-                            </RadioGroup>
-                            
-                            {quizFeedback && (
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    className={cn(
-                                        "p-4 rounded-lg border-2 flex items-start gap-3",
-                                        quizIsCorrect 
-                                            ? "bg-green-50 dark:bg-green-950/30 border-green-500 text-green-900 dark:text-green-100"
-                                            : quizIsCorrect === false
-                                            ? "bg-red-50 dark:bg-red-950/30 border-red-500 text-red-900 dark:text-red-100"
-                                            : "bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
-                                    )}
+                            {currentStep === 'observe' && currentFlame && (
+                                <Button 
+                                    size="lg" 
+                                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                                    onClick={handleShowResult}
+                                    data-action-button="result"
                                 >
-                                    {quizIsCorrect ? (
-                                        <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : quizIsCorrect === false ? (
-                                        <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    ) : (
-                                        <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                                    )}
-                                    <p className="text-sm font-medium">{quizFeedback}</p>
-                                </motion.div>
+                                    <Eye className="h-5 w-5 mr-2" />
+                                    View Detailed Result
+                                </Button>
                             )}
-                        </CardContent>
-                        <CardFooter>
-                            <Button 
-                                onClick={handleQuizSubmit} 
-                                disabled={!quizAnswer || quizIsCorrect !== null}
-                                size="lg"
-                            >
-                                {quizIsCorrect === true ? "Correct! ✓" : quizIsCorrect === false ? "Review Answer" : quizAttempts === 1 ? "Try Again" : "Submit Answer"}
-                            </Button>
+                            
+                            {currentStep !== 'intro' && currentStep !== 'collect-supplies' && currentStep !== 'complete' && (
+                                <Button 
+                                    variant="outline" 
+                                    onClick={handleReset}
+                                    className="w-full border-2 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-950/20"
+                                >
+                                    <RefreshCw className="h-4 w-4 mr-2" />
+                                    Reset & Try Another Salt
+                                </Button>
+                            )}
                         </CardFooter>
                     </Card>
                 </motion.div>
-            )}
 
-            {/* XP Celebration */}
-            <AnimatePresence>
-                {showCelebration && xpEarned > 0 && (
+                {/* Quiz Section */}
+                {currentStep === 'quiz' && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        className="fixed bottom-8 right-8 z-50"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        data-quiz-section
                     >
-                        <div className="bg-gradient-to-br from-amber-500 to-yellow-600 text-white p-6 rounded-2xl shadow-2xl border-4 border-yellow-300">
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 bg-white/20 rounded-full">
-                                    <Sparkles className="h-8 w-8" />
+                        <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                            <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
+                                <CardTitle>Knowledge Check Quiz</CardTitle>
+                                <CardDescription>Test your understanding of flame tests</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <p className="font-medium text-lg">
+                                    What causes the different colors observed in flame tests?
+                                </p>
+                                <div className="grid gap-3">
+                                    {[
+                                        { value: "The metal burning", label: "The metal burning at different temperatures" },
+                                        { value: "Electrons moving between energy levels", label: "Electrons moving between energy levels", isCorrect: true },
+                                        { value: "Chemical reactions with oxygen", label: "Chemical reactions with oxygen in the air" },
+                                        { value: "Reflection of light", label: "Reflection of light by metal crystals" },
+                                    ].map((option, idx) => {
+                                        const isSelected = quizAnswer === option.value;
+                                        const isCorrect = option.isCorrect;
+                                        const showFeedback = quizIsCorrect !== null;
+                                        const isWrong = showFeedback && isSelected && !isCorrect;
+                                        
+                                        return (
+                                            <motion.button
+                                                key={idx}
+                                                onClick={() => {
+                                                    if (quizIsCorrect === null) {
+                                                        setQuizAnswer(option.value);
+                                                    }
+                                                }}
+                                                disabled={showFeedback}
+                                                className={cn(
+                                                    "relative p-4 rounded-lg border-2 text-left transition-all",
+                                                    "disabled:cursor-not-allowed",
+                                                    !showFeedback && isSelected && "border-orange-500 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 shadow-md",
+                                                    !showFeedback && !isSelected && "border-gray-200 dark:border-gray-700 hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/50",
+                                                    showFeedback && isCorrect && "border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 shadow-md",
+                                                    showFeedback && isWrong && "border-red-500 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 shadow-md",
+                                                    showFeedback && !isSelected && !isCorrect && "border-gray-200 dark:border-gray-700 opacity-60"
+                                                )}
+                                                whileHover={!showFeedback ? { scale: 1.02, y: -2 } : {}}
+                                                whileTap={!showFeedback ? { scale: 0.98 } : {}}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className={cn(
+                                                        "flex items-center justify-center w-6 h-6 rounded-full border-2 flex-shrink-0",
+                                                        isSelected && !showFeedback && "border-orange-500 bg-orange-500",
+                                                        showFeedback && isCorrect && "border-green-500 bg-green-500",
+                                                        showFeedback && isWrong && "border-red-500 bg-red-500",
+                                                        !isSelected && !showFeedback && "border-gray-300 dark:border-gray-600"
+                                                    )}>
+                                                        {isSelected && (
+                                                            <div className="w-3 h-3 rounded-full bg-white" />
+                                                        )}
+                                                    </div>
+                                                    <span className="flex-1 font-medium">{option.label}</span>
+                                                    {showFeedback && isCorrect && (
+                                                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                                                    )}
+                                                    {showFeedback && isWrong && (
+                                                        <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                                                    )}
+                                                </div>
+                                            </motion.button>
+                                        );
+                                    })}
                                 </div>
-                                <div>
-                                    <div className="text-2xl font-bold">+{xpEarned} XP</div>
-                                    <div className="text-sm opacity-90">Lab Complete!</div>
-                                </div>
-                            </div>
-                        </div>
+                                
+                                {quizFeedback && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className={cn(
+                                            "p-4 rounded-lg border-2 flex items-start gap-3",
+                                            quizIsCorrect 
+                                                ? "bg-green-50 dark:bg-green-950/30 border-green-500 text-green-900 dark:text-green-100"
+                                                : quizIsCorrect === false
+                                                ? "bg-red-50 dark:bg-red-950/30 border-red-500 text-red-900 dark:text-red-100"
+                                                : "bg-blue-50 dark:bg-blue-950/30 border-blue-500 text-blue-900 dark:text-blue-100"
+                                        )}
+                                    >
+                                        {quizIsCorrect ? (
+                                            <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                        ) : quizIsCorrect === false ? (
+                                            <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                        ) : (
+                                            <Sparkles className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                                        )}
+                                        <p className="text-sm font-medium">{quizFeedback}</p>
+                                    </motion.div>
+                                )}
+                            </CardContent>
+                            <CardFooter>
+                                <Button 
+                                    onClick={handleQuizSubmit} 
+                                    disabled={!quizAnswer && quizIsCorrect === null}
+                                    size="lg"
+                                    className={cn(
+                                        "w-full shadow-lg",
+                                        quizIsCorrect === false
+                                            ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                                            : "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                                    )}
+                                >
+                                    {quizIsCorrect === true ? (
+                                        <>
+                                            <CheckCircle className="mr-2 h-5 w-5" />
+                                            Correct! ✓
+                                        </>
+                                    ) : quizIsCorrect === false ? (
+                                        <>
+                                            <RefreshCw className="mr-2 h-5 w-5" />
+                                            Try Again
+                                        </>
+                                    ) : quizAttempts === 1 ? (
+                                        <>
+                                            <RefreshCw className="mr-2 h-5 w-5" />
+                                            Try Again
+                                        </>
+                                    ) : (
+                                        <>
+                                            <CheckCircle className="mr-2 h-5 w-5" />
+                                            Submit Answer
+                                        </>
+                                    )}
+                                </Button>
+                            </CardFooter>
+                        </Card>
                     </motion.div>
                 )}
-            </AnimatePresence>
+
+                {/* Complete Step */}
+                {currentStep === 'complete' && (
+                    <motion.div
+                        key="complete"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="relative"
+                    >
+                        <Card className="border-2 border-yellow-300 dark:border-yellow-700 bg-gradient-to-br from-yellow-50/90 via-orange-50/90 to-red-50/90 dark:from-yellow-950/90 dark:via-orange-950/90 dark:to-red-950/90 backdrop-blur-sm shadow-2xl overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-orange-400/20 to-red-400/20 animate-pulse" />
+                            <CardContent className="relative p-8 text-center space-y-6">
+                                <motion.div
+                                    animate={{ 
+                                        scale: [1, 1.1, 1],
+                                        rotate: [0, 5, -5, 0]
+                                    }}
+                                    transition={{ 
+                                        repeat: Infinity,
+                                        duration: 2
+                                    }}
+                                    className="text-8xl mb-4"
+                                >
+                                    🏆
+                                </motion.div>
+                                <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
+                                    Lab Complete!
+                                </h2>
+                                {xpEarned > 0 && (
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ delay: 0.2, type: "spring" }}
+                                        className="flex items-center justify-center gap-2 text-3xl font-black text-orange-600 dark:text-orange-400"
+                                    >
+                                        <Award className="h-8 w-8" />
+                                        <span>+{xpEarned} XP</span>
+                                    </motion.div>
+                                )}
+                                <div className="space-y-4 pt-4">
+                                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">What You Learned:</h3>
+                                    <ul className="text-left space-y-2 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>How to identify metal ions using flame tests</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>The unique flame colors produced by different metals</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>How electron transitions cause colored flames</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>The relationship between wavelength and flame color</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                                            <span>Safety procedures for working with flames</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <Button 
+                                    onClick={handleReset} 
+                                    variant="outline" 
+                                    className="mt-6 border-2 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-950/20"
+                                    size="lg"
+                                >
+                                    <RefreshCw className="h-4 w-4 mr-2" />
+                                    Try Again
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                )}
+
+            </div>
         </div>
     );
 }

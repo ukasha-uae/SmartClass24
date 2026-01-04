@@ -4,13 +4,14 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, Flame, Droplets, Beaker, CheckCircle, XCircle, Award, Trophy, FlaskConical, TestTube, Wind, Sparkles, AlertTriangle, GripVertical } from 'lucide-react';
+import { Filter, Flame, Droplets, Beaker, CheckCircle, XCircle, Award, Trophy, FlaskConical, TestTube, Wind, Sparkles, AlertTriangle, GripVertical, RefreshCw, BookOpen, Shield, Label } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { useLocalization } from '@/hooks/useLocalization';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
 type Technique = 'filtration' | 'evaporation' | 'decantation' | 'none';
 type MixtureType = 'muddy-water' | 'salt-water' | 'oil-water' | 'none';
@@ -39,17 +40,20 @@ export function SeparationTechniquesLabEnhanced() {
 
   // Teacher voice
   const [teacherMessage, setTeacherMessage] = React.useState('');
-  const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+  const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+  
+  const labSupplies: SupplyItem[] = [
+    { id: 'filter-paper', name: 'Filter Paper', emoji: '📄', description: 'For filtration' },
+    { id: 'bunsen-burner', name: 'Bunsen Burner', emoji: '🔥', description: 'For evaporation' },
+    { id: 'beakers', name: 'Beakers', emoji: '🧪', description: 'To hold mixtures' },
+    { id: 'funnel', name: 'Funnel', emoji: '🔬', description: 'For directing liquids' },
+  ];
 
-  // Supplies tracking
-  const [filterPaperCollected, setFilterPaperCollected] = React.useState(false);
-  const [bunsenBurnerCollected, setBunsenBurnerCollected] = React.useState(false);
-  const [beakersCollected, setBeakersCollected] = React.useState(false);
-  const [funnelCollected, setFunnelCollected] = React.useState(false);
-
-  const { markLabComplete, isLabCompleted } = useLabProgress();
+  const { markLabComplete, isLabCompleted, getLabCompletion } = useLabProgress();
   const labId = 'separation-techniques';
   const isComplete = isLabCompleted(labId);
+  const completion = getLabCompletion(labId);
+  const [xpEarned, setXpEarned] = React.useState(0);
 
   // Intro message
   React.useEffect(() => {
@@ -60,46 +64,28 @@ export function SeparationTechniquesLabEnhanced() {
 
   const handleStartExperiment = () => {
     setStep('collect-supplies');
-    setTeacherMessage("Excellent! Let's collect our lab supplies. Start by clicking on the FILTER PAPER - we'll use this for filtration!");
+    setTeacherMessage("Excellent! Let's collect our lab supplies. Click on each item to collect them for your experiment!");
   };
 
   const handleTeacherComplete = () => {
-    if (pendingTransition) {
-      pendingTransition();
-      setPendingTransition(null);
+    // Direct state updates - no pending transitions
+  };
+
+  const handleCollectSupply = (itemId: string) => {
+    if (!collectedSupplies.includes(itemId)) {
+      setCollectedSupplies(prev => {
+        const newCollected = [...prev, itemId];
+        if (newCollected.length === labSupplies.length) {
+          setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Setup' to begin!");
+        }
+        return newCollected;
+      });
+      toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
     }
   };
 
-  const handleCollectFilterPaper = () => {
-    if (!filterPaperCollected) {
-      setFilterPaperCollected(true);
-      setTeacherMessage("Good! Now click on the BUNSEN BURNER - we need heat for evaporation!");
-      toast({ title: '✅ Filter Paper Collected' });
-    }
-  };
-
-  const handleCollectBunsenBurner = () => {
-    if (filterPaperCollected && !bunsenBurnerCollected) {
-      setBunsenBurnerCollected(true);
-      setTeacherMessage("Perfect! Now click on the BEAKERS - we'll use these to hold our mixtures!");
-      toast({ title: '✅ Bunsen Burner Collected' });
-    }
-  };
-
-  const handleCollectBeakers = () => {
-    if (bunsenBurnerCollected && !beakersCollected) {
-      setBeakersCollected(true);
-      setTeacherMessage("Excellent! Finally, click on the FUNNEL - this helps direct liquids during filtration and decantation!");
-      toast({ title: '✅ Beakers Collected' });
-    }
-  };
-
-  const handleCollectFunnel = () => {
-    if (beakersCollected && !funnelCollected) {
-      setFunnelCollected(true);
-      setTeacherMessage("Wonderful! All equipment collected! Now you're ready to learn about the three separation techniques. Click 'Continue to Setup' to begin!");
-      toast({ title: '✅ Funnel Collected' });
-    }
+  const handleAllSuppliesCollected = () => {
+    setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Setup' to begin!");
   };
 
   const handleContinueToSetup = () => {
@@ -272,6 +258,14 @@ export function SeparationTechniquesLabEnhanced() {
   };
 
   const handleQuizSubmit = () => {
+    // If already showing feedback, allow retry by resetting
+    if (showQuizFeedback) {
+      setQuizAnswers({});
+      setShowQuizFeedback(false);
+      setQuizScore(0);
+      return;
+    }
+    
     let score = 0;
     quizQuestions.forEach((q, idx) => {
       if (quizAnswers[idx] === q.correct) {
@@ -296,7 +290,8 @@ export function SeparationTechniquesLabEnhanced() {
   };
 
   const handleComplete = () => {
-    markLabComplete(labId, 100, 0);
+    const earnedXP = markLabComplete(labId, 100, 0);
+    setXpEarned(earnedXP);
     setStep('complete');
     setTeacherMessage(`Congratulations! You've mastered separation techniques! These methods are used daily in ${country.name} - from water treatment plants to salt production. You now understand how to separate mixtures based on their physical properties!`);
     confetti({
@@ -316,31 +311,82 @@ export function SeparationTechniquesLabEnhanced() {
     setQuizAnswers({});
     setShowQuizFeedback(false);
     setQuizScore(0);
-    setFilterPaperCollected(false);
-    setBunsenBurnerCollected(false);
-    setBeakersCollected(false);
-    setFunnelCollected(false);
-    setPendingTransition(null);
+    setCollectedSupplies([]);
+    setCurrentResult(null);
+    setXpEarned(0);
     setTeacherMessage("Ready to explore Separation Techniques again!");
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 space-y-6">
+    <div className="relative min-h-screen pb-20">
+      {/* Premium Animated Background - Purple/Blue Separation Theme */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-indigo-950/30" />
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-gradient-to-br from-purple-200/40 to-blue-300/40 dark:from-purple-800/20 dark:to-blue-900/20 blur-3xl"
+            style={{
+              width: `${200 + i * 50}px`,
+              height: `${200 + i * 50}px`,
+              left: `${(i * 12.5) % 100}%`,
+              top: `${(i * 15) % 100}%`,
+            }}
+            animate={{
+              x: [0, 100, 0],
+              y: [0, 50, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 10 + i * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative max-w-5xl mx-auto p-4 space-y-6">
       <TeacherVoice
         message={teacherMessage}
         onComplete={handleTeacherComplete}
       />
 
-      <Card className="border-2">
-        <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
-          <CardTitle className="flex items-center gap-2 text-2xl">
-            <FlaskConical className="w-8 h-8 text-purple-600" />
-            Separation Techniques Lab
-          </CardTitle>
-          <CardDescription className="text-base">
-            Learn how to separate different types of mixtures using filtration, evaporation, and decantation
-          </CardDescription>
-        </CardHeader>
+        {isComplete && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 border-2 border-purple-200 dark:border-purple-800 rounded-lg p-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-full">
+                <Trophy className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-purple-900 dark:text-purple-100">Lab Completed!</h3>
+                <p className="text-sm text-purple-700 dark:text-purple-300">
+                  Completed: {new Date(completion?.completedAt || '').toLocaleDateString()} • 
+                  Total XP: {completion?.xpEarned || 0}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950">
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <FlaskConical className="w-8 h-8 text-purple-600" />
+                Separation Techniques Lab
+              </CardTitle>
+              <CardDescription className="text-base">
+                Learn how to separate different types of mixtures using filtration, evaporation, and decantation
+              </CardDescription>
+            </CardHeader>
 
         <CardContent className="p-6">
           <AnimatePresence mode="wait">
@@ -415,8 +461,9 @@ export function SeparationTechniquesLabEnhanced() {
                 <Button
                   onClick={handleStartExperiment}
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                 >
+                  <Sparkles className="w-5 h-5 mr-2" />
                   Begin Experiments
                 </Button>
               </motion.div>
@@ -431,154 +478,23 @@ export function SeparationTechniquesLabEnhanced() {
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-6"
               >
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-semibold flex items-center justify-center gap-2">
-                    <TestTube className="w-6 h-6 text-purple-500" />
-                    Collect Laboratory Supplies
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Click on each item to collect it for your experiments
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Filter Paper */}
-                  {!filterPaperCollected && (
-                    <motion.button
-                      onClick={handleCollectFilterPaper}
-                      className="p-6 rounded-xl border-4 border-blue-300 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950 transition-all cursor-pointer"
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="flex flex-col items-center gap-3">
-                        <Filter className="w-16 h-16 text-blue-600" />
-                        <h4 className="font-semibold text-lg">Filter Paper</h4>
-                        <p className="text-sm text-muted-foreground">Click to collect</p>
-                      </div>
-                    </motion.button>
-                  )}
-
-                  {/* Bunsen Burner */}
-                  {filterPaperCollected && !bunsenBurnerCollected && (
-                    <motion.button
-                      onClick={handleCollectBunsenBurner}
-                      className="p-6 rounded-xl border-4 border-orange-300 hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950 transition-all cursor-pointer"
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="flex flex-col items-center gap-3">
-                        <Flame className="w-16 h-16 text-orange-600" />
-                        <h4 className="font-semibold text-lg">Bunsen Burner</h4>
-                        <p className="text-sm text-muted-foreground">Click to collect</p>
-                      </div>
-                    </motion.button>
-                  )}
-
-                  {/* Beakers */}
-                  {bunsenBurnerCollected && !beakersCollected && (
-                    <motion.button
-                      onClick={handleCollectBeakers}
-                      className="p-6 rounded-xl border-4 border-green-300 hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-950 transition-all cursor-pointer"
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="flex flex-col items-center gap-3">
-                        <Beaker className="w-16 h-16 text-green-600" />
-                        <h4 className="font-semibold text-lg">Beakers</h4>
-                        <p className="text-sm text-muted-foreground">Click to collect</p>
-                      </div>
-                    </motion.button>
-                  )}
-
-                  {/* Funnel */}
-                  {beakersCollected && !funnelCollected && (
-                    <motion.button
-                      onClick={handleCollectFunnel}
-                      className="p-6 rounded-xl border-4 border-purple-300 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-950 transition-all cursor-pointer"
-                      whileHover={{ scale: 1.05, y: -5 }}
-                      whileTap={{ scale: 0.95 }}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="flex flex-col items-center gap-3">
-                        <svg className="w-16 h-16 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M6 2h12v6l-6 10-6-10V2z" />
-                          <line x1="6" y1="2" x2="18" y2="2" />
-                          <line x1="12" y1="18" x2="12" y2="22" />
-                        </svg>
-                        <h4 className="font-semibold text-lg">Funnel</h4>
-                        <p className="text-sm text-muted-foreground">Click to collect</p>
-                      </div>
-                    </motion.button>
-                  )}
-                </div>
-
-                {/* Show collected items */}
-                {(filterPaperCollected || bunsenBurnerCollected || beakersCollected || funnelCollected) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-6"
-                  >
-                    <h4 className="font-semibold mb-3 text-center">Collected Items:</h4>
-                    <div className="flex gap-4 justify-center flex-wrap">
-                      {filterPaperCollected && (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                          <CheckCircle className="w-5 h-5 text-blue-600" />
-                          <span className="text-sm font-medium">Filter Paper</span>
-                        </div>
-                      )}
-                      {bunsenBurnerCollected && (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
-                          <CheckCircle className="w-5 h-5 text-orange-600" />
-                          <span className="text-sm font-medium">Bunsen Burner</span>
-                        </div>
-                      )}
-                      {beakersCollected && (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900 rounded-lg">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                          <span className="text-sm font-medium">Beakers</span>
-                        </div>
-                      )}
-                      {funnelCollected && (
-                        <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                          <CheckCircle className="w-5 h-5 text-purple-600" />
-                          <span className="text-sm font-medium">Funnel</span>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-
-                {filterPaperCollected && bunsenBurnerCollected && beakersCollected && funnelCollected && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-4"
-                  >
-                    <div className="bg-green-50 dark:bg-green-950 border-2 border-green-500 p-4 rounded-lg">
-                      <p className="text-center font-semibold text-green-900 dark:text-green-100">
-                        ✅ All supplies collected! You're ready to begin your experiments.
-                      </p>
-                    </div>
+                <LabSupplies
+                  supplies={labSupplies}
+                  collectedItems={collectedSupplies}
+                  onCollect={handleCollectSupply}
+                  onAllCollected={handleAllSuppliesCollected}
+                  requiredCount={labSupplies.length}
+                />
+                {collectedSupplies.length === labSupplies.length && (
+                  <CardFooter className="mt-4">
                     <Button
                       onClick={handleContinueToSetup}
                       size="lg"
-                      className="w-full"
+                      className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                     >
                       Continue to Setup
                     </Button>
-                  </motion.div>
+                  </CardFooter>
                 )}
               </motion.div>
             )}
@@ -626,7 +542,7 @@ export function SeparationTechniquesLabEnhanced() {
                     setTeacherMessage("Now select a mixture and technique to try separating it! Think carefully about which method works best for each mixture type.");
                   }}
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                 >
                   Start Separating Mixtures
                 </Button>
@@ -1025,7 +941,7 @@ export function SeparationTechniquesLabEnhanced() {
                   <Button
                     onClick={handleSeparate}
                     size="lg"
-                    className="w-full"
+                    className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                   >
                     Perform Separation
                   </Button>
@@ -1125,7 +1041,7 @@ export function SeparationTechniquesLabEnhanced() {
                       setTeacherMessage("Excellent work! Let's analyze your results. Notice which techniques worked best for each type of mixture. This is key to choosing the right separation method!");
                     }}
                     size="lg"
-                    className="w-full"
+                    className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                   >
                     View Analysis
                   </Button>
@@ -1238,11 +1154,14 @@ export function SeparationTechniquesLabEnhanced() {
 
                 <Button
                   onClick={() => {
-                    setStep('quiz');
                     setTeacherMessage("Time to test your understanding! Think about which technique works best for each mixture type. You've done the experiments, now show what you learned!");
+                    // Transition to quiz after showing results - give students time to observe
+                    setTimeout(() => {
+                      setStep('quiz');
+                    }, 25000); // 25 seconds to allow teacher to finish explaining
                   }}
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white shadow-lg"
                 >
                   Take the Quiz
                 </Button>
@@ -1267,102 +1186,153 @@ export function SeparationTechniquesLabEnhanced() {
 
                 <div className="space-y-6">
                   {quizQuestions.map((q, qIdx) => (
-                    <div
+                    <Card
                       key={qIdx}
-                      className="p-5 bg-gray-50 dark:bg-gray-900 rounded-lg border-2"
+                      className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-lg"
                     >
-                      <h4 className="font-semibold mb-3">
-                        {qIdx + 1}. {q.question}
-                      </h4>
-                      <div className="space-y-2">
-                        {q.options.map((option, oIdx) => (
-                          <label
-                            key={oIdx}
-                            className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                              quizAnswers[qIdx] === oIdx
-                                ? 'border-purple-500 bg-purple-50 dark:bg-purple-950'
-                                : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
-                            } ${
-                              showQuizFeedback
-                                ? oIdx === q.correct
-                                  ? 'border-green-500 bg-green-50 dark:bg-green-950'
-                                  : quizAnswers[qIdx] === oIdx
-                                  ? 'border-red-500 bg-red-50 dark:bg-red-950'
-                                  : ''
-                                : ''
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name={`question-${qIdx}`}
-                              checked={quizAnswers[qIdx] === oIdx}
-                              onChange={() => {
-                                if (!showQuizFeedback) {
-                                  setQuizAnswers((prev) => ({
-                                    ...prev,
-                                    [qIdx]: oIdx,
-                                  }));
-                                }
-                              }}
-                              disabled={showQuizFeedback}
-                              className="w-4 h-4"
-                            />
-                            <span className="flex-1">{option}</span>
-                            {showQuizFeedback && oIdx === q.correct && (
-                              <CheckCircle className="w-5 h-5 text-green-600" />
-                            )}
-                            {showQuizFeedback &&
-                              quizAnswers[qIdx] === oIdx &&
-                              oIdx !== q.correct && (
-                                <XCircle className="w-5 h-5 text-red-600" />
-                              )}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+                      <CardHeader>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-bold text-sm">
+                            {qIdx + 1}
+                          </span>
+                          {q.question}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid gap-3">
+                          {q.options.map((option, oIdx) => {
+                            const isSelected = quizAnswers[qIdx] === oIdx;
+                            const isCorrect = oIdx === q.correct;
+                            const showFeedback = showQuizFeedback;
+                            const isWrong = showFeedback && isSelected && !isCorrect;
+                            
+                            return (
+                              <motion.button
+                                key={oIdx}
+                                onClick={() => {
+                                  if (!showQuizFeedback) {
+                                    setQuizAnswers((prev) => ({
+                                      ...prev,
+                                      [qIdx]: oIdx,
+                                    }));
+                                  }
+                                }}
+                                disabled={showQuizFeedback}
+                                className={cn(
+                                  "relative p-4 rounded-lg border-2 text-left transition-all",
+                                  "disabled:cursor-not-allowed",
+                                  !showFeedback && isSelected && "border-purple-500 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 shadow-md",
+                                  !showFeedback && !isSelected && "border-gray-200 dark:border-gray-700 hover:border-purple-300 hover:bg-purple-50/50 dark:hover:bg-purple-950/50",
+                                  showFeedback && isCorrect && "border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 shadow-md",
+                                  showFeedback && isWrong && "border-red-500 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 shadow-md",
+                                  showFeedback && !isSelected && !isCorrect && "border-gray-200 dark:border-gray-700 opacity-60"
+                                )}
+                                whileHover={!showFeedback ? { scale: 1.02, y: -2 } : {}}
+                                whileTap={!showFeedback ? { scale: 0.98 } : {}}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={cn(
+                                    "flex items-center justify-center w-6 h-6 rounded-full border-2 flex-shrink-0",
+                                    isSelected && !showFeedback && "border-purple-500 bg-purple-500",
+                                    showFeedback && isCorrect && "border-green-500 bg-green-500",
+                                    showFeedback && isWrong && "border-red-500 bg-red-500",
+                                    !isSelected && !showFeedback && "border-gray-300 dark:border-gray-600"
+                                  )}>
+                                    {isSelected && (
+                                      <div className="w-3 h-3 rounded-full bg-white" />
+                                    )}
+                                  </div>
+                                  <span className="flex-1 font-medium">{option}</span>
+                                  {showFeedback && isCorrect && (
+                                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                                  )}
+                                  {showFeedback && isWrong && (
+                                    <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                                  )}
+                                </div>
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
 
-                {!showQuizFeedback && (
-                  <Button
-                    onClick={handleQuizSubmit}
-                    size="lg"
-                    className="w-full"
-                    disabled={
-                      Object.keys(quizAnswers).length < quizQuestions.length
-                    }
-                  >
-                    Submit Answers
-                  </Button>
-                )}
+                <Button
+                  onClick={handleQuizSubmit}
+                  className={cn(
+                    "w-full shadow-lg",
+                    showQuizFeedback && quizScore < quizQuestions.length
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                      : "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+                  )}
+                  size="lg"
+                  disabled={!showQuizFeedback && Object.keys(quizAnswers).length < quizQuestions.length}
+                >
+                  {showQuizFeedback ? (
+                    quizScore === quizQuestions.length ? (
+                      <>
+                        <CheckCircle className="mr-2 h-5 w-5" />
+                        Quiz Completed
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-2 h-5 w-5" />
+                        Try Again
+                      </>
+                    )
+                  ) : (
+                    <>
+                      <CheckCircle className="mr-2 h-5 w-5" />
+                      Submit Answers
+                    </>
+                  )}
+                </Button>
 
                 {showQuizFeedback && (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center space-y-4"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={cn(
+                      "p-6 rounded-lg border-2 bg-gradient-to-r",
+                      quizScore === quizQuestions.length
+                        ? "from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-500 text-green-700 dark:text-green-300"
+                        : quizScore >= quizQuestions.length / 2
+                        ? "from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50 border-blue-500 text-blue-700 dark:text-blue-300"
+                        : "from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 border-amber-500 text-amber-700 dark:text-amber-300"
+                    )}
                   >
-                    <div className="p-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 rounded-lg border-2">
-                      <h3 className="text-2xl font-bold mb-2">
-                        Your Score: {quizScore} / {quizQuestions.length}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {quizScore === quizQuestions.length
-                          ? '🎉 Perfect! You mastered separation techniques!'
-                          : quizScore >= quizQuestions.length / 2
-                          ? '👍 Good job! Review the material to improve.'
-                          : '📚 Keep learning! Review the concepts and try again.'}
-                      </p>
+                    <div className="flex items-start gap-2">
+                      {quizScore === quizQuestions.length ? (
+                        <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold mb-2">
+                          Your Score: {quizScore} / {quizQuestions.length}
+                        </h3>
+                        <p className="text-sm font-medium">
+                          {quizScore === quizQuestions.length
+                            ? '🎉 Perfect! You mastered separation techniques!'
+                            : quizScore >= quizQuestions.length / 2
+                            ? '👍 Good job! Review the material to improve.'
+                            : '📚 Keep learning! Review the concepts and try again.'}
+                        </p>
+                      </div>
                     </div>
-
-                    <Button
-                      onClick={handleComplete}
-                      size="lg"
-                      className="w-full"
-                    >
-                      Complete Lab
-                    </Button>
                   </motion.div>
+                )}
+
+                {showQuizFeedback && quizScore === quizQuestions.length && (
+                  <Button
+                    onClick={handleComplete}
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
+                  >
+                    Complete Lab
+                  </Button>
                 )}
               </motion.div>
             )}
@@ -1373,48 +1343,82 @@ export function SeparationTechniquesLabEnhanced() {
                 key="complete"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="text-center space-y-6 py-8"
+                exit={{ opacity: 0, y: -20 }}
+                className="relative"
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: 'spring' }}
-                >
-                  <Trophy className="w-24 h-24 text-yellow-500 mx-auto mb-4" />
-                </motion.div>
-
-                <div className="space-y-2">
-                  <h3 className="text-3xl font-bold">Congratulations! 🎉</h3>
-                  <p className="text-xl text-muted-foreground">
-                    You've completed the Separation Techniques Lab
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-center gap-2 text-2xl font-bold text-purple-600">
-                  <Award className="w-8 h-8" />
-                  <span>+100 XP</span>
-                </div>
-
-                <div className="prose dark:prose-invert max-w-none text-left bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 p-6 rounded-lg">
-                  <h4 className="text-lg font-semibold mb-3">What You Learned:</h4>
-                  <ul className="space-y-2">
-                    <li>✓ How to use filtration to separate insoluble solids from liquids</li>
-                    <li>✓ How evaporation separates dissolved solids by removing the solvent</li>
-                    <li>✓ How decantation separates immiscible liquids by density</li>
-                    <li>✓ When to choose each technique based on mixture properties</li>
-                    <li>✓ Real-world applications in water treatment, salt production, and more</li>
-                  </ul>
-                </div>
-
-                <Button onClick={resetLab} size="lg" variant="outline">
-                  Try Again
-                </Button>
+                <Card className="border-2 border-yellow-300 dark:border-yellow-700 bg-gradient-to-br from-yellow-50/90 via-purple-50/90 to-blue-50/90 dark:from-yellow-950/90 dark:via-purple-950/90 dark:to-blue-950/90 backdrop-blur-sm shadow-2xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-purple-400/20 to-blue-400/20 animate-pulse" />
+                  <CardContent className="relative p-8 text-center space-y-6">
+                    <motion.div
+                      animate={{ 
+                        scale: [1, 1.1, 1],
+                        rotate: [0, 5, -5, 0]
+                      }}
+                      transition={{ 
+                        repeat: Infinity,
+                        duration: 2
+                      }}
+                      className="text-8xl mb-4"
+                    >
+                      🏆
+                    </motion.div>
+                    <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-purple-600 to-blue-600 bg-clip-text text-transparent">
+                      Lab Complete!
+                    </h2>
+                    {xpEarned > 0 && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2, type: "spring" }}
+                        className="flex items-center justify-center gap-2 text-3xl font-black text-purple-600 dark:text-purple-400"
+                      >
+                        <Award className="h-8 w-8" />
+                        <span>+{xpEarned} XP</span>
+                      </motion.div>
+                    )}
+                    <div className="space-y-4 pt-4">
+                      <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">What You Learned:</h3>
+                      <ul className="text-left space-y-2 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>How to use filtration to separate insoluble solids from liquids</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>How evaporation separates dissolved solids by removing the solvent</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>How decantation separates immiscible liquids by density</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>When to choose each technique based on mixture properties</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>Real-world applications in water treatment, salt production, and more</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <Button 
+                      onClick={resetLab} 
+                      variant="outline" 
+                      className="mt-6 border-2 border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-950/20"
+                      size="lg"
+                    >
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Try Again
+                    </Button>
+                  </CardContent>
+                </Card>
               </motion.div>
             )}
           </AnimatePresence>
         </CardContent>
       </Card>
+        </motion.div>
+      </div>
     </div>
   );
 }

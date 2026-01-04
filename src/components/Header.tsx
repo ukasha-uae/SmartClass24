@@ -11,6 +11,7 @@ import { useHasMounted } from '@/hooks/use-has-mounted';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { SubscriptionStatusBadge } from '@/components/SubscriptionStatusBadge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -229,7 +230,7 @@ export default function Header() {
                   <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                   
                   {/* Premium Profile Link - Only when signed in */}
-                  {user && profile?.profilePictureUrl && (
+                  {user && (
                     <>
                       <Link 
                         href="/profile" 
@@ -238,14 +239,21 @@ export default function Header() {
                       >
                         <div className="relative">
                           <Avatar className="h-12 w-12 border-2 border-purple-300 dark:border-purple-700 shadow-lg">
-                            <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
-                            <AvatarFallback className="bg-gradient-to-br from-purple-500 to-violet-600 text-white font-bold">{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>
+                            <AvatarImage src={profile?.profilePictureUrl} alt={profile?.studentName || 'Student'} />
+                            <AvatarFallback className="bg-gradient-to-br from-purple-500 to-violet-600 text-white font-bold">
+                              {profile?.studentName?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase() || 'S'}
+                            </AvatarFallback>
                           </Avatar>
                           <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
                         </div>
                         <div className="flex flex-col flex-1">
-                          <span className="font-bold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-violet-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">{profile.studentName || 'Profile'}</span>
-                          <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">View Profile</span>
+                          <span className="font-bold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-violet-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
+                            {profile?.studentName || user.email || 'Profile'}
+                          </span>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <SubscriptionStatusBadge variant="compact" />
+                            <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">View Profile</span>
+                          </div>
                         </div>
                         <ChevronRight className="h-5 w-5 text-purple-600 dark:text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
@@ -269,25 +277,19 @@ export default function Header() {
                           <ChevronRight className="h-4 w-4 text-amber-600 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                         
-                        {/* Virtual Labs - Always Visible (with lock icon if no access) */}
+                        {/* Virtual Labs - Available for All Students */}
                         <Link 
                           href="/virtual-labs" 
                           onClick={() => setSheetOpen(false)}
                           className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] shadow-md"
                         >
-                          <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg group-hover:from-blue-500/30 group-hover:to-indigo-500/30 transition-all relative">
+                          <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg group-hover:from-blue-500/30 group-hover:to-indigo-500/30 transition-all">
                             <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                             </svg>
-                            {!hasVirtualLabsAccess && (
-                              <Lock className="h-3 w-3 text-amber-600 dark:text-amber-400 absolute -top-1 -right-1" />
-                            )}
                           </div>
-                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:bg-clip-text group-hover:text-transparent transition-all flex items-center gap-2">
+                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
                             Virtual Labs
-                            {!hasVirtualLabsAccess && (
-                              <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full">SHS Only</span>
-                            )}
                           </span>
                           <ChevronRight className="h-4 w-4 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
@@ -326,16 +328,13 @@ export default function Header() {
           </div>
           {hasMounted && user && (
             <>
-              {/* V1: Simplified Resources Menu - Virtual Labs Always Visible */}
+              {/* Virtual Labs - Available for All Students */}
               <Link href="/virtual-labs" className="hidden md:block">
-                <Button variant="ghost" size="sm" className="flex items-center gap-2 relative">
+                <Button variant="ghost" size="sm" className="flex items-center gap-2">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                   </svg>
                   <span>Virtual Labs</span>
-                  {!hasVirtualLabsAccess && (
-                    <Lock className="h-3 w-3 text-amber-600 dark:text-amber-400 absolute -top-1 -right-1" />
-                  )}
                 </Button>
               </Link>
 
@@ -354,13 +353,26 @@ export default function Header() {
                 </Button>
               </Link>
               <NotificationBell />
-              {profile?.profilePictureUrl && (
-                <Link href="/profile" className="hidden sm:block">
-                  <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity">
-                    <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
-                    <AvatarFallback>{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>
-                  </Avatar>
-                </Link>
+              {user && (
+                <div className="hidden sm:flex items-center gap-2">
+                  <SubscriptionStatusBadge variant="compact" />
+                  {profile?.profilePictureUrl ? (
+                    <Link href="/profile">
+                      <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity border-2 border-violet-300 dark:border-violet-700">
+                        <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
+                        <AvatarFallback>{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>
+                      </Avatar>
+                    </Link>
+                  ) : (
+                    <Link href="/profile">
+                      <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity border-2 border-violet-300 dark:border-violet-700">
+                        <AvatarFallback className="bg-gradient-to-br from-violet-500 to-indigo-600 text-white">
+                          {user.email?.charAt(0)?.toUpperCase() || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Link>
+                  )}
+                </div>
               )}
             </>
           )}

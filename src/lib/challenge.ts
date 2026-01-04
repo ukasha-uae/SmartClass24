@@ -1005,29 +1005,23 @@ const generateGameQuestions = (
       };
     } else if (questionType === 'fillblank') {
       // Fill Blank (10%) - Convert MCQ to Fill Blank
+      // BUT: Skip conversion for "Which of the following" questions - they need options!
+      if (q.question.toLowerCase().includes('which of the following') || 
+          q.question.toLowerCase().includes('which of these')) {
+        // Keep as MCQ - these questions don't work well as fillblank
+        return {
+          ...baseQuestion,
+          type: 'mcq' as const,
+          options: q.options,
+          correctAnswer: q.options[q.correctAnswer],
+        };
+      }
+      
       const correctOption = q.options[q.correctAnswer];
       // Create a fill-in-the-blank version with better question rewriting
       let blankQuestion = q.question.replace(/\?/g, '').trim();
       
-      // Handle "Which of these" type questions by rewriting them
-      if (blankQuestion.toLowerCase().includes('which of these') || blankQuestion.toLowerCase().includes('which of the following')) {
-        // Convert "Which of these is a search engine?" to "A search engine is: _____"
-        // Pattern: "Which of these is [something]?" -> "[Something] is: _____"
-        const match = blankQuestion.match(/which of (?:these|the following)\s+(?:is|are|can be|is used for|are used for|is used to|are used to)\s+(.+)/i);
-        if (match && match[1]) {
-          const rest = match[1].trim();
-          blankQuestion = `${rest}: _____`;
-        } else {
-          // Fallback: remove "Which of these" and make it a statement
-          blankQuestion = blankQuestion.replace(/which of (?:these|the following)/i, '').trim();
-          blankQuestion = blankQuestion.replace(/^(is|are|can be|is used for|are used for|is used to|are used to)\s*/i, '');
-          if (blankQuestion.trim()) {
-            blankQuestion = `${blankQuestion.trim()}: _____`;
-          } else {
-            blankQuestion = q.question.replace(/\?/g, '') + ': _____';
-          }
-        }
-      } else if (blankQuestion.toLowerCase().includes('what is') || blankQuestion.toLowerCase().includes('what does')) {
+      if (blankQuestion.toLowerCase().includes('what is') || blankQuestion.toLowerCase().includes('what does')) {
         // Convert "What is X?" to "X is: _____" or "What does X stand for?" to "X stands for: _____"
         blankQuestion = blankQuestion.replace(/what (?:is|does)\s+/i, '');
         if (blankQuestion.toLowerCase().includes('stand for')) {

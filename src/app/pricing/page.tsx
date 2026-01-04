@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, X, Zap, Crown, TrendingUp, Users, BookOpen, BarChart3, Target, Gift, Sparkles, FlaskConical, Dna, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase/provider';
-import { isPremiumUser } from '@/lib/monetization';
+import { isPremiumUser, hasVirtualLabAccess, hasFullBundle } from '@/lib/monetization';
 import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 import { formatGHS } from '@/lib/payments';
 import { virtualLabExperiments } from '@/lib/virtual-labs-data';
@@ -21,6 +21,8 @@ export default function PricingPage() {
   
   const userId = user?.uid || 'guest';
   const isPremium = isPremiumUser(userId);
+  const hasVirtualLab = hasVirtualLabAccess(userId);
+  const hasBundle = hasFullBundle(userId);
 
   const features = {
     free: [
@@ -68,20 +70,49 @@ export default function PricingPage() {
   };
 
   const plans = {
-    monthly: {
-      price: 15,
-      period: 'month',
-      savings: null,
+    challengeArena: {
+      monthly: {
+        price: 15,
+        period: 'month',
+        savings: null,
+      },
+      annual: {
+        price: 120,
+        period: 'year',
+        savings: 'Save 33%',
+        originalPrice: 180,
+      },
     },
-    annual: {
-      price: 120,
-      period: 'year',
-      savings: 'Save 33%',
-      originalPrice: 180,
+    virtualLab: {
+      monthly: {
+        price: 10,
+        period: 'month',
+        savings: null,
+      },
+      annual: {
+        price: 80,
+        period: 'year',
+        savings: 'Save 33%',
+        originalPrice: 120,
+      },
+    },
+    fullBundle: {
+      monthly: {
+        price: 20,
+        period: 'month',
+        savings: 'Save 20%',
+        originalPrice: 25, // 15 + 10
+      },
+      annual: {
+        price: 160,
+        period: 'year',
+        savings: 'Save 33%',
+        originalPrice: 240, // 120 + 120
+      },
     },
   };
 
-  const handleUpgrade = (plan: 'monthly' | 'annual') => {
+  const handleUpgrade = (plan: 'monthly' | 'annual', subscriptionType: 'challengeArena' | 'virtualLab' | 'fullBundle' = 'challengeArena') => {
     if (!user) {
       // Redirect to signup with return URL
       const returnUrl = encodeURIComponent('/pricing');
@@ -91,6 +122,10 @@ export default function PricingPage() {
     // User is logged in, open the modal
     setSelectedPlan(plan);
     setShowUnlockModal(true);
+    // Store subscription type for the modal
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('subscriptionType', subscriptionType);
+    }
   };
 
   return (
@@ -140,7 +175,7 @@ export default function PricingPage() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {/* Free Plan */}
           <Card className="relative border-2">
             <CardHeader>
@@ -210,25 +245,25 @@ export default function PricingPage() {
                 )}
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold">GHS {plans[selectedPlan].price}</span>
-                <span className="text-muted-foreground">/{plans[selectedPlan].period}</span>
+                <span className="text-4xl font-bold">GHS {plans.challengeArena[selectedPlan].price}</span>
+                <span className="text-muted-foreground">/{plans.challengeArena[selectedPlan].period}</span>
               </div>
               {selectedPlan === 'annual' && (
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-sm text-muted-foreground line-through">GHS {plans.annual.originalPrice}</span>
+                  <span className="text-sm text-muted-foreground line-through">GHS {plans.challengeArena.annual.originalPrice}</span>
                   <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                    {plans.annual.savings}
+                    {plans.challengeArena.annual.savings}
                   </Badge>
                 </div>
               )}
               <CardDescription className="mt-2">
-                Unlimited questions, advanced analytics, and everything you need to ace your exams.
+                Unlimited questions, advanced analytics, and everything you need to ace your exams in Challenge Arena.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Button 
                 className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
-                onClick={() => handleUpgrade(selectedPlan)}
+                onClick={() => handleUpgrade(selectedPlan, 'challengeArena')}
                 disabled={isPremium}
               >
                 {isPremium ? (
@@ -255,6 +290,173 @@ export default function PricingPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Virtual Lab Premium Plan */}
+          <Card className="relative border-2 border-purple-500 shadow-xl bg-gradient-to-br from-purple-50/50 to-violet-50/50 dark:from-purple-950/30 dark:to-violet-950/30">
+            {!hasVirtualLab && !hasBundle && (
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-4 py-1 text-sm">
+                  Virtual Labs
+                </Badge>
+              </div>
+            )}
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <CardTitle className="text-2xl flex items-center gap-2">
+                  Virtual Lab Premium
+                  <FlaskConical className="h-5 w-5 text-purple-500" />
+                </CardTitle>
+                {(hasVirtualLab || hasBundle) && (
+                  <Badge className="bg-green-500">Current Plan</Badge>
+                )}
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold">GHS {plans.virtualLab[selectedPlan].price}</span>
+                <span className="text-muted-foreground">/{plans.virtualLab[selectedPlan].period}</span>
+              </div>
+              {selectedPlan === 'annual' && (
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-sm text-muted-foreground line-through">GHS {plans.virtualLab.annual.originalPrice}</span>
+                  <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                    {plans.virtualLab.annual.savings}
+                  </Badge>
+                </div>
+              )}
+              <CardDescription className="mt-2">
+                Access all {virtualLabExperiments.experiments.length}+ interactive virtual labs for hands-on science learning.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button 
+                className="w-full bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white"
+                onClick={() => handleUpgrade(selectedPlan, 'virtualLab')}
+                disabled={hasVirtualLab || hasBundle}
+              >
+                {(hasVirtualLab || hasBundle) ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    You Have Access!
+                  </>
+                ) : (
+                  <>
+                    <FlaskConical className="h-4 w-4 mr-2" />
+                    Get Virtual Lab Premium
+                  </>
+                )}
+              </Button>
+              
+              <div className="space-y-3 pt-4 border-t">
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 shrink-0 mt-0.5 text-purple-500" />
+                  <div className="flex-1">
+                    <span className="font-semibold text-purple-600 dark:text-purple-400">
+                      All {virtualLabExperiments.experiments.length}+ Virtual Labs
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 shrink-0 mt-0.5 text-green-500" />
+                  <div className="flex-1">
+                    <span>Interactive Experiments</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 shrink-0 mt-0.5 text-green-500" />
+                  <div className="flex-1">
+                    <span>Biology, Chemistry & Physics</span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 shrink-0 mt-0.5 text-green-500" />
+                  <div className="flex-1">
+                    <span>Progress Tracking & XP</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Full Bundle Plan */}
+          <Card className="relative border-2 border-gradient-to-r from-blue-500 to-purple-500 shadow-2xl bg-gradient-to-br from-blue-50/50 via-indigo-50/50 to-purple-50/50 dark:from-blue-950/30 dark:via-indigo-950/30 dark:to-purple-950/30">
+            {!hasBundle && (
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <Badge className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white px-4 py-1 text-sm">
+                  Best Value
+                </Badge>
+              </div>
+            )}
+            <CardHeader>
+              <div className="flex items-center justify-between mb-2">
+                <CardTitle className="text-2xl flex items-center gap-2">
+                  Full Bundle
+                  <Crown className="h-5 w-5 text-yellow-500" />
+                  <FlaskConical className="h-5 w-5 text-purple-500" />
+                </CardTitle>
+                {hasBundle && (
+                  <Badge className="bg-green-500">Current Plan</Badge>
+                )}
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold">GHS {plans.fullBundle[selectedPlan].price}</span>
+                <span className="text-muted-foreground">/{plans.fullBundle[selectedPlan].period}</span>
+              </div>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-sm text-muted-foreground line-through">GHS {plans.fullBundle[selectedPlan].originalPrice}</span>
+                <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                  {plans.fullBundle[selectedPlan].savings}
+                </Badge>
+              </div>
+              <CardDescription className="mt-2">
+                Everything: Challenge Arena Premium + Virtual Lab Premium. Best value for serious students!
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button 
+                className="w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 hover:from-blue-600 hover:via-indigo-600 hover:to-purple-700 text-white"
+                onClick={() => handleUpgrade(selectedPlan, 'fullBundle')}
+                disabled={hasBundle}
+              >
+                {hasBundle ? (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    You Have Full Bundle!
+                  </>
+                ) : (
+                  <>
+                    <Crown className="h-4 w-4 mr-2" />
+                    Get Full Bundle
+                  </>
+                )}
+              </Button>
+              
+              <div className="space-y-3 pt-4 border-t">
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 shrink-0 mt-0.5 text-blue-500" />
+                  <div className="flex-1">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400">
+                      Everything in Challenge Arena Premium
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 shrink-0 mt-0.5 text-purple-500" />
+                  <div className="flex-1">
+                    <span className="font-semibold text-purple-600 dark:text-purple-400">
+                      Everything in Virtual Lab Premium
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Check className="h-5 w-5 shrink-0 mt-0.5 text-green-500" />
+                  <div className="flex-1">
+                    <span className="font-semibold text-green-600 dark:text-green-400">
+                      Save {selectedPlan === 'monthly' ? '20%' : '33%'} vs buying separately
+                    </span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -311,20 +513,20 @@ export default function PricingPage() {
         {!isPremium && (
           <Card className="mb-12 bg-gradient-to-br from-purple-50 via-violet-50 to-indigo-50 dark:from-purple-950/30 dark:via-violet-950/30 dark:to-indigo-950/30 border-2 border-purple-200 dark:border-purple-800">
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-2xl flex items-center gap-2 mb-2">
-                    <FlaskConical className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div className="flex-1">
+                  <CardTitle className="text-xl md:text-2xl flex items-center gap-2 mb-2">
+                    <FlaskConical className="h-5 w-5 md:h-6 md:w-6 text-purple-600 dark:text-purple-400" />
                     Virtual Labs - See What You're Missing!
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="text-sm md:text-base">
                     You currently have access to 3 free labs. Upgrade to unlock all {virtualLabExperiments.experiments.length}+ interactive experiments!
                   </CardDescription>
                 </div>
                 <Button
                   onClick={() => router.push('/virtual-labs')}
                   variant="outline"
-                  className="border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900"
+                  className="w-full md:w-auto border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900 shrink-0"
                 >
                   View All Labs
                 </Button>

@@ -88,13 +88,13 @@ export default function Home() {
       description: 'Class 1-6: Building Strong Foundations',
       gradient: colors.accent,
       icon: Trophy,
-      features: ['Arena Challenge', 'Fun Learning Games', 'Competitive Play', 'Skill Building'],
+      features: ['Arena Challenge', 'Virtual Labs', 'Fun Learning Games', 'Competitive Play'],
       href: '/challenge-arena/ghana',
       studentCount: '5,000+',
       classes: 'Class 1-6',
       emoji: '🎒',
       tagline: 'Start Your Learning Journey',
-      v1Note: 'V1: Arena Challenge Only'
+      v1Note: 'V1: Arena + Virtual Labs'
     },
     {
       id: 'jhs',
@@ -103,13 +103,13 @@ export default function Home() {
       description: `Ace Your ${juniorExam} Exams`,
       gradient: colors.primary,
       icon: Trophy,
-      features: ['Arena Challenge', 'Competitive Battles', 'Progress Tracking', `${juniorExam} Practice`],
+      features: ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', 'Progress Tracking'],
       href: '/challenge-arena/ghana',
       studentCount: '12,000+',
       classes: juniorClasses,
       emoji: '📚',
       tagline: country?.id === 'nigeria' ? 'Excel in Basic Education' : `Master ${juniorExam}`,
-      v1Note: 'V1: Arena Challenge Only'
+      v1Note: 'V1: Arena + Virtual Labs'
     },
     {
       id: 'shs',

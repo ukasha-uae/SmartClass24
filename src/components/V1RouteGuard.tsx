@@ -80,12 +80,10 @@ export function V1RouteGuard({
           <AlertTitle>Access Restricted</AlertTitle>
           <AlertDescription className="mt-2">
             <p className="mb-4">
-              {campusName} students have access to <strong>Arena Challenge</strong> in V1.
-              {campus === 'shs' && ' SHS students also have access to Virtual Labs.'}
+              {campusName} students have access to <strong>Arena Challenge</strong> and <strong>Virtual Labs</strong> in V1.
             </p>
             <p className="mb-4 text-sm text-muted-foreground">
               {feature === 'lessons' && 'Lessons will be available in V2. For now, enjoy Arena Challenge and Virtual Labs!'}
-              {feature === 'virtualLabs' && campus !== 'shs' && 'Virtual Labs are available for SHS students only.'}
             </p>
             <Link href="/challenge-arena/ghana">
               <Button className="w-full">

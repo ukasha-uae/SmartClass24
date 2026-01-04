@@ -4,11 +4,14 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../ui/card';
 import { Button } from '../ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Droplets, CheckCircle, XCircle, Award, Trophy, TestTube, Sparkles, AlertTriangle, Beaker } from 'lucide-react';
+import { Droplets, CheckCircle, XCircle, Award, Trophy, TestTube, Sparkles, AlertTriangle, Beaker, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
 type TestType = 'copper-sulfate' | 'cobalt-chloride' | 'none';
 
@@ -19,6 +22,7 @@ interface TestResult {
 }
 
 export function WaterTestLabEnhanced() {
+  const { toast } = useToast();
   const [step, setStep] = React.useState<'intro' | 'collect-supplies' | 'setup' | 'experiment' | 'results' | 'quiz' | 'complete'>('intro');
   const [selectedTest, setSelectedTest] = React.useState<TestType>('none');
   const [isTesting, setIsTesting] = React.useState(false);
@@ -30,12 +34,23 @@ export function WaterTestLabEnhanced() {
   const [quizScore, setQuizScore] = React.useState(0);
   const [teacherMessage, setTeacherMessage] = React.useState('');
   const [currentObservation, setCurrentObservation] = React.useState('');
-  const [suppliesCollected, setSuppliesCollected] = React.useState<string[]>([]);
+  const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+  const [xpEarned, setXpEarned] = React.useState(0);
 
-  const { markLabComplete, isLabCompleted } = useLabProgress();
+  const labSupplies: SupplyItem[] = [
+    { id: 'copper-sulfate', name: 'Anhydrous Copper Sulfate', emoji: '⚗️', description: 'White powder for water test' },
+    { id: 'cobalt-paper', name: 'Cobalt Chloride Paper', emoji: '📄', description: 'Blue paper for water test' },
+    { id: 'dropper', name: 'Water Dropper', emoji: '💧', description: 'To add water' },
+    { id: 'test-tubes', name: 'Test Tubes', emoji: '🧪', description: 'To hold samples' },
+    { id: 'water', name: 'Distilled Water', emoji: '💦', description: 'Test sample' },
+    { id: 'goggles', name: 'Safety Goggles', emoji: '🥽', description: 'Eye protection' },
+  ];
+
+  const { markLabComplete, isLabCompleted, getLabCompletion } = useLabProgress();
   const { country } = useLocalization();
   const labId = 'water-test';
   const isComplete = isLabCompleted(labId);
+  const completion = getLabCompletion(labId);
 
   React.useEffect(() => {
     setTeacherMessage(`Welcome to the Water Testing Lab! Today we'll learn two chemical tests that scientists in ${country.name} and worldwide use to detect water. These tests are important for quality control in industries, laboratories, and even in everyday products. Let's discover how chemical color changes can reveal the presence of water!`);
@@ -137,7 +152,32 @@ export function WaterTestLabEnhanced() {
     }, 2000);
   };
 
+  const handleCollectSupply = (itemId: string) => {
+    if (!collectedSupplies.includes(itemId)) {
+      setCollectedSupplies(prev => {
+        const newCollected = [...prev, itemId];
+        if (newCollected.length === labSupplies.length) {
+          setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Setup' to begin!");
+        }
+        return newCollected;
+      });
+      toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
+    }
+  };
+
+  const handleAllSuppliesCollected = () => {
+    setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Setup' to begin!");
+  };
+
   const handleQuizSubmit = () => {
+    // If already showing feedback, allow retry by resetting
+    if (showQuizFeedback) {
+      setQuizAnswers({});
+      setShowQuizFeedback(false);
+      setQuizScore(0);
+      return;
+    }
+    
     let score = 0;
     quizQuestions.forEach((q, idx) => {
       if (quizAnswers[idx] === q.correct) {
@@ -162,7 +202,8 @@ export function WaterTestLabEnhanced() {
   };
 
   const handleComplete = () => {
-    markLabComplete(labId, 100, 0);
+    const earnedXP = markLabComplete(labId, 100, 0);
+    setXpEarned(earnedXP);
     setStep('complete');
     setTeacherMessage(`Congratulations! You've successfully completed the Water Testing Lab. You now know how to detect water using chemical tests - skills that scientists and quality control experts in ${country.name} and around the world use every day. Well done!`);
     confetti({
@@ -183,7 +224,8 @@ export function WaterTestLabEnhanced() {
     setShowQuizFeedback(false);
     setQuizScore(0);
     setCurrentObservation('');
-    setSuppliesCollected([]);
+    setCollectedSupplies([]);
+    setXpEarned(0);
     setTeacherMessage(`Welcome to the Water Testing Lab! Today we'll learn two chemical tests that scientists in ${country.name} and worldwide use to detect water. These tests are important for quality control in industries, laboratories, and even in everyday products. Let's discover how chemical color changes can reveal the presence of water!`);
   };
 
@@ -194,20 +236,49 @@ export function WaterTestLabEnhanced() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 space-y-6">
-      {/* Teacher Voice */}
-      {teacherMessage && (
+    <div className="relative min-h-screen pb-20">
+      {/* Premium Animated Background - Cyan/Blue Water Theme */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 dark:from-cyan-950/30 dark:via-blue-950/30 dark:to-indigo-950/30" />
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-gradient-to-br from-cyan-200/40 to-blue-300/40 dark:from-cyan-800/20 dark:to-blue-900/20 blur-3xl"
+            style={{
+              width: `${200 + i * 50}px`,
+              height: `${200 + i * 50}px`,
+              left: `${(i * 12.5) % 100}%`,
+              top: `${(i * 15) % 100}%`,
+            }}
+            animate={{
+              x: [0, 100, 0],
+              y: [0, 50, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 10 + i * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative max-w-5xl mx-auto p-4 space-y-6">
+        {/* Teacher Voice */}
         <TeacherVoice 
           message={teacherMessage}
-          theme="science"
-          teacherName="Lab Instructor"
+          onComplete={() => {}}
         />
-      )}
 
-      {/* Progress Indicator */}
-      {step !== 'intro' && step !== 'complete' && (
-        <Card className="border">
-          <CardContent className="p-4">
+        {/* Progress Indicator */}
+        {step !== 'intro' && step !== 'complete' && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-lg">
+              <CardContent className="p-4">
             <div className="flex items-center justify-between gap-2">
               {[
                 { key: 'collect-supplies', label: 'Supplies', icon: Beaker },
@@ -242,13 +313,39 @@ export function WaterTestLabEnhanced() {
                   </div>
                 );
               })}
+              </div>
+            </CardContent>
+          </Card>
+          </motion.div>
+        )}
+
+        {isComplete && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950/20 dark:to-blue-950/20 border-2 border-cyan-200 dark:border-cyan-800 rounded-lg p-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="bg-cyan-100 dark:bg-cyan-900 p-2 rounded-full">
+                <Trophy className="h-6 w-6 text-cyan-600 dark:text-cyan-400" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-cyan-900 dark:text-cyan-100">Lab Completed!</h3>
+                <p className="text-sm text-cyan-700 dark:text-cyan-300">
+                  Completed: {new Date(completion?.completedAt || '').toLocaleDateString()} • 
+                  Total XP: {completion?.xpEarned || 0}
+                </p>
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      )}
-      
-      <Card className="border-2">
-        <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950">
+          </motion.div>
+        )}
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950">
           <CardTitle className="flex items-center gap-2 text-2xl">
             <Droplets className="w-8 h-8 text-cyan-600" />
             Testing for Water - Chemical Tests
@@ -345,8 +442,9 @@ export function WaterTestLabEnhanced() {
                     setTeacherMessage("Before we begin testing, let's gather all the materials we'll need for both water tests. Click each item to collect it!");
                   }}
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                 >
+                  <Sparkles className="w-5 h-5 mr-2" />
                   Begin Testing
                 </Button>
               </motion.div>
@@ -361,84 +459,25 @@ export function WaterTestLabEnhanced() {
                 exit={{ opacity: 0, y: -20 }}
                 className="space-y-6"
               >
-                <div className="text-center space-y-2">
-                  <h3 className="text-xl font-semibold flex items-center justify-center gap-2">
-                    <Beaker className="w-6 h-6 text-cyan-500" />
-                    Gather Your Supplies
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Click on each item to collect it for your experiments
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {[
-                    { id: 'copper-sulfate', name: 'Anhydrous Copper Sulfate', icon: '⚗️', emoji: '🤍' },
-                    { id: 'cobalt-paper', name: 'Cobalt Chloride Paper', icon: '📄', emoji: '💙' },
-                    { id: 'dropper', name: 'Water Dropper', icon: '💧', emoji: '💧' },
-                    { id: 'test-tubes', name: 'Test Tubes', icon: '🧪', emoji: '🧪' },
-                    { id: 'water', name: 'Distilled Water', icon: '💦', emoji: '💦' },
-                    { id: 'goggles', name: 'Safety Goggles', icon: '🥽', emoji: '🥽' },
-                  ].map((supply) => {
-                    const collected = suppliesCollected.includes(supply.id);
-                    return (
-                      <motion.button
-                        key={supply.id}
-                        onClick={() => {
-                          if (!collected) {
-                            setSuppliesCollected((prev) => [...prev, supply.id]);
-                            confetti({
-                              particleCount: 30,
-                              spread: 50,
-                              origin: { y: 0.6 },
-                            });
-                          }
-                        }}
-                        disabled={collected}
-                        className={`p-6 rounded-xl border-2 transition-all ${
-                          collected
-                            ? 'border-green-500 bg-green-50 dark:bg-green-950'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-cyan-300 hover:shadow-lg'
-                        }`}
-                        whileHover={{ scale: collected ? 1 : 1.05 }}
-                        whileTap={{ scale: collected ? 1 : 0.95 }}
-                      >
-                        <div className="text-4xl mb-2">{supply.emoji}</div>
-                        <h4 className="font-semibold text-sm mb-1">{supply.name}</h4>
-                        {collected && (
-                          <div className="flex items-center justify-center gap-1 text-green-600 text-sm mt-2">
-                            <CheckCircle className="w-4 h-4" />
-                            <span>Collected</span>
-                          </div>
-                        )}
-                      </motion.button>
-                    );
-                  })}
-                </div>
-
-                {suppliesCollected.length === 6 && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                <LabSupplies
+                  supplies={labSupplies}
+                  collectedItems={collectedSupplies}
+                  onCollect={handleCollectSupply}
+                  onAllCollected={handleAllSuppliesCollected}
+                  requiredCount={labSupplies.length}
+                />
+                {collectedSupplies.length === labSupplies.length && (
+                  <Button
+                    onClick={() => {
+                      setStep('setup');
+                      setTeacherMessage("Perfect! Now that we have all our supplies, let's review the testing procedures. Both tests rely on hydration - when water molecules bind to anhydrous chemicals, changing their structure and color.");
+                    }}
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                   >
-                    <Button
-                      onClick={() => {
-                        setStep('setup');
-                        setTeacherMessage("Perfect! Now that we have all our supplies, let's review the testing procedures. Both tests rely on hydration - when water molecules bind to anhydrous chemicals, changing their structure and color.");
-                      }}
-                      size="lg"
-                      className="w-full bg-green-600 hover:bg-green-700"
-                    >
-                      <CheckCircle className="w-5 h-5 mr-2" />
-                      All Supplies Collected - Continue
-                    </Button>
-                  </motion.div>
-                )}
-
-                {suppliesCollected.length < 6 && (
-                  <div className="text-center text-sm text-muted-foreground">
-                    {suppliesCollected.length}/6 supplies collected
-                  </div>
+                    <CheckCircle className="w-5 h-5 mr-2" />
+                    Continue to Setup
+                  </Button>
                 )}
               </motion.div>
             )}
@@ -487,7 +526,7 @@ export function WaterTestLabEnhanced() {
                     setTeacherMessage('Now for the exciting part! Select a test and add water to observe the chemical color change. Remember to observe carefully!');
                   }}
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                 >
                   Perform Tests
                 </Button>
@@ -702,7 +741,7 @@ export function WaterTestLabEnhanced() {
                     <Button
                       onClick={handleTest}
                       size="lg"
-                      className="w-full"
+                      className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                     >
                       <Droplets className="w-5 h-5 mr-2" />
                       Add Water to Test
@@ -711,7 +750,7 @@ export function WaterTestLabEnhanced() {
                       onClick={resetTest}
                       size="lg"
                       variant="outline"
-                      className="w-full"
+                      className="w-full border-2 border-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
                     >
                       Try Different Test
                     </Button>
@@ -757,7 +796,7 @@ export function WaterTestLabEnhanced() {
                       setTeacherMessage("Outstanding work! Let's dive deeper into the chemistry behind these tests and explore their real-world applications.");
                     }}
                     size="lg"
-                    className="w-full"
+                    className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                   >
                     View Analysis
                   </Button>
@@ -857,11 +896,14 @@ export function WaterTestLabEnhanced() {
 
                 <Button
                   onClick={() => {
-                    setStep('quiz');
                     setTeacherMessage('Time to test your understanding! These questions will check if you grasp the chemistry behind water detection.');
+                    // Transition to quiz after showing results - give students time to observe
+                    setTimeout(() => {
+                      setStep('quiz');
+                    }, 25000); // 25 seconds to allow teacher to finish explaining
                   }}
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg"
                 >
                   Take the Quiz
                 </Button>
@@ -886,121 +928,154 @@ export function WaterTestLabEnhanced() {
 
                 <div className="space-y-6">
                   {quizQuestions.map((q, qIdx) => (
-                    <div
+                    <Card
                       key={qIdx}
-                      className="p-5 bg-gray-50 dark:bg-gray-900 rounded-lg border-2"
+                      className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-cyan-50/90 dark:from-gray-900/90 dark:to-cyan-950/90 backdrop-blur-sm shadow-lg"
                     >
-                      <h4 className="font-semibold mb-3">
-                        {qIdx + 1}. {q.question}
-                      </h4>
-                      <div className="space-y-2">
-                        {q.options.map((option, oIdx) => (
-                          <label
-                            key={oIdx}
-                            className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                              quizAnswers[qIdx] === oIdx
-                                ? 'border-cyan-500 bg-cyan-50 dark:bg-cyan-950'
-                                : 'border-gray-200 dark:border-gray-700 hover:border-cyan-300'
-                            } ${
-                              showQuizFeedback
-                                ? oIdx === q.correct
-                                  ? 'border-green-500 bg-green-50 dark:bg-green-950'
-                                  : quizAnswers[qIdx] === oIdx
-                                  ? 'border-red-500 bg-red-50 dark:bg-red-950'
-                                  : ''
-                                : ''
-                            }`}
-                          >
-                            <input
-                              type="radio"
-                              name={`question-${qIdx}`}
-                              checked={quizAnswers[qIdx] === oIdx}
-                              onChange={() => {
-                                if (!showQuizFeedback) {
-                                  setQuizAnswers((prev) => ({
-                                    ...prev,
-                                    [qIdx]: oIdx,
-                                  }));
-                                }
-                              }}
-                              disabled={showQuizFeedback}
-                              className="w-4 h-4"
-                            />
-                            <span className="flex-1">{option}</span>
-                            {showQuizFeedback && oIdx === q.correct && (
-                              <CheckCircle className="w-5 h-5 text-green-600" />
-                            )}
-                            {showQuizFeedback &&
-                              quizAnswers[qIdx] === oIdx &&
-                              oIdx !== q.correct && (
-                                <XCircle className="w-5 h-5 text-red-600" />
-                              )}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
+                      <CardHeader>
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold text-sm">
+                            {qIdx + 1}
+                          </span>
+                          {q.question}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="grid gap-3">
+                          {q.options.map((option, oIdx) => {
+                            const isSelected = quizAnswers[qIdx] === oIdx;
+                            const isCorrect = oIdx === q.correct;
+                            const showFeedback = showQuizFeedback;
+                            const isWrong = showFeedback && isSelected && !isCorrect;
+                            
+                            return (
+                              <motion.button
+                                key={oIdx}
+                                onClick={() => {
+                                  if (!showQuizFeedback) {
+                                    setQuizAnswers((prev) => ({
+                                      ...prev,
+                                      [qIdx]: oIdx,
+                                    }));
+                                  }
+                                }}
+                                disabled={showQuizFeedback}
+                                className={cn(
+                                  "relative p-4 rounded-lg border-2 text-left transition-all",
+                                  "disabled:cursor-not-allowed",
+                                  !showFeedback && isSelected && "border-cyan-500 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950 shadow-md",
+                                  !showFeedback && !isSelected && "border-gray-200 dark:border-gray-700 hover:border-cyan-300 hover:bg-cyan-50/50 dark:hover:bg-cyan-950/50",
+                                  showFeedback && isCorrect && "border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 shadow-md",
+                                  showFeedback && isWrong && "border-red-500 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 shadow-md",
+                                  showFeedback && !isSelected && !isCorrect && "border-gray-200 dark:border-gray-700 opacity-60"
+                                )}
+                                whileHover={!showFeedback ? { scale: 1.02, y: -2 } : {}}
+                                whileTap={!showFeedback ? { scale: 0.98 } : {}}
+                              >
+                                <div className="flex items-center gap-3">
+                                  <div className={cn(
+                                    "flex items-center justify-center w-6 h-6 rounded-full border-2 flex-shrink-0",
+                                    isSelected && !showFeedback && "border-cyan-500 bg-cyan-500",
+                                    showFeedback && isCorrect && "border-green-500 bg-green-500",
+                                    showFeedback && isWrong && "border-red-500 bg-red-500",
+                                    !isSelected && !showFeedback && "border-gray-300 dark:border-gray-600"
+                                  )}>
+                                    {isSelected && (
+                                      <div className="w-3 h-3 rounded-full bg-white" />
+                                    )}
+                                  </div>
+                                  <span className="flex-1 font-medium">{option}</span>
+                                  {showFeedback && isCorrect && (
+                                    <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                                  )}
+                                  {showFeedback && isWrong && (
+                                    <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                                  )}
+                                </div>
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
 
-                {!showQuizFeedback && (
-                  <Button
-                    onClick={handleQuizSubmit}
-                    size="lg"
-                    className="w-full"
-                    disabled={
-                      Object.keys(quizAnswers).length < quizQuestions.length
-                    }
-                  >
-                    Submit Answers
-                  </Button>
-                )}
+                <Button
+                  onClick={handleQuizSubmit}
+                  className={cn(
+                    "w-full shadow-lg",
+                    showQuizFeedback && quizScore < quizQuestions.length
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                      : "bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
+                  )}
+                  size="lg"
+                  disabled={!showQuizFeedback && Object.keys(quizAnswers).length < quizQuestions.length}
+                >
+                  {showQuizFeedback ? (
+                    quizScore === quizQuestions.length ? (
+                      <>
+                        <CheckCircle className="mr-2 h-5 w-5" />
+                        Quiz Completed
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-2 h-5 w-5" />
+                        Try Again
+                      </>
+                    )
+                  ) : (
+                    <>
+                      <CheckCircle className="mr-2 h-5 w-5" />
+                      Submit Answers
+                    </>
+                  )}
+                </Button>
 
                 {showQuizFeedback && (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="space-y-4"
-                  >
-                    <Card className={`border-2 ${
-                      quizScore === quizQuestions.length 
-                        ? 'border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950'
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={cn(
+                      "p-6 rounded-lg border-2 bg-gradient-to-r",
+                      quizScore === quizQuestions.length
+                        ? "from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-500 text-green-700 dark:text-green-300"
                         : quizScore >= 2
-                        ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950'
-                        : 'border-orange-500 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950 dark:to-amber-950'
-                    }`}>
-                      <CardContent className="p-6 text-center space-y-3">
-                        <div className="text-6xl mb-2">
-                          {quizScore === quizQuestions.length ? '🏆' : quizScore >= 2 ? '👍' : '📚'}
-                        </div>
-                        <h3 className="text-3xl font-bold">
-                          {quizScore} / {quizQuestions.length}
+                        ? "from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50 border-blue-500 text-blue-700 dark:text-blue-300"
+                        : "from-amber-50 to-orange-50 dark:from-amber-950/50 dark:to-orange-950/50 border-amber-500 text-amber-700 dark:text-amber-300"
+                    )}
+                  >
+                    <div className="flex items-start gap-2">
+                      {quizScore === quizQuestions.length ? (
+                        <CheckCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      ) : (
+                        <XCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                      )}
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold mb-2">
+                          Your Score: {quizScore} / {quizQuestions.length}
                         </h3>
-                        <p className="text-lg font-medium">
+                        <p className="text-sm font-medium">
                           {quizScore === quizQuestions.length
-                            ? 'Perfect Score! Outstanding!'
+                            ? '🎉 Perfect! You mastered water testing methods and chemistry!'
                             : quizScore >= 2
-                            ? 'Good Work! Almost There!'
-                            : 'Keep Practicing!'}
+                            ? '👍 Good work! Review the explanations to strengthen your understanding.'
+                            : '📚 Keep learning! Review the color changes and chemical reactions.'}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          {quizScore === quizQuestions.length
-                            ? "You've mastered water testing methods and chemistry!"
-                            : quizScore >= 2
-                            ? 'Review the explanations to strengthen your understanding.'
-                            : 'Take time to review the concepts and try again.'}
-                        </p>
-                      </CardContent>
-                    </Card>
-
-                    <Button
-                      onClick={handleComplete}
-                      size="lg"
-                      className="w-full"
-                    >
-                      <Trophy className="w-5 h-5 mr-2" />
-                      Complete Lab
-                    </Button>
+                      </div>
+                    </div>
                   </motion.div>
+                )}
+
+                {showQuizFeedback && quizScore === quizQuestions.length && (
+                  <Button
+                    onClick={handleComplete}
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg"
+                  >
+                    <Trophy className="w-5 h-5 mr-2" />
+                    Complete Lab
+                  </Button>
                 )}
               </motion.div>
             )}
@@ -1011,48 +1086,82 @@ export function WaterTestLabEnhanced() {
                 key="complete"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="text-center space-y-6 py-8"
+                exit={{ opacity: 0, y: -20 }}
+                className="relative"
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: 'spring' }}
-                >
-                  <Trophy className="w-24 h-24 text-yellow-500 mx-auto mb-4" />
-                </motion.div>
-
-                <div className="space-y-2">
-                  <h3 className="text-3xl font-bold">Congratulations! 🎉</h3>
-                  <p className="text-xl text-muted-foreground">
-                    You've completed the Water Test Lab
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-center gap-2 text-2xl font-bold text-cyan-600">
-                  <Award className="w-8 h-8" />
-                  <span>+100 XP</span>
-                </div>
-
-                <div className="prose dark:prose-invert max-w-none text-left bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-950 dark:to-blue-950 p-6 rounded-lg">
-                  <h4 className="text-lg font-semibold mb-3">What You Learned:</h4>
-                  <ul className="space-y-2">
-                    <li>✓ How to use anhydrous copper sulfate to test for water (white → blue)</li>
-                    <li>✓ How cobalt chloride paper detects water (blue → pink)</li>
-                    <li>✓ The difference between anhydrous and hydrated compounds</li>
-                    <li>✓ Why chemical color changes occur during hydration</li>
-                    <li>✓ Real-world applications in quality control and moisture detection</li>
-                  </ul>
-                </div>
-
-                <Button onClick={resetLab} size="lg" variant="outline">
-                  Try Again
-                </Button>
+                <Card className="border-2 border-yellow-300 dark:border-yellow-700 bg-gradient-to-br from-yellow-50/90 via-cyan-50/90 to-blue-50/90 dark:from-yellow-950/90 dark:via-cyan-950/90 dark:to-blue-950/90 backdrop-blur-sm shadow-2xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-cyan-400/20 to-blue-400/20 animate-pulse" />
+                  <CardContent className="relative p-8 text-center space-y-6">
+                    <motion.div
+                      animate={{ 
+                        scale: [1, 1.1, 1],
+                        rotate: [0, 5, -5, 0]
+                      }}
+                      transition={{ 
+                        repeat: Infinity,
+                        duration: 2
+                      }}
+                      className="text-8xl mb-4"
+                    >
+                      🏆
+                    </motion.div>
+                    <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                      Lab Complete!
+                    </h2>
+                    {xpEarned > 0 && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2, type: "spring" }}
+                        className="flex items-center justify-center gap-2 text-3xl font-black text-cyan-600 dark:text-cyan-400"
+                      >
+                        <Award className="h-8 w-8" />
+                        <span>+{xpEarned} XP</span>
+                      </motion.div>
+                    )}
+                    <div className="space-y-4 pt-4">
+                      <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">What You Learned:</h3>
+                      <ul className="text-left space-y-2 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>How to use anhydrous copper sulfate to test for water (white → blue)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>How cobalt chloride paper detects water (blue → pink)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>The difference between anhydrous and hydrated compounds</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>Why chemical color changes occur during hydration</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <span>Real-world applications in quality control and moisture detection</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <Button 
+                      onClick={resetLab} 
+                      variant="outline" 
+                      className="mt-6 border-2 border-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20"
+                      size="lg"
+                    >
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Try Again
+                    </Button>
+                  </CardContent>
+                </Card>
               </motion.div>
             )}
           </AnimatePresence>
         </CardContent>
       </Card>
+        </motion.div>
+      </div>
     </div>
   );
 }

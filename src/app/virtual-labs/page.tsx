@@ -11,7 +11,7 @@ import { useLabProgress } from '@/stores/lab-progress-store';
 import { Progress } from "@/components/ui/progress";
 import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
 import { useFirebase } from '@/firebase/provider';
-import { isPremiumUser } from '@/lib/monetization';
+import { hasVirtualLabAccess } from '@/lib/monetization';
 import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 
 export default function VirtualLabsPage() {
@@ -25,7 +25,7 @@ export default function VirtualLabsPage() {
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   
   const userId = user?.uid || 'guest';
-  const isPremium = isPremiumUser(userId);
+  const hasVirtualLab = hasVirtualLabAccess(userId);
 
   useEffect(() => {
     setMounted(true);
@@ -113,10 +113,10 @@ export default function VirtualLabsPage() {
             </div>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
               Master science through hands-on experiments.{' '}
-              {!isPremium ? (
+              {!hasVirtualLab ? (
                 <>
                   <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{allLabs.length}</span> labs free,{' '}
-                  <span className="font-bold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">{allLabsTotal - allLabs.length}</span> more with Premium!
+                  <span className="font-bold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">{allLabsTotal - allLabs.length}</span> more with Virtual Lab Premium!
                 </>
               ) : (
                 <>
@@ -240,10 +240,10 @@ export default function VirtualLabsPage() {
                     <Icon className={`h-8 w-8 ${color.icon} group-hover:scale-110 transition-transform`} />
                     <div>
                       <p className={`text-3xl font-bold bg-gradient-to-r ${color.text} bg-clip-text text-transparent`}>
-                        {isPremium ? totalCount : `${availableCount}/${totalCount}`}
+                        {hasVirtualLab ? totalCount : `${availableCount}/${totalCount}`}
                       </p>
                       <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">{subject}</p>
-                      {!isPremium && availableCount < totalCount && (
+                      {!hasVirtualLab && availableCount < totalCount && (
                         <p className="text-xs text-yellow-600 dark:text-yellow-400 font-semibold mt-1">
                           Upgrade for {totalCount - availableCount} more
                         </p>
@@ -256,14 +256,14 @@ export default function VirtualLabsPage() {
           </div>
 
           {/* Premium Info Banner for Free Users */}
-          {!isPremium && allLabs.length < allLabsTotal && (
+          {!hasVirtualLab && allLabs.length < allLabsTotal && (
             <Card className="mb-6 bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-950/30 dark:to-amber-950/30 border-2 border-yellow-200/50 dark:border-yellow-800/50">
               <CardContent className="p-4 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <Crown className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
                   <div>
                     <p className="font-bold text-yellow-900 dark:text-yellow-100">
-                      Unlock All {allLabsTotal} Labs with Premium!
+                      Unlock All {allLabsTotal} Labs with Virtual Lab Premium!
                     </p>
                     <p className="text-sm text-yellow-700 dark:text-yellow-300">
                       You're currently viewing {allLabs.length} free labs. Upgrade to access all {allLabsTotal} interactive experiments.

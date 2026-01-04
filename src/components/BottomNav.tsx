@@ -20,7 +20,7 @@ export default function BottomNav() {
     return null;
   }
 
-  // V1: Only Challenge Arena, Virtual Labs (for SHS), and Profile
+  // V1: Challenge Arena, Virtual Labs (for all students), and Profile
   const navItems = [
     { href: '/challenge-arena', label: 'Arena', icon: Swords },
     { href: '/virtual-labs', label: 'Labs', icon: FlaskConical },

@@ -385,20 +385,20 @@ export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperimen
     // TEMPORARILY UNLOCK ALL LABS FOR UPGRADE - Remove this after upgrading all labs
     return allLabs;
     
-    // Check premium status
-    let isPremium = false;
+    // Check virtual lab access (Virtual Lab subscription or Full Bundle)
+    let hasAccess = false;
     if (typeof window !== 'undefined') {
         try {
-            const { isPremiumUser } = require('./monetization');
-            isPremium = isPremiumUser(userId);
+            const { hasVirtualLabAccess } = require('./monetization');
+            hasAccess = hasVirtualLabAccess(userId);
         } catch (e) {
             // Fallback for server-side rendering
-            console.warn("Could not determine premium status:", e);
+            console.warn("Could not determine virtual lab access:", e);
         }
     }
     
-    // Premium users get all labs
-    if (isPremium) {
+    // Users with Virtual Lab subscription or Full Bundle get all labs
+    if (hasAccess) {
         return allLabs;
     }
     

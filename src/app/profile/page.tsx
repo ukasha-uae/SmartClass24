@@ -14,6 +14,7 @@ import { useHasMounted } from '@/hooks/use-has-mounted';
 import { useToast } from '@/hooks/use-toast';
 import StudentProfileSetup from '@/components/StudentProfileSetup';
 import CampusSelector from '@/components/CampusSelector';
+import { SubscriptionStatusBadge } from '@/components/SubscriptionStatusBadge';
 
 export default function ProfilePage() {
   const hasMounted = useHasMounted();
@@ -128,7 +129,8 @@ export default function ProfilePage() {
                 <h1 className="text-3xl sm:text-4xl font-bold font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent mb-2">
                   {profile?.studentName || 'Student Name'}
                 </h1>
-                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-medium">{profile?.studentClass || 'JHS student'}</p>
+                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-medium mb-3">{profile?.studentClass || 'JHS student'}</p>
+                <SubscriptionStatusBadge variant="detailed" showUpgrade={true} />
               </div>
             </div>
           </CardContent>

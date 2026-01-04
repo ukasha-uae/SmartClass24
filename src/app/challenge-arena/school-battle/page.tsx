@@ -43,7 +43,25 @@ const getSubjectsForLevel = (level: 'Primary' | 'JHS' | 'SHS') => {
   if (level === 'Primary') {
     return ['English Language', 'Mathematics', 'Science', 'Social Studies', 'Computing', 'Creative Arts'];
   } else if (level === 'SHS') {
-    return ['Core Mathematics', 'Core English', 'Core Science', 'Social Studies', 'Elective Mathematics', 'Physics', 'Chemistry', 'Biology'];
+    // All SHS programs and subjects
+    return [
+      // Core Subjects
+      'Core Mathematics', 'English Language', 'Integrated Science', 'Social Studies',
+      // General Science
+      'Physics', 'Chemistry', 'Biology', 'Elective Mathematics',
+      // General Arts
+      'Literature in English', 'History', 'Geography', 'Economics', 'Government',
+      // Business
+      'Accounting', 'Business Management', 'Cost Accounting'
+      // Visual Arts
+      'General Knowledge in Art', 'Textiles', 'Graphic Design',
+      // Home Economics
+      'Food and Nutrition', 'Management in Living', 'Clothing and Textiles',
+      // Agricultural Science
+      'Agricultural Science', 'Crop Husbandry', 'Animal Husbandry',
+      // Technical
+      'Technical Drawing', 'Building Construction', 'Woodwork', 'Metalwork', 'Electronics', 'Auto Mechanics'
+    ];
   } else {
     return ['Mathematics', 'English Language', 'Integrated Science', 'Social Studies', 'RME', 'Creative Arts', 'French', 'Local Language', 'ICT'];
   }

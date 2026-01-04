@@ -12,10 +12,10 @@ export const FEATURE_FLAGS = {
     showSHS: true,                 // SHS has full access
     // Feature Access by Campus - V1: Arena + Virtual Labs Only
     primaryHasLessons: false,       // Primary: no lessons (V2)
-    primaryHasVirtualLabs: false,  // Primary: no virtual labs
+    primaryHasVirtualLabs: true,   // Primary: can access virtual labs (all students can use)
     primaryHasArena: true,         // Primary: Arena Challenge only
     jhsHasLessons: false,          // JHS: no lessons (V2)
-    jhsHasVirtualLabs: false,      // JHS: no virtual labs
+    jhsHasVirtualLabs: true,       // JHS: can access virtual labs (all students can use)
     jhsHasArena: true,            // JHS: Arena Challenge only
     shsHasLessons: false,          // SHS: no lessons (V2) - Redirect to Arena
     shsHasVirtualLabs: true,       // SHS: virtual labs access (V1)

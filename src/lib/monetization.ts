@@ -3,7 +3,7 @@
  * Handles premium subscriptions, coin purchases, and feature unlocks
  */
 
-export type SubscriptionTier = 'free' | 'premium';
+export type SubscriptionTier = 'free' | 'premium' | 'virtual_lab' | 'full_bundle';
 export type PremiumFeature = 
   | 'boss_battle' 
   | 'tournaments' 
@@ -14,7 +14,9 @@ export type PremiumFeature =
   | 'double_coins'
   | 'priority_matchmaking'
   | 'unlimited_practice'
-  | 'daily_bonus';
+  | 'daily_bonus'
+  | 'virtual_labs'
+  | 'challenge_arena';
 
 export interface UserSubscription {
   userId: string;
@@ -23,7 +25,7 @@ export interface UserSubscription {
   endDate?: string; // undefined for lifetime
   isActive: boolean;
   features: PremiumFeature[];
-  planId?: string; // e.g., 'premium_monthly', 'premium_annual'
+  planId?: string; // e.g., 'premium_monthly', 'premium_annual', 'virtual_lab_monthly', 'full_bundle_monthly'
 }
 
 export interface CoinPurchase {
@@ -93,16 +95,46 @@ export const PREMIUM_FEATURES: Record<PremiumFeature, {
     description: 'Extra coins and XP daily',
     icon: '🎁',
   },
+  virtual_labs: {
+    name: 'Virtual Labs',
+    description: 'Access to all interactive science experiments',
+    icon: '🧪',
+  },
+  challenge_arena: {
+    name: 'Challenge Arena',
+    description: 'Unlimited questions and all Challenge Arena features',
+    icon: '⚔️',
+  },
 };
 
 /**
- * Check if user has premium subscription
+ * Check if user has premium subscription (Challenge Arena Premium)
  */
 export function isPremiumUser(userId: string): boolean {
   if (typeof window === 'undefined') return false;
   
   const subscription = getUserSubscription(userId);
-  return subscription?.tier === 'premium' && subscription?.isActive === true;
+  return (subscription?.tier === 'premium' || subscription?.tier === 'full_bundle') && subscription?.isActive === true;
+}
+
+/**
+ * Check if user has Virtual Lab subscription
+ */
+export function hasVirtualLabAccess(userId: string): boolean {
+  if (typeof window === 'undefined') return false;
+  
+  const subscription = getUserSubscription(userId);
+  return (subscription?.tier === 'virtual_lab' || subscription?.tier === 'full_bundle') && subscription?.isActive === true;
+}
+
+/**
+ * Check if user has Full Bundle subscription (both Challenge Arena and Virtual Lab)
+ */
+export function hasFullBundle(userId: string): boolean {
+  if (typeof window === 'undefined') return false;
+  
+  const subscription = getUserSubscription(userId);
+  return subscription?.tier === 'full_bundle' && subscription?.isActive === true;
 }
 
 /**
@@ -159,7 +191,8 @@ export function getUserPremiumFeatures(userId: string): PremiumFeature[] {
 export function addSubscription(
   userId: string,
   planId: string,
-  duration: 'monthly' | 'annual'
+  duration: 'monthly' | 'annual',
+  subscriptionType: 'challengeArena' | 'virtualLab' | 'fullBundle' = 'challengeArena'
 ): UserSubscription {
   if (typeof window === 'undefined') {
     throw new Error('Cannot add subscription on server side');
@@ -170,13 +203,29 @@ export function addSubscription(
     ? new Date(now.setMonth(now.getMonth() + 1)).toISOString()
     : new Date(now.setFullYear(now.getFullYear() + 1)).toISOString();
 
+  // Determine tier and features based on subscription type
+  let tier: SubscriptionTier;
+  let features: PremiumFeature[];
+
+  if (subscriptionType === 'fullBundle') {
+    tier = 'full_bundle';
+    features = Object.keys(PREMIUM_FEATURES) as PremiumFeature[];
+  } else if (subscriptionType === 'virtualLab') {
+    tier = 'virtual_lab';
+    features = ['virtual_labs'];
+  } else {
+    tier = 'premium';
+    features = Object.keys(PREMIUM_FEATURES).filter(f => f !== 'virtual_labs' && f !== 'challenge_arena') as PremiumFeature[];
+    features.push('challenge_arena');
+  }
+
   const subscription: UserSubscription = {
     userId,
-    tier: 'premium',
+    tier,
     startDate: new Date().toISOString(),
     endDate,
     isActive: true,
-    features: Object.keys(PREMIUM_FEATURES) as PremiumFeature[],
+    features,
     planId,
   };
 

@@ -1,6 +1,6 @@
 // Unified Challenge Questions System for Primary, JHS & SHS
 // Scalable question bank architecture - easily extendable for loading more questions
-import { getRandomQuestions as getJHSQuestions, QuestionSubject as JHSSubject, QuestionDifficulty } from './bece-questions';
+import { getRandomQuestions as getJHSQuestions, QuestionSubject as JHSSubject } from './bece-questions';
 import { pastQuestions, type PastQuestion } from './past-questions';
 
 export type EducationLevel = 'Primary' | 'JHS' | 'SHS';
@@ -11852,12 +11852,50 @@ export function getAvailableSubjects(level: EducationLevel): string[] {
       'Arabic'
     ];
   } else {
+    // SHS - All Programs
     return [
       'Mixed',
+      // Core Subjects (All Programs)
       'Core Mathematics',
       'English Language',
       'Integrated Science',
-      'Social Studies'
+      'Social Studies',
+      // General Science Program
+      'Physics',
+      'Chemistry',
+      'Biology',
+      'Elective Mathematics',
+      // General Arts Program
+      'Literature in English',
+      'History',
+      'Geography',
+      'Economics',
+      'Government',
+      'Christian Religious Studies',
+      'Islamic Religious Studies',
+      // Business Program
+      'Accounting',
+      'Business Management',
+      'Cost Accounting',
+      // Visual Arts Program
+      'General Knowledge in Art',
+      'Textiles',
+      'Graphic Design',
+      // Home Economics Program
+      'Food and Nutrition',
+      'Management in Living',
+      'Clothing and Textiles',
+      // Agricultural Science Program
+      'Agricultural Science',
+      'Crop Husbandry',
+      'Animal Husbandry',
+      // Technical Program
+      'Technical Drawing',
+      'Building Construction',
+      'Woodwork',
+      'Metalwork',
+      'Electronics',
+      'Auto Mechanics'
     ];
   }
 }

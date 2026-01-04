@@ -22,6 +22,7 @@ import html2canvas from 'html2canvas';
 import {
   getChallenge,
   getPlayerProfile,
+  createOrUpdatePlayer,
   submitChallengeAnswers,
   completeChallenge,
   Challenge,
@@ -86,7 +87,27 @@ export default function QuizBattlePage() {
       return;
     }
     setChallenge(challengeData);
-    setPlayer(getPlayerProfile(userId));
+    
+    // Get or create player profile
+    let playerProfile = getPlayerProfile(userId);
+    if (!playerProfile) {
+      // Create a default player if one doesn't exist
+      playerProfile = createOrUpdatePlayer({
+        userId,
+        userName: user?.email?.split('@')[0] || 'Player',
+        school: 'Unknown School',
+        rating: 1000,
+        wins: 0,
+        losses: 0,
+        draws: 0,
+        totalGames: 0,
+        winStreak: 0,
+        highestStreak: 0,
+        coins: 0,
+        level: 'SHS' as const
+      });
+    }
+    setPlayer(playerProfile);
     
     if (challengeData.status === 'pending') {
       setGamePhase('waiting');

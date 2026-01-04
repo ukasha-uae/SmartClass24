@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Trophy, Award, TestTube, Flame, Droplets, Sparkles, AlertTriangle, Package, Zap, Wind } from 'lucide-react';
+import { CheckCircle, XCircle, RefreshCw, BookOpen, Shield, Trophy, Award, TestTube, Flame, Droplets, Sparkles, AlertTriangle } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Label } from '../ui/label';
@@ -14,9 +14,9 @@ import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
 import { TextToSpeech } from '../text-to-speech';
-import { LabNotes } from './LabNotes';
+import { LabSupplies, SupplyItem } from './LabSupplies';
 
-type Step = 'intro' | 'setup' | 'experiment' | 'results' | 'quiz' | 'complete';
+type Step = 'intro' | 'collect-supplies' | 'setup' | 'experiment' | 'results' | 'quiz' | 'complete';
 type Metal = 'Magnesium' | 'Zinc' | 'Iron' | 'Copper';
 
 interface Observation {
@@ -31,7 +31,14 @@ export function MetalAcidReactionLabEnhanced() {
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+    
+    const labSupplies: SupplyItem[] = [
+        { id: 'hcl', name: 'Hydrochloric Acid', emoji: '⚗️', description: 'Dilute HCl solution' },
+        { id: 'test-tubes', name: 'Test Tubes', emoji: '🧪', description: 'To hold reactions' },
+        { id: 'metals', name: 'Metal Samples', emoji: '🔩', description: 'Mg, Zn, Fe, Cu' },
+        { id: 'goggles', name: 'Safety Goggles', emoji: '🥽', description: 'Eye protection' },
+    ];
     
     // Experiment state
     const [selectedMetal, setSelectedMetal] = React.useState<Metal | null>(null);
@@ -45,20 +52,14 @@ export function MetalAcidReactionLabEnhanced() {
     const [quizAnswer3, setQuizAnswer3] = React.useState<string | undefined>();
     const [quizFeedback, setQuizFeedback] = React.useState('');
     const [quizSubmitted, setQuizSubmitted] = React.useState(false);
+    const [quizIsCorrect, setQuizIsCorrect] = React.useState<boolean | null>(null);
     
     // XP and completion
     const [xpEarned, setXpEarned] = React.useState(0);
-    const [showCelebration, setShowCelebration] = React.useState(false);
-    const { markLabComplete, isLabCompleted, getLabCompletion, totalXP } = useLabProgress();
+    const { markLabComplete, isLabCompleted, getLabCompletion } = useLabProgress();
     const labId = 'metal-acid-reaction';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
-    const alreadyCompleted = completion !== null;
-
-    // UI state
-    const [showSupplies, setShowSupplies] = React.useState(false);
-    const [showPractice, setShowPractice] = React.useState(false);
-    const [practiceInteraction, setPracticeInteraction] = React.useState<string | null>(null);
 
     React.useEffect(() => {
         if (currentStep === 'intro') {
@@ -94,10 +95,30 @@ export function MetalAcidReactionLabEnhanced() {
     };
 
     const handleStartExperiment = () => {
+        setCurrentStep('collect-supplies');
+        setTeacherMessage("Before we begin, let's gather all the equipment we'll need for the metal-acid reaction experiment. Click each item to collect it!");
+    };
+
+    const handleCollectSupply = (itemId: string) => {
+        if (!collectedSupplies.includes(itemId)) {
+            setCollectedSupplies(prev => {
+                const newCollected = [...prev, itemId];
+                if (newCollected.length === labSupplies.length) {
+                    setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
+                }
+                return newCollected;
+            });
+            toast({ title: `✅ ${labSupplies.find(s => s.id === itemId)?.name} Collected` });
+        }
+    };
+
+    const handleAllSuppliesCollected = () => {
+        setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
+    };
+
+    const handleContinueToExperiment = () => {
+        setCurrentStep('setup');
         setTeacherMessage("Perfect! Let's begin! You'll test metals with hydrochloric acid. Select a metal, add it to the acid, and observe carefully. Look for bubbles (that's hydrogen gas!), heat production, and how fast the metal dissolves. This reveals the reactivity series!");
-        setPendingTransition(() => () => {
-            setCurrentStep('setup');
-        });
     };
 
     const handleSelectMetal = (metal: Metal) => {
@@ -195,11 +216,7 @@ export function MetalAcidReactionLabEnhanced() {
     };
 
     const handleTeacherComplete = () => {
-        if (pendingTransition) {
-            const transition = pendingTransition;
-            setPendingTransition(null);
-            transition();
-        }
+        // Direct state updates - no pending transitions
     };
 
     const handleViewResults = () => {
@@ -213,19 +230,31 @@ export function MetalAcidReactionLabEnhanced() {
         }
         
         setTeacherMessage("Excellent observations! Now let's analyze your results. You'll see the reactivity series clearly: more reactive metals produce more vigorous reactions and bubbles of hydrogen gas. This explains why some metals are used in batteries and why copper is safe for cooking pots!");
-        setPendingTransition(() => () => {
-            setCurrentStep('results');
-        });
+        setCurrentStep('results');
     };
 
     const handleViewQuiz = () => {
         setTeacherMessage("Time to test your understanding of metal reactivity!");
-        setPendingTransition(() => () => {
+        // Transition to quiz after showing results - give students time to observe
+        setTimeout(() => {
             setCurrentStep('quiz');
-        });
+        }, 25000); // 25 seconds to allow teacher to finish explaining
     };
 
     const handleQuizSubmit = () => {
+        // If already submitted and incorrect, allow retry by resetting
+        if (quizSubmitted && quizIsCorrect === false) {
+            setQuizAnswer1(undefined);
+            setQuizAnswer2(undefined);
+            setQuizAnswer3(undefined);
+            setQuizFeedback('');
+            setQuizSubmitted(false);
+            setQuizIsCorrect(null);
+            return;
+        }
+        
+        if (quizSubmitted) return;
+        
         let correctCount = 0;
         if (quizAnswer1 === 'hydrogen') correctCount++;
         if (quizAnswer2 === 'magnesium') correctCount++;
@@ -234,23 +263,25 @@ export function MetalAcidReactionLabEnhanced() {
         setQuizSubmitted(true);
 
         if (correctCount === 3) {
+            setQuizIsCorrect(true);
             const score = 100;
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand metal reactivity! +${earnedXP} XP`);
             setTeacherMessage(`Outstanding! Perfect score! You've mastered the reactivity series. You understand why magnesium reacts vigorously, why copper doesn't react, and how hydrogen gas is produced. Excellent work! +${earnedXP} XP earned!`);
-            setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
-                setShowCelebration(false);
                 setCurrentStep('complete');
             }, 2000);
-        } else if (correctCount === 2) {
-            setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the reactivity series.`);
-            setTeacherMessage(`Good effort! You got ${correctCount} out of 3 correct. Remember: more reactive metals like magnesium displace hydrogen from acids, while less reactive metals like copper don't react. Review your observations and try again!`);
         } else {
-            setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: more reactive metals displace hydrogen from acids.`);
-            setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me help: The reactivity series goes Magnesium > Zinc > Iron > Copper. Reactive metals produce hydrogen gas (H₂) when added to acid. Review your experiment observations and give it another go!`);
+            setQuizIsCorrect(false);
+            if (correctCount === 2) {
+                setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the reactivity series.`);
+                setTeacherMessage(`Good effort! You got ${correctCount} out of 3 correct. Remember: more reactive metals like magnesium displace hydrogen from acids, while less reactive metals like copper don't react. Review your observations and try again!`);
+            } else {
+                setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: more reactive metals displace hydrogen from acids.`);
+                setTeacherMessage(`Keep trying! You got ${correctCount} correct. Let me help: The reactivity series goes Magnesium > Zinc > Iron > Copper. Reactive metals produce hydrogen gas (H₂) when added to acid. Review your experiment observations and give it another go!`);
+            }
         }
     };
 
@@ -265,143 +296,93 @@ export function MetalAcidReactionLabEnhanced() {
         setQuizAnswer3(undefined);
         setQuizFeedback('');
         setQuizSubmitted(false);
-        setShowCelebration(false);
-        setPendingTransition(null);
+        setQuizIsCorrect(null);
+        setXpEarned(0);
+        setCollectedSupplies([]);
         setTeacherMessage("Welcome back! Let's explore metal reactivity again. Remember what you learned: the reactivity series, hydrogen gas production, and why different metals behave differently with acids. Ready to start?");
     };
 
     return (
-        <div className="space-y-6 pb-20">
-            {/* Teacher Voice */}
-            <TeacherVoice 
-                message={teacherMessage}
-                onComplete={handleTeacherComplete}
-                emotion={currentStep === 'complete' ? 'celebrating' : observations.length >= 3 ? 'happy' : 'explaining'}
-                context={{
-                    attempts: observations.length,
-                    correctStreak: observations.filter(obs => obs.bubbles).length
-                }}
-                quickActions={[
-                    { label: 'Reset Lab', icon: '🔄', onClick: handleRestart },
-                    { label: 'View Theory', icon: '📖', onClick: () => document.querySelector('[value="theory"]')?.parentElement?.click() },
-                    { label: 'Safety Tips', icon: '🛡️', onClick: () => document.querySelector('[value="safety"]')?.parentElement?.click() }
-                ]}
-            />
-
-            {isCompleted && (
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-950/20 dark:to-yellow-950/20 border-2 border-orange-200 dark:border-orange-800 rounded-lg p-4"
-                >
-                    <div className="flex items-center gap-3">
-                        <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded-full">
-                            <Trophy className="h-6 w-6 text-orange-600 dark:text-orange-400" />
-                        </div>
-                        <div className="flex-1">
-                            <h3 className="font-semibold text-orange-900 dark:text-orange-100">Lab Completed!</h3>
-                            <p className="text-sm text-orange-700 dark:text-orange-300">
-                                Completed: {new Date(completion?.completedAt || '').toLocaleDateString()} • 
-                                Total XP: {completion?.xpEarned || 0}
-                            </p>
-                        </div>
-                    </div>
-                </motion.div>
-            )}
-
-            {/* Celebration Overlay */}
-            <AnimatePresence>
-                {showCelebration && xpEarned !== null && (
+        <div className="relative min-h-screen pb-20">
+            {/* Premium Animated Background - Orange/Red Acid Theme */}
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-50 via-red-50 to-amber-50 dark:from-orange-950/30 dark:via-red-950/30 dark:to-amber-950/30" />
+                {[...Array(8)].map((_, i) => (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-br from-orange-200/40 to-red-300/40 dark:from-orange-800/20 dark:to-red-900/20 blur-3xl"
+                        style={{
+                            width: `${200 + i * 50}px`,
+                            height: `${200 + i * 50}px`,
+                            left: `${(i * 12.5) % 100}%`,
+                            top: `${(i * 15) % 100}%`,
+                        }}
+                        animate={{
+                            x: [0, 100, 0],
+                            y: [0, 50, 0],
+                            scale: [1, 1.2, 1],
+                        }}
+                        transition={{
+                            duration: 10 + i * 2,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="relative max-w-5xl mx-auto p-4 space-y-6">
+                {/* Teacher Voice */}
+                <TeacherVoice 
+                    message={teacherMessage}
+                    onComplete={handleTeacherComplete}
+                />
+
+                {isCompleted && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-950/20 dark:to-yellow-950/20 border-2 border-orange-200 dark:border-orange-800 rounded-lg p-4"
                     >
-                        <motion.div
-                            initial={{ scale: 0.5, rotate: -10 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            exit={{ scale: 0.5, rotate: 10 }}
-                            className="bg-gradient-to-br from-yellow-400 via-orange-500 to-pink-500 text-white rounded-3xl p-8 shadow-2xl max-w-md mx-4"
-                        >
-                            <motion.div
-                                animate={{ 
-                                    scale: [1, 1.2, 1],
-                                    rotate: [0, 5, -5, 0]
-                                }}
-                                transition={{ 
-                                    repeat: Infinity,
-                                    duration: 2
-                                }}
-                                className="text-8xl text-center mb-4"
-                            >
-                                🎉
-                            </motion.div>
-                            <h2 className="text-3xl font-bold text-center mb-2">Lab Completed!</h2>
-                            <div className="text-center">
-                                <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: 0.2, type: "spring" }}
-                                    className="text-6xl font-black mb-2"
-                                >
-                                    +{xpEarned} XP
-                                </motion.div>
-                                <p className="text-xl opacity-90">Total XP: {totalXP + xpEarned}</p>
-                                {!alreadyCompleted && (
-                                    <p className="text-sm mt-2 opacity-75">First time completion bonus!</p>
-                                )}
+                        <div className="flex items-center gap-3">
+                            <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded-full">
+                                <Trophy className="h-6 w-6 text-orange-600 dark:text-orange-400" />
                             </div>
-                            <div className="flex gap-2 justify-center mt-4">
-                                {[...Array(5)].map((_, i) => (
-                                    <motion.span
-                                        key={i}
-                                        animate={{ 
-                                            y: [0, -20, 0],
-                                            rotate: [0, 360]
-                                        }}
-                                        transition={{ 
-                                            delay: i * 0.1,
-                                            repeat: Infinity,
-                                            duration: 1.5
-                                        }}
-                                        className="text-3xl"
-                                    >
-                                        ⭐
-                                    </motion.span>
-                                ))}
+                            <div className="flex-1">
+                                <h3 className="font-semibold text-orange-900 dark:text-orange-100">Lab Completed!</h3>
+                                <p className="text-sm text-orange-700 dark:text-orange-300">
+                                    Completed: {new Date(completion?.completedAt || '').toLocaleDateString()} • 
+                                    Total XP: {completion?.xpEarned || 0}
+                                </p>
                             </div>
-                        </motion.div>
+                        </div>
                     </motion.div>
                 )}
-            </AnimatePresence>
 
-            <Card className="border-2 border-orange-200 dark:border-orange-800">
-                <CardHeader>
-                    <div className="flex items-center justify-between flex-wrap gap-2">
-                        <CardTitle className="flex items-center gap-2">
-                            <TestTube className="h-5 w-5 text-orange-600" />
-                            Objective
-                        </CardTitle>
-                        <div className="flex items-center gap-2">
-                            {alreadyCompleted && (
-                                <span className="text-xs sm:text-sm bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-3 py-1 rounded-full font-medium flex items-center gap-1">
-                                    <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                                    Completed
-                                </span>
-                            )}
-                            <TextToSpeech textToSpeak="To investigate and observe how different metals react with hydrochloric acid and understand the reactivity series of metals." />
-                        </div>
-                    </div>
-                    <CardDescription>To investigate and observe how different metals react with hydrochloric acid and understand the reactivity series of metals.</CardDescription>
-                </CardHeader>
-            </Card>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                >
+                    <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                                <CardTitle className="flex items-center gap-2">
+                                    <TestTube className="h-5 w-5 text-orange-600" />
+                                    Objective
+                                </CardTitle>
+                                <div className="flex items-center gap-2">
+                                    <TextToSpeech textToSpeak="To investigate and observe how different metals react with hydrochloric acid and understand the reactivity series of metals." />
+                                </div>
+                            </div>
+                            <CardDescription>To investigate and observe how different metals react with hydrochloric acid and understand the reactivity series of metals.</CardDescription>
+                        </CardHeader>
+                    </Card>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                    <CardDescription>Essential background and safety guidelines</CardDescription>
-                </CardHeader>
+                    <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
+                            <CardTitle>Lab Information</CardTitle>
+                            <CardDescription>Essential background and safety guidelines</CardDescription>
+                        </CardHeader>
                 <CardContent>
                     <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="theory">
@@ -520,11 +501,44 @@ export function MetalAcidReactionLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleStartExperiment} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleStartExperiment} 
+                                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
+                                    <Sparkles className="w-5 h-5 mr-2" />
                                     Start Experiment
                                 </Button>
                             </CardFooter>
                         </Card>
+                    </motion.div>
+                )}
+
+                {/* Collect Supplies Step */}
+                {currentStep === 'collect-supplies' && (
+                    <motion.div
+                        key="collect-supplies"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="space-y-6"
+                    >
+                        <LabSupplies
+                            supplies={labSupplies}
+                            collectedItems={collectedSupplies}
+                            onCollect={handleCollectSupply}
+                            onAllCollected={handleAllSuppliesCollected}
+                            requiredCount={labSupplies.length}
+                        />
+                        {collectedSupplies.length === labSupplies.length && (
+                            <Button
+                                onClick={handleContinueToExperiment}
+                                size="lg"
+                                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
+                            >
+                                Continue to Experiment
+                            </Button>
+                        )}
                     </motion.div>
                 )}
 
@@ -536,8 +550,8 @@ export function MetalAcidReactionLabEnhanced() {
                         exit={{ opacity: 0, y: -20 }}
                         className="space-y-6"
                     >
-                        <Card className="border-2 border-orange-200 dark:border-orange-800">
-                            <CardHeader>
+                        <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                            <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                     <div>
                                         <CardTitle className="flex items-center gap-2">
@@ -545,26 +559,6 @@ export function MetalAcidReactionLabEnhanced() {
                                             Test Metal Reactivity
                                         </CardTitle>
                                         <CardDescription>Metals tested: {observations.length}/3+</CardDescription>
-                                    </div>
-                                    <div className="flex gap-2 flex-wrap">
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm"
-                                            onClick={() => setShowSupplies(!showSupplies)}
-                                            className="text-xs sm:text-sm"
-                                        >
-                                            <Package className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                                            {showSupplies ? 'Hide' : 'Show'} Supplies
-                                        </Button>
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm"
-                                            onClick={() => setShowPractice(!showPractice)}
-                                            className="text-xs sm:text-sm"
-                                        >
-                                            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                                            {showPractice ? 'Hide' : 'Show'} Practice
-                                        </Button>
                                     </div>
                                 </div>
                             </CardHeader>
@@ -697,7 +691,7 @@ export function MetalAcidReactionLabEnhanced() {
                                 <Button 
                                     onClick={handleAddMetal}
                                     disabled={!selectedMetal || isReacting}
-                                    className="w-full"
+                                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg"
                                     size="lg"
                                 >
                                     <Droplets className="h-5 w-5 mr-2" />
@@ -739,144 +733,13 @@ export function MetalAcidReactionLabEnhanced() {
                                 <Button 
                                     onClick={handleViewResults} 
                                     disabled={observations.length < 3}
-                                    variant="outline"
-                                    className="w-full"
+                                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg disabled:opacity-50"
                                     size="lg"
                                 >
                                     View Results ({observations.length}/3 metals tested)
                                 </Button>
                             </CardFooter>
                         </Card>
-
-                        {/* Lab Supplies Drawer */}
-                        {showSupplies && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                            >
-                                <Card className="border-2 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2 text-lg">
-                                            <Package className="h-5 w-5 text-amber-600" />
-                                            Lab Supplies - Equipment Information
-                                        </CardTitle>
-                                        <CardDescription>Learn about the equipment used in this experiment</CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="grid md:grid-cols-2 gap-4">
-                                            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border-2 border-gray-200 dark:border-gray-700">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <TestTube className="h-8 w-8 text-blue-600" />
-                                                    <h4 className="font-semibold">Test Tubes</h4>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Glass containers for holding small amounts of chemicals during reactions. Resistant to heat and most acids.
-                                                </p>
-                                            </div>
-                                            
-                                            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border-2 border-gray-200 dark:border-gray-700">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <Droplets className="h-8 w-8 text-blue-400" />
-                                                    <h4 className="font-semibold">Hydrochloric Acid (HCl)</h4>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground">
-                                                    A strong acid that reacts with most metals to produce hydrogen gas and metal salts. Handle with care!
-                                                </p>
-                                            </div>
-
-                                            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border-2 border-gray-200 dark:border-gray-700">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <Shield className="h-8 w-8 text-orange-600" />
-                                                    <h4 className="font-semibold">Safety Goggles</h4>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Essential eye protection when working with acids. Protects against splashes and fumes.
-                                                </p>
-                                            </div>
-
-                                            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border-2 border-gray-200 dark:border-gray-700">
-                                                <div className="flex items-center gap-3 mb-2">
-                                                    <Wind className="h-8 w-8 text-cyan-600" />
-                                                    <h4 className="font-semibold">Fume Hood</h4>
-                                                </div>
-                                                <p className="text-sm text-muted-foreground">
-                                                    Ventilation system that removes harmful fumes and gases from the work area. Always work in a ventilated space!
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )}
-
-                        {/* Practice Mode */}
-                        {showPractice && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                            >
-                                <Card className="border-2 border-violet-200 dark:border-violet-800 bg-violet-50/50 dark:bg-violet-950/20">
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <Sparkles className="h-5 w-5 text-violet-600" />
-                                            Practice Mode - Explore & Learn
-                                        </CardTitle>
-                                        <CardDescription>Click on cards to learn more about metal reactivity</CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="grid md:grid-cols-3 gap-4">
-                                            <Card 
-                                                className="cursor-pointer hover:shadow-lg transition-shadow border-2"
-                                                onClick={() => setPracticeInteraction('reactivity')}
-                                            >
-                                                <CardHeader>
-                                                    <CardTitle className="text-base">⚡ Reactivity Series</CardTitle>
-                                                </CardHeader>
-                                                <CardContent>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {practiceInteraction === 'reactivity'
-                                                            ? "The reactivity series ranks metals from most to least reactive. Magnesium > Zinc > Iron > Copper. More reactive metals displace less reactive metals from solutions!"
-                                                            : "Tap to learn about metal reactivity order"}
-                                                    </p>
-                                                </CardContent>
-                                            </Card>
-
-                                            <Card 
-                                                className="cursor-pointer hover:shadow-lg transition-shadow border-2"
-                                                onClick={() => setPracticeInteraction('hydrogen')}
-                                            >
-                                                <CardHeader>
-                                                    <CardTitle className="text-base">💨 Hydrogen Gas (H₂)</CardTitle>
-                                                </CardHeader>
-                                                <CardContent>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {practiceInteraction === 'hydrogen'
-                                                            ? "Hydrogen gas is produced when reactive metals displace hydrogen from acids. It's colorless, odorless, and highly flammable! The 'pop test' confirms its presence."
-                                                            : "Tap to learn about hydrogen gas"}
-                                                    </p>
-                                                </CardContent>
-                                            </Card>
-
-                                            <Card 
-                                                className="cursor-pointer hover:shadow-lg transition-shadow border-2"
-                                                onClick={() => setPracticeInteraction('realworld')}
-                                            >
-                                                <CardHeader>
-                                                    <CardTitle className="text-base">🌍 Real-World Applications</CardTitle>
-                                                </CardHeader>
-                                                <CardContent>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {practiceInteraction === 'realworld'
-                                                            ? "Reactivity series explains why: copper pots are used in cooking (safe with acidic foods), zinc is used for galvanization, and magnesium is used in fireworks!"
-                                                            : "Tap to see practical applications"}
-                                                    </p>
-                                                </CardContent>
-                                            </Card>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        )}
                     </motion.div>
                 )}
 
@@ -887,8 +750,8 @@ export function MetalAcidReactionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card className="border-2 border-orange-200 dark:border-orange-800">
-                            <CardHeader>
+                        <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                            <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
                                 <CardTitle className="flex items-center gap-2">
                                     <CheckCircle className="h-5 w-5 text-orange-600" />
                                     Analysis & Results
@@ -983,7 +846,11 @@ export function MetalAcidReactionLabEnhanced() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <Button onClick={handleViewQuiz} className="w-full" size="lg">
+                                <Button 
+                                    onClick={handleViewQuiz} 
+                                    className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white shadow-lg" 
+                                    size="lg"
+                                >
                                     Take the Quiz
                                 </Button>
                             </CardFooter>
@@ -998,134 +865,209 @@ export function MetalAcidReactionLabEnhanced() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                     >
-                        <Card>
-                            <CardHeader>
+                        <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-xl">
+                            <CardHeader className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950">
                                 <CardTitle>Knowledge Check</CardTitle>
                                 <CardDescription>Test your understanding of metal reactivity</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 {/* Question 1 */}
-                                <div className="space-y-3">
-                                    <p className="font-medium">1. What gas is produced when a metal reacts with acid?</p>
-                                    <div className="space-y-2">
-                                        {[
-                                            { value: 'hydrogen', label: 'Hydrogen (H₂)', isCorrect: true },
-                                            { value: 'oxygen', label: 'Oxygen (O₂)' },
-                                            { value: 'carbon', label: 'Carbon Dioxide (CO₂)' }
-                                        ].map((option) => (
-                                            <motion.div
-                                                key={option.value}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
-                                                onClick={() => !quizSubmitted && setQuizAnswer1(option.value)}
-                                                className={cn(
-                                                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
-                                                    quizAnswer1 === option.value && !quizSubmitted && "border-orange-500 bg-orange-50 dark:bg-orange-950/20",
-                                                    quizAnswer1 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
-                                                    quizAnswer1 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
-                                                    quizAnswer1 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                                                )}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <div className={cn(
-                                                        "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                                                        quizAnswer1 === option.value && !quizSubmitted && "border-orange-500 bg-orange-500",
-                                                        quizAnswer1 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-500",
-                                                        quizAnswer1 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-500",
-                                                        quizAnswer1 !== option.value && "border-gray-300"
-                                                    )}>
-                                                        {quizAnswer1 === option.value && (
-                                                            <div className="w-2 h-2 bg-white rounded-full" />
+                                <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-lg">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg flex items-center gap-2">
+                                            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm">
+                                                1
+                                            </span>
+                                            What gas is produced when a metal reacts with acid?
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid gap-3">
+                                            {[
+                                                { value: 'hydrogen', label: 'Hydrogen (H₂)', isCorrect: true },
+                                                { value: 'oxygen', label: 'Oxygen (O₂)' },
+                                                { value: 'carbon', label: 'Carbon Dioxide (CO₂)' }
+                                            ].map((option, idx) => {
+                                                const isSelected = quizAnswer1 === option.value;
+                                                const isCorrect = option.isCorrect;
+                                                const showFeedback = quizSubmitted;
+                                                const isWrong = showFeedback && isSelected && !isCorrect;
+                                                
+                                                return (
+                                                    <motion.button
+                                                        key={idx}
+                                                        onClick={() => !quizSubmitted && setQuizAnswer1(option.value)}
+                                                        disabled={quizSubmitted}
+                                                        className={cn(
+                                                            "relative p-4 rounded-lg border-2 text-left transition-all",
+                                                            "disabled:cursor-not-allowed",
+                                                            !showFeedback && isSelected && "border-orange-500 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 shadow-md",
+                                                            !showFeedback && !isSelected && "border-gray-200 dark:border-gray-700 hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/50",
+                                                            showFeedback && isCorrect && "border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 shadow-md",
+                                                            showFeedback && isWrong && "border-red-500 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 shadow-md",
+                                                            showFeedback && !isSelected && !isCorrect && "border-gray-200 dark:border-gray-700 opacity-60"
                                                         )}
-                                                    </div>
-                                                    <span>{option.label}</span>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                </div>
+                                                        whileHover={!showFeedback ? { scale: 1.02, y: -2 } : {}}
+                                                        whileTap={!showFeedback ? { scale: 0.98 } : {}}
+                                                    >
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={cn(
+                                                                "flex items-center justify-center w-6 h-6 rounded-full border-2 flex-shrink-0",
+                                                                isSelected && !showFeedback && "border-orange-500 bg-orange-500",
+                                                                showFeedback && isCorrect && "border-green-500 bg-green-500",
+                                                                showFeedback && isWrong && "border-red-500 bg-red-500",
+                                                                !isSelected && !showFeedback && "border-gray-300 dark:border-gray-600"
+                                                            )}>
+                                                                {isSelected && (
+                                                                    <div className="w-3 h-3 rounded-full bg-white" />
+                                                                )}
+                                                            </div>
+                                                            <span className="flex-1 font-medium">{option.label}</span>
+                                                            {showFeedback && isCorrect && (
+                                                                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                                                            )}
+                                                            {showFeedback && isWrong && (
+                                                                <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                                                            )}
+                                                        </div>
+                                                    </motion.button>
+                                                );
+                                            })}
+                                        </div>
+                                    </CardContent>
+                                </Card>
 
                                 {/* Question 2 */}
-                                <div className="space-y-3">
-                                    <p className="font-medium">2. Which metal reacts most vigorously with dilute hydrochloric acid?</p>
-                                    <div className="space-y-2">
-                                        {[
-                                            { value: 'magnesium', label: 'Magnesium', isCorrect: true },
-                                            { value: 'zinc', label: 'Zinc' },
-                                            { value: 'copper', label: 'Copper' }
-                                        ].map((option) => (
-                                            <motion.div
-                                                key={option.value}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
-                                                onClick={() => !quizSubmitted && setQuizAnswer2(option.value)}
-                                                className={cn(
-                                                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
-                                                    quizAnswer2 === option.value && !quizSubmitted && "border-orange-500 bg-orange-50 dark:bg-orange-950/20",
-                                                    quizAnswer2 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
-                                                    quizAnswer2 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
-                                                    quizAnswer2 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                                                )}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <div className={cn(
-                                                        "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                                                        quizAnswer2 === option.value && !quizSubmitted && "border-orange-500 bg-orange-500",
-                                                        quizAnswer2 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-500",
-                                                        quizAnswer2 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-500",
-                                                        quizAnswer2 !== option.value && "border-gray-300"
-                                                    )}>
-                                                        {quizAnswer2 === option.value && (
-                                                            <div className="w-2 h-2 bg-white rounded-full" />
+                                <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-lg">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg flex items-center gap-2">
+                                            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm">
+                                                2
+                                            </span>
+                                            Which metal reacts most vigorously with dilute hydrochloric acid?
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid gap-3">
+                                            {[
+                                                { value: 'magnesium', label: 'Magnesium', isCorrect: true },
+                                                { value: 'zinc', label: 'Zinc' },
+                                                { value: 'copper', label: 'Copper' }
+                                            ].map((option, idx) => {
+                                                const isSelected = quizAnswer2 === option.value;
+                                                const isCorrect = option.isCorrect;
+                                                const showFeedback = quizSubmitted;
+                                                const isWrong = showFeedback && isSelected && !isCorrect;
+                                                
+                                                return (
+                                                    <motion.button
+                                                        key={idx}
+                                                        onClick={() => !quizSubmitted && setQuizAnswer2(option.value)}
+                                                        disabled={quizSubmitted}
+                                                        className={cn(
+                                                            "relative p-4 rounded-lg border-2 text-left transition-all",
+                                                            "disabled:cursor-not-allowed",
+                                                            !showFeedback && isSelected && "border-orange-500 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 shadow-md",
+                                                            !showFeedback && !isSelected && "border-gray-200 dark:border-gray-700 hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/50",
+                                                            showFeedback && isCorrect && "border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 shadow-md",
+                                                            showFeedback && isWrong && "border-red-500 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 shadow-md",
+                                                            showFeedback && !isSelected && !isCorrect && "border-gray-200 dark:border-gray-700 opacity-60"
                                                         )}
-                                                    </div>
-                                                    <span>{option.label}</span>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                </div>
+                                                        whileHover={!showFeedback ? { scale: 1.02, y: -2 } : {}}
+                                                        whileTap={!showFeedback ? { scale: 0.98 } : {}}
+                                                    >
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={cn(
+                                                                "flex items-center justify-center w-6 h-6 rounded-full border-2 flex-shrink-0",
+                                                                isSelected && !showFeedback && "border-orange-500 bg-orange-500",
+                                                                showFeedback && isCorrect && "border-green-500 bg-green-500",
+                                                                showFeedback && isWrong && "border-red-500 bg-red-500",
+                                                                !isSelected && !showFeedback && "border-gray-300 dark:border-gray-600"
+                                                            )}>
+                                                                {isSelected && (
+                                                                    <div className="w-3 h-3 rounded-full bg-white" />
+                                                                )}
+                                                            </div>
+                                                            <span className="flex-1 font-medium">{option.label}</span>
+                                                            {showFeedback && isCorrect && (
+                                                                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                                                            )}
+                                                            {showFeedback && isWrong && (
+                                                                <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                                                            )}
+                                                        </div>
+                                                    </motion.button>
+                                                );
+                                            })}
+                                        </div>
+                                    </CardContent>
+                                </Card>
 
                                 {/* Question 3 */}
-                                <div className="space-y-3">
-                                    <p className="font-medium">3. Which metal does NOT react with dilute hydrochloric acid?</p>
-                                    <div className="space-y-2">
-                                        {[
-                                            { value: 'copper', label: 'Copper', isCorrect: true },
-                                            { value: 'magnesium2', label: 'Magnesium' },
-                                            { value: 'iron', label: 'Iron' }
-                                        ].map((option) => (
-                                            <motion.div
-                                                key={option.value}
-                                                whileHover={{ scale: 1.02 }}
-                                                whileTap={{ scale: 0.98 }}
-                                                onClick={() => !quizSubmitted && setQuizAnswer3(option.value)}
-                                                className={cn(
-                                                    "p-4 rounded-lg border-2 cursor-pointer transition-all",
-                                                    quizAnswer3 === option.value && !quizSubmitted && "border-orange-500 bg-orange-50 dark:bg-orange-950/20",
-                                                    quizAnswer3 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-50 dark:bg-green-950/20",
-                                                    quizAnswer3 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-50 dark:bg-red-950/20",
-                                                    quizAnswer3 !== option.value && "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                                                )}
-                                            >
-                                                <div className="flex items-center gap-3">
-                                                    <div className={cn(
-                                                        "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-                                                        quizAnswer3 === option.value && !quizSubmitted && "border-orange-500 bg-orange-500",
-                                                        quizAnswer3 === option.value && quizSubmitted && option.isCorrect && "border-green-500 bg-green-500",
-                                                        quizAnswer3 === option.value && quizSubmitted && !option.isCorrect && "border-red-500 bg-red-500",
-                                                        quizAnswer3 !== option.value && "border-gray-300"
-                                                    )}>
-                                                        {quizAnswer3 === option.value && (
-                                                            <div className="w-2 h-2 bg-white rounded-full" />
+                                <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-orange-50/90 dark:from-gray-900/90 dark:to-orange-950/90 backdrop-blur-sm shadow-lg">
+                                    <CardHeader>
+                                        <CardTitle className="text-lg flex items-center gap-2">
+                                            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-sm">
+                                                3
+                                            </span>
+                                            Which metal does NOT react with dilute hydrochloric acid?
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="grid gap-3">
+                                            {[
+                                                { value: 'copper', label: 'Copper', isCorrect: true },
+                                                { value: 'magnesium2', label: 'Magnesium' },
+                                                { value: 'iron', label: 'Iron' }
+                                            ].map((option, idx) => {
+                                                const isSelected = quizAnswer3 === option.value;
+                                                const isCorrect = option.isCorrect;
+                                                const showFeedback = quizSubmitted;
+                                                const isWrong = showFeedback && isSelected && !isCorrect;
+                                                
+                                                return (
+                                                    <motion.button
+                                                        key={idx}
+                                                        onClick={() => !quizSubmitted && setQuizAnswer3(option.value)}
+                                                        disabled={quizSubmitted}
+                                                        className={cn(
+                                                            "relative p-4 rounded-lg border-2 text-left transition-all",
+                                                            "disabled:cursor-not-allowed",
+                                                            !showFeedback && isSelected && "border-orange-500 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 shadow-md",
+                                                            !showFeedback && !isSelected && "border-gray-200 dark:border-gray-700 hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/50",
+                                                            showFeedback && isCorrect && "border-green-500 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 shadow-md",
+                                                            showFeedback && isWrong && "border-red-500 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950 dark:to-orange-950 shadow-md",
+                                                            showFeedback && !isSelected && !isCorrect && "border-gray-200 dark:border-gray-700 opacity-60"
                                                         )}
-                                                    </div>
-                                                    <span>{option.label}</span>
-                                                </div>
-                                            </motion.div>
-                                        ))}
-                                    </div>
-                                </div>
+                                                        whileHover={!showFeedback ? { scale: 1.02, y: -2 } : {}}
+                                                        whileTap={!showFeedback ? { scale: 0.98 } : {}}
+                                                    >
+                                                        <div className="flex items-center gap-3">
+                                                            <div className={cn(
+                                                                "flex items-center justify-center w-6 h-6 rounded-full border-2 flex-shrink-0",
+                                                                isSelected && !showFeedback && "border-orange-500 bg-orange-500",
+                                                                showFeedback && isCorrect && "border-green-500 bg-green-500",
+                                                                showFeedback && isWrong && "border-red-500 bg-red-500",
+                                                                !isSelected && !showFeedback && "border-gray-300 dark:border-gray-600"
+                                                            )}>
+                                                                {isSelected && (
+                                                                    <div className="w-3 h-3 rounded-full bg-white" />
+                                                                )}
+                                                            </div>
+                                                            <span className="flex-1 font-medium">{option.label}</span>
+                                                            {showFeedback && isCorrect && (
+                                                                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                                                            )}
+                                                            {showFeedback && isWrong && (
+                                                                <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                                                            )}
+                                                        </div>
+                                                    </motion.button>
+                                                );
+                                            })}
+                                        </div>
+                                    </CardContent>
+                                </Card>
 
                                 {quizFeedback && (
                                     <motion.div
@@ -1145,82 +1087,129 @@ export function MetalAcidReactionLabEnhanced() {
                             <CardFooter className="flex gap-3">
                                 <Button 
                                     onClick={handleQuizSubmit} 
-                                    disabled={!quizAnswer1 || !quizAnswer2 || !quizAnswer3 || quizSubmitted}
-                                    className="flex-1"
+                                    disabled={(!quizAnswer1 || !quizAnswer2 || !quizAnswer3) && !quizSubmitted}
+                                    className={cn(
+                                        "flex-1 shadow-lg",
+                                        quizIsCorrect === false
+                                            ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                                            : "bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+                                    )}
                                     size="lg"
                                 >
-                                    Submit Answers
+                                    {quizSubmitted ? (
+                                        quizIsCorrect ? (
+                                            <>
+                                                <CheckCircle className="mr-2 h-5 w-5" />
+                                                Quiz Completed
+                                            </>
+                                        ) : (
+                                            <>
+                                                <RefreshCw className="mr-2 h-5 w-5" />
+                                                Try Again
+                                            </>
+                                        )
+                                    ) : (
+                                        <>
+                                            <CheckCircle className="mr-2 h-5 w-5" />
+                                            Submit Answers
+                                        </>
+                                    )}
                                 </Button>
-                                {quizSubmitted && !quizFeedback.includes('all 3') && (
-                                    <Button onClick={() => {
-                                        setQuizAnswer1(undefined);
-                                        setQuizAnswer2(undefined);
-                                        setQuizAnswer3(undefined);
-                                        setQuizFeedback('');
-                                        setQuizSubmitted(false);
-                                    }} variant="outline" size="lg">
-                                        Try Again
-                                    </Button>
-                                )}
                             </CardFooter>
                         </Card>
+                    </motion.div>
+                )}
+
+                {quizFeedback && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={cn(
+                            "p-4 rounded-lg border-2",
+                            quizFeedback.includes('Perfect') || quizFeedback.includes('all 3') ? "bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800 text-green-900 dark:text-green-100" :
+                            quizFeedback.includes('Good') ? "bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800 text-orange-900 dark:text-orange-100" :
+                            "bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-800 text-orange-900 dark:text-orange-100"
+                        )}
+                    >
+                        {quizFeedback}
                     </motion.div>
                 )}
 
                 {currentStep === 'complete' && (
                     <motion.div
                         key="complete"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, y: -20 }}
+                        className="relative"
                     >
-                        <Card className="border-2 border-orange-200 dark:border-orange-800">
-                            <CardHeader className="text-center">
+                        <Card className="border-2 border-yellow-300 dark:border-yellow-700 bg-gradient-to-br from-yellow-50/90 via-orange-50/90 to-red-50/90 dark:from-yellow-950/90 dark:via-orange-950/90 dark:to-red-950/90 backdrop-blur-sm shadow-2xl overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 via-orange-400/20 to-red-400/20 animate-pulse" />
+                            <CardContent className="relative p-8 text-center space-y-6">
                                 <motion.div
-                                    animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
-                                    transition={{ duration: 0.5 }}
-                                    className="flex justify-center mb-4"
+                                    animate={{ 
+                                        scale: [1, 1.1, 1],
+                                        rotate: [0, 5, -5, 0]
+                                    }}
+                                    transition={{ 
+                                        repeat: Infinity,
+                                        duration: 2
+                                    }}
+                                    className="text-8xl mb-4"
                                 >
-                                    <Trophy className="h-16 w-16 text-yellow-500" />
+                                    🏆
                                 </motion.div>
-                                <CardTitle>Lab Complete!</CardTitle>
-                                <CardDescription>You've mastered metal reactivity!</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 dark:from-orange-950/20 dark:to-yellow-950/20 p-6 rounded-lg border-2 border-orange-200 dark:border-orange-800">
-                                    <h3 className="font-semibold text-center text-lg mb-4">What You've Learned:</h3>
-                                    <ul className="space-y-2 text-sm">
+                                <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-600 via-orange-600 to-red-600 bg-clip-text text-transparent">
+                                    Lab Complete!
+                                </h2>
+                                {xpEarned > 0 && (
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ delay: 0.2, type: "spring" }}
+                                        className="flex items-center justify-center gap-2 text-3xl font-black text-orange-600 dark:text-orange-400"
+                                    >
+                                        <Award className="h-8 w-8" />
+                                        <span>+{xpEarned} XP</span>
+                                    </motion.div>
+                                )}
+                                <div className="space-y-4 pt-4">
+                                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">What You Learned:</h3>
+                                    <ul className="text-left space-y-2 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                                             <span>The reactivity series of metals (Mg {">"} Zn {">"} Fe {">"} Cu)</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                                             <span>Reactive metals displace hydrogen from acids</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                                             <span>Hydrogen gas (H₂) is produced in metal-acid reactions</span>
                                         </li>
                                         <li className="flex items-start gap-2">
-                                            <CheckCircle className="h-5 w-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                                            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                                             <span>Why copper cooking vessels are safe with acidic foods</span>
                                         </li>
                                     </ul>
                                 </div>
-                            </CardContent>
-                            <CardFooter>
-                                <Button onClick={handleRestart} variant="outline" className="w-full" size="lg">
-                                    Restart Lab
+                                <Button 
+                                    onClick={handleRestart} 
+                                    variant="outline" 
+                                    className="mt-6 border-2 border-orange-300 hover:bg-orange-50 dark:hover:bg-orange-950/20"
+                                    size="lg"
+                                >
+                                    <RefreshCw className="h-4 w-4 mr-2" />
+                                    Try Again
                                 </Button>
-                            </CardFooter>
+                            </CardContent>
                         </Card>
-
-                        {/* Lab Notes */}
-                        <LabNotes labId="metal-acid-reaction-lab" labTitle="Metal-Acid Reaction Lab" />
                     </motion.div>
                 )}
             </AnimatePresence>
+                </motion.div>
+            </div>
         </div>
     );
 }

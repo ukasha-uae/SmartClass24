@@ -26,11 +26,14 @@ import {
   addSubscription, 
   updateSubscription,
   isPremiumUser,
+  hasVirtualLabAccess,
+  hasFullBundle,
   COIN_PACKAGES
 } from '@/lib/monetization';
 import { getUserTransactions, getTransactionStats } from '@/lib/transaction-history';
 import { useToast } from '@/hooks/use-toast';
 import { formatGHS } from '@/lib/payments';
+import { useFirebase } from '@/firebase/provider';
 
 export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,8 +42,10 @@ export default function AdminDashboard() {
   const [coinAmount, setCoinAmount] = useState<number>(0);
   const [selectedPackage, setSelectedPackage] = useState<string>('');
   const [subscriptionPlan, setSubscriptionPlan] = useState<'premium_monthly' | 'premium_annual'>('premium_monthly');
+  const [subscriptionType, setSubscriptionType] = useState<'challengeArena' | 'virtualLab' | 'fullBundle'>('fullBundle');
   const [activeTab, setActiveTab] = useState('search');
   const { toast } = useToast();
+  const { user } = useFirebase();
 
   useEffect(() => {
     loadAllUsers();
@@ -149,14 +154,27 @@ export default function AdminDashboard() {
     if (!selectedUser) return;
 
     try {
-      addSubscription(selectedUser.userId, subscriptionPlan, subscriptionPlan.includes('annual') ? 'annual' : 'monthly');
+      const duration = subscriptionPlan.includes('annual') ? 'annual' : 'monthly';
+      const planId = subscriptionType === 'challengeArena' 
+        ? `premium_${duration}`
+        : subscriptionType === 'virtualLab'
+        ? `virtual_lab_${duration}`
+        : `full_bundle_${duration}`;
+      
+      addSubscription(selectedUser.userId, planId, duration, subscriptionType);
       
       const updatedUser = getPlayerProfile(selectedUser.userId);
       setSelectedUser(updatedUser);
 
+      const subscriptionName = subscriptionType === 'challengeArena' 
+        ? 'Challenge Arena Premium'
+        : subscriptionType === 'virtualLab'
+        ? 'Virtual Lab Premium'
+        : 'Full Bundle';
+
       toast({
         title: 'Premium Activated! ✅',
-        description: `Premium subscription activated for ${selectedUser.name || selectedUser.userId}`,
+        description: `${subscriptionName} activated for ${selectedUser.name || selectedUser.userId}`,
       });
 
       loadAllUsers();
@@ -200,6 +218,8 @@ export default function AdminDashboard() {
   const userSubscription = selectedUser ? getUserSubscription(selectedUser.userId) : null;
   const userStats = selectedUser ? getTransactionStats(selectedUser.userId) : null;
   const isPremium = selectedUser ? isPremiumUser(selectedUser.userId) : false;
+  const hasVirtualLab = selectedUser ? hasVirtualLabAccess(selectedUser.userId) : false;
+  const hasBundle = selectedUser ? hasFullBundle(selectedUser.userId) : false;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 p-4 md:p-6">
@@ -221,48 +241,183 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="search">
-            <Card>
-              <CardHeader>
-                <CardTitle>Search User</CardTitle>
-                <CardDescription>
-                  Search by user ID, email, or name
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Enter user ID, email, or name..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="flex-1"
-                  />
-                  <Button onClick={handleSearch}>
-                    <Search className="h-4 w-4 mr-2" />
-                    Search
-                  </Button>
-                </div>
-
-                {selectedUser && (
-                  <div className="mt-4 p-4 bg-primary/10 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <User className="h-8 w-8 text-primary" />
-                      <div>
-                        <p className="font-semibold">{selectedUser.name || 'No Name'}</p>
-                        <p className="text-sm text-muted-foreground">{selectedUser.userId}</p>
-                        <p className="text-sm text-muted-foreground">{selectedUser.email || 'No email'}</p>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => setActiveTab('manage')}
-                      className="mt-3 w-full"
-                    >
-                      Manage User
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Search User</CardTitle>
+                  <CardDescription>
+                    Search by user ID, email, or name
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Enter user ID, email, or name..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                      className="flex-1"
+                    />
+                    <Button onClick={handleSearch}>
+                      <Search className="h-4 w-4 mr-2" />
+                      Search
                     </Button>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+
+                  {selectedUser && (
+                    <div className="mt-4 p-4 bg-primary/10 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <User className="h-8 w-8 text-primary" />
+                        <div>
+                          <p className="font-semibold">{selectedUser.name || 'No Name'}</p>
+                          <p className="text-sm text-muted-foreground">{selectedUser.userId}</p>
+                          <p className="text-sm text-muted-foreground">{selectedUser.email || 'No email'}</p>
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => setActiveTab('manage')}
+                        className="mt-3 w-full"
+                      >
+                        Manage User
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Quick Grant Premium - For Testing */}
+              <Card className="bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20 border-2 border-amber-200 dark:border-amber-800">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Crown className="h-5 w-5 text-amber-600" />
+                    Quick Grant Premium (Testing)
+                  </CardTitle>
+                  <CardDescription>
+                    Quickly grant premium access to your account or any user for testing
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {user && (
+                    <div className="p-3 bg-white dark:bg-gray-800 rounded-lg border border-amber-200 dark:border-amber-800">
+                      <p className="text-xs text-muted-foreground mb-1">Your User ID (click to copy):</p>
+                      <p 
+                        className="font-mono text-sm cursor-pointer hover:bg-amber-50 dark:hover:bg-amber-950/30 p-2 rounded"
+                        onClick={() => {
+                          navigator.clipboard.writeText(user.uid);
+                          toast({ title: 'Copied!', description: 'User ID copied to clipboard' });
+                        }}
+                      >
+                        {user.uid}
+                      </p>
+                    </div>
+                  )}
+                  <div>
+                    <label className="text-sm font-semibold mb-2 block">Subscription Type</label>
+                    <select
+                      value={subscriptionType}
+                      onChange={(e) => setSubscriptionType(e.target.value as 'challengeArena' | 'virtualLab' | 'fullBundle')}
+                      className="w-full px-3 py-2 border rounded-lg mb-2"
+                    >
+                      <option value="fullBundle">Full Bundle (Recommended for Testing)</option>
+                      <option value="challengeArena">Challenge Arena Premium</option>
+                      <option value="virtualLab">Virtual Lab Premium</option>
+                    </select>
+                    <select
+                      value={subscriptionPlan}
+                      onChange={(e) => setSubscriptionPlan(e.target.value as 'premium_monthly' | 'premium_annual')}
+                      className="w-full px-3 py-2 border rounded-lg mb-3"
+                    >
+                      <option value="premium_monthly">Monthly</option>
+                      <option value="premium_annual">Annual</option>
+                    </select>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Enter User ID..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="flex-1"
+                      />
+                      <Button
+                        onClick={() => {
+                          const userId = searchQuery.trim() || user?.uid;
+                          if (!userId) {
+                            toast({
+                              title: 'Error',
+                              description: 'Please enter a user ID or log in',
+                              variant: 'destructive',
+                            });
+                            return;
+                          }
+                          try {
+                            const duration = subscriptionPlan.includes('annual') ? 'annual' : 'monthly';
+                            const planId = subscriptionType === 'challengeArena' 
+                              ? `premium_${duration}`
+                              : subscriptionType === 'virtualLab'
+                              ? `virtual_lab_${duration}`
+                              : `full_bundle_${duration}`;
+                            
+                            addSubscription(userId, planId, duration, subscriptionType);
+                            
+                            toast({
+                              title: 'Premium Granted! ✅',
+                              description: `${subscriptionType === 'challengeArena' ? 'Challenge Arena' : subscriptionType === 'virtualLab' ? 'Virtual Lab' : 'Full Bundle'} Premium activated for ${userId}`,
+                            });
+                            
+                            // Refresh if this is the current user
+                            if (userId === user?.uid) {
+                              window.location.reload();
+                            }
+                          } catch (error: any) {
+                            toast({
+                              title: 'Error',
+                              description: error.message || 'Failed to grant premium',
+                              variant: 'destructive',
+                            });
+                          }
+                        }}
+                        className="bg-gradient-to-r from-amber-500 to-orange-600"
+                      >
+                        <Crown className="h-4 w-4 mr-2" />
+                        Grant Premium
+                      </Button>
+                    </div>
+                    {user && (
+                      <Button
+                        variant="outline"
+                        className="w-full mt-2"
+                        onClick={() => {
+                          setSearchQuery(user.uid);
+                          const duration = subscriptionPlan.includes('annual') ? 'annual' : 'monthly';
+                          const planId = subscriptionType === 'challengeArena' 
+                            ? `premium_${duration}`
+                            : subscriptionType === 'virtualLab'
+                            ? `virtual_lab_${duration}`
+                            : `full_bundle_${duration}`;
+                          
+                          try {
+                            addSubscription(user.uid, planId, duration, subscriptionType);
+                            toast({
+                              title: 'Premium Granted! ✅',
+                              description: `${subscriptionType === 'challengeArena' ? 'Challenge Arena' : subscriptionType === 'virtualLab' ? 'Virtual Lab' : 'Full Bundle'} Premium activated for your account`,
+                            });
+                            setTimeout(() => window.location.reload(), 1000);
+                          } catch (error: any) {
+                            toast({
+                              title: 'Error',
+                              description: error.message || 'Failed to grant premium',
+                              variant: 'destructive',
+                            });
+                          }
+                        }}
+                      >
+                        <Crown className="h-4 w-4 mr-2" />
+                        Grant Premium to My Account
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="manage">
@@ -294,21 +449,35 @@ export default function AdminDashboard() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Premium Status</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        {isPremium ? (
-                          <Badge className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white">
+                      <p className="text-sm text-muted-foreground">Subscription Status</p>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        {hasBundle ? (
+                          <Badge className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white">
                             <Crown className="h-3 w-3 mr-1" />
-                            Premium Active
+                            Full Bundle
+                          </Badge>
+                        ) : isPremium ? (
+                          <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+                            <Crown className="h-3 w-3 mr-1" />
+                            Challenge Arena Premium
+                          </Badge>
+                        ) : hasVirtualLab ? (
+                          <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white">
+                            <Crown className="h-3 w-3 mr-1" />
+                            Virtual Lab Premium
                           </Badge>
                         ) : (
                           <Badge variant="outline">Free User</Badge>
                         )}
                       </div>
                       {userSubscription && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Plan: {userSubscription.planId || 'N/A'}
-                        </p>
+                        <div className="text-xs text-muted-foreground mt-1 space-y-1">
+                          <p>Plan: {userSubscription.planId || 'N/A'}</p>
+                          <p>Tier: {userSubscription.tier || 'N/A'}</p>
+                          {userSubscription.endDate && (
+                            <p>Expires: {new Date(userSubscription.endDate).toLocaleDateString()}</p>
+                          )}
+                        </div>
                       )}
                     </div>
                     {userStats && (
@@ -382,44 +551,104 @@ export default function AdminDashboard() {
                 <Card className="lg:col-span-3">
                   <CardHeader>
                     <CardTitle>Manage Premium Subscription</CardTitle>
+                    <CardDescription>
+                      Grant premium access for testing. Choose subscription type and duration.
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {!isPremium ? (
-                      <div>
-                        <label className="text-sm font-semibold mb-2 block">Activate Premium</label>
-                        <div className="flex gap-2">
-                          <select
-                            value={subscriptionPlan}
-                            onChange={(e) => setSubscriptionPlan(e.target.value as 'premium_monthly' | 'premium_annual')}
-                            className="flex-1 px-3 py-2 border rounded-lg"
-                          >
-                            <option value="premium_monthly">Monthly (₵25.00)</option>
-                            <option value="premium_annual">Annual (₵200.00)</option>
-                          </select>
-                          <Button onClick={handleActivatePremium} className="bg-gradient-to-r from-amber-500 to-orange-600">
-                            <Crown className="h-4 w-4 mr-2" />
-                            Activate Premium
-                          </Button>
+                    {!hasBundle && (!isPremium || !hasVirtualLab) ? (
+                      <div className="space-y-4">
+                        <div>
+                          <label className="text-sm font-semibold mb-2 block">Select Subscription Type</label>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <button
+                              onClick={() => setSubscriptionType('challengeArena')}
+                              className={`p-4 rounded-lg border-2 transition-all text-left ${
+                                subscriptionType === 'challengeArena'
+                                  ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                                  : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                <Crown className="h-5 w-5 text-blue-600" />
+                                <span className="font-semibold">Challenge Arena</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">Unlimited questions, analytics</p>
+                              <p className="text-xs font-semibold text-blue-600 mt-1">GHS 15/month</p>
+                            </button>
+                            <button
+                              onClick={() => setSubscriptionType('virtualLab')}
+                              className={`p-4 rounded-lg border-2 transition-all text-left ${
+                                subscriptionType === 'virtualLab'
+                                  ? 'border-purple-500 bg-purple-50 dark:bg-purple-950/30'
+                                  : 'border-gray-200 dark:border-gray-700 hover:border-purple-300'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                <Crown className="h-5 w-5 text-purple-600" />
+                                <span className="font-semibold">Virtual Lab</span>
+                              </div>
+                              <p className="text-xs text-muted-foreground">All virtual labs access</p>
+                              <p className="text-xs font-semibold text-purple-600 mt-1">GHS 10/month</p>
+                            </button>
+                            <button
+                              onClick={() => setSubscriptionType('fullBundle')}
+                              className={`p-4 rounded-lg border-2 transition-all text-left ${
+                                subscriptionType === 'fullBundle'
+                                  ? 'border-gradient-to-r from-blue-500 to-purple-500 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30'
+                                  : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2 mb-2">
+                                <Crown className="h-5 w-5 text-yellow-600" />
+                                <span className="font-semibold">Full Bundle</span>
+                                <Badge className="ml-auto text-xs bg-green-500">Best Value</Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground">Everything + 20% discount</p>
+                              <p className="text-xs font-semibold text-blue-600 mt-1">GHS 20/month</p>
+                            </button>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="text-sm font-semibold mb-2 block">Select Duration</label>
+                          <div className="flex gap-2">
+                            <select
+                              value={subscriptionPlan}
+                              onChange={(e) => setSubscriptionPlan(e.target.value as 'premium_monthly' | 'premium_annual')}
+                              className="flex-1 px-3 py-2 border rounded-lg"
+                            >
+                              <option value="premium_monthly">Monthly</option>
+                              <option value="premium_annual">Annual (Save 33%)</option>
+                            </select>
+                            <Button 
+                              onClick={handleActivatePremium} 
+                              className="bg-gradient-to-r from-amber-500 to-orange-600"
+                            >
+                              <Crown className="h-4 w-4 mr-2" />
+                              Activate {subscriptionType === 'challengeArena' ? 'Challenge Arena' : subscriptionType === 'virtualLab' ? 'Virtual Lab' : 'Full Bundle'}
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ) : (
                       <div>
-                        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                        <div className="p-4 bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20 rounded-lg border-2 border-amber-200 dark:border-amber-800">
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="font-semibold flex items-center gap-2">
                                 <Crown className="h-4 w-4 text-amber-600" />
-                                Premium Active
+                                {hasBundle ? 'Full Bundle Active' : isPremium ? 'Challenge Arena Premium Active' : 'Virtual Lab Premium Active'}
                               </p>
                               {userSubscription && (
-                                <p className="text-sm text-muted-foreground mt-1">
-                                  Plan: {userSubscription.planId || 'N/A'}
+                                <div className="text-sm text-muted-foreground mt-1 space-y-1">
+                                  <p>Plan: {userSubscription.planId || 'N/A'}</p>
+                                  <p>Tier: {userSubscription.tier || 'N/A'}</p>
                                   {userSubscription.endDate && (
-                                    <span className="ml-2">
-                                      • Expires: {new Date(userSubscription.endDate).toLocaleDateString()}
-                                    </span>
+                                    <p>
+                                      Expires: {new Date(userSubscription.endDate).toLocaleDateString()}
+                                    </p>
                                   )}
-                                </p>
+                                </div>
                               )}
                             </div>
                             <Button
@@ -427,10 +656,17 @@ export default function AdminDashboard() {
                               variant="destructive"
                             >
                               <XCircle className="h-4 w-4 mr-2" />
-                              Cancel Premium
+                              Cancel Subscription
                             </Button>
                           </div>
                         </div>
+                        {!hasBundle && (
+                          <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                            <p className="text-sm text-blue-700 dark:text-blue-300">
+                              💡 Tip: You can upgrade to Full Bundle to get both Challenge Arena and Virtual Lab Premium at a discount!
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </CardContent>
@@ -446,44 +682,206 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="stats">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Users</p>
-                      <p className="text-2xl font-bold">{users.length}</p>
+            <div className="space-y-6">
+              {/* Summary Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total Users</p>
+                        <p className="text-2xl font-bold">{users.length}</p>
+                      </div>
+                      <Users className="h-8 w-8 text-primary opacity-50" />
                     </div>
-                    <Users className="h-8 w-8 text-primary opacity-50" />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Premium Users</p>
-                      <p className="text-2xl font-bold">
-                        {users.filter(u => isPremiumUser(u.userId)).length}
-                      </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Free Users</p>
+                        <p className="text-2xl font-bold text-gray-600">
+                          {users.filter(u => !isPremiumUser(u.userId) && !hasVirtualLabAccess(u.userId)).length}
+                        </p>
+                      </div>
+                      <Users className="h-8 w-8 text-gray-400 opacity-50" />
                     </div>
-                    <Crown className="h-8 w-8 text-amber-600 opacity-50" />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Total Coins Distributed</p>
-                      <p className="text-2xl font-bold">
-                        {users.reduce((sum, u) => sum + (u.coins || 0), 0).toLocaleString()}
-                      </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Premium Users</p>
+                        <p className="text-2xl font-bold text-blue-600">
+                          {users.filter(u => isPremiumUser(u.userId) || hasVirtualLabAccess(u.userId)).length}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {users.filter(u => hasFullBundle(u.userId)).length} Full Bundle
+                        </p>
+                      </div>
+                      <Crown className="h-8 w-8 text-amber-600 opacity-50" />
                     </div>
-                    <Coins className="h-8 w-8 text-yellow-600 opacity-50" />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-muted-foreground">Total Coins</p>
+                        <p className="text-2xl font-bold text-yellow-600">
+                          {users.reduce((sum, u) => sum + (u.coins || 0), 0).toLocaleString()}
+                        </p>
+                      </div>
+                      <Coins className="h-8 w-8 text-yellow-600 opacity-50" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Users by Status */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* Free Users */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Users className="h-5 w-5 text-gray-500" />
+                      Free Users ({users.filter(u => !isPremiumUser(u.userId) && !hasVirtualLabAccess(u.userId)).length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                      {users
+                        .filter(u => !isPremiumUser(u.userId) && !hasVirtualLabAccess(u.userId))
+                        .map((user) => (
+                          <div
+                            key={user.userId}
+                            className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setSearchQuery(user.userId);
+                              setActiveTab('manage');
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-sm truncate">{user.name || user.userName || 'No Name'}</p>
+                                <p className="text-xs text-muted-foreground truncate">{user.userId}</p>
+                              </div>
+                              <Badge variant="outline" className="ml-2">Free</Badge>
+                            </div>
+                          </div>
+                        ))}
+                      {users.filter(u => !isPremiumUser(u.userId) && !hasVirtualLabAccess(u.userId)).length === 0 && (
+                        <p className="text-sm text-muted-foreground text-center py-4">No free users</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Premium Users */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Crown className="h-5 w-5 text-amber-600" />
+                      Premium Users ({users.filter(u => isPremiumUser(u.userId) || hasVirtualLabAccess(u.userId)).length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                      {users
+                        .filter(u => isPremiumUser(u.userId) || hasVirtualLabAccess(u.userId))
+                        .map((user) => {
+                          const hasBundle = hasFullBundle(user.userId);
+                          const isPremium = isPremiumUser(user.userId);
+                          const hasVL = hasVirtualLabAccess(user.userId);
+                          
+                          return (
+                            <div
+                              key={user.userId}
+                              className="p-3 rounded-lg border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/20 cursor-pointer transition-colors"
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setSearchQuery(user.userId);
+                                setActiveTab('manage');
+                              }}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-sm truncate">{user.name || user.userName || 'No Name'}</p>
+                                  <p className="text-xs text-muted-foreground truncate">{user.userId}</p>
+                                </div>
+                                <div className="ml-2 flex flex-col items-end gap-1">
+                                  {hasBundle ? (
+                                    <Badge className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white text-xs">
+                                      <Crown className="h-2.5 w-2.5 mr-0.5" />
+                                      Bundle
+                                    </Badge>
+                                  ) : isPremium ? (
+                                    <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-xs">
+                                      <Crown className="h-2.5 w-2.5 mr-0.5" />
+                                      Arena
+                                    </Badge>
+                                  ) : hasVL ? (
+                                    <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs">
+                                      <Crown className="h-2.5 w-2.5 mr-0.5" />
+                                      VL
+                                    </Badge>
+                                  ) : null}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      {users.filter(u => isPremiumUser(u.userId) || hasVirtualLabAccess(u.userId)).length === 0 && (
+                        <p className="text-sm text-muted-foreground text-center py-4">No premium users</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Full Bundle Users */}
+                <Card className="border-2 border-blue-500 bg-gradient-to-br from-blue-50/30 to-purple-50/30 dark:from-blue-950/30 dark:to-purple-950/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Crown className="h-5 w-5 text-yellow-600" />
+                      Full Bundle ({users.filter(u => hasFullBundle(u.userId)).length})
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                      {users
+                        .filter(u => hasFullBundle(u.userId))
+                        .map((user) => (
+                          <div
+                            key={user.userId}
+                            className="p-3 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 hover:from-blue-50 dark:hover:from-blue-950/30 cursor-pointer transition-colors"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setSearchQuery(user.userId);
+                              setActiveTab('manage');
+                            }}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-sm truncate">{user.name || user.userName || 'No Name'}</p>
+                                <p className="text-xs text-muted-foreground truncate">{user.userId}</p>
+                              </div>
+                              <Badge className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white text-xs ml-2">
+                                <Crown className="h-2.5 w-2.5 mr-0.5" />
+                                Bundle
+                              </Badge>
+                            </div>
+                          </div>
+                        ))}
+                      {users.filter(u => hasFullBundle(u.userId)).length === 0 && (
+                        <p className="text-sm text-muted-foreground text-center py-4">No full bundle users</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
         </Tabs>

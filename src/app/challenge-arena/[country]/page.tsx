@@ -352,7 +352,7 @@ export default function LocalizedChallengeArenaPage() {
                 const subjectColor = getSubjectColor(subject, index);
                 return (
                   <Link
-                    key={subject}
+                    key={`${subject}-${index}`}
                     href={`/challenge-arena/practice?level=${educationLevel}&subject=${encodeURIComponent(subject)}`}
                   >
                     <Card className={`group relative bg-gradient-to-br ${subjectColor} p-4 rounded-xl shadow-lg text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0 h-full`}>
