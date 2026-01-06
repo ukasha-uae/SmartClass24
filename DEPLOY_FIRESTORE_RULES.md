@@ -33,3 +33,4 @@ If you still get permission errors:
 - Check that the user ID matches in the console logs
 - Verify rules were published successfully in Firebase Console
 
+

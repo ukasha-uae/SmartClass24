@@ -890,7 +890,14 @@ export default function QuizBattlePage() {
                       <XCircle className="h-5 w-5 text-red-500" />
                       <span className="text-sm font-medium">Incorrect</span>
                     </div>
-                    <p className="text-2xl font-bold text-red-600">{challenge.questions.length - myResult?.correctAnswers}</p>
+                    <p className="text-2xl font-bold text-red-600">
+                      {(() => {
+                        const total = challenge?.questions?.length ?? 0;
+                        const correct = myResult?.correctAnswers ?? 0;
+                        const incorrect = total - correct;
+                        return isNaN(incorrect) ? '0' : incorrect.toString();
+                      })()}
+                    </p>
                   </div>
                 </div>
 
@@ -1098,7 +1105,7 @@ export default function QuizBattlePage() {
               </Button>
             </Link>
             <Link href={
-              isPractice ? "/challenge-arena/practice" :
+              isPractice ? `/challenge-arena/practice?level=${challenge?.level || 'JHS'}` :
               isBossBattle && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss ? "/challenge-arena/boss-battle" :
               isSchoolBattle && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool ? "/challenge-arena/school-battle" :
               isTournament && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament ? "/challenge-arena/tournaments" :
@@ -1189,7 +1196,7 @@ export default function QuizBattlePage() {
                         </>
                       )}
                       {isPractice && accuracy < 80 && (
-                        <Link href="/challenge-arena/practice">
+                        <Link href={`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`}>
                           <Button size="sm" variant="outline" className="h-8 text-xs">
                             <RotateCcw className="h-3 w-3 mr-1" />
                             Practice Again
@@ -1226,7 +1233,7 @@ export default function QuizBattlePage() {
                               </Button>
                             </Link>
                           )}
-                          <Link href="/challenge-arena/practice">
+                          <Link href={`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`}>
                             <Button size="sm" variant="outline" className="h-8 text-xs">
                               <BookOpen className="h-3 w-3 mr-1" />
                               Practice
@@ -1423,7 +1430,7 @@ export default function QuizBattlePage() {
             </CardContent>
           </Card>
 
-          {/* Premium Question Card - Using QuestionRenderer */}
+          {/* Premium Question Card - Using QuestionRenderer - Scrollable */}
           <Card className="mb-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-primary/30 shadow-2xl">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-4">
@@ -1435,15 +1442,18 @@ export default function QuizBattlePage() {
                 </Badge>
               </div>
               
-              <ArenaQuestionRenderer
-                key={`question-${currentQuestion.id}-${currentQuestionIndex}`}
-                question={currentQuestion}
-                onAnswer={handleAnswerSelect}
-                selectedAnswer={selectedAnswer}
-                showResult={selectedAnswer !== null && selectedAnswer !== undefined}
-                isCorrect={selectedAnswer !== null && selectedAnswer !== undefined ? checkGameQuestionAnswer(currentQuestion, selectedAnswer) : false}
-                disabled={selectedAnswer !== null && selectedAnswer !== undefined}
-              />
+              {/* Scrollable question container with max height */}
+              <div className="max-h-[calc(100vh-350px)] sm:max-h-[calc(100vh-400px)] overflow-y-auto overflow-x-hidden pr-2 -mr-2 scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 dark:scrollbar-track-gray-700">
+                <ArenaQuestionRenderer
+                  key={`question-${currentQuestion.id}-${currentQuestionIndex}`}
+                  question={currentQuestion}
+                  onAnswer={handleAnswerSelect}
+                  selectedAnswer={selectedAnswer}
+                  showResult={selectedAnswer !== null && selectedAnswer !== undefined}
+                  isCorrect={selectedAnswer !== null && selectedAnswer !== undefined ? checkGameQuestionAnswer(currentQuestion, selectedAnswer) : false}
+                  disabled={selectedAnswer !== null && selectedAnswer !== undefined}
+                />
+              </div>
             </CardContent>
           </Card>
 

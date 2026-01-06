@@ -7,6 +7,7 @@ import {
   EmailAuthProvider,
   linkWithCredential,
   signOut,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 import { Firestore, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { getLocalQuizAttempts, clearLocalQuizAttempts } from '@/lib/local-quiz-attempts';
@@ -90,4 +91,9 @@ export async function migrateLocalAttemptsToFirestore(authInstance: Auth, firest
 
 export async function doSignOut(authInstance: Auth) {
   return signOut(authInstance);
+}
+
+/** Send password reset email to the user */
+export async function sendPasswordReset(authInstance: Auth, email: string): Promise<void> {
+  return sendPasswordResetEmail(authInstance, email);
 }

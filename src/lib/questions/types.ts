@@ -16,6 +16,8 @@ interface BaseQuestion {
   topic?: string;
   source?: string; // e.g., 'actual WASSCE', 'generated', etc.
   year?: number; // Year of exam if from past papers
+  paper?: 1 | 2; // WASSCE paper number: 1 = MCQ/Objective, 2 = Theory/Essay (defaults to 1 for MCQs)
+  verifiedQuestionNumber?: number; // Actual question number from WASSCE paper (only set when verified against official papers)
 }
 
 // Multiple Choice Question

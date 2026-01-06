@@ -83,8 +83,11 @@ export interface GameQuestion {
   correctAnswers?: string[]; // For multiple select
   points: number;
   explanation?: string;
-  source: 'bece' | 'practice';
+  source: 'bece' | 'wassce' | 'practice';
   year?: number;
+  questionNumber?: string; // Question number from WASSCE/SSCE paper (e.g., "001", "15") - DEPRECATED: use verifiedQuestionNumber
+  paper?: 1 | 2; // WASSCE paper number: 1 = MCQ/Objective, 2 = Theory/Essay
+  verifiedQuestionNumber?: number; // Actual question number from WASSCE paper (only set when verified against official papers)
   unit?: string; // For number input questions
   alternatives?: string[]; // Alternative correct answers for fillblank
 }
@@ -967,13 +970,74 @@ const generateGameQuestions = (
     else if (difficulty.includes('2') || difficulty === 'medium') points = 10;
     else if (difficulty.includes('1') || difficulty === 'easy') points = 5;
     
+    // Extract year, paper, and question number from ID
+    // Formats supported:
+    // - 'wassce-2023-phys-001' (Paper 1, inferred from MCQ type)
+    // - 'wassce-2023-phys-p1-001' (Paper 1, explicit)
+    // - 'wassce-2023-phys-p2-001' (Paper 2, explicit)
+    // - 'bece-2022-math-015' (BECE, no paper designation)
+    let extractedYear: number | undefined;
+    let extractedPaper: 1 | 2 | undefined;
+    let questionNumber: string | undefined;
+    const idParts = q.id.split('-');
+    
+    if (idParts.length >= 4) {
+      // Year is at index 1
+      const yearStr = idParts[1];
+      const yearNum = parseInt(yearStr, 10);
+      if (!isNaN(yearNum) && yearNum >= 2000 && yearNum <= 2100) {
+        extractedYear = yearNum;
+      }
+      
+      // Check for paper designation (p1 or p2) before question number
+      const lastPart = idParts[idParts.length - 1];
+      const secondLastPart = idParts[idParts.length - 2];
+      
+      if (secondLastPart === 'p1' || secondLastPart === 'p2') {
+        // Format: 'wassce-2023-phys-p1-001'
+        extractedPaper = secondLastPart === 'p1' ? 1 : 2;
+        questionNumber = lastPart;
+      } else {
+        // Format: 'wassce-2023-phys-001' (no paper designation)
+        questionNumber = lastPart;
+      }
+    } else if (idParts.length === 3) {
+      // Format might be 'wassce-2023-001'
+      const yearStr = idParts[1];
+      const yearNum = parseInt(yearStr, 10);
+      if (!isNaN(yearNum) && yearNum >= 2000 && yearNum <= 2100) {
+        extractedYear = yearNum;
+      }
+      questionNumber = idParts[2];
+    }
+    
+    // Use year from question data first, fallback to extracted from ID
+    const finalYear = q.year || extractedYear;
+    
+    // Determine paper: use explicit paper field, then extracted from ID, then infer from type
+    let finalPaper: 1 | 2 | undefined;
+    if (q.paper) {
+      finalPaper = q.paper;
+    } else if (extractedPaper) {
+      finalPaper = extractedPaper;
+    } else if (q.type === 'mcq' || q.type === 'true-false' || q.type === 'fill-blank') {
+      // MCQs, True/False, and Fill-blank are typically Paper 1
+      finalPaper = 1;
+    } else if (q.type === 'essay' || q.type === 'short-answer') {
+      // Essay and Short Answer are typically Paper 2
+      finalPaper = 2;
+    }
+    
     const baseQuestion = {
       id: q.id,
       question: q.question,
       points,
       explanation: q.explanation || '',
       source: level === 'JHS' ? 'bece' : 'wassce' as 'bece' | 'practice',
-      year: 2024,
+      year: finalYear || undefined, // Use actual year from question, or extract from ID
+      questionNumber: questionNumber || undefined, // Keep for backward compatibility
+      paper: finalPaper, // Paper 1 or 2 (inferred from type if not explicit)
+      verifiedQuestionNumber: q.verifiedQuestionNumber || undefined, // Only set when verified against actual papers
     };
 
     // Use pre-calculated question type for this index

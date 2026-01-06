@@ -361,4 +361,46 @@
 
   .animate-float {
     animation: float 3s ease-in-out infinite;
-  }}
+  }
+
+  /* Custom scrollbar for question containers */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(59 130 246) rgb(229 231 235);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgb(229 231 235);
+    border-radius: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgb(59 130 246);
+    border-radius: 10px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgb(37 99 235);
+  }
+
+  .dark .scrollbar-thin {
+    scrollbar-color: rgb(59 130 246) rgb(55 65 81);
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgb(55 65 81);
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgb(59 130 246);
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgb(37 99 235);
+  }
+}

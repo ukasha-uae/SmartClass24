@@ -169,10 +169,12 @@ export default function PracticeModePage() {
     }
   }, [level]);
   
-  // Update level when levelParam changes
+  // Update level when levelParam changes - ensure it's always in sync
   useEffect(() => {
     if (levelParam && ['Primary', 'JHS', 'SHS'].includes(levelParam)) {
       setLevel(levelParam);
+      // Also update class level to match the new level
+      setFormData(prev => ({ ...prev, classLevel: getDefaultClassLevel(levelParam) }));
     }
   }, [levelParam]);
 

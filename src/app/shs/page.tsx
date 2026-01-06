@@ -249,7 +249,7 @@ export default function SHSHubPage() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link href="/challenge-arena">
+          <Link href={`/challenge-arena/${country?.id || 'ghana'}?level=SHS`}>
             <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
               <CardContent className="p-6 text-center">
                 <Trophy className="h-10 w-10 mx-auto mb-3 text-yellow-600" />

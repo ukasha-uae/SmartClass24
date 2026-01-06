@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { useFirebase } from '@/firebase';
-import { linkAnonymousToEmail, initiateEmailSignIn, initiateEmailSignUp, doSignOut, migrateLocalAttemptsToFirestore } from '@/firebase/non-blocking-login';
+import { linkAnonymousToEmail, initiateEmailSignIn, initiateEmailSignUp, doSignOut, migrateLocalAttemptsToFirestore, sendPasswordReset } from '@/firebase/non-blocking-login';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AuthModal() {
@@ -15,6 +15,8 @@ export default function AuthModal() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'sign-in'|'sign-up'>('sign-in');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmailSent, setResetEmailSent] = useState(false);
   const { toast } = useToast();
 
   const signUp = async () => {
@@ -69,16 +71,82 @@ export default function AuthModal() {
     try {
       await initiateEmailSignIn(auth, email, password);
       toast({ title: 'Signed in successfully', description: 'Welcome back!' });
+      setShowForgotPassword(false);
+      setResetEmailSent(false);
     } catch (err: any) {
-      console.error('Sign in error', err);
-      if (err?.code === 'auth/wrong-password' || err?.code === 'auth/user-not-found') {
-        toast({ title: 'Sign-in failed', description: 'Invalid email or password.', variant: 'destructive' });
-      } else if (err?.code === 'auth/invalid-credential') {
-        toast({ title: 'Sign-in failed', description: 'Invalid email or password.', variant: 'destructive' });
+      // Handle invalid credentials professionally
+      if (err?.code === 'auth/wrong-password' || 
+          err?.code === 'auth/user-not-found' || 
+          err?.code === 'auth/invalid-credential' ||
+          err?.code === 'auth/invalid-email') {
+        // Show professional error message and offer password reset
+        toast({ 
+          title: 'Invalid credentials', 
+          description: 'The email or password you entered is incorrect. Would you like to reset your password?', 
+          variant: 'destructive',
+          duration: 5000
+        });
+        setShowForgotPassword(true);
+      } else if (err?.code === 'auth/too-many-requests') {
+        toast({ 
+          title: 'Too many attempts', 
+          description: 'Too many failed login attempts. Please try again later or reset your password.', 
+          variant: 'destructive' 
+        });
+        setShowForgotPassword(true);
       } else {
-        toast({ title: 'Sign-in failed', description: err?.message || String(err), variant: 'destructive' });
+        // For other errors, show a generic message
+        toast({ 
+          title: 'Sign-in failed', 
+          description: 'Unable to sign in. Please check your connection and try again.', 
+          variant: 'destructive' 
+        });
       }
     } finally { setLoading(false); }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!auth) { 
+      toast({ title: 'Error', description: 'Auth is unavailable.' }); 
+      return; 
+    }
+    if (!email.trim()) { 
+      toast({ title: 'Email required', description: 'Please enter your email address to reset your password.' }); 
+      return; 
+    }
+    
+    setLoading(true);
+    try {
+      await sendPasswordReset(auth, email);
+      setResetEmailSent(true);
+      toast({ 
+        title: 'Password reset email sent', 
+        description: `We've sent a password reset link to ${email}. Please check your inbox and follow the instructions.`,
+        duration: 6000
+      });
+    } catch (err: any) {
+      if (err?.code === 'auth/user-not-found') {
+        toast({ 
+          title: 'Email not found', 
+          description: 'No account found with this email address. Please check your email or sign up for a new account.', 
+          variant: 'destructive' 
+        });
+      } else if (err?.code === 'auth/invalid-email') {
+        toast({ 
+          title: 'Invalid email', 
+          description: 'Please enter a valid email address.', 
+          variant: 'destructive' 
+        });
+      } else {
+        toast({ 
+          title: 'Error', 
+          description: 'Unable to send password reset email. Please try again later.', 
+          variant: 'destructive' 
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signOutClick = async () => {
@@ -107,10 +175,57 @@ export default function AuthModal() {
               <TabsTrigger value="sign-up">Sign up</TabsTrigger>
             </TabsList>
             <TabsContent value="sign-in" className="space-y-2 mt-4">
-              <Input placeholder="Email" value={email} onChange={(e) => setEmail((e.target as HTMLInputElement).value)} />
-              <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword((e.target as HTMLInputElement).value)} />
+              <Input 
+                placeholder="Email" 
+                value={email} 
+                onChange={(e) => {
+                  setEmail((e.target as HTMLInputElement).value);
+                  setShowForgotPassword(false);
+                  setResetEmailSent(false);
+                }} 
+              />
+              <Input 
+                type="password" 
+                placeholder="Password" 
+                value={password} 
+                onChange={(e) => setPassword((e.target as HTMLInputElement).value)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter' && !loading) {
+                    signIn();
+                  }
+                }}
+              />
+              
+              {/* Forgot Password Section */}
+              {showForgotPassword && !resetEmailSent && (
+                <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 space-y-2">
+                  <p className="text-sm text-blue-900 dark:text-blue-100">
+                    Forgot your password? We can help you reset it.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={handleForgotPassword}
+                    disabled={loading}
+                    className="w-full"
+                  >
+                    {loading ? 'Sending...' : 'Send Password Reset Email'}
+                  </Button>
+                </div>
+              )}
+              
+              {resetEmailSent && (
+                <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 rounded-lg p-3">
+                  <p className="text-sm text-green-900 dark:text-green-100">
+                    ✓ Password reset email sent! Check your inbox at <strong>{email}</strong> and follow the instructions to reset your password.
+                  </p>
+                </div>
+              )}
+              
               <div className="flex gap-2 justify-end">
-                <Button disabled={loading} onClick={signIn}>Sign in</Button>
+                <Button disabled={loading} onClick={signIn}>
+                  {loading ? 'Signing in...' : 'Sign in'}
+                </Button>
               </div>
             </TabsContent>
             <TabsContent value="sign-up" className="space-y-2 mt-4">

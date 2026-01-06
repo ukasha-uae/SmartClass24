@@ -33,7 +33,7 @@ import { useMemo } from 'react';
 import CampusSelector from '@/components/CampusSelector';
 import { useLocalization } from '@/hooks/useLocalization';
 import CountrySelector from '@/components/CountrySelector';
-import { useParams, notFound, useRouter } from 'next/navigation';
+import { useParams, notFound, useRouter, useSearchParams } from 'next/navigation';
 import { COUNTRIES } from '@/lib/localization/countries/index';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { getAvailableSubjects } from '@/lib/challenge-questions';
@@ -46,6 +46,7 @@ import { Coins } from 'lucide-react';
 export default function LocalizedChallengeArenaPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const countryParam = params.country as string;
   
   // Validate country parameter
@@ -76,6 +77,54 @@ export default function LocalizedChallengeArenaPage() {
   const isPremium = isPremiumUser(userId);
   const profileRef = useMemo(() => (user && firestore) ? doc(firestore, `students/${user.uid}`) : null, [user, firestore]);
   const { data: userProfile } = useDoc(profileRef);
+
+  // Determine initial education level based on priority:
+  // 1. URL parameter (if coming from home page)
+  // 2. User profile educationLevel (if logged in)
+  // 3. localStorage (if previously selected)
+  // 4. Default to 'Primary'
+  // Extract stable values for dependency array
+  const levelParam = searchParams?.get('level') || null;
+  const profileEducationLevel = userProfile?.educationLevel || null;
+  
+  useEffect(() => {
+    let initialLevel: 'Primary' | 'JHS' | 'SHS' = 'Primary';
+    
+    // Priority 1: Check URL parameter
+    if (levelParam) {
+      const normalizedLevel = levelParam.toUpperCase();
+      if (normalizedLevel === 'SHS' || normalizedLevel === 'JHS' || normalizedLevel === 'PRIMARY') {
+        initialLevel = normalizedLevel === 'PRIMARY' ? 'Primary' : normalizedLevel as 'Primary' | 'JHS' | 'SHS';
+      }
+    } else {
+      // Priority 2: Check user profile
+      if (profileEducationLevel) {
+        const profileLevel = profileEducationLevel.toUpperCase();
+        if (profileLevel === 'SHS' || profileLevel === 'JHS' || profileLevel === 'PRIMARY') {
+          initialLevel = profileLevel === 'PRIMARY' ? 'Primary' : profileLevel as 'Primary' | 'JHS' | 'SHS';
+        }
+      } else {
+        // Priority 3: Check localStorage
+        if (typeof window !== 'undefined') {
+          const savedLevel = localStorage.getItem('userEducationLevel') as 'Primary' | 'JHS' | 'SHS' | null;
+          if (savedLevel && (savedLevel === 'Primary' || savedLevel === 'JHS' || savedLevel === 'SHS')) {
+            initialLevel = savedLevel;
+          }
+        }
+      }
+    }
+    
+    // Only update if level actually changed to prevent unnecessary re-renders
+    setEducationLevel(prevLevel => {
+      if (prevLevel !== initialLevel) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('userEducationLevel', initialLevel);
+        }
+        return initialLevel;
+      }
+      return prevLevel;
+    });
+  }, [levelParam, profileEducationLevel]);
 
   // Set country from URL parameter (only on initial load)
   useEffect(() => {

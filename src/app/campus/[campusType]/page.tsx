@@ -8,9 +8,11 @@ import { BookOpen, FlaskConical, Trophy, GraduationCap, ArrowRight } from 'lucid
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { useLocalization } from '@/hooks/useLocalization';
 
 export default function CampusHomePage({ params }: { params: { campusType: string } }) {
   const [mounted, setMounted] = useState(false);
+  const { country } = useLocalization();
 
   useEffect(() => {
     setMounted(true);
@@ -39,6 +41,15 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
 
   const colors = getColorClasses(campus.color);
   const examType = campus.id === 'shs' ? 'WASSCE' : 'BECE';
+  
+  // Map campus.id to education level for arena links
+  const getEducationLevel = (campusId: string): 'Primary' | 'JHS' | 'SHS' => {
+    if (campusId === 'shs') return 'SHS';
+    if (campusId === 'jhs') return 'JHS';
+    return 'Primary';
+  };
+  
+  const educationLevel = getEducationLevel(campus.id);
 
   // Feature cards based on campus type
   const features = campus.id === 'shs' ? [
@@ -95,7 +106,7 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
       icon: GraduationCap,
       title: 'Challenge Arena',
       description: 'Compete with other students in quiz battles',
-      href: '/challenge-arena',
+      href: `/challenge-arena/${country?.id || 'ghana'}?level=${educationLevel}`,
       color: 'purple',
       badge: 'Live'
     },

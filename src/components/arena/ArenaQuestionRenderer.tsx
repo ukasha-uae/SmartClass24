@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { GameQuestion } from '@/lib/challenge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, XCircle } from 'lucide-react';
+import { CheckCircle2, XCircle, Award } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface ArenaQuestionRendererProps {
   question: GameQuestion;
@@ -42,14 +43,54 @@ export default function ArenaQuestionRenderer({
     }
   }, [selectedAnswer]);
 
+  // Helper function to render exam identity badge
+  // - Always requires a year (so students can verify recency)
+  // - Shows paper number whenever it's available
+  // - Shows question number only when explicitly verified from WAEC
+  const renderQuestionIdentity = () => {
+    if (!question.year) return null;
+
+    // Treat anything that's not BECE as WASSCE in this context
+    const examType = question.source === 'bece' ? 'BECE' : 'WASSCE';
+    const displayYear = question.year;
+    const displayPaper = question.paper;
+    const verifiedQuestionNumber = question.verifiedQuestionNumber;
+    
+    // Build badge text
+    let badgeText = `${examType} ${displayYear}`;
+    
+    // Add paper designation whenever we know it (Paper 1 or Paper 2)
+    if (displayPaper) {
+      badgeText += ` • Paper ${displayPaper}`;
+    }
+    
+    // Only show question number if it's verified against actual WAEC papers
+    if (verifiedQuestionNumber) {
+      badgeText += ` • Q${verifiedQuestionNumber}`;
+    }
+    
+    return (
+      <div className="flex items-center justify-end mb-3">
+        <Badge 
+          variant="outline" 
+          className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 font-semibold text-xs px-3 py-1.5 flex items-center gap-1.5"
+        >
+          <Award className="h-3.5 w-3.5" />
+          <span>{badgeText}</span>
+        </Badge>
+      </div>
+    );
+  };
+
   // Multiple Choice
   if (question.type === 'mcq' && question.options) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-3 pb-2">
+        {renderQuestionIdentity()}
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
           {question.question}
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2">
           {question.options.map((option, index) => {
             // Only show as selected if selectedAnswer is explicitly set and matches
             // This prevents showing previous answer when selectedAnswer is null/undefined
@@ -102,7 +143,8 @@ export default function ArenaQuestionRenderer({
     const correctAnswer = question.correctAnswer === 'true' || question.correctAnswer === true;
     
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 pb-2">
+        {renderQuestionIdentity()}
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
           {question.question}
         </h3>
@@ -154,7 +196,8 @@ export default function ArenaQuestionRenderer({
       : parseFloat(String(question.correctAnswer));
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 pb-2">
+        {renderQuestionIdentity()}
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
           {question.question}
         </h3>
@@ -218,7 +261,8 @@ export default function ArenaQuestionRenderer({
     ];
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 pb-2">
+        {renderQuestionIdentity()}
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
           {question.question}
         </h3>
@@ -287,7 +331,8 @@ export default function ArenaQuestionRenderer({
     };
 
     return (
-      <div className="space-y-4">
+      <div className="space-y-4 pb-2">
+        {renderQuestionIdentity()}
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
           {question.question}
         </h3>
