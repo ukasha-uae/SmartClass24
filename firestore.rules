@@ -28,10 +28,7 @@ service cloud.firestore {
       allow create: if request.auth != null;
       // Allow update if user is creator OR authenticated (opponent validation happens client-side)
       // This allows opponents to accept/update their status
-      allow update: if request.auth != null && (
-        resource.data.creatorId == request.auth.uid ||
-        request.auth != null
-      );
+      allow update: if request.auth != null;
       allow delete: if false;
     }
 
