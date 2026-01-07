@@ -35,17 +35,45 @@ function getNotificationsCollection(userId: string) {
   return collection(firestore, 'users', userId, 'notifications');
 }
 
+// Helper function to remove undefined values recursively
+function removeUndefinedValues(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return null;
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(item => removeUndefinedValues(item)).filter(item => item !== undefined);
+  }
+  
+  if (typeof obj === 'object' && obj.constructor === Object) {
+    const cleaned: any = {};
+    Object.keys(obj).forEach(key => {
+      const value = obj[key];
+      if (value !== undefined) {
+        cleaned[key] = removeUndefinedValues(value);
+      }
+    });
+    return cleaned;
+  }
+  
+  return obj;
+}
+
 export async function createUserNotification(
   userId: string,
   payload: UserNotificationPayload
 ) {
   if (!userId) return;
   const colRef = getNotificationsCollection(userId);
-  await addDoc(colRef, {
+  
+  // Remove all undefined values - Firestore doesn't accept undefined
+  const cleanedPayload = removeUndefinedValues({
     ...payload,
     read: false,
     createdAt: serverTimestamp(),
   });
+  
+  await addDoc(colRef, cleanedPayload);
 }
 
 export async function markUserNotificationAsRead(

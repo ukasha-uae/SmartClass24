@@ -1554,17 +1554,22 @@ const generateGameQuestions = (
 const createChallengeNotification = async (challenge: Challenge, recipientId: string): Promise<void> => {
   try {
     console.log('[Challenge Notification] Creating notification for:', recipientId, 'Challenge:', challenge.id);
+    // Build data object, only including scheduledTime if it exists
+    const notificationData: any = {
+      challengeId: challenge.id,
+      from: challenge.creatorName,
+      fromSchool: challenge.creatorSchool,
+      subject: challenge.subject,
+    };
+    if (challenge.scheduledTime) {
+      notificationData.scheduledTime = challenge.scheduledTime;
+    }
+    
     await createUserNotification(recipientId, {
       type: 'challenge_invite',
       title: 'New Challenge Invitation',
       message: `${challenge.creatorName} from ${challenge.creatorSchool} has challenged you to a ${challenge.subject} duel!`,
-      data: {
-        challengeId: challenge.id,
-        from: challenge.creatorName,
-        fromSchool: challenge.creatorSchool,
-        subject: challenge.subject,
-        scheduledTime: challenge.scheduledTime,
-      },
+      data: notificationData,
       actionUrl: `/challenge-arena/play/${challenge.id}`
     });
     console.log('[Challenge Notification] Notification created successfully for:', recipientId);
