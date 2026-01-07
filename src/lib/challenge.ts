@@ -5,6 +5,7 @@ import { getChallengeQuestions, getAvailableSubjects, type EducationLevel } from
 import { createInAppNotification } from './in-app-notifications';
 import { calculateXP, calculateCoins, checkAchievements } from './gamification';
 import { getCoinMultiplier, getQuestionLimit } from './monetization';
+import { trackQuestionUsage } from './analytics';
 
 export interface Player {
   userId: string;
@@ -940,7 +941,33 @@ const generateGameQuestions = (
       userId
     );
   }
-  
+
+  // Basic subject/topic usage analytics (for prioritising question banks)
+  try {
+    const topics = Array.from(
+      new Set(
+        challengeQuestions
+          .map(q => q.topic)
+          .filter((t): t is string => typeof t === 'string' && t.trim().length > 0)
+      )
+    );
+
+    trackQuestionUsage({
+      level,
+      subject: mappedSubject,
+      difficulty,
+      topics,
+      questionCount: challengeQuestions.length,
+      userId,
+      timestamp: Date.now(),
+    });
+  } catch (e) {
+    // Analytics must never break gameplay
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[Question Usage Analytics] Failed to track usage', e);
+    }
+  }
+
   // Convert to GameQuestion format with variety of question types
   // Pre-calculate question types to ensure proper distribution
   const totalQuestions = challengeQuestions.length;

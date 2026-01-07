@@ -1,6 +1,7 @@
 /**
- * Analytics Tracking for Carousel Mode
- * Track usage patterns, engagement, and errors
+ * Analytics Tracking
+ * - Carousel usage (existing)
+ * - Question usage (new, for subject/topic popularity)
  */
 
 export interface CarouselUsageData {
@@ -13,6 +14,55 @@ export interface CarouselUsageData {
   action: 'view' | 'next' | 'previous' | 'jump' | 'complete' | 'exit';
   timeSpent?: number; // milliseconds
   timestamp: number;
+}
+
+// ============================================
+// Question Usage Analytics (Quizzes / Challenges)
+// ============================================
+
+export interface QuestionUsageEvent {
+  level: string;           // Primary, JHS, SHS
+  subject: string;         // Mathematics, English Language, Science, Arabic, etc.
+  difficulty: string;      // easy/medium/hard or class level (e.g. JHS 1)
+  topics: string[];        // unique topics from the questions shown
+  questionCount: number;   // how many questions were generated
+  userId?: string;         // optional – only set for authenticated users
+  timestamp: number;
+}
+
+import { initializeFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+
+/**
+ * Track which subjects/topics are being used in challenges.
+ * Best-effort: skips on server and for guest/unauthenticated users.
+ *
+ * Firestore path (requires auth, allowed by firestore.rules):
+ *   subjects/__analytics/questionUsage/{autoId}
+ */
+export function trackQuestionUsage(event: QuestionUsageEvent): void {
+  if (typeof window === 'undefined') return;
+
+  // Skip if no real user id – avoids permission errors for guests
+  if (!event.userId || event.userId === 'guest') return;
+
+  try {
+    const { firestore } = initializeFirebase();
+    const colRef = collection(firestore, 'subjects', '__analytics', 'questionUsage');
+
+    addDocumentNonBlocking(colRef, {
+      ...event,
+    });
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Question Usage Analytics]', event);
+    }
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[Question Usage Analytics] Tracking failed:', err);
+    }
+  }
 }
 
 export interface CarouselErrorData {
