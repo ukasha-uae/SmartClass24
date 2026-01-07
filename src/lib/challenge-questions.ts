@@ -17220,7 +17220,9 @@ export function getChallengeQuestions(
   // Check premium status for question bank limit
   // Import here to avoid circular dependency
   let isPremium = false;
-  let freeBankLimit = 5; // Free users get 5 questions per subject (optimized for conversion)
+  // Free users get a limited, but still varied, question bank per level
+  // Primary: ~8, JHS: ~10, SHS: ~12
+  let freeBankLimit = level === 'Primary' ? 8 : level === 'JHS' ? 10 : 12;
   if (typeof window !== 'undefined') {
     try {
       const { isPremiumUser } = require('./monetization');

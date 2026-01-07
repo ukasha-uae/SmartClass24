@@ -170,6 +170,140 @@ export interface PlayerAnswer {
   points: number;
 }
 
+// ============================================
+// Subject Mastery & Auto-Promotion (Local Only)
+// ============================================
+
+type SHSClassLevel = 'SHS 1' | 'SHS 2' | 'SHS 3';
+
+interface SubjectMasteryRecord {
+  userId: string;
+  level: EducationLevel;      // We will only use 'SHS' for auto-promotion
+  subject: string;
+  classLevel: SHSClassLevel;  // SHS 1, SHS 2, SHS 3
+  totalQuestions: number;     // total questions answered at this classLevel
+  totalCorrect: number;       // number answered correctly
+  challengesPlayed: number;   // how many challenges contributed
+}
+
+interface SubjectMasteryState {
+  [key: string]: SubjectMasteryRecord;
+}
+
+const SUBJECT_MASTERY_STORAGE_KEY = 'africlass24_subject_mastery_v1';
+
+function getSubjectMasteryState(): SubjectMasteryState {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(SUBJECT_MASTERY_STORAGE_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw) as SubjectMasteryState;
+  } catch {
+    return {};
+  }
+}
+
+function saveSubjectMasteryState(state: SubjectMasteryState): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(SUBJECT_MASTERY_STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Best-effort only – ignore storage errors
+  }
+}
+
+function getSubjectMasteryKey(
+  userId: string,
+  level: EducationLevel,
+  subject: string,
+  classLevel: SHSClassLevel
+): string {
+  return `${userId}|${level}|${subject}|${classLevel}`;
+}
+
+/**
+ * Update local mastery stats after a challenge result.
+ * Only used for SHS levels to drive auto-promotion between SHS 1/2/3.
+ */
+function updateSubjectMasteryFromResult(
+  challenge: Challenge,
+  result: GameResult
+): void {
+  if (typeof window === 'undefined') return;
+  if (challenge.level !== 'SHS') return;
+
+  // Only auto-promote for real students, not AI bosses
+  if (!result.userId || result.userId.startsWith('boss-')) return;
+
+  const classLevel = challenge.difficulty as SHSClassLevel;
+  if (classLevel !== 'SHS 1' && classLevel !== 'SHS 2' && classLevel !== 'SHS 3') return;
+
+  const questionsAnswered = result.answers?.length || 0;
+  if (questionsAnswered === 0) return;
+
+  const correctAnswers = result.answers.filter(a => a.isCorrect).length;
+
+  const state = getSubjectMasteryState();
+  const key = getSubjectMasteryKey(result.userId, challenge.level, challenge.subject, classLevel);
+  const existing = state[key];
+
+  const updated: SubjectMasteryRecord = {
+    userId: result.userId,
+    level: challenge.level,
+    subject: challenge.subject,
+    classLevel,
+    totalQuestions: (existing?.totalQuestions || 0) + questionsAnswered,
+    totalCorrect: (existing?.totalCorrect || 0) + correctAnswers,
+    challengesPlayed: (existing?.challengesPlayed || 0) + 1,
+  };
+
+  state[key] = updated;
+  saveSubjectMasteryState(state);
+}
+
+/**
+ * Decide which SHS class level to actually use when generating questions,
+ * based on local mastery. We only ever promote upwards (1 -> 2 -> 3).
+ */
+function getEffectiveSHSClassLevel(
+  userId: string,
+  subject: string,
+  requestedClassLevel: string
+): string {
+  if (requestedClassLevel !== 'SHS 1' && requestedClassLevel !== 'SHS 2' && requestedClassLevel !== 'SHS 3') {
+    return requestedClassLevel;
+  }
+  if (typeof window === 'undefined') return requestedClassLevel;
+
+  const state = getSubjectMasteryState();
+  const classOrder: SHSClassLevel[] = ['SHS 1', 'SHS 2', 'SHS 3'];
+  let currentLevel = requestedClassLevel as SHSClassLevel;
+
+  // Simple promotion rule:
+  // - at least 5 challenges played at that classLevel
+  // - accuracy (totalCorrect / totalQuestions) >= 80%
+  for (let i = 0; i < classOrder.length - 1; i++) {
+    const level = classOrder[i];
+    if (currentLevel !== level) continue;
+
+    const key = getSubjectMasteryKey(userId, 'SHS', subject, level);
+    const record = state[key];
+    if (!record) break;
+
+    if (record.challengesPlayed >= 5 && record.totalQuestions > 0) {
+      const accuracy = record.totalCorrect / record.totalQuestions;
+      if (accuracy >= 0.8) {
+        // Promote to next level
+        currentLevel = classOrder[i + 1];
+        continue;
+      }
+    }
+    break;
+  }
+
+  return currentLevel;
+}
+
 export interface Tournament {
   id: string;
   name: string;
@@ -678,6 +812,9 @@ export const completeChallenge = (challenge: Challenge): void => {
     // Store coins earned in result
     result.coinsEarned = coinsEarned;
 
+    // Update local subject mastery (used for SHS auto-promotion)
+    updateSubjectMasteryFromResult(challenge, result);
+
     updatePlayerStats(result.userId, playerResult, ratingChange, xpEarned, newAchievements, coinsEarned);
   });
   
@@ -899,13 +1036,19 @@ const generateGameQuestions = (
   }
   if (subject === 'social') mappedSubject = 'Social Studies';
 
+  // For SHS, allow local auto-promotion between SHS 1/2/3 based on mastery
+  const effectiveDifficulty =
+    level === 'SHS'
+      ? getEffectiveSHSClassLevel(userId, mappedSubject, difficulty)
+      : difficulty;
+
   // STRICT LEVEL FILTERING - Use the new unified challenge questions system
   // Each level ONLY gets questions from their own level
   // difficulty can now be a classLevel (JHS 1, JHS 2, etc.) or legacy difficulty
   let challengeQuestions = getChallengeQuestions(
     level,
     subject === 'general' ? 'Mixed' : mappedSubject,
-    difficulty as any, // Can be QuestionDifficulty or ClassLevel
+    effectiveDifficulty as any, // Can be QuestionDifficulty or ClassLevel
     count,
     userId
   );
@@ -916,7 +1059,7 @@ const generateGameQuestions = (
     challengeQuestions = getChallengeQuestions(
       level, // Keep same level - STRICT filtering
       'Mixed',
-      difficulty as any,
+      effectiveDifficulty as any,
       count,
       userId
     );
@@ -928,7 +1071,7 @@ const generateGameQuestions = (
     const classLevels: string[] = level === 'Primary' ? ['Primary 1', 'Primary 2', 'Primary 3'] :
                                   level === 'JHS' ? ['JHS 1', 'JHS 2', 'JHS 3'] :
                                   ['SHS 1', 'SHS 2', 'SHS 3'];
-    const currentIndex = classLevels.indexOf(difficulty);
+    const currentIndex = classLevels.indexOf(effectiveDifficulty);
     const fallbackClassLevel = currentIndex > 0 ? classLevels[currentIndex - 1] : classLevels[0];
     const fallbackSubject = level === 'Primary' ? 'Mathematics' :
                             level === 'JHS' ? 'Mathematics' :
@@ -941,7 +1084,7 @@ const generateGameQuestions = (
       userId
     );
   }
-
+  
   // Basic subject/topic usage analytics (for prioritising question banks)
   try {
     const topics = Array.from(
@@ -955,7 +1098,7 @@ const generateGameQuestions = (
     trackQuestionUsage({
       level,
       subject: mappedSubject,
-      difficulty,
+      difficulty: effectiveDifficulty,
       topics,
       questionCount: challengeQuestions.length,
       userId,
