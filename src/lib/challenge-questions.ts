@@ -15,6 +15,7 @@ import { jhsICTQuestions } from './questions/jhs/ict';
 import { jhsCreativeArtsQuestions } from './questions/jhs/creative-arts';
 import { jhsFrenchQuestions } from './questions/jhs/french';
 import { jhsRMEQuestions } from './questions/jhs/rme';
+import { jhsArabicQuestions } from './questions/jhs/arabic';
 import { primaryMathematicsQuestions } from './questions/primary/mathematics';
 import { primaryEnglishLanguageQuestions } from './questions/primary/english-language';
 import { primaryScienceQuestions } from './questions/primary/science';
@@ -17535,12 +17536,48 @@ export function getChallengeQuestions(
         };
       });
       filtered = [...filtered, ...beceConverted];
+    } else if (subject === 'Arabic') {
+      // Start with modular JHS Arabic questions
+      filtered = [...jhsArabicQuestions];
+      // Also get questions from bece-questions.ts
+      let beceDifficulty: QuestionDifficulty = 'medium';
+      if (classLevel === 'JHS 1') beceDifficulty = 'easy';
+      else if (classLevel === 'JHS 2') beceDifficulty = 'medium';
+      else if (classLevel === 'JHS 3') beceDifficulty = 'hard';
+      else if (legacyDifficulty) beceDifficulty = legacyDifficulty;
+      
+      const beceQuestions = getJHSQuestions(count, 'Arabic' as JHSSubject, beceDifficulty);
+      const beceConverted = beceQuestions.map(q => {
+        let mappedClassLevel: ClassLevel | undefined = undefined;
+        if (classLevel) {
+          mappedClassLevel = classLevel;
+        } else if (q.difficulty === 'easy') {
+          mappedClassLevel = 'JHS 1';
+        } else if (q.difficulty === 'medium') {
+          mappedClassLevel = 'JHS 2';
+        } else if (q.difficulty === 'hard') {
+          mappedClassLevel = 'JHS 3';
+        }
+        return {
+          id: q.id,
+          question: q.question,
+          options: q.options,
+          correctAnswer: q.correctAnswer,
+          subject: 'Arabic',
+          difficulty: q.difficulty,
+          classLevel: mappedClassLevel,
+          level: 'JHS' as EducationLevel,
+          explanation: q.explanation,
+          topic: q.topic
+        };
+      });
+      filtered = [...filtered, ...beceConverted];
     } else {
       // For other subjects, use bece-questions.ts
       let mappedSubject = subject;
       
       // Validate subject - Chemistry, Physics, Biology, etc. are SHS-only subjects
-      const shsOnlySubjects = ['Chemistry', 'Physics', 'Biology', 'Elective Mathematics', 'Economics', 'Government', 'Geography', 'History', 'Literature', 'German', 'Arabic', 'Food and Nutrition', 'Management in Living', 'Textiles', 'Visual Arts', 'Music', 'Physical Education', 'Technical Drawing', 'Building Construction', 'Woodwork', 'Metalwork', 'Auto Mechanics', 'Applied Electricity', 'Electronics', 'Engineering Science'];
+      const shsOnlySubjects = ['Chemistry', 'Physics', 'Biology', 'Elective Mathematics', 'Economics', 'Government', 'Geography', 'History', 'Literature', 'German', 'Food and Nutrition', 'Management in Living', 'Textiles', 'Visual Arts', 'Music', 'Physical Education', 'Technical Drawing', 'Building Construction', 'Woodwork', 'Metalwork', 'Auto Mechanics', 'Applied Electricity', 'Electronics', 'Engineering Science'];
       if (shsOnlySubjects.includes(subject)) {
         // Return empty array - these subjects are not available at JHS level
         return [];
