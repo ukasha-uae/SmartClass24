@@ -601,11 +601,22 @@ async function saveChallengeToFirestore(challenge: Challenge): Promise<void> {
     const { firestore } = initializeFirebase();
     if (!firestore) return;
     const challengeRef = doc(firestore, 'challenges', challenge.id);
-    await setDoc(challengeRef, {
-      ...challenge,
-      createdAt: challenge.createdAt || serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    }, { merge: true });
+    
+    // Remove undefined values - Firestore doesn't accept undefined
+    const challengeData: any = {};
+    Object.keys(challenge).forEach(key => {
+      const value = (challenge as any)[key];
+      if (value !== undefined) {
+        challengeData[key] = value;
+      }
+    });
+    
+    // Ensure required fields are set
+    challengeData.id = challenge.id;
+    challengeData.createdAt = challenge.createdAt || serverTimestamp();
+    challengeData.updatedAt = serverTimestamp();
+    
+    await setDoc(challengeRef, challengeData, { merge: true });
   } catch (error) {
     console.error('Failed to save challenge to Firestore:', error);
   }

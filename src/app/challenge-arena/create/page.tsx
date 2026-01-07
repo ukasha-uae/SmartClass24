@@ -212,13 +212,6 @@ export default function CreateChallengePage() {
     else handleCreate();
   };
 
-  const SUBJECTS = [
-    { id: 'math', name: 'Maths', icon: Calculator, color: 'text-blue-500', bg: 'bg-blue-500/10' },
-    { id: 'english', name: 'English', icon: BookOpen, color: 'text-green-500', bg: 'bg-green-500/10' },
-    { id: 'science', name: 'Science', icon: FlaskConical, color: 'text-orange-500', bg: 'bg-orange-500/10' },
-    { id: 'social', name: 'Social Studies', icon: Globe, color: 'text-purple-500', bg: 'bg-purple-500/10' },
-  ];
-
   const DIFFICULTIES = [
     { id: 'easy', name: 'Easy', questions: 5, color: 'text-green-500' },
     { id: 'medium', name: 'Medium', questions: 10, color: 'text-yellow-500' },
