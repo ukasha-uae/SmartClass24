@@ -952,8 +952,21 @@ export const submitChallengeAnswers = async (
     // CRITICAL: Also load from Firestore to get latest results from other players
     const firestoreChallenge = await getChallengeFromFirestore(challengeId);
     if (firestoreChallenge && firestoreChallenge.results) {
-      // Merge results from Firestore to ensure we have all players' results
-      challenge = { ...challenge, results: firestoreChallenge.results };
+      // Merge results from Firestore with local results (don't replace, merge by userId)
+      if (!challenge.results) {
+        challenge.results = [];
+      }
+      // Merge Firestore results into local results, avoiding duplicates
+      firestoreChallenge.results.forEach((firestoreResult: any) => {
+        const existingIndex = challenge.results!.findIndex(r => r.userId === firestoreResult.userId);
+        if (existingIndex > -1) {
+          // Update existing result with Firestore data (has latest data)
+          challenge.results![existingIndex] = firestoreResult;
+        } else {
+          // Add new result from Firestore
+          challenge.results!.push(firestoreResult);
+        }
+      });
       challenges[challengeIndex] = challenge;
     }
   }
