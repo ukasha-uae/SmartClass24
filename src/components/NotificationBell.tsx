@@ -38,12 +38,24 @@ export default function NotificationBell() {
 
   const notifQuery = useMemo(() => {
     if (!firestore || !user) return null;
-    const notificationsCollection = collection(firestore, 'users', user.uid, 'notifications');
-    // Order by createdAt descending so newest notifications appear first
-    return query(notificationsCollection, orderBy('createdAt', 'desc'));
+    return collection(firestore, 'users', user.uid, 'notifications');
   }, [firestore, user]);
 
-  const { data: notifications } = useCollection<FirestoreNotification>(notifQuery as any);
+  const { data: notificationsRaw } = useCollection<FirestoreNotification>(notifQuery as any);
+
+  // Sort notifications client-side by createdAt descending (newest first)
+  const notifications = useMemo(() => {
+    if (!notificationsRaw) return null;
+    return [...notificationsRaw].sort((a, b) => {
+      const aTime = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 
+                    (a.createdAt?.seconds ? a.createdAt.seconds * 1000 : 
+                    (typeof a.createdAt === 'string' ? new Date(a.createdAt).getTime() : 0));
+      const bTime = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 
+                    (b.createdAt?.seconds ? b.createdAt.seconds * 1000 : 
+                    (typeof b.createdAt === 'string' ? new Date(b.createdAt).getTime() : 0));
+      return bTime - aTime; // Descending (newest first)
+    });
+  }, [notificationsRaw]);
 
   const prevIdsRef = useRef<string[]>([]);
 

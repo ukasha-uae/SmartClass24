@@ -14,7 +14,7 @@ import {
   Info
 } from 'lucide-react';
 import { useFirebase } from '@/firebase/provider';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
 import { useCollection } from '@/firebase';
 import type { WithId } from '@/firebase/use-collection';
 import { formatDistanceToNow } from 'date-fns';
