@@ -649,8 +649,10 @@ export default function QuizBattlePage() {
     }, []);
     
     // Ensure ranks are assigned - if all ranks are 0 or undefined, sort and assign them
+    // BUT only if we have all expected results (to avoid assigning rank 1 to a single result)
+    const expectedResultCount = (challenge?.opponents?.length || 0) + 1; // creator + opponents
     const hasRanks = uniqueResults.every((r: any) => r.rank && r.rank > 0);
-    if (!hasRanks && uniqueResults.length > 0) {
+    if (!hasRanks && uniqueResults.length > 0 && uniqueResults.length >= expectedResultCount) {
       // Sort by score (descending), then by time (ascending)
       uniqueResults.sort((a: any, b: any) => {
         if (b.score !== a.score) return b.score - a.score;
