@@ -939,7 +939,7 @@ export default function SettingsPage() {
                 <a href="mailto:support@smartc24.edu.gh">Support</a>
               </Button>
               <Button variant="link" className="h-auto p-0 text-xs" asChild>
-                <a href="https://github.com/ukasha-uae/Africlass24" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/ukasha-uae/smartclass24" target="_blank" rel="noopener noreferrer">
                   GitHub
                 </a>
               </Button>

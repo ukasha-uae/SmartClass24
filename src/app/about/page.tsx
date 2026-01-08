@@ -191,7 +191,7 @@ export default function PrivacyPolicyPage() {
                 </a>
               </Button>
               <Button variant="outline" size="sm" asChild>
-                <a href="https://github.com/ukasha-uae/Africlass24" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/ukasha-uae/smartclass24" target="_blank" rel="noopener noreferrer">
                   <Github className="h-4 w-4 mr-2" />
                   Repository
                 </a>
