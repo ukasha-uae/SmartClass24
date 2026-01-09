@@ -20,6 +20,7 @@ export default function AuthModal() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmailSent, setResetEmailSent] = useState(false);
   const [stayLoggedIn, setStayLoggedIn] = useState(true); // Default to true for better UX
+  const [open, setOpen] = useState(false); // Control dialog open state
   const { toast } = useToast();
 
   const signUp = async () => {
@@ -42,7 +43,11 @@ export default function AuthModal() {
           console.error('Migration error after linking:', e);
           // Don't block flow — migration is best-effort.
         }
-        toast({ title: 'Account created', description: 'Your anonymous session is now linked to your email.' });
+        toast({ title: 'Account created', description: 'Your anonymous session is now linked to your email.', duration: 3000 });
+        // Close dialog after a short delay to show the success message
+        setTimeout(() => {
+          setOpen(false);
+        }, 1500);
       } else {
         await initiateEmailSignUp(auth, email, password, stayLoggedIn);
         // Save preference for future reference
@@ -55,10 +60,14 @@ export default function AuthModal() {
           description: stayLoggedIn 
             ? 'Welcome! Your account has been created and you are signed in.' 
             : 'Welcome! Your account has been created and you are signed in for this session.',
-          duration: 5000
+          duration: 3000
         });
         setActiveTab('sign-in');
         setPassword('');
+        // Close dialog after a short delay to show the success message
+        setTimeout(() => {
+          setOpen(false);
+        }, 1500);
       }
     } catch (err: any) {
       // Only log unexpected errors, not email-already-in-use
@@ -102,6 +111,10 @@ export default function AuthModal() {
       });
       setShowForgotPassword(false);
       setResetEmailSent(false);
+      // Close dialog after a short delay to show the success message
+      setTimeout(() => {
+        setOpen(false);
+      }, 1500);
     } catch (err: any) {
       // Handle invalid credentials professionally
       if (err?.code === 'auth/wrong-password' || 
@@ -189,7 +202,7 @@ export default function AuthModal() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost">{user ? 'Account' : 'Sign in'}</Button>
       </DialogTrigger>
