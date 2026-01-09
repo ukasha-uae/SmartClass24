@@ -44,13 +44,16 @@ export default function CreateChallengePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [userLastSeenMap, setUserLastSeenMap] = useState<Record<string, Date | null>>({});
   
-  // Get user's education level
-  const userLevel = useMemo(() => {
-    if (typeof window === 'undefined') return 'JHS';
+  // Get user's education level - use state to avoid hydration mismatch
+  const [userLevel, setUserLevel] = useState<EducationLevel>('JHS');
+  
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
     const userId = user?.uid || 'test-user-1';
     const player = getPlayerProfile(userId);
     const savedLevel = localStorage.getItem('userEducationLevel');
-    return (player?.level || savedLevel || 'JHS') as EducationLevel;
+    const level = (player?.level || savedLevel || 'JHS') as EducationLevel;
+    setUserLevel(level);
   }, [user]);
   
   // Get available subjects for user's level
