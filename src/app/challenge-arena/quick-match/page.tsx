@@ -27,10 +27,11 @@ import {
 } from '@/lib/challenge';
 import { useFirebase } from '@/firebase/provider';
 import { useSoundEffects } from '@/hooks/use-sound-effects';
+import { startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
 
 export default function QuickMatchPage() {
   const router = useRouter();
-  const { user } = useFirebase();
+  const { user, firestore } = useFirebase();
   const { playSound } = useSoundEffects();
   
   const [player, setPlayer] = useState<Player | null>(null);
@@ -38,6 +39,7 @@ export default function QuickMatchPage() {
   const [opponent, setOpponent] = useState<Player | null>(null);
   const [countdown, setCountdown] = useState(10);
   const [matchFound, setMatchFound] = useState(false);
+  const [onlinePlayers, setOnlinePlayers] = useState<Player[]>([]);
   
   // Match settings
   const [subject, setSubject] = useState('');
@@ -107,6 +109,88 @@ export default function QuickMatchPage() {
 
   const classLevels = player ? getClassLevels(player.level || 'JHS') : [];
 
+  // Start presence heartbeat for current user
+  useEffect(() => {
+    if (!user?.uid) return;
+    
+    const cleanup = startPresenceHeartbeat(user.uid);
+    return cleanup;
+  }, [user?.uid]);
+
+  // Fetch real online users from Firestore
+  useEffect(() => {
+    if (!firestore || !user) {
+      setOnlinePlayers([]);
+      return;
+    }
+    
+    let unsubscribe: (() => void) | null = null;
+    
+    const setupListener = async () => {
+      try {
+        const { collection, query, limit, onSnapshot } = await import('firebase/firestore');
+        const studentsRef = collection(firestore, 'students');
+        
+        const q = query(studentsRef, limit(100));
+        
+        unsubscribe = onSnapshot(q, (snapshot) => {
+          const playersList: Player[] = [];
+          
+          snapshot.forEach((docSnapshot) => {
+            const data = docSnapshot.data();
+            const userId = docSnapshot.id;
+            
+            // Skip current user
+            if (userId === user.uid) return;
+            
+            if (data.studentName) {
+              const lastSeen = data.lastSeen?.toDate?.() || null;
+              const isOnline = isUserOnline(lastSeen);
+              
+              // Only include online users for quick match
+              if (!isOnline) return;
+              
+              playersList.push({
+                userId,
+                userName: data.studentName || 'Student',
+                school: data.schoolName || 'Unknown School',
+                level: (data.studentClass?.includes('SHS') ? 'SHS' : 
+                       data.studentClass?.includes('JHS') ? 'JHS' : 
+                       data.studentClass?.includes('Primary') ? 'Primary' : 'JHS') as 'Primary' | 'JHS' | 'SHS',
+                rating: data.rating || 1200, // Use rating from Firestore if available
+                wins: data.wins || 0,
+                losses: data.losses || 0,
+                draws: data.draws || 0,
+                totalGames: data.totalGames || 0,
+                winStreak: data.winStreak || 0,
+                highestStreak: data.highestStreak || 0,
+                xp: data.xp || 0,
+                achievements: data.achievements || [],
+                coins: data.coins || 0,
+              });
+            }
+          });
+          
+          setOnlinePlayers(playersList);
+        }, (error) => {
+          console.error('Error fetching online players:', error);
+          setOnlinePlayers([]);
+        });
+      } catch (error) {
+        console.error('Error setting up online players listener:', error);
+        setOnlinePlayers([]);
+      }
+    };
+    
+    setupListener();
+    
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [firestore, user]);
+
   useEffect(() => {
     // Use mock user ID for testing
     const userId = user?.uid || 'test-user-1';
@@ -148,7 +232,7 @@ export default function QuickMatchPage() {
     }, 2000);
 
     return () => clearTimeout(searchTimer);
-  }, [isSearching]);
+  }, [isSearching, matchFound]);
 
   useEffect(() => {
     if (!opponent || countdown <= 0) return;
@@ -168,21 +252,37 @@ export default function QuickMatchPage() {
   const findOpponent = () => {
     if (!player) return;
 
-    // Use mock user ID for testing
-    const userId = user?.uid || 'test-user-1';
-    const allPlayers = getAllPlayers().filter(p => p.userId !== userId);
+    // Use real online players from Firestore
+    const availablePlayers = onlinePlayers.filter(p => p.userId !== user?.uid);
     
-    // Enhanced SmartClassUAE-style matching algorithm
+    // If no online players available, fall back to mock players
+    if (availablePlayers.length === 0) {
+      const mockPlayers = getAllPlayers().filter(p => p.userId !== (user?.uid || 'test-user-1'));
+      if (mockPlayers.length === 0) {
+        setIsSearching(false);
+        alert('No online opponents available right now. Please try again later.');
+        return;
+      }
+      // Use mock players as fallback
+      const randomOpponent = mockPlayers[Math.floor(Math.random() * mockPlayers.length)];
+      setOpponent(randomOpponent);
+      setMatchFound(true);
+      setCountdown(10);
+      playSound('matchFound');
+      return;
+    }
+    
+    // Enhanced SmartClassUAE-style matching algorithm with real online users
     const RATING_THRESHOLD = 200; // ±200 rating threshold (like SmartClassUAE)
     
     // 1. Try to find opponent within ±200 rating (SmartClassUAE standard)
-    let matched = allPlayers.filter(p => 
+    let matched = availablePlayers.filter(p => 
       Math.abs(p.rating - player.rating) <= RATING_THRESHOLD
     );
     
     // 2. If no match within threshold, expand to ±300
     if (matched.length === 0) {
-      matched = allPlayers.filter(p => 
+      matched = availablePlayers.filter(p => 
         Math.abs(p.rating - player.rating) <= 300
       );
     }
@@ -199,9 +299,9 @@ export default function QuickMatchPage() {
       matched = sameLevel;
     }
     
-    // 5. Fallback to any opponent if still no match
+    // 5. Fallback to any online opponent if still no match
     if (matched.length === 0) {
-      matched = allPlayers;
+      matched = availablePlayers;
     }
     
     // Pick random opponent from matched players
@@ -215,7 +315,7 @@ export default function QuickMatchPage() {
     } else {
       // No opponents available
       setIsSearching(false);
-      alert('No opponents available right now. Please try again later.');
+      alert('No online opponents available right now. Please try again later.');
     }
   };
 
