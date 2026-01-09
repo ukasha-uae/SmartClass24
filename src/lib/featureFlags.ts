@@ -32,8 +32,8 @@ export const FEATURE_FLAGS = {
     // Challenge Arena Modes
     showChallengeArena: true,      // Show Arena Challenge
     showChallengeArenaBoss: true,  // Show boss battles (Premium unlock)
-    showChallengeArenaTournament: true, // Show tournaments (Premium unlock)
-    showChallengeArenaSchool: true,      // Show school battles (Premium unlock)
+    showChallengeArenaTournament: false, // Show tournaments (Premium unlock) - V2 Feature
+    showChallengeArenaSchool: false,      // Show school battles (Premium unlock) - V2 Feature
     showChallengeArenaPractice: true,    // Show practice mode
     showChallengeArenaQuickMatch: true,  // Show quick match
     // Virtual Labs - V1 Selection (5-10 best labs)
