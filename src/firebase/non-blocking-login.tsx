@@ -17,6 +17,13 @@ import { getLocalQuizAttempts, clearLocalQuizAttempts } from '@/lib/local-quiz-a
 
 /** Initiate anonymous sign-in (non-blocking). */
 export function initiateAnonymousSignIn(authInstance: Auth): void {
+  // Set persistence to LOCAL (default) to ensure long-term session persistence
+  // This ensures users stay logged in across browser sessions, similar to Facebook/LinkedIn
+  setPersistence(authInstance, browserLocalPersistence).catch((error) => {
+    // Log but don't block - Firebase defaults to local persistence anyway
+    console.warn('[Auth] Failed to set persistence for anonymous sign-in (non-critical):', error);
+  });
+  
   // CRITICAL: Call signInAnonymously directly. Do NOT use 'await signInAnonymously(...)'.
   signInAnonymously(authInstance);
   // Code continues immediately. Auth state change is handled by onAuthStateChanged listener.

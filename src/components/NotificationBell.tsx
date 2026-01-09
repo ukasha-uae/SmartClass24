@@ -242,8 +242,9 @@ export default function NotificationBell() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity -mr-2 -mt-2"
+                      className="h-6 w-6 opacity-60 hover:opacity-100 active:opacity-100 transition-opacity -mr-2 -mt-2 touch-manipulation"
                       onClick={(e) => handleDelete(notification.id, e)}
+                      aria-label="Delete notification"
                     >
                       <X className="h-3 w-3" />
                     </Button>
