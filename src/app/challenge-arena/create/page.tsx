@@ -31,6 +31,7 @@ import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-quest
 import { updateUserPresence, startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
 import { Badge } from '@/components/ui/badge';
 import { Circle } from 'lucide-react';
+import { ShareChallengeDialog } from '@/components/challenge/ShareChallengeDialog';
 
 // Create challenge page is now enabled for friend challenges
 export default function CreateChallengePage() {

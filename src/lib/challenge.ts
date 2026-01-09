@@ -1711,6 +1711,25 @@ const createChallengeNotification = async (challenge: Challenge, recipientId: st
     console.log('[Challenge Notification] Calling createUserNotification with payload:', notificationPayload);
     const notificationId = await createUserNotification(recipientId, notificationPayload);
     console.log('[Challenge Notification] ✅ Notification created successfully for:', recipientId, 'Notification ID:', notificationId);
+    
+    // Also send email notification if user has email configured (non-blocking)
+    try {
+      const { sendChallengeInviteEmail } = await import('./email-notifications');
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://smartc24.com';
+      const challengeUrl = `${baseUrl}/challenge-arena/play/${challenge.id}`;
+      sendChallengeInviteEmail(
+        recipientId,
+        challenge.id,
+        challenge.creatorName,
+        challenge.creatorSchool,
+        challenge.subject,
+        challengeUrl
+      ).catch((emailError) => {
+        console.warn('[Challenge Notification] Email notification failed (non-critical):', emailError);
+      });
+    } catch (emailError) {
+      console.warn('[Challenge Notification] Failed to send email notification (non-critical):', emailError);
+    }
   } catch (err: any) {
     console.error('[Challenge Notification] ❌ Failed to create notification for', recipientId, err);
     console.error('[Challenge Notification] Error details:', {
