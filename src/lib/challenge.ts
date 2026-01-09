@@ -664,19 +664,50 @@ export const getAllChallenges = (): Challenge[] => {
 export const getChallenge = async (challengeId: string): Promise<Challenge | undefined> => {
   // First check localStorage
   const challenges = getAllChallenges();
-  const localChallenge = challenges.find(c => c.id === challengeId);
-  if (localChallenge) return localChallenge;
+  const challengeIndex = challenges.findIndex(c => c.id === challengeId);
+  const localChallenge = challengeIndex > -1 ? challenges[challengeIndex] : undefined;
   
-  // If not found, check Firestore
+  // Always also load from Firestore to get latest results from all players
   const firestoreChallenge = await getChallengeFromFirestore(challengeId);
+  
   if (firestoreChallenge) {
-    // Cache it in localStorage for faster access
-    challenges.push(firestoreChallenge);
-    localStorage.setItem('challenges', JSON.stringify(challenges));
-    return firestoreChallenge;
+    if (localChallenge) {
+      // Merge Firestore results with local challenge (Firestore has latest data from all players)
+      if (firestoreChallenge.results && firestoreChallenge.results.length > 0) {
+        if (!localChallenge.results) {
+          localChallenge.results = [];
+        }
+        // Merge Firestore results into local results, avoiding duplicates
+        firestoreChallenge.results.forEach((firestoreResult: any) => {
+          const existingIndex = localChallenge.results!.findIndex(r => r.userId === firestoreResult.userId);
+          if (existingIndex > -1) {
+            // Update existing result with Firestore data (has latest data)
+            localChallenge.results![existingIndex] = firestoreResult;
+          } else {
+            // Add new result from Firestore
+            localChallenge.results!.push(firestoreResult);
+          }
+        });
+      }
+      // Update other fields from Firestore (status, completedAt, etc.)
+      localChallenge.status = firestoreChallenge.status || localChallenge.status;
+      localChallenge.completedAt = firestoreChallenge.completedAt || localChallenge.completedAt;
+      localChallenge.winner = firestoreChallenge.winner || localChallenge.winner;
+      
+      // Save merged challenge back to localStorage
+      challenges[challengeIndex] = localChallenge;
+      localStorage.setItem('challenges', JSON.stringify(challenges));
+      return localChallenge;
+    } else {
+      // Not in localStorage, cache Firestore challenge
+      challenges.push(firestoreChallenge);
+      localStorage.setItem('challenges', JSON.stringify(challenges));
+      return firestoreChallenge;
+    }
   }
   
-  return undefined;
+  // Return local challenge if Firestore fetch failed
+  return localChallenge;
 };
 
 export const getMyChallenges = (userId: string): Challenge[] => {

@@ -26,6 +26,7 @@ import {
   submitChallengeAnswers,
   completeChallenge,
   acceptChallenge,
+  createChallenge,
   Challenge,
   GameQuestion,
   Player,
@@ -155,18 +156,55 @@ export default function QuizBattlePage() {
             challengeRef,
             (snapshot) => {
               if (snapshot.exists()) {
-                const challengeData = snapshot.data() as Challenge;
-                setChallenge(challengeData);
+                const firestoreChallenge = snapshot.data() as Challenge;
+                
+                // Merge Firestore results with current challenge state to ensure we have all results
+                setChallenge((currentChallenge) => {
+                  if (!currentChallenge) {
+                    return firestoreChallenge;
+                  }
+                  
+                  // Merge results: combine Firestore results with current results, avoiding duplicates
+                  const mergedChallenge = { ...currentChallenge, ...firestoreChallenge };
+                  if (firestoreChallenge.results && firestoreChallenge.results.length > 0) {
+                    if (!mergedChallenge.results) {
+                      mergedChallenge.results = [];
+                    }
+                    // Merge results by userId, preferring Firestore data (most up-to-date)
+                    firestoreChallenge.results.forEach((firestoreResult: any) => {
+                      const existingIndex = mergedChallenge.results!.findIndex(r => r.userId === firestoreResult.userId);
+                      if (existingIndex > -1) {
+                        mergedChallenge.results![existingIndex] = firestoreResult;
+                      } else {
+                        mergedChallenge.results!.push(firestoreResult);
+                      }
+                    });
+                  }
+                  
+                  return mergedChallenge;
+                });
                 
                 // Update results state when challenge.results changes (from Firestore, contains all players)
-                if (challengeData.results && challengeData.results.length > 0) {
-                  setResults(challengeData.results);
+                if (firestoreChallenge.results && firestoreChallenge.results.length > 0) {
+                  setResults((currentResults) => {
+                    // Merge with existing results to ensure we don't lose any
+                    const merged = [...(currentResults || [])];
+                    firestoreChallenge.results!.forEach((firestoreResult: any) => {
+                      const existingIndex = merged.findIndex(r => r.userId === firestoreResult.userId);
+                      if (existingIndex > -1) {
+                        merged[existingIndex] = firestoreResult;
+                      } else {
+                        merged.push(firestoreResult);
+                      }
+                    });
+                    return merged;
+                  });
                 }
                 
                 // Update game phase based on challenge status
                 setGamePhase((currentPhase) => {
                   // CRITICAL: If challenge is completed OR has results data, always show results (prevents reset to waiting)
-                  if (challengeData.status === 'completed' || (challengeData.results && challengeData.results.length > 0)) {
+                  if (firestoreChallenge.status === 'completed' || (firestoreChallenge.results && firestoreChallenge.results.length > 0)) {
                     return 'results';
                   }
                   
@@ -176,13 +214,13 @@ export default function QuizBattlePage() {
                   }
                   
                   // Handle status transitions only if not in results phase and no results data
-                  if (challengeData.status === 'pending') {
+                  if (firestoreChallenge.status === 'pending') {
                     return 'waiting';
-                  } else if (challengeData.status === 'accepted' && currentPhase === 'waiting') {
+                  } else if (firestoreChallenge.status === 'accepted' && currentPhase === 'waiting') {
                     // Challenge was accepted, start the game
                     // Track start time for first question
-                    if (challengeData.questions.length > 0) {
-                      setQuestionStartTimes({ [challengeData.questions[0].id]: Date.now() });
+                    if (firestoreChallenge.questions.length > 0) {
+                      setQuestionStartTimes({ [firestoreChallenge.questions[0].id]: Date.now() });
                     }
                     return 'playing';
                   }
@@ -422,28 +460,30 @@ export default function QuizBattlePage() {
     if (!challenge || !results || isCapturing) return;
 
     setIsCapturing(true);
-    toast({ title: 'Preparing image...', description: 'Please wait' });
+    toast({ title: 'Creating shareable image...', description: 'Please wait' });
 
     try {
-      // Find the results card element
-      const resultsCard = document.getElementById('results-card');
-      if (!resultsCard) {
-        throw new Error('Results card not found');
+      // Find the shareable card element
+      const shareableCard = document.getElementById('shareable-results-card');
+      if (!shareableCard) {
+        throw new Error('Shareable card not found');
       }
 
       // Capture the element as canvas
-      const canvas = await html2canvas(resultsCard, {
-        scale: 2, // Higher quality
+      const canvas = await html2canvas(shareableCard, {
+        scale: 3, // Higher quality for social media
         backgroundColor: '#ffffff',
         logging: false,
         useCORS: true,
+        width: shareableCard.scrollWidth,
+        height: shareableCard.scrollHeight,
       });
 
       // Convert canvas to blob
       const blob = await new Promise<Blob>((resolve) => {
         canvas.toBlob((blob) => {
           resolve(blob!);
-        }, 'image/png');
+        }, 'image/png', 1.0);
       });
 
       const file = new File([blob], 'smartc24-results.png', { type: 'image/png' });
@@ -453,7 +493,7 @@ export default function QuizBattlePage() {
         try {
           await navigator.share({
             title: 'S24 Challenge Results',
-            text: '🎯 Check out my results on S24!',
+            text: '🎯 Check out my results on S24! Join me and excel in WASSCE & BECE!',
             files: [file],
           });
           toast({ title: 'Shared successfully!', description: 'Thanks for spreading the word!' });
@@ -649,19 +689,26 @@ export default function QuizBattlePage() {
     }, []);
     
     // Ensure ranks are assigned - if all ranks are 0 or undefined, sort and assign them
-    // BUT only if we have all expected results (to avoid assigning rank 1 to a single result)
+    // For 2-player challenges, assign ranks even if only 1 result exists (so we can show winner/loser when both are available)
     const expectedResultCount = (challenge?.opponents?.length || 0) + 1; // creator + opponents
     const hasRanks = uniqueResults.every((r: any) => r.rank && r.rank > 0);
-    if (!hasRanks && uniqueResults.length > 0 && uniqueResults.length >= expectedResultCount) {
-      // Sort by score (descending), then by time (ascending)
-      uniqueResults.sort((a: any, b: any) => {
-        if (b.score !== a.score) return b.score - a.score;
-        return (a.totalTime || 0) - (b.totalTime || 0);
-      });
-      // Assign ranks
-      uniqueResults.forEach((result: any, index: number) => {
-        result.rank = index + 1;
-      });
+    const challengeType = challenge?.type || '';
+    const isTwoPlayerChallenge = expectedResultCount === 2 && (challengeType === 'quick' || challengeType === 'tournament' || challengeType === 'school');
+    
+    if (!hasRanks && uniqueResults.length > 0) {
+      // For 2-player challenges, assign ranks even with 1 result (temporary rank 1, will be updated when opponent submits)
+      // For other challenges, only assign ranks if we have all expected results
+      if (isTwoPlayerChallenge || uniqueResults.length >= expectedResultCount) {
+        // Sort by score (descending), then by time (ascending)
+        uniqueResults.sort((a: any, b: any) => {
+          if (b.score !== a.score) return b.score - a.score;
+          return (a.totalTime || 0) - (b.totalTime || 0);
+        });
+        // Assign ranks
+        uniqueResults.forEach((result: any, index: number) => {
+          result.rank = index + 1;
+        });
+      }
     }
     
     console.log('[Results Debug] Unique results count:', uniqueResults.length);
@@ -823,6 +870,75 @@ export default function QuizBattlePage() {
       if (isTournament) return 'Tournament';
       if (isPractice) return 'Practice Session';
       return 'Challenge';
+    };
+
+    // Handle Play Again - rematch with same opponent for quick matches
+    const handlePlayAgain = async () => {
+      if (!challenge || !user) return;
+      
+      // For quick matches, create a rematch with the same opponent
+      if (isQuickMatch && challenge.opponents.length === 1) {
+        const currentUserId = user.uid;
+        
+        // Determine the opponent: if current user is creator, opponent is opponents[0], otherwise opponent is creator
+        let opponentPlayer: Player | undefined;
+        if (challenge.creatorId === currentUserId) {
+          // Current user is creator, opponent is in opponents array
+          const opponentData = challenge.opponents[0];
+          opponentPlayer = getPlayerProfile(opponentData.userId);
+        } else {
+          // Current user is the opponent, so the creator is the opponent for rematch
+          opponentPlayer = getPlayerProfile(challenge.creatorId);
+        }
+        
+        if (!opponentPlayer) {
+          toast({ title: 'Error', description: 'Opponent profile not found for rematch', variant: 'destructive' });
+          return;
+        }
+        
+        // Get player profile for creator info
+        const playerProfile = getPlayerProfile(currentUserId);
+        if (!playerProfile) {
+          toast({ title: 'Error', description: 'Player profile not found', variant: 'destructive' });
+          return;
+        }
+        
+        // Create new challenge with same opponent
+        const questionCount = challenge.difficulty === 'easy' ? 5 : challenge.difficulty === 'medium' ? 10 : 15;
+        const timeLimit = challenge.difficulty === 'easy' ? 30 : challenge.difficulty === 'medium' ? 45 : 60;
+        
+        const newChallenge = createChallenge({
+          type: 'quick',
+          level: challenge.level,
+          subject: challenge.subject,
+          difficulty: challenge.difficulty,
+          questionCount,
+          timeLimit,
+          creatorId: currentUserId,
+          creatorName: playerProfile.userName,
+          creatorSchool: playerProfile.school,
+          opponents: [{ userId: opponentPlayer.userId, userName: opponentPlayer.userName, school: opponentPlayer.school, status: 'invited' as const }],
+          maxPlayers: 2,
+        });
+        
+        toast({ title: 'Rematch Created!', description: `Challenging ${opponentPlayer.userName} again!` });
+        router.push(`/challenge-arena/play/${newChallenge.id}`);
+        return;
+      }
+      
+      // For other challenge types, use the default redirect behavior
+      if (isPractice) {
+        router.push(`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`);
+      } else if (isBossBattle && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss) {
+        router.push("/challenge-arena/boss-battle");
+      } else if (isSchoolBattle && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool) {
+        router.push("/challenge-arena/school-battle");
+      } else if (isTournament && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
+        router.push("/challenge-arena/tournaments");
+      } else {
+        // Default: redirect to quick-match
+        router.push("/challenge-arena/quick-match");
+      }
     };
 
     return (
@@ -1369,6 +1485,120 @@ export default function QuizBattlePage() {
             </CardContent>
           </Card>
 
+          {/* Hidden Shareable Card - Compact design for social media */}
+          <div id="shareable-results-card" className="fixed -left-[9999px] top-0 w-[800px] bg-white">
+            <div className="p-8 bg-gradient-to-br from-violet-50 via-indigo-50 to-purple-50">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 rounded-full blur-lg opacity-50"></div>
+                    <div className="relative bg-gradient-to-br from-violet-500 via-indigo-500 to-purple-500 text-white rounded-full w-16 h-16 flex items-center justify-center font-black text-xl shadow-lg">
+                      S24
+                    </div>
+                  </div>
+                  <div>
+                    <h2 className="font-black text-2xl leading-tight bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      S24 Challenge Results
+                    </h2>
+                    <p className="text-sm text-gray-600">Learn • Practice • Excel</p>
+                  </div>
+                </div>
+                <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${performance.color} flex items-center justify-center shadow-xl`}>
+                  <div className="text-4xl font-black text-white">{performance.grade}</div>
+                </div>
+              </div>
+
+              {/* Main Result - Compact for 2 players */}
+              {uniqueResults.length === 2 && myResult ? (() => {
+                const opponentResult = uniqueResults.find((r: any) => r.userId !== (user?.uid || userId));
+                const opponentAccuracy = opponentResult?.accuracy !== undefined 
+                  ? Math.round(opponentResult.accuracy) 
+                  : (opponentResult?.correctAnswers && challenge?.questions?.length 
+                    ? Math.round((opponentResult.correctAnswers / challenge.questions.length) * 100) 
+                    : 0);
+                
+                return (
+                  <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+                    <div className="flex items-center justify-center gap-8">
+                      {/* Player 1 */}
+                      <div className="text-center flex-1">
+                        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-3 ${
+                          myResult.rank === 1 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : 'bg-gradient-to-br from-blue-400 to-blue-600'
+                        }`}>
+                          <span className="text-2xl font-bold text-white">
+                            {myResult.rank === 1 ? '🥇' : '🥈'}
+                          </span>
+                        </div>
+                        <p className="font-bold text-lg mb-1">{myResult.userName || 'You'}</p>
+                        <p className="text-3xl font-black text-gray-800 mb-2">{myResult.score ?? 0}</p>
+                        <div className="text-sm text-gray-600 space-y-1">
+                          <p>{accuracy}% Accuracy</p>
+                          <p>{correctAnswers}/{totalQuestions} Correct</p>
+                        </div>
+                      </div>
+
+                      <div className="text-3xl font-bold text-gray-400">VS</div>
+
+                      {/* Player 2 */}
+                      <div className="text-center flex-1">
+                        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-3 ${
+                          opponentResult?.rank === 1 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : 'bg-gradient-to-br from-blue-400 to-blue-600'
+                        }`}>
+                          <span className="text-2xl font-bold text-white">
+                            {opponentResult?.rank === 1 ? '🥇' : '🥈'}
+                          </span>
+                        </div>
+                        <p className="font-bold text-lg mb-1">{opponentResult?.userName || 'Opponent'}</p>
+                        <p className="text-3xl font-black text-gray-800 mb-2">{opponentResult?.score ?? 0}</p>
+                        <div className="text-sm text-gray-600 space-y-1">
+                          <p>{opponentAccuracy}% Accuracy</p>
+                          <p>{opponentResult?.correctAnswers ?? 0}/{totalQuestions} Correct</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })() : (
+                <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 text-center">
+                  <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-4 ${
+                    isWin ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : 'bg-gradient-to-br from-blue-400 to-blue-600'
+                  }`}>
+                    <span className="text-4xl">
+                      {isWin ? '🏆' : '⭐'}
+                    </span>
+                  </div>
+                  <p className="font-bold text-2xl mb-2">{myResult?.userName || 'You'}</p>
+                  <p className="text-4xl font-black text-gray-800 mb-3">{myResult?.score ?? 0} Points</p>
+                  <div className="flex justify-center gap-6 text-sm text-gray-600">
+                    <div>
+                      <p className="font-semibold">{accuracy}%</p>
+                      <p>Accuracy</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">{correctAnswers}/{totalQuestions}</p>
+                      <p>Correct</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">{totalTimeSeconds}s</p>
+                      <p>Time</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Footer with app link */}
+              <div className="bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 rounded-xl p-6 text-white text-center">
+                <p className="text-xl font-bold mb-2">🎓 Join the Learning Revolution!</p>
+                <p className="text-sm opacity-90 mb-3">Practice • Compete • Excel in WASSCE & BECE</p>
+                <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 inline-block">
+                  <p className="font-mono font-bold text-lg">{typeof window !== 'undefined' ? window.location.origin : 'smartc24.com'}</p>
+                </div>
+                <p className="text-xs mt-3 opacity-75">Download the app and start your learning journey today!</p>
+              </div>
+            </div>
+          </div>
+
           {/* Leaderboard for competitive modes - Show both players immediately */}
           {!isPractice && uniqueResults.length > 0 && (
             <Card className="mb-6">
@@ -1443,38 +1673,38 @@ export default function QuizBattlePage() {
                               : result.userName?.split(' ').map((n: string) => n[0]).join('').toUpperCase() || '??'}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1">
-                          <div className="font-semibold text-lg flex items-center gap-2">
-                            {isSchoolBattle ? result.school : result.userName}
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-base sm:text-lg flex items-center gap-2 flex-wrap">
+                            <span className="truncate">{isSchoolBattle ? result.school : result.userName}</span>
                             {result.userId === (user?.uid || userId) && (
-                              <Badge variant="secondary" className="ml-1">You</Badge>
+                              <Badge variant="secondary" className="shrink-0">You</Badge>
                             )}
                             {isBossBattle && result.userId !== userId && (
-                              <Badge variant="outline" className="ml-1 border-purple-500 text-purple-500">AI</Badge>
+                              <Badge variant="outline" className="shrink-0 border-purple-500 text-purple-500">AI</Badge>
                             )}
                           </div>
                           {isSchoolBattle && result.userName && (
-                             <p className="text-xs text-muted-foreground">Represented by {result.userName}</p>
+                             <p className="text-xs text-muted-foreground truncate">Represented by {result.userName}</p>
                           )}
-                          <div className="flex items-center gap-4 mt-1 text-sm">
-                            <span className="text-muted-foreground">
+                          <div className="flex items-center gap-2 sm:gap-4 mt-1 text-xs sm:text-sm flex-wrap">
+                            <span className="text-muted-foreground whitespace-nowrap">
                               {result.correctAnswers ?? 0}/{challenge?.questions?.length || 0} correct
                             </span>
-                            <span className="text-muted-foreground">•</span>
-                            <span className="text-muted-foreground">
+                            <span className="text-muted-foreground hidden sm:inline">•</span>
+                            <span className="text-muted-foreground whitespace-nowrap">
                               {resultAccuracy}% accuracy
                             </span>
-                            <span className="text-muted-foreground">•</span>
-                            <span className="text-muted-foreground">
+                            <span className="text-muted-foreground hidden sm:inline">•</span>
+                            <span className="text-muted-foreground whitespace-nowrap">
                               {resultTimeSeconds}s
                             </span>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold">{result.score ?? 0}</p>
+                        <div className="text-right shrink-0">
+                          <p className="text-xl sm:text-2xl font-bold">{result.score ?? 0}</p>
                           <p className="text-xs text-muted-foreground mb-1">points</p>
                           {!isBossBattle && result.ratingChange !== undefined && (
-                            <p className={`text-sm flex items-center justify-end gap-1 ${
+                            <p className={`text-xs sm:text-sm flex items-center justify-end gap-1 ${
                               result.ratingChange > 0 ? 'text-green-600' :
                               result.ratingChange < 0 ? 'text-red-600' : 'text-muted-foreground'
                             }`}>
@@ -1635,28 +1865,17 @@ export default function QuizBattlePage() {
                 Back to Arena
               </Button>
             </Link>
-            <Link href={
-              isPractice ? `/challenge-arena/practice?level=${challenge?.level || 'JHS'}` :
-              isBossBattle && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss ? "/challenge-arena/boss-battle" :
-              isSchoolBattle && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool ? "/challenge-arena/school-battle" :
-              isTournament && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament ? "/challenge-arena/tournaments" :
-              // Friend challenges are stored as 'quick' type but can be detected:
-              // Quick matches always have timeLimit: 120, friend challenges have 30/45/60
-              // If it's a quick match with 1 opponent and timeLimit !== 120, it's a friend challenge
-              (isQuickMatch && challenge?.opponents?.length === 1 && challenge?.maxPlayers === 2 && 
-               challenge?.timeLimit !== 120)
-                ? "/challenge-arena/create?type=friend"
-                : "/challenge-arena/quick-match"
-            } className="w-full">
-              <Button className="w-full h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70">
-                <RotateCcw className="h-4 w-4 mr-2" />
-                {isPractice ? "Practice Again" :
-                 isBossBattle ? (isWin ? "Next Boss" : "Rematch") :
-                 isSchoolBattle ? "Defend Again" :
-                 isTournament ? "View Tournaments" :
-                 "Play Again"}
-              </Button>
-            </Link>
+            <Button 
+              onClick={handlePlayAgain}
+              className="w-full h-12 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              {isPractice ? "Practice Again" :
+               isBossBattle ? (isWin ? "Next Boss" : "Rematch") :
+               isSchoolBattle ? "Defend Again" :
+               isTournament ? "View Tournaments" :
+               "Play Again"}
+            </Button>
           </div>
 
           {/* Share Results Card - Enhanced for different types */}

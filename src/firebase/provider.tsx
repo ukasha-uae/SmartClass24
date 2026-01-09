@@ -1,13 +1,14 @@
 
 'use client';
 
-import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
+import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect, useRef } from 'react';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 import { initiateAnonymousSignIn, migrateLocalAttemptsToFirestore } from './non-blocking-login';
 import { syncSubscriptionFromFirestore } from '@/lib/monetization';
+import { startPresenceHeartbeat } from '@/lib/user-presence';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -73,6 +74,9 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     isUserLoading: true, // Start loading until first auth event
     userError: null,
   });
+  
+  // Ref to store presence heartbeat cleanup function
+  const presenceCleanupRef = useRef<(() => void) | null>(null);
 
   // Effect to subscribe to Firebase auth state changes
   useEffect(() => {
@@ -82,16 +86,26 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     }
 
     setUserAuthState({ user: null, isUserLoading: true, userError: null }); // Reset on auth instance change
-
+    
     const unsubscribe = onAuthStateChanged(
       auth,
       async (firebaseUser) => { // Auth state determined
         console.log('[Auth] Auth state changed:', firebaseUser ? `User ${firebaseUser.uid} (${firebaseUser.isAnonymous ? 'anonymous' : 'email'})` : 'No user');
+        
+        // Clean up previous presence heartbeat if user changed
+        if (presenceCleanupRef.current) {
+          presenceCleanupRef.current();
+          presenceCleanupRef.current = null;
+        }
+        
         setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         
-        // If we've just signed in, sync data from Firestore
+        // If we've just signed in, sync data from Firestore and start presence heartbeat
         if (firebaseUser && firestore) {
           try { 
+            // Start global presence heartbeat (runs on all pages for authenticated users)
+            presenceCleanupRef.current = startPresenceHeartbeat(firebaseUser.uid);
+            
             // Migrate local quiz attempts to Firestore
             migrateLocalAttemptsToFirestore(auth, firestore);
             // Sync subscription from Firestore to localStorage (for cross-device sync)
@@ -130,6 +144,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         }
       }
     );
+    
     // After subscribing, if we don't have a user and the auth object exists, ensure anonymous signin is attempted
     if (auth) {
       // Wait a bit for the auth state to settle, then attempt anonymous sign-in if no user
@@ -163,8 +178,16 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       
       checkAndSignIn();
     }
-    return () => unsubscribe(); // Cleanup
-  }, [auth]); // Depends on the auth instance
+    
+    // Cleanup function
+    return () => {
+      unsubscribe();
+      if (presenceCleanupRef.current) {
+        presenceCleanupRef.current();
+        presenceCleanupRef.current = null;
+      }
+    };
+  }, [auth, firestore]); // Depends on the auth instance and firestore
 
   // Memoize the context value
   const contextValue = useMemo((): FirebaseContextState => {

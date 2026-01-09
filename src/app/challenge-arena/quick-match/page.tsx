@@ -26,12 +26,15 @@ import {
 } from '@/lib/challenge';
 import { useFirebase } from '@/firebase/provider';
 import { useSoundEffects } from '@/hooks/use-sound-effects';
+import { useToast } from '@/hooks/use-toast';
 import { startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
+import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions';
 
 export default function QuickMatchPage() {
   const router = useRouter();
   const { user, firestore } = useFirebase();
   const { playSound } = useSoundEffects();
+  const { toast } = useToast();
   
   const [player, setPlayer] = useState<Player | null>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -44,41 +47,8 @@ export default function QuickMatchPage() {
   const [subject, setSubject] = useState('');
   const [classLevel, setClassLevel] = useState<string>(''); // Will be set based on player level
   
-  // Get subjects based on player's education level
-  const getSubjectsForLevel = (level: 'Primary' | 'JHS' | 'SHS') => {
-    if (level === 'Primary') {
-      return [
-        'English Language',
-        'Mathematics',
-        'Science',
-        'Social Studies',
-        'Computing',
-        'Creative Arts'
-      ];
-    } else if (level === 'SHS') {
-      return [
-        'Core Mathematics',
-        'English Language',
-        'Integrated Science',
-        'Social Studies',
-      ];
-    } else {
-      return [
-        'Mathematics',
-        'English Language',
-        'Integrated Science',
-        'Social Studies',
-        'Religious & Moral Education',
-        'Creative Arts',
-        'French',
-        'Local Language',
-        'ICT',
-        'Career Technology'
-      ];
-    }
-  };
-  
-  const subjects = player ? getSubjectsForLevel(player.level || 'JHS') : [];
+  // Get subjects based on player's education level - use the same function as Challenge a Friend
+  const subjects = player ? getAvailableSubjects(player.level || 'JHS').filter(s => s !== 'Mixed') : [];
 
   // Get class levels based on education level
   const getClassLevels = (level: 'Primary' | 'JHS' | 'SHS') => {
@@ -210,7 +180,7 @@ export default function QuickMatchPage() {
       setPlayer(playerProfile);
       // Set default subject based on player's level
       if (!subject) {
-        const defaultSubjects = getSubjectsForLevel(playerProfile.level || 'JHS');
+        const defaultSubjects = getAvailableSubjects(playerProfile.level || 'JHS').filter(s => s !== 'Mixed');
         setSubject(defaultSubjects[0] || 'Mathematics');
       }
       // Set default class level based on player's level
@@ -266,11 +236,15 @@ export default function QuickMatchPage() {
     // Use ONLY real online players from Firestore - NO mock players
     const availablePlayers = onlinePlayers.filter(p => p.userId !== user?.uid);
     
-    // If no real online players available, show message and stop searching
+    // If no real online players available, stop searching and show message
     if (availablePlayers.length === 0) {
       setIsSearching(false);
       setMatchFound(false);
-      alert('No online opponents available right now. Please try again later when more players are online.');
+      toast({
+        title: 'No Opponents Available',
+        description: 'No online players are available right now. Please try again later when more players are online.',
+        variant: 'default',
+      });
       return;
     }
     
@@ -318,7 +292,11 @@ export default function QuickMatchPage() {
       // No opponents available (should not happen but safety check)
       setIsSearching(false);
       setMatchFound(false);
-      alert('No online opponents available right now. Please try again later when more players are online.');
+      toast({
+        title: 'No Opponents Available',
+        description: 'No online players are available right now. Please try again later when more players are online.',
+        variant: 'default',
+      });
     }
   };
 
@@ -613,27 +591,6 @@ export default function QuickMatchPage() {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Searching Animation */}
-        {isSearching && !opponent && (
-          <Card className="mb-6 border-2 border-primary">
-            <CardContent className="p-12 text-center">
-              <Loader2 className="h-16 w-16 animate-spin text-primary mx-auto mb-4" />
-              <h2 className="text-2xl font-bold mb-2">Searching for opponent...</h2>
-              <p className="text-muted-foreground mb-6">
-                Finding someone near your skill level
-              </p>
-              <div className="flex flex-wrap justify-center gap-2 mb-6">
-                <Badge variant="outline">Rating: {player.rating} ±100</Badge>
-                <Badge variant="outline">{subject}</Badge>
-                <Badge variant="outline">{classLevel}</Badge>
-              </div>
-              <Button variant="outline" onClick={handleCancel}>
-                Cancel Search
-              </Button>
             </CardContent>
           </Card>
         )}
