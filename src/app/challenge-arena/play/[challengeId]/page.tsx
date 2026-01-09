@@ -752,8 +752,8 @@ export default function QuizBattlePage() {
     console.log('[Results Debug] Unique results:', uniqueResults.map((r: any) => ({ userId: r.userId, userName: r.userName, score: r.score, rank: r.rank })));
     console.log('[Results Debug] Expected results:', challenge?.opponents?.length + 1, '(creator +', challenge?.opponents?.length, 'opponents)');
 
-    // CRITICAL: Detect incomplete matches (when not all players have submitted results)
-    // This prevents showing one player's result to another player
+    // ASYNC MODEL: Detect if match is complete (both players have submitted) vs incomplete (only one player has submitted)
+    const isMatchComplete = challenge?.status === 'completed';
     const isMatchIncomplete = uniqueResults.length < expectedResultCount;
     const allPlayerIds = [
       challenge?.creatorId,
@@ -1308,8 +1308,8 @@ export default function QuizBattlePage() {
                   </div>
                 </div>
 
-                {/* Head-to-Head Comparison for 2 Players */}
-                {!isPractice && uniqueResults.length === 2 ? (
+                {/* Head-to-Head Comparison for 2 Players - Only show when match is COMPLETE (both players finished) */}
+                {!isPractice && isMatchComplete && uniqueResults.length === 2 ? (
                   <div className="mt-6 space-y-4">
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
                       <div className="flex-1 w-full sm:w-auto">

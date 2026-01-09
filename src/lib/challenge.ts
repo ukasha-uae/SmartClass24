@@ -1068,7 +1068,7 @@ export const submitChallengeAnswers = async (
     }
   }
   
-  // Check if all players finished
+  // Check if all players finished (for 2-player challenges: creator + 1 opponent)
   const creatorFinished = challenge.results.some(r => r.userId === challenge.creatorId);
   const allOpponentsFinished = challenge.opponents.length === 0 || challenge.opponents.every(o => o.status === 'finished');
   const allFinished = creatorFinished && allOpponentsFinished;
@@ -1102,10 +1102,20 @@ export const submitChallengeAnswers = async (
             mergedResults.push(resultData);
           }
           
+          // ASYNC MODEL: Only mark as completed if ALL players have finished
+          // Keep status as 'in-progress' until both players submit their results
+          let finalStatus = challenge.status;
+          if (allFinished && challenge.status !== 'completed') {
+            finalStatus = 'completed';
+          }
+          
           // Update the challenge with merged results
           const challengeData = removeUndefinedValues({
             ...challenge,
             results: mergedResults,
+            status: finalStatus,
+            // Only set completedAt when all players have finished
+            completedAt: allFinished ? (challenge.completedAt || new Date().toISOString()) : challenge.completedAt,
             updatedAt: serverTimestamp(),
           });
           
@@ -1114,10 +1124,23 @@ export const submitChallengeAnswers = async (
         
         // CRITICAL: Update the local challenge object with merged results so it's returned correctly
         challenge.results = mergedResults;
+        
+        // ASYNC MODEL: Only complete challenge (calculate ranks, ratings) when ALL players have finished
+        if (allFinished && challenge.status !== 'completed') {
+          completeChallenge(challenge);
+          // Refresh from localStorage after completeChallenge updates it
+          const freshChallenges = getAllChallenges();
+          const updatedChallenge = freshChallenges.find(c => c.id === challengeId);
+          if (updatedChallenge) {
+            challenge = updatedChallenge;
+          }
+        }
+        
         challenges[challengeIndex] = challenge;
         localStorage.setItem('challenges', JSON.stringify(challenges));
         
         console.log('[Submit Answers] ✅ Results saved to Firestore via transaction. Total results:', mergedResults.length);
+        console.log('[Submit Answers] All players finished:', allFinished, 'Status:', challenge.status);
       } else {
         // Fallback to regular save if transaction fails
         await saveChallengeToFirestore(challenge).catch(err => {
@@ -1131,16 +1154,20 @@ export const submitChallengeAnswers = async (
         console.error('Failed to save challenge results to Firestore:', err);
       });
     }
+  } else {
+    // Server-side: Complete challenge immediately if all finished (for AI/automated scenarios)
+    if (allFinished && challenge.status !== 'completed') {
+      completeChallenge(challenge);
+      // Get the freshly saved challenge after completeChallenge
+      const freshChallenges = getAllChallenges();
+      const updatedChallenge = freshChallenges.find(c => c.id === challengeId);
+      if (updatedChallenge) {
+        return updatedChallenge;
+      }
+    }
   }
   
-  if (allFinished && challenge.status !== 'completed') {
-    completeChallenge(challenge);
-    // Get the freshly saved challenge after completeChallenge
-    const freshChallenges = getAllChallenges();
-    return freshChallenges.find(c => c.id === challengeId) || challenge;
-  }
-  
-  // Return the updated challenge
+  // Return the updated challenge (may be incomplete if not all players finished)
   return challenges[challengeIndex];
 };
 
