@@ -685,9 +685,29 @@ export default function QuizBattlePage() {
     // Get current user ID - use user.uid with fallback for testing scenarios
     const userId = user?.uid || 'test-user-1';
     
-    // Use challenge.results as primary source (from Firestore, contains all players)
-    // Fall back to results state if challenge.results is not available yet
-    const allResults = challenge?.results || results || [];
+    // CRITICAL: Always use challenge.results as primary source (from Firestore, contains all players)
+    // Merge with results state to ensure we have the most up-to-date data
+    // This ensures we always show both players' results even if state updates are out of sync
+    let allResults: any[] = [];
+    
+    // Start with challenge.results (most authoritative, from Firestore)
+    if (challenge?.results && challenge.results.length > 0) {
+      allResults = [...challenge.results];
+    }
+    
+    // Merge with results state (local state, might have more recent data)
+    if (results && Array.isArray(results) && results.length > 0) {
+      results.forEach((result: any) => {
+        const existingIndex = allResults.findIndex(r => r.userId === result.userId);
+        if (existingIndex > -1) {
+          // Update existing result with newer data
+          allResults[existingIndex] = result;
+        } else {
+          // Add new result
+          allResults.push(result);
+        }
+      });
+    }
     
     console.log('[Results Debug] Current user:', user?.uid);
     console.log('[Results Debug] Challenge ID:', challenge?.id);
