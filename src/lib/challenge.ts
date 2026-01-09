@@ -7,7 +7,7 @@ import { getCoinMultiplier, getQuestionLimit } from './monetization';
 import { trackQuestionUsage } from './analytics';
 import { createUserNotification } from './realtime-notifications';
 import { initializeFirebase } from '@/firebase';
-import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, onSnapshot, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, onSnapshot, serverTimestamp, runTransaction } from 'firebase/firestore';
 
 export interface Player {
   userId: string;
@@ -1077,11 +1077,53 @@ export const submitChallengeAnswers = async (
   challenges[challengeIndex] = challenge;
   localStorage.setItem('challenges', JSON.stringify(challenges));
   
-  // Save to Firestore so both players can see updated results
+  // CRITICAL: Save to Firestore using transaction to ensure we merge results correctly
+  // This prevents race conditions where one player's result overwrites another's
   if (typeof window !== 'undefined') {
-    await saveChallengeToFirestore(challenge).catch(err => {
-      console.error('Failed to save challenge results to Firestore:', err);
-    });
+    try {
+      const { firestore } = initializeFirebase();
+      if (firestore) {
+        const challengeRef = doc(firestore, 'challenges', challengeId);
+        await runTransaction(firestore, async (transaction) => {
+          // Fetch the latest challenge data from Firestore
+          const challengeDoc = await transaction.get(challengeRef);
+          const latestChallenge = challengeDoc.exists() ? challengeDoc.data() as Challenge : null;
+          
+          // Merge results: combine existing Firestore results with our new result
+          const mergedResults = latestChallenge?.results ? [...latestChallenge.results] : [];
+          
+          // Find and update/insert our result
+          const existingIndex = mergedResults.findIndex(r => r.userId === userId);
+          if (existingIndex > -1) {
+            mergedResults[existingIndex] = resultData;
+          } else {
+            mergedResults.push(resultData);
+          }
+          
+          // Update the challenge with merged results
+          const challengeData = removeUndefinedValues({
+            ...challenge,
+            results: mergedResults,
+            updatedAt: serverTimestamp(),
+          });
+          
+          transaction.set(challengeRef, challengeData, { merge: true });
+        });
+        
+        console.log('[Submit Answers] ✅ Results saved to Firestore via transaction. Total results:', challenge.results.length);
+      } else {
+        // Fallback to regular save if transaction fails
+        await saveChallengeToFirestore(challenge).catch(err => {
+          console.error('Failed to save challenge results to Firestore:', err);
+        });
+      }
+    } catch (err) {
+      console.error('Transaction failed, falling back to regular save:', err);
+      // Fallback to regular save
+      await saveChallengeToFirestore(challenge).catch(err => {
+        console.error('Failed to save challenge results to Firestore:', err);
+      });
+    }
   }
   
   if (allFinished && challenge.status !== 'completed') {
