@@ -14,7 +14,7 @@ import {
   ChevronRight, Home, RotateCcw, BrainCircuit, Users,
   Volume2, VolumeX, Flame, Star, Sparkles, Medal,
   BookOpen, Lightbulb, TrendingDownIcon, BarChart3,
-  Share2, Download, Camera, Globe
+  Share2, Download, Camera, Globe, AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
 import confetti from 'canvas-confetti';
@@ -752,32 +752,31 @@ export default function QuizBattlePage() {
     console.log('[Results Debug] Unique results:', uniqueResults.map((r: any) => ({ userId: r.userId, userName: r.userName, score: r.score, rank: r.rank })));
     console.log('[Results Debug] Expected results:', challenge?.opponents?.length + 1, '(creator +', challenge?.opponents?.length, 'opponents)');
 
-    // Find current user's result - prioritize exact userId match
+    // CRITICAL: Detect incomplete matches (when not all players have submitted results)
+    // This prevents showing one player's result to another player
+    const isMatchIncomplete = uniqueResults.length < expectedResultCount;
+    const allPlayerIds = [
+      challenge?.creatorId,
+      ...(challenge?.opponents?.map((o: any) => o.userId) || [])
+    ].filter(Boolean);
+    const completedPlayerIds = uniqueResults.map((r: any) => r.userId);
+    const incompletePlayerIds = allPlayerIds.filter(id => !completedPlayerIds.includes(id));
+
+    // Find current user's result - STRICT matching by userId only (no fallbacks that could show wrong player's result)
     let myResult = null;
     
-    if (uniqueResults.length > 0 && user?.uid) {
-      // Primary match: exact userId match using user.uid (not fallback)
+    if (user?.uid) {
+      // CRITICAL: Only match by exact userId - never use fallbacks that could show another player's result
       myResult = uniqueResults.find((r: any) => r.userId === user.uid);
       
-      // Fallback 1: Match by creatorId if we're the creator
-      if (!myResult && challenge && user.uid === challenge.creatorId) {
-        myResult = uniqueResults.find((r: any) => r.userId === challenge.creatorId);
-      }
-      
-      // Fallback 2: Match by opponent userId if we're an opponent
-      if (!myResult && challenge) {
-        const opponent = challenge.opponents.find(o => o.userId === user.uid);
-        if (opponent) {
-          myResult = uniqueResults.find((r: any) => r.userId === opponent.userId);
-        }
+      // Log if user doesn't have a result (incomplete match scenario)
+      if (!myResult && isMatchIncomplete) {
+        console.log('[Results Debug] Match incomplete - current user has not submitted results:', user.uid);
       }
     }
     
-    // If still no match and using fallback userId, try to find by position
-    if (!myResult && uniqueResults.length > 0 && userId === 'test-user-1') {
-      // Last resort: use first result for testing
-      myResult = uniqueResults[0];
-    }
+    // SAFETY: Never use fallback to first result - this could show wrong player's data
+    // If user has no result, myResult remains null and we'll show incomplete match UI
     const ratingChange = myResult?.ratingChange || 0;
     const isWin = myResult?.rank === 1;
     const isPodium = myResult?.rank <= 3;
@@ -787,8 +786,7 @@ export default function QuizBattlePage() {
     const isQuickMatch = challenge.type === 'quick';
     const isTournament = challenge.type === 'tournament';
 
-    // Calculate performance metrics with fallback values
-    // Use accuracy from result if available, otherwise calculate from correctAnswers
+    // Calculate performance metrics - ONLY if myResult exists (prevents showing wrong player's stats)
     const correctAnswers = myResult?.correctAnswers ?? 0;
     const totalQuestions = challenge?.questions?.length || 1; // Prevent division by zero
     const accuracy = myResult?.accuracy !== undefined 
