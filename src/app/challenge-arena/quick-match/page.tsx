@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/select';
 import {
   getPlayerProfile,
-  getAllPlayers,
   createChallenge,
   acceptChallenge,
   startChallenge,
@@ -252,23 +251,14 @@ export default function QuickMatchPage() {
   const findOpponent = () => {
     if (!player) return;
 
-    // Use real online players from Firestore
+    // Use ONLY real online players from Firestore - NO mock players
     const availablePlayers = onlinePlayers.filter(p => p.userId !== user?.uid);
     
-    // If no online players available, fall back to mock players
+    // If no real online players available, show message and stop searching
     if (availablePlayers.length === 0) {
-      const mockPlayers = getAllPlayers().filter(p => p.userId !== (user?.uid || 'test-user-1'));
-      if (mockPlayers.length === 0) {
-        setIsSearching(false);
-        alert('No online opponents available right now. Please try again later.');
-        return;
-      }
-      // Use mock players as fallback
-      const randomOpponent = mockPlayers[Math.floor(Math.random() * mockPlayers.length)];
-      setOpponent(randomOpponent);
-      setMatchFound(true);
-      setCountdown(10);
-      playSound('matchFound');
+      setIsSearching(false);
+      setMatchFound(false);
+      alert('No online opponents available right now. Please try again later when more players are online.');
       return;
     }
     
@@ -304,7 +294,7 @@ export default function QuickMatchPage() {
       matched = availablePlayers;
     }
     
-    // Pick random opponent from matched players
+    // Pick random opponent from matched players (all are real online users)
     if (matched.length > 0) {
       const randomOpponent = matched[Math.floor(Math.random() * matched.length)];
       setOpponent(randomOpponent);
@@ -313,9 +303,10 @@ export default function QuickMatchPage() {
       // Play match found sound
       playSound('matchFound');
     } else {
-      // No opponents available
+      // No opponents available (should not happen but safety check)
       setIsSearching(false);
-      alert('No online opponents available right now. Please try again later.');
+      setMatchFound(false);
+      alert('No online opponents available right now. Please try again later when more players are online.');
     }
   };
 
