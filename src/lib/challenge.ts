@@ -1614,7 +1614,7 @@ const generateGameQuestions = (
       question: q.question,
       points,
       explanation: q.explanation || '',
-      source: level === 'JHS' ? 'bece' : 'wassce' as 'bece' | 'practice',
+      source: level === 'Primary' ? 'practice' : level === 'JHS' ? 'bece' : 'wassce' as 'bece' | 'wassce' | 'practice',
       year: (q as any).year || finalYear || undefined, // Use actual year from question, or extract from ID
       questionNumber: questionNumber || undefined, // Keep for backward compatibility
       paper: finalPaper, // Paper 1 or 2 (inferred from type if not explicit)

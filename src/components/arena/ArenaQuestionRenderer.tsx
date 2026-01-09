@@ -47,10 +47,15 @@ export default function ArenaQuestionRenderer({
   // - Always requires a year (so students can verify recency)
   // - Shows paper number whenever it's available
   // - Shows question number only when explicitly verified from WAEC
+  // - Primary students (source='practice') should NEVER see WASSCE/BECE badges
   const renderQuestionIdentity = () => {
+    // Don't show badge for Primary/practice questions
+    if (question.source === 'practice') return null;
+    
+    // Only show badge if we have a year
     if (!question.year) return null;
 
-    // Treat anything that's not BECE as WASSCE in this context
+    // JHS shows BECE, SHS shows WASSCE
     const examType = question.source === 'bece' ? 'BECE' : 'WASSCE';
     const displayYear = question.year;
     const displayPaper = question.paper;
