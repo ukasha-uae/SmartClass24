@@ -87,30 +87,29 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
 
     // CRITICAL: Set persistence to LOCAL before setting up auth listener
     // This ensures users stay logged in across browser sessions
-    const setPersistenceAsync = async () => {
+    let unsubscribe: (() => void) | null = null;
+    
+    const initializeAuth = async () => {
       try {
-        const { setPersistence, browserLocalPersistence } = await import('firebase/auth');
+        const { setPersistence, browserLocalPersistence, onAuthStateChanged } = await import('firebase/auth');
+        
+        // WAIT for persistence to be set before setting up listener
         await setPersistence(auth, browserLocalPersistence);
         console.log('[Auth] Persistence set to LOCAL - users will stay logged in');
-      } catch (error) {
-        console.warn('[Auth] Failed to set persistence (will use default):', error);
-      }
-    };
-    
-    setPersistenceAsync();
-
-    setUserAuthState({ user: null, isUserLoading: true, userError: null }); // Reset on auth instance change
-    
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      async (firebaseUser) => { // Auth state determined
+        
+        setUserAuthState({ user: null, isUserLoading: true, userError: null }); // Reset on auth instance change
+        
+        unsubscribe = onAuthStateChanged(
+          auth,
+          async (firebaseUser) => { // Auth state determined
         console.log('[Auth] Auth state changed:', firebaseUser ? `User ${firebaseUser.uid} (${firebaseUser.isAnonymous ? 'anonymous' : 'email'})` : 'No user');
         
-        // Clean up previous presence heartbeat if user changed
-        if (presenceCleanupRef.current) {
-          presenceCleanupRef.current();
-          presenceCleanupRef.current = null;
-        }
+            // Log persistence state for debugging
+            if (typeof window !== 'undefined') {
+              const persistedUser = window.localStorage.getItem(`firebase:authUser:${auth.config.apiKey}:[DEFAULT]`);
+              console.log('[Auth] Persisted user in localStorage:', persistedUser ? 'EXISTS' : 'NONE');
+            }
+            
         
         setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         
@@ -183,45 +182,53 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         // REMOVED: Don't sign in anonymously on errors - this can interrupt real user sessions
       }
     );
-    
-    // After subscribing, if we don't have a user and the auth object exists, ensure anonymous signin is attempted
-    if (auth) {
-      // Wait longer for the auth state to fully load from persistence before attempting anonymous sign-in
-      const checkAndSignIn = async () => {
-        // CRITICAL: Wait 3 seconds for Firebase to load persisted session
-        // This prevents signing in anonymously while a real user session is being restored
-        await new Promise(resolve => setTimeout(resolve, 3000));
         
-        // Check again if still no user after auth state has fully settled
-        if (!auth.currentUser) {
-          try {
-            console.log('[Auth] No user after 3s, initiating anonymous sign-in...');
-            initiateAnonymousSignIn(auth);
-          } catch (err) {
-            console.error('[Auth] Error initiating anonymous sign-in', err);
-            // Single retry after longer delay
-            setTimeout(() => {
-              if (!auth.currentUser) {
-                try {
-                  console.log('[Auth] Retrying anonymous sign-in...');
-                  initiateAnonymousSignIn(auth);
-                } catch (retryErr) {
-                  console.error('[Auth] Retry failed:', retryErr);
+        // After subscribing, if we don't have a user and the auth object exists, ensure anonymous signin is attempted
+        // Wait longer for the auth state to fully load from persistence before attempting anonymous sign-in
+        const checkAndSignIn = async () => {
+          // CRITICAL: Wait 5 seconds for Firebase to load persisted session
+          // This prevents signing in anonymously while a real user session is being restored
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          
+          // Check again if still no user after auth state has fully settled
+          if (!auth.currentUser) {
+            try {
+              console.log('[Auth] No user after 5s, initiating anonymous sign-in...');
+              initiateAnonymousSignIn(auth);
+            } catch (err) {
+              console.error('[Auth] Error initiating anonymous sign-in', err);
+              // Single retry after longer delay
+              setTimeout(() => {
+                if (!auth.currentUser) {
+                  try {
+                    console.log('[Auth] Retrying anonymous sign-in...');
+                    initiateAnonymousSignIn(auth);
+                  } catch (retryErr) {
+                    console.error('[Auth] Retry failed:', retryErr);
+                  }
                 }
-              }
-            }, 3000);
+              }, 3000);
+            }
+          } else {
+            console.log('[Auth] User already signed in:', auth.currentUser.uid, auth.currentUser.isAnonymous ? '(anonymous)' : '(email)');
           }
-        } else {
-          console.log('[Auth] User already signed in:', auth.currentUser.uid, auth.currentUser.isAnonymous ? '(anonymous)' : '(email)');
-        }
-      };
-      
-      checkAndSignIn();
-    }
+        };
+        
+        checkAndSignIn();
+        
+      } catch (error) {
+        console.error('[Auth] Failed to initialize auth:', error);
+        setUserAuthState({ user: null, isUserLoading: false, userError: error as Error });
+      }
+    };
+    
+    initializeAuth();
     
     // Cleanup function
     return () => {
-      unsubscribe();
+      if (unsubscribe) {
+        unsubscribe();
+      }
       if (presenceCleanupRef.current) {
         presenceCleanupRef.current();
         presenceCleanupRef.current = null;

@@ -28,6 +28,8 @@ import {
   SchoolRanking, 
   Player 
 } from '@/lib/challenge';
+import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
+import type { EducationLevel } from '@/lib/challenge-questions-exports';
 import { GHANA_SCHOOLS } from '@/lib/schools';
 import { getSchoolsByCountry, getAllMultiCountrySchools } from '@/lib/schools-multi-country';
 import { useLocalization } from '@/hooks/useLocalization';
@@ -35,35 +37,6 @@ import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
-
-// Get subjects based on education level
-const getSubjectsForLevel = (level: 'Primary' | 'JHS' | 'SHS') => {
-  if (level === 'Primary') {
-    return ['English Language', 'Mathematics', 'Science', 'Social Studies', 'Computing', 'Creative Arts'];
-  } else if (level === 'SHS') {
-    // All SHS programs and subjects
-    return [
-      // Core Subjects
-      'Core Mathematics', 'English Language', 'Integrated Science', 'Social Studies',
-      // General Science
-      'Physics', 'Chemistry', 'Biology', 'Elective Mathematics',
-      // General Arts
-      'Literature in English', 'History', 'Geography', 'Economics', 'Government',
-      // Business
-      'Accounting', 'Business Management', 'Cost Accounting',
-      // Visual Arts
-      'General Knowledge in Art', 'Textiles', 'Graphic Design',
-      // Home Economics
-      'Food and Nutrition', 'Management in Living', 'Clothing and Textiles',
-      // Agricultural Science
-      'Agricultural Science', 'Crop Husbandry', 'Animal Husbandry',
-      // Technical
-      'Technical Drawing', 'Building Construction', 'Woodwork', 'Metalwork', 'Electronics', 'Auto Mechanics'
-    ];
-  } else {
-    return ['Mathematics', 'English Language', 'Integrated Science', 'Social Studies', 'RME', 'Creative Arts', 'French', 'Local Language', 'ICT'];
-  }
-};
 
 export default function SchoolBattlePage() {
   const router = useRouter();
@@ -110,8 +83,8 @@ export default function SchoolBattlePage() {
       const schoolData = filteredRankings.find(r => r.school === currentPlayer.school);
       setMySchool(schoolData || null);
       
-      // Set default subject based on player level
-      const subjects = getSubjectsForLevel(playerLevel);
+      // Set default subject based on player level (dynamic from question bank)
+      const subjects = getAvailableSubjects(playerLevel as EducationLevel);
       setSelectedSubject(subjects[0]);
     }
   }, [country, user]);
@@ -341,7 +314,7 @@ export default function SchoolBattlePage() {
                     <SelectValue placeholder="Select subject" />
                   </SelectTrigger>
                   <SelectContent>
-                    {getSubjectsForLevel(player?.level || 'JHS').map((subject) => (
+                    {getAvailableSubjects((player?.level || 'JHS') as EducationLevel).map((subject) => (
                       <SelectItem key={subject} value={subject}>
                         {subject}
                       </SelectItem>

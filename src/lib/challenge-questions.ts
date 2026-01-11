@@ -17550,7 +17550,9 @@ export function getChallengeQuestions(
       filtered = [...filtered, ...beceConverted];
     } else if (subject === 'Arabic') {
       // Start with modular JHS Arabic questions
+      console.log('[DEBUG] JHS Arabic handler triggered. jhsArabicQuestions count:', jhsArabicQuestions.length);
       filtered = filterMCQQuestions(jhsArabicQuestions);
+      console.log('[DEBUG] After filterMCQQuestions, filtered count:', filtered.length);
       // Also get questions from bece-questions.ts
       let beceDifficulty: QuestionDifficulty = 'medium';
       if (classLevel === 'JHS 1') beceDifficulty = 'easy';
@@ -17559,6 +17561,7 @@ export function getChallengeQuestions(
       else if (legacyDifficulty) beceDifficulty = legacyDifficulty;
       
       const beceQuestions = getJHSQuestions(count, 'Arabic' as JHSSubject, beceDifficulty);
+      console.log('[DEBUG] BECE Arabic questions fetched:', beceQuestions.length);
       const beceConverted = beceQuestions.map(q => {
         let mappedClassLevel: ClassLevel | undefined = undefined;
         if (classLevel) {
@@ -17583,8 +17586,11 @@ export function getChallengeQuestions(
           topic: q.topic
         };
       });
-      filtered = [...filtered, ...beceConverted];
+      console.log('[DEBUG] Total Arabic questions after merge:', filtered.length);
+      console.log('[DEBUG] Sample Arabic question:', filtered[0]?.question.substring(0, 50));
     } else {
+      // For other subjects, use bece-questions.ts
+      console.log('[DEBUG] JHS fallback handler triggered for subject:', subject);
       // For other subjects, use bece-questions.ts
       let mappedSubject = subject;
       
@@ -17799,6 +17805,7 @@ export function getAvailableSubjects(level: EducationLevel): string[] {
       'English Language',
       'Science',
       'Social Studies',
+      'RME',
       'ICT',
       'Creative Arts',
       'French',

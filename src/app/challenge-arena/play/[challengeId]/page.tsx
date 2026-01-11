@@ -26,6 +26,7 @@ import {
   submitChallengeAnswers,
   completeChallenge,
   acceptChallenge,
+  declineChallenge,
   createChallenge,
   Challenge,
   GameQuestion,
@@ -643,6 +644,28 @@ export default function QuizBattlePage() {
       }
     };
     
+    const handleDeclineChallenge = async () => {
+      if (!challenge) return;
+      try {
+        const success = await declineChallenge(challenge.id, userId);
+        if (success) {
+          toast({ 
+            title: 'Challenge Declined', 
+            description: 'You have declined this challenge. The creator will be notified.' 
+          });
+          // Navigate back to challenge arena after a short delay
+          setTimeout(() => {
+            router.push('/challenge-arena');
+          }, 1500);
+        } else {
+          toast({ title: 'Error', description: 'Failed to decline challenge', variant: 'destructive' });
+        }
+      } catch (error) {
+        console.error('Error declining challenge:', error);
+        toast({ title: 'Error', description: 'Failed to decline challenge', variant: 'destructive' });
+      }
+    };
+    
     return (
       <div className="container mx-auto p-6 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <div className="mb-8 relative">
@@ -675,7 +698,7 @@ export default function QuizBattlePage() {
               {challenge?.creatorName} from {challenge?.creatorSchool} has invited you to a {challenge?.subject} challenge on SmartClass24 (S24).
             </p>
             <div className="flex gap-4">
-              <Button variant="outline" onClick={() => router.push('/challenge-arena')}>
+              <Button variant="outline" onClick={handleDeclineChallenge}>
                 Decline
               </Button>
               <Button onClick={handleAcceptChallenge} size="lg">

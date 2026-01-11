@@ -396,12 +396,16 @@ export default function LocalizedChallengeArenaPage() {
   };
 
   const pendingChallenges = challenges.filter(c => 
-    c.status === 'pending' && c.opponents.some(o => o.userId === (user?.uid || 'user-1') && o.status === 'invited')
+    c.status === 'pending' && 
+    c.opponents.some(o => o.userId === (user?.uid || 'user-1') && o.status === 'invited')
   );
 
   const activeChallenges = challenges.filter(c => 
     c.status === 'accepted' || c.status === 'in-progress'
   );
+
+  // Show expired/declined challenges separately so users know what happened
+  const expiredChallenges = challenges.filter(c => c.status === 'expired');
 
   const completedChallenges = challenges.filter(c => c.status === 'completed');
 

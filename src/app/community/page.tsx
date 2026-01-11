@@ -21,10 +21,25 @@ import {
 
   Question,
 } from '@/lib/social';
-
-const SUBJECTS = ['Mathematics', 'Science', 'English', 'Social Studies', 'ICT', 'French'];
+import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
+import type { EducationLevel } from '@/lib/challenge-questions-exports';
 
 export default function CommunityPage() {
+  const [educationLevel, setEducationLevel] = useState<EducationLevel>('JHS');
+  
+  // Load education level from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedLevel = localStorage.getItem('userEducationLevel') as EducationLevel | null;
+      if (savedLevel) {
+        setEducationLevel(savedLevel);
+      }
+    }
+  }, []);
+  
+  // Get available subjects dynamically based on education level
+  const SUBJECTS = getAvailableSubjects(educationLevel).filter(s => s !== 'Mixed');
+  
   const [questions, setQuestions] = useState<Question[]>([]);
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [searchTerm, setSearchTerm] = useState('');

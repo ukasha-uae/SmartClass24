@@ -1079,7 +1079,7 @@ export const acceptChallenge = async (challengeId: string, userId: string): Prom
   return true;
 };
 
-export const declineChallenge = (challengeId: string, userId: string): boolean => {
+export const declineChallenge = async (challengeId: string, userId: string): Promise<boolean> => {
   const challenges = getAllChallenges();
   const challengeIndex = challenges.findIndex(c => c.id === challengeId);
   
@@ -1090,10 +1090,34 @@ export const declineChallenge = (challengeId: string, userId: string): boolean =
   
   if (opponentIndex === -1) return false;
   
+  // Mark opponent as declined
   challenge.opponents[opponentIndex].status = 'declined';
+  
+  // If any opponent declines, mark the challenge as expired so creator knows immediately
+  // This prevents the creator from waiting indefinitely
+  challenge.status = 'expired';
   
   challenges[challengeIndex] = challenge;
   localStorage.setItem('challenges', JSON.stringify(challenges));
+  
+  // Sync to Firestore so creator gets updated immediately
+  saveChallengeToFirestore(challenge).catch(err => {
+    console.error('Failed to update declined challenge in Firestore:', err);
+  });
+  
+  // Notify the creator that their challenge was declined
+  try {
+    const declinerName = challenge.opponents[opponentIndex].userName;
+    await createUserNotification(
+      challenge.creatorId,
+      'challenge_declined',
+      `${declinerName} declined your challenge in ${challenge.subject}`,
+      `/challenge-arena/play/${challengeId}`
+    );
+  } catch (error) {
+    console.error('Failed to send decline notification:', error);
+  }
+  
   return true;
 };
 

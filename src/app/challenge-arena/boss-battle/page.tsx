@@ -22,6 +22,8 @@ import {
   getPlayerProfile,
   createOrUpdatePlayer
 } from '@/lib/challenge';
+import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
+import type { EducationLevel } from '@/lib/challenge-questions-exports';
 import type { Player } from '@/lib/challenge';
 import { useFirebase } from '@/firebase/provider';
 import { useToast } from '@/hooks/use-toast';
@@ -48,22 +50,27 @@ export default function BossBattlePage() {
   const [selectedBoss, setSelectedBoss] = useState<AIBoss | null>(null);
   const [subject, setSubject] = useState('');
   const [isStarting, setIsStarting] = useState(false);
+  const [educationLevel, setEducationLevel] = useState<EducationLevel>('JHS');
 
-  const getSubjectsForLevel = () => {
+  // Get education level from localStorage
+  useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedLevel = localStorage.getItem('userEducationLevel');
-      if (savedLevel === 'SHS') {
-        return ['Core Mathematics', 'English Language', 'Integrated Science', 'Social Studies'];
+      const savedLevel = localStorage.getItem('userEducationLevel') as EducationLevel | null;
+      if (savedLevel) {
+        setEducationLevel(savedLevel);
       }
     }
-    return ['Mathematics', 'English Language', 'Integrated Science', 'Social Studies', 'ICT'];
-  };
+  }, []);
 
-  const subjects = getSubjectsForLevel();
+  // Get available subjects dynamically from the question bank
+  const subjects = getAvailableSubjects(educationLevel);
   
-  if (!subject && subjects.length > 0) {
-    setSubject(subjects[0]);
-  }
+  // Set default subject when subjects are loaded
+  useEffect(() => {
+    if (!subject && subjects.length > 0) {
+      setSubject(subjects[0]);
+    }
+  }, [subject, subjects]);
 
   const handleStartBattle = () => {
     if (!selectedBoss) {
@@ -84,7 +91,7 @@ export default function BossBattlePage() {
         userId: userId, 
         userName: user?.displayName || user?.email || 'Test Player',
         school: 'My School',
-        level: 'JHS'
+        level: educationLevel
       });
     }
     
