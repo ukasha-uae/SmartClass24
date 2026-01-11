@@ -12,6 +12,8 @@ import { useState, useEffect } from 'react';
 import { IntelligentWelcome } from '@/components/IntelligentWelcome';
 import { useLocalization } from '@/hooks/useLocalization';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
+import { EarnPremiumBanner } from '@/components/EarnPremiumBanner';
+import { useFirebase } from '@/firebase/provider';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -19,6 +21,7 @@ export default function Home() {
   const [userName, setUserName] = useState('there');
   const [selectedCampus, setSelectedCampus] = useState<'JHS' | 'SHS' | 'Primary'>('JHS');
   const { country } = useLocalization();
+  const { user } = useFirebase();
 
   useEffect(() => {
     setMounted(true);
@@ -373,6 +376,13 @@ export default function Home() {
             ))}
           </div>
 
+          {/* Earn Premium Banner - Only for logged in users */}
+          {user && !user.isAnonymous && (
+          <div className="mt-12 max-w-5xl mx-auto">
+            <EarnPremiumBanner variant="full" dismissible={false} showProgress={true} />
+          </div>
+          )}
+
           {/* Premium Trust Indicators */}
           <div className="mt-12 text-center">
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-6 font-medium">
@@ -404,6 +414,9 @@ export default function Home() {
           onComplete={handleWelcomeComplete}
         />
       )}
+      
+      {/* Floating Earn Premium Banner - Only for logged in users */}
+      {user && !user.isAnonymous && <EarnPremiumBanner variant="floating" dismissible={true} />}
     </div>
   );
 }

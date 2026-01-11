@@ -28,7 +28,7 @@ import { useFirebase } from '@/firebase/provider';
 import { useSoundEffects } from '@/hooks/use-sound-effects';
 import { useToast } from '@/hooks/use-toast';
 import { startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
-import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions';
+import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
 
 export default function QuickMatchPage() {
   const router = useRouter();
@@ -354,7 +354,7 @@ export default function QuickMatchPage() {
       type: 'quick',
       level: player.level || 'JHS',
       subject,
-      difficulty: classLevel, // Using classLevel as difficulty for backward compatibility
+      difficulty: classLevel as any, // Using classLevel as difficulty for backward compatibility
       questionCount: 10,
       timeLimit: 120,
       creatorId: player.userId,

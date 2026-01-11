@@ -13,6 +13,7 @@ import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
 import { useFirebase } from '@/firebase/provider';
 import { hasVirtualLabAccess } from '@/lib/monetization';
 import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
+import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLabDialog';
 
 export default function VirtualLabsPage() {
   // V1 Route Guard: Check if user has access to virtual labs
@@ -111,7 +112,7 @@ export default function VirtualLabsPage() {
                 Virtual Labs
               </h1>
             </div>
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-4">
               Master science through hands-on experiments.{' '}
               {!hasVirtualLab ? (
                 <>
@@ -124,6 +125,16 @@ export default function VirtualLabsPage() {
                 </>
               )}
             </p>
+            {userId !== 'guest' && (
+              <div className="flex justify-center">
+                <ShareVirtualLabDialog
+                  labTitle="Virtual Labs"
+                  labSlug=""
+                  subject="Science"
+                  userId={userId}
+                />
+              </div>
+            )}
           </div>
 
           {/* Premium Progress Section */}

@@ -13,7 +13,7 @@ import {
   shareAchievement,
   toggleAchievementLike,
   addAchievementComment,
-  initializeSocialData,
+
   AchievementShare,
 } from '@/lib/social';
 

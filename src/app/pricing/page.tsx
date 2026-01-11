@@ -27,7 +27,7 @@ export default function PricingPage() {
   const features = {
     free: [
       { name: 'All Game Modes', included: true },
-      { name: '5 Questions per Subject', included: true, note: 'Limited question bank' },
+      { name: '20 Questions per Subject', included: true, note: 'Limited question bank' },
       { name: 'Practice Mode', included: true },
       { name: 'Quick Match', included: true },
       { name: 'Boss Battle', included: true },
@@ -666,7 +666,7 @@ export default function PricingPage() {
             <div>
               <h3 className="font-semibold mb-2">What's the difference between Free and Premium?</h3>
               <p className="text-sm text-muted-foreground">
-                Free users get access to all game modes but with a limited question bank (5 questions per subject) and 3 virtual labs (1 per subject). 
+                Free users get access to all game modes but with a limited question bank (20 questions per subject) and 3 virtual labs (1 per subject). 
                 Premium users get unlimited access to all questions for their education level, all {virtualLabExperiments.experiments.length}+ virtual labs, 
                 plus advanced analytics and additional features like study streaks, priority matchmaking, and double coins.
               </p>
@@ -706,6 +706,14 @@ export default function PricingPage() {
               <p className="text-sm text-muted-foreground">
                 Your premium subscription applies to all levels. When you change your level (e.g., from JHS to SHS), 
                 you'll automatically get access to questions for your new level.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">Can I earn Premium for FREE?</h3>
+              <p className="text-sm text-muted-foreground">
+                Yes! Share your referral link with friends or share Virtual Labs/Challenge Arena. When 10 friends sign up using your link 
+                and complete their profile + first activity (Practice, Challenge, or Quick Match), you earn 1 month of premium access for FREE! 
+                Check the "Earn Premium Free" page to track your progress and get your unique referral link.
               </p>
             </div>
           </CardContent>

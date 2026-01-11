@@ -280,7 +280,7 @@ export async function processSubscription(
       {
         packageId,
         subscriptionTier: 'premium',
-        subscriptionDuration: package_.duration,
+        subscriptionDuration: package_.duration as 'monthly' | 'annual',
         phoneNumber,
       }
     );

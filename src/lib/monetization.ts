@@ -455,7 +455,7 @@ export function addSubscription(
 /**
  * Initialize premium subscription (for testing/demo)
  */
-export function initializePremiumSubscription(userId: string, tier: SubscriptionTier = 'premium'): void {
+export function initializePremiumSubscription(userId: string, tier: SubscriptionTier = 'premium', firestoreInstance?: any): void {
   const subscription: UserSubscription = {
     userId,
     tier,
@@ -467,7 +467,7 @@ export function initializePremiumSubscription(userId: string, tier: Subscription
     planId: 'premium_monthly', // Default for demo
   };
   
-  setUserSubscription(userId, subscription, firestore);
+  setUserSubscription(userId, subscription, firestoreInstance);
 }
 
 /**
@@ -519,16 +519,16 @@ export function getCoinMultiplier(userId: string): number {
 
 /**
  * Get question bank limit based on premium status
- * Free users: Limited question bank (e.g., 10 questions per subject - they see same questions repeating)
+ * Free users: Limited question bank (e.g., 20 questions per subject - they see same questions repeating)
  * Premium users: Full question bank (all available questions for their level/subject)
  * 
  * @param userId - User ID to check premium status
- * @param freeBankLimit - Maximum questions in bank for free users (default: 10 per subject)
+ * @param freeBankLimit - Maximum questions in bank for free users (default: 20 per subject)
  * @returns Maximum number of questions available in the bank for this user
  */
 export function getQuestionBankLimit(
   userId: string,
-  freeBankLimit: number = 10
+  freeBankLimit: number = 20
 ): number {
   const isPremium = isPremiumUser(userId);
   // Premium users get unlimited (return a very large number to indicate full access)

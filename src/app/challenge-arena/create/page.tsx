@@ -27,7 +27,7 @@ import {
 import { createChallenge, getAllPlayers, Player, getPlayerProfile } from '@/lib/challenge';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
-import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions';
+import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
 import { updateUserPresence, startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
 import { Badge } from '@/components/ui/badge';
 import { Circle } from 'lucide-react';

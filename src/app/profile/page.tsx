@@ -15,6 +15,8 @@ import { useToast } from '@/hooks/use-toast';
 import StudentProfileSetup from '@/components/StudentProfileSetup';
 import CampusSelector from '@/components/CampusSelector';
 import { SubscriptionStatusBadge } from '@/components/SubscriptionStatusBadge';
+import { EarnPremiumBanner } from '@/components/EarnPremiumBanner';
+import { FEATURE_FLAGS } from '@/lib/featureFlags';
 
 export default function ProfilePage() {
   const hasMounted = useHasMounted();
@@ -143,6 +145,13 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
+        {/* Earn Premium Banner - Only for authenticated users */}
+        {user && !user.isAnonymous && (
+        <div className="mb-6">
+          <EarnPremiumBanner variant="compact" dismissible={true} showProgress={true} />
+        </div>
+        )}
+
         {/* Premium Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="group relative p-5 sm:p-6 bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-2xl border-2 border-amber-200/30 dark:border-amber-800/30 shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden">
@@ -192,6 +201,7 @@ export default function ProfilePage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {FEATURE_FLAGS.V1_LAUNCH.showAchievements && (
           <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-xl">
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -206,20 +216,26 @@ export default function ProfilePage() {
               <CardDescription className="text-slate-600 dark:text-slate-400">Unlock badges by completing challenges</CardDescription>
             </CardHeader>
           <CardContent>
+            {(FEATURE_FLAGS.V1_LAUNCH.showBookmarks || FEATURE_FLAGS.V1_LAUNCH.showSchedule) && (
             <div className="grid grid-cols-2 gap-2 mb-4">
+              {FEATURE_FLAGS.V1_LAUNCH.showBookmarks && (
               <Button asChild variant="outline" size="sm">
                 <Link href="/bookmarks">
                   <Bookmark className="h-4 w-4 mr-2" />
                   Bookmarks
                 </Link>
               </Button>
+              )}
+              {FEATURE_FLAGS.V1_LAUNCH.showSchedule && (
               <Button asChild variant="outline" size="sm">
                 <Link href="/study-schedule">
                   <Target className="h-4 w-4 mr-2" />
                   Schedule
                 </Link>
               </Button>
+              )}
             </div>
+            )}
             <div className="grid grid-cols-2 gap-3">
               {achievements.map((ach) => (
                 <Card 
@@ -247,7 +263,9 @@ export default function ProfilePage() {
             </div>
           </CardContent>
         </Card>
+          )}
 
+          {FEATURE_FLAGS.V1_LAUNCH.showParent && (
         <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-violet-200/30 dark:border-violet-800/30 shadow-xl">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -321,6 +339,7 @@ export default function ProfilePage() {
             )}
           </CardContent>
         </Card>
+        )}
         </div>
       </div>
     </div>

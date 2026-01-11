@@ -56,7 +56,7 @@ export default function QuizBattlePage() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes per question
-  const [gamePhase, setGamePhase] = useState<'loading' | 'waiting' | 'playing' | 'results'>('loading');
+  const [gamePhase, setGamePhase] = useState<'loading' | 'waiting' | 'playing' | 'results' | 'waiting-for-opponent'>('loading');
   const [results, setResults] = useState<any>(null);
   const [startTime] = useState(Date.now());
   const [showDetailedStats, setShowDetailedStats] = useState(false);
@@ -66,6 +66,9 @@ export default function QuizBattlePage() {
   const [questionStartTimes, setQuestionStartTimes] = useState<Record<string, number>>({});
   const [questionTimeSpent, setQuestionTimeSpent] = useState<Record<string, number>>({});
   const [suspiciousActivity, setSuspiciousActivity] = useState<string[]>([]);
+  
+  // Extend gamePhase type to include 'waiting-for-opponent'
+  type GamePhaseType = 'loading' | 'waiting' | 'playing' | 'results' | 'waiting-for-opponent';
   
   // Ref to store unsubscribe function for challenge listener
   const unsubscribeRef = useRef<(() => void) | null>(null);
@@ -227,7 +230,7 @@ export default function QuizBattlePage() {
                 
                 // Update results state when challenge.results changes (from Firestore, contains all players)
                 if (firestoreChallenge.results && firestoreChallenge.results.length > 0) {
-                  setResults((currentResults) => {
+                  setResults((currentResults: any) => {
                     // Merge with existing results to ensure we don't lose any
                     const merged = [...(currentResults || [])];
                     firestoreChallenge.results!.forEach((firestoreResult: any) => {

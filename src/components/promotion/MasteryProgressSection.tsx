@@ -19,7 +19,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
 import { getUserSubjectMastery, resetSubjectMastery, getPrimaryPromotionProgress } from '@/lib/challenge';
-import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions';
+import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
 import { RotateCcw, TrendingUp, AlertTriangle, GraduationCap } from 'lucide-react';
 import { PromotionProgress } from './PromotionProgress';
 

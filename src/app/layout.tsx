@@ -11,6 +11,7 @@ import FirstTimeProfileModal from '@/components/FirstTimeProfileModal';
 import { LocalizationProvider } from '@/lib/localization/localization-context';
 import { FullscreenProvider } from '@/contexts/FullscreenContext';
 import { FullscreenMain } from '@/components/FullscreenMain';
+import { ReferralHandler } from '@/components/ReferralHandler';
 
 export const metadata: Metadata = {
   title: 'Smartclass24',
@@ -47,6 +48,7 @@ export default function RootLayout({
                 <PWAInstallPrompt />
                 <PWAUpdatePrompt />
                 <FirstTimeProfileModal />
+                <ReferralHandler />
                 <BottomNav />
                 <Toaster />
               </div>

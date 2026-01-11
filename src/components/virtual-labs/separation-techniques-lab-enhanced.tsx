@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Filter, Flame, Droplets, Beaker, CheckCircle, XCircle, Award, Trophy, FlaskConical, TestTube, Wind, Sparkles, AlertTriangle, GripVertical, RefreshCw, BookOpen, Shield, Label } from 'lucide-react';
+import { Filter, Flame, Droplets, Beaker, CheckCircle, XCircle, Award, Trophy, FlaskConical, TestTube, Wind, Sparkles, AlertTriangle, GripVertical, RefreshCw, BookOpen, Shield } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';

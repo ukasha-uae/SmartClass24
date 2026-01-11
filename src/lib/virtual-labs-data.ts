@@ -382,9 +382,6 @@ export const virtualLabExperiments = {
 export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperiment[] => {
     const allLabs = virtualLabExperiments.experiments;
     
-    // TEMPORARILY UNLOCK ALL LABS FOR UPGRADE - Remove this after upgrading all labs
-    return allLabs;
-    
     // Check virtual lab access (Virtual Lab subscription or Full Bundle)
     let hasAccess = false;
     if (typeof window !== 'undefined') {
@@ -399,18 +396,15 @@ export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperimen
     
     // Users with Virtual Lab subscription or Full Bundle get all labs
     if (hasAccess) {
-        return allLabs;
+        return allLabs as VirtualLabExperiment[];
     }
     
-    // Free users: 1 lab per subject (3 total)
-    // Selected labs: Most popular/fundamental from each subject
-    const freeLabs = [
-        'food-tests',        // Biology - Most popular
-        'litmus-test',       // Chemistry - Fundamental
-        'simple-circuits',   // Physics - Engaging
-    ];
-    
-    return allLabs.filter(lab => freeLabs.includes(lab.slug));
+    // Free users: Get 1 lab per subject (Biology, Chemistry, Physics)
+    // Food Tests (Biology), Litmus Test (Chemistry), Simple Circuits (Physics)
+    const freeLabs = allLabs.filter(lab => 
+        ['food-tests', 'litmus-test', 'simple-circuits'].includes(lab.slug)
+    );
+    return freeLabs as VirtualLabExperiment[];
 };
 
 export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): VirtualLabExperiment | undefined => {

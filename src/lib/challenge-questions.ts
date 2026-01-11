@@ -17196,6 +17196,16 @@ function mapDifficultyToClassLevel(level: EducationLevel, difficulty: QuestionDi
 }
 
 /**
+ * Helper function to filter and type-cast questions to ChallengeQuestion (MCQ only)
+ * Filters out non-MCQ questions from the modular question banks
+ */
+function filterMCQQuestions(questions: any[]): ChallengeQuestion[] {
+  return questions.filter(q => 
+    q.type === 'mcq' || (q.options && Array.isArray(q.options) && typeof q.correctAnswer === 'number')
+  ) as ChallengeQuestion[];
+}
+
+/**
  * Get challenge questions with STRICT level filtering
  * Primary students ONLY get Primary questions
  * JHS students ONLY get JHS questions  
@@ -17221,8 +17231,8 @@ export function getChallengeQuestions(
   // Import here to avoid circular dependency
   let isPremium = false;
   // Free users get a limited, but still varied, question bank per level
-  // Primary: ~8, JHS: ~10, SHS: ~12
-  let freeBankLimit = level === 'Primary' ? 8 : level === 'JHS' ? 10 : 12;
+  // Increased limits to give free users more practice (Primary: ~15, JHS: ~20, SHS: ~25)
+  let freeBankLimit = level === 'Primary' ? 15 : level === 'JHS' ? 20 : 25;
   if (typeof window !== 'undefined') {
     try {
       const { isPremiumUser } = require('./monetization');
@@ -17241,19 +17251,19 @@ export function getChallengeQuestions(
     
     // 1. Subject-specific modular banks
     if (subject === 'Mathematics') {
-      filtered = [...primaryMathematicsQuestions];
+      filtered = filterMCQQuestions(primaryMathematicsQuestions);
       const extraMath = primaryQuestionBank.filter(q => q.level === 'Primary' && q.subject === subject);
       filtered = [...filtered, ...extraMath];
     } else if (subject === 'English Language') {
-      filtered = [...primaryEnglishLanguageQuestions];
+      filtered = filterMCQQuestions(primaryEnglishLanguageQuestions);
       const extraEng = primaryQuestionBank.filter(q => q.level === 'Primary' && q.subject === subject);
       filtered = [...filtered, ...extraEng];
     } else if (subject === 'Science') {
-      filtered = [...primaryScienceQuestions];
+      filtered = filterMCQQuestions(primaryScienceQuestions);
       const extraSci = primaryQuestionBank.filter(q => q.level === 'Primary' && q.subject === subject);
       filtered = [...filtered, ...extraSci];
     } else if (subject === 'Social Studies') {
-      filtered = [...primarySocialStudiesQuestions];
+      filtered = filterMCQQuestions(primarySocialStudiesQuestions);
       const extraSoc = primaryQuestionBank.filter(q => q.level === 'Primary' && q.subject === subject);
       filtered = [...filtered, ...extraSoc];
     } else {
@@ -17318,19 +17328,19 @@ export function getChallengeQuestions(
     // Check if we have questions in modular banks or jhsQuestionBank for this subject
     if (subject === 'Mathematics') {
       // Start with modular JHS Mathematics questions
-      filtered = [...jhsMathematicsQuestions];
+      filtered = filterMCQQuestions(jhsMathematicsQuestions);
       // Also include any legacy JHS bank questions tagged as Mathematics
       const extraMath = jhsQuestionBank.filter(q => q.level === 'JHS' && q.subject === subject);
       filtered = [...filtered, ...extraMath];
     } else if (subject === 'English Language') {
       // Start with modular JHS English Language questions
-      filtered = [...jhsEnglishLanguageQuestions];
+      filtered = filterMCQQuestions(jhsEnglishLanguageQuestions);
       // Also include any legacy JHS bank questions tagged as English Language
       const extraEng = jhsQuestionBank.filter(q => q.level === 'JHS' && q.subject === subject);
       filtered = [...filtered, ...extraEng];
     } else if (subject === 'Science') {
       // Start with modular JHS Science questions
-      filtered = [...jhsScienceQuestions];
+      filtered = filterMCQQuestions(jhsScienceQuestions);
       // Also get questions from bece-questions.ts (mapped to Integrated Science)
       const beceQuestions = getJHSQuestions(count, 'Integrated Science' as JHSSubject, legacyDifficulty || 'medium');
       const beceConverted = beceQuestions.map(q => {
@@ -17360,7 +17370,7 @@ export function getChallengeQuestions(
       filtered = [...filtered, ...beceConverted];
     } else if (subject === 'Social Studies') {
       // Start with modular JHS Social Studies questions
-      filtered = [...jhsSocialStudiesQuestions];
+      filtered = filterMCQQuestions(jhsSocialStudiesQuestions);
       // Also get questions from bece-questions.ts
       let beceDifficulty: QuestionDifficulty = 'medium';
       if (classLevel === 'JHS 1') beceDifficulty = 'easy';
@@ -17396,7 +17406,7 @@ export function getChallengeQuestions(
       filtered = [...filtered, ...beceConverted];
     } else if (subject === 'ICT' || subject === 'Information and Communication Technology' || subject === 'Computing') {
       // Start with modular JHS ICT questions
-      filtered = [...jhsICTQuestions];
+      filtered = filterMCQQuestions(jhsICTQuestions);
       // Also get questions from bece-questions.ts
       let beceDifficulty: QuestionDifficulty = 'medium';
       if (classLevel === 'JHS 1') beceDifficulty = 'easy';
@@ -17432,7 +17442,7 @@ export function getChallengeQuestions(
       filtered = [...filtered, ...beceConverted];
     } else if (subject === 'Creative Arts' || subject === 'Cultural and Creative Arts' || subject === 'CCA') {
       // Start with modular JHS Creative Arts questions
-      filtered = [...jhsCreativeArtsQuestions];
+      filtered = filterMCQQuestions(jhsCreativeArtsQuestions);
       // Also get questions from bece-questions.ts
       let beceDifficulty: QuestionDifficulty = 'medium';
       if (classLevel === 'JHS 1') beceDifficulty = 'easy';
@@ -17468,7 +17478,7 @@ export function getChallengeQuestions(
       filtered = [...filtered, ...beceConverted];
     } else if (subject === 'French') {
       // Start with modular JHS French questions
-      filtered = [...jhsFrenchQuestions];
+      filtered = filterMCQQuestions(jhsFrenchQuestions);
       // Also get questions from bece-questions.ts
       let beceDifficulty: QuestionDifficulty = 'medium';
       if (classLevel === 'JHS 1') beceDifficulty = 'easy';
@@ -17504,7 +17514,7 @@ export function getChallengeQuestions(
       filtered = [...filtered, ...beceConverted];
     } else if (subject === 'RME' || subject === 'Religious and Moral Education' || subject === 'Religious & Moral Education') {
       // Start with modular JHS RME questions
-      filtered = [...jhsRMEQuestions];
+      filtered = filterMCQQuestions(jhsRMEQuestions);
       // Also get questions from bece-questions.ts
       let beceDifficulty: QuestionDifficulty = 'medium';
       if (classLevel === 'JHS 1') beceDifficulty = 'easy';
@@ -17540,7 +17550,7 @@ export function getChallengeQuestions(
       filtered = [...filtered, ...beceConverted];
     } else if (subject === 'Arabic') {
       // Start with modular JHS Arabic questions
-      filtered = [...jhsArabicQuestions];
+      filtered = filterMCQQuestions(jhsArabicQuestions);
       // Also get questions from bece-questions.ts
       let beceDifficulty: QuestionDifficulty = 'medium';
       if (classLevel === 'JHS 1') beceDifficulty = 'easy';
@@ -17670,25 +17680,25 @@ export function getChallengeQuestions(
     // 1. Subject-specific modular banks
     if (subject === 'Core Mathematics') {
       // Start with modular Core Mathematics questions
-      filtered = [...coreMathematicsQuestions];
+      filtered = filterMCQQuestions(coreMathematicsQuestions);
       // Also include any legacy SHS bank questions tagged as Core Mathematics
       const extraCore = shsQuestionBank.filter(q => q.level === 'SHS' && q.subject === 'Core Mathematics');
       filtered = [...filtered, ...extraCore];
     } else if (subject === 'Integrated Science') {
       // Start with modular Integrated Science questions
-      filtered = [...integratedScienceQuestions];
+      filtered = filterMCQQuestions(integratedScienceQuestions);
       // Also include any legacy SHS bank questions tagged as Integrated Science
       const extraIntSci = shsQuestionBank.filter(q => q.level === 'SHS' && q.subject === 'Integrated Science');
       filtered = [...filtered, ...extraIntSci];
     } else if (subject === 'English Language') {
       // Start with modular SHS English Language questions
-      filtered = [...englishLanguageQuestions];
+      filtered = filterMCQQuestions(englishLanguageQuestions);
       // Also include any legacy SHS bank questions tagged as English Language
       const extraEng = shsQuestionBank.filter(q => q.level === 'SHS' && q.subject === 'English Language');
       filtered = [...filtered, ...extraEng];
     } else if (subject === 'Social Studies') {
       // Start with modular SHS Social Studies questions
-      filtered = [...socialStudiesQuestions];
+      filtered = filterMCQQuestions(socialStudiesQuestions);
       // Also include any legacy SHS bank questions tagged as Social Studies
       const extraSoc = shsQuestionBank.filter(q => q.level === 'SHS' && q.subject === 'Social Studies');
       filtered = [...filtered, ...extraSoc];
@@ -17944,8 +17954,10 @@ export function getQuestionBankSize(level: EducationLevel): number {
   return 0;
 }
 
-// Explicit re-exports to ensure bundlers see these named exports clearly
-export {
+// Explicit exports for Turbopack compatibility
+export const __esModule = true;
+export default {
   getChallengeQuestions,
   getAvailableSubjects,
+  getQuestionBankSize,
 };

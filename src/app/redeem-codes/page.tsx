@@ -19,7 +19,7 @@ import { Gift, Copy, CheckCircle2, XCircle, Share2, MessageCircle, Trophy, Star 
 import Link from 'next/link';
 
 export default function RedeemCodesPage() {
-  const { user } = useFirebase();
+  const { user, isUserLoading } = useFirebase();
   const router = useRouter();
   const { toast } = useToast();
   const [code, setCode] = useState('');
@@ -30,6 +30,9 @@ export default function RedeemCodesPage() {
   const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
+    // Don't redirect while still loading auth state
+    if (isUserLoading) return;
+    
     if (!user) {
       router.push('/');
       return;
@@ -50,7 +53,7 @@ export default function RedeemCodesPage() {
     };
 
     loadStats();
-  }, [user, router]);
+  }, [user, isUserLoading, router]);
 
   const handleRedeem = async () => {
     if (!user) return;
@@ -128,6 +131,18 @@ export default function RedeemCodesPage() {
   const codesNeeded = 10 - (stats?.referralCount || 0);
   const progressPercent = ((stats?.referralCount || 0) / 10) * 100;
 
+  // Show loading spinner while checking authentication
+  if (isUserLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-950/30 dark:to-blue-950/30 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!user) {
     return null;
   }
@@ -156,9 +171,14 @@ export default function RedeemCodesPage() {
             <CardTitle className="flex items-center gap-2">
               <Trophy className="h-5 w-5 text-yellow-500" />
               Your Progress
+              {stats && stats.referralRedemptions && stats.referralRedemptions > 0 && (
+                <Badge className="ml-auto bg-gradient-to-r from-yellow-500 to-amber-600 text-white">
+                  {stats.referralRedemptions} {stats.referralRedemptions === 1 ? 'Month' : 'Months'} Earned!
+                </Badge>
+              )}
             </CardTitle>
             <CardDescription>
-              {loadingStats ? 'Loading...' : `${stats?.referralCount || 0} out of 10 codes collected`}
+              {loadingStats ? 'Loading...' : `${stats?.referralCount || 0} out of 10 codes collected toward your ${stats?.referralRedemptions ? 'next' : 'first'} month`}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -176,8 +196,14 @@ export default function RedeemCodesPage() {
               <div className="p-4 bg-green-100 dark:bg-green-900/30 rounded-lg border border-green-300 dark:border-green-700">
                 <div className="flex items-center gap-2 text-green-800 dark:text-green-200">
                   <CheckCircle2 className="h-5 w-5" />
-                  <span className="font-semibold">Congratulations! You've earned 1 month premium access!</span>
+                  <span className="font-semibold">
+                    Congratulations! You've earned {stats.referralRedemptions ? 'another' : 'your first'} month of premium! 
+                    {stats.referralRedemptions && stats.referralRedemptions > 0 && ` (Total: ${stats.referralRedemptions + 1} months)`}
+                  </span>
                 </div>
+                <p className="text-sm text-green-700 dark:text-green-300 mt-2">
+                  Keep sharing to earn more! Every 10 validated referrals = 1 additional month of premium.
+                </p>
               </div>
             )}
 
@@ -284,7 +310,7 @@ export default function RedeemCodesPage() {
               </div>
               <div className="p-3 bg-muted rounded-lg">
                 <p className="text-xs text-muted-foreground">
-                  <strong>How it works:</strong> Share your link with friends. When they sign up, complete their profile, and finish their first activity (Practice, Challenge a friend, or Quick Match), you get 1 code. Collect 10 codes to unlock 1 month of premium! 🎁
+                  <strong>How it works:</strong> Share your link with friends (or share challenges/virtual labs from Challenge Arena and Virtual Labs). When they sign up, complete their profile, and finish their first activity (Practice, Challenge a friend, or Quick Match), you get 1 code. Collect 10 codes to unlock 1 month of premium! 🎁
                 </p>
               </div>
             </CardContent>

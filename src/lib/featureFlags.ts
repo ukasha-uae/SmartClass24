@@ -29,6 +29,9 @@ export const FEATURE_FLAGS = {
     showParent: false,             // Hide parent
     showCommunity: false,         // Hide community
     showStudyGroups: false,        // Hide study groups
+    showAchievements: false,       // Hide achievements (V2)
+    showBookmarks: false,          // Hide bookmarks (V2)
+    showSchedule: false,           // Hide schedule (V2)
     // Challenge Arena Modes
     showChallengeArena: true,      // Show Arena Challenge
     showChallengeArenaBoss: true,  // Show boss battles (Premium unlock)

@@ -18,7 +18,7 @@ import {
   markBestAnswer,
   toggleQuestionLike,
   incrementQuestionViews,
-  initializeSocialData,
+
   Question,
 } from '@/lib/social';
 

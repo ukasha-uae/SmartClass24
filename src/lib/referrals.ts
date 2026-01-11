@@ -1,13 +1,16 @@
 /**
  * Referral System
  * Allows students to earn 1 month premium access by inviting 10 friends
+ * Users can continue earning - every 10 validated referrals = 1 additional month
  * 
  * Rules:
  * - 10 valid referral codes = 1 month premium
+ * - After redeeming 10, counter resets and user can earn another month
  * - Codes only become valid after referred user completes profile and activity
  * - No self-referrals
  * - One-time use only
  * - Each code tied to unique user
+ * - Existing premium users can earn extensions
  */
 
 import { initializeFirebase } from '@/firebase';
@@ -19,15 +22,18 @@ export interface Referral {
   referredUid: string | null;
   isUsed: boolean;
   isValidated: boolean; // True after referred user completes profile + activity
+  isRedeemed?: boolean; // True after referrer has redeemed these 10 codes for premium
   createdAt: string;
   validatedAt?: string;
+  redeemedAt?: string;
 }
 
 export interface UserReferralStats {
-  referralCount: number; // Valid, validated referrals
+  referralCount: number; // Unredeemed validated referrals (toward next premium month)
   totalReferrals: number; // All referrals (including unvalidated)
   codesRedeemed: number; // Codes this user has redeemed
-  premiumEarned: boolean; // Whether premium was earned via referrals
+  premiumEarned: boolean; // Whether premium was ever earned via referrals
+  referralRedemptions?: number; // How many times user has earned premium (each = 1 month)
 }
 
 /**
@@ -216,17 +222,23 @@ export async function getUserReferralStats(userId: string): Promise<UserReferral
     const { firestore } = initializeFirebase();
     if (!firestore) return null;
 
-    const { collection, query, where, getDocs } = await import('firebase/firestore');
+    const { collection, query, where, getDocs, doc, getDoc } = await import('firebase/firestore');
     const referralsRef = collection(firestore, 'referrals');
     
-    // Get validated referrals (counts toward premium)
+    // Get validated but NOT YET REDEEMED referrals (counts toward NEXT premium)
+    // This allows users to keep earning after they've already redeemed 10
     const validatedQuery = query(
       referralsRef,
       where('referrerUid', '==', userId),
       where('isValidated', '==', true)
     );
     const validatedSnapshot = await getDocs(validatedQuery);
-    const referralCount = validatedSnapshot.size;
+    
+    // Filter out redeemed referrals
+    const unredeemedReferrals = validatedSnapshot.docs.filter(
+      doc => !(doc.data() as any).isRedeemed
+    );
+    const referralCount = unredeemedReferrals.length;
     
     // Get total referrals (all referrals by this user)
     const totalQuery = query(
@@ -245,14 +257,20 @@ export async function getUserReferralStats(userId: string): Promise<UserReferral
     const redeemedSnapshot = await getDocs(redeemedQuery);
     const codesRedeemed = redeemedSnapshot.size;
     
-    // Check if premium was earned via referrals
-    const premiumEarned = referralCount >= 10;
+    // Check how many times user has earned premium from referrals
+    const userRef = doc(firestore, 'users', userId);
+    const userSnap = await getDoc(userRef);
+    const referralRedemptions = userSnap.exists() ? (userSnap.data().referralRedemptions || 0) : 0;
+    
+    // premiumEarned is true if they've ever earned premium via referrals
+    const premiumEarned = referralRedemptions > 0;
     
     return {
       referralCount,
       totalReferrals,
       codesRedeemed,
       premiumEarned,
+      referralRedemptions, // How many times they've earned premium (each = 1 month)
     };
   } catch (error: any) {
     console.error('[Referrals] Error getting referral stats:', error);
@@ -263,14 +281,16 @@ export async function getUserReferralStats(userId: string): Promise<UserReferral
 /**
  * Update referral count for a user
  * Checks if threshold reached and grants premium if needed
+ * Users can earn multiple times - every 10 validated referrals = 1 month premium
  */
 async function updateReferralCount(userId: string): Promise<void> {
   try {
     const stats = await getUserReferralStats(userId);
     if (!stats) return;
     
-    // If user has 10+ validated referrals, grant premium
-    if (stats.referralCount >= 10 && !stats.premiumEarned) {
+    // Grant premium for every 10 unredeemed validated referrals
+    // This allows users to keep earning even if they already have premium
+    if (stats.referralCount >= 10) {
       await grantPremiumFromReferrals(userId);
     }
   } catch (error: any) {
@@ -286,38 +306,74 @@ async function grantPremiumFromReferrals(userId: string): Promise<boolean> {
     const { firestore } = initializeFirebase();
     if (!firestore) return false;
 
-    // Check if user already has premium (paid subscription takes precedence)
-    const { isPremiumUser } = await import('./monetization');
-    if (isPremiumUser(userId)) {
-      // User already has premium, don't override
-      return false;
-    }
+    const { getUserSubscription } = await import('./monetization');
+    const existingSub = getUserSubscription(userId);
     
-    // Grant 1 month premium
     const now = new Date();
-    const endDate = new Date(now);
-    endDate.setMonth(endDate.getMonth() + 1);
+    let startDate: Date;
+    let endDate: Date;
+    
+    // If user has active premium, extend from their current end date
+    // Otherwise, start from now
+    if (existingSub && existingSub.isActive && existingSub.endDate && new Date(existingSub.endDate) > now) {
+      startDate = new Date(existingSub.endDate); // Start extension from current expiry
+      endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1); // Add 1 month to their existing subscription
+    } else {
+      // No active premium, start fresh
+      startDate = now;
+      endDate = new Date(now);
+      endDate.setMonth(endDate.getMonth() + 1);
+    }
     
     const subscription: UserSubscription = {
       userId,
-      tier: 'premium',
-      startDate: now.toISOString(),
+      tier: existingSub?.tier || 'premium', // Keep their existing tier if they have one
+      startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
       isActive: true,
-      features: ['boss_battle', 'tournaments', 'school_battle', 'challenge_arena'],
+      features: existingSub?.features || ['boss_battle', 'tournaments', 'school_battle', 'challenge_arena'],
       planId: 'referral_premium',
     };
     
     const { setUserSubscription } = await import('./monetization');
-    setUserSubscription(userId, subscription, firestore);
+    await setUserSubscription(userId, subscription, firestore);
     
-    // Mark premium as earned in user stats (we'll track this in Firestore)
-    const { doc, setDoc } = await import('firebase/firestore');
+    // Mark this batch of 10 referrals as redeemed
+    // We'll create a new field to track how many times they've earned premium
+    const { doc, setDoc, getDoc, updateDoc, increment } = await import('firebase/firestore');
     const userRef = doc(firestore, 'users', userId);
+    const userSnap = await getDoc(userRef);
+    
+    const currentRedemptions = userSnap.exists() ? (userSnap.data().referralRedemptions || 0) : 0;
+    
     await setDoc(userRef, {
-      referralPremiumEarned: true,
-      referralPremiumEarnedAt: now.toISOString(),
+      referralRedemptions: currentRedemptions + 1, // Track how many times they've redeemed
+      lastReferralRedemptionAt: now.toISOString(),
     }, { merge: true });
+    
+    // Archive the 10 referrals that were just redeemed
+    // Mark them as redeemed so they don't count toward the next 10
+    const { collection, query, where, getDocs } = await import('firebase/firestore');
+    const referralsRef = collection(firestore, 'referrals');
+    const validatedQuery = query(
+      referralsRef,
+      where('referrerUid', '==', userId),
+      where('isValidated', '==', true),
+      where('isRedeemed', '!=', true) // Only get unredeemed validated referrals
+    );
+    const validatedSnapshot = await getDocs(validatedQuery);
+    
+    // Mark first 10 as redeemed
+    let count = 0;
+    for (const docRef of validatedSnapshot.docs) {
+      if (count >= 10) break;
+      await updateDoc(docRef.ref, {
+        isRedeemed: true,
+        redeemedAt: now.toISOString(),
+      });
+      count++;
+    }
     
     return true;
   } catch (error: any) {

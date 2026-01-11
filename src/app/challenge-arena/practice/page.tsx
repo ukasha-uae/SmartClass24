@@ -26,7 +26,7 @@ import {
 import { createChallenge, getPrimaryPromotionInfo, getPrimaryPromotionProgress } from '@/lib/challenge';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
-import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions';
+import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
 import { PromotionProgress } from '@/components/promotion/PromotionProgress';
 import { PromotionNotification } from '@/components/promotion/PromotionNotification';
 

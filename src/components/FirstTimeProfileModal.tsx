@@ -28,9 +28,8 @@ export default function FirstTimeProfileModal() {
   const { data: profile, isLoading } = useDoc<any>(profileDocRef as any);
 
   useEffect(() => {
-    // Wait for profile to load before checking
-    if (!user || !firestore || isLoading) {
-      setOpen(false);
+    // Don't do anything while still loading or if no auth
+    if (!user || !firestore) {
       return;
     }
 
@@ -41,26 +40,45 @@ export default function FirstTimeProfileModal() {
       return;
     }
 
+    // Wait for profile to finish loading before making decisions
+    if (isLoading) {
+      return;
+    }
+
     // Check if user has already completed their profile at least once
     const completedKey = `profileCompleted_${user.uid}`;
     const hasCompletedBefore = typeof window !== 'undefined' && localStorage.getItem(completedKey) === 'true';
 
     // Check if profile exists and is complete (has studentName)
     const profileExists = profile && profile.studentName && profile.studentName.trim().length > 0;
-    setProfileComplete(profileExists);
-
-    // If profile is complete, mark it as completed (for future checks)
-    if (profileExists && !hasCompletedBefore) {
-      localStorage.setItem(completedKey, 'true');
+    
+    console.log('[Profile Modal] Checking conditions:', {
+      userId: user.uid,
+      isAnonymous: user.isAnonymous,
+      hasCompletedBefore,
+      profileExists,
+      studentName: profile?.studentName,
+      willShowModal: !hasCompletedBefore && !profileExists
+    });
+    
+    // If profile is complete, mark it as completed (for future checks) and close modal
+    if (profileExists) {
+      setProfileComplete(true);
+      if (!hasCompletedBefore) {
+        localStorage.setItem(completedKey, 'true');
+      }
+      setOpen(false);
+      return;
     }
 
-    // Only show modal if:
-    // 1. User hasn't completed profile before (not even once)
-    // 2. Profile doesn't currently exist or is incomplete
-    if (!hasCompletedBefore && !profileExists) {
+    // Profile is incomplete - check if we should show the modal
+    setProfileComplete(false);
+    
+    // Show modal if user hasn't completed profile before
+    // For new users or users who haven't filled their profile yet
+    if (!hasCompletedBefore) {
+      console.log('[Profile Modal] Opening modal for new/incomplete user');
       setOpen(true);
-    } else {
-      setOpen(false);
     }
   }, [user, firestore, profile, isLoading]);
 
@@ -79,12 +97,16 @@ export default function FirstTimeProfileModal() {
     }
   };
 
-  // Don't show if:
+  // Don't render modal if:
   // - No user
-  // - Still loading
-  // - Profile is already complete
-  // - Modal is closed
-  if (!user || isLoading || profileComplete || !open) {
+  // - User is anonymous
+  // - Still loading profile data
+  if (!user || user.isAnonymous || isLoading) {
+    return null;
+  }
+
+  // Only render when modal should be open
+  if (!open) {
     return null;
   }
 

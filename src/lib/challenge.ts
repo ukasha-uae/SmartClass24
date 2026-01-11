@@ -1,7 +1,7 @@
 // Challenge Arena - Competitive Quiz System
 import { getSchoolById } from './schools';
 import { QuestionDifficulty } from './bece-questions';
-import { getChallengeQuestions, getAvailableSubjects, type EducationLevel } from './challenge-questions';
+import { getChallengeQuestions, getAvailableSubjects, type EducationLevel } from './challenge-questions-exports';
 import { calculateXP, calculateCoins, checkAchievements } from './gamification';
 import { getCoinMultiplier, getQuestionLimit } from './monetization';
 import { trackQuestionUsage } from './analytics';
@@ -1193,13 +1193,13 @@ export const submitChallengeAnswers = async (
       }
       // Merge Firestore results into local results, avoiding duplicates
       firestoreChallenge.results.forEach((firestoreResult: any) => {
-        const existingIndex = challenge.results!.findIndex(r => r.userId === firestoreResult.userId);
-        if (existingIndex > -1) {
+        const existingIndex = challenge?.results?.findIndex(r => r.userId === firestoreResult.userId) ?? -1;
+        if (challenge && challenge.results && existingIndex > -1) {
           // Update existing result with Firestore data (has latest data)
-          challenge.results![existingIndex] = firestoreResult;
-        } else {
+          challenge.results[existingIndex] = firestoreResult;
+        } else if (challenge && challenge.results) {
           // Add new result from Firestore
-          challenge.results!.push(firestoreResult);
+          challenge.results.push(firestoreResult);
         }
       });
       challenges[challengeIndex] = challenge;
@@ -1283,7 +1283,9 @@ export const submitChallengeAnswers = async (
   }
   
   // Check if all players finished (for 2-player challenges: creator + 1 opponent)
-  const creatorFinished = challenge.results.some(r => r.userId === challenge.creatorId);
+  if (!challenge) return null;
+  
+  const creatorFinished = challenge!.results?.some(r => r.userId === challenge!.creatorId) ?? false;
   const allOpponentsFinished = challenge.opponents.length === 0 || challenge.opponents.every(o => o.status === 'finished');
   const allFinished = creatorFinished && allOpponentsFinished;
   
@@ -1315,6 +1317,8 @@ export const submitChallengeAnswers = async (
           } else {
             mergedResults.push(resultData);
           }
+          
+          if (!challenge) return null;
           
           // ASYNC MODEL: Only mark as completed if ALL players have finished
           // Keep status as 'in-progress' until both players submit their results

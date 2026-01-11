@@ -36,7 +36,7 @@ import CountrySelector from '@/components/CountrySelector';
 import { useParams, notFound, useRouter, useSearchParams } from 'next/navigation';
 import { COUNTRIES } from '@/lib/localization/countries/index';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
-import { getAvailableSubjects } from '@/lib/challenge-questions';
+import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
 import CoinStore from '@/components/premium/CoinStore';
 import TransactionHistory from '@/components/premium/TransactionHistory';
 import SubscriptionManagement from '@/components/premium/SubscriptionManagement';
