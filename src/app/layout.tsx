@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import Header from '@/components/Header';
@@ -48,7 +49,9 @@ export default function RootLayout({
                 <PWAInstallPrompt />
                 <PWAUpdatePrompt />
                 <FirstTimeProfileModal />
-                <ReferralHandler />
+                <Suspense fallback={null}>
+                  <ReferralHandler />
+                </Suspense>
                 <BottomNav />
                 <Toaster />
               </div>
