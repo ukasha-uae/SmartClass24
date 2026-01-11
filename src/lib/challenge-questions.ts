@@ -7,6 +7,12 @@ import { coreMathematicsQuestions } from './questions/shs/core-mathematics';
 import { integratedScienceQuestions } from './questions/shs/integrated-science';
 import { englishLanguageQuestions } from './questions/shs/english-language';
 import { socialStudiesQuestions } from './questions/shs/social-studies';
+import { economicsQuestions } from './questions/shs/economics';
+import { governmentQuestions } from './questions/shs/government';
+import { geographyQuestions } from './questions/shs/geography';
+import { historyQuestions } from './questions/shs/history';
+import { accountingQuestions } from './questions/shs/accounting';
+import { literatureQuestions } from './questions/shs/literature';
 import { jhsMathematicsQuestions } from './questions/jhs/mathematics';
 import { jhsEnglishLanguageQuestions } from './questions/jhs/english-language';
 import { jhsScienceQuestions } from './questions/jhs/science';
@@ -17708,6 +17714,18 @@ export function getChallengeQuestions(
       // Also include any legacy SHS bank questions tagged as Social Studies
       const extraSoc = shsQuestionBank.filter(q => q.level === 'SHS' && q.subject === 'Social Studies');
       filtered = [...filtered, ...extraSoc];
+    } else if (subject === 'Economics') {
+      filtered = filterMCQQuestions(economicsQuestions);
+    } else if (subject === 'Government') {
+      filtered = filterMCQQuestions(governmentQuestions);
+    } else if (subject === 'Geography') {
+      filtered = filterMCQQuestions(geographyQuestions);
+    } else if (subject === 'History') {
+      filtered = filterMCQQuestions(historyQuestions);
+    } else if (subject === 'Accounting') {
+      filtered = filterMCQQuestions(accountingQuestions);
+    } else if (subject === 'Literature in English') {
+      filtered = filterMCQQuestions(literatureQuestions);
     } else {
       // Default: all SHS questions from main bank
       filtered = shsQuestionBank.filter(q => q.level === 'SHS');
@@ -17721,7 +17739,13 @@ export function getChallengeQuestions(
       subject !== 'Core Mathematics' &&
       subject !== 'Integrated Science' &&
       subject !== 'English Language' &&
-      subject !== 'Social Studies'
+      subject !== 'Social Studies' &&
+      subject !== 'Economics' &&
+      subject !== 'Government' &&
+      subject !== 'Geography' &&
+      subject !== 'History' &&
+      subject !== 'Accounting' &&
+      subject !== 'Literature in English'
     ) {
       filtered = filtered.filter(q => q.subject === subject);
     }
