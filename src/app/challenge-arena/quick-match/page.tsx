@@ -1,10 +1,7 @@
 'use client';
 
-// Disable static generation to allow useSearchParams
-export const dynamic = 'force-dynamic';
-
-import { useState, useEffect, useCallback, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -35,14 +32,22 @@ import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-quest
 
 export default function QuickMatchPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { user, firestore } = useFirebase();
   const { playSound } = useSoundEffects();
   const { toast } = useToast();
   
-  // Get education level from URL parameter (set by arena page)
-  const levelParam = searchParams?.get('level') as 'Primary' | 'JHS' | 'SHS' | null;
-  const userSelectedLevel = levelParam || 'JHS'; // Default to JHS if no param
+  const [userSelectedLevel, setUserSelectedLevel] = useState<'Primary' | 'JHS' | 'SHS'>('JHS');
+  
+  // Read level from URL client-side only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const levelParam = params.get('level') as 'Primary' | 'JHS' | 'SHS' | null;
+      if (levelParam) {
+        setUserSelectedLevel(levelParam);
+      }
+    }
+  }, []);
   
   const [player, setPlayer] = useState<Player | null>(null);
   const [isSearching, setIsSearching] = useState(false);

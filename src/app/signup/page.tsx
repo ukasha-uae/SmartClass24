@@ -1,10 +1,7 @@
 'use client';
 
-// Disable static generation to allow useSearchParams
-export const dynamic = 'force-dynamic';
-
-import { useEffect, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import AuthModal from '@/components/AuthModal';
 import { getReferrerFromUrl } from '@/lib/referrals';
 
@@ -12,17 +9,23 @@ import { getReferrerFromUrl } from '@/lib/referrals';
  * Signup page with referral support
  * Handles /signup?ref={referrerUid} URLs
  */
-function SignupContent() {
+export default function SignupPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const referrerUid = searchParams?.get('ref') || getReferrerFromUrl();
+  const [referrerUid, setReferrerUid] = useState<string | null>(null);
 
   useEffect(() => {
-    // Store referrer UID in localStorage for use during signup
-    if (referrerUid) {
-      localStorage.setItem('pendingReferrerUid', referrerUid);
+    // Read referrer from URL client-side only
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get('ref') || getReferrerFromUrl();
+      setReferrerUid(ref);
+      
+      // Store referrer UID in localStorage for use during signup
+      if (ref) {
+        localStorage.setItem('pendingReferrerUid', ref);
+      }
     }
-  }, [referrerUid]);
+  }, []);
 
   // Redirect to home if already signed in, or show auth modal
   // The AuthModal will handle the actual signup process
@@ -43,17 +46,5 @@ function SignupContent() {
         <AuthModal />
       </div>
     </div>
-  );
-}
-
-export default function SignupPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    }>
-      <SignupContent />
-    </Suspense>
   );
 }

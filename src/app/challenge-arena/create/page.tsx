@@ -1,10 +1,7 @@
 'use client';
 
-// Disable static generation to allow useSearchParams
-export const dynamic = 'force-dynamic';
-
-import { useState, useEffect, useMemo, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -39,7 +36,6 @@ import { ShareChallengeDialog } from '@/components/challenge/ShareChallengeDialo
 // Create challenge page is now enabled for friend challenges
 export default function CreateChallengePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { toast } = useToast();
   const { user, firestore } = useFirebase();
   const [step, setStep] = useState(1);
@@ -118,11 +114,14 @@ export default function CreateChallengePage() {
   
   // Update formData.type when URL parameter changes (if user navigates with different type param)
   useEffect(() => {
-    const typeParam = searchParams?.get('type');
-    if (typeParam === 'friend' && formData.type !== 'friend') {
-      setFormData(prev => ({ ...prev, type: 'friend' }));
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const typeParam = params.get('type');
+      if (typeParam === 'friend' && formData.type !== 'friend') {
+        setFormData(prev => ({ ...prev, type: 'friend' }));
+      }
     }
-  }, [searchParams, formData.type]);
+  }, [formData.type]);
 
   // Start presence heartbeat for current user
   useEffect(() => {

@@ -1,10 +1,7 @@
 'use client';
 
-// Disable static generation to allow useSearchParams
-export const dynamic = 'force-dynamic';
-
-import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -105,19 +102,34 @@ const getSubjectBg = (subject: string, index: number) => {
 
 export default function PracticeModePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { toast } = useToast();
   const { user } = useFirebase();
   
-  // Get level and subject from URL params
-  const levelParam = searchParams.get('level') as EducationLevel | null;
-  const subjectParam = searchParams.get('subject');
-  
-  const [level, setLevel] = useState<EducationLevel>(levelParam || 'JHS');
-  const [step, setStep] = useState(subjectParam ? 2 : 1); // Skip to step 2 if subject is provided
+  const [level, setLevel] = useState<EducationLevel>('JHS');
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [showPromotionNotification, setShowPromotionNotification] = useState(false);
   const [promotionInfo, setPromotionInfo] = useState<{from: string; to: string; subject: string} | null>(null);
+  const [levelParam, setLevelParam] = useState<EducationLevel | null>(null);
+  const [subjectParam, setSubjectParam] = useState<string | null>(null);
+  
+  // Read level and subject from URL client-side only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const urlLevelParam = params.get('level') as EducationLevel | null;
+      const urlSubjectParam = params.get('subject');
+      
+      if (urlLevelParam) {
+        setLevelParam(urlLevelParam);
+        setLevel(urlLevelParam);
+      }
+      if (urlSubjectParam) {
+        setSubjectParam(urlSubjectParam);
+        setStep(2); // Skip to step 2 if subject is provided
+      }
+    }
+  }, []);
   
   // Get available subjects for the selected level
   const availableSubjects = useMemo(() => {
