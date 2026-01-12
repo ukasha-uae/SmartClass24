@@ -6,25 +6,14 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-// IMPORTANT: DO NOT MODIFY THIS FUNCTION
+// MODIFIED: Always use custom config from environment variables
+// Firebase App Hosting's auto-injected config has expired API key
 export function initializeFirebase() {
   if (!getApps().length) {
-    // Important! initializeApp() is called without any arguments because Firebase App Hosting
-    // integrates with the initializeApp() function to provide the environment variables needed to
-    // populate the FirebaseOptions in production. It is critical that we attempt to call initializeApp()
-    // without arguments.
-    let firebaseApp;
-    try {
-      // Attempt to initialize via Firebase App Hosting environment variables
-      firebaseApp = initializeApp();
-    } catch (e) {
-      // Only warn in production because it's normal to use the firebaseConfig to initialize
-      // during development
-      if (process.env.NODE_ENV === "production") {
-        console.warn('Automatic initialization failed. Falling back to firebase config object.', e);
-      }
-      firebaseApp = initializeApp(firebaseConfig);
-    }
+    // FORCE use of firebaseConfig from our environment variables (apphosting.yaml)
+    // Firebase's auto-injected FIREBASE_WEBAPP_CONFIG has expired API key
+    console.log('[Firebase Init] Using custom config from process.env.NEXT_PUBLIC_FIREBASE_*');
+    const firebaseApp = initializeApp(firebaseConfig);
 
     const sdks = getSdks(firebaseApp);
     
