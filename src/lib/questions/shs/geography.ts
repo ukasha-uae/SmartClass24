@@ -1,254 +1,354 @@
-import { Question } from '@/lib/challenge';
+import type { ChallengeQuestion } from '../types';
 
-export const geographyQuestions: Question[] = [
+export const geographyQuestions: ChallengeQuestion[] = [
   {
+    type: 'mcq',
     id: 'geo_1',
     question: 'What is the capital of Ghana?',
     options: ['Kumasi', 'Accra', 'Tamale', 'Cape Coast'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghana Geography',
+    explanation: 'Accra is the capital and largest city of Ghana, located on the Gulf of Guinea coast.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_2',
     question: 'The largest ocean in the world is:',
     options: ['Atlantic Ocean', 'Indian Ocean', 'Arctic Ocean', 'Pacific Ocean'],
     correctAnswer: 3,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Physical Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Physical Geography',
+    explanation: 'The Pacific Ocean is the largest ocean, covering about 63 million square miles and containing over half of Earth\'s free water.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_3',
     question: 'The longest river in Ghana is:',
     options: ['Pra River', 'Ankobra River', 'Volta River', 'Tano River'],
     correctAnswer: 2,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghana Geography',
+    explanation: 'The Volta River is Ghana\'s longest river, stretching about 1,600 km and creating Lake Volta, the world\'s largest artificial reservoir.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_4',
     question: 'What is the imaginary line that divides the Earth into Northern and Southern hemispheres?',
     options: ['Prime Meridian', 'Equator', 'Tropic of Cancer', 'Tropic of Capricorn'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Physical Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Physical Geography',
+    explanation: 'The Equator is located at 0° latitude and divides Earth into the Northern and Southern hemispheres.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_5',
     question: 'The Sahara Desert is located in:',
     options: ['South America', 'Asia', 'Africa', 'Australia'],
     correctAnswer: 2,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'World Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'World Geography',
+    explanation: 'The Sahara Desert spans much of North Africa and is the world\'s largest hot desert.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_6',
     question: 'Lake Volta is primarily used for:',
     options: ['Transportation only', 'Hydroelectric power generation', 'Fishing only', 'Tourism only'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Geography'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Geography',
+    explanation: 'Lake Volta, created by the Akosombo Dam, primarily generates hydroelectric power for Ghana and neighboring countries.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_7',
     question: 'What is the study of weather called?',
     options: ['Geology', 'Meteorology', 'Oceanography', 'Astronomy'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Weather and Climate'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Weather and Climate',
+    explanation: 'Meteorology is the scientific study of the atmosphere, focusing on weather patterns and forecasting.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_8',
     question: 'Which vegetation belt covers the largest area in Ghana?',
     options: ['Coastal savanna', 'Guinea savanna', 'Rain forest', 'Sudan savanna'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Geography'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Geography',
+    explanation: 'Guinea savanna covers the largest area of Ghana, characterized by grasslands with scattered trees and seasonal rainfall.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_9',
     question: 'The continuous movement of water between the Earth\'s surface and atmosphere is called:',
     options: ['Water cycle', 'Evaporation', 'Condensation', 'Precipitation'],
     correctAnswer: 0,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Physical Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Physical Geography',
+    explanation: 'The water cycle (hydrologic cycle) describes the continuous movement of water through evaporation, condensation, and precipitation.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_10',
     question: 'What is erosion?',
     options: ['Building of soil', 'Wearing away of soil', 'Planting of crops', 'Irrigation'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Physical Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Physical Geography',
+    explanation: 'Erosion is the process by which soil and rock are removed from Earth\'s surface by wind, water, or ice.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_11',
     question: 'The world\'s highest mountain is:',
     options: ['Kilimanjaro', 'Mount Kenya', 'Mount Everest', 'K2'],
     correctAnswer: 2,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'World Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'World Geography',
+    explanation: 'Mount Everest, located in the Himalayas, is the world\'s highest mountain at 8,849 meters (29,032 feet) above sea level.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_12',
     question: 'Ghana has how many regions?',
     options: ['10', '12', '14', '16'],
     correctAnswer: 3,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Geography'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Geography',
+    explanation: 'Ghana currently has 16 administrative regions following the creation of six new regions in 2018-2019.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_13',
     question: 'What is latitude?',
     options: ['Distance north or south of the equator', 'Distance east or west of Prime Meridian', 'Height above sea level', 'Depth below sea level'],
     correctAnswer: 0,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Map Reading'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Map Reading',
+    explanation: 'Latitude measures the angular distance north or south of the equator, ranging from 0° at the equator to 90° at the poles.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_14',
     question: 'Which mineral is Ghana most famous for?',
     options: ['Diamond', 'Gold', 'Silver', 'Copper'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghana Geography',
+    explanation: 'Ghana is famous for gold production and was historically known as the "Gold Coast" due to its abundant gold reserves.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_15',
     question: 'Population density is:',
     options: ['Total population', 'Number of people per unit area', 'Birth rate', 'Death rate'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Population'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Population',
+    explanation: 'Population density measures the average number of people living per square kilometer or square mile in a given area.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_16',
     question: 'Urbanization refers to:',
     options: ['Rural development', 'Growth of cities', 'Agricultural expansion', 'Deforestation'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Settlement'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Settlement',
+    explanation: 'Urbanization is the process by which rural areas develop into cities and towns, with increasing population concentration in urban areas.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_17',
     question: 'What causes seasons on Earth?',
     options: ['Distance from the sun', 'Tilt of Earth\'s axis', 'Moon\'s orbit', 'Ocean currents'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Weather and Climate'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Weather and Climate',
+    explanation: 'Earth\'s 23.5° axial tilt causes different parts of the planet to receive varying amounts of sunlight throughout the year, creating seasons.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_18',
     question: 'The Greenwich Meridian passes through:',
     options: ['USA', 'Ghana', 'UK', 'France'],
     correctAnswer: 2,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Map Reading'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Map Reading',
+    explanation: 'The Prime Meridian (0° longitude) passes through Greenwich, London, UK, serving as the reference point for measuring longitude.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_19',
     question: 'Cocoa production in Ghana is mainly in which vegetation zone?',
     options: ['Savanna', 'Rain forest', 'Coastal zone', 'Montane'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Geography'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Geography',
+    explanation: 'Cocoa thrives in Ghana\'s rain forest zone, which provides the humid, shaded conditions ideal for cocoa cultivation.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_20',
     question: 'What is a delta?',
     options: ['A mountain', 'A desert', 'A triangular deposit at river mouth', 'A type of rock'],
     correctAnswer: 2,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Physical Geography'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Physical Geography',
+    explanation: 'A delta is a landform created by sediment deposition at the mouth of a river where it meets a body of water.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_21',
     question: 'The tropical rainforest climate is characterized by:',
     options: ['Hot and dry', 'Cold and wet', 'Hot and wet', 'Cold and dry'],
     correctAnswer: 2,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Weather and Climate'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Weather and Climate',
+    explanation: 'Tropical rainforest climates feature consistently high temperatures and heavy rainfall throughout the year.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_22',
     question: 'Which port is the largest in Ghana?',
     options: ['Takoradi', 'Tema', 'Sekondi', 'Cape Coast'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Geography'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Geography',
+    explanation: 'Tema Port is Ghana\'s largest seaport, handling the majority of the country\'s international trade.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_23',
     question: 'What is afforestation?',
     options: ['Cutting down trees', 'Planting trees', 'Building houses', 'Mining'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Environmental Geography'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Environmental Geography',
+    explanation: 'Afforestation is the process of establishing forests on land that was not previously forested, helping combat deforestation.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_24',
     question: 'The Tropic of Cancer is located at:',
     options: ['0°', '23.5° North', '23.5° South', '66.5° North'],
     correctAnswer: 1,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Physical Geography'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Physical Geography',
+    explanation: 'The Tropic of Cancer is located at approximately 23.5° North latitude, marking the northernmost point where the sun appears directly overhead.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'geo_25',
     question: 'Which factor does NOT affect climate?',
     options: ['Latitude', 'Altitude', 'Distance from sea', 'Population'],
     correctAnswer: 3,
     subject: 'Geography',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Weather and Climate'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Weather and Climate',
+    explanation: 'Population does not affect climate; climate is primarily influenced by latitude, altitude, distance from water bodies, and ocean currents.',
+    year: 2023
   }
 ];

@@ -1,254 +1,354 @@
-import { Question } from '@/lib/challenge';
+import type { ChallengeQuestion } from '../types';
 
-export const literatureQuestions: Question[] = [
+export const literatureQuestions: ChallengeQuestion[] = [
   {
+    type: 'mcq',
     id: 'lit_1',
     question: 'What is a novel?',
     options: ['A short story', 'A long narrative fiction', 'A poem', 'A play'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Literary Forms'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Literary Forms',
+    explanation: 'A novel is an extended work of narrative fiction, typically longer than a short story and featuring complex characters and plot development.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_2',
     question: 'The main character in a story is called the:',
     options: ['Antagonist', 'Protagonist', 'Narrator', 'Author'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Literary Terms'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Literary Terms',
+    explanation: 'The protagonist is the central character around whom the story revolves, often facing the main conflict.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_3',
     question: 'What is a metaphor?',
     options: ['Direct comparison using like or as', 'Indirect comparison without using like or as', 'Exaggeration', 'Giving human qualities to objects'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Figures of Speech'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Figures of Speech',
+    explanation: 'A metaphor makes an implicit comparison by stating one thing is another, without using "like" or "as" (e.g., "Time is money").',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_4',
     question: 'A play written to be performed on stage is called:',
     options: ['Novel', 'Drama', 'Prose', 'Epic'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Literary Forms'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Literary Forms',
+    explanation: 'Drama is a literary form designed for theatrical performance, featuring dialogue and stage directions.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_5',
     question: 'Who wrote "Things Fall Apart"?',
     options: ['Wole Soyinka', 'Chinua Achebe', 'Ama Ata Aidoo', 'Ngugi wa Thiongo'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'African Literature'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'African Literature',
+    explanation: 'Chinua Achebe\'s "Things Fall Apart" (1958) is a landmark African novel depicting pre-colonial and colonial Nigeria.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_6',
     question: 'A simile is:',
     options: ['Comparison using like or as', 'Indirect comparison', 'Exaggeration', 'Sound repetition'],
     correctAnswer: 0,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Figures of Speech'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Figures of Speech',
+    explanation: 'A simile is a direct comparison using "like" or "as" (e.g., "brave as a lion" or "runs like the wind").',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_7',
     question: 'The atmosphere or feeling in a literary work is called:',
     options: ['Theme', 'Mood', 'Tone', 'Setting'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Literary Terms'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Literary Terms',
+    explanation: 'Mood is the emotional atmosphere created by the author\'s use of setting, imagery, and diction to evoke feelings in the reader.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_8',
     question: 'Personification is:',
     options: ['Comparison', 'Exaggeration', 'Giving human qualities to non-human things', 'Sound imitation'],
     correctAnswer: 2,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Figures of Speech'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Figures of Speech',
+    explanation: 'Personification attributes human characteristics to non-human entities (e.g., "The wind whispered through the trees").',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_9',
     question: 'The sequence of events in a story is called:',
     options: ['Theme', 'Plot', 'Character', 'Setting'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Literary Terms'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Literary Terms',
+    explanation: 'Plot refers to the organized sequence of events in a narrative, typically following exposition, rising action, climax, falling action, and resolution.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_10',
     question: 'Who wrote "Romeo and Juliet"?',
     options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen', 'George Orwell'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'English Literature'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'English Literature',
+    explanation: 'William Shakespeare wrote the tragic play "Romeo and Juliet" in the 1590s, depicting doomed young lovers from feuding families.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_11',
     question: 'A poem with 14 lines is called a:',
     options: ['Haiku', 'Sonnet', 'Ballad', 'Epic'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Poetry'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Poetry',
+    explanation: 'A sonnet is a 14-line poem with a specific rhyme scheme, typically written in iambic pentameter.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_12',
     question: 'The central idea or message of a literary work is the:',
     options: ['Plot', 'Character', 'Theme', 'Setting'],
     correctAnswer: 2,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Literary Terms'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Literary Terms',
+    explanation: 'Theme is the underlying message or central idea that the author explores throughout the literary work.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_13',
     question: 'Alliteration is:',
     options: ['Repetition of vowel sounds', 'Repetition of consonant sounds at the beginning of words', 'Exaggeration', 'Comparison'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Sound Devices'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Sound Devices',
+    explanation: 'Alliteration is the repetition of initial consonant sounds in nearby words (e.g., "Peter Piper picked a peck").',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_14',
     question: 'The person telling the story is the:',
     options: ['Protagonist', 'Antagonist', 'Narrator', 'Character'],
     correctAnswer: 2,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Literary Terms'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Literary Terms',
+    explanation: 'The narrator is the voice telling the story, which can be a character in the story or an outside observer.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_15',
     question: 'Which African writer won the Nobel Prize in Literature?',
     options: ['Chinua Achebe', 'Wole Soyinka', 'Ngugi wa Thiongo', 'Ama Ata Aidoo'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'African Literature'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'African Literature',
+    explanation: 'Wole Soyinka, Nigerian playwright and poet, became the first African to win the Nobel Prize in Literature in 1986.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_16',
     question: 'Hyperbole is:',
     options: ['Understatement', 'Exaggeration', 'Comparison', 'Sound imitation'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Figures of Speech'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Figures of Speech',
+    explanation: 'Hyperbole is deliberate exaggeration for emphasis or effect (e.g., "I\'ve told you a million times").',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_17',
     question: 'The time and place where a story occurs is the:',
     options: ['Plot', 'Theme', 'Setting', 'Mood'],
     correctAnswer: 2,
     subject: 'Literature in English',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Literary Terms'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Literary Terms',
+    explanation: 'Setting establishes the time period and location where the story takes place, providing context for the narrative.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_18',
     question: 'A tragic hero is a character who:',
     options: ['Is purely evil', 'Has a fatal flaw leading to downfall', 'Is completely good', 'Never changes'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Drama'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Drama',
+    explanation: 'A tragic hero is a noble character whose tragic flaw (hamartia) leads to their inevitable downfall and evokes pity.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_19',
     question: 'Irony is when:',
     options: ['Something is repeated', 'Reality differs from expectation', 'Sounds are imitated', 'Objects are compared'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Literary Devices'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Literary Devices',
+    explanation: 'Irony occurs when there\'s a contrast between expectation and reality, including verbal, situational, and dramatic irony.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_20',
     question: 'Who wrote "The Lion and the Jewel"?',
     options: ['Chinua Achebe', 'Wole Soyinka', 'Ama Ata Aidoo', 'Efua Sutherland'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'African Drama'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'African Drama',
+    explanation: 'Wole Soyinka wrote "The Lion and the Jewel", a comedy exploring tradition versus modernity in a Yoruba village.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_21',
     question: 'Onomatopoeia is:',
     options: ['Repetition', 'Words that imitate sounds', 'Comparison', 'Exaggeration'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Sound Devices'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Sound Devices',
+    explanation: 'Onomatopoeia uses words that phonetically imitate the sounds they describe (e.g., "buzz", "hiss", "splash").',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_22',
     question: 'A soliloquy is:',
     options: ['A conversation between two characters', 'A character speaking alone, revealing thoughts', 'A narrator\'s description', 'A stage direction'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'hard',
-    examBoard: 'WASSCE',
-    topic: 'Drama'
+    level: 'SHS',
+    classLevel: 'SHS 3',
+    topic: 'Drama',
+    explanation: 'A soliloquy is a dramatic device where a character speaks their thoughts aloud while alone, revealing inner feelings to the audience.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_23',
     question: 'The climax of a story is:',
     options: ['The beginning', 'The turning point or highest point of tension', 'The end', 'The introduction'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Plot Structure'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Plot Structure',
+    explanation: 'The climax is the peak of the story\'s tension and conflict, where the outcome of the main conflict is determined.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_24',
     question: 'A ballad is:',
     options: ['A short story', 'A narrative poem often set to music', 'A type of novel', 'A speech'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Poetry'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Poetry',
+    explanation: 'A ballad is a narrative poem with a musical quality, often telling a story and traditionally passed down orally.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'lit_25',
     question: 'Flashback is a technique where:',
     options: ['The story moves forward', 'Past events are recalled', 'Future is predicted', 'Time stops'],
     correctAnswer: 1,
     subject: 'Literature in English',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Literary Techniques'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Literary Techniques',
+    explanation: 'Flashback is a narrative device that interrupts the chronological sequence to present events that occurred earlier.',
+    year: 2023
   }
 ];

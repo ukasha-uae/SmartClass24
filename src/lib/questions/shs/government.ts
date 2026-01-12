@@ -1,254 +1,354 @@
-import { Question } from '@/lib/challenge';
+import type { ChallengeQuestion } from '../types';
 
-export const governmentQuestions: Question[] = [
+export const governmentQuestions: ChallengeQuestion[] = [
   {
+    type: 'mcq',
     id: 'gov_1',
     question: 'What is democracy?',
     options: ['Rule by the military', 'Rule by the people', 'Rule by one person', 'Rule by the wealthy'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Political Systems'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Political Systems',
+    explanation: 'Democracy is a system of government where power rests with the people, who exercise it directly or through elected representatives.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_2',
     question: 'The three arms of government are:',
     options: ['President, Governor, Chief', 'Executive, Legislature, Judiciary', 'Army, Police, Navy', 'Federal, State, Local'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Arms of Government'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Arms of Government',
+    explanation: 'The three arms of government are the Executive (enforces laws), Legislature (makes laws), and Judiciary (interprets laws).',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_3',
     question: 'Which body makes laws in a democratic system?',
     options: ['The Executive', 'The Judiciary', 'The Legislature', 'The Police'],
     correctAnswer: 2,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Legislature'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Legislature',
+    explanation: 'The Legislature (Parliament or Congress) is responsible for making and passing laws in a democratic system.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_4',
     question: 'What is a constitution?',
     options: ['A religious text', 'A supreme law of the land', 'A political party manifesto', 'A military decree'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Constitution'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Constitution',
+    explanation: 'A constitution is the supreme law that defines the structure, powers, and limits of government and protects citizens\' rights.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_5',
     question: 'Ghana became independent in which year?',
     options: ['1957', '1960', '1966', '1950'],
     correctAnswer: 0,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghanaian History'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghanaian History',
+    explanation: 'Ghana gained independence from British colonial rule on March 6, 1957, led by Kwame Nkrumah.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_6',
     question: 'Who is Ghana\'s first president?',
     options: ['J.B. Danquah', 'Kwame Nkrumah', 'Jerry Rawlings', 'John Kufuor'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghanaian History'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghanaian History',
+    explanation: 'Kwame Nkrumah became Ghana\'s first president, championing Pan-Africanism and leading the independence movement.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_7',
     question: 'What is federalism?',
     options: ['A unitary system', 'Division of power between central and regional governments', 'Military rule', 'One-party state'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Political Systems'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Political Systems',
+    explanation: 'Federalism divides power between a central government and regional governments, each with distinct responsibilities.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_8',
     question: 'The principle of separation of powers means:',
     options: ['Powers are concentrated', 'Powers are divided among different branches', 'Only one branch governs', 'Military controls all'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Separation of Powers'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Separation of Powers',
+    explanation: 'Separation of powers divides government authority among the executive, legislature, and judiciary to prevent abuse of power.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_9',
     question: 'What is a political party?',
     options: ['A social club', 'An organization seeking political power', 'A religious group', 'A business association'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Political Parties'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Political Parties',
+    explanation: 'A political party is an organized group that seeks to gain and exercise political power through elections.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_10',
     question: 'Universal suffrage means:',
     options: ['Only men can vote', 'Only educated people can vote', 'All adults can vote', 'Only the rich can vote'],
     correctAnswer: 2,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Voting Rights'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Voting Rights',
+    explanation: 'Universal suffrage grants the right to vote to all adult citizens regardless of gender, race, wealth, or education.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_11',
     question: 'Which of the following is a fundamental human right?',
     options: ['Right to steal', 'Right to life', 'Right to break laws', 'Right to harm others'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Human Rights'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Human Rights',
+    explanation: 'The right to life is a fundamental human right protected by international law and most constitutions.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_12',
     question: 'The head of the judiciary in Ghana is the:',
     options: ['President', 'Chief Justice', 'Attorney General', 'Inspector General of Police'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Judiciary'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Judiciary',
+    explanation: 'The Chief Justice is the head of Ghana\'s judiciary, presiding over the Supreme Court and overseeing the judicial system.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_13',
     question: 'Which organization promotes cooperation among African countries?',
     options: ['United Nations', 'African Union', 'European Union', 'ECOWAS only'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'International Organizations'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'International Organizations',
+    explanation: 'The African Union (AU) promotes unity, cooperation, and development among African countries.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_14',
     question: 'ECOWAS stands for:',
     options: ['East Coast of West African States', 'Economic Community of West African States', 'European Council of West African States', 'Educational Community of West African States'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Regional Organizations'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Regional Organizations',
+    explanation: 'ECOWAS (Economic Community of West African States) promotes economic integration and cooperation among West African nations.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_15',
     question: 'A referendum is:',
     options: ['A type of election', 'A direct vote on a specific issue', 'A military coup', 'A court case'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Electoral Systems'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Electoral Systems',
+    explanation: 'A referendum allows citizens to vote directly on a specific political question or policy proposal.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_16',
     question: 'What is civil service?',
     options: ['Military service', 'Government administrative body', 'Private sector jobs', 'Community service'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Public Administration'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Public Administration',
+    explanation: 'The civil service comprises permanent government employees who implement policies and provide public services.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_17',
     question: 'The rule of law means:',
     options: ['Military rule', 'Everyone is subject to the law', 'Only poor people follow laws', 'Laws apply to citizens only'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Rule of Law'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Rule of Law',
+    explanation: 'The rule of law means all people, including government officials, are equally accountable under the law.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_18',
     question: 'What is a bicameral legislature?',
     options: ['One house', 'Two houses', 'Three houses', 'No houses'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Legislature'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Legislature',
+    explanation: 'A bicameral legislature has two separate chambers or houses (e.g., Senate and House of Representatives in the US).',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_19',
     question: 'Ghana\'s parliament has how many houses?',
     options: ['One (unicameral)', 'Two (bicameral)', 'Three', 'Four'],
     correctAnswer: 0,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghanaian Government'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghanaian Government',
+    explanation: 'Ghana has a unicameral parliament with a single legislative chamber of 275 members.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_20',
     question: 'What is sovereignty?',
     options: ['Supreme power of the state', 'Economic strength', 'Military power', 'Population size'],
     correctAnswer: 0,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Political Theory'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Political Theory',
+    explanation: 'Sovereignty is the supreme authority of a state to govern itself without external interference.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_21',
     question: 'The electoral commission in Ghana is responsible for:',
     options: ['Making laws', 'Conducting elections', 'Enforcing laws', 'Interpreting laws'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Elections'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Elections',
+    explanation: 'The Electoral Commission organizes, conducts, and supervises all public elections and referendums in Ghana.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_22',
     question: 'What is a coup d\'état?',
     options: ['Democratic election', 'Illegal seizure of power', 'Peaceful transition', 'Constitutional change'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Political Systems'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Political Systems',
+    explanation: 'A coup d\'état is the sudden, illegal overthrow of a government, typically by a small group or military force.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_23',
     question: 'Which system allows citizens to directly elect the head of government?',
     options: ['Parliamentary system', 'Presidential system', 'Monarchy', 'Aristocracy'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Political Systems'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Political Systems',
+    explanation: 'In a presidential system, citizens directly elect the president as head of government and state.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_24',
     question: 'The United Nations was established in:',
     options: ['1919', '1945', '1960', '1975'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'International Organizations'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'International Organizations',
+    explanation: 'The United Nations was founded in 1945 after World War II to promote international cooperation and peace.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'gov_25',
     question: 'What is nationalism?',
     options: ['Hatred of other nations', 'Love and devotion to one\'s nation', 'Isolationism', 'Colonialism'],
     correctAnswer: 1,
     subject: 'Government',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Political Theory'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Political Theory',
+    explanation: 'Nationalism is loyalty, devotion, and pride in one\'s nation, often promoting national independence and identity.',
+    year: 2023
   }
 ];

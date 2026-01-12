@@ -51,10 +51,27 @@ export default function CreateChallengePage() {
   
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    
+    // Priority 1: Check URL parameter (from challenge arena page)
+    const params = new URLSearchParams(window.location.search);
+    const levelParam = params.get('level') as 'Primary' | 'JHS' | 'SHS' | null;
+    
+    if (levelParam && (levelParam === 'Primary' || levelParam === 'JHS' || levelParam === 'SHS')) {
+      setUserLevel(levelParam);
+      return;
+    }
+    
+    // Priority 2: Check player profile
     const userId = user?.uid || `anon-${Date.now()}`;
     const player = getPlayerProfile(userId);
+    if (player?.level) {
+      setUserLevel(player.level);
+      return;
+    }
+    
+    // Priority 3: Check localStorage
     const savedLevel = localStorage.getItem('userEducationLevel');
-    const level = (player?.level || savedLevel || 'JHS') as EducationLevel;
+    const level = (savedLevel || 'JHS') as EducationLevel;
     setUserLevel(level);
   }, [user]);
   
@@ -97,16 +114,44 @@ export default function CreateChallengePage() {
     }));
   }, [availableSubjects]);
   
+  // Get class levels based on education level
+  const getClassLevels = (level: 'Primary' | 'JHS' | 'SHS') => {
+    if (level === 'Primary') {
+      return [
+        { id: 'Primary 1', name: 'Primary 1', color: 'text-green-500' },
+        { id: 'Primary 2', name: 'Primary 2', color: 'text-green-500' },
+        { id: 'Primary 3', name: 'Primary 3', color: 'text-yellow-500' },
+        { id: 'Primary 4', name: 'Primary 4', color: 'text-yellow-500' },
+        { id: 'Primary 5', name: 'Primary 5', color: 'text-red-500' },
+        { id: 'Primary 6', name: 'Primary 6', color: 'text-red-500' },
+      ];
+    } else if (level === 'JHS') {
+      return [
+        { id: 'JHS 1', name: 'JHS 1', color: 'text-green-500' },
+        { id: 'JHS 2', name: 'JHS 2', color: 'text-yellow-500' },
+        { id: 'JHS 3', name: 'JHS 3', color: 'text-red-500' },
+      ];
+    } else {
+      return [
+        { id: 'SHS 1', name: 'SHS 1', color: 'text-green-500' },
+        { id: 'SHS 2', name: 'SHS 2', color: 'text-yellow-500' },
+        { id: 'SHS 3', name: 'SHS 3', color: 'text-red-500' },
+      ];
+    }
+  };
+
+  const classLevels = getClassLevels(userLevel);
+
   // Initialize formData with type from URL parameter
   const [formData, setFormData] = useState(() => {
     if (typeof window === 'undefined') {
-      return { subject: '', difficulty: 'medium', type: 'quick' as const, opponentId: '' };
+      return { subject: '', classLevel: '', type: 'quick' as const, opponentId: '' };
     }
     const params = new URLSearchParams(window.location.search);
     const typeFromUrl = params.get('type') === 'friend' ? 'friend' : 'quick';
     return {
       subject: '',
-      difficulty: 'medium',
+      classLevel: '',
       type: typeFromUrl,
       opponentId: '',
     };
@@ -257,8 +302,8 @@ export default function CreateChallengePage() {
       }
       
       const currentUser = { id: userId, name: creatorName, school: creatorSchool };
-      const questionCount = formData.difficulty === 'easy' ? 5 : formData.difficulty === 'medium' ? 10 : 15;
-      const timeLimit = formData.difficulty === 'easy' ? 30 : formData.difficulty === 'medium' ? 45 : 60;
+      const questionCount = 10; // Standard 10 questions
+      const timeLimit = 45; // Standard 45 seconds per question
       
       let opponents: any[] = [];
       if (formData.type === 'friend' && formData.opponentId) {
@@ -278,7 +323,7 @@ export default function CreateChallengePage() {
         type: challengeType as any,
         level: userLevel,
         subject: subjectName,
-        difficulty: formData.difficulty as any,
+        difficulty: formData.classLevel as any, // Use classLevel as difficulty
         questionCount,
         timeLimit,
         creatorId: currentUser.id,
@@ -312,7 +357,7 @@ export default function CreateChallengePage() {
 
   const canProceed = () => {
     if (step === 1) return !!formData.subject;
-    if (step === 2) return true; // difficulty always selected
+    if (step === 2) return !!formData.classLevel; // classLevel must be selected
     if (step === 3) return formData.type === 'quick' || (formData.type === 'friend' && formData.opponentId);
     if (step === 4) return true; // confirmation step
     return true;
@@ -328,12 +373,6 @@ export default function CreateChallengePage() {
       handleCreate();
     }
   };
-
-  const DIFFICULTIES = [
-    { id: 'easy', name: 'Easy', questions: 5, color: 'text-green-500' },
-    { id: 'medium', name: 'Medium', questions: 10, color: 'text-yellow-500' },
-    { id: 'hard', name: 'Hard', questions: 15, color: 'text-red-500' },
-  ];
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-2xl">
@@ -392,30 +431,30 @@ export default function CreateChallengePage() {
           </div>
         )}
 
-        {/* Step 2: Difficulty & Type */}
+        {/* Step 2: Class Level & Type */}
         {step === 2 && (
           <div className="animate-in fade-in duration-200">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg">Battle Settings</CardTitle>
-              <CardDescription>Choose difficulty and opponent type</CardDescription>
+              <CardDescription>Choose your class level and opponent type</CardDescription>
             </CardHeader>
             <CardContent className="pb-4 space-y-4">
-              {/* Difficulty - Compact */}
+              {/* Class Level - Compact */}
               <div>
-                <Label className="text-xs text-muted-foreground mb-2 block">Difficulty</Label>
+                <Label className="text-xs text-muted-foreground mb-2 block">Class Level</Label>
                 <div className="flex gap-2">
-                  {DIFFICULTIES.map((diff) => (
+                  {classLevels.map((level) => (
                     <button
-                      key={diff.id}
+                      key={level.id}
                       className={`flex-1 py-2 px-3 rounded-lg border-2 text-center transition-all ${
-                        formData.difficulty === diff.id 
+                        formData.classLevel === level.id 
                           ? 'border-primary bg-primary/5' 
                           : 'border-transparent bg-muted/50 hover:bg-muted'
                       }`}
-                      onClick={() => setFormData({ ...formData, difficulty: diff.id })}
+                      onClick={() => setFormData({ ...formData, classLevel: level.id })}
                     >
-                      <div className={`font-semibold text-sm ${diff.color}`}>{diff.name}</div>
-                      <div className="text-xs text-muted-foreground">{diff.questions} Qs</div>
+                      <div className={`font-semibold text-sm ${level.color}`}>{level.name}</div>
+                      <div className="text-xs text-muted-foreground">10 Qs</div>
                     </button>
                   ))}
                 </div>
@@ -572,18 +611,16 @@ export default function CreateChallengePage() {
                     </p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground text-xs block mb-1">Difficulty</span>
-                    <p className="font-medium capitalize">{formData.difficulty}</p>
+                    <span className="text-muted-foreground text-xs block mb-1">Class Level</span>
+                    <p className="font-medium">{formData.classLevel}</p>
                   </div>
                   <div>
                     <span className="text-muted-foreground text-xs block mb-1">Questions</span>
-                    <p className="font-medium">{DIFFICULTIES.find(d => d.id === formData.difficulty)?.questions || 10}</p>
+                    <p className="font-medium">10</p>
                   </div>
                   <div>
                     <span className="text-muted-foreground text-xs block mb-1">Time Limit</span>
-                    <p className="font-medium">
-                      {formData.difficulty === 'easy' ? '30s' : formData.difficulty === 'medium' ? '45s' : '60s'} per Q
-                    </p>
+                    <p className="font-medium">45s per Q</p>
                   </div>
                 </div>
                 
@@ -659,7 +696,7 @@ export default function CreateChallengePage() {
       {formData.subject && (
         <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           <span className="bg-muted px-2 py-1 rounded-full">{SUBJECTS.find(s => s.id === formData.subject)?.name}</span>
-          <span className="bg-muted px-2 py-1 rounded-full capitalize">{formData.difficulty}</span>
+          {formData.classLevel && <span className="bg-muted px-2 py-1 rounded-full">{formData.classLevel}</span>}
           <span className="bg-muted px-2 py-1 rounded-full">{formData.type === 'quick' ? 'Quick Match' : selectedFriend?.userName || 'Select friend'}</span>
         </div>
       )}

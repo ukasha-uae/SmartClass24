@@ -1,254 +1,354 @@
-import { Question } from '@/lib/challenge';
+import type { ChallengeQuestion } from '../types';
 
-export const economicsQuestions: Question[] = [
+export const economicsQuestions: ChallengeQuestion[] = [
   {
+    type: 'mcq',
     id: 'econ_1',
     question: 'What is the basic economic problem?',
     options: ['Scarcity', 'Inflation', 'Unemployment', 'Poverty'],
     correctAnswer: 0,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Introduction to Economics'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Introduction to Economics',
+    explanation: 'Scarcity is the fundamental economic problem arising from unlimited wants and limited resources.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_2',
     question: 'The law of demand states that as price increases, quantity demanded:',
     options: ['Increases', 'Decreases', 'Remains constant', 'Fluctuates randomly'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Demand and Supply'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Demand and Supply',
+    explanation: 'The law of demand states there is an inverse relationship between price and quantity demanded, ceteris paribus.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_3',
     question: 'Which of the following is NOT a factor of production?',
     options: ['Land', 'Labour', 'Capital', 'Money'],
     correctAnswer: 3,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Factors of Production'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Factors of Production',
+    explanation: 'Money is not a factor of production; the four factors are land, labor, capital, and entrepreneurship.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_4',
     question: 'What type of unemployment occurs when workers lack the skills required for available jobs?',
     options: ['Cyclical unemployment', 'Structural unemployment', 'Frictional unemployment', 'Seasonal unemployment'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Unemployment'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Unemployment',
+    explanation: 'Structural unemployment occurs when there is a mismatch between workers\' skills and the requirements of available jobs.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_5',
     question: 'In a market economy, prices are determined by:',
     options: ['The government', 'Supply and demand', 'Production costs only', 'International trade'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Market Systems'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Market Systems',
+    explanation: 'In a market economy, prices are determined by the interaction of supply and demand forces without government intervention.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_6',
     question: 'What is inflation?',
     options: ['A general fall in prices', 'A general rise in prices', 'An increase in wages', 'A decrease in unemployment'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Inflation'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Inflation',
+    explanation: 'Inflation is the sustained increase in the general price level of goods and services, reducing purchasing power.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_7',
     question: 'Which of the following is a function of money?',
     options: ['Medium of exchange', 'Unit of account', 'Store of value', 'All of the above'],
     correctAnswer: 3,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Money and Banking'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Money and Banking',
+    explanation: 'Money serves multiple functions: medium of exchange, unit of account, store of value, and standard of deferred payment.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_8',
     question: 'What is GDP?',
     options: ['Government Domestic Product', 'Gross Domestic Product', 'General Development Plan', 'Global Distribution Pattern'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'National Income'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'National Income',
+    explanation: 'GDP (Gross Domestic Product) measures the total value of all goods and services produced within a country in a specific period.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_9',
     question: 'A monopoly market structure is characterized by:',
     options: ['Many sellers', 'One seller', 'Two sellers', 'Perfect competition'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Market Structures'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Market Structures',
+    explanation: 'A monopoly exists when there is only one seller in a market with no close substitutes and high barriers to entry.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_10',
     question: 'The opportunity cost of a decision is:',
     options: ['The monetary cost', 'The next best alternative forgone', 'The total benefits', 'The marginal cost'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Opportunity Cost'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Opportunity Cost',
+    explanation: 'Opportunity cost represents the value of the next best alternative that must be given up when making a choice.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_11',
     question: 'Which of the following is an example of fiscal policy?',
     options: ['Changing interest rates', 'Government spending', 'Printing money', 'Foreign exchange controls'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Government Policy'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Government Policy',
+    explanation: 'Fiscal policy involves government spending and taxation decisions to influence the economy.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_12',
     question: 'A progressive tax system means:',
     options: ['Everyone pays the same rate', 'Higher earners pay a higher percentage', 'Lower earners pay more', 'Businesses are exempt'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Taxation'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Taxation',
+    explanation: 'In a progressive tax system, the tax rate increases as income increases, promoting income redistribution.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_13',
     question: 'What is comparative advantage?',
     options: ['Producing everything efficiently', 'Producing at the lowest opportunity cost', 'Having more resources', 'Trading with neighbors only'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'hard',
-    examBoard: 'WASSCE',
-    topic: 'International Trade'
+    level: 'SHS',
+    classLevel: 'SHS 3',
+    topic: 'International Trade',
+    explanation: 'Comparative advantage occurs when a country can produce a good at a lower opportunity cost than other countries.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_14',
     question: 'The elasticity of demand measures:',
     options: ['Price changes', 'Responsiveness of quantity demanded to price changes', 'Supply changes', 'Market equilibrium'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Elasticity'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Elasticity',
+    explanation: 'Price elasticity of demand measures how responsive the quantity demanded is to changes in price.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_15',
     question: 'Which institution conducts monetary policy in Ghana?',
     options: ['Ministry of Finance', 'Bank of Ghana', 'Ghana Stock Exchange', 'Parliament'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Money and Banking'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Money and Banking',
+    explanation: 'The Bank of Ghana is the central bank responsible for implementing monetary policy, including controlling money supply and interest rates.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_16',
     question: 'A budget deficit occurs when:',
     options: ['Revenue exceeds expenditure', 'Expenditure exceeds revenue', 'Revenue equals expenditure', 'Taxes are too high'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Government Finance'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Government Finance',
+    explanation: 'A budget deficit occurs when government spending exceeds its revenue, requiring borrowing to cover the shortfall.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_17',
     question: 'In perfect competition, firms are:',
     options: ['Price makers', 'Price takers', 'Monopolists', 'Oligopolists'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Market Structures'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Market Structures',
+    explanation: 'In perfect competition, firms are price takers because they must accept the market price determined by supply and demand.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_18',
     question: 'What is the main purpose of the World Bank?',
     options: ['Military assistance', 'Economic development', 'Political unity', 'Cultural exchange'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'International Economics'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'International Economics',
+    explanation: 'The World Bank provides financial and technical assistance to developing countries for economic development projects.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_19',
     question: 'Consumer surplus is:',
     options: ['Extra production', 'Difference between willingness to pay and actual price', 'Excess supply', 'Government subsidy'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'hard',
-    examBoard: 'WASSCE',
-    topic: 'Consumer Theory'
+    level: 'SHS',
+    classLevel: 'SHS 3',
+    topic: 'Consumer Theory',
+    explanation: 'Consumer surplus is the difference between what consumers are willing to pay and what they actually pay for a good.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_20',
     question: 'What causes cost-push inflation?',
     options: ['Increased demand', 'Increased production costs', 'Decreased taxes', 'Lower interest rates'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Inflation'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Inflation',
+    explanation: 'Cost-push inflation occurs when rising production costs (wages, raw materials) force firms to increase prices.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_21',
     question: 'The demand curve typically slopes:',
     options: ['Upward from left to right', 'Downward from left to right', 'Horizontally', 'Vertically'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Demand and Supply'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Demand and Supply',
+    explanation: 'The demand curve slopes downward due to the inverse relationship between price and quantity demanded.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_22',
     question: 'Which of the following is a direct tax?',
     options: ['VAT', 'Income tax', 'Sales tax', 'Import duty'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Taxation'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Taxation',
+    explanation: 'Income tax is a direct tax paid directly to the government by the taxpayer, based on income earned.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_23',
     question: 'Economies of scale occur when:',
     options: ['Costs increase with output', 'Costs decrease with output', 'Costs remain constant', 'Production stops'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Production'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Production',
+    explanation: 'Economies of scale occur when average costs per unit decrease as production volume increases.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_24',
     question: 'What is a tariff?',
     options: ['Tax on imports', 'Subsidy on exports', 'Price control', 'Wage regulation'],
     correctAnswer: 0,
     subject: 'Economics',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'International Trade'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'International Trade',
+    explanation: 'A tariff is a tax imposed on imported goods, used to protect domestic industries or generate revenue.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'econ_25',
     question: 'The central bank uses interest rates to control:',
     options: ['Fiscal policy', 'Monetary policy', 'Trade policy', 'Industrial policy'],
     correctAnswer: 1,
     subject: 'Economics',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Monetary Policy'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Monetary Policy',
+    explanation: 'The central bank manipulates interest rates as part of monetary policy to control money supply and inflation.',
+    year: 2023
   }
 ];

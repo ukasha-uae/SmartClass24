@@ -13,6 +13,20 @@ import { geographyQuestions } from './questions/shs/geography';
 import { historyQuestions } from './questions/shs/history';
 import { accountingQuestions } from './questions/shs/accounting';
 import { literatureQuestions } from './questions/shs/literature';
+import { chemistryQuestions } from './questions/shs/chemistry';
+import { physicsQuestions } from './questions/shs/physics';
+import { biologyQuestions } from './questions/shs/biology';
+import { electiveMathematicsQuestions } from './questions/shs/elective-mathematics';
+import { businessManagementQuestions } from './questions/shs/business-management';
+import { costAccountingQuestions } from './questions/shs/cost-accounting';
+import { generalKnowledgeArtQuestions } from './questions/shs/general-knowledge-art';
+import { foodNutritionQuestions } from './questions/shs/food-nutrition';
+import { technicalDrawingQuestions } from './questions/shs/technical-drawing';
+import { buildingConstructionQuestions } from './questions/shs/building-construction';
+import { woodworkQuestions } from './questions/shs/woodwork';
+import { metalworkQuestions } from './questions/shs/metalwork';
+import { electronicsQuestions } from './questions/shs/electronics';
+import { autoMechanicsQuestions } from './questions/shs/auto-mechanics';
 import { jhsMathematicsQuestions } from './questions/jhs/mathematics';
 import { jhsEnglishLanguageQuestions } from './questions/jhs/english-language';
 import { jhsScienceQuestions } from './questions/jhs/science';
@@ -17726,6 +17740,34 @@ export function getChallengeQuestions(
       filtered = filterMCQQuestions(accountingQuestions);
     } else if (subject === 'Literature in English') {
       filtered = filterMCQQuestions(literatureQuestions);
+    } else if (subject === 'Chemistry') {
+      filtered = filterMCQQuestions(chemistryQuestions);
+    } else if (subject === 'Physics') {
+      filtered = filterMCQQuestions(physicsQuestions);
+    } else if (subject === 'Biology') {
+      filtered = filterMCQQuestions(biologyQuestions);
+    } else if (subject === 'Elective Mathematics') {
+      filtered = filterMCQQuestions(electiveMathematicsQuestions);
+    } else if (subject === 'Business Management') {
+      filtered = filterMCQQuestions(businessManagementQuestions);
+    } else if (subject === 'Cost Accounting') {
+      filtered = filterMCQQuestions(costAccountingQuestions);
+    } else if (subject === 'General Knowledge in Art') {
+      filtered = filterMCQQuestions(generalKnowledgeArtQuestions);
+    } else if (subject === 'Food and Nutrition') {
+      filtered = filterMCQQuestions(foodNutritionQuestions);
+    } else if (subject === 'Technical Drawing') {
+      filtered = filterMCQQuestions(technicalDrawingQuestions);
+    } else if (subject === 'Building Construction') {
+      filtered = filterMCQQuestions(buildingConstructionQuestions);
+    } else if (subject === 'Woodwork') {
+      filtered = filterMCQQuestions(woodworkQuestions);
+    } else if (subject === 'Metalwork') {
+      filtered = filterMCQQuestions(metalworkQuestions);
+    } else if (subject === 'Electronics') {
+      filtered = filterMCQQuestions(electronicsQuestions);
+    } else if (subject === 'Auto Mechanics') {
+      filtered = filterMCQQuestions(autoMechanicsQuestions);
     } else {
       // Default: all SHS questions from main bank
       filtered = shsQuestionBank.filter(q => q.level === 'SHS');
@@ -17745,7 +17787,21 @@ export function getChallengeQuestions(
       subject !== 'Geography' &&
       subject !== 'History' &&
       subject !== 'Accounting' &&
-      subject !== 'Literature in English'
+      subject !== 'Literature in English' &&
+      subject !== 'Chemistry' &&
+      subject !== 'Physics' &&
+      subject !== 'Biology' &&
+      subject !== 'Elective Mathematics' &&
+      subject !== 'Business Management' &&
+      subject !== 'Cost Accounting' &&
+      subject !== 'General Knowledge in Art' &&
+      subject !== 'Food and Nutrition' &&
+      subject !== 'Technical Drawing' &&
+      subject !== 'Building Construction' &&
+      subject !== 'Woodwork' &&
+      subject !== 'Metalwork' &&
+      subject !== 'Electronics' &&
+      subject !== 'Auto Mechanics'
     ) {
       filtered = filtered.filter(q => q.subject === subject);
     }

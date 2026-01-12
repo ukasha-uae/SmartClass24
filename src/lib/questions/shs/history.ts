@@ -1,254 +1,354 @@
-import { Question } from '@/lib/challenge';
+import type { ChallengeQuestion } from '../types';
 
-export const historyQuestions: Question[] = [
+export const historyQuestions: ChallengeQuestion[] = [
   {
+    type: 'mcq',
     id: 'hist_1',
     question: 'When did Ghana gain independence?',
     options: ['1950', '1957', '1960', '1966'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Independence'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghana Independence',
+    explanation: 'Ghana gained independence from British colonial rule on March 6, 1957, becoming the first sub-Saharan African nation to do so.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_2',
     question: 'Who was Ghana\'s first president?',
     options: ['J.B. Danquah', 'Kwame Nkrumah', 'Edward Akufo-Addo', 'Joseph Boakye Danquah'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Independence'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghana Independence',
+    explanation: 'Kwame Nkrumah became Ghana\'s first president after leading the country to independence in 1957.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_3',
     question: 'The Gold Coast was colonized by:',
     options: ['France', 'Portugal', 'Britain', 'Germany'],
     correctAnswer: 2,
     subject: 'History',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Colonialism'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Colonialism',
+    explanation: 'Britain colonized the Gold Coast (modern-day Ghana) and controlled it until independence in 1957.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_4',
     question: 'The Ashanti Empire was famous for:',
     options: ['Fishing', 'Gold and military power', 'Pottery', 'Weaving only'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Pre-colonial Ghana'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Pre-colonial Ghana',
+    explanation: 'The Ashanti Empire was renowned for its vast gold resources and powerful military organization, dominating much of present-day Ghana.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_5',
     question: 'Who was the Ashanti king during the War of the Golden Stool?',
     options: ['Osei Tutu', 'Opoku Ware I', 'Prempeh I', 'Osei Bonsu'],
     correctAnswer: 2,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ashanti History'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ashanti History',
+    explanation: 'Prempeh I was the Asantehene (king) when the British attempted to seize the Golden Stool, leading to the Yaa Asantewaa War in 1900.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_6',
     question: 'The Big Six were independence leaders. Who was NOT one of them?',
     options: ['Kwame Nkrumah', 'J.B. Danquah', 'Jerry Rawlings', 'Edward Akufo-Addo'],
     correctAnswer: 2,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Independence'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Independence',
+    explanation: 'Jerry Rawlings was not part of the Big Six; he became prominent in Ghana\'s politics much later, in the 1970s-1990s.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_7',
     question: 'The trans-Atlantic slave trade lasted approximately:',
     options: ['100 years', '200 years', '400 years', '600 years'],
     correctAnswer: 2,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Slave Trade'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Slave Trade',
+    explanation: 'The trans-Atlantic slave trade lasted roughly 400 years, from the early 16th to the mid-19th century.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_8',
     question: 'Which castle was NOT built in Ghana?',
     options: ['Cape Coast Castle', 'Elmina Castle', 'Fort Prinzenstein', 'Gorée Island Fort'],
     correctAnswer: 3,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Colonial History'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Colonial History',
+    explanation: 'Gorée Island Fort is located in Senegal, not Ghana. Cape Coast, Elmina, and Fort Prinzenstein are all in Ghana.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_9',
     question: 'The Yaa Asantewaa War occurred in:',
     options: ['1800', '1824', '1900', '1920'],
     correctAnswer: 2,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ashanti History'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ashanti History',
+    explanation: 'The Yaa Asantewaa War took place in 1900 when Queen Mother Yaa Asantewaa led the Ashanti resistance against British colonialism.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_10',
     question: 'What does UGCC stand for?',
     options: ['United Gold Coast Convention', 'United Ghana Coast Convention', 'Universal Gold Coast Council', 'United Ghana Civil Council'],
     correctAnswer: 0,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Independence'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Independence',
+    explanation: 'UGCC (United Gold Coast Convention) was a political party formed in 1947 that played a key role in Ghana\'s independence movement.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_11',
     question: 'The Bond of 1844 was signed between the British and:',
     options: ['Ashanti chiefs', 'Fante chiefs', 'Ewe chiefs', 'Ga chiefs'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'hard',
-    examBoard: 'WASSCE',
-    topic: 'Colonial History'
+    level: 'SHS',
+    classLevel: 'SHS 3',
+    topic: 'Colonial History',
+    explanation: 'The Bond of 1844 was an agreement between the British and Fante chiefs, establishing British jurisdiction over coastal areas.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_12',
     question: 'Ghana was the first African country to gain independence from:',
     options: ['Colonial rule', 'Military rule', 'Apartheid', 'Slavery'],
     correctAnswer: 0,
     subject: 'History',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Independence'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghana Independence',
+    explanation: 'Ghana was the first sub-Saharan African nation to gain independence from colonial rule in 1957, inspiring other African nations.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_13',
     question: 'The CPP stands for:',
     options: ['Central People\'s Party', 'Convention People\'s Party', 'Colonial People\'s Party', 'Citizens People\'s Party'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Independence'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ghana Independence',
+    explanation: 'The Convention People\'s Party (CPP) was founded by Kwame Nkrumah in 1949 and led Ghana to independence.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_14',
     question: 'Which European country first arrived on the Gold Coast?',
     options: ['Britain', 'Portugal', 'Netherlands', 'Denmark'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Colonial History'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Colonial History',
+    explanation: 'Portugal was the first European nation to arrive on the Gold Coast in 1471, establishing trade relations and building Elmina Castle in 1482.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_15',
     question: 'The Golden Stool is a symbol of:',
     options: ['Wealth', 'Ashanti unity and soul', 'British power', 'Trade'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ashanti History'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ashanti History',
+    explanation: 'The Golden Stool (Sika Dwa Kofi) symbolizes the soul and unity of the Ashanti people, descending from the heavens according to legend.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_16',
     question: 'Yaa Asantewaa was:',
     options: ['A queen mother who led war against British', 'A British governor', 'A trader', 'A missionary'],
     correctAnswer: 0,
     subject: 'History',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Ashanti History'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Ashanti History',
+    explanation: 'Yaa Asantewaa was the Queen Mother of Ejisu who led the Ashanti rebellion against British colonialism in 1900.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_17',
     question: 'The Berlin Conference of 1884-1885 resulted in:',
     options: ['African independence', 'Partition of Africa', 'End of slavery', 'World War I'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Colonialism'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Colonialism',
+    explanation: 'The Berlin Conference divided Africa among European powers without African input, establishing colonial boundaries that persist today.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_18',
     question: 'Ghana became a republic in:',
     options: ['1957', '1960', '1966', '1979'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Independence'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Independence',
+    explanation: 'Ghana became a republic on July 1, 1960, three years after gaining independence, with Nkrumah as its first president.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_19',
     question: 'The first military coup in Ghana occurred in:',
     options: ['1960', '1966', '1972', '1979'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Ghana Politics'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Ghana Politics',
+    explanation: 'The first military coup in Ghana occurred on February 24, 1966, overthrowing President Kwame Nkrumah.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_20',
     question: 'Which Ghanaian served as UN Secretary-General?',
     options: ['Kwame Nkrumah', 'Kofi Annan', 'Jerry Rawlings', 'John Kufuor'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Modern Ghana'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Modern Ghana',
+    explanation: 'Kofi Annan served as the 7th UN Secretary-General from 1997 to 2006 and won the Nobel Peace Prize in 2001.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_21',
     question: 'The 1992 constitution established:',
     options: ['Military rule', 'Fourth Republic', 'Colonial rule', 'Monarchy'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Modern Ghana'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Modern Ghana',
+    explanation: 'The 1992 Constitution established Ghana\'s Fourth Republic, marking a return to democratic civilian rule.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_22',
     question: 'Indirect rule was a colonial policy where:',
     options: ['Europeans ruled directly', 'Local chiefs administered under European supervision', 'Africans had full independence', 'Military ruled'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Colonial History'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Colonial History',
+    explanation: 'Indirect rule used traditional chiefs as intermediaries to administer colonial policies, maintaining local structures while exercising control.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_23',
     question: 'The Pan-African movement was promoted by:',
     options: ['Colonial powers', 'Kwame Nkrumah and others', 'Missionaries', 'Traders'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Pan-Africanism'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Pan-Africanism',
+    explanation: 'Kwame Nkrumah was a leading advocate of Pan-Africanism, promoting unity and solidarity among African nations.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_24',
     question: 'Which war was known as the Sagrenti War?',
     options: ['1826 Anglo-Ashanti War', '1874 Anglo-Ashanti War', '1900 Yaa Asantewaa War', 'World War I'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'hard',
-    examBoard: 'WASSCE',
-    topic: 'Ashanti History'
+    level: 'SHS',
+    classLevel: 'SHS 3',
+    topic: 'Ashanti History',
+    explanation: 'The Sagrenti War (1874) was named after British commander Sir Garnet Wolseley and resulted in the burning of Kumasi.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'hist_25',
     question: 'The first African to be elected as AU Chairperson was:',
     options: ['Kwame Nkrumah', 'Nkosazana Dlamini-Zuma', 'Nelson Mandela', 'Haile Selassie'],
     correctAnswer: 1,
     subject: 'History',
     difficulty: 'hard',
-    examBoard: 'WASSCE',
-    topic: 'African History'
+    level: 'SHS',
+    classLevel: 'SHS 3',
+    topic: 'African History',
+    explanation: 'Nkosazana Dlamini-Zuma from South Africa became the first woman to chair the African Union Commission in 2012.',
+    year: 2023
   }
 ];

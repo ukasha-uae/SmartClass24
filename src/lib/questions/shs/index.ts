@@ -11,6 +11,16 @@ import { geographyQuestions } from './geography';
 import { historyQuestions } from './history';
 import { accountingQuestions } from './accounting';
 import { literatureQuestions } from './literature';
+import { businessManagementQuestions } from './business-management';
+import { costAccountingQuestions } from './cost-accounting';
+import { generalKnowledgeArtQuestions } from './general-knowledge-art';
+import { foodNutritionQuestions } from './food-nutrition';
+import { technicalDrawingQuestions } from './technical-drawing';
+import { buildingConstructionQuestions } from './building-construction';
+import { woodworkQuestions } from './woodwork';
+import { metalworkQuestions } from './metalwork';
+import { electronicsQuestions } from './electronics';
+import { autoMechanicsQuestions } from './auto-mechanics';
 
 // Combine all SHS questions
 export const shsQuestionBank: ChallengeQuestion[] = [
@@ -24,6 +34,16 @@ export const shsQuestionBank: ChallengeQuestion[] = [
   ...historyQuestions,
   ...accountingQuestions,
   ...literatureQuestions,
+  ...businessManagementQuestions,
+  ...costAccountingQuestions,
+  ...generalKnowledgeArtQuestions,
+  ...foodNutritionQuestions,
+  ...technicalDrawingQuestions,
+  ...buildingConstructionQuestions,
+  ...woodworkQuestions,
+  ...metalworkQuestions,
+  ...electronicsQuestions,
+  ...autoMechanicsQuestions,
 ];
 
 // Export individual question banks for selective loading
@@ -37,6 +57,16 @@ export { geographyQuestions } from './geography';
 export { historyQuestions } from './history';
 export { accountingQuestions } from './accounting';
 export { literatureQuestions } from './literature';
+export { businessManagementQuestions } from './business-management';
+export { costAccountingQuestions } from './cost-accounting';
+export { generalKnowledgeArtQuestions } from './general-knowledge-art';
+export { foodNutritionQuestions } from './food-nutrition';
+export { technicalDrawingQuestions } from './technical-drawing';
+export { buildingConstructionQuestions } from './building-construction';
+export { woodworkQuestions } from './woodwork';
+export { metalworkQuestions } from './metalwork';
+export { electronicsQuestions } from './electronics';
+export { autoMechanicsQuestions } from './auto-mechanics';
 
 // Helper function to get questions by subject
 export function getSHSQuestionsBySubject(subject: string): ChallengeQuestion[] {

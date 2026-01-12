@@ -1,254 +1,354 @@
-import { Question } from '@/lib/challenge';
+import type { ChallengeQuestion } from '../types';
 
-export const accountingQuestions: Question[] = [
+export const accountingQuestions: ChallengeQuestion[] = [
   {
+    type: 'mcq',
     id: 'acc_1',
     question: 'What is accounting?',
     options: ['Counting money', 'Systematic recording and reporting of financial transactions', 'Banking', 'Trading'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Introduction to Accounting'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Introduction to Accounting',
+    explanation: 'Accounting is the systematic process of recording, classifying, and reporting financial transactions to provide useful information for decision-making.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_2',
     question: 'The accounting equation is:',
     options: ['Assets = Liabilities + Capital', 'Assets + Liabilities = Capital', 'Assets + Capital = Liabilities', 'Liabilities = Assets + Capital'],
     correctAnswer: 0,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Accounting Equation'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Accounting Equation',
+    explanation: 'The fundamental accounting equation states that Assets = Liabilities + Capital. This equation must always balance.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_3',
     question: 'A debit entry increases which type of account?',
     options: ['Liability', 'Revenue', 'Asset', 'Capital'],
     correctAnswer: 2,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Double Entry'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Double Entry',
+    explanation: 'In double-entry bookkeeping, debit entries increase asset and expense accounts while decreasing liability, capital, and revenue accounts.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_4',
     question: 'Which of these is a current asset?',
     options: ['Building', 'Machinery', 'Cash', 'Goodwill'],
     correctAnswer: 2,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Assets'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Assets',
+    explanation: 'Current assets are assets expected to be converted to cash within one year. Cash is the most liquid current asset.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_5',
     question: 'The book that records all transactions in chronological order is:',
     options: ['Ledger', 'Journal', 'Trial Balance', 'Cash Book'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Books of Accounts'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Books of Accounts',
+    explanation: 'The journal (day book) records all transactions chronologically before they are posted to the ledger accounts.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_6',
     question: 'Depreciation is:',
     options: ['Increase in asset value', 'Decrease in asset value over time', 'Sale of asset', 'Purchase of asset'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Depreciation'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Depreciation',
+    explanation: 'Depreciation is the systematic allocation of an asset cost over its useful life, reflecting wear and tear.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_7',
     question: 'Which method of depreciation charges equal amounts each year?',
     options: ['Reducing balance', 'Straight line', 'Sum of digits', 'Revaluation'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Depreciation'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Depreciation',
+    explanation: 'The straight-line method charges equal depreciation amounts each year by dividing the depreciable amount by the asset\'s useful life.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_8',
     question: 'Bad debts are:',
     options: ['Debts expected to be paid', 'Debts unlikely to be recovered', 'All debts', 'Good debts'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Debtors and Creditors'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Debtors and Creditors',
+    explanation: 'Bad debts are amounts owed by customers that are unlikely to be recovered and must be written off as expenses.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_9',
     question: 'The trial balance is prepared to:',
     options: ['Calculate profit', 'Check arithmetic accuracy', 'Value assets', 'Pay taxes'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Trial Balance'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Trial Balance',
+    explanation: 'The trial balance verifies that total debits equal total credits, ensuring arithmetic accuracy in the double-entry bookkeeping system.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_10',
     question: 'Which financial statement shows the financial position at a specific date?',
     options: ['Income Statement', 'Balance Sheet', 'Cash Flow Statement', 'Trial Balance'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Financial Statements'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Financial Statements',
+    explanation: 'The Balance Sheet presents a snapshot of assets, liabilities, and capital at a specific point in time.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_11',
     question: 'Revenue is recognized when:',
     options: ['Cash is received', 'Sale is made', 'Invoice is sent', 'Order is placed'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Accounting Principles'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Accounting Principles',
+    explanation: 'Under the accrual principle, revenue is recognized when the sale is made, regardless of when cash is received.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_12',
     question: 'Capital expenditure is:',
     options: ['Day-to-day expenses', 'Expenditure on acquiring fixed assets', 'Payment to creditors', 'Salary payments'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Capital vs Revenue'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Capital vs Revenue',
+    explanation: 'Capital expenditure involves spending on fixed assets that provide long-term benefits to the business, not day-to-day operating expenses.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_13',
     question: 'Accrued expenses are:',
     options: ['Expenses paid in advance', 'Expenses incurred but not yet paid', 'Expenses not incurred', 'Future expenses'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Adjustments'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Adjustments',
+    explanation: 'Accrued expenses are costs incurred during an accounting period but not yet paid, requiring adjustment entries.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_14',
     question: 'The cash book records:',
     options: ['Credit transactions only', 'Cash and bank transactions', 'Fixed assets only', 'Stock movements'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Cash Book'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Cash Book',
+    explanation: 'The cash book is a specialized journal that records all cash and bank transactions of the business.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_15',
     question: 'Gross profit is calculated as:',
     options: ['Sales - Cost of goods sold', 'Sales - All expenses', 'Sales - Assets', 'Sales + Expenses'],
     correctAnswer: 0,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Trading Account'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Trading Account',
+    explanation: 'Gross profit is the difference between sales revenue and the cost of goods sold, shown in the trading account.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_16',
     question: 'A credit balance in the trial balance indicates:',
     options: ['Asset or expense', 'Liability, capital or income', 'Error', 'Loss'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Trial Balance'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Trial Balance',
+    explanation: 'Credit balances represent liabilities, capital, and income accounts in the trial balance, while debit balances show assets and expenses.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_17',
     question: 'Provision for doubtful debts is created to:',
     options: ['Increase profit', 'Account for potential bad debts', 'Pay creditors', 'Buy assets'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Provisions'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Provisions',
+    explanation: 'Provision for doubtful debts is set aside to cover expected losses from debtors who may not pay, following the prudence principle.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_18',
     question: 'The principle that revenue and expenses should be matched is called:',
     options: ['Going concern', 'Matching principle', 'Prudence', 'Consistency'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Accounting Principles'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Accounting Principles',
+    explanation: 'The matching principle requires that expenses be recorded in the same period as the revenues they helped generate.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_19',
     question: 'Working capital is:',
     options: ['Fixed assets', 'Current assets - Current liabilities', 'Total capital', 'Cash only'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Working Capital'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Working Capital',
+    explanation: 'Working capital measures a business\'s short-term liquidity by subtracting current liabilities from current assets.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_20',
     question: 'A bank overdraft is:',
     options: ['An asset', 'A liability', 'An expense', 'Revenue'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Current Liabilities'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Current Liabilities',
+    explanation: 'A bank overdraft represents money owed to the bank and is classified as a current liability on the balance sheet.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_21',
     question: 'Goodwill is:',
     options: ['A current asset', 'An intangible asset', 'A liability', 'An expense'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Intangible Assets'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Intangible Assets',
+    explanation: 'Goodwill is an intangible asset representing the excess value paid when purchasing a business, reflecting reputation and customer relationships.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_22',
     question: 'The accounting period is usually:',
     options: ['1 month', '3 months', '6 months', '12 months'],
     correctAnswer: 3,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Accounting Concepts'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Accounting Concepts',
+    explanation: 'The standard accounting period is 12 months (one year), allowing for annual financial reporting and performance evaluation.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_23',
     question: 'Drawings refer to:',
     options: ['Business income', 'Owner\'s withdrawals from business', 'Business expenses', 'Asset purchases'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Capital Account'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Capital Account',
+    explanation: 'Drawings represent cash or goods taken by the owner for personal use, reducing the capital account balance.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_24',
     question: 'A petty cash book is used for:',
     options: ['Large transactions', 'Small routine expenses', 'Credit sales', 'Fixed assets'],
     correctAnswer: 1,
     subject: 'Accounting',
     difficulty: 'easy',
-    examBoard: 'WASSCE',
-    topic: 'Petty Cash'
+    level: 'SHS',
+    classLevel: 'SHS 1',
+    topic: 'Petty Cash',
+    explanation: 'The petty cash book records small, routine expenses like stationery and refreshments using the imprest system.',
+    year: 2023
   },
   {
+    type: 'mcq',
     id: 'acc_25',
     question: 'The difference between assets and liabilities is:',
     options: ['Profit', 'Loss', 'Capital', 'Revenue'],
     correctAnswer: 2,
     subject: 'Accounting',
     difficulty: 'medium',
-    examBoard: 'WASSCE',
-    topic: 'Accounting Equation'
+    level: 'SHS',
+    classLevel: 'SHS 2',
+    topic: 'Accounting Equation',
+    explanation: 'Capital equals assets minus liabilities, representing the owner\'s equity or net worth in the business.',
+    year: 2023
   }
 ];

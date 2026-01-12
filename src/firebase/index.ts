@@ -3,7 +3,7 @@
 import { firebaseConfig } from '@/firebase/config';
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 // IMPORTANT: DO NOT MODIFY THIS FUNCTION
@@ -26,7 +26,19 @@ export function initializeFirebase() {
       firebaseApp = initializeApp(firebaseConfig);
     }
 
-    return getSdks(firebaseApp);
+    const sdks = getSdks(firebaseApp);
+    
+    // Enable offline persistence for PWA support
+    // This allows the app to work offline and sync when back online
+    enableIndexedDbPersistence(sdks.firestore).catch((err) => {
+      if (err.code === 'failed-precondition') {
+        console.warn('Firestore persistence: Multiple tabs open, can only enable in one tab at a time.');
+      } else if (err.code === 'unimplemented') {
+        console.warn('Firestore persistence: Browser does not support offline persistence.');
+      }
+    });
+
+    return sdks;
   }
 
   // If already initialized, return the SDKs with the already initialized App

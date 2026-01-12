@@ -1,0 +1,383 @@
+import type { ChallengeQuestion } from '../types';
+
+export const businessManagementQuestions: ChallengeQuestion[] = [
+  // Introduction to Business
+  {
+    id: 'bm-2023-001',
+    type: 'mcq',
+    question: 'Which of the following best describes business management?',
+    options: [
+      'Buying and selling goods only',
+      'Coordinating resources to achieve organizational goals',
+      'Manufacturing products',
+      'Providing entertainment services'
+    ],
+    correctAnswer: 1,
+    explanation: 'Business management involves planning, organizing, leading, and controlling resources to achieve business objectives.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 1',
+    level: 'SHS',
+    topic: 'Introduction to Business',
+    year: 2023,
+  },
+  {
+    id: 'bm-2023-002',
+    type: 'mcq',
+    question: 'Which business objective focuses on earning returns for shareholders?',
+    options: ['Social objective', 'Economic objective', 'Human objective', 'National objective'],
+    correctAnswer: 1,
+    explanation: 'Economic objectives include earning profit, creating wealth for shareholders, and ensuring business survival.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 1',
+    level: 'SHS',
+    topic: 'Business Objectives',
+    year: 2023,
+  },
+
+  // Business Environment
+  {
+    id: 'bm-2022-003',
+    type: 'mcq',
+    question: 'Which factor is part of the external business environment?',
+    options: ['Company culture', 'Management style', 'Government policies', 'Employee motivation'],
+    correctAnswer: 2,
+    explanation: 'External environment includes factors outside the organization like government regulations, economic conditions, and competition.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 1',
+    level: 'SHS',
+    topic: 'Business Environment',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-004',
+    type: 'mcq',
+    question: 'SWOT analysis stands for:',
+    options: [
+      'Strengths, Weaknesses, Opportunities, Threats',
+      'Sales, Work, Operations, Training',
+      'Systems, Workers, Objectives, Targets',
+      'Strategy, Workforce, Output, Technology'
+    ],
+    correctAnswer: 0,
+    explanation: 'SWOT analysis evaluates internal strengths/weaknesses and external opportunities/threats.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 2',
+    level: 'SHS',
+    topic: 'Strategic Planning',
+    year: 2023,
+  },
+
+  // Types of Business Ownership
+  {
+    id: 'bm-2022-005',
+    type: 'mcq',
+    question: 'In which type of business does the owner have unlimited liability?',
+    options: ['Limited liability company', 'Sole proprietorship', 'Public corporation', 'Cooperative society'],
+    correctAnswer: 1,
+    explanation: 'Sole proprietors have unlimited liability - they are personally responsible for all business debts.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 1',
+    level: 'SHS',
+    topic: 'Forms of Business',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-006',
+    type: 'mcq',
+    question: 'What is the main advantage of a partnership over a sole proprietorship?',
+    options: [
+      'Less paperwork',
+      'Easier decision making',
+      'More capital and shared expertise',
+      'No liability'
+    ],
+    correctAnswer: 2,
+    explanation: 'Partnerships allow multiple partners to pool resources, capital, and skills.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 1',
+    level: 'SHS',
+    topic: 'Forms of Business',
+    year: 2023,
+  },
+
+  // Management Functions
+  {
+    id: 'bm-2022-007',
+    type: 'mcq',
+    question: 'Which management function involves setting goals and determining how to achieve them?',
+    options: ['Organizing', 'Planning', 'Leading', 'Controlling'],
+    correctAnswer: 1,
+    explanation: 'Planning is the process of setting objectives and determining the best course of action to achieve them.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 2',
+    level: 'SHS',
+    topic: 'Management Functions',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-008',
+    type: 'mcq',
+    question: 'Span of control refers to:',
+    options: [
+      'The number of subordinates a manager supervises',
+      'The size of the organization',
+      'The length of the organizational chart',
+      'The number of departments'
+    ],
+    correctAnswer: 0,
+    explanation: 'Span of control is the number of employees directly reporting to one manager.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 2',
+    level: 'SHS',
+    topic: 'Organizing',
+    year: 2023,
+  },
+
+  // Marketing
+  {
+    id: 'bm-2022-009',
+    type: 'mcq',
+    question: 'The 4 Ps of marketing are:',
+    options: [
+      'Product, Price, Place, Promotion',
+      'People, Process, Performance, Profit',
+      'Planning, Production, Purchasing, Payment',
+      'Purpose, Practice, Performance, Progress'
+    ],
+    correctAnswer: 0,
+    explanation: 'The marketing mix consists of Product (what you sell), Price (how much), Place (where), and Promotion (how you advertise).',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 2',
+    level: 'SHS',
+    topic: 'Marketing',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-010',
+    type: 'mcq',
+    question: 'Market segmentation involves:',
+    options: [
+      'Dividing markets into smaller groups with similar needs',
+      'Reducing market prices',
+      'Expanding into new countries',
+      'Closing unprofitable stores'
+    ],
+    correctAnswer: 0,
+    explanation: 'Market segmentation divides a broad market into subgroups of consumers with common needs or characteristics.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 2',
+    level: 'SHS',
+    topic: 'Marketing',
+    year: 2023,
+  },
+
+  // Human Resource Management
+  {
+    id: 'bm-2022-011',
+    type: 'mcq',
+    question: 'Recruitment is the process of:',
+    options: [
+      'Training employees',
+      'Attracting and selecting suitable candidates',
+      'Firing employees',
+      'Promoting employees'
+    ],
+    correctAnswer: 1,
+    explanation: 'Recruitment involves identifying, attracting, and selecting qualified people for job positions.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 2',
+    level: 'SHS',
+    topic: 'Human Resource Management',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-012',
+    type: 'mcq',
+    question: 'Which of the following is an example of intrinsic motivation?',
+    options: [
+      'Salary increase',
+      'Bonus payment',
+      'Job satisfaction and personal growth',
+      'Company car'
+    ],
+    correctAnswer: 2,
+    explanation: 'Intrinsic motivation comes from within - personal satisfaction, sense of achievement, and enjoyment of work itself.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 3',
+    level: 'SHS',
+    topic: 'Human Resource Management',
+    year: 2023,
+  },
+
+  // Finance & Accounting
+  {
+    id: 'bm-2022-013',
+    type: 'mcq',
+    question: 'Working capital is:',
+    options: [
+      'Long-term loans',
+      'Current assets minus current liabilities',
+      'Total assets',
+      'Shareholders\' equity'
+    ],
+    correctAnswer: 1,
+    explanation: 'Working capital = Current Assets - Current Liabilities. It measures short-term financial health.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 3',
+    level: 'SHS',
+    topic: 'Financial Management',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-014',
+    type: 'mcq',
+    question: 'A cash flow statement shows:',
+    options: [
+      'Profitability over a period',
+      'Financial position at a point in time',
+      'Movement of cash in and out of the business',
+      'Value of assets'
+    ],
+    correctAnswer: 2,
+    explanation: 'Cash flow statement tracks all cash inflows and outflows during a period.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 3',
+    level: 'SHS',
+    topic: 'Financial Management',
+    year: 2023,
+  },
+
+  // Production & Operations
+  {
+    id: 'bm-2022-015',
+    type: 'mcq',
+    question: 'Just-In-Time (JIT) production aims to:',
+    options: [
+      'Maximize inventory levels',
+      'Minimize waste by producing only what is needed',
+      'Speed up production regardless of demand',
+      'Increase storage costs'
+    ],
+    correctAnswer: 1,
+    explanation: 'JIT production reduces waste by producing goods only when needed, reducing inventory holding costs.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 3',
+    level: 'SHS',
+    topic: 'Operations Management',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-016',
+    type: 'mcq',
+    question: 'Quality control involves:',
+    options: [
+      'Reducing production costs only',
+      'Ensuring products meet required standards',
+      'Hiring more workers',
+      'Expanding the factory'
+    ],
+    correctAnswer: 1,
+    explanation: 'Quality control monitors and maintains standards to ensure products/services meet customer expectations.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 2',
+    level: 'SHS',
+    topic: 'Operations Management',
+    year: 2023,
+  },
+
+  // Business Ethics & Social Responsibility
+  {
+    id: 'bm-2022-017',
+    type: 'mcq',
+    question: 'Corporate Social Responsibility (CSR) refers to:',
+    options: [
+      'Maximizing profits at all costs',
+      'Business obligations to society and the environment',
+      'Paying taxes only',
+      'Hiring family members'
+    ],
+    correctAnswer: 1,
+    explanation: 'CSR is a company\'s commitment to operate ethically and contribute to economic development while improving quality of life.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 3',
+    level: 'SHS',
+    topic: 'Business Ethics',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-018',
+    type: 'mcq',
+    question: 'Which of the following is an unethical business practice?',
+    options: [
+      'Fair trade',
+      'Environmental protection',
+      'False advertising',
+      'Employee welfare programs'
+    ],
+    correctAnswer: 2,
+    explanation: 'False advertising is unethical as it deceives consumers about product/service features or benefits.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 2',
+    level: 'SHS',
+    topic: 'Business Ethics',
+    year: 2023,
+  },
+
+  // Entrepreneurship
+  {
+    id: 'bm-2022-019',
+    type: 'mcq',
+    question: 'An entrepreneur is someone who:',
+    options: [
+      'Works for someone else',
+      'Takes risks to start and manage a business',
+      'Only invests in stocks',
+      'Works in government'
+    ],
+    correctAnswer: 1,
+    explanation: 'Entrepreneurs identify opportunities, take calculated risks, and create new businesses.',
+    subject: 'Business Management',
+    difficulty: 'easy',
+    classLevel: 'SHS 1',
+    level: 'SHS',
+    topic: 'Entrepreneurship',
+    year: 2022,
+  },
+  {
+    id: 'bm-2023-020',
+    type: 'mcq',
+    question: 'A business plan is important because it:',
+    options: [
+      'Guarantees business success',
+      'Provides a roadmap and helps secure funding',
+      'Eliminates all business risks',
+      'Prevents competition'
+    ],
+    correctAnswer: 1,
+    explanation: 'A business plan outlines goals, strategies, and financial projections, helping entrepreneurs stay focused and attract investors.',
+    subject: 'Business Management',
+    difficulty: 'medium',
+    classLevel: 'SHS 3',
+    level: 'SHS',
+    topic: 'Entrepreneurship',
+    year: 2023,
+  },
+];

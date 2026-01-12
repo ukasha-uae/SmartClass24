@@ -797,7 +797,7 @@ export default function LocalizedChallengeArenaPage() {
                 </Card>
               </Link>
 
-              <Link href="/challenge-arena/create?type=friend">
+              <Link href={`/challenge-arena/create?type=friend&level=${educationLevel}`}>
                 <Card className="relative bg-gradient-to-br from-purple-500 to-indigo-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                   <div className="relative">
