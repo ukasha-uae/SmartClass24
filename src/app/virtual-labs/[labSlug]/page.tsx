@@ -27,7 +27,7 @@ interface QuizQuestion {
 export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: string }> }) {
   // V1 Route Guard: Check if user has access to virtual labs
   const { hasAccess, campus } = useV1FeatureAccess('virtualLabs');
-  const { user } = useFirebase();
+  const { user, isUserLoading } = useFirebase();
   
   const [mounted, setMounted] = useState(false);
   const [experimentCompleted, setExperimentCompleted] = useState(false);
@@ -57,9 +57,21 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
     };
   }, []);
 
-  if (!mounted) return null;
+  // CRITICAL: Wait for both mount and auth state to be ready
+  // This prevents checking lab access with 'guest' userId before user loads
+  if (!mounted || isUserLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading virtual lab...</p>
+        </div>
+      </div>
+    );
+  }
 
   const userId = user?.uid || 'guest';
+  console.log('[Virtual Lab Page] Checking access with userId:', userId, 'isUserLoading:', isUserLoading);
   const experiment = getVirtualLabBySlug(resolvedParams.labSlug, userId);
   
   if (!experiment) {

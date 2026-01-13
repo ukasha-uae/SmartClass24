@@ -18,7 +18,7 @@ import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLab
 export default function VirtualLabsPage() {
   // V1 Route Guard: Check if user has access to virtual labs
   const { hasAccess, campus, mounted: accessMounted } = useV1FeatureAccess('virtualLabs');
-  const { user } = useFirebase();
+  const { user, isUserLoading } = useFirebase();
   const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics'>('All');
   const [difficultyFilter, setDifficultyFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
   const { completedLabs, totalXP, streak, isLabCompleted } = useLabProgress();
@@ -32,18 +32,24 @@ export default function VirtualLabsPage() {
     setMounted(true);
   }, []);
   
-  // Wait for access check to complete before rendering to prevent hydration mismatch
-  if (!accessMounted) {
+  // CRITICAL: Wait for both access check AND auth state to complete
+  // This prevents showing locked labs while auth is still loading
+  if (!accessMounted || isUserLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-purple-950/30 dark:to-indigo-950/30 relative overflow-hidden">
         <div className="container mx-auto px-4 py-8 relative z-10">
           <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading virtual labs...</p>
+            </div>
           </div>
         </div>
       </div>
     );
   }
+  
+  console.log('[Virtual Labs Page] userId:', userId, 'hasVirtualLab:', hasVirtualLab, 'isUserLoading:', isUserLoading);
 
   const subjectIcons = {
     Biology: Dna,
