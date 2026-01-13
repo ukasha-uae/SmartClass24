@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,7 +19,10 @@ import {
   Calendar,
   TrendingUp,
   Users,
-  DollarSign
+  DollarSign,
+  AlertTriangle,
+  Shield,
+  Loader2
 } from 'lucide-react';
 import { getPlayerProfile, getAllPlayers, createOrUpdatePlayer, Player } from '@/lib/challenge';
 import { 
@@ -34,8 +38,11 @@ import { getUserTransactions, getTransactionStats } from '@/lib/transaction-hist
 import { useToast } from '@/hooks/use-toast';
 import { formatGHS } from '@/lib/payments';
 import { useFirebase } from '@/firebase/provider';
+import { isAdmin } from '@/lib/admin-config';
+import { collection, getDocs } from 'firebase/firestore';
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<Player | null>(null);
   const [users, setUsers] = useState<Player[]>([]);
@@ -44,16 +51,132 @@ export default function AdminDashboard() {
   const [subscriptionPlan, setSubscriptionPlan] = useState<'premium_monthly' | 'premium_annual'>('premium_monthly');
   const [subscriptionType, setSubscriptionType] = useState<'challengeArena' | 'virtualLab' | 'fullBundle'>('fullBundle');
   const [activeTab, setActiveTab] = useState('search');
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const { toast } = useToast();
-  const { user, firestore } = useFirebase();
+  const { user, firestore, isUserLoading } = useFirebase();
 
+  // Admin authentication check
   useEffect(() => {
-    loadAllUsers();
-  }, []);
+    async function checkAdminAccess() {
+      if (isUserLoading) return;
+      
+      if (!user) {
+        toast({
+          title: 'Authentication Required',
+          description: 'Please sign in to access the admin dashboard',
+          variant: 'destructive',
+        });
+        router.push('/profile');
+        return;
+      }
 
-  const loadAllUsers = () => {
-    const allUsers = getAllPlayers();
-    setUsers(allUsers);
+      // Check if user email is in admin list
+      if (!firestore) {
+        setIsCheckingAuth(false);
+        return;
+      }
+
+      try {
+        const studentDoc = await import('firebase/firestore').then(m => m.getDoc(m.doc(firestore, `students/${user.uid}`)));
+        const email = studentDoc.exists() ? studentDoc.data()?.email : user.email;
+        
+        const hasAdminAccess = isAdmin(email);
+        
+        if (!hasAdminAccess) {
+          toast({
+            title: 'Access Denied',
+            description: 'You do not have admin privileges. Please contact support if you believe this is an error.',
+            variant: 'destructive',
+          });
+          router.push('/');
+          return;
+        }
+
+        setIsAuthorized(true);
+        loadAllUsers();
+      } catch (error) {
+        console.error('[Admin] Error checking access:', error);
+        toast({
+          title: 'Error',
+          description: 'Failed to verify admin access',
+          variant: 'destructive',
+        });
+        router.push('/');
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    }
+
+    checkAdminAccess();
+  }, [user, isUserLoading, firestore, router, toast]);
+
+  // Load all users from Firestore
+  const loadAllUsers = async () => {
+    if (!firestore) return;
+    
+    setIsLoadingUsers(true);
+    try {
+      // Load from Firestore students collection
+      const studentsRef = collection(firestore, 'students');
+      const studentsSnapshot = await getDocs(studentsRef);
+      
+      const firestoreUsers: Player[] = [];
+      studentsSnapshot.forEach((doc) => {
+        const data = doc.data();
+        firestoreUsers.push({
+          userId: doc.id,
+          userName: data.studentName || data.userName || 'Unknown',
+          name: data.studentName || data.userName || 'Unknown',
+          email: data.email || undefined,
+          school: data.school || 'Unknown',
+          schoolId: data.schoolId,
+          schoolRegion: data.schoolRegion,
+          rating: data.rating || 1000,
+          wins: data.wins || 0,
+          losses: data.losses || 0,
+          draws: data.draws || 0,
+          totalGames: data.totalGames || 0,
+          winStreak: data.winStreak || 0,
+          highestStreak: data.highestStreak || 0,
+          xp: data.xp || 0,
+          coins: data.coins || 0,
+          achievements: data.achievements || [],
+          level: data.level || 'JHS',
+        });
+      });
+
+      // Also load from localStorage (for users who haven't synced to Firestore yet)
+      const localUsers = getAllPlayers();
+      
+      // Merge users, preferring Firestore data
+      const userMap = new Map<string, Player>();
+      
+      // Add local users first
+      localUsers.forEach(user => userMap.set(user.userId, user));
+      
+      // Override with Firestore data (more authoritative)
+      firestoreUsers.forEach(user => userMap.set(user.userId, user));
+      
+      const allUsers = Array.from(userMap.values());
+      setUsers(allUsers);
+      
+      console.log(`[Admin] Loaded ${allUsers.length} users (${firestoreUsers.length} from Firestore, ${localUsers.length} from localStorage)`);
+    } catch (error) {
+      console.error('[Admin] Error loading users:', error);
+      toast({
+        title: 'Error Loading Users',
+        description: 'Failed to load user data. Showing localStorage data only.',
+        variant: 'destructive',
+      });
+      
+      // Fallback to localStorage
+      const allUsers = getAllPlayers();
+      setUsers(allUsers);
+    } finally {
+      setIsLoadingUsers(false);
+    }
   };
 
   const handleSearch = () => {
@@ -221,15 +344,54 @@ export default function AdminDashboard() {
   const hasVirtualLab = selectedUser ? hasVirtualLabAccess(selectedUser.userId) : false;
   const hasBundle = selectedUser ? hasFullBundle(selectedUser.userId) : false;
 
+  // Show loading screen while checking authentication
+  if (isCheckingAuth || isUserLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="flex justify-center">
+            <Shield className="h-16 w-16 text-primary animate-pulse" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Verifying Admin Access</h2>
+            <p className="text-muted-foreground flex items-center gap-2 justify-center">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Checking credentials...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if not authorized (redirect will happen via useEffect)
+  if (!isAuthorized) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
+        {/* Admin Badge */}
+        <div className="mb-4">
+          <Badge className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+            <Shield className="h-3 w-3 mr-1" />
+            Admin Dashboard
+          </Badge>
+        </div>
+        
         <div className="mb-6">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-2">
             Admin Dashboard
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground flex items-center gap-2">
             Manage user coins, subscriptions, and premium access
+            {isLoadingUsers && (
+              <span className="flex items-center gap-1 text-xs">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Loading users...
+              </span>
+            )}
           </p>
         </div>
 
