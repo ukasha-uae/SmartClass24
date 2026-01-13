@@ -82,26 +82,33 @@ export default function AdminDashboard() {
         return;
       }
 
-      try {await isAdmin(email);
+      try {
+        // Get user email from Firestore profile or Firebase Auth
+        const studentDoc = await import('firebase/firestore').then(m => m.getDoc(m.doc(firestore, `students/${user.uid}`)));
+        const email = studentDoc.exists() ? studentDoc.data()?.email : user.email;
+        
+        console.log('[Admin] Checking access for email:', email);
+        console.log('[Admin] User UID:', user.uid);
+        
+        const hasAdminAccess = await isAdmin(email);
+        console.log('[Admin] Has admin access:', hasAdminAccess);
         
         if (!hasAdminAccess) {
+          console.log('[Admin] Access denied - not in admin list');
           toast({
             title: 'Access Denied',
-            description: 'You do not have admin privileges. Please contact support if you believe this is an error.',
+            description: `You do not have admin privileges. Email: ${email}`,
             variant: 'destructive',
           });
           router.push('/');
           return;
         }
 
+        console.log('[Admin] Access granted - loading dashboard');
         setIsAuthorized(true);
         setIsSuperAdminUser(isSuperAdmin(email));
         loadAllUsers();
-        loadAdminn;
-        }
-
-        setIsAuthorized(true);
-        loadAllUsers();
+        loadAdminUsers();
       } catch (error) {
         console.error('[Admin] Error checking access:', error);
         toast({

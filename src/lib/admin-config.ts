@@ -15,12 +15,17 @@
  */
 const SUPER_ADMIN_EMAIL = process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL || 'ukasha.uae@gmail.com';
 
+console.log('[Admin Config] Super admin email:', SUPER_ADMIN_EMAIL);
+console.log('[Admin Config] Environment variable:', process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL);
+
 /**
  * Check if a user is the super admin
  */
 export function isSuperAdmin(userEmail: string | null | undefined): boolean {
   if (!userEmail) return false;
-  return userEmail.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+  const result = userEmail.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+  console.log(`[Admin Config] isSuperAdmin check: ${userEmail} === ${SUPER_ADMIN_EMAIL} = ${result}`);
+  return result;
 }
 
 /**
@@ -28,23 +33,39 @@ export function isSuperAdmin(userEmail: string | null | undefined): boolean {
  * Checks both super admin status and Firestore admin collection
  */
 export async function isAdmin(userEmail: string | null | undefined): Promise<boolean> {
-  if (!userEmail) return false;
+  console.log('[Admin Config] isAdmin called with email:', userEmail);
+  
+  if (!userEmail) {
+    console.log('[Admin Config] No email provided');
+    return false;
+  }
   
   // Check if super admin
-  if (isSuperAdmin(userEmail)) return true;
+  if (isSuperAdmin(userEmail)) {
+    console.log('[Admin Config] User is super admin');
+    return true;
+  }
+  
+  console.log('[Admin Config] Not super admin, checking Firestore...');
   
   // Check Firestore admins collection
   try {
     const { initializeFirebase } = await import('@/firebase');
     const { firestore } = initializeFirebase();
-    if (!firestore) return false;
+    if (!firestore) {
+      console.log('[Admin Config] Firestore not initialized');
+      return false;
+    }
     
     const { doc, getDoc } = await import('firebase/firestore');
     const adminDoc = await getDoc(doc(firestore, `admins/${userEmail.toLowerCase()}`));
     
-    return adminDoc.exists() && adminDoc.data()?.isActive === true;
+    const isAdminUser = adminDoc.exists() && adminDoc.data()?.isActive === true;
+    console.log('[Admin Config] Firestore check result:', isAdminUser);
+    
+    return isAdminUser;
   } catch (error) {
-    console.error('[Admin] Error checking admin status:', error);
+    console.error('[Admin Config] Error checking admin status:', error);
     return false;
   }
 }
