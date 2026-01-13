@@ -38,7 +38,7 @@ import { getUserTransactions, getTransactionStats } from '@/lib/transaction-hist
 import { useToast } from '@/hooks/use-toast';
 import { formatGHS } from '@/lib/payments';
 import { useFirebase } from '@/firebase/provider';
-import { isAdmin } from '@/lib/admin-config';
+import { isAdmin, isSuperAdmin, addAdmin, removeAdmin, getAllAdmins } from '@/lib/admin-config';
 import { collection, getDocs } from 'firebase/firestore';
 
 export default function AdminDashboard() {
@@ -54,6 +54,10 @@ export default function AdminDashboard() {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isSuperAdminUser, setIsSuperAdminUser] = useState(false);
+  const [adminUsers, setAdminUsers] = useState<Array<{ email: string; addedBy: string; addedAt: any; isSuperAdmin: boolean }>>([]);
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [isLoadingAdmins, setIsLoadingAdmins] = useState(false);
   const { toast } = useToast();
   const { user, firestore, isUserLoading } = useFirebase();
 
@@ -78,11 +82,7 @@ export default function AdminDashboard() {
         return;
       }
 
-      try {
-        const studentDoc = await import('firebase/firestore').then(m => m.getDoc(m.doc(firestore, `students/${user.uid}`)));
-        const email = studentDoc.exists() ? studentDoc.data()?.email : user.email;
-        
-        const hasAdminAccess = isAdmin(email);
+      try {await isAdmin(email);
         
         if (!hasAdminAccess) {
           toast({
@@ -92,6 +92,12 @@ export default function AdminDashboard() {
           });
           router.push('/');
           return;
+        }
+
+        setIsAuthorized(true);
+        setIsSuperAdminUser(isSuperAdmin(email));
+        loadAllUsers();
+        loadAdminn;
         }
 
         setIsAuthorized(true);
@@ -176,6 +182,92 @@ export default function AdminDashboard() {
       setUsers(allUsers);
     } finally {
       setIsLoadingUsers(false);
+    }
+  };
+
+  // Load admin users from Firestore
+  const loadAdminUsers = async () => {
+    if (!firestore) return;
+    
+    setIsLoadingAdmins(true);
+    try {
+      const admins = await getAllAdmins(firestore);
+      setAdminUsers(admins);
+    } catch (error) {
+      console.error('[Admin] Error loading admins:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load admin users',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoadingAdmins(false);
+    }
+  };
+
+  // Add new admin (super admin only)
+  const handleAddAdmin = async () => {
+    if (!newAdminEmail.trim()) {
+      toast({
+        title: 'Email Required',
+        description: 'Please enter an email address',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!user || !firestore) return;
+
+    try {
+      const studentDoc = await import('firebase/firestore').then(m => m.getDoc(m.doc(firestore, `students/${user.uid}`)));
+      const currentUserEmail = studentDoc.exists() ? studentDoc.data()?.email : user.email;
+
+      await addAdmin(newAdminEmail.toLowerCase(), currentUserEmail || 'Unknown', firestore);
+      
+      toast({
+        title: 'Admin Added! ✅',
+        description: `${newAdminEmail} now has admin access`,
+      });
+      
+      setNewAdminEmail('');
+      loadAdminUsers();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to add admin',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  // Remove admin (super admin only)
+  const handleRemoveAdmin = async (email: string) => {
+    if (!firestore) return;
+    
+    if (isSuperAdmin(email)) {
+      toast({
+        title: 'Cannot Remove',
+        description: 'Super admin cannot be removed',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      await removeAdmin(email, firestore);
+      
+      toast({
+        title: 'Admin Removed',
+        description: `${email} no longer has admin access`,
+      });
+      
+      loadAdminUsers();
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to remove admin',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -400,6 +492,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="search">Search User</TabsTrigger>
             <TabsTrigger value="manage" disabled={!selectedUser}>Manage User</TabsTrigger>
             <TabsTrigger value="stats">Statistics</TabsTrigger>
+            {isSuperAdminUser && <TabsTrigger value="admins">Admin Management</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="search">
@@ -1046,6 +1139,164 @@ export default function AdminDashboard() {
               </div>
             </div>
           </TabsContent>
+
+          {/* Admin Management Tab - Super Admin Only */}
+          {isSuperAdminUser && (
+            <TabsContent value="admins">
+              <div className="space-y-6">
+                <Card className="border-2 border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5 text-purple-600" />
+                      Admin Management (Super Admin Only)
+                    </CardTitle>
+                    <CardDescription>
+                      Add or remove admin users. Admins can manage users, subscriptions, and coins.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Add New Admin */}
+                    <div>
+                      <label className="text-sm font-semibold mb-2 block">Add New Admin</label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="email"
+                          placeholder="Enter email address..."
+                          value={newAdminEmail}
+                          onChange={(e) => setNewAdminEmail(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && handleAddAdmin()}
+                          className="flex-1"
+                        />
+                        <Button onClick={handleAddAdmin} className="bg-purple-600 hover:bg-purple-700">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Admin
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        The user must sign up with this email to gain admin access
+                      </p>
+                    </div>
+
+                    {/* Admin List */}
+                    <div className="pt-4 border-t">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-sm font-semibold">Current Admins ({adminUsers.length})</h3>
+                        {isLoadingAdmins && (
+                          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        {adminUsers.map((admin) => (
+                          <div
+                            key={admin.email}
+                            className={`p-4 rounded-lg border-2 transition-all ${
+                              admin.isSuperAdmin
+                                ? 'border-yellow-300 dark:border-yellow-700 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-950/20 dark:to-amber-950/20'
+                                : 'border-purple-200 dark:border-purple-800 bg-white dark:bg-gray-800'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <p className="font-semibold">{admin.email}</p>
+                                  {admin.isSuperAdmin && (
+                                    <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white">
+                                      <Crown className="h-3 w-3 mr-1" />
+                                      Super Admin
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  Added by: {admin.addedBy}
+                                  {admin.addedAt && ` • ${new Date(admin.addedAt.toDate()).toLocaleDateString()}`}
+                                </p>
+                              </div>
+                              {!admin.isSuperAdmin && (
+                                <Button
+                                  onClick={() => handleRemoveAdmin(admin.email)}
+                                  variant="destructive"
+                                  size="sm"
+                                >
+                                  <XCircle className="h-4 w-4 mr-1" />
+                                  Remove
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                        {adminUsers.length === 0 && !isLoadingAdmins && (
+                          <p className="text-sm text-muted-foreground text-center py-4">
+                            No admins added yet
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Admin Instructions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">How Admin Management Works</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm">
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 mt-1">
+                        <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold text-xs">
+                          1
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Super Admin (You)</p>
+                        <p className="text-muted-foreground">
+                          Your email is set as the super admin via environment variable. You can add/remove other admins and cannot be removed.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 mt-1">
+                        <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold text-xs">
+                          2
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Adding Admins</p>
+                        <p className="text-muted-foreground">
+                          Enter any email address to grant admin access. The user must create an account with that exact email to access the dashboard.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 mt-1">
+                        <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold text-xs">
+                          3
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Admin List Storage</p>
+                        <p className="text-muted-foreground">
+                          Admin emails are stored in Firestore at <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">admins/&#123;email&#125;</code>. This is production-safe and not committed to Git.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="flex-shrink-0 mt-1">
+                        <div className="w-6 h-6 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold text-xs">
+                          4
+                        </div>
+                      </div>
+                      <div>
+                        <p className="font-semibold mb-1">Production Setup</p>
+                        <p className="text-muted-foreground">
+                          Set <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded">NEXT_PUBLIC_SUPER_ADMIN_EMAIL</code> in Firebase environment variables for your super admin email.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </div>

@@ -87,6 +87,17 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Admins collection - store admin user emails
+    match /admins/{email} {
+      // Allow any authenticated user to read admin list (to check their own access)
+      allow read: if request.auth != null;
+      // Only allow authenticated users to create/update admin entries
+      // Authorization check happens in application code (super admin only)
+      allow create, update: if request.auth != null;
+      // Allow authenticated users to delete (authorization checked in app)
+      allow delete: if request.auth != null;
+    }
+
     // Allow authenticated users to seed/manage lesson content (for admin/seed operations)
     match /subjects/{subjectId}/{document=**} {
       allow read: if true;
