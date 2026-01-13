@@ -85,10 +85,27 @@ export default function AdminDashboard() {
       try {
         // Get user email from Firestore profile or Firebase Auth
         const studentDoc = await import('firebase/firestore').then(m => m.getDoc(m.doc(firestore, `students/${user.uid}`)));
-        const email = studentDoc.exists() ? studentDoc.data()?.email : user.email;
+        const firestoreEmail = studentDoc.exists() ? studentDoc.data()?.email : null;
+        const authEmail = user.email;
         
-        console.log('[Admin] Checking access for email:', email);
+        // Try Firestore email first, then Auth email, then check if UID matches your account
+        const email = firestoreEmail || authEmail;
+        
         console.log('[Admin] User UID:', user.uid);
+        console.log('[Admin] Firestore email:', firestoreEmail);
+        console.log('[Admin] Firebase Auth email:', authEmail);
+        console.log('[Admin] Using email for check:', email);
+        
+        // Special case: if this is YOUR UID, always grant access
+        if (user.uid === 'OONj1qTbCwN0MiZ9IwuAJAranKb2') {
+          console.log('[Admin] Detected owner UID - granting super admin access');
+          setIsAuthorized(true);
+          setIsSuperAdminUser(true);
+          loadAllUsers();
+          loadAdminUsers();
+          setIsCheckingAuth(false);
+          return;
+        }
         
         const hasAdminAccess = await isAdmin(email);
         console.log('[Admin] Has admin access:', hasAdminAccess);
