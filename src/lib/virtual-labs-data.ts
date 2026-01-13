@@ -409,11 +409,15 @@ export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperimen
 
 export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): VirtualLabExperiment | undefined => {
     const experiment = virtualLabExperiments.experiments.find(exp => exp.slug === slug);
-    if (!experiment) return undefined;
+    if (!experiment) {
+        console.log(`[Virtual Labs] Lab not found: ${slug}`);
+        return undefined;
+    }
     
     // Ensure the subject matches the expected union type
     const validSubjects: Array<'Biology' | 'Chemistry' | 'Physics' | 'Science'> = ['Biology', 'Chemistry', 'Physics', 'Science'];
     if (!validSubjects.includes(experiment.subject as any)) {
+        console.warn(`[Virtual Labs] Invalid subject for ${slug}: ${experiment.subject}`);
         return undefined;
     }
     
@@ -423,8 +427,9 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
         try {
             const { hasVirtualLabAccess } = require('./monetization');
             hasAccess = hasVirtualLabAccess(userId);
+            console.log(`[Virtual Labs] Access check for ${slug}: hasAccess=${hasAccess}, userId=${userId}`);
         } catch (e) {
-            console.warn("Could not determine virtual lab access:", e);
+            console.warn("[Virtual Labs] Could not determine virtual lab access:", e);
         }
     }
     
@@ -432,10 +437,14 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
     const freeLabs = ['food-tests', 'litmus-test', 'simple-circuits'];
     const isFree = freeLabs.includes(slug);
     
+    console.log(`[Virtual Labs] ${slug} - isFree=${isFree}, hasAccess=${hasAccess}, allowing=${hasAccess || isFree}`);
+    
     // Allow access if: 1) User has subscription, or 2) It's a free lab
     if (!hasAccess && !isFree) {
+        console.warn(`[Virtual Labs] Access denied for ${slug} - no subscription and not a free lab`);
         return undefined; // Lab not available for this user
     }
     
+    console.log(`[Virtual Labs] Granting access to ${slug}`);
     return experiment as VirtualLabExperiment;
 };
