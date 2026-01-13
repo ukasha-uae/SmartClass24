@@ -22,7 +22,9 @@ import {
   DollarSign,
   AlertTriangle,
   Shield,
-  Loader2
+  Loader2,
+  Trash2,
+  UserX
 } from 'lucide-react';
 import { getPlayerProfile, getAllPlayers, createOrUpdatePlayer, Player } from '@/lib/challenge';
 import { 
@@ -454,6 +456,73 @@ export default function AdminDashboard() {
     }
   };
 
+  // Delete user permanently
+  const handleDeleteUser = async (userId: string, userName?: string) => {
+    if (!firestore) {
+      toast({
+        title: 'Error',
+        description: 'Firestore not initialized',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const confirmMessage = `⚠️ PERMANENT DELETE ⚠️\n\nAre you sure you want to delete this user?\n\nUser: ${userName || userId}\nUID: ${userId}\n\nThis will:\n• Delete their Firestore profile\n• Remove from localStorage\n• Delete all their data (subscriptions, progress, etc.)\n\nThis action CANNOT be undone!\n\nType 'DELETE' to confirm:`;
+    
+    const confirmation = prompt(confirmMessage);
+    
+    if (confirmation !== 'DELETE') {
+      if (confirmation !== null) {
+        toast({
+          title: 'Cancelled',
+          description: 'User deletion cancelled',
+        });
+      }
+      return;
+    }
+
+    try {
+      // Delete from Firestore
+      const { doc, deleteDoc, collection, getDocs } = await import('firebase/firestore');
+      
+      // Delete main profile
+      await deleteDoc(doc(firestore, `students/${userId}`));
+      
+      // Delete subscription if exists
+      try {
+        await deleteDoc(doc(firestore, `subscriptions/${userId}`));
+      } catch (e) {
+        // Subscription might not exist
+      }
+
+      // Delete from localStorage
+      const localPlayers = getAllPlayers();
+      const updatedPlayers = localPlayers.filter(p => p.userId !== userId);
+      localStorage.setItem('challengePlayers', JSON.stringify(updatedPlayers));
+
+      // If this was the selected user, clear selection
+      if (selectedUser?.userId === userId) {
+        setSelectedUser(null);
+        setActiveTab('search');
+      }
+
+      // Reload users list
+      await loadAllUsers();
+
+      toast({
+        title: 'User Deleted ✅',
+        description: `Successfully deleted ${userName || userId}`,
+      });
+    } catch (error: any) {
+      console.error('[Admin] Error deleting user:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to delete user',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const userSubscription = selectedUser ? getUserSubscription(selectedUser.userId) : null;
   const userStats = selectedUser ? getTransactionStats(selectedUser.userId) : null;
   const isPremium = selectedUser ? isPremiumUser(selectedUser.userId) : false;
@@ -714,7 +783,7 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">User ID</p>
-                      <p className="font-mono text-xs">{selectedUser.userId}</p>
+                      <p className="font-mono text-xs break-all">{selectedUser.userId}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Email</p>
@@ -768,6 +837,25 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     )}
+
+                    {/* Danger Zone - Delete User */}
+                    <div className="pt-4 border-t border-red-200 dark:border-red-900">
+                      <p className="text-sm font-semibold text-red-600 dark:text-red-400 mb-2 flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4" />
+                        Danger Zone
+                      </p>
+                      <Button
+                        onClick={() => handleDeleteUser(selectedUser.userId, selectedUser.name || selectedUser.email)}
+                        variant="destructive"
+                        className="w-full"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete User Permanently
+                      </Button>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        This will permanently delete the user and all their data. This action cannot be undone.
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
 
@@ -1036,19 +1124,34 @@ export default function AdminDashboard() {
                         .map((user) => (
                           <div
                             key={user.userId}
-                            className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setSearchQuery(user.userId);
-                              setActiveTab('manage');
-                            }}
+                            className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
                           >
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <div 
+                                className="flex-1 min-w-0 cursor-pointer"
+                                onClick={() => {
+                                  setSelectedUser(user);
+                                  setSearchQuery(user.userId);
+                                  setActiveTab('manage');
+                                }}
+                              >
                                 <p className="font-semibold text-sm truncate">{user.name || user.userName || 'No Name'}</p>
                                 <p className="text-xs text-muted-foreground truncate">{user.userId}</p>
                               </div>
-                              <Badge variant="outline" className="ml-2">Free</Badge>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="outline">Free</Badge>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteUser(user.userId, user.name || user.userName);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -1079,19 +1182,21 @@ export default function AdminDashboard() {
                           return (
                             <div
                               key={user.userId}
-                              className="p-3 rounded-lg border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/20 cursor-pointer transition-colors"
-                              onClick={() => {
-                                setSelectedUser(user);
-                                setSearchQuery(user.userId);
-                                setActiveTab('manage');
-                              }}
+                              className="p-3 rounded-lg border-2 border-amber-200 dark:border-amber-800 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors group"
                             >
-                              <div className="flex items-center justify-between">
-                                <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2">
+                                <div 
+                                  className="flex-1 min-w-0 cursor-pointer"
+                                  onClick={() => {
+                                    setSelectedUser(user);
+                                    setSearchQuery(user.userId);
+                                    setActiveTab('manage');
+                                  }}
+                                >
                                   <p className="font-semibold text-sm truncate">{user.name || user.userName || 'No Name'}</p>
                                   <p className="text-xs text-muted-foreground truncate">{user.userId}</p>
                                 </div>
-                                <div className="ml-2 flex flex-col items-end gap-1">
+                                <div className="flex items-center gap-2">
                                   {hasBundle ? (
                                     <Badge className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white text-xs">
                                       <Crown className="h-2.5 w-2.5 mr-0.5" />
@@ -1105,6 +1210,24 @@ export default function AdminDashboard() {
                                   ) : hasVL ? (
                                     <Badge className="bg-gradient-to-r from-purple-500 to-violet-600 text-white text-xs">
                                       <Crown className="h-2.5 w-2.5 mr-0.5" />
+                                      VL
+                                    </Badge>
+                                  ) : null}
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleDeleteUser(user.userId, user.name || user.userName);
+                                    }}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          );
                                       VL
                                     </Badge>
                                   ) : null}
@@ -1135,22 +1258,37 @@ export default function AdminDashboard() {
                         .map((user) => (
                           <div
                             key={user.userId}
-                            className="p-3 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 hover:from-blue-50 dark:hover:from-blue-950/30 cursor-pointer transition-colors"
-                            onClick={() => {
-                              setSelectedUser(user);
-                              setSearchQuery(user.userId);
-                              setActiveTab('manage');
-                            }}
+                            className="p-3 rounded-lg border-2 border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 hover:from-blue-50 dark:hover:from-blue-950/30 transition-colors group"
                           >
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <div 
+                                className="flex-1 min-w-0 cursor-pointer"
+                                onClick={() => {
+                                  setSelectedUser(user);
+                                  setSearchQuery(user.userId);
+                                  setActiveTab('manage');
+                                }}
+                              >
                                 <p className="font-semibold text-sm truncate">{user.name || user.userName || 'No Name'}</p>
                                 <p className="text-xs text-muted-foreground truncate">{user.userId}</p>
                               </div>
-                              <Badge className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white text-xs ml-2">
-                                <Crown className="h-2.5 w-2.5 mr-0.5" />
-                                Bundle
-                              </Badge>
+                              <div className="flex items-center gap-2">
+                                <Badge className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 text-white text-xs">
+                                  <Crown className="h-2.5 w-2.5 mr-0.5" />
+                                  Bundle
+                                </Badge>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteUser(user.userId, user.name || user.userName);
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         ))}
