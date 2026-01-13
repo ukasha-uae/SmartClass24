@@ -136,17 +136,11 @@ export default function Header() {
           </div>
           {/* Premium Text Logo - Clean & Minimal */}
           <div className="relative flex items-baseline gap-2">
-            <div className="relative">
-              {/* Text glow effect */}
-              <span className="absolute inset-0 text-base sm:text-lg md:text-xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent blur-sm opacity-50 group-hover:opacity-70 transition-opacity">
-                S24
-              </span>
-              {/* Main text */}
-              <span className="relative text-base sm:text-lg md:text-xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent group-hover:scale-105 transition-transform inline-block tracking-tight drop-shadow-sm">
-                S24
-              </span>
-            </div>
-            {/* Optional: Elegant Premium Tagline Badge */}
+            {/* Main text - Single clean version */}
+            <span className="text-base sm:text-lg md:text-xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent group-hover:scale-105 transition-transform inline-block tracking-tight drop-shadow-sm">
+              S24
+            </span>
+            {/* Elegant Premium Tagline Badge */}
             <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gradient-to-r from-violet-100/80 to-indigo-100/80 dark:from-violet-900/30 dark:to-indigo-900/30 text-violet-700 dark:text-violet-300 border border-violet-200/50 dark:border-violet-700/50 backdrop-blur-sm group-hover:scale-105 transition-transform tracking-wide">
               Smart Learning
             </span>

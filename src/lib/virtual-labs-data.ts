@@ -417,11 +417,23 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
         return undefined;
     }
     
-    // Check if user has access to this lab
-    const availableLabs = getAllVirtualLabs(userId);
-    const hasAccess = availableLabs.some(lab => lab.slug === slug);
+    // Check virtual lab access (Virtual Lab subscription or Full Bundle)
+    let hasAccess = false;
+    if (typeof window !== 'undefined') {
+        try {
+            const { hasVirtualLabAccess } = require('./monetization');
+            hasAccess = hasVirtualLabAccess(userId);
+        } catch (e) {
+            console.warn("Could not determine virtual lab access:", e);
+        }
+    }
     
-    if (!hasAccess) {
+    // Free labs are always accessible (food-tests, litmus-test, simple-circuits)
+    const freeLabs = ['food-tests', 'litmus-test', 'simple-circuits'];
+    const isFree = freeLabs.includes(slug);
+    
+    // Allow access if: 1) User has subscription, or 2) It's a free lab
+    if (!hasAccess && !isFree) {
         return undefined; // Lab not available for this user
     }
     

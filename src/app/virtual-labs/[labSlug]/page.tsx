@@ -35,12 +35,26 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const [quizAnswers, setQuizAnswers] = useState<number[]>([]);
   const [startTime, setStartTime] = useState<number>(Date.now());
   const [labCompleted, setLabCompleted] = useState(false);
+  const [userInteracted, setUserInteracted] = useState(false);
   const { markLabComplete, isLabCompleted } = useLabProgress();
   const resolvedParams = use(params);
 
   useEffect(() => {
     setMounted(true);
     setStartTime(Date.now());
+    
+    // Track user interaction (scroll or click) to show completion controls
+    const handleInteraction = () => {
+      setUserInteracted(true);
+    };
+    
+    window.addEventListener('scroll', handleInteraction, { once: true });
+    window.addEventListener('click', handleInteraction, { once: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleInteraction);
+      window.removeEventListener('click', handleInteraction);
+    };
   }, []);
 
   if (!mounted) return null;
@@ -240,13 +254,13 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
               {!showQuiz && (
                 <>
                   <Card className="mb-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl">
-                    <CardContent className="p-6">
+                    <CardContent className="p-4 sm:p-6 min-h-[400px] sm:min-h-[500px]">
                       <LabComponent />
                     </CardContent>
                   </Card>
 
-                  {/* Premium Complete Experiment Button */}
-                  {!experimentCompleted && (
+                  {/* Premium Complete Experiment Button - Only show after user interaction */}
+                  {!experimentCompleted && userInteracted && (
                     <div className="mb-6 text-center">
                       <Button 
                         size="lg" 
@@ -283,24 +297,28 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                     </Card>
                   )}
 
-                  {/* Premium Lab Notes with Exam Practice Reminder */}
-                  <Card className="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 backdrop-blur-xl border-2 border-amber-200/50 dark:border-amber-800/50 shadow-xl">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-3">
-                        <div className="text-3xl">📝</div>
-                        <div>
-                          <p className="font-bold text-amber-900 dark:text-amber-100 mb-2">Exam Preparation Tip</p>
-                          <p className="text-sm text-amber-800 dark:text-amber-200">
-                            Use digital notes below to capture your observations quickly, 
-                            but <strong>remember to copy important points by hand</strong> into your notebook! Handwriting builds 
-                            muscle memory and prepares you for written exams.
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  {/* Premium Lab Notes with Exam Practice Reminder - Only show after user interaction */}
+                  {userInteracted && (
+                    <>
+                      <Card className="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 backdrop-blur-xl border-2 border-amber-200/50 dark:border-amber-800/50 shadow-xl">
+                        <CardContent className="p-6">
+                          <div className="flex items-start gap-3">
+                            <div className="text-3xl">📝</div>
+                            <div>
+                              <p className="font-bold text-amber-900 dark:text-amber-100 mb-2">Exam Preparation Tip</p>
+                              <p className="text-sm text-amber-800 dark:text-amber-200">
+                                Use digital notes below to capture your observations quickly, 
+                                but <strong>remember to copy important points by hand</strong> into your notebook! Handwriting builds 
+                                muscle memory and prepares you for written exams.
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                  <LabNotes labId={experiment.id} labTitle={experiment.title} />
+                      <LabNotes labId={experiment.id} labTitle={experiment.title} />
+                    </>
+                  )}
                 </>
               )}
 
