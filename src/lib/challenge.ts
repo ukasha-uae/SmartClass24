@@ -1654,7 +1654,7 @@ const generateAIResults = (challenge: Challenge, bossId: string): void => {
       answer: String(Array.isArray(answer) ? answer.join(',') : answer),
       isCorrect,
       timeSpent: 5000 * boss.speedFactor, // Simulated time per question
-      points: isCorrect ? q.points : 0
+      points: isCorrect ? (q.points || 10) : 0 // Use question's points value or default to 10
     };
   });
 
