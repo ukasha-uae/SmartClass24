@@ -10,7 +10,8 @@ import {
   sendPasswordResetEmail,
   setPersistence,
   browserLocalPersistence,
-  browserSessionPersistence,
+  // REMOVED: browserSessionPersistence - causes PWA logout issues
+  // Desktop PWA MUST use browserLocalPersistence for login persistence
 } from 'firebase/auth';
 import { Firestore, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { getLocalQuizAttempts, clearLocalQuizAttempts } from '@/lib/local-quiz-attempts';
@@ -34,14 +35,13 @@ export async function initiateAnonymousSignIn(authInstance: Auth): Promise<void>
 
 /** Initiate email/password sign-up (returns promise to catch errors like email-already-in-use). */
 export async function initiateEmailSignUp(authInstance: Auth, email: string, password: string, stayLoggedIn: boolean = true): Promise<any> {
-  // Set persistence based on user preference (before sign-up so it applies when user is auto-signed in)
+  // CRITICAL: Always use LOCAL persistence for desktop PWA login persistence
+  // browserSessionPersistence causes users to be logged out on PWA restart
   try {
-    await setPersistence(
-      authInstance, 
-      stayLoggedIn ? browserLocalPersistence : browserSessionPersistence
-    );
+    await setPersistence(authInstance, browserLocalPersistence);
+    console.log('[Auth] Sign-up persistence set to LOCAL (stays logged in)');
   } catch (error) {
-    console.warn('Failed to set auth persistence, using default:', error);
+    console.warn('[Auth] Failed to set auth persistence:', error);
     // Continue with sign-up even if persistence setting fails
   }
   
@@ -52,16 +52,13 @@ export async function initiateEmailSignUp(authInstance: Auth, email: string, pas
 
 /** Initiate email/password sign-in (returns promise to catch errors). */
 export async function initiateEmailSignIn(authInstance: Auth, email: string, password: string, stayLoggedIn: boolean = true): Promise<any> {
-  // Set persistence based on user preference
-  // LOCAL persistence (default) = stays logged in across browser sessions
-  // SESSION persistence = only for current browser session
+  // CRITICAL: Always use LOCAL persistence for desktop PWA login persistence
+  // This ensures users remain logged in after closing and reopening the PWA
   try {
-    await setPersistence(
-      authInstance, 
-      stayLoggedIn ? browserLocalPersistence : browserSessionPersistence
-    );
+    await setPersistence(authInstance, browserLocalPersistence);
+    console.log('[Auth] Sign-in persistence set to LOCAL (stays logged in)');
   } catch (error) {
-    console.warn('Failed to set auth persistence, using default:', error);
+    console.warn('[Auth] Failed to set auth persistence:', error);
     // Continue with sign-in even if persistence setting fails
   }
   

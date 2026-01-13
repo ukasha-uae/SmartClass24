@@ -184,11 +184,12 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
     );
         
         // After subscribing, if we don't have a user and the auth object exists, ensure anonymous signin is attempted
-        // Optimized: Wait for persistence to load, then check if we need anonymous sign-in
+        // PWA-OPTIMIZED: Wait for persistence to load, then check if we need anonymous sign-in
         const checkAndSignIn = async () => {
-          // CRITICAL: Wait for Firebase to load persisted session
-          // Reduced from 5s to 2s for better UX, but still prevents race conditions
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          // CRITICAL: Wait for Firebase to load persisted session from IndexedDB
+          // 500ms is sufficient for PWA to read localStorage/IndexedDB
+          // Longer delays cause poor UX on desktop PWA startup
+          await new Promise(resolve => setTimeout(resolve, 500));
           
           // Check again if still no user after auth state has fully settled
           if (!auth.currentUser) {
@@ -197,7 +198,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               initiateAnonymousSignIn(auth);
             } catch (err) {
               console.error('[Auth] Error initiating anonymous sign-in', err);
-              // Single retry after shorter delay (1.5s instead of 3s)
+              // Single retry after 1s delay
               setTimeout(() => {
                 if (!auth.currentUser) {
                   try {
@@ -207,7 +208,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
                     console.error('[Auth] Retry failed:', retryErr);
                   }
                 }
-              }, 1500);
+              }, 1000);
             }
           } else {
             console.log('[Auth] User session restored:', auth.currentUser.uid, auth.currentUser.isAnonymous ? '(anonymous)' : '(email)');
