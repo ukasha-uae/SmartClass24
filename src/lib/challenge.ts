@@ -1110,9 +1110,17 @@ export const declineChallenge = async (challengeId: string, userId: string): Pro
     const declinerName = challenge.opponents[opponentIndex].userName;
     await createUserNotification(
       challenge.creatorId,
-      'challenge_declined',
-      `${declinerName} declined your challenge in ${challenge.subject}`,
-      `/challenge-arena/play/${challengeId}`
+      {
+        type: 'challenge_declined',
+        title: 'Challenge Declined',
+        message: `${declinerName} declined your challenge in ${challenge.subject}`,
+        actionUrl: `/challenge-arena/play/${challengeId}`,
+        data: {
+          challengeId: challengeId,
+          opponentName: declinerName,
+          subject: challenge.subject,
+        }
+      }
     );
   } catch (error) {
     console.error('Failed to send decline notification:', error);

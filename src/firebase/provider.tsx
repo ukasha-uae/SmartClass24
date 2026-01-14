@@ -77,6 +77,9 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
   
   // Ref to store presence heartbeat cleanup function
   const presenceCleanupRef = useRef<(() => void) | null>(null);
+  
+  // Ref to store FCM cleanup functions
+  const fcmCleanupRef = useRef<(() => void) | null>(null);
 
   // Effect to subscribe to Firebase auth state changes
   useEffect(() => {
@@ -118,6 +121,11 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           try { 
             // Start global presence heartbeat (runs on all pages for authenticated users)
             presenceCleanupRef.current = startPresenceHeartbeat(firebaseUser.uid);
+            
+            // Initialize FCM for push notifications (non-blocking)
+            initializeFCMForUser(firebaseUser.uid).catch(err => {
+              console.warn('[FCM] Failed to initialize (non-critical):', err);
+            });
             
             // Migrate local quiz attempts to Firestore
             migrateLocalAttemptsToFirestore(auth, firestore);
@@ -234,8 +242,42 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         presenceCleanupRef.current();
         presenceCleanupRef.current = null;
       }
+      if (fcmCleanupRef.current) {
+        fcmCleanupRef.current();
+        fcmCleanupRef.current = null;
+      }
     };
   }, [auth, firestore]); // Depends on the auth instance and firestore
+  
+  // Helper function to initialize FCM for a user
+  const initializeFCMForUser = async (userId: string) => {
+    if (!firebaseApp || !firestore) return;
+    
+    try {
+      // Dynamically import FCM modules (for code splitting)
+      const { initializeMessaging } = await import('./messaging');
+      const { initializeFCMToken, setupTokenRefreshListener } = await import('./fcm-token');
+      
+      // Initialize messaging
+      const messaging = await initializeMessaging(firebaseApp);
+      if (!messaging) {
+        console.log('[FCM] Messaging not supported, skipping initialization');
+        return;
+      }
+      
+      // Initialize FCM token (will request permission if needed)
+      const token = await initializeFCMToken(messaging, firestore, userId);
+      if (token) {
+        console.log('[FCM] Successfully initialized for user');
+        
+        // Setup token refresh listener
+        const unsubscribe = setupTokenRefreshListener(messaging, firestore, userId);
+        fcmCleanupRef.current = unsubscribe;
+      }
+    } catch (error) {
+      console.error('[FCM] Error initializing:', error);
+    }
+  };
 
   // Memoize the context value
   const contextValue = useMemo((): FirebaseContextState => {

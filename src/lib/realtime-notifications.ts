@@ -13,6 +13,7 @@ import { getAuth } from 'firebase/auth';
 
 export type NotificationType =
   | 'challenge_invite'
+  | 'challenge_declined'
   | 'friend_request'
   | 'achievement_unlock'
   | 'system_message'

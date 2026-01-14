@@ -1228,13 +1228,6 @@ export default function AdminDashboard() {
                               </div>
                             </div>
                           );
-                                      VL
-                                    </Badge>
-                                  ) : null}
-                                </div>
-                              </div>
-                            </div>
-                          );
                         })}
                       {users.filter(u => isPremiumUser(u.userId) || hasVirtualLabAccess(u.userId)).length === 0 && (
                         <p className="text-sm text-muted-foreground text-center py-4">No premium users</p>

@@ -48,6 +48,8 @@ export * from './client-provider';
 export * from './use-collection';
 export * from './use-doc';
 export * from './non-blocking-updates';
+export * from './messaging';
+export * from './fcm-token';
 export * from './non-blocking-login';
 export * from './errors';
 export * from './error-emitter';

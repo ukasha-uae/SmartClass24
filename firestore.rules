@@ -98,6 +98,16 @@ service cloud.firestore {
       allow delete: if request.auth != null;
     }
 
+    // FCM Tokens - store push notification tokens for each user
+    match /users/{userId}/fcmTokens/{tokenId} {
+      // Only the owner can read their own FCM tokens
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Only the owner can create/update their FCM tokens
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+      // Only the owner can delete their FCM tokens
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
     // Allow authenticated users to seed/manage lesson content (for admin/seed operations)
     match /subjects/{subjectId}/{document=**} {
       allow read: if true;
