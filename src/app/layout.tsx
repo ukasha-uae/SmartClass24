@@ -13,6 +13,8 @@ import { LocalizationProvider } from '@/lib/localization/localization-context';
 import { FullscreenProvider } from '@/contexts/FullscreenContext';
 import { FullscreenMain } from '@/components/FullscreenMain';
 import { ReferralHandler } from '@/components/ReferralHandler';
+import { NotificationHandler } from '@/components/NotificationHandler';
+import { NotificationPermissionPrompt } from '@/components/NotificationPermissionPrompt';
 
 export const metadata: Metadata = {
   title: 'Smartclass24',
@@ -42,6 +44,10 @@ export default function RootLayout({
         <FirebaseClientProvider>
           <LocalizationProvider>
             <FullscreenProvider>
+              {/* Push Notification Components */}
+              <NotificationHandler />
+              <NotificationPermissionPrompt delay={8000} />
+              
               <div className="relative flex min-h-screen w-full flex-col">
                 <Header />
                 <FullscreenMain>{children}</FullscreenMain>
