@@ -20,15 +20,24 @@ service cloud.firestore {
 
     // Challenges - accessible to creator and opponents
     match /challenges/{challengeId} {
+      // Helper function to check if any opponent is a bot
+      function hasBot() {
+        return request.resource.data.opponents != null && 
+               request.resource.data.opponents.size() > 0 &&
+               request.resource.data.opponents[0].userId.matches('bot-.*');
+      }
+      
       // Allow read for authenticated users
-      // Note: Users will only access challenges they're invited to via notifications
-      // Firestore rules can't easily check nested array fields, so we rely on client-side validation
       allow read: if request.auth != null;
+      
       // Allow create if user is authenticated
       allow create: if request.auth != null;
-      // Allow update if user is creator OR authenticated (opponent validation happens client-side)
-      // This allows opponents to accept/update their status
-      allow update: if request.auth != null;
+      
+      // Allow update if:
+      // 1. User is authenticated, OR
+      // 2. Challenge involves a bot opponent (Sarah)
+      allow update: if request.auth != null || hasBot();
+      
       allow delete: if false;
     }
 
