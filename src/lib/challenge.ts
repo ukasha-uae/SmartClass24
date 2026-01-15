@@ -1139,6 +1139,12 @@ export const startChallenge = (challengeId: string): boolean => {
   challenges[challengeIndex].startedAt = new Date().toISOString();
   
   localStorage.setItem('challenges', JSON.stringify(challenges));
+  
+  // Update Firestore so all clients see the started status
+  saveChallengeToFirestore(challenges[challengeIndex]).catch(err => {
+    console.error('Failed to update started challenge in Firestore:', err);
+  });
+  
   return true;
 };
 

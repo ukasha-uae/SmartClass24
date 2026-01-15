@@ -384,8 +384,10 @@ export default function QuickMatchPage() {
     }
   };
 
-  const startMatch = useCallback(() => {
+  const startMatch = useCallback(async () => {
     if (!player || !opponent) return;
+
+    console.log('[Quick Match] Starting match with opponent:', opponent.userName, opponent.userId);
 
     // Create challenge
     const challenge = createChallenge({
@@ -408,16 +410,21 @@ export default function QuickMatchPage() {
       scheduledTime: undefined,
     });
 
+    console.log('[Quick Match] Challenge created:', challenge.id);
+
     // Auto-accept for quick match
-    acceptChallenge(challenge.id, opponent.userId);
+    const accepted = await acceptChallenge(challenge.id, opponent.userId);
+    console.log('[Quick Match] Challenge accepted:', accepted);
+    
+    // Small delay to ensure state updates
+    await new Promise(resolve => setTimeout(resolve, 100));
     
     // Start the challenge
-    startChallenge(challenge.id);
+    const started = startChallenge(challenge.id);
+    console.log('[Quick Match] Challenge started:', started);
 
-    // Navigate to battle page - use setTimeout to defer navigation
-    setTimeout(() => {
-      router.push(`/challenge-arena/play/${challenge.id}`);
-    }, 0);
+    // Navigate to battle page
+    router.push(`/challenge-arena/play/${challenge.id}`);
   }, [player, opponent, subject, classLevel, router]);
 
   // Separate effect to handle navigation when countdown reaches 0 (after startMatch is defined)

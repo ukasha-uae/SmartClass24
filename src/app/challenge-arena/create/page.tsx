@@ -403,9 +403,20 @@ export default function CreateChallengePage() {
 
       // If opponent is Sarah (bot), auto-accept the challenge
       if (formData.opponentId && formData.opponentId.startsWith('bot-')) {
-        await acceptChallenge(challenge.id, formData.opponentId);
-        startChallenge(challenge.id); // Also start the challenge immediately
-        toast({ title: '🤖 Sarah Accepted!', description: 'Sarah is ready to challenge you!' });
+        console.log('[Challenge Create] Auto-accepting Sarah challenge:', challenge.id);
+        const accepted = await acceptChallenge(challenge.id, formData.opponentId);
+        console.log('[Challenge Create] Sarah accepted:', accepted);
+        
+        if (accepted) {
+          // Small delay to ensure localStorage/Firestore updates complete
+          await new Promise(resolve => setTimeout(resolve, 100));
+          const started = startChallenge(challenge.id);
+          console.log('[Challenge Create] Challenge started:', started);
+          toast({ title: '🤖 Sarah Accepted!', description: 'Sarah is ready to challenge you!' });
+        } else {
+          console.error('[Challenge Create] Failed to accept Sarah challenge');
+          toast({ title: 'Error', description: 'Failed to start challenge with Sarah', variant: 'destructive' });
+        }
       } else {
         toast({ title: 'Challenge Created!', description: 'You can share with your opponent!' });
       }
