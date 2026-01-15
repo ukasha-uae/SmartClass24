@@ -6,9 +6,16 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Generate unique build ID to force cache invalidation
+  // Generate unique build ID using git commit hash for cache invalidation
   generateBuildId: async () => {
-    return `build-${Date.now()}`;
+    // Use git commit hash if available, fallback to timestamp
+    try {
+      const { execSync } = require('child_process');
+      const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
+      return `v${commitHash}-${Date.now()}`;
+    } catch {
+      return `build-${Date.now()}`;
+    }
   },
   images: {
     remotePatterns: [
