@@ -15,6 +15,7 @@ import { FullscreenMain } from '@/components/FullscreenMain';
 import { ReferralHandler } from '@/components/ReferralHandler';
 import { NotificationHandler } from '@/components/NotificationHandler';
 import { NotificationPermissionPrompt } from '@/components/NotificationPermissionPrompt';
+import { UpdateNotification } from '@/components/update-notification';
 
 export const metadata: Metadata = {
   title: 'Smartclass24',
@@ -60,6 +61,8 @@ export default function RootLayout({
                 </Suspense>
                 <BottomNav />
                 <Toaster />
+                {/* Update notification for new versions */}
+                <UpdateNotification />
               </div>
             </FullscreenProvider>
           </LocalizationProvider>
