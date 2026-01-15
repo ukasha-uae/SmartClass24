@@ -24,7 +24,7 @@ import {
   Languages,
   Music
 } from 'lucide-react';
-import { createChallenge, getAllPlayers, Player, getPlayerProfile, acceptChallenge } from '@/lib/challenge';
+import { createChallenge, getAllPlayers, Player, getPlayerProfile, acceptChallenge, startChallenge } from '@/lib/challenge';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
 import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
@@ -404,6 +404,7 @@ export default function CreateChallengePage() {
       // If opponent is Sarah (bot), auto-accept the challenge
       if (formData.opponentId && formData.opponentId.startsWith('bot-')) {
         await acceptChallenge(challenge.id, formData.opponentId);
+        startChallenge(challenge.id); // Also start the challenge immediately
         toast({ title: '🤖 Sarah Accepted!', description: 'Sarah is ready to challenge you!' });
       } else {
         toast({ title: 'Challenge Created!', description: 'You can share with your opponent!' });
