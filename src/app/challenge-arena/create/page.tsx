@@ -32,6 +32,7 @@ import { updateUserPresence, startPresenceHeartbeat, isUserOnline } from '@/lib/
 import { Badge } from '@/components/ui/badge';
 import { Circle } from 'lucide-react';
 import { ShareChallengeDialog } from '@/components/challenge/ShareChallengeDialog';
+import { getSarahBot } from '@/lib/ai-bot-profiles';
 
 // Create challenge page is now enabled for friend challenges
 export default function CreateChallengePage() {
@@ -238,24 +239,78 @@ export default function CreateChallengePage() {
           
           setUserLastSeenMap(lastSeenMap);
           
-          // If no real users found, fall back to mock players
+          // Convert Sarah bot to Player format
+          const sarahBot = getSarahBot();
+          const sarahPlayer: Player = {
+            userId: sarahBot.id,
+            userName: sarahBot.displayName,
+            school: 'AI Study Partner',
+            level: 'JHS' as const, // Will adapt to user's level
+            rating: 1200,
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            totalGames: 0,
+            winStreak: 0,
+            highestStreak: 0,
+            xp: sarahBot.xp,
+            achievements: [],
+            coins: 0,
+          };
+          
+          // If no real users found, fall back to mock players with Sarah
           if (usersList.length === 0) {
             const allPlayers = getAllPlayers();
-            setFriends(allPlayers.filter(p => p.userId !== user.uid));
+            setFriends([sarahPlayer, ...allPlayers.filter(p => p.userId !== user.uid)]);
           } else {
-            setFriends(usersList);
+            // Add Sarah at the beginning (she's always online)
+            setFriends([sarahPlayer, ...usersList]);
           }
         }, (error) => {
           console.error('Error fetching users:', error);
-          // Fall back to empty list for anonymous users
+          // Fall back to Sarah only for anonymous users
+          const sarahBot = getSarahBot();
+          const sarahPlayer: Player = {
+            userId: sarahBot.id,
+            userName: sarahBot.displayName,
+            school: 'AI Study Partner',
+            level: 'JHS' as const,
+            rating: 1200,
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            totalGames: 0,
+            winStreak: 0,
+            highestStreak: 0,
+            xp: sarahBot.xp,
+            achievements: [],
+            coins: 0,
+          };
           const allPlayers = getAllPlayers();
-          setFriends(allPlayers.filter(p => user?.uid && p.userId !== user.uid));
+          setFriends([sarahPlayer, ...allPlayers.filter(p => user?.uid && p.userId !== user.uid)]);
         });
       } catch (error) {
         console.error('Error setting up users listener:', error);
-        // Fall back to empty list for anonymous users
+        // Fall back to Sarah for anonymous users
+        const sarahBot = getSarahBot();
+        const sarahPlayer: Player = {
+          userId: sarahBot.id,
+          userName: sarahBot.displayName,
+          school: 'AI Study Partner',
+          level: 'JHS' as const,
+          rating: 1200,
+          wins: 0,
+          losses: 0,
+          draws: 0,
+          totalGames: 0,
+          winStreak: 0,
+          highestStreak: 0,
+          xp: sarahBot.xp,
+          achievements: [],
+          coins: 0,
+        };
         const allPlayers = getAllPlayers();
-        setFriends(allPlayers.filter(p => user?.uid && p.userId !== user.uid));
+        setFriends([sarahPlayer, ...allPlayers.filter(p => user?.uid && p.userId !== user.uid)]);
       }
     };
     
@@ -516,7 +571,8 @@ export default function CreateChallengePage() {
             <CardContent className="pb-4">
               <div className="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto pr-1">
                 {filteredFriends.map((friend) => {
-                  const isOnline = isUserOnline(userLastSeenMap[friend.userId]);
+                  const isBot = friend.userId.startsWith('bot-');
+                  const isOnline = isBot || isUserOnline(userLastSeenMap[friend.userId]);
                   return (
                     <button
                       key={friend.userId}
@@ -538,11 +594,15 @@ export default function CreateChallengePage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="font-medium text-sm truncate">{friend.userName}</p>
-                          {isOnline && (
+                          {isBot ? (
+                            <Badge variant="outline" className="h-4 px-1.5 text-[10px] border-green-500 text-green-600 dark:text-green-400">
+                              Always Online
+                            </Badge>
+                          ) : isOnline ? (
                             <Badge variant="outline" className="h-4 px-1.5 text-[10px] border-green-500 text-green-600 dark:text-green-400">
                               Online
                             </Badge>
-                          )}
+                          ) : null}
                         </div>
                         <p className="text-xs text-muted-foreground truncate">{friend.school}</p>
                       </div>
