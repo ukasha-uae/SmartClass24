@@ -29,6 +29,7 @@ import { useSoundEffects } from '@/hooks/use-sound-effects';
 import { useToast } from '@/hooks/use-toast';
 import { startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
 import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
+import { getSarahBot, getSarahAdaptedDifficulty, isBot } from '@/lib/ai-bot-profiles';
 
 export default function QuickMatchPage() {
   const router = useRouter();
@@ -290,14 +291,37 @@ export default function QuickMatchPage() {
     // Use ONLY real online players from Firestore - NO mock players
     const availablePlayers = onlinePlayers.filter(p => p.userId !== user?.uid);
     
-    // If no real online players available, stop searching and show message
+    // If no real online players available, use Sarah bot as fallback
     if (availablePlayers.length === 0) {
+      const sarah = getSarahBot();
+      const difficulty = getSarahAdaptedDifficulty(
+        player.level || 'JHS',
+        player.xp || 0,
+        undefined
+      );
+      
+      // Create Sarah as a player opponent
+      const sarahOpponent: Player = {
+        userId: sarah.id,
+        userName: sarah.firstName,
+        school: 'AI Study Partner',
+        level: player.level || 'JHS', // Match player's level
+        rating: player.rating, // Match player's rating for fairness
+        xp: sarah.xp,
+        avatar: sarah.avatar,
+        lastActive: Date.now(),
+        isOnline: true,
+      };
+      
+      setOpponent(sarahOpponent);
+      setMatchFound(true);
+      setCountdown(10);
       setIsSearching(false);
-      setMatchFound(false);
+      playSound('matchFound');
+      
       toast({
-        title: 'No Opponents Available',
-        description: 'No online players are available right now. Please try again later when more players are online.',
-        variant: 'default',
+        title: '🤖 Sarah Accepted Your Challenge!',
+        description: "No players online right now, but I'm here to practice with you! Let's go! 📚",
       });
       return;
     }
