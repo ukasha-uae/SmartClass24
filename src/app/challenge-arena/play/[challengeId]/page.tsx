@@ -41,6 +41,8 @@ import { useToast } from '@/hooks/use-toast';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { useFullscreen } from '@/contexts/FullscreenContext';
 import { ShareChallengeDialog } from '@/components/challenge/ShareChallengeDialog';
+import { useBotChallenge } from '@/lib/use-bot-challenge';
+import { isBot } from '@/lib/ai-bot-profiles';
 
 export default function QuizBattlePage() {
   const params = useParams();
@@ -73,6 +75,16 @@ export default function QuizBattlePage() {
   
   // Ref to store unsubscribe function for challenge listener
   const unsubscribeRef = useRef<(() => void) | null>(null);
+
+  // Get opponent user ID for bot detection
+  const opponentUserId = challenge?.opponents[0]?.userId;
+  
+  // Activate bot answering when player starts playing
+  const { isBotAnswering, botAnswersSubmitted } = useBotChallenge(
+    challenge,
+    gamePhase === 'playing',
+    opponentUserId
+  );
 
   // Enable fullscreen mode when gameplay starts
   useEffect(() => {
