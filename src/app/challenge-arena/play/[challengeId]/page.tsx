@@ -28,6 +28,7 @@ import {
   acceptChallenge,
   declineChallenge,
   createChallenge,
+  startChallenge,
   Challenge,
   GameQuestion,
   Player,
@@ -1101,6 +1102,18 @@ export default function QuizBattlePage() {
           opponents: [{ userId: opponentUserId, userName: opponentUserName, school: opponentSchool, status: 'invited' as const }],
           maxPlayers: 2,
         });
+        
+        // If opponent is Sarah bot, auto-accept and start
+        if (opponentUserId.startsWith('bot-')) {
+          try {
+            await acceptChallenge(newChallenge.id, opponentUserId);
+            await new Promise(resolve => setTimeout(resolve, 100));
+            await startChallenge(newChallenge.id);
+            console.log('✅ Sarah auto-accepted rematch');
+          } catch (error) {
+            console.error('Sarah rematch accept error:', error);
+          }
+        }
         
         toast({ title: 'Rematch Created!', description: `Challenging ${opponentUserName} again!` });
         router.push(`/challenge-arena/play/${newChallenge.id}`);
