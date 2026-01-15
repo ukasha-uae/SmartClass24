@@ -401,7 +401,14 @@ export default function CreateChallengePage() {
         opponentName,
       });
 
-      toast({ title: 'Challenge Created!', description: 'You can share with your opponent!' });
+      // If opponent is Sarah (bot), auto-accept the challenge
+      if (formData.opponentId && formData.opponentId.startsWith('bot-')) {
+        await acceptChallenge(challenge.id, formData.opponentId);
+        toast({ title: '🤖 Sarah Accepted!', description: 'Sarah is ready to challenge you!' });
+      } else {
+        toast({ title: 'Challenge Created!', description: 'You can share with your opponent!' });
+      }
+      
       router.push(`/challenge-arena/play/${challenge.id}`);
     } catch (error) {
       toast({ title: 'Error', description: 'Failed to create challenge', variant: 'destructive' });
