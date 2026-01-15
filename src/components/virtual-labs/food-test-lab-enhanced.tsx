@@ -947,28 +947,29 @@ export function FoodTestLabEnhanced() {
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="p-6 bg-gradient-to-br from-green-500/20 via-emerald-500/20 to-teal-500/20 backdrop-blur-xl rounded-2xl border-2 border-green-400/50 dark:border-green-600/50 shadow-2xl overflow-hidden"
+                                className="p-4 sm:p-6 bg-gradient-to-br from-green-500/20 via-emerald-500/20 to-teal-500/20 backdrop-blur-xl rounded-2xl border-2 border-green-400/50 dark:border-green-600/50 shadow-2xl overflow-hidden"
                             >
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/30 to-emerald-400/30 rounded-full blur-3xl"></div>
-                                <div className="relative flex items-start gap-4">
-                                    <div className="p-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-lg flex-shrink-0">
-                                        <CheckCircle className="h-8 w-8 text-white" />
+                                <div className="relative flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+                                    {/* Icon - smaller on mobile, hidden on very small screens */}
+                                    <div className="hidden sm:block p-3 sm:p-4 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl sm:rounded-2xl shadow-lg flex-shrink-0">
+                                        <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                                     </div>
-                                    <div className="flex-1 space-y-4">
-                                        <h3 className="font-bold text-xl bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
+                                    <div className="flex-1 w-full space-y-3 sm:space-y-4">
+                                        <h3 className="font-bold text-lg sm:text-xl bg-gradient-to-r from-green-600 to-emerald-600 dark:from-green-400 dark:to-emerald-400 bg-clip-text text-transparent">
                                             Test Complete! ✓
                                         </h3>
-                                        <p className="text-green-800 dark:text-green-200 font-semibold text-base leading-relaxed">
+                                        <p className="text-green-800 dark:text-green-200 font-semibold text-sm sm:text-base leading-relaxed">
                                             {result.text}
                                         </p>
-                                        <div className="grid grid-cols-2 gap-4 mt-6 pt-4 border-t-2 border-green-300/50 dark:border-green-700/50">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t-2 border-green-300/50 dark:border-green-700/50">
                                             <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border border-green-200/50 dark:border-green-800/50">
                                                 <div className="text-xs text-green-600 dark:text-green-400 font-bold mb-2">Nutrient Detected</div>
-                                                <div className="text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{result.nutrient}</div>
+                                                <div className="text-sm sm:text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{result.nutrient}</div>
                                             </div>
                                             <div className="p-3 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 rounded-xl border border-green-200/50 dark:border-green-800/50">
                                                 <div className="text-xs text-green-600 dark:text-green-400 font-bold mb-2">Color Change</div>
-                                                <div className="text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{result.colorChange}</div>
+                                                <div className="text-sm sm:text-base font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">{result.colorChange}</div>
                                             </div>
                                         </div>
                                     </div>
