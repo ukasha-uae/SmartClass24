@@ -4,7 +4,7 @@
  */
 
 const VERSION_CHECK_INTERVAL = 60000; // Check every 60 seconds
-const VERSION_ENDPOINT = '/_next/static/chunks/webpack.js'; // Use webpack file as version indicator
+const VERSION_ENDPOINT = '/'; // Use root page as version indicator
 
 let lastCheckedVersion: string | null = null;
 
@@ -13,8 +13,8 @@ let lastCheckedVersion: string | null = null;
  */
 export async function checkForNewVersion(): Promise<boolean> {
   try {
-    // Fetch webpack file with cache-busting
-    const response = await fetch(`${VERSION_ENDPOINT}?t=${Date.now()}`, {
+    // Fetch root page with cache-busting
+    const response = await fetch(`${VERSION_ENDPOINT}?_version=${Date.now()}`, {
       cache: 'no-cache',
       headers: {
         'Cache-Control': 'no-cache',
