@@ -70,18 +70,21 @@ export default withPWA({
   sw: 'sw.js',
   // Add custom service worker handlers
   additionalManifestEntries: [],
-  // Exclude virtual labs from caching - always fetch fresh
+  // Force cache version bump to invalidate all caches
+  buildId: `v${Date.now()}`,
+  // Aggressive cache invalidation
+  cacheStartUrl: false,
+  dynamicStartUrl: true,
+  cacheOnFrontEndNav: false,
+  // Exclude virtual labs from caching - NEVER cache
   runtimeCaching: [
     {
-      urlPattern: /^https:\/\/.*\/virtual-labs.*/i,
-      handler: 'NetworkFirst',
-      options: {
-        cacheName: 'virtual-labs',
-        expiration: {
-          maxEntries: 0, // Don't cache
-        },
-        networkTimeoutSeconds: 10,
-      },
+      urlPattern: /\/virtual-labs/,
+      handler: 'NetworkOnly', // Changed from NetworkFirst to NetworkOnly - never cache
+    },
+    {
+      urlPattern: /\/_next\/static\/chunks\/app\/.*virtual-labs/,
+      handler: 'NetworkOnly', // Don't cache virtual lab chunks
     },
   ],
 } as unknown as any)(nextConfig);

@@ -16,6 +16,7 @@ import { ReferralHandler } from '@/components/ReferralHandler';
 import { NotificationHandler } from '@/components/NotificationHandler';
 import { NotificationPermissionPrompt } from '@/components/NotificationPermissionPrompt';
 import { UpdateNotification } from '@/components/update-notification';
+import { ForceCacheClear } from '@/components/force-cache-clear';
 
 export const metadata: Metadata = {
   title: 'Smartclass24',
@@ -46,6 +47,7 @@ export default function RootLayout({
          <meta name="theme-color" content="#7c3aed" />
       </head>
       <body className={cn('font-body antialiased bg-background h-full')}>
+        <ForceCacheClear />
         <FirebaseClientProvider>
           <LocalizationProvider>
             <FullscreenProvider>
