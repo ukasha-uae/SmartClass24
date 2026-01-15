@@ -16,6 +16,12 @@ let messagingInstance: Messaging | null = null;
  */
 export async function initializeMessaging(firebaseApp: FirebaseApp): Promise<Messaging | null> {
   try {
+    // Skip FCM initialization in development (service worker issues with Next.js dev server)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[FCM] Skipping messaging in development mode');
+      return null;
+    }
+
     // Check if push notifications are supported by the browser
     const supported = await isSupported();
     if (!supported) {
