@@ -309,8 +309,14 @@ export default function QuickMatchPage() {
         rating: player.rating, // Match player's rating for fairness
         xp: sarah.xp,
         avatar: sarah.avatar,
-        lastActive: Date.now(),
-        isOnline: true,
+        wins: 0,
+        losses: 0,
+        draws: 0,
+        totalGames: 0,
+        winStreak: 0,
+        highestStreak: 0,
+        achievements: [],
+        coins: 0,
       };
       
       setOpponent(sarahOpponent);

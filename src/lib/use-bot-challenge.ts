@@ -29,8 +29,8 @@ export function useBotChallenge(
     }
 
     // Get player info to adapt Sarah's difficulty
-    const creatorLevel = challenge.creator.level || 'JHS';
-    const creatorXP = challenge.creator.xp || 0;
+    const creatorLevel = challenge.level || 'JHS';
+    const creatorXP = 0; // XP not stored in challenge, use base difficulty
 
     // Adapt Sarah's difficulty
     const difficulty = getSarahAdaptedDifficulty(creatorLevel, creatorXP, undefined);
@@ -47,10 +47,15 @@ export function useBotChallenge(
 
       for (const question of challenge.questions) {
         // Sarah answers the question
+        // For MCQ questions, find the correct answer index
+        const correctIndex = question.type === 'mcq' && question.options 
+          ? question.options.indexOf(question.correctAnswer as string)
+          : 0;
+        
         const result = await sarahAI.answerQuestion(
           question.question,
-          question.options,
-          question.correctAnswerIndex
+          question.options || [],
+          correctIndex
         );
 
         botAnswers.push({

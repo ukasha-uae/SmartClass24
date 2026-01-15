@@ -24,7 +24,7 @@ import {
   Languages,
   Music
 } from 'lucide-react';
-import { createChallenge, getAllPlayers, Player, getPlayerProfile } from '@/lib/challenge';
+import { createChallenge, getAllPlayers, Player, getPlayerProfile, acceptChallenge } from '@/lib/challenge';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
 import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
