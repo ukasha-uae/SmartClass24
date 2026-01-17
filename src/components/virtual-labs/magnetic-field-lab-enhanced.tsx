@@ -186,7 +186,7 @@ export function MagneticFieldLabEnhanced() {
             const m2 = magnet2Ref.current;
             
             const distance = Math.sqrt(Math.pow(m2.x - m1.x, 2) + Math.pow(m2.y - m1.y, 2));
-            const minDistance = 100; // Minimum distance (edges touch)
+            const minDistance = 105; // Minimum distance (edges touch with small gap)
             const maxForceDistance = 300;
             
             const horizontalAlignment = Math.abs(m1.y - m2.y) < 50;
@@ -195,7 +195,7 @@ export function MagneticFieldLabEnhanced() {
             if (distance < maxForceDistance && (horizontalAlignment || verticalAlignment)) {
                 isUpdatingRef.current = true;
                 
-                // STRONG force - not slow motion!
+                // Smoother force calculations based on distance
                 let force: number;
                 if (interactionType === 'attract') {
                     // For attraction: strong pull, stop at minDistance
@@ -203,7 +203,7 @@ export function MagneticFieldLabEnhanced() {
                         // Already at minimum - maintain distance, but only adjust if needed
                         if (horizontalAlignment) {
                             const currentMin = Math.abs(m2.x - m1.x);
-                            if (Math.abs(currentMin - minDistance) > 2) {
+                            if (Math.abs(currentMin - minDistance) > 3) { // Slightly larger tolerance for smoother behavior
                                 const dx = m2.x - m1.x;
                                 const direction = dx > 0 ? 1 : -1;
                                 const midX = (m1.x + m2.x) / 2;
@@ -212,7 +212,7 @@ export function MagneticFieldLabEnhanced() {
                             }
                         } else if (verticalAlignment) {
                             const currentMinY = Math.abs(m2.y - m1.y);
-                            if (Math.abs(currentMinY - minDistance) > 2) {
+                            if (Math.abs(currentMinY - minDistance) > 3) { // Slightly larger tolerance for smoother behavior
                                 const dy = m2.y - m1.y;
                                 const direction = dy > 0 ? 1 : -1;
                                 const midY = (m1.y + m2.y) / 2;
@@ -223,11 +223,13 @@ export function MagneticFieldLabEnhanced() {
                         setTimeout(() => { isUpdatingRef.current = false; }, 50);
                         return;
                     }
-                    // VERY STRONG attraction force - immediate snap together
-                    force = Math.min((maxForceDistance - distance) / maxForceDistance * 25, 20);
+                    // Smooth attraction force - scales with distance (SCIENTIFIC & REALISTIC)
+                    const distanceRatio = (maxForceDistance - distance) / maxForceDistance;
+                    force = Math.min(distanceRatio * 15, 12); // Reduced from 25/20 for smoother movement
                 } else {
-                    // For repulsion: VERY STRONG push away - immediate separation
-                    force = Math.min((maxForceDistance - distance) / maxForceDistance * 30, 25);
+                    // For repulsion: smooth push away - scales with proximity (SCIENTIFIC & REALISTIC)
+                    const distanceRatio = (maxForceDistance - distance) / maxForceDistance;
+                    force = Math.min(distanceRatio * 18, 14); // Reduced from 30/25 for smoother movement
                 }
                 
                 if (horizontalAlignment) {

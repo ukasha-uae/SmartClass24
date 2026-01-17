@@ -196,17 +196,16 @@ export const virtualLabExperiments = {
             learningObjective: 'Discover the linear relationship between force and displacement in elastic materials.',
             component: HookesLawLabEnhanced 
         },
-        // DISABLED FOR V1 - Magnetic field physics needs fixing (attraction/repulsion logic)
-        // TODO: Fix pole detection and interaction logic before re-enabling
-        // { 
-        //     id: 'phy-lab-8', 
-        //     slug: 'magnetic-field-mapping', 
-        //     title: 'Magnetic Field Mapping', 
-        //     subject: 'Physics', 
-        //     description: 'Visualize magnetic field lines using a compass.', 
-        //     learningObjective: 'Learn how to map invisible magnetic fields and understand magnetic field patterns.',
-        //     component: MagneticFieldLab 
-        // },
+        // ✅ ENABLED - Magnetic field physics fixed with proper attraction/repulsion logic
+        { 
+            id: 'phy-lab-8', 
+            slug: 'magnetic-field-mapping', 
+            title: 'Magnetic Field Mapping', 
+            subject: 'Physics', 
+            description: 'Visualize magnetic field lines using a compass and explore how magnets attract and repel.', 
+            learningObjective: 'Learn how to map invisible magnetic fields and understand that opposite poles attract while same poles repel. Aligns with GES JHS Integrated Science syllabus on magnetism.',
+            component: MagneticFieldLab 
+        },
         { 
             id: 'phy-lab-9', 
             slug: 'ohms-law', 
