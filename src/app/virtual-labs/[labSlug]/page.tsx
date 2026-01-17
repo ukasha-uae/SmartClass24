@@ -86,7 +86,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                           // Physics Labs
                           'hookes-law', 'simple-circuits', 'work-energy-inclined-plane', 'ohms-law', 
                           'heat-transfer', 'density-buoyancy', 'expansion-of-air', 'expansion-of-solids-liquids',
-                          'reflection-of-light', 'refraction-of-light', 'projectile-motion',
+                          'reflection-of-light', 'refraction-of-light', 'projectile-motion', 'magnetic-field-mapping',
                           // Chemistry Labs
                           'separation-techniques', 'ammonia-test', 'hydrogen-pop-test', 'oxygen-test', 
                           'limewater-test-for-co2', 'litmus-test', 'neutralization-reaction', 

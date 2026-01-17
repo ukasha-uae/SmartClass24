@@ -400,8 +400,9 @@ export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperimen
     
     // Free users: Get 1 lab per subject (Biology, Chemistry, Physics)
     // Food Tests (Biology), Litmus Test (Chemistry), Simple Circuits (Physics)
+    // Magnetic Field Mapping (Physics - for testing/development)
     const freeLabs = allLabs.filter(lab => 
-        ['food-tests', 'litmus-test', 'simple-circuits'].includes(lab.slug)
+        ['food-tests', 'litmus-test', 'simple-circuits', 'magnetic-field-mapping'].includes(lab.slug)
     );
     return freeLabs as VirtualLabExperiment[];
 };
@@ -432,8 +433,8 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
         }
     }
     
-    // Free labs are always accessible (food-tests, litmus-test, simple-circuits)
-    const freeLabs = ['food-tests', 'litmus-test', 'simple-circuits'];
+    // Free labs are always accessible (food-tests, litmus-test, simple-circuits, magnetic-field-mapping)
+    const freeLabs = ['food-tests', 'litmus-test', 'simple-circuits', 'magnetic-field-mapping'];
     const isFree = freeLabs.includes(slug);
     
     console.log(`[Virtual Labs] ${slug} - isFree=${isFree}, hasAccess=${hasAccess}, allowing=${hasAccess || isFree}`);

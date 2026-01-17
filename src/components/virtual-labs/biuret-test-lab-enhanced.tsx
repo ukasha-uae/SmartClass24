@@ -87,6 +87,7 @@ export function BiuretTestLabEnhanced() {
     const [currentColor, setCurrentColor] = React.useState({ r: 59, g: 130, b: 246 }); // Blue-500
     const [targetColor, setTargetColor] = React.useState({ r: 59, g: 130, b: 246 });
     const [isColorAnimating, setIsColorAnimating] = React.useState(false);
+    const allSuppliesNotifiedRef = React.useRef(false);
     
     // Teacher voice
     const [teacherMessage, setTeacherMessage] = React.useState('');

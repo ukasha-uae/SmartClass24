@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocalization } from '@/lib/localization/localization-context';
 import { useFullscreen } from '@/contexts/FullscreenContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * Footer Component - Traditional website footer
@@ -17,7 +17,23 @@ export default function Footer() {
   const { country } = useLocalization();
   const { isFullscreen } = useFullscreen();
   const [email, setEmail] = useState('');
+  const [mounted, setMounted] = useState(false);
   const currentYear = new Date().getFullYear();
+  
+  // Store the actual localized values only after client mount
+  const [phoneNumber, setPhoneNumber] = useState('+970589549030');
+  const [location, setLocation] = useState('Accra, Ghana');
+  
+  // Ensure client-side rendering for localization values
+  useEffect(() => {
+    setMounted(true);
+    if (country?.supportPhone) {
+      setPhoneNumber(country.supportPhone);
+    }
+    if (country?.capital && country?.name) {
+      setLocation(`${country.capital}, ${country.name}`);
+    }
+  }, [country]);
   
   // Hide footer during fullscreen (gameplay/lessons)
   if (isFullscreen) {
@@ -191,13 +207,17 @@ export default function Footer() {
                 <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
                   <Phone className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                 </div>
-                <span className="text-slate-700 dark:text-slate-300 font-medium" suppressHydrationWarning>{country?.supportPhone || '+970589549030'}</span>
+                <span className="text-slate-700 dark:text-slate-300 font-medium" suppressHydrationWarning>
+                  {phoneNumber}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
                   <MapPin className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                 </div>
-                <span className="text-slate-700 dark:text-slate-300 font-medium" suppressHydrationWarning>{country?.capital}, {country?.name}</span>
+                <span className="text-slate-700 dark:text-slate-300 font-medium" suppressHydrationWarning>
+                  {location}
+                </span>
               </div>
             </div>
           </div>

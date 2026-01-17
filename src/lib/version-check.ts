@@ -13,6 +13,11 @@ let lastCheckedVersion: string | null = null;
  */
 export async function checkForNewVersion(): Promise<boolean> {
   try {
+    // Skip version check in development to avoid fetch errors
+    if (process.env.NODE_ENV === 'development') {
+      return false;
+    }
+    
     // Fetch root page with cache-busting
     const response = await fetch(`${VERSION_ENDPOINT}?_version=${Date.now()}`, {
       cache: 'no-cache',
