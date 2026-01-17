@@ -412,7 +412,7 @@ export const ghanaConfig: CountryConfig = {
   // ============================================================================
   localizationRules: {
     ...DEFAULT_LOCALIZATION_RULES,
-    phoneFormat: '+233 XX XXX XXXX',
+    phoneFormat: '+970589549030',
     addressFormat: ['house_number', 'street', 'area', 'city', 'region', 'ghana'],
   },
 
@@ -474,7 +474,7 @@ export const ghanaConfig: CountryConfig = {
   launchDate: '2024-01-01', // Original launch
   priority: 1, // Highest priority (baseline country)
   supportEmail: 'support@smartclass24.com',
-  supportPhone: '+233 XX XXX XXXX',
+  supportPhone: '+970589549030',
 
   // ============================================================================
   // FEATURES

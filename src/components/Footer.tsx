@@ -191,7 +191,7 @@ export default function Footer() {
                 <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
                   <Phone className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                 </div>
-                <span className="text-slate-700 dark:text-slate-300 font-medium">{country?.supportPhone || '+233 XX XXX XXXX'}</span>
+                <span className="text-slate-700 dark:text-slate-300 font-medium">{country?.supportPhone || '+970589549030'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">

@@ -48,7 +48,7 @@ export default function ContactPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="font-mono">+233 XX XXX XXXX</p>
+            <p className="font-mono">+970589549030</p>
           </CardContent>
         </Card>
 
