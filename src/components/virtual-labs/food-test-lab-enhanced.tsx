@@ -11,7 +11,7 @@ import {
     Utensils, TestTube, Beaker, FlaskConical, Flame, Droplets, 
     Eye, EyeOff, Shield, BookOpen, Clock, ThermometerSun,
     CheckCircle, XCircle, Wheat, Egg, Milk, Nut, 
-    Sparkles, Trophy, Award, Pipette
+    Sparkles, Trophy, Award
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
