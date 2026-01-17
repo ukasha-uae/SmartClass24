@@ -160,6 +160,7 @@ export function ExpansionOfAirLabEnhanced() {
     const labId = 'expansion-of-air';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Supplies definition
     const supplies: SupplyItem[] = [
@@ -188,10 +189,17 @@ export function ExpansionOfAirLabEnhanced() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("All supplies ready! Now we'll set up the bottle with the balloon attached. Click 'Setup Complete' when ready!");
         setCurrentStep('setup');
-    };
+}, [toast]);
 
     const handleSetupComplete = () => {
         setSuppliesReady(true);
@@ -284,6 +292,7 @@ export function ExpansionOfAirLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setTeacherMessage("Welcome back! Ready to explore air expansion again? Let's heat some gas!");
+        allSuppliesNotifiedRef.current = false;
     };
 
     return (
@@ -457,6 +466,7 @@ export function ExpansionOfAirLabEnhanced() {
                         </CardContent>
                     </Card>
                 </motion.div>
+                )}
 
                 <AnimatePresence mode="wait">
                     {currentStep === 'intro' && (

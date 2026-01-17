@@ -60,6 +60,7 @@ export function RustingLabEnhanced() {
     const labId = 'rusting-of-iron';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     React.useEffect(() => {
         if (currentStep === 'intro') {
@@ -87,13 +88,21 @@ export function RustingLabEnhanced() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
-    };
+}, [toast]);
 
     const handleContinueToExperiment = () => {
         setCurrentStep('experiment');
         setTeacherMessage("All supplies ready! Now we'll set up three different tubes to test what causes rusting. Let's discover which conditions allow rust to form!");
+        allSuppliesNotifiedRef.current = false;
     };
     
     const handleSetupTube = (tubeId: string, conditions: string) => {
@@ -256,6 +265,7 @@ export function RustingLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setTeacherMessage("Great! Let's explore the rusting process again. Repetition is an excellent way to reinforce your understanding. Notice how each tube teaches us something different about the conditions needed for oxidation. Ready when you are!");
+        allSuppliesNotifiedRef.current = false;
     };
 
     return (

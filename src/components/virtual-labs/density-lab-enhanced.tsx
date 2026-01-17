@@ -64,6 +64,7 @@ export function DensityLabEnhanced() {
     const labId = 'density';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Supplies definition
     const supplies: SupplyItem[] = [
@@ -92,10 +93,17 @@ export function DensityLabEnhanced() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("All supplies ready! Now let's fill the beaker with water and start our investigation!");
         setCurrentStep('fill-water');
-    };
+}, [toast]);
 
     const handleFillWater = () => {
         if (!waterFilled) {
@@ -191,6 +199,7 @@ export function DensityLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setTeacherMessage("Welcome back! Ready to explore density again? Let's test more materials!");
+        allSuppliesNotifiedRef.current = false;
     };
 
     return (
@@ -365,6 +374,7 @@ export function DensityLabEnhanced() {
                         </CardContent>
                     </Card>
                 </motion.div>
+                )}
 
                 <AnimatePresence mode="wait">
                     {currentStep === 'intro' && (

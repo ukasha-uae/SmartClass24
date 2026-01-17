@@ -122,9 +122,16 @@ export function CellDivisionLabEnhanced() {
     }, [collectedItems]);
 
     const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setCurrentStep('selecting');
         setTeacherMessage('Great! Now choose which type of cell division you want to observe. Mitosis is for body cells - it makes identical copies. Meiosis is for sex cells - it creates genetic variety. Which one interests you?');
-    }, []);
+}, [toast]);
 
     // Initial intro
     React.useEffect(() => {

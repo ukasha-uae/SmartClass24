@@ -56,6 +56,7 @@ export function MagneticFieldLabEnhanced() {
     const labId = 'magnetic-field';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Supplies definition
     const supplies: SupplyItem[] = [
@@ -301,10 +302,17 @@ export function MagneticFieldLabEnhanced() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("Perfect! All supplies ready. Drag the magnets close to each other and watch them attract or repel! Flip the poles to see the difference!");
         setCurrentStep('setup');
-    };
+    }, [toast]);
 
     // Handle magnet dragging
     const handleMagnetMouseDown = (e: React.MouseEvent, magnetId: string) => {
@@ -455,6 +463,7 @@ export function MagneticFieldLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setCollectedSupplies([]);
+        allSuppliesNotifiedRef.current = false;
         setTeacherMessage("Ready to explore magnetism again!");
     };
 

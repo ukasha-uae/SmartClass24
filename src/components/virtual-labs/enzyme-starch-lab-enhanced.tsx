@@ -77,6 +77,7 @@ export function EnzymeStarchLabEnhanced() {
     const labId = 'enzyme-starch';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Timer
     const timerRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -120,9 +121,16 @@ export function EnzymeStarchLabEnhanced() {
     }, [collectedItems]);
 
     const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setCurrentStep('add-starch');
         setTeacherMessage("All supplies collected! Now click on the test tube to pour in the starch solution first.");
-    }, []);
+}, [toast]);
     
     const handleAddStarch = () => {
         if (collectedItems.includes('iodine') && !starchAdded) {
@@ -209,6 +217,7 @@ export function EnzymeStarchLabEnhanced() {
         setShowCelebration(false);
         setXpEarned(0);
         setTeacherMessage("Welcome back! Ready to explore enzyme action again? Let's discover how enzymes speed up chemical reactions!");
+        allSuppliesNotifiedRef.current = false;
     };
 
     const getVisualStage = () => {

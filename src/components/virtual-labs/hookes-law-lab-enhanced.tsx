@@ -59,6 +59,7 @@ export function HookesLawLabEnhanced() {
     const labId = 'hookes-law';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     const currentExtension = totalMass > 0 ? (totalMass / 1000 * GRAVITY_g) / SPRING_CONSTANT_K : 0;
     const currentForce = totalMass / 1000 * GRAVITY_g;
@@ -90,10 +91,17 @@ export function HookesLawLabEnhanced() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("Perfect! All supplies ready. Now we'll add masses to the spring and measure how far it extends. Let's verify Hooke's Law!");
         setCurrentStep('experiment');
-    };
+}, [toast]);
     
     const handleAddMass = (mass: MassValue) => {
         if (isSimulating || totalMass + mass > 250) return;
@@ -174,6 +182,7 @@ export function HookesLawLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setTeacherMessage("Ready to explore Hooke's Law again!");
+        allSuppliesNotifiedRef.current = false;
     };
 
     return (
@@ -349,6 +358,7 @@ export function HookesLawLabEnhanced() {
                 </CardContent>
             </Card>
             </motion.div>
+            )}
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (

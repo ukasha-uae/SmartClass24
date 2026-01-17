@@ -60,6 +60,7 @@ export function MetalAcidReactionLabEnhanced() {
     const labId = 'metal-acid-reaction';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     React.useEffect(() => {
         if (currentStep === 'intro') {
@@ -112,9 +113,16 @@ export function MetalAcidReactionLabEnhanced() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
-    };
+}, [toast]);
 
     const handleContinueToExperiment = () => {
         setCurrentStep('setup');

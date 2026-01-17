@@ -161,9 +161,16 @@ export function GreaseSpotTestLabEnhanced() {
     }, [collectedItems]);
 
     const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setCurrentStep('select-food');
         setTeacherMessage('Great! Now choose a food sample to test. We have groundnut paste (very oily), bread (small amount of fat), boiled rice (almost no fat), and water as our negative control. Which one would you like to test first?');
-    }, []);
+}, [toast]);
 
     // Initial intro
     React.useEffect(() => {

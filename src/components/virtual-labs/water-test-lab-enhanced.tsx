@@ -51,6 +51,7 @@ export function WaterTestLabEnhanced() {
   const labId = 'water-test';
   const isComplete = isLabCompleted(labId);
   const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
   React.useEffect(() => {
     setTeacherMessage(`Welcome to the Water Testing Lab! Today we'll learn two chemical tests that scientists in ${country.name} and worldwide use to detect water. These tests are important for quality control in industries, laboratories, and even in everyday products. Let's discover how chemical color changes can reveal the presence of water!`);

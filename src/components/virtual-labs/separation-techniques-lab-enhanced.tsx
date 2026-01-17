@@ -53,6 +53,7 @@ export function SeparationTechniquesLabEnhanced() {
   const labId = 'separation-techniques';
   const isComplete = isLabCompleted(labId);
   const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
   const [xpEarned, setXpEarned] = React.useState(0);
 
   // Intro message
@@ -315,6 +316,7 @@ export function SeparationTechniquesLabEnhanced() {
     setCurrentResult(null);
     setXpEarned(0);
     setTeacherMessage("Ready to explore Separation Techniques again!");
+    allSuppliesNotifiedRef.current = false;
   };
 
   return (

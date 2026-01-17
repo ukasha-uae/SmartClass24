@@ -38,6 +38,7 @@ export function OsmosisLabEnhanced() {
     
     // Teacher voice
     const [teacherMessage, setTeacherMessage] = React.useState('');
+    const allSuppliesNotifiedRef = React.useRef(false);
     
     // Quiz
     const [selectedAnswer1, setSelectedAnswer1] = React.useState<string | null>(null);
@@ -133,20 +134,27 @@ export function OsmosisLabEnhanced() {
         setCollectedItems((prev) => [...prev, itemId]);
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setShowSupplies(false);
         setTeacherMessage('Excellent! All supplies collected. Now choose your experimental setup. Option 1: Sugar solution INSIDE the tubing, pure water OUTSIDE. Option 2: Pure water INSIDE the tubing, sugar solution OUTSIDE. Which setup do you want to observe?');
         setCurrentStep('select-setup');
-    };
+}, [toast]);
 
     // Define lab supplies
     const supplies: SupplyItem[] = [
-        { id: 'beaker', name: 'Beaker', emoji: '🥛', description: 'Container for solutions', required: true, icon: Beaker },
-        { id: 'dialysis-tubing', name: 'Dialysis Tubing', emoji: '🔬', description: 'Semi-permeable membrane', required: true, icon: TestTube },
-        { id: 'sugar-solution', name: 'Sugar Solution', emoji: '🍬', description: 'High solute concentration', required: true, icon: FlaskConical },
-        { id: 'pure-water', name: 'Pure Water', emoji: '💧', description: 'Low solute concentration', required: true, icon: Droplets },
-        { id: 'clips', name: 'Tubing Clips', emoji: '📎', description: 'To seal the tubing', required: true, icon: Shield },
-        { id: 'scale', name: 'Scale', emoji: '⚖️', description: 'To measure changes', required: true, icon: Timer },
+        { id: 'beaker', name: 'Beaker', emoji: '🥛', description: 'Container for solutions', required: true },
+        { id: 'dialysis-tubing', name: 'Dialysis Tubing', emoji: '🔬', description: 'Semi-permeable membrane', required: true },
+        { id: 'sugar-solution', name: 'Sugar Solution', emoji: '🍬', description: 'High solute concentration', required: true },
+        { id: 'pure-water', name: 'Pure Water', emoji: '💧', description: 'Low solute concentration', required: true },
+        { id: 'clips', name: 'Tubing Clips', emoji: '📎', description: 'To seal the tubing', required: true },
+        { id: 'scale', name: 'Scale', emoji: '⚖️', description: 'To measure changes', required: true },
     ];
 
     const handleSelectSetup = (setupType: SetupType) => {
@@ -322,21 +330,18 @@ export function OsmosisLabEnhanced() {
                     }}
                     quickActions={[
                         {
-                            label: 'Reset Lab',
-                            icon: '🔄',
+                            label: '🔄 Reset Lab',
                             onClick: handleReset
                         },
                         {
-                            label: 'View Theory',
-                            icon: '📖',
+                            label: '📖 View Theory',
                             onClick: () => {
                                 const theorySection = document.querySelector('[data-theory-section]');
                                 theorySection?.scrollIntoView({ behavior: 'smooth' });
                             }
                         },
                         {
-                            label: 'Safety Tips',
-                            icon: '🛡️',
+                            label: '🛡️ Safety Tips',
                             onClick: () => {
                                 const safetySection = document.querySelector('[data-safety-section]');
                                 safetySection?.scrollIntoView({ behavior: 'smooth' });
@@ -359,45 +364,47 @@ export function OsmosisLabEnhanced() {
             </Card>
 
             {/* Premium Lab Information Card */}
-            <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-blue-300/50 dark:border-blue-700/50 shadow-2xl overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-cyan-400/5 to-teal-400/5"></div>
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
-                <CardHeader className="relative z-10 bg-gradient-to-r from-blue-50/80 to-cyan-50/80 dark:from-blue-950/40 dark:to-cyan-950/40 border-b border-blue-200/50 dark:border-blue-800/50">
-                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 dark:from-blue-400 dark:via-cyan-400 dark:to-teal-400 bg-clip-text text-transparent">
-                        Lab Information
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="relative z-10 pt-6">
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1" data-theory-section className="border-2 border-blue-200/30 dark:border-blue-800/30 rounded-xl mb-3 px-4">
-                            <AccordionTrigger className="hover:no-underline">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg">
-                                        <BookOpen className="h-5 w-5 text-white" />
+            {currentStep === 'intro' && (
+                <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-blue-300/50 dark:border-blue-700/50 shadow-2xl overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-cyan-400/5 to-teal-400/5"></div>
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-blue-50/80 to-cyan-50/80 dark:from-blue-950/40 dark:to-cyan-950/40 border-b border-blue-200/50 dark:border-blue-800/50">
+                        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 dark:from-blue-400 dark:via-cyan-400 dark:to-teal-400 bg-clip-text text-transparent">
+                            Lab Information
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="relative z-10 pt-6">
+                        <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="item-1" data-theory-section className="border-2 border-blue-200/30 dark:border-blue-800/30 rounded-xl mb-3 px-4">
+                                <AccordionTrigger className="hover:no-underline">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-lg">
+                                            <BookOpen className="h-5 w-5 text-white" />
+                                        </div>
+                                        <span className="font-semibold text-blue-900 dark:text-blue-100">Background Theory</span>
                                     </div>
-                                    <span className="font-semibold text-blue-900 dark:text-blue-100">Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground pt-4">
-                                <p>{theoryText}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-2" data-safety-section className="border-2 border-blue-200/30 dark:border-blue-800/30 rounded-xl px-4">
-                            <AccordionTrigger className="hover:no-underline">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg">
-                                        <Shield className="h-5 w-5 text-white" />
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground pt-4">
+                                    <p>{theoryText}</p>
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-2" data-safety-section className="border-2 border-blue-200/30 dark:border-blue-800/30 rounded-xl px-4">
+                                <AccordionTrigger className="hover:no-underline">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg">
+                                            <Shield className="h-5 w-5 text-white" />
+                                        </div>
+                                        <span className="font-semibold text-blue-900 dark:text-blue-100">Safety Precautions</span>
                                     </div>
-                                    <span className="font-semibold text-blue-900 dark:text-blue-100">Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground pt-4">
-                                <p>{safetyText}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground pt-4">
+                                    <p>{safetyText}</p>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Premium Main Lab Interface */}
             <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-blue-300/50 dark:border-blue-700/50 shadow-2xl overflow-hidden relative">

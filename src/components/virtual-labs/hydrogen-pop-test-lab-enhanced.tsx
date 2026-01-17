@@ -88,6 +88,7 @@ export function HydrogenPopTestLab() {
     const objectiveText = "To confirm the presence of hydrogen gas using the characteristic 'pop' sound produced when a burning splint is introduced into the gas.";
     const theoryText = "Hydrogen (H₂) is a highly flammable, colorless, odorless gas. When hydrogen comes into contact with a flame, it reacts explosively with oxygen in the air to form water (2H₂ + O₂ → 2H₂O). This rapid combustion produces a distinctive 'pop' or 'squeaky pop' sound, making it a reliable test for identifying hydrogen gas in the laboratory.";
     const safetyText = "Always wear safety goggles and work in a well-ventilated area. Hydrogen is extremely flammable - keep away from open flames except during the test. Only test small quantities of gas. Never test hydrogen in enclosed spaces. Ensure the burning splint is held at arm's length when testing.";
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Clean up audio on unmount
     React.useEffect(() => {
@@ -182,9 +183,16 @@ export function HydrogenPopTestLab() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
-    };
+}, [toast]);
 
     const handleContinueToSetup = () => {
         setCurrentStep('setup');
@@ -450,44 +458,46 @@ export function HydrogenPopTestLab() {
             </Card>
 
             {/* Theory & Safety */}
-            <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-red-50/90 dark:from-gray-900/90 dark:to-red-950/90 backdrop-blur-sm shadow-xl">
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                    <CardDescription>Essential background and safety guidelines</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="theory">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <BookOpen className="h-4 w-4" />
-                                    <span>Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <div className="flex items-start gap-2">
-                                    <div className="flex-grow">{theoryText}</div>
-                                    <TextToSpeech textToSpeak={theoryText} className="flex-shrink-0" />
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="safety">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <Shield className="h-4 w-4" />
-                                    <span>Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <div className="flex items-start gap-2">
-                                    <div className="flex-grow">{safetyText}</div>
-                                    <TextToSpeech textToSpeak={safetyText} className="flex-shrink-0" />
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
+            {currentStep === 'intro' && (
+                <Card className="border-2 border-orange-200/50 dark:border-orange-800/50 bg-gradient-to-br from-white/90 to-red-50/90 dark:from-gray-900/90 dark:to-red-950/90 backdrop-blur-sm shadow-xl">
+                    <CardHeader>
+                        <CardTitle>Lab Information</CardTitle>
+                        <CardDescription>Essential background and safety guidelines</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="theory">
+                                <AccordionTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <BookOpen className="h-4 w-4" />
+                                        <span>Background Theory</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                    <div className="flex items-start gap-2">
+                                        <div className="flex-grow">{theoryText}</div>
+                                        <TextToSpeech textToSpeak={theoryText} className="flex-shrink-0" />
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="safety">
+                                <AccordionTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <Shield className="h-4 w-4" />
+                                        <span>Safety Precautions</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                    <div className="flex items-start gap-2">
+                                        <div className="flex-grow">{safetyText}</div>
+                                        <TextToSpeech textToSpeak={safetyText} className="flex-shrink-0" />
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Main Experiment */}
             <Card className="border-2 border-violet-200/50 dark:border-violet-800/50 bg-gradient-to-br from-white/90 to-violet-50/90 dark:from-gray-900/90 dark:to-violet-950/90 backdrop-blur-sm shadow-xl">

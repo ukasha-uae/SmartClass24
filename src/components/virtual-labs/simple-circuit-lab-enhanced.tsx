@@ -473,65 +473,67 @@ export function SimpleCircuitLabEnhanced() {
                 </CardHeader>
             </Card>
 
-            <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-xl">
-                <CardHeader className="bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-950/30 dark:to-indigo-950/30 border-b border-purple-200/50 dark:border-purple-800/50">
-                    <CardTitle className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                        Lab Information
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="theory">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <BookOpen className="h-4 w-4" />
-                                    <span>Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <p><strong>Electric Circuits</strong> are closed loops through which electric current flows. There are two main types:</p>
-                                <p className="mt-2"><strong>Series Circuits:</strong></p>
-                                <ul>
-                                    <li>Components connected in a single loop</li>
-                                    <li>Current flows through one component after another</li>
-                                    <li>Same current through all components</li>
-                                    <li>Voltages add up to total voltage</li>
-                                    <li>If one component breaks, the circuit breaks (all components stop working)</li>
-                                    <li>More resistors = dimmer lights</li>
-                                </ul>
-                                <p className="mt-2"><strong>Parallel Circuits:</strong></p>
-                                <ul>
-                                    <li>Components connected on separate branches</li>
-                                    <li>Current can flow through multiple paths</li>
-                                    <li>Same voltage across all components</li>
-                                    <li>Currents add up to total current</li>
-                                    <li>If one component breaks, others keep working</li>
-                                    <li>More branches = brighter lights overall</li>
-                                </ul>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="safety">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <Shield className="h-4 w-4" />
-                                    <span>Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <ul>
-                                    <li>Always disconnect circuits before making changes</li>
-                                    <li>Use low voltage sources (batteries, not mains electricity)</li>
-                                    <li>Check for loose connections or exposed wires</li>
-                                    <li>Don't create short circuits across batteries</li>
-                                    <li>Allow bulbs to cool before touching them</li>
-                                    <li>Disconnect immediately if wires become hot</li>
-                                    <li>Keep circuits away from water</li>
-                                </ul>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
+            {currentStep === 'intro' && (
+                <Card className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-xl">
+                    <CardHeader className="bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-950/30 dark:to-indigo-950/30 border-b border-purple-200/50 dark:border-purple-800/50">
+                        <CardTitle className="text-xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                            Lab Information
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="theory">
+                                <AccordionTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <BookOpen className="h-4 w-4" />
+                                        <span>Background Theory</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                    <p><strong>Electric Circuits</strong> are closed loops through which electric current flows. There are two main types:</p>
+                                    <p className="mt-2"><strong>Series Circuits:</strong></p>
+                                    <ul>
+                                        <li>Components connected in a single loop</li>
+                                        <li>Current flows through one component after another</li>
+                                        <li>Same current through all components</li>
+                                        <li>Voltages add up to total voltage</li>
+                                        <li>If one component breaks, the circuit breaks (all components stop working)</li>
+                                        <li>More resistors = dimmer lights</li>
+                                    </ul>
+                                    <p className="mt-2"><strong>Parallel Circuits:</strong></p>
+                                    <ul>
+                                        <li>Components connected on separate branches</li>
+                                        <li>Current can flow through multiple paths</li>
+                                        <li>Same voltage across all components</li>
+                                        <li>Currents add up to total current</li>
+                                        <li>If one component breaks, others keep working</li>
+                                        <li>More branches = brighter lights overall</li>
+                                    </ul>
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="safety">
+                                <AccordionTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <Shield className="h-4 w-4" />
+                                        <span>Safety Precautions</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                    <ul>
+                                        <li>Always disconnect circuits before making changes</li>
+                                        <li>Use low voltage sources (batteries, not mains electricity)</li>
+                                        <li>Check for loose connections or exposed wires</li>
+                                        <li>Don't create short circuits across batteries</li>
+                                        <li>Allow bulbs to cool before touching them</li>
+                                        <li>Disconnect immediately if wires become hot</li>
+                                        <li>Keep circuits away from water</li>
+                                    </ul>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            )}
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (

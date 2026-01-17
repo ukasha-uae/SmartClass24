@@ -51,6 +51,7 @@ export function NeutralizationReactionLabEnhanced() {
     const labId = 'neutralization-reaction';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     React.useEffect(() => {
         if (currentStep === 'intro') {
@@ -76,13 +77,21 @@ export function NeutralizationReactionLabEnhanced() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("Perfect! All supplies collected! Now let's start the experiment. Click 'Continue to Experiment' to begin!");
-    };
+}, [toast]);
 
     const handleContinueToExperiment = () => {
         setCurrentStep('experiment');
         setTeacherMessage("All supplies ready! Now we'll combine these reactants and observe the neutralization reaction. Watch for the temperature increase!");
+        allSuppliesNotifiedRef.current = false;
     };
     
     const handlePerformReaction = () => {
@@ -182,6 +191,7 @@ export function NeutralizationReactionLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setTeacherMessage("Ready to explore neutralization reactions again!");
+        allSuppliesNotifiedRef.current = false;
     };
 
     return (

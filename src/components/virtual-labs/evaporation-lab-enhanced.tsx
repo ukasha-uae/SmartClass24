@@ -79,7 +79,6 @@ const EnhancedFlame = ({ isActive }: { isActive: boolean }) => {
                         {/* Middle flame - yellow/orange */}
                         <motion.div
                             className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10"
-                            style={{ height: '72px' }}
                             animate={{
                                 scaleX: [1, 1.15, 0.85, 1],
                                 scaleY: [1, 1.2, 0.9, 1],
@@ -92,6 +91,7 @@ const EnhancedFlame = ({ isActive }: { isActive: boolean }) => {
                                 delay: 0.1
                             }}
                             style={{
+                                height: '72px',
                                 background: 'radial-gradient(ellipse at center bottom, #ffd700 0%, #ffa500 40%, #ff6b35 80%, transparent 100%)',
                                 clipPath: 'polygon(35% 100%, 50% 0%, 65% 100%)',
                                 filter: 'blur(0.5px)',
@@ -231,6 +231,7 @@ export function EvaporationLabEnhanced() {
     const labId = 'evaporation-of-liquids';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Draggable teacher position
     const [teacherPosition, setTeacherPosition] = React.useState({ x: 0, y: 0 });
@@ -301,9 +302,16 @@ export function EvaporationLabEnhanced() {
     }, [collectedItems]);
 
     const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setCurrentStep('setup-beakers');
         setTeacherMessage("All supplies collected! Now click on each beaker to fill it with its liquid.");
-    }, []);
+    }, [toast]);
     
     const handleFillBeakers = () => {
         if (!beakersFilled) {
@@ -391,6 +399,7 @@ export function EvaporationLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setXpEarned(0);
+        allSuppliesNotifiedRef.current = false;
         setTeacherMessage("Welcome back! Ready to explore evaporation again? Let's compare how different liquids evaporate!");
     };
 

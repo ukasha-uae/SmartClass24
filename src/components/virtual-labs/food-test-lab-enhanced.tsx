@@ -166,6 +166,8 @@ export function FoodTestLabEnhanced() {
     const [showSupplies, setShowSupplies] = React.useState(true);
     const [colorChangeProgress, setColorChangeProgress] = React.useState(0); // 0-1 for gradual color change
     
+    const allSuppliesNotifiedRef = React.useRef(false);
+
     // Teacher voice
     const [teacherMessage, setTeacherMessage] = React.useState('');
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
@@ -256,21 +258,28 @@ export function FoodTestLabEnhanced() {
         setCollectedItems((prev) => [...prev, itemId]);
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setShowSupplies(false);
         setTeacherMessage('Excellent! All supplies collected. Now let\'s choose a food sample to test. We have bread, egg white, milk, and groundnut paste. Each food contains different nutrients. Which one would you like to test?');
         setCurrentStep('select-food');
-    };
+}, [toast]);
 
     // Define lab supplies
     const supplies: SupplyItem[] = [
-        { id: 'test-tubes', name: 'Test Tubes', emoji: '🧪', description: 'For holding food samples and reagents', required: true, icon: TestTube },
-        { id: 'iodine', name: 'Iodine Solution', emoji: '🧴', description: 'Tests for starch', required: true, icon: Beaker },
-        { id: 'benedict', name: "Benedict's Solution", emoji: '🧪', description: 'Tests for reducing sugars', required: true, icon: FlaskConical },
-        { id: 'biuret', name: 'Biuret Solution', emoji: '💧', description: 'Tests for proteins', required: true, icon: Droplets },
-        { id: 'ethanol', name: 'Ethanol', emoji: '🍶', description: 'Tests for fats', required: true, icon: Beaker },
-        { id: 'water-bath', name: 'Water Bath', emoji: '🔥', description: 'For heating tests', required: true, icon: Flame },
-        { id: 'pipette', name: 'Pipette', emoji: '🔬', description: 'For adding reagents', required: true, icon: Pipette },
+        { id: 'test-tubes', name: 'Test Tubes', emoji: '🧪', description: 'For holding food samples and reagents', required: true },
+        { id: 'iodine', name: 'Iodine Solution', emoji: '🧴', description: 'Tests for starch', required: true },
+        { id: 'benedict', name: "Benedict's Solution", emoji: '🧪', description: 'Tests for reducing sugars', required: true },
+        { id: 'biuret', name: 'Biuret Solution', emoji: '💧', description: 'Tests for proteins', required: true },
+        { id: 'ethanol', name: 'Ethanol', emoji: '🍶', description: 'Tests for fats', required: true },
+        { id: 'water-bath', name: 'Water Bath', emoji: '🔥', description: 'For heating tests', required: true },
+        { id: 'pipette', name: 'Pipette', emoji: '🔬', description: 'For adding reagents', required: true },
     ];
 
     const handleFoodSelect = (food: FoodType) => {
@@ -515,21 +524,18 @@ export function FoodTestLabEnhanced() {
                     context={studentContext}
                     quickActions={[
                         ...(currentStep === 'select-food' ? [{
-                            label: 'Need help choosing?',
-                            icon: '❓',
+                            label: '❓ Need help choosing?',
                             onClick: () => {
                                 setTeacherMessage('Try bread if you want to test for starch, egg white for protein, milk for multiple nutrients, or groundnut paste for fats!');
                                 setTeacherEmotion('happy');
                             }
                         }] : []),
                         ...(currentStep === 'observe' ? [{
-                            label: 'Show result',
-                            icon: '👁️',
+                            label: '👁️ Show result',
                             onClick: handleShowResult
                         }] : []),
                         ...(currentStep === 'result' ? [{
-                            label: 'Start quiz',
-                            icon: '→',
+                            label: '→ Start quiz',
                             onClick: () => {
                                 setCurrentStep('quiz');
                                 setTimeout(() => {
@@ -569,48 +575,50 @@ export function FoodTestLabEnhanced() {
             </Card>
 
             {/* Premium Lab Information Card */}
-            <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-indigo-400/5 to-purple-400/5"></div>
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
-                <CardHeader className="relative z-10 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 dark:from-blue-950/40 dark:to-indigo-950/40 border-b border-blue-200/50 dark:border-blue-800/50">
-                    <CardTitle className="flex items-center gap-3 text-xl font-bold">
-                        <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-lg">
-                            <span className="text-2xl">📚</span>
-                        </div>
-                        <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Lab Information</span>
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="relative z-10 pt-6">
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1" className="border-2 border-purple-200/30 dark:border-purple-800/30 rounded-xl mb-3 px-4">
-                            <AccordionTrigger className="hover:no-underline">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg">
-                                        <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            {currentStep === 'intro' && (
+                <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-400/5 via-indigo-400/5 to-purple-400/5"></div>
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-blue-400/20 to-indigo-400/20 rounded-full blur-3xl"></div>
+                    <CardHeader className="relative z-10 bg-gradient-to-r from-blue-50/80 to-indigo-50/80 dark:from-blue-950/40 dark:to-indigo-950/40 border-b border-blue-200/50 dark:border-blue-800/50">
+                        <CardTitle className="flex items-center gap-3 text-xl font-bold">
+                            <div className="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg shadow-lg">
+                                <span className="text-2xl">📚</span>
+                            </div>
+                            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Lab Information</span>
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="relative z-10 pt-6">
+                        <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="item-1" className="border-2 border-purple-200/30 dark:border-purple-800/30 rounded-xl mb-3 px-4">
+                                <AccordionTrigger className="hover:no-underline">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg">
+                                            <BookOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                        </div>
+                                        <span className="font-semibold text-slate-700 dark:text-slate-300">Background Theory</span>
                                     </div>
-                                    <span className="font-semibold text-slate-700 dark:text-slate-300">Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="pt-4 text-slate-600 dark:text-slate-400 leading-relaxed">
-                                <p>{theoryText}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-2" className="border-2 border-green-200/30 dark:border-green-800/30 rounded-xl px-4">
-                            <AccordionTrigger className="hover:no-underline">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg">
-                                        <Shield className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                </AccordionTrigger>
+                                <AccordionContent className="pt-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    <p>{theoryText}</p>
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="item-2" className="border-2 border-green-200/30 dark:border-green-800/30 rounded-xl px-4">
+                                <AccordionTrigger className="hover:no-underline">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg">
+                                            <Shield className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                        </div>
+                                        <span className="font-semibold text-slate-700 dark:text-slate-300">Safety Precautions</span>
                                     </div>
-                                    <span className="font-semibold text-slate-700 dark:text-slate-300">Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="pt-4 text-slate-600 dark:text-slate-400 leading-relaxed">
-                                <p>{safetyText}</p>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
+                                </AccordionTrigger>
+                                <AccordionContent className="pt-4 text-slate-600 dark:text-slate-400 leading-relaxed">
+                                    <p>{safetyText}</p>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Premium Main Lab Interface */}
             <Card className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-2xl overflow-hidden relative">

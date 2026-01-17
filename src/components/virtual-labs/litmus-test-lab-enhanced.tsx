@@ -110,9 +110,16 @@ export function LitmusTestLab() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setTeacherMessage("Perfect! All supplies collected! Now let's start testing. Click 'Continue to Experiment' to begin!");
-    };
+}, [toast]);
 
     const handleContinueToExperiment = () => {
         setCurrentStep('select-substance');
@@ -392,44 +399,46 @@ export function LitmusTestLab() {
                 </motion.div>
 
                 {/* Theory & Safety */}
-                <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
-                <CardHeader>
-                    <CardTitle>Lab Information</CardTitle>
-                    <CardDescription>Essential background and safety guidelines</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="theory">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <BookOpen className="h-4 w-4" />
-                                    <span>Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <div className="flex items-start gap-2">
-                                    <div className="flex-grow">{theoryText}</div>
-                                    <TextToSpeech textToSpeak={theoryText} className="flex-shrink-0" />
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="safety">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <Shield className="h-4 w-4" />
-                                    <span>Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <div className="flex items-start gap-2">
-                                    <div className="flex-grow">{safetyText}</div>
-                                    <TextToSpeech textToSpeak={safetyText} className="flex-shrink-0" />
-                                </div>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
+                {currentStep === 'intro' && (
+                    <Card className="border-2 border-cyan-200/50 dark:border-cyan-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader>
+                            <CardTitle>Lab Information</CardTitle>
+                            <CardDescription>Essential background and safety guidelines</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Accordion type="single" collapsible className="w-full">
+                                <AccordionItem value="theory">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-2">
+                                            <BookOpen className="h-4 w-4" />
+                                            <span>Background Theory</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                        <div className="flex items-start gap-2">
+                                            <div className="flex-grow">{theoryText}</div>
+                                            <TextToSpeech textToSpeak={theoryText} className="flex-shrink-0" />
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="safety">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-2">
+                                            <Shield className="h-4 w-4" />
+                                            <span>Safety Precautions</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                        <div className="flex items-start gap-2">
+                                            <div className="flex-grow">{safetyText}</div>
+                                            <TextToSpeech textToSpeak={safetyText} className="flex-shrink-0" />
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Main Experiment */}
                 <Card className="border-2 border-violet-200/50 dark:border-violet-800/50 bg-gradient-to-br from-white/90 to-violet-50/90 dark:from-gray-900/90 dark:to-violet-950/90 backdrop-blur-sm shadow-xl">

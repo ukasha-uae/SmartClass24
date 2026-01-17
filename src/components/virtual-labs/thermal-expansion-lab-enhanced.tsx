@@ -201,6 +201,7 @@ export function ThermalExpansionLabEnhanced() {
     const labId = 'thermal-expansion';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Intro message
     React.useEffect(() => {
@@ -222,10 +223,17 @@ export function ThermalExpansionLabEnhanced() {
     }, [collectedItems]);
 
     const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setShowSupplies(false);
         setCurrentStep('setup');
         setTeacherMessage("All supplies ready! Now we'll set up three containers and heat each one. Watch what happens to each material!");
-    }, []);
+}, [toast]);
     
     const handleSetupComplete = () => {
         if (!suppliesReady) {
@@ -345,6 +353,7 @@ export function ThermalExpansionLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setTeacherMessage("Welcome back! Ready to explore thermal expansion again? Let's heat some materials!");
+        allSuppliesNotifiedRef.current = false;
     };
 
     return (

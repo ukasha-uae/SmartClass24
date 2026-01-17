@@ -140,6 +140,7 @@ export function HeatTransferLabEnhanced() {
     const labId = 'heat-transfer';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Supplies definition
     const supplies: SupplyItem[] = [
@@ -168,11 +169,18 @@ export function HeatTransferLabEnhanced() {
         }
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setSuppliesReady(true);
         setTeacherMessage("All supplies ready! Now we'll test each method of heat transfer. Let's start with conduction!");
         setCurrentStep('conduction');
-    };
+    }, [toast]);
     
     const handleTestConduction = () => {
         if (conductionTested || conductionHeating) return;
@@ -298,6 +306,7 @@ export function HeatTransferLabEnhanced() {
         setQuizFeedback('');
         setQuizSubmitted(false);
         setShowCelebration(false);
+        allSuppliesNotifiedRef.current = false;
         setTeacherMessage("Welcome back! Ready to explore heat transfer again? Let's gather our supplies!");
     };
 

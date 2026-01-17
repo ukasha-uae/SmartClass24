@@ -336,65 +336,67 @@ export function ReflectionLabEnhanced() {
                 </Card>
             </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-            >
-                <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
-                    <CardHeader>
-                        <CardTitle className="text-lg">Lab Information</CardTitle>
-                    </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="theory">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <BookOpen className="h-4 w-4" />
-                                    <span>Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <p><strong>Reflection</strong> is the bouncing back of light when it hits a surface.</p>
-                                <p className="mt-2"><strong>The Law of Reflection states:</strong></p>
-                                <ul>
-                                    <li>The incident ray, reflected ray, and normal all lie in the same plane</li>
-                                    <li>The angle of incidence equals the angle of reflection (∠i = ∠r)</li>
-                                    <li>Both angles are measured from the normal (perpendicular line to the surface)</li>
-                                </ul>
-                                <p className="mt-2"><strong>Key Terms:</strong></p>
-                                <ul>
-                                    <li><strong>Incident Ray:</strong> Light approaching the surface</li>
-                                    <li><strong>Reflected Ray:</strong> Light bouncing off the surface</li>
-                                    <li><strong>Normal:</strong> Imaginary line perpendicular to the surface</li>
-                                    <li><strong>Angle of Incidence (i):</strong> Angle between incident ray and normal</li>
-                                    <li><strong>Angle of Reflection (r):</strong> Angle between reflected ray and normal</li>
-                                </ul>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="safety">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <Shield className="h-4 w-4" />
-                                    <span>Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <ul>
-                                    <li>Never shine bright lights directly into eyes</li>
-                                    <li>Use only low-power laser pointers (Class 2 or below)</li>
-                                    <li>Handle mirrors carefully to avoid cuts</li>
-                                    <li>Secure mirrors to prevent falling</li>
-                                    <li>Clean glass surfaces carefully</li>
-                                    <li>Work in a well-lit room to avoid eye strain</li>
-                                    <li>Report any broken glass immediately</li>
-                                </ul>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
-            </motion.div>
+            {currentStep === 'intro' && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                >
+                    <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
+                        <CardHeader>
+                            <CardTitle className="text-lg">Lab Information</CardTitle>
+                        </CardHeader>
+                    <CardContent>
+                        <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="theory">
+                                <AccordionTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <BookOpen className="h-4 w-4" />
+                                        <span>Background Theory</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                    <p><strong>Reflection</strong> is the bouncing back of light when it hits a surface.</p>
+                                    <p className="mt-2"><strong>The Law of Reflection states:</strong></p>
+                                    <ul>
+                                        <li>The incident ray, reflected ray, and normal all lie in the same plane</li>
+                                        <li>The angle of incidence equals the angle of reflection (∠i = ∠r)</li>
+                                        <li>Both angles are measured from the normal (perpendicular line to the surface)</li>
+                                    </ul>
+                                    <p className="mt-2"><strong>Key Terms:</strong></p>
+                                    <ul>
+                                        <li><strong>Incident Ray:</strong> Light approaching the surface</li>
+                                        <li><strong>Reflected Ray:</strong> Light bouncing off the surface</li>
+                                        <li><strong>Normal:</strong> Imaginary line perpendicular to the surface</li>
+                                        <li><strong>Angle of Incidence (i):</strong> Angle between incident ray and normal</li>
+                                        <li><strong>Angle of Reflection (r):</strong> Angle between reflected ray and normal</li>
+                                    </ul>
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="safety">
+                                <AccordionTrigger>
+                                    <div className="flex items-center gap-2">
+                                        <Shield className="h-4 w-4" />
+                                        <span>Safety Precautions</span>
+                                    </div>
+                                </AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                    <ul>
+                                        <li>Never shine bright lights directly into eyes</li>
+                                        <li>Use only low-power laser pointers (Class 2 or below)</li>
+                                        <li>Handle mirrors carefully to avoid cuts</li>
+                                        <li>Secure mirrors to prevent falling</li>
+                                        <li>Clean glass surfaces carefully</li>
+                                        <li>Work in a well-lit room to avoid eye strain</li>
+                                        <li>Report any broken glass immediately</li>
+                                    </ul>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </CardContent>
+                </Card>
+                </motion.div>
+            )}
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (

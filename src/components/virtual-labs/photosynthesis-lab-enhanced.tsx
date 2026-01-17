@@ -81,6 +81,7 @@ export function PhotosynthesisLabEnhanced() {
     const labId = 'photosynthesis';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Show intro message on mount
     React.useEffect(() => {
@@ -119,18 +120,25 @@ export function PhotosynthesisLabEnhanced() {
         setCollectedItems((prev) => [...prev, itemId]);
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setShowSupplies(false);
         setTeacherMessage('Excellent! All supplies collected. Now choose a light intensity to test. Low intensity simulates cloudy conditions, medium is partial sunlight, and high is bright sunlight. Which would you like to test first?');
         setCurrentStep('select-intensity');
-    };
+}, [toast]);
 
     // Define lab supplies
     const supplies: SupplyItem[] = [
-        { id: 'aquatic-plant', name: 'Aquatic Plant (Hydrilla)', emoji: '🌿', description: 'Plant for photosynthesis', required: true, icon: Lightbulb },
-        { id: 'beaker', name: 'Beaker with Water', emoji: '🥛', description: 'Container for the plant', required: true, icon: Beaker },
-        { id: 'light-source', name: 'Light Source', emoji: '💡', description: 'Energy for photosynthesis', required: true, icon: Lightbulb },
-        { id: 'timer', name: 'Timer', emoji: '⏱️', description: 'To measure bubble rate', required: true, icon: BookOpen },
+        { id: 'aquatic-plant', name: 'Aquatic Plant (Hydrilla)', emoji: '🌿', description: 'Plant for photosynthesis', required: true },
+        { id: 'beaker', name: 'Beaker with Water', emoji: '🥛', description: 'Container for the plant', required: true },
+        { id: 'light-source', name: 'Light Source', emoji: '💡', description: 'Energy for photosynthesis', required: true },
+        { id: 'timer', name: 'Timer', emoji: '⏱️', description: 'To measure bubble rate', required: true },
     ];
 
     const handleSelectIntensity = (intensity: 'low' | 'medium' | 'high') => {
@@ -232,6 +240,7 @@ export function PhotosynthesisLabEnhanced() {
         setPlantPlaced(false);
         setTestedIntensities(new Set());
         setTeacherMessage("Welcome back! Ready to explore photosynthesis again? Let's discover more about how plants use light to make food!");
+        allSuppliesNotifiedRef.current = false;
     };
 
     const numBubbles = lightIntensity === 'low' ? 3 : lightIntensity === 'medium' ? 6 : 12;
@@ -287,21 +296,18 @@ export function PhotosynthesisLabEnhanced() {
                     }}
                     quickActions={[
                         {
-                            label: 'Reset Lab',
-                            icon: '🔄',
+                            label: '🔄 Reset Lab',
                             onClick: handleRestart
                         },
                         {
-                            label: 'View Theory',
-                            icon: '📖',
+                            label: '📖 View Theory',
                             onClick: () => {
                                 const theorySection = document.querySelector('[data-theory-section]');
                                 theorySection?.scrollIntoView({ behavior: 'smooth' });
                             }
                         },
                         {
-                            label: 'Safety Tips',
-                            icon: '🛡️',
+                            label: '🛡️ Safety Tips',
                             onClick: () => {
                                 const safetySection = document.querySelector('[data-safety-section]');
                                 safetySection?.scrollIntoView({ behavior: 'smooth' });

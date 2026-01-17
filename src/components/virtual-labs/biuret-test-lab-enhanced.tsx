@@ -162,11 +162,18 @@ export function BiuretTestLabEnhanced() {
         setCollectedItems((prev) => [...prev, itemId]);
     };
 
-    const handleAllSuppliesCollected = () => {
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setShowSupplies(false);
         setTeacherMessage('Excellent! All supplies collected. Now choose a food sample to test for protein. We have egg white, milk, bread, apple, and groundnut paste. Each food has different protein levels. Which one would you like to test?');
         setCurrentStep('select-food');
-    };
+}, [toast]);
 
     // Define lab supplies
     const supplies: SupplyItem[] = [

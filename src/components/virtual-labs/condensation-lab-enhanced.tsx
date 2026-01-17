@@ -212,6 +212,7 @@ export function CondensationLabEnhanced() {
     const labId = 'condensation';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Draggable teacher position
     const [teacherPosition, setTeacherPosition] = React.useState({ x: 0, y: 0 });
@@ -265,9 +266,16 @@ export function CondensationLabEnhanced() {
     }, [collectedItems]);
 
     const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setCurrentStep('add-water');
         setTeacherMessage("All supplies collected! Now click on the kettle to pour water into it.");
-    }, []);
+}, [toast]);
     
     const handleAddWater = () => {
         if (collectedItems.includes('water') && !waterAdded) {
@@ -349,6 +357,7 @@ export function CondensationLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setXpEarned(0);
+        allSuppliesNotifiedRef.current = false;
         setTeacherMessage("Welcome back! Ready to explore condensation again? Let's observe how cooling causes water vapor to become liquid!");
     };
 

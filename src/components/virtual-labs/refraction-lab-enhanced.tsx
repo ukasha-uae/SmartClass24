@@ -349,66 +349,68 @@ export function RefractionLabEnhanced() {
                         </Card>
                     </motion.div>
 
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                    >
-                        <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
-                            <CardHeader>
-                                <CardTitle className="text-lg">Lab Information</CardTitle>
-                            </CardHeader>
-                        <CardContent>
-                            <Accordion type="single" collapsible className="w-full">
-                                <AccordionItem value="theory">
-                                    <AccordionTrigger>
-                                        <div className="flex items-center gap-2">
-                                            <BookOpen className="h-4 w-4" />
-                                            <span>Background Theory</span>
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                        <p><strong>Refraction</strong> is the bending of light as it passes from one medium to another with a different optical density.</p>
-                                        <p className="mt-2"><strong>Snell's Law states:</strong></p>
-                                        <ul>
-                                            <li>n₁ sin(θ₁) = n₂ sin(θ₂)</li>
-                                            <li>Where n is the refractive index and θ is the angle from the normal</li>
-                                            <li>Light bends toward the normal when entering a denser medium</li>
-                                            <li>Light bends away from the normal when entering a less dense medium</li>
-                                        </ul>
-                                        <p className="mt-2"><strong>Key Concepts:</strong></p>
-                                        <ul>
-                                            <li><strong>Refractive Index (n):</strong> Measure of how much light slows down in a medium</li>
-                                            <li><strong>Air:</strong> n ≈ 1.0</li>
-                                            <li><strong>Water:</strong> n ≈ 1.33</li>
-                                            <li><strong>Glass:</strong> n ≈ 1.5</li>
-                                            <li><strong>Critical Angle:</strong> Angle beyond which total internal reflection occurs</li>
-                                        </ul>
-                                    </AccordionContent>
-                                </AccordionItem>
-                                <AccordionItem value="safety">
-                                    <AccordionTrigger>
-                                        <div className="flex items-center gap-2">
-                                            <Shield className="h-4 w-4" />
-                                            <span>Safety Precautions</span>
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                        <ul>
-                                            <li>Never shine bright lights directly into eyes</li>
-                                            <li>Use only low-power laser pointers (Class 2 or below)</li>
-                                            <li>Handle glass blocks carefully to avoid cuts</li>
-                                            <li>Keep water containers stable to prevent spills</li>
-                                            <li>Clean up water spills immediately</li>
-                                            <li>Work in a well-lit room</li>
-                                            <li>Report any broken glass immediately</li>
-                                        </ul>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            </Accordion>
-                        </CardContent>
-                    </Card>
-                    </motion.div>
+                    {currentStep === 'intro' && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1 }}
+                        >
+                            <Card className="border-2 border-blue-200/50 dark:border-blue-800/50 bg-gradient-to-br from-white/90 to-blue-50/90 dark:from-gray-900/90 dark:to-blue-950/90 backdrop-blur-sm shadow-xl">
+                                <CardHeader>
+                                    <CardTitle className="text-lg">Lab Information</CardTitle>
+                                </CardHeader>
+                            <CardContent>
+                                <Accordion type="single" collapsible className="w-full">
+                                    <AccordionItem value="theory">
+                                        <AccordionTrigger>
+                                            <div className="flex items-center gap-2">
+                                                <BookOpen className="h-4 w-4" />
+                                                <span>Background Theory</span>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                            <p><strong>Refraction</strong> is the bending of light as it passes from one medium to another with a different optical density.</p>
+                                            <p className="mt-2"><strong>Snell's Law states:</strong></p>
+                                            <ul>
+                                                <li>n₁ sin(θ₁) = n₂ sin(θ₂)</li>
+                                                <li>Where n is the refractive index and θ is the angle from the normal</li>
+                                                <li>Light bends toward the normal when entering a denser medium</li>
+                                                <li>Light bends away from the normal when entering a less dense medium</li>
+                                            </ul>
+                                            <p className="mt-2"><strong>Key Concepts:</strong></p>
+                                            <ul>
+                                                <li><strong>Refractive Index (n):</strong> Measure of how much light slows down in a medium</li>
+                                                <li><strong>Air:</strong> n ≈ 1.0</li>
+                                                <li><strong>Water:</strong> n ≈ 1.33</li>
+                                                <li><strong>Glass:</strong> n ≈ 1.5</li>
+                                                <li><strong>Critical Angle:</strong> Angle beyond which total internal reflection occurs</li>
+                                            </ul>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                    <AccordionItem value="safety">
+                                        <AccordionTrigger>
+                                            <div className="flex items-center gap-2">
+                                                <Shield className="h-4 w-4" />
+                                                <span>Safety Precautions</span>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                            <ul>
+                                                <li>Never shine bright lights directly into eyes</li>
+                                                <li>Use only low-power laser pointers (Class 2 or below)</li>
+                                                <li>Handle glass blocks carefully to avoid cuts</li>
+                                                <li>Keep water containers stable to prevent spills</li>
+                                                <li>Clean up water spills immediately</li>
+                                                <li>Work in a well-lit room</li>
+                                                <li>Report any broken glass immediately</li>
+                                            </ul>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+                            </CardContent>
+                        </Card>
+                        </motion.div>
+                    )}
                 </>
             )}
 
