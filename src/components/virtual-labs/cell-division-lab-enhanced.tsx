@@ -397,7 +397,8 @@ export function CellDivisionLabEnhanced() {
             </motion.div>
 
             {/* Premium Lab Information Card */}
-            <motion.div
+            {currentStep === 'intro' && (
+<motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -437,6 +438,8 @@ export function CellDivisionLabEnhanced() {
                     </CardContent>
                 </Card>
             </motion.div>
+)}
+
 
             {/* Supplies Collection Step */}
             {currentStep === 'collect-supplies' && (

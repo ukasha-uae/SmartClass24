@@ -82,6 +82,7 @@ export function RespirationLabEnhanced() {
     const labId = 'respiration';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Show intro message on mount
     React.useEffect(() => {
@@ -132,9 +133,17 @@ export function RespirationLabEnhanced() {
     }, [collectedItems]);
 
     const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            toast({
+                title: "🎉 All Supplies Collected!",
+                description: "Great work! You're ready to begin the experiment.",
+                duration: 3000,
+            });
+            allSuppliesNotifiedRef.current = true;
+        }
         setCurrentStep('setup');
         setTeacherMessage("Perfect! All supplies collected! Now let's set up the experiment and begin our 24-hour observation.");
-    }, []);
+    }, [toast]);
     
     const handleTeacherComplete = () => {
         // No pending transitions - immediate responsiveness
@@ -213,6 +222,7 @@ export function RespirationLabEnhanced() {
         setXpEarned(0);
         setShowCelebration(false);
         setCollectedItems([]);
+        allSuppliesNotifiedRef.current = false;
         setTeacherMessage("Welcome back! Ready to explore cellular respiration again? Let's observe how living seeds release energy through respiration!");
     };
 
@@ -279,7 +289,7 @@ export function RespirationLabEnhanced() {
                 ]}
             />
 
-            {isCompleted && (
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -314,6 +324,7 @@ export function RespirationLabEnhanced() {
             </motion.div>
 
             {/* Premium Lab Information Card */}
+            {currentStep === 'intro' && (
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -376,6 +387,7 @@ export function RespirationLabEnhanced() {
                 </CardContent>
             </Card>
             </motion.div>
+            )}
 
             {/* Supplies Collection Step */}
             {currentStep === 'collect-supplies' && (
@@ -411,7 +423,7 @@ export function RespirationLabEnhanced() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 p-6 rounded-lg border-2 border-orange-200 dark:border-orange-800">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <Thermometer className="w-16 h-16 text-orange-600 dark:text-orange-400 flex-shrink-0" />
                                         <div>
                                             <h3 className="font-semibold text-lg mb-2 text-orange-900 dark:text-orange-100">What We'll Discover:</h3>

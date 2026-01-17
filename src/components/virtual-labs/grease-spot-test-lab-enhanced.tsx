@@ -358,7 +358,8 @@ export function GreaseSpotTestLabEnhanced() {
             </motion.div>
 
             {/* Premium Lab Information Card */}
-            <motion.div
+            {currentStep === 'intro' && (
+<motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -398,6 +399,8 @@ export function GreaseSpotTestLabEnhanced() {
                     </CardContent>
                 </Card>
             </motion.div>
+)}
+
 
             {/* Supplies Collection Step */}
             {currentStep === 'collect-supplies' && (
@@ -645,7 +648,7 @@ export function GreaseSpotTestLabEnhanced() {
                                         animate={{ opacity: 1, y: 0 }}
                                         className="p-6 bg-gradient-to-br from-amber-50/90 to-yellow-50/90 dark:from-amber-950/30 dark:to-yellow-950/30 rounded-xl border-2 border-amber-300/50 dark:border-amber-700/50 shadow-lg backdrop-blur-sm"
                                     >
-                                <div className="flex items-start gap-4">
+                                <div className="flex flex-col sm:flex-row items-start gap-4">
                                     <div className="p-3 bg-amber-500 rounded-full flex-shrink-0">
                                         <CheckCircle className="h-6 w-6 text-white" />
                                     </div>
@@ -894,3 +897,4 @@ export function GreaseSpotTestLabEnhanced() {
         </div>
     );
 }
+

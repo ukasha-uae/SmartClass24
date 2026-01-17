@@ -237,7 +237,7 @@ export function DensityLabEnhanced() {
                     ]}
                 />
 
-                {isCompleted && (
+                {currentStep === 'intro' && isCompleted && (
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -306,7 +306,8 @@ export function DensityLabEnhanced() {
                 </motion.div>
 
                 {/* Lab Information Card - Premium Design */}
-                <motion.div
+                {currentStep === 'intro' && (
+<motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
@@ -380,7 +381,7 @@ export function DensityLabEnhanced() {
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 p-6 rounded-lg border-2 border-purple-200 dark:border-purple-800">
-                                        <div className="flex items-start gap-4">
+                                        <div className="flex flex-col sm:flex-row items-start gap-4">
                                             <Scale className="w-16 h-16 text-purple-600 dark:text-purple-400 flex-shrink-0" />
                                             <div>
                                                 <h3 className="font-semibold text-lg mb-2 text-purple-900 dark:text-purple-100">What We'll Discover:</h3>
@@ -939,3 +940,4 @@ export function DensityLabEnhanced() {
         </div>
     );
 }
+

@@ -61,6 +61,7 @@ export function TranspirationLabEnhanced() {
     const labId = 'transpiration';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const allSuppliesNotifiedRef = React.useRef(false);
 
     // Show intro message on mount
     React.useEffect(() => {
@@ -108,9 +109,16 @@ export function TranspirationLabEnhanced() {
     }, [collectedItems]);
 
     const handleAllSuppliesCollected = React.useCallback(() => {
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({
+                title: "All Supplies Collected!",
+                description: "Great work! You have everything you need for the experiment.",
+            });
+        }
         setCurrentStep('place-bag');
         setTeacherMessage("Excellent! You now have both supplies. Now click on the plant's leafy branch to place the plastic bag over it.");
-    }, []);
+    }, [toast]);
 
     const handlePlaceBag = () => {
         if (!isBagPlaced) {
@@ -192,8 +200,10 @@ export function TranspirationLabEnhanced() {
             setCurrentStep('complete');
         } else if (correctCount === 2) {
             setQuizFeedback(`Good effort! You got ${correctCount} out of 3 correct. Review how stomata work and the effects of environmental conditions!`);
+            setTeacherMessage("Good work! You understood most concepts. Remember: stomata are the tiny pores in leaves where water vapor escapes. Heat and sunlight make stomata open wider, and wind carries moisture away, both increasing transpiration rate. Keep these principles in mind!");
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Think about the stomata in leaves and how heat and wind affect water vapor release. Try again!`);
+            setTeacherMessage("Let's review the key concepts: Transpiration happens through stomata (tiny pores in leaves). Water evaporates from inside the leaf and exits through these pores. Sunlight opens stomata wider and provides heat for evaporation. Wind removes humid air near leaves, maintaining a steep water vapor gradient. Together, they dramatically increase transpiration rate!");
         }
     };
 
@@ -212,6 +222,7 @@ export function TranspirationLabEnhanced() {
         setQuizSubmitted(false);
         setXpEarned(0);
         setShowCelebration(false);
+        allSuppliesNotifiedRef.current = false;
         setTeacherMessage("Welcome back! Ready to explore transpiration again? Let's discover how plants move water from roots to air!");
     };
 
@@ -265,7 +276,7 @@ export function TranspirationLabEnhanced() {
                 onComplete={handleTeacherComplete}
             />
 
-            {isCompleted && (
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -300,6 +311,7 @@ export function TranspirationLabEnhanced() {
             </motion.div>
 
             {/* Premium Lab Information Card */}
+            {currentStep === 'intro' && (
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -364,6 +376,7 @@ export function TranspirationLabEnhanced() {
                 </CardContent>
             </Card>
             </motion.div>
+            )}
 
             {/* Supplies Collection Step */}
             {currentStep === 'collect-supplies' && (
@@ -399,7 +412,7 @@ export function TranspirationLabEnhanced() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-950/20 dark:to-green-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <Droplets className="w-16 h-16 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                                         <div>
                                             <h3 className="font-semibold text-lg mb-2 text-blue-900 dark:text-blue-100">What We'll Discover:</h3>

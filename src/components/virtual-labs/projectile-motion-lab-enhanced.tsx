@@ -315,7 +315,7 @@ export function ProjectileMotionLabEnhanced() {
                 ]}
             />
 
-            {isCompleted && (
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -458,7 +458,7 @@ export function ProjectileMotionLabEnhanced() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-6 rounded-lg border-2 border-purple-200 dark:border-purple-800">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <Rocket className="w-16 h-16 text-purple-600 dark:text-purple-400 flex-shrink-0" />
                                         <div>
                                             <h3 className="font-semibold text-lg mb-2 text-purple-900 dark:text-purple-100">What You'll Learn:</h3>
@@ -1148,3 +1148,4 @@ export function ProjectileMotionLabEnhanced() {
         </div>
     );
 }
+

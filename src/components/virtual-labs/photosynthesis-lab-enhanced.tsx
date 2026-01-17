@@ -310,7 +310,7 @@ export function PhotosynthesisLabEnhanced() {
                     ]}
                 />
 
-            {isCompleted && (
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -347,7 +347,8 @@ export function PhotosynthesisLabEnhanced() {
             </motion.div>
 
             {/* Premium Lab Information Card */}
-            <motion.div
+            {currentStep === 'intro' && (
+<motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -403,6 +404,8 @@ export function PhotosynthesisLabEnhanced() {
                 </CardContent>
             </Card>
             </motion.div>
+)}
+
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (
@@ -423,7 +426,7 @@ export function PhotosynthesisLabEnhanced() {
                             </CardHeader>
                             <CardContent className="relative z-10 space-y-4 pt-6">
                                 <div className="bg-gradient-to-r from-green-100/60 to-emerald-100/60 dark:from-green-900/30 dark:to-emerald-900/30 p-6 rounded-xl border-2 border-green-300/50 dark:border-green-700/50 shadow-lg">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <motion.div
                                             animate={{ 
                                                 scale: [1, 1.1, 1],
@@ -685,7 +688,7 @@ export function PhotosynthesisLabEnhanced() {
 
                                 {/* Enhanced Info Panel */}
                                 <div className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/30 p-5 rounded-xl border-2 border-blue-200/50 dark:border-blue-800/50 shadow-lg">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
                                             <Lightbulb className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                                         </div>
@@ -1036,3 +1039,4 @@ export function PhotosynthesisLabEnhanced() {
         </div>
     );
 }
+

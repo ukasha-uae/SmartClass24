@@ -294,7 +294,7 @@ export function RustingLabEnhanced() {
                 onComplete={handleTeacherComplete}
             />
 
-            {isCompleted && (
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -406,7 +406,7 @@ export function RustingLabEnhanced() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20 p-6 rounded-lg border-2 border-orange-200 dark:border-orange-800">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <Flame className="w-16 h-16 text-orange-600 dark:text-orange-400 flex-shrink-0" />
                                         <div>
                                             <h3 className="font-semibold text-lg mb-2 text-orange-900 dark:text-orange-100">What You'll Learn:</h3>
@@ -1024,3 +1024,4 @@ export function RustingLabEnhanced() {
         </div>
     );
 }
+

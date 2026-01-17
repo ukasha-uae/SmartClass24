@@ -219,7 +219,7 @@ export function HookesLawLabEnhanced() {
                     ]}
                 />
 
-            {isCompleted && (
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -288,7 +288,8 @@ export function HookesLawLabEnhanced() {
                 </motion.div>
 
                 {/* Lab Information Card - Premium Design */}
-                <motion.div
+                {currentStep === 'intro' && (
+<motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.1 }}
@@ -364,7 +365,7 @@ export function HookesLawLabEnhanced() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-6 rounded-lg border-2 border-blue-200 dark:border-blue-800">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <Scale className="w-16 h-16 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                                         <div>
                                             <h3 className="font-semibold text-lg mb-2 text-blue-900 dark:text-blue-100">What You'll Learn:</h3>
@@ -936,3 +937,4 @@ export function HookesLawLabEnhanced() {
         </div>
     );
 }
+

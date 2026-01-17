@@ -383,7 +383,7 @@ export function ThermalExpansionLabEnhanced() {
                 message={teacherMessage}
             />
 
-            {isCompleted && (
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -524,7 +524,7 @@ export function ThermalExpansionLabEnhanced() {
                             </CardHeader>
                             <CardContent className="space-y-4 pt-6">
                                 <div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 p-6 rounded-lg border-2 border-red-200 dark:border-red-800">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <Thermometer className="w-16 h-16 text-red-600 dark:text-red-400 flex-shrink-0" />
                                         <div>
                                             <h3 className="font-semibold text-lg mb-2 text-red-900 dark:text-red-100">What We'll Discover:</h3>
@@ -1268,3 +1268,4 @@ export function ThermalExpansionLabEnhanced() {
         </div>
     );
 }
+

@@ -440,7 +440,8 @@ export function BiuretTestLabEnhanced() {
             </motion.div>
 
             {/* Premium Lab Information Card */}
-            <motion.div
+            {currentStep === 'intro' && (
+<motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -480,6 +481,8 @@ export function BiuretTestLabEnhanced() {
                 </CardContent>
             </Card>
             </motion.div>
+)}
+
 
             {/* Supplies Collection Step */}
             {currentStep === 'collect-supplies' && (
@@ -721,7 +724,7 @@ export function BiuretTestLabEnhanced() {
                                             animate={{ opacity: 1, y: 0 }}
                                             className="p-6 bg-gradient-to-br from-purple-100/60 to-violet-100/60 dark:from-purple-900/30 dark:to-violet-900/30 rounded-xl border-2 border-purple-300/50 dark:border-purple-700/50 shadow-lg"
                                         >
-                                <div className="flex items-start gap-4">
+                                <div className="flex flex-col sm:flex-row items-start gap-4">
                                     <div className="p-3 bg-purple-500 rounded-full flex-shrink-0">
                                         <CheckCircle className="h-6 w-6 text-white" />
                                     </div>
@@ -996,3 +999,4 @@ export function BiuretTestLabEnhanced() {
         </div>
     );
 }
+

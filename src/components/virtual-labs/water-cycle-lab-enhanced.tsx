@@ -559,7 +559,7 @@ export function WaterCycleLabEnhanced() {
                           isCompleted ? 'text-green-600' : 'text-blue-600'
                         }`} />
                         <p className="font-semibold text-sm">{name}</p>
-                        {isCompleted && (
+                        {currentStep === 'intro' && isCompleted && (
                           <CheckCircle className="w-5 h-5 mx-auto mt-2 text-green-600" />
                         )}
                       </motion.button>

@@ -283,7 +283,7 @@ export function EnzymeStarchLabEnhanced() {
                 ]}
             />
 
-            {isCompleted && (
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -321,7 +321,8 @@ export function EnzymeStarchLabEnhanced() {
             </motion.div>
 
             {/* Premium Lab Information Card */}
-            <motion.div
+            {currentStep === 'intro' && (
+<motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -370,6 +371,8 @@ export function EnzymeStarchLabEnhanced() {
                 </CardContent>
             </Card>
             </motion.div>
+)}
+
 
             {/* Supplies Collection Step */}
             {currentStep === 'collect-supplies' && (
@@ -405,7 +408,7 @@ export function EnzymeStarchLabEnhanced() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 p-6 rounded-lg border-2 border-green-200 dark:border-green-800">
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex flex-col sm:flex-row items-start gap-4">
                                         <Droplets className="w-16 h-16 text-green-600 dark:text-green-400 flex-shrink-0" />
                                         <div>
                                             <h3 className="font-semibold text-lg mb-2 text-green-900 dark:text-green-100">What We'll Discover:</h3>
@@ -930,3 +933,4 @@ export function EnzymeStarchLabEnhanced() {
         </div>
     );
 }
+
