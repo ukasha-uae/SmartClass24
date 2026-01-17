@@ -233,10 +233,35 @@ export const SARAH_THE_ROBOT = {
 };
 
 /**
+ * Check if a user is a test/fake account
+ */
+const isTestUser = (userName: string, email: string = '', userId: string = ''): boolean => {
+  const testPatterns = [
+    /test/i,
+    /demo/i,
+    /sample/i,
+    /fake/i,
+    /anon-/i, // Anonymous users
+    /Sarah K\./i,
+    /Michael A\./i,
+    /Emma T\./i,
+    /David L\./i,
+    /Olivia M\./i,
+    /James P\./i,
+  ];
+  
+  return testPatterns.some(pattern => 
+    pattern.test(userName) || 
+    pattern.test(email) || 
+    pattern.test(userId)
+  );
+};
+
+/**
  * Get leaderboard from real Firestore data
  * @param firestore - Firestore instance (optional, if not provided returns local-only)
  * @param currentUserId - Current user's ID to highlight them
- * @param limit - Number of top users to fetch
+ * @param limit - Number of top users to fetch (will fetch more and filter)
  */
 export const getLeaderboard = async (firestore?: any, currentUserId?: string, limit: number = 20) => {
   try {
@@ -252,12 +277,12 @@ export const getLeaderboard = async (firestore?: any, currentUserId?: string, li
     // Import Firestore functions dynamically
     const { collection, query, orderBy, limit: firestoreLimit, getDocs } = await import('firebase/firestore');
     
-    // Fetch top users by XP
+    // Fetch more users than needed to account for filtering out test accounts
     const studentsRef = collection(firestore, 'students');
     const leaderboardQuery = query(
       studentsRef,
       orderBy('totalXP', 'desc'),
-      firestoreLimit(limit)
+      firestoreLimit(limit * 3) // Fetch 3x to ensure we get enough real users after filtering
     );
     
     const snapshot = await getDocs(leaderboardQuery);
@@ -265,25 +290,35 @@ export const getLeaderboard = async (firestore?: any, currentUserId?: string, li
     
     snapshot.forEach(doc => {
       const data = doc.data();
-      users.push({
-        userId: doc.id,
-        name: data.studentName || data.userName || 'Anonymous',
-        level: Math.floor((data.totalXP || 0) / 100),
-        xp: data.totalXP || 0,
-        streak: data.currentStreak || 0,
-        school: data.school || 'Unknown',
-        isCurrentUser: doc.id === currentUserId,
-      });
+      const userName = data.studentName || data.userName || 'Anonymous';
+      const email = data.email || '';
+      const userId = doc.id;
+      
+      // Filter out test/fake accounts from leaderboard
+      if (!isTestUser(userName, email, userId)) {
+        users.push({
+          userId: doc.id,
+          name: userName,
+          level: Math.floor((data.totalXP || 0) / 100),
+          xp: data.totalXP || 0,
+          streak: data.currentStreak || 0,
+          school: data.school || 'Unknown',
+          isCurrentUser: doc.id === currentUserId,
+        });
+      }
     });
     
+    // Limit to requested number of real users
+    const realUsers = users.slice(0, limit);
+    
     // Insert Sarah the Robot into the rankings
-    users.push(SARAH_THE_ROBOT);
+    realUsers.push(SARAH_THE_ROBOT);
     
     // Sort by XP (highest first)
-    users.sort((a, b) => b.xp - a.xp);
+    realUsers.sort((a, b) => b.xp - a.xp);
     
     // Assign ranks
-    const rankedUsers = users.map((user, index) => ({
+    const rankedUsers = realUsers.map((user, index) => ({
       ...user,
       rank: index + 1,
     }));
