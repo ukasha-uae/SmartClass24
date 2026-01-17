@@ -2,16 +2,45 @@
  * Script to clean up test/demo users from Firestore
  * Run this with: node cleanup-test-users.js
  * 
- * Make sure to have firebase-admin installed:
- * npm install firebase-admin
+ * PREREQUISITES:
+ * 1. npm install firebase-admin
+ * 2. Download serviceAccountKey.json from Firebase Console
+ * 3. Place serviceAccountKey.json in project root (same folder as this script)
+ * 
+ * SECURITY: serviceAccountKey.json is in .gitignore - NEVER commit it!
  */
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./serviceAccountKey.json'); // You need to download this from Firebase Console
+const fs = require('fs');
+const path = require('path');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// Safely load service account key
+const keyPath = path.join(__dirname, 'serviceAccountKey.json');
+
+// Check if service account key exists
+if (!fs.existsSync(keyPath)) {
+  console.error('❌ ERROR: serviceAccountKey.json not found!\n');
+  console.log('📝 To fix this:');
+  console.log('1. Go to Firebase Console: https://console.firebase.google.com/');
+  console.log('2. Select your project');
+  console.log('3. Click ⚙️ → Project Settings → Service Accounts');
+  console.log('4. Click "Generate New Private Key"');
+  console.log('5. Save as "serviceAccountKey.json" in project root\n');
+  process.exit(1);
+}
+
+const serviceAccount = require('./serviceAccountKey.json');
+
+// Initialize Firebase Admin SDK
+try {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+  console.log('✅ Firebase Admin SDK initialized successfully\n');
+} catch (error) {
+  console.error('❌ ERROR: Failed to initialize Firebase Admin SDK:', error.message);
+  process.exit(1);
+}
 
 const db = admin.firestore();
 

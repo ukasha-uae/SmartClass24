@@ -30,17 +30,42 @@ Sarah is an AI competitor with the following stats:
 ## 🧹 Step 1: Clean Up Test Users
 
 ### Prerequisites
-1. Download your Firebase service account key:
+
+**⚠️ SECURITY CRITICAL: Protect Your Service Account Key**
+
+Your `serviceAccountKey.json` file has **admin access** to your entire Firebase project. Never commit it to Git!
+
+1. **Download your Firebase service account key:**
    - Go to [Firebase Console](https://console.firebase.google.com/)
    - Select your project
    - Click ⚙️ (Settings) → Project Settings
    - Go to "Service Accounts" tab
    - Click "Generate New Private Key"
-   - Save as `serviceAccountKey.json` in your project root
+   - **Save as `serviceAccountKey.json` in your project root**
+   - ✅ Verify it's in `.gitignore` (already added for you)
 
-2. Install firebase-admin (if not already installed):
+2. **Install firebase-admin:**
 ```powershell
 npm install firebase-admin
+```
+
+**✅ Safe Implementation (Already Done):**
+```javascript
+// This is how the script safely loads your key:
+const admin = require('firebase-admin');
+const serviceAccount = require('./serviceAccountKey.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+```
+
+**❌ NEVER Do This:**
+```javascript
+// DON'T hardcode credentials
+// DON'T commit serviceAccountKey.json
+// DON'T share it publicly
+// DON'T use it in client-side code
 ```
 
 ### Run the Cleanup Script
