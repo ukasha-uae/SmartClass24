@@ -218,17 +218,86 @@ export const getAchievements = () => {
   return allAchievements;
 };
 
-export const getLeaderboard = () => {
-  // Mock leaderboard data - in production this would come from Firestore
-  const currentUserProgress = getUserProgress();
-  
-  return [
-    { rank: 1, name: 'Sarah K.', level: 15, xp: 1520, streak: 25 },
-    { rank: 2, name: 'Michael A.', level: 14, xp: 1405, streak: 18 },
-    { rank: 3, name: 'Emma T.', level: 13, xp: 1380, streak: 22 },
-    { rank: 4, name: 'You', level: currentUserProgress.level, xp: currentUserProgress.totalXP, streak: currentUserProgress.currentStreak },
-    { rank: 5, name: 'David L.', level: 12, xp: 1205, streak: 15 },
-    { rank: 6, name: 'Olivia M.', level: 11, xp: 1150, streak: 12 },
-    { rank: 7, name: 'James P.', level: 10, xp: 1020, streak: 10 },
-  ].sort((a, b) => b.xp - a.xp).map((user, index) => ({ ...user, rank: index + 1 }));
+// Sarah the Robot - AI competitor to motivate students
+export const SARAH_THE_ROBOT = {
+  userId: 'bot-sarah',
+  name: '🤖 Sarah the Robot',
+  displayName: 'Sarah',
+  isBot: true,
+  xp: 3500, // High score but beatable
+  level: 18,
+  streak: 42,
+  school: 'SmartClass AI Academy',
+  totalLessons: 250,
+  averageQuizScore: 92,
+};
+
+/**
+ * Get leaderboard from real Firestore data
+ * @param firestore - Firestore instance (optional, if not provided returns local-only)
+ * @param currentUserId - Current user's ID to highlight them
+ * @param limit - Number of top users to fetch
+ */
+export const getLeaderboard = async (firestore?: any, currentUserId?: string, limit: number = 20) => {
+  try {
+    if (!firestore) {
+      // Fallback to local data only (for non-authenticated users)
+      const currentUserProgress = getUserProgress();
+      return [
+        { ...SARAH_THE_ROBOT, rank: 1 },
+        { rank: 2, name: 'You', userId: 'local', level: currentUserProgress.level, xp: currentUserProgress.totalXP, streak: currentUserProgress.currentStreak, isCurrentUser: true },
+      ];
+    }
+
+    // Import Firestore functions dynamically
+    const { collection, query, orderBy, limit: firestoreLimit, getDocs } = await import('firebase/firestore');
+    
+    // Fetch top users by XP
+    const studentsRef = collection(firestore, 'students');
+    const leaderboardQuery = query(
+      studentsRef,
+      orderBy('totalXP', 'desc'),
+      firestoreLimit(limit)
+    );
+    
+    const snapshot = await getDocs(leaderboardQuery);
+    const users: any[] = [];
+    
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      users.push({
+        userId: doc.id,
+        name: data.studentName || data.userName || 'Anonymous',
+        level: Math.floor((data.totalXP || 0) / 100),
+        xp: data.totalXP || 0,
+        streak: data.currentStreak || 0,
+        school: data.school || 'Unknown',
+        isCurrentUser: doc.id === currentUserId,
+      });
+    });
+    
+    // Insert Sarah the Robot into the rankings
+    users.push(SARAH_THE_ROBOT);
+    
+    // Sort by XP (highest first)
+    users.sort((a, b) => b.xp - a.xp);
+    
+    // Assign ranks
+    const rankedUsers = users.map((user, index) => ({
+      ...user,
+      rank: index + 1,
+    }));
+    
+    return rankedUsers;
+    
+  } catch (error) {
+    console.error('[Leaderboard] Error fetching leaderboard:', error);
+    
+    // Fallback to local data
+    const currentUserProgress = getUserProgress();
+    return [
+      { ...SARAH_THE_ROBOT, rank: 1 },
+      { rank: 2, name: 'You', userId: 'local', level: currentUserProgress.level, xp: currentUserProgress.totalXP, streak: currentUserProgress.currentStreak, isCurrentUser: true },
+    ];
+  }
 };
