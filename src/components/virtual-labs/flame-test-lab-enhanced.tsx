@@ -260,55 +260,57 @@ export function FlameTestLab() {
                 </CardHeader>
             </Card>
 
-            <Card>
-                <CardHeader><CardTitle>Lab Information</CardTitle></CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="theory">
-                            <AccordionTrigger><BookOpen className="h-4 w-4 mr-2"/>Background Theory</AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground flex items-start gap-2">
-                                <div className="flex-grow">
-                                    <p>
-                                        <HighlightedText 
-                                            text={theoryText} 
-                                            sectionId="theory" 
-                                            highlightedSentenceIndex={highlightInfo?.section === 'theory' ? highlightInfo.sentenceIndex : null} 
-                                        />
-                                    </p>
-                                </div>
-                                <TextToSpeech 
-                                    textToSpeak={theoryText}
-                                    onSentenceChange={(i) => setHighlightInfo({ section: 'theory', sentenceIndex: i })}
-                                    onStart={() => setHighlightInfo({ section: 'theory', sentenceIndex: 0 })}
-                                    onEnd={() => setHighlightInfo(null)}
-                                    className="flex-shrink-0"
-                                />
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="safety">
-                            <AccordionTrigger><Shield className="h-4 w-4 mr-2"/>Safety Precautions</AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground flex items-start gap-2">
-                                <div className="flex-grow">
-                                    <p>
-                                        <HighlightedText 
-                                            text={safetyText} 
-                                            sectionId="safety" 
-                                            highlightedSentenceIndex={highlightInfo?.section === 'safety' ? highlightInfo.sentenceIndex : null} 
-                                        />
-                                    </p>
-                                </div>
-                                <TextToSpeech 
-                                    textToSpeak={safetyText}
-                                    onSentenceChange={(i) => setHighlightInfo({ section: 'safety', sentenceIndex: i })}
-                                    onStart={() => setHighlightInfo({ section: 'safety', sentenceIndex: 0 })}
-                                    onEnd={() => setHighlightInfo(null)}
-                                    className="flex-shrink-0"
-                                />
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
+            {currentStep === 'intro' && (
+                <Card>
+                    <CardHeader><CardTitle>Lab Information</CardTitle></CardHeader>
+                    <CardContent>
+                        <Accordion type="single" collapsible className="w-full">
+                            <AccordionItem value="theory">
+                                <AccordionTrigger><BookOpen className="h-4 w-4 mr-2"/>Background Theory</AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground flex items-start gap-2">
+                                    <div className="flex-grow">
+                                        <p>
+                                            <HighlightedText 
+                                                text={theoryText} 
+                                                sectionId="theory" 
+                                                highlightedSentenceIndex={highlightInfo?.section === 'theory' ? highlightInfo.sentenceIndex : null} 
+                                            />
+                                        </p>
+                                    </div>
+                                    <TextToSpeech 
+                                        textToSpeak={theoryText}
+                                        onSentenceChange={(i) => setHighlightInfo({ section: 'theory', sentenceIndex: i })}
+                                        onStart={() => setHighlightInfo({ section: 'theory', sentenceIndex: 0 })}
+                                        onEnd={() => setHighlightInfo(null)}
+                                        className="flex-shrink-0"
+                                    />
+                                </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem value="safety">
+                                <AccordionTrigger><Shield className="h-4 w-4 mr-2"/>Safety Precautions</AccordionTrigger>
+                                <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground flex items-start gap-2">
+                                    <div className="flex-grow">
+                                        <p>
+                                            <HighlightedText 
+                                                text={safetyText} 
+                                                sectionId="safety" 
+                                                highlightedSentenceIndex={highlightInfo?.section === 'safety' ? highlightInfo.sentenceIndex : null} 
+                                            />
+                                        </p>
+                                    </div>
+                                    <TextToSpeech 
+                                        textToSpeak={safetyText}
+                                        onSentenceChange={(i) => setHighlightInfo({ section: 'safety', sentenceIndex: i })}
+                                        onStart={() => setHighlightInfo({ section: 'safety', sentenceIndex: 0 })}
+                                        onEnd={() => setHighlightInfo(null)}
+                                        className="flex-shrink-0"
+                                    />
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Practice Mode Section */}
             <Card>
