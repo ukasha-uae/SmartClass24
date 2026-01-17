@@ -10,7 +10,7 @@ import { Label } from '../ui/label';
 import { 
     CheckCircle, XCircle, RefreshCw, BookOpen, Shield, 
     ArrowRightLeft, Droplets, Beaker, TestTube,
-    Sparkles, Trophy, Award, Eye, EyeOff, Timer, FlaskConical, Pipette
+    Sparkles, Trophy, Award, Eye, EyeOff, Timer, FlaskConical
 } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { cn } from '@/lib/utils';

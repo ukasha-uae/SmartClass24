@@ -82,7 +82,21 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   
   // Check if this is a self-contained enhanced lab (has its own quiz/completion flow)
   const isEnhancedLab = LabComponent.name?.includes('Enhanced') || 
-                        ['hookes-law', 'simple-circuit', 'work-energy-inclined-plane', 'separation-techniques', 'ohms-law', 'ammonia-test', 'hydrogen-pop-test', 'oxygen-test-lab', 'limewater-test-for-co2'].includes(experiment.slug);
+                        [
+                          // Physics Labs
+                          'hookes-law', 'simple-circuits', 'work-energy-inclined-plane', 'ohms-law', 
+                          'heat-transfer', 'density-buoyancy', 'expansion-of-air', 'expansion-of-solids-liquids',
+                          'reflection-of-light', 'refraction-of-light', 'projectile-motion',
+                          // Chemistry Labs
+                          'separation-techniques', 'ammonia-test', 'hydrogen-pop-test', 'oxygen-test', 
+                          'limewater-test-for-co2', 'litmus-test', 'neutralization-reaction', 
+                          'rusting-of-iron', 'acid-base-neutralization', 'test-for-water', 
+                          'flame-test', 'metal-acid-reaction', 'condensation', 'evaporation-of-liquids',
+                          // Biology Labs
+                          'food-tests', 'osmosis', 'photosynthesis-oxygen-production', 'biuret-test-for-protein',
+                          'grease-spot-test-for-fats', 'cell-division-simulator', 'respiration-in-seeds',
+                          'transpiration-in-plants', 'enzyme-starch-digestion'
+                        ].includes(experiment.slug);
 
   const subjectColors = {
     Biology: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30',
