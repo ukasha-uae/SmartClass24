@@ -30,6 +30,9 @@ export function SimpleCircuitLabEnhanced() {
     const [teacherMessage, setTeacherMessage] = React.useState('');
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
+    // Track if all-supplies-collected notification already shown
+    const allSuppliesNotifiedRef = React.useRef(false);
+    
     // Supplies tracking - using standardized component
     const [showSupplies, setShowSupplies] = React.useState(true);
     const [collectedItems, setCollectedItems] = React.useState<string[]>([]);
@@ -139,14 +142,18 @@ export function SimpleCircuitLabEnhanced() {
         }
     };
     
-    const handleAllSuppliesCollected = () => {
-        setShowSupplies(false);
-        setTeacherMessage("All components ready! Now let's build a series circuit first, then compare it to a parallel circuit!");
-        toast({ title: '🎉 All Supplies Collected!', description: 'Ready to start the experiment!' });
-        setPendingTransition(() => () => {
-            setCurrentStep('experiment');
-        });
-    };
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        // Only show notification once
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            setShowSupplies(false);
+            setTeacherMessage("All components ready! Now let's build a series circuit first, then compare it to a parallel circuit!");
+            toast({ title: '🎉 All Supplies Collected!', description: 'Ready to start the experiment!' });
+            setPendingTransition(() => () => {
+                setCurrentStep('experiment');
+            });
+        }
+    }, [toast]);
     
     // Check if all supplies collected (for backward compatibility with experiment logic)
     const batteryCollected = collectedItems.includes('battery');
@@ -279,8 +286,35 @@ export function SimpleCircuitLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the differences between series and parallel circuits.`);
+            setTeacherMessage(
+                `Good work! You got ${correctCount} out of 3 correct. Let me clarify the key differences: ` +
+                `SERIES circuits: ONE path for electricity - all components connected in a single loop. ` +
+                `Current flows through each component one after another like beads on a string. ` +
+                `Key fact: If ONE bulb breaks, ALL bulbs go out (circuit is broken). ` +
+                `Voltage divides among components, so with 3 bulbs on a 6V battery, each gets 2V - DIM. ` +
+                `PARALLEL circuits: MULTIPLE paths - components connected on separate branches. ` +
+                `Current splits at junctions and flows through each branch independently. ` +
+                `Key fact: If one bulb breaks, OTHERS STAY LIT (current has alternate paths). ` +
+                `Each bulb gets full battery voltage, so with 3 bulbs on a 6V battery, each gets 6V - BRIGHT! ` +
+                `Go back to your experiment - notice how series bulbs were dimmer and parallel bulbs were brighter? ` +
+                `That's the voltage difference in action! Review and try again.`
+            );
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Remember: series = one loop, parallel = multiple branches.`);
+            setTeacherMessage(
+                `You got ${correctCount} out of 3 correct. Let's break it down simply: ` +
+                `Think of electricity like water flowing through pipes. ` +
+                `SERIES CIRCUIT = ONE PIPE: Water must flow through each section in order. If you block any section, ` +
+                `ALL water stops. Same with electricity - one path, all components in a chain. Break one, break all. ` +
+                `That's why old Christmas lights would ALL go out if one bulb failed. ` +
+                `PARALLEL CIRCUIT = MULTIPLE PIPES: Water can take different routes. Block one pipe, water still flows through others. ` +
+                `Same with electricity - multiple paths, separate branches. Break one bulb, others keep working. ` +
+                `That's why your home lights work independently - they're wired in parallel! ` +
+                `Another key difference: In series, components SHARE voltage (dimmer bulbs). ` +
+                `In parallel, each gets FULL voltage (brighter bulbs). ` +
+                `Go back to your experiment and observe: Which circuit had brighter bulbs? Which stayed lit when you broke a bulb? ` +
+                `Understanding this is essential for electrical safety and design. Keep practicing!`
+            );
         }
     };
 
@@ -304,6 +338,7 @@ export function SimpleCircuitLabEnhanced() {
         setQuizSubmitted(false);
         setShowCelebration(false);
         setPendingTransition(null);
+        allSuppliesNotifiedRef.current = false; // Reset notification tracker
         setTeacherMessage("Ready to build circuits again!");
     };
 
@@ -314,6 +349,8 @@ export function SimpleCircuitLabEnhanced() {
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-300/20 via-purple-300/20 to-indigo-300/20 rounded-full blur-3xl animate-pulse"></div>
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-300/20 via-violet-300/20 to-purple-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
             </div>
+            
+            {/* TeacherVoice stays visible - provides experiment instructions */}
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
@@ -353,7 +390,8 @@ export function SimpleCircuitLabEnhanced() {
                 ]}
             />
 
-            {isCompleted && (
+            {/* Hide completion status during active experiment */}
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}

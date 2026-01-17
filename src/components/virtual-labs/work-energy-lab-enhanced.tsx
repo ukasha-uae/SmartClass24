@@ -46,6 +46,10 @@ interface Measurement {
 export function WorkEnergyLabEnhanced() {
   const { toast } = useToast();
   const [step, setStep] = React.useState<'intro' | 'collect-supplies' | 'setup' | 'experiment' | 'results' | 'quiz' | 'complete'>('intro');
+  
+  // Track if all-supplies-collected notification already shown
+  const allSuppliesNotifiedRef = React.useRef(false);
+  
   const [height, setHeight] = React.useState(5);
   const [mass, setMass] = React.useState(2);
   const [isRunning, setIsRunning] = React.useState(false);
@@ -114,9 +118,13 @@ export function WorkEnergyLabEnhanced() {
     }
   };
 
-  const handleAllSuppliesCollected = () => {
-    setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
-  };
+  const handleAllSuppliesCollected = React.useCallback(() => {
+    // Only show notification once
+    if (!allSuppliesNotifiedRef.current) {
+      allSuppliesNotifiedRef.current = true;
+      setTeacherMessage("Perfect! All supplies collected! Now let's set up our experiment. Click 'Continue to Setup' to begin!");
+    }
+  }, []);
 
   const handleContinueToSetup = () => {
     setTeacherMessage("Now you can adjust the mass and height using the sliders. Notice how potential energy changes with height. When you're ready, we'll release the object and watch energy transform!");
@@ -284,6 +292,7 @@ export function WorkEnergyLabEnhanced() {
     setShowQuizFeedback(false);
     setQuizScore(0);
     setCollectedSupplies([]);
+    allSuppliesNotifiedRef.current = false; // Reset notification tracker
     setTeacherMessage("Ready to explore Work & Energy again!");
   };
 
@@ -320,6 +329,7 @@ export function WorkEnergyLabEnhanced() {
       </div>
 
       <div className="relative max-w-5xl mx-auto p-4 space-y-6">
+      {/* TeacherVoice stays visible - provides experiment instructions */}
       <TeacherVoice 
         message={teacherMessage}
         onComplete={handleTeacherComplete}

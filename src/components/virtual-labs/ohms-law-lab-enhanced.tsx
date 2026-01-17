@@ -28,6 +28,9 @@ export function OhmsLawLabEnhanced() {
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [teacherMessage, setTeacherMessage] = React.useState('');
     
+    // Track if all-supplies-collected notification already shown
+    const allSuppliesNotifiedRef = React.useRef(false);
+    
     // Supplies tracking using LabSupplies component
     const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
     const supplies = [
@@ -77,10 +80,14 @@ export function OhmsLawLabEnhanced() {
         }
     };
     
-    const handleAllSuppliesCollected = () => {
-        setTeacherMessage("All components ready! Now let's build circuits and test Ohm's Law by varying voltage and resistance!");
-        toast({ title: '✅ All Components Collected!' });
-    };
+    const handleAllSuppliesCollected = React.useCallback(() => {
+        // Only show notification once
+        if (!allSuppliesNotifiedRef.current) {
+            allSuppliesNotifiedRef.current = true;
+            toast({ title: '✅ All Components Collected!' });
+            setTeacherMessage("Perfect! All components ready! Now let's connect them and test Ohm's Law by varying voltage and resistance. Click 'Begin Testing' to start!");
+        }
+    }, [toast]);
     
     const handleTakeReading = () => {
         // Calculate current using Ohm's Law: I = V / R
@@ -144,6 +151,18 @@ export function OhmsLawLabEnhanced() {
             const earnedXP = markLabComplete(labId, score, 0);
             setXpEarned(earnedXP);
             setQuizFeedback(`Perfect! 🎉 You got all 3 correct! You understand Ohm's Law! +${earnedXP} XP`);
+            setTeacherMessage(
+                `Outstanding! ⚡ Perfect score! You've earned ${earnedXP} XP and mastered Ohm's Law! ` +
+                `You now understand that V = I × R is one of the most fundamental equations in electricity. ` +
+                `This relationship tells us: VOLTAGE (V) equals CURRENT (I) times RESISTANCE (R). ` +
+                `You verified this experimentally! When you increased voltage, current increased proportionally. ` +
+                `When you increased resistance, current decreased. The beauty of Ohm's Law is its simplicity and universality - ` +
+                `it applies to every electrical circuit from tiny phone components to massive power grids! ` +
+                `Real-world applications: Engineers use this to design safe circuits, calculate wire thickness for homes, ` +
+                `size fuses and breakers, and optimize power distribution. Ghana's ECG uses Ohm's Law principles daily! ` +
+                `Fun fact: This law was discovered by Georg Ohm in 1827 using handmade equipment. ` +
+                `You're now thinking like an electrical engineer! Phenomenal work! 🎉⚡`
+            );
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => {
@@ -152,8 +171,28 @@ export function OhmsLawLabEnhanced() {
             }, 2000);
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Remember V = I × R.`);
+            setTeacherMessage(
+                `Good effort! You got ${correctCount} out of 3 correct. Let me clarify the key concepts: ` +
+                `Ohm's Law V = I × R means Voltage equals Current times Resistance. ` +
+                `Think of it like water flow: Voltage is like water pressure pushing through a pipe, ` +
+                `Current is the amount of water flowing (measured in Amperes), ` +
+                `and Resistance is like the pipe's narrowness that opposes flow. ` +
+                `Key relationships: If you DOUBLE the voltage (keeping R constant), current DOUBLES too - they're directly proportional. ` +
+                `But if you DOUBLE the resistance (keeping V constant), current is CUT IN HALF - they're inversely proportional. ` +
+                `Try the quiz again after reviewing your experimental data!`
+            );
         } else {
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Review the relationship: Voltage = Current × Resistance.`);
+            setTeacherMessage(
+                `You got ${correctCount} out of 3 correct. Don't worry - Ohm's Law takes practice! Let's break it down simply: ` +
+                `The formula is V = I × R. Think of it in everyday terms: ` +
+                `VOLTAGE (V) is the electrical 'push' or 'pressure' - like water pressure in pipes. Higher voltage = stronger push. ` +
+                `CURRENT (I) is the actual flow of electricity - like water flowing through a pipe. Measured in Amperes (Amps). ` +
+                `RESISTANCE (R) is what opposes or restricts the flow - like a narrow pipe slows water. Measured in Ohms (Ω). ` +
+                `The relationship: More voltage → More current. More resistance → Less current. ` +
+                `Your experiment showed this! Go back and review your readings. Notice how changing V or R affected I. ` +
+                `This is the foundation of ALL electrical work. Keep studying!`
+            );
         }
     };
 
@@ -171,6 +210,7 @@ export function OhmsLawLabEnhanced() {
         setQuizFeedback('');
         setQuizSubmitted(false);
         setShowCelebration(false);
+        allSuppliesNotifiedRef.current = false; // Reset notification tracker
         setTeacherMessage("Ready to explore Ohm's Law again!");
     };
 
@@ -211,12 +251,14 @@ export function OhmsLawLabEnhanced() {
             </div>
 
             <div className="relative space-y-6">
+            {/* TeacherVoice stays visible - provides experiment instructions */}
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
             />
 
-            {isCompleted && (
+            {/* Hide completion status during active experiment */}
+            {currentStep === 'intro' && isCompleted && (
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -268,81 +310,86 @@ export function OhmsLawLabEnhanced() {
                 </motion.div>
             )}
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-            >
-                <Card className="border-2 border-yellow-200/50 dark:border-yellow-800/50 bg-gradient-to-br from-white/90 to-yellow-50/90 dark:from-gray-900/90 dark:to-yellow-950/90 backdrop-blur-sm shadow-xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-xl">
-                            <Zap className="h-6 w-6 text-yellow-600" />
-                            Ohm's Law Lab
-                        </CardTitle>
-                        <CardDescription className="text-base">Explore the relationship between voltage, current, and resistance</CardDescription>
-                    </CardHeader>
-                </Card>
-            </motion.div>
+            {/* Hide title and accordion when experiment is active */}
+            {currentStep === 'intro' && (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                    >
+                        <Card className="border-2 border-yellow-200/50 dark:border-yellow-800/50 bg-gradient-to-br from-white/90 to-yellow-50/90 dark:from-gray-900/90 dark:to-yellow-950/90 backdrop-blur-sm shadow-xl">
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-xl">
+                                    <Zap className="h-6 w-6 text-yellow-600" />
+                                    Ohm's Law Lab
+                                </CardTitle>
+                                <CardDescription className="text-base">Explore the relationship between voltage, current, and resistance</CardDescription>
+                            </CardHeader>
+                        </Card>
+                    </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-            >
-                <Card className="border-2 border-yellow-200/50 dark:border-yellow-800/50 bg-gradient-to-br from-white/90 to-yellow-50/90 dark:from-gray-900/90 dark:to-yellow-950/90 backdrop-blur-sm shadow-xl">
-                    <CardHeader>
-                        <CardTitle className="text-lg">Lab Information</CardTitle>
-                    </CardHeader>
-                <CardContent>
-                    <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="theory">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <BookOpen className="h-4 w-4" />
-                                    <span>Background Theory</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <p><strong>Ohm's Law</strong> is a fundamental principle in electrical circuits that relates voltage (V), current (I), and resistance (R).</p>
-                                <p className="mt-2"><strong>The Formula:</strong></p>
-                                <p className="font-mono bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">V = I × R</p>
-                                <p className="mt-2">Where:</p>
-                                <ul>
-                                    <li><strong>V (Voltage):</strong> Measured in Volts (V) - the electrical potential difference</li>
-                                    <li><strong>I (Current):</strong> Measured in Amperes (A) - the flow of electric charge</li>
-                                    <li><strong>R (Resistance):</strong> Measured in Ohms (Ω) - opposition to current flow</li>
-                                </ul>
-                                <p className="mt-2"><strong>Key Relationships:</strong></p>
-                                <ul>
-                                    <li>Current is <strong>directly proportional</strong> to voltage (at constant R)</li>
-                                    <li>Current is <strong>inversely proportional</strong> to resistance (at constant V)</li>
-                                    <li>Doubling voltage doubles current (if R stays constant)</li>
-                                    <li>Doubling resistance halves current (if V stays constant)</li>
-                                </ul>
-                            </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="safety">
-                            <AccordionTrigger>
-                                <div className="flex items-center gap-2">
-                                    <Shield className="h-4 w-4" />
-                                    <span>Safety Precautions</span>
-                                </div>
-                            </AccordionTrigger>
-                            <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
-                                <ul>
-                                    <li>Always disconnect power before changing circuit connections</li>
-                                    <li>Start with low voltages and gradually increase</li>
-                                    <li>Check polarity before connecting meters</li>
-                                    <li>Never exceed component ratings</li>
-                                    <li>Avoid touching exposed wires when circuit is on</li>
-                                    <li>Use insulated tools and probes</li>
-                                    <li>Monitor for overheating components</li>
-                                </ul>
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
-                </CardContent>
-            </Card>
-            </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        <Card className="border-2 border-yellow-200/50 dark:border-yellow-800/50 bg-gradient-to-br from-white/90 to-yellow-50/90 dark:from-gray-900/90 dark:to-yellow-950/90 backdrop-blur-sm shadow-xl">
+                            <CardHeader>
+                                <CardTitle className="text-lg">Lab Information</CardTitle>
+                            </CardHeader>
+                        <CardContent>
+                            <Accordion type="single" collapsible className="w-full">
+                                <AccordionItem value="theory">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-2">
+                                            <BookOpen className="h-4 w-4" />
+                                            <span>Background Theory</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                        <p><strong>Ohm's Law</strong> is a fundamental principle in electrical circuits that relates voltage (V), current (I), and resistance (R).</p>
+                                        <p className="mt-2"><strong>The Formula:</strong></p>
+                                        <p className="font-mono bg-slate-100 dark:bg-slate-900 p-2 rounded text-center">V = I × R</p>
+                                        <p className="mt-2">Where:</p>
+                                        <ul>
+                                            <li><strong>V (Voltage):</strong> Measured in Volts (V) - the electrical potential difference</li>
+                                            <li><strong>I (Current):</strong> Measured in Amperes (A) - the flow of electric charge</li>
+                                            <li><strong>R (Resistance):</strong> Measured in Ohms (Ω) - opposition to current flow</li>
+                                        </ul>
+                                        <p className="mt-2"><strong>Key Relationships:</strong></p>
+                                        <ul>
+                                            <li>Current is <strong>directly proportional</strong> to voltage (at constant R)</li>
+                                            <li>Current is <strong>inversely proportional</strong> to resistance (at constant V)</li>
+                                            <li>Doubling voltage doubles current (if R stays constant)</li>
+                                            <li>Doubling resistance halves current (if V stays constant)</li>
+                                        </ul>
+                                    </AccordionContent>
+                                </AccordionItem>
+                                <AccordionItem value="safety">
+                                    <AccordionTrigger>
+                                        <div className="flex items-center gap-2">
+                                            <Shield className="h-4 w-4" />
+                                            <span>Safety Precautions</span>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                                        <ul>
+                                            <li>Always disconnect power before changing circuit connections</li>
+                                            <li>Start with low voltages and gradually increase</li>
+                                            <li>Check polarity before connecting meters</li>
+                                            <li>Never exceed component ratings</li>
+                                            <li>Avoid touching exposed wires when circuit is on</li>
+                                            <li>Use insulated tools and probes</li>
+                                            <li>Monitor for overheating components</li>
+                                        </ul>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            </Accordion>
+                        </CardContent>
+                    </Card>
+                    </motion.div>
+                </>
+            )}
 
             <AnimatePresence mode="wait">
                 {currentStep === 'intro' && (
