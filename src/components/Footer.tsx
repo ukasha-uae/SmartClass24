@@ -20,20 +20,14 @@ export default function Footer() {
   const [mounted, setMounted] = useState(false);
   const currentYear = new Date().getFullYear();
   
-  // Store the actual localized values only after client mount
-  const [phoneNumber, setPhoneNumber] = useState('+970589549030');
-  const [location, setLocation] = useState('Accra, Ghana');
+  // Use localized values directly from context (client-side only)
+  const phoneNumber = country?.supportPhone || '+233 XX XXX XXXX';
+  const location = country?.capital && country?.name ? `${country.capital}, ${country.name}` : 'Ghana';
   
-  // Ensure client-side rendering for localization values
+  // Ensure client-side mounting for hydration
   useEffect(() => {
     setMounted(true);
-    if (country?.supportPhone) {
-      setPhoneNumber(country.supportPhone);
-    }
-    if (country?.capital && country?.name) {
-      setLocation(`${country.capital}, ${country.name}`);
-    }
-  }, [country]);
+  }, []);
   
   // Hide footer during fullscreen (gameplay/lessons)
   if (isFullscreen) {
@@ -203,22 +197,26 @@ export default function Footer() {
                   support@smartclass24.com
                 </a>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
-                  <Phone className="h-4 w-4 text-violet-600 dark:text-violet-400" />
-                </div>
-                <span className="text-slate-700 dark:text-slate-300 font-medium" suppressHydrationWarning>
-                  {phoneNumber}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
-                  <MapPin className="h-4 w-4 text-violet-600 dark:text-violet-400" />
-                </div>
-                <span className="text-slate-700 dark:text-slate-300 font-medium" suppressHydrationWarning>
-                  {location}
-                </span>
-              </div>
+              {mounted && (
+                <>
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
+                      <Phone className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                    </div>
+                    <span className="text-slate-700 dark:text-slate-300 font-medium">
+                      {phoneNumber}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
+                      <MapPin className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+                    </div>
+                    <span className="text-slate-700 dark:text-slate-300 font-medium">
+                      {location}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -57,6 +57,12 @@ export function MagneticFieldLabEnhanced() {
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
     const allSuppliesNotifiedRef = React.useRef(false);
+    
+    // Detect mobile device for performance optimization
+    const isMobile = React.useMemo(() => {
+        if (typeof window === 'undefined') return false;
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    }, []);
 
     // Supplies definition
     const supplies: SupplyItem[] = [
@@ -178,8 +184,22 @@ export function MagneticFieldLabEnhanced() {
     React.useEffect(() => {
         if (isDragging || interactionType === 'none') return;
         
-        const interval = setInterval(() => {
-            if (isUpdatingRef.current) return; // Prevent concurrent updates
+        // Use requestAnimationFrame for smoother animations (better for mobile)
+        let frameId: number;
+        let lastUpdate = 0;
+        const updateInterval = isMobile ? 50 : 20; // Slower updates on mobile (50ms vs 20ms)
+        
+        const animate = (timestamp: number) => {
+            if (timestamp - lastUpdate < updateInterval) {
+                frameId = requestAnimationFrame(animate);
+                return;
+            }
+            lastUpdate = timestamp;
+            
+            if (isUpdatingRef.current) {
+                frameId = requestAnimationFrame(animate);
+                return;
+            }
             
             // Use refs to get current values without dependencies
             const m1 = magnet1Ref.current;
@@ -285,12 +305,18 @@ export function MagneticFieldLabEnhanced() {
                 // Reset flag after a short delay
                 setTimeout(() => {
                     isUpdatingRef.current = false;
-                }, 30);
+                }, isMobile ? 50 : 30); // Longer delay on mobile
             }
-        }, 20); // Update every 20ms for smooth animation
+            
+            frameId = requestAnimationFrame(animate);
+        };
         
-        return () => clearInterval(interval);
-    }, [interactionType, isDragging]);
+        frameId = requestAnimationFrame(animate);
+        
+        return () => {
+            if (frameId) cancelAnimationFrame(frameId);
+        };
+    }, [interactionType, isDragging, isMobile]);
 
     const handleStartExperiment = () => {
         setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
@@ -317,7 +343,7 @@ export function MagneticFieldLabEnhanced() {
     }, [toast]);
 
     // Handle magnet dragging
-    const handleMagnetMouseDown = (e: React.MouseEvent, magnetId: string) => {
+    const handleMagnetMouseDown = (e: React.MouseEvent | React.TouchEvent, magnetId: string) => {
         e.preventDefault();
         e.stopPropagation();
         setIsDragging(magnetId);
@@ -327,8 +353,13 @@ export function MagneticFieldLabEnhanced() {
             const viewBox = svg.viewBox.baseVal;
             const scaleX = viewBox.width / rect.width;
             const scaleY = viewBox.height / rect.height;
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
+            
+            // Handle both mouse and touch events
+            const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+            const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+            
+            const x = (clientX - rect.left) * scaleX;
+            const y = (clientY - rect.top) * scaleY;
             
             if (magnetId === 'magnet1') {
                 setDragOffset({ x: x - magnet1.x, y: y - magnet1.y });
@@ -338,7 +369,7 @@ export function MagneticFieldLabEnhanced() {
         }
     };
 
-    const handleMagnetMouseMove = (e: React.MouseEvent) => {
+    const handleMagnetMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
         if (!isDragging) return;
         e.preventDefault();
         
@@ -348,8 +379,13 @@ export function MagneticFieldLabEnhanced() {
             const viewBox = svg.viewBox.baseVal;
             const scaleX = viewBox.width / rect.width;
             const scaleY = viewBox.height / rect.height;
-            const x = Math.max(50, Math.min(450, (e.clientX - rect.left) * scaleX - dragOffset.x));
-            const y = Math.max(50, Math.min(350, (e.clientY - rect.top) * scaleY - dragOffset.y));
+            
+            // Handle both mouse and touch events
+            const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+            const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+            
+            const x = Math.max(50, Math.min(450, (clientX - rect.left) * scaleX - dragOffset.x));
+            const y = Math.max(50, Math.min(350, (clientY - rect.top) * scaleY - dragOffset.y));
             
             if (isDragging === 'magnet1') {
                 setMagnet1(prev => ({ ...prev, x, y }));
@@ -882,10 +918,17 @@ export function MagneticFieldLabEnhanced() {
                                         height="400" 
                                         className="w-full h-auto border border-gray-300 dark:border-gray-600 rounded" 
                                         viewBox="0 0 500 400"
-                                        style={{ minHeight: '400px', backgroundColor: 'rgba(255,255,255,0.5)' }}
+                                        style={{ 
+                                            minHeight: '400px', 
+                                            backgroundColor: 'rgba(255,255,255,0.5)',
+                                            willChange: isMobile ? 'auto' : 'transform',
+                                            transform: 'translateZ(0)', // Force GPU acceleration
+                                        }}
                                         onMouseMove={handleMagnetMouseMove}
                                         onMouseUp={handleMagnetMouseUp}
                                         onMouseLeave={handleMagnetMouseUp}
+                                        onTouchMove={handleMagnetMouseMove as any}
+                                        onTouchEnd={handleMagnetMouseUp}
                                     >
                                         {/* Background grid for reference */}
                                         <defs>
@@ -915,8 +958,8 @@ export function MagneticFieldLabEnhanced() {
                                                         strokeWidth="2"
                                                         strokeDasharray="8,4"
                                                         initial={{ opacity: 0, scale: 0.8 }}
-                                                        animate={{ opacity: [0.3, 0.6, 0.3], scale: [0.9, 1.1, 0.9] }}
-                                                        transition={{ duration: 2, repeat: Infinity }}
+                                                        animate={isMobile ? { opacity: 0.4 } : { opacity: [0.3, 0.6, 0.3], scale: [0.9, 1.1, 0.9] }}
+                                                        transition={isMobile ? {} : { duration: 2, repeat: Infinity }}
                                                     />
                                                 );
                                             }
@@ -984,7 +1027,8 @@ export function MagneticFieldLabEnhanced() {
                                         <g 
                                             transform={`translate(${magnet1.x},${magnet1.y}) rotate(${magnet1.rotation})`}
                                             onMouseDown={(e) => handleMagnetMouseDown(e, 'magnet1')}
-                                            style={{ cursor: isDragging === 'magnet1' ? 'grabbing' : 'grab' }}
+                                            onTouchStart={(e) => handleMagnetMouseDown(e, 'magnet1')}
+                                            style={{ cursor: isDragging === 'magnet1' ? 'grabbing' : 'grab', touchAction: 'none' }}
                                         >
                                             <motion.g
                                                 animate={isDragging === 'magnet1' ? { scale: 1.15 } : { scale: 1 }}
@@ -1021,7 +1065,7 @@ export function MagneticFieldLabEnhanced() {
                                                     {magnet1.flipped ? 'N' : 'S'}
                                                 </text>
                                                 {/* Drag indicator */}
-                                                {!isDragging && (
+                                                {!isDragging && !isMobile && (
                                                     <motion.circle
                                                         cx="0"
                                                         cy="0"
@@ -1041,7 +1085,8 @@ export function MagneticFieldLabEnhanced() {
                                         <g 
                                             transform={`translate(${magnet2.x},${magnet2.y}) rotate(${magnet2.rotation})`}
                                             onMouseDown={(e) => handleMagnetMouseDown(e, 'magnet2')}
-                                            style={{ cursor: isDragging === 'magnet2' ? 'grabbing' : 'grab' }}
+                                            onTouchStart={(e) => handleMagnetMouseDown(e, 'magnet2')}
+                                            style={{ cursor: isDragging === 'magnet2' ? 'grabbing' : 'grab', touchAction: 'none' }}
                                         >
                                             <motion.g
                                                 animate={isDragging === 'magnet2' ? { scale: 1.15 } : { scale: 1 }}
@@ -1078,7 +1123,7 @@ export function MagneticFieldLabEnhanced() {
                                                     {magnet2.flipped ? 'N' : 'S'}
                                                 </text>
                                                 {/* Drag indicator */}
-                                                {!isDragging && (
+                                                {!isDragging && !isMobile && (
                                                     <motion.circle
                                                         cx="0"
                                                         cy="0"

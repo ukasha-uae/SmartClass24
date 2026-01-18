@@ -56,6 +56,12 @@ export function TeacherVoice({
     const debounceTimerRef = React.useRef<NodeJS.Timeout | null>(null);
     const chunkTimerRef = React.useRef<NodeJS.Timeout | null>(null);
     
+    // Detect mobile device for performance optimization
+    const isMobile = React.useMemo(() => {
+        if (typeof window === 'undefined') return false;
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    }, []);
+    
     // Auto-detect emotion from context if not explicitly provided
     const detectedEmotion = React.useMemo(() => {
         if (emotion) return emotion;
@@ -274,19 +280,21 @@ export function TeacherVoice({
                             className={`bg-gradient-to-br ${gradientClass} text-white rounded-3xl shadow-2xl p-8 max-w-sm mx-4 text-center border border-white/20 backdrop-blur-xl relative overflow-hidden`}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            {/* Animated background shimmer */}
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                                animate={{
-                                    x: ['-100%', '100%'],
-                                }}
-                                transition={{
-                                    repeat: Infinity,
-                                    duration: 3,
-                                    ease: 'linear',
-                                }}
-                                style={{ pointerEvents: 'none' }}
-                            />
+                            {/* Animated background shimmer - disabled on mobile for performance */}
+                            {!isMobile && (
+                                <motion.div
+                                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                                    animate={{
+                                        x: ['-100%', '100%'],
+                                    }}
+                                    transition={{
+                                        repeat: Infinity,
+                                        duration: 3,
+                                        ease: 'linear',
+                                    }}
+                                    style={{ pointerEvents: 'none' }}
+                                />
+                            )}
                             
                             <div className="relative z-10">
                                 <motion.div
@@ -426,21 +434,24 @@ export function TeacherVoice({
                         <div className={`relative rounded-2xl shadow-2xl backdrop-blur-md border border-white/40 overflow-hidden`}
                             style={{ 
                                 background: `linear-gradient(to bottom right, ${getThemeColors(theme).start}, ${getThemeColors(theme).end})`,
-                                opacity: 0.80
+                                opacity: 0.80,
+                                willChange: isMobile ? 'auto' : 'transform' // GPU acceleration hint on desktop only
                             }}>
-                            {/* Animated background shimmer */}
-                            <motion.div
-                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-                                animate={{
-                                    x: ['-100%', '100%'],
-                                }}
-                                transition={{
-                                    repeat: Infinity,
-                                    duration: 3,
-                                    ease: 'linear',
-                                }}
-                                style={{ pointerEvents: 'none' }}
-                            />
+                            {/* Animated background shimmer - disabled on mobile for performance */}
+                            {!isMobile && (
+                                <motion.div
+                                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+                                    animate={{
+                                        x: ['-100%', '100%'],
+                                    }}
+                                    transition={{
+                                        repeat: Infinity,
+                                        duration: 3,
+                                        ease: 'linear',
+                                    }}
+                                    style={{ pointerEvents: 'none' }}
+                                />
+                            )}
                             
                             {/* Drag Handle */}
                             <div className="absolute top-1.5 left-1/2 -translate-x-1/2 text-white/40 cursor-move z-10">
@@ -451,8 +462,9 @@ export function TeacherVoice({
                                 {/* Teacher Avatar */}
                                 <motion.div
                                     className="flex-shrink-0"
+                                    style={{ willChange: isMobile ? 'auto' : 'transform' }}
                                 >
-                                    <TeacherAvatar isPlaying={isPlaying} size="medium" theme={theme} emotion={detectedEmotion} />
+                                    <TeacherAvatar isPlaying={!isMobile && isPlaying} size="medium" theme={theme} emotion={detectedEmotion} />
                                 </motion.div>
 
                                 {/* Message */}

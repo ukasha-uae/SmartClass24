@@ -11,6 +11,12 @@ interface TeacherAvatarProps {
 }
 
 export function TeacherAvatar({ isPlaying, size = 'medium', theme = 'default', emotion = 'explaining' }: TeacherAvatarProps) {
+    // Detect mobile device for performance optimization
+    const isMobile = React.useMemo(() => {
+        if (typeof window === 'undefined') return false;
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }, []);
+    
     const sizeMap = {
         small: 40,
         medium: 48,
@@ -44,10 +50,10 @@ export function TeacherAvatar({ isPlaying, size = 'medium', theme = 'default', e
                 r="45"
                 fill="url(#avatarGradient)"
                 animate={{
-                    scale: isPlaying ? [1, 1.05, 1] : 1,
+                    scale: (isPlaying && !isMobile) ? [1, 1.05, 1] : 1,
                 }}
                 transition={{
-                    repeat: isPlaying ? Infinity : 0,
+                    repeat: (isPlaying && !isMobile) ? Infinity : 0,
                     duration: 1.5,
                     ease: "easeInOut",
                 }}
@@ -77,10 +83,10 @@ export function TeacherAvatar({ isPlaying, size = 'medium', theme = 'default', e
             {/* Eyes - blinking animation */}
             <motion.g
                 animate={{
-                    scaleY: isPlaying ? [1, 0.1, 1, 1, 1, 1, 1, 1] : 1,
+                    scaleY: (isPlaying && !isMobile) ? [1, 0.1, 1, 1, 1, 1, 1, 1] : 1,
                 }}
                 transition={{
-                    repeat: isPlaying ? Infinity : 0,
+                    repeat: (isPlaying && !isMobile) ? Infinity : 0,
                     duration: 4,
                     times: [0, 0.05, 0.1, 0.15, 0.2, 0.4, 0.6, 1],
                 }}
@@ -91,10 +97,10 @@ export function TeacherAvatar({ isPlaying, size = 'medium', theme = 'default', e
             
             <motion.g
                 animate={{
-                    scaleY: isPlaying ? [1, 0.1, 1, 1, 1, 1, 1, 1] : 1,
+                    scaleY: (isPlaying && !isMobile) ? [1, 0.1, 1, 1, 1, 1, 1, 1] : 1,
                 }}
                 transition={{
-                    repeat: isPlaying ? Infinity : 0,
+                    repeat: (isPlaying && !isMobile) ? Infinity : 0,
                     duration: 4,
                     times: [0, 0.05, 0.1, 0.15, 0.2, 0.4, 0.6, 1],
                 }}
@@ -126,7 +132,7 @@ export function TeacherAvatar({ isPlaying, size = 'medium', theme = 'default', e
                     strokeWidth="2"
                     strokeLinecap="round"
                     animate={{
-                        d: isPlaying && emotion === 'explaining'
+                        d: (isPlaying && !isMobile && emotion === 'explaining')
                             ? [
                                 "M 40 58 Q 50 60, 60 58",  // Closed
                                 "M 40 58 Q 50 63, 60 58",  // Open
@@ -134,7 +140,7 @@ export function TeacherAvatar({ isPlaying, size = 'medium', theme = 'default', e
                                 "M 40 58 Q 50 63, 60 58",  // Open
                                 "M 40 58 Q 50 60, 60 58",  // Closed
                             ]
-                            : emotion === 'celebrating'
+                            : (emotion === 'celebrating' && !isMobile)
                             ? [
                                 "M 38 58 Q 50 64, 62 58",  // Big smile
                                 "M 38 57 Q 50 63, 62 57",  // Animate
@@ -143,7 +149,7 @@ export function TeacherAvatar({ isPlaying, size = 'medium', theme = 'default', e
                             : undefined
                     }}
                     transition={{
-                        repeat: isPlaying && emotion === 'explaining' ? Infinity : emotion === 'celebrating' ? Infinity : 0,
+                        repeat: (isPlaying && !isMobile && emotion === 'explaining') ? Infinity : (emotion === 'celebrating' && !isMobile) ? Infinity : 0,
                         duration: emotion === 'celebrating' ? 0.8 : 1.2,
                         ease: "easeInOut",
                     }}
@@ -163,8 +169,8 @@ export function TeacherAvatar({ isPlaying, size = 'medium', theme = 'default', e
                 opacity="0.3"
             />
             
-            {/* Speaking indicator - sound waves */}
-            {isPlaying && (
+            {/* Speaking indicator - sound waves (disabled on mobile for performance) */}
+            {isPlaying && !isMobile && (
                 <>
                     <motion.circle
                         cx="50"
