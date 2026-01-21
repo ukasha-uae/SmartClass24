@@ -649,9 +649,9 @@ export default function PricingPage() {
           <Card className="text-center">
             <CardContent className="pt-6">
               <Users className="h-12 w-12 text-purple-500 mx-auto mb-4" />
-              <h3 className="font-semibold mb-2">Join Thousands</h3>
+              <h3 className="font-semibold mb-2">Join Our Community</h3>
               <p className="text-sm text-muted-foreground">
-                Join 5,000+ premium students preparing for their exams. You're not alone!
+                Join 150+ premium students preparing for their exams. You're not alone!
               </p>
             </CardContent>
           </Card>

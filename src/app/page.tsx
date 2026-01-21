@@ -3,9 +3,10 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   GraduationCap, BookOpen, ArrowRight, Sparkles, 
-  Users, Trophy, Target, Brain
+  Users, Trophy, Target, Brain, Info
 } from "lucide-react";
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -93,7 +94,7 @@ export default function Home() {
       icon: Trophy,
       features: ['Arena Challenge', 'Virtual Labs', 'Fun Learning Games', 'Competitive Play'],
       href: `/challenge-arena/${country?.id || 'ghana'}?level=Primary`,
-      studentCount: '5,000+',
+      studentCount: '120+',
       classes: 'Class 1-6',
       emoji: '🎒',
       tagline: 'Start Your Learning Journey',
@@ -108,7 +109,7 @@ export default function Home() {
       icon: Trophy,
       features: ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', 'Progress Tracking'],
       href: `/challenge-arena/${country?.id || 'ghana'}?level=JHS`,
-      studentCount: '12,000+',
+      studentCount: '350+',
       classes: juniorClasses,
       emoji: '📚',
       tagline: country?.id === 'nigeria' ? 'Excel in Basic Education' : `Master ${juniorExam}`,
@@ -123,7 +124,7 @@ export default function Home() {
       icon: GraduationCap,
       features: ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', `${seniorExam} Prep`],
       href: `/challenge-arena/${country?.id || 'ghana'}?level=SHS`,
-      studentCount: '10,000+',
+      studentCount: '280+',
       classes: seniorClasses,
       emoji: '🎓',
       tagline: 'Your Path to University',
@@ -132,7 +133,7 @@ export default function Home() {
   ];
 
   const stats = [
-    { label: 'Active Students', value: '27,000+', icon: Users },
+    { label: 'Active Students', value: '750+', icon: Users },
     { label: 'Success Rate', value: '96%', icon: Trophy },
     { label: 'Education Levels', value: '3', icon: Target },
     { label: 'AI-Powered', value: 'Yes', icon: Brain }
@@ -355,26 +356,56 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            {[
-              { href: '/challenge-arena/ghana', label: 'Challenge Arena', icon: '⚔️', desc: 'Battle & Compete', show: true, gradient: 'from-orange-500 to-red-600' },
-              { href: '/study-groups', label: 'Study Groups', icon: '👥', desc: 'Learn Together', show: false, gradient: 'from-blue-500 to-indigo-600' }, // Hidden for V1
-              { href: '/virtual-labs', label: 'Virtual Labs', icon: '🔬', desc: 'Hands-On Science', show: FEATURE_FLAGS.V1_LAUNCH.shsHasVirtualLabs, gradient: 'from-purple-500 to-pink-600' },
-              { href: '/past-questions', label: 'Past Questions', icon: '📝', desc: 'Practice Tests', show: true, gradient: 'from-green-500 to-emerald-600' }
-            ].filter(item => item.show).map((item) => (
-              <Link key={item.href} href={item.href}>
-                <Card className="group relative hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 border-slate-200/50 dark:border-slate-700/50 hover:border-violet-400 dark:hover:border-violet-600 h-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity`}></div>
-                  <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20 rounded-full blur-2xl group-hover:scale-150 transition-all`}></div>
-                  <CardContent className="p-6 text-center relative z-10">
-                    <div className="text-4xl sm:text-5xl mb-3 group-hover:scale-110 transition-transform inline-block">{item.icon}</div>
-                    <h4 className="font-bold text-sm sm:text-base mb-1 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">{item.label}</h4>
-                    <p className="text-xs text-muted-foreground">{item.desc}</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+          <TooltipProvider>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+              {[
+                { 
+                  href: '/challenge-arena/ghana', 
+                  label: 'Challenge Arena', 
+                  icon: '⚔️', 
+                  desc: 'Battle & Compete', 
+                  tooltip: 'Compete with classmates in timed quiz battles. Earn XP, climb leaderboards, and win achievements!',
+                  show: true, 
+                  gradient: 'from-orange-500 to-red-600' 
+                },
+                { href: '/study-groups', label: 'Study Groups', icon: '👥', desc: 'Learn Together', show: false, gradient: 'from-blue-500 to-indigo-600' }, // Hidden for V1
+                { 
+                  href: '/virtual-labs', 
+                  label: 'Virtual Labs', 
+                  icon: '🔬', 
+                  desc: 'Hands-On Science', 
+                  tooltip: 'Interactive science experiments you can do online. Test acids & bases, explore circuits, and more!',
+                  show: FEATURE_FLAGS.V1_LAUNCH.shsHasVirtualLabs, 
+                  gradient: 'from-purple-500 to-pink-600' 
+                },
+                { href: '/past-questions', label: 'Past Questions', icon: '📝', desc: 'Practice Tests', show: true, gradient: 'from-green-500 to-emerald-600' }
+              ].filter(item => item.show).map((item) => (
+                <Tooltip key={item.href} delayDuration={300}>
+                  <TooltipTrigger asChild>
+                    <Link href={item.href}>
+                      <Card className="group relative hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 border-slate-200/50 dark:border-slate-700/50 hover:border-violet-400 dark:hover:border-violet-600 h-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden">
+                        <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity`}></div>
+                        <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20 rounded-full blur-2xl group-hover:scale-150 transition-all`}></div>
+                        <CardContent className="p-6 text-center relative z-10">
+                          <div className="text-4xl sm:text-5xl mb-3 group-hover:scale-110 transition-transform inline-block">{item.icon}</div>
+                          <h4 className="font-bold text-sm sm:text-base mb-1 bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
+                            {item.label}
+                            {item.tooltip && <Info className="inline-block ml-1 h-3 w-3 opacity-50" />}
+                          </h4>
+                          <p className="text-xs text-muted-foreground">{item.desc}</p>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </TooltipTrigger>
+                  {item.tooltip && (
+                    <TooltipContent side="bottom" className="max-w-[250px] text-center">
+                      <p>{item.tooltip}</p>
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              ))}
+            </div>
+          </TooltipProvider>
 
           {/* Earn Premium Banner - Only for logged in users */}
           {user && !user.isAnonymous && (
