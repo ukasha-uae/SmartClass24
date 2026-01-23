@@ -58,9 +58,17 @@ export function useBotChallenge(
           correctIndex
         );
 
+        // Convert answer index to the actual option text for MCQ questions
+        let answerValue: string;
+        if (question.type === 'mcq' && question.options && result.selectedIndex < question.options.length) {
+          answerValue = question.options[result.selectedIndex];
+        } else {
+          answerValue = String(result.selectedIndex);
+        }
+
         botAnswers.push({
           questionId: question.id,
-          answer: String(result.selectedIndex),
+          answer: answerValue,
           isCorrect: result.isCorrect,
           timeSpent: result.timeSpent,
           points: result.isCorrect ? question.points : 0

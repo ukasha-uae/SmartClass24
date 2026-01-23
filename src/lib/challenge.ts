@@ -1269,23 +1269,45 @@ export const submitChallengeAnswers = async (
   }
   
   // Get player profile and sync name from Firestore student profile
-  const player = getPlayerProfile(userId);
-  let displayName = player?.userName || 'Unknown';
+  // Special handling for bots - use bot profile instead of localStorage
+  let displayName = 'Unknown';
+  let schoolName = 'Unknown';
   
-  // Try to get actual student name from Firestore (non-blocking)
-  try {
-    const syncedName = await syncPlayerNameFromFirestore(userId);
-    if (syncedName) {
-      displayName = syncedName;
+  if (userId.startsWith('bot-')) {
+    // Bot player - ALWAYS use opponent info from challenge (most reliable)
+    console.log('[Submit Answers] Detected bot user:', userId);
+    const opponent = challenge.opponents.find(o => o.userId === userId);
+    if (opponent) {
+      displayName = opponent.userName;
+      schoolName = opponent.school;
+      console.log('[Submit Answers] Bot info from challenge:', displayName, schoolName);
+    } else {
+      console.warn('[Submit Answers] Bot opponent NOT found in challenge for:', userId);
+      // Last resort: hardcoded bot name
+      displayName = 'Sarah';
+      schoolName = 'AI Study Partner';
     }
-  } catch (err) {
-    console.warn('[Challenge] Could not sync player name from Firestore:', err);
+  } else {
+    // Real player - get from localStorage and sync with Firestore
+    const player = getPlayerProfile(userId);
+    displayName = player?.userName || 'Unknown';
+    schoolName = player?.school || 'Unknown';
+    
+    // Try to get actual student name from Firestore (non-blocking)
+    try {
+      const syncedName = await syncPlayerNameFromFirestore(userId);
+      if (syncedName) {
+        displayName = syncedName;
+      }
+    } catch (err) {
+      console.warn('[Challenge] Could not sync player name from Firestore:', err);
+    }
   }
   
   const resultData = {
     userId,
     userName: displayName,
-    school: player?.school || 'Unknown',
+    school: schoolName,
     answers,
     score,
     correctAnswers: correctAnswersCount,

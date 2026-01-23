@@ -261,8 +261,12 @@ export default function QuizBattlePage() {
                 
                 // Update game phase based on challenge status
                 setGamePhase((currentPhase) => {
-                  // CRITICAL: If challenge is completed OR has results data, always show results (prevents reset to waiting)
-                  if (firestoreChallenge.status === 'completed' || (firestoreChallenge.results && firestoreChallenge.results.length > 0)) {
+                  // CRITICAL: If challenge is completed OR has all results, always show results
+                  const expectedResults = 1 + (firestoreChallenge.opponents?.length || 0);
+                  const hasAllResults = firestoreChallenge.results && firestoreChallenge.results.length >= expectedResults;
+                  
+                  if (firestoreChallenge.status === 'completed' || hasAllResults) {
+                    console.log('[Listener] Challenge complete or has all results, showing results');
                     return 'results';
                   }
                   
@@ -518,15 +522,24 @@ export default function QuizBattlePage() {
     // For practice mode or boss battles, show results immediately
     const isPractice = challenge.type === 'practice';
     const isBossBattle = challenge.type === 'boss';
+    const isQuickMatch = challenge.type === 'quick';
     const totalPlayers = 1 + (challenge.opponents?.length || 0); // Creator + opponents
     const finishedPlayers = updatedChallenge?.results?.length || 1;
     
-    if (isPractice || isBossBattle || finishedPlayers >= totalPlayers) {
-      // All players finished, show results
+    console.log('[Finish Challenge] Type:', challenge.type, 'Total players:', totalPlayers, 'Finished:', finishedPlayers);
+    console.log('[Finish Challenge] Results:', updatedChallenge?.results?.map(r => ({ userId: r.userId, userName: r.userName })));
+    
+    // For quick matches with bots, show results immediately since bot finishes fast
+    const opponentIsBot = challenge.opponents.some(o => o.userId.startsWith('bot-'));
+    
+    if (isPractice || isBossBattle || finishedPlayers >= totalPlayers || (isQuickMatch && opponentIsBot)) {
+      // All players finished (or bot match), show results
+      console.log('[Finish Challenge] Showing results now');
       setGamePhase('results');
       playSound('complete');
     } else {
       // Wait for opponent to finish
+      console.log('[Finish Challenge] Waiting for opponent');
       setGamePhase('waiting-for-opponent');
       toast({ 
         title: 'Challenge Complete!', 
