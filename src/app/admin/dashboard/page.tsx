@@ -154,14 +154,46 @@ export default function AdminDashboard() {
       const studentsRef = collection(firestore, 'students');
       const studentsSnapshot = await getDocs(studentsRef);
       
+      // Import Firebase Auth to get user data
+      const { getAuth } = await import('firebase/auth');
+      const auth = getAuth();
+      
       const firestoreUsers: Player[] = [];
-      studentsSnapshot.forEach((doc) => {
+      
+      for (const doc of studentsSnapshot.docs) {
         const data = doc.data();
+        const userId = doc.id;
+        
+        // Try to get Firebase Auth user data for better display names
+        let displayName = data.studentName || data.userName;
+        let email = data.email;
+        
+        // If no name in Firestore, try to get from Firebase Auth
+        if (!displayName || displayName === 'Unknown') {
+          try {
+            // Check if this is an anonymous user
+            if (userId.startsWith('anon-')) {
+              displayName = 'Guest Student';
+            } else {
+              // Try to get auth user data (this works for the current session)
+              // For a full solution, you'd need Firebase Admin SDK
+              // For now, use email username as fallback
+              if (email) {
+                displayName = email.split('@')[0];
+              } else {
+                displayName = 'Unknown';
+              }
+            }
+          } catch (authError) {
+            console.warn(`Could not fetch auth data for user ${userId}:`, authError);
+          }
+        }
+        
         firestoreUsers.push({
-          userId: doc.id,
-          userName: data.studentName || data.userName || 'Unknown',
-          name: data.studentName || data.userName || 'Unknown',
-          email: data.email || undefined,
+          userId,
+          userName: displayName,
+          name: displayName,
+          email: email || undefined,
           school: data.school || 'Unknown',
           schoolId: data.schoolId,
           schoolRegion: data.schoolRegion,
@@ -177,7 +209,7 @@ export default function AdminDashboard() {
           achievements: data.achievements || [],
           level: data.level || 'JHS',
         });
-      });
+      }
 
       // Also load from localStorage (for users who haven't synced to Firestore yet)
       const localUsers = getAllPlayers();
