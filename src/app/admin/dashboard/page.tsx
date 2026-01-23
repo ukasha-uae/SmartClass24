@@ -24,7 +24,8 @@ import {
   Shield,
   Loader2,
   Trash2,
-  UserX
+  UserX,
+  BarChart3
 } from 'lucide-react';
 import { getPlayerProfile, getAllPlayers, createOrUpdatePlayer, Player } from '@/lib/challenge';
 import { 
@@ -610,6 +611,18 @@ export default function AdminDashboard() {
               </span>
             )}
           </p>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mb-4">
+          <Button
+            onClick={() => router.push('/admin/analytics')}
+            variant="outline"
+            className="gap-2 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 hover:from-violet-100 hover:to-purple-100 dark:hover:from-violet-900/30 dark:hover:to-purple-900/30 border-violet-200 dark:border-violet-800"
+          >
+            <BarChart3 className="h-4 w-4" />
+            📊 View Usage Analytics
+          </Button>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
