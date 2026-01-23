@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -614,9 +615,12 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mb-4">
+        <div className="mb-4 flex gap-2">
           <Button
-            onClick={() => router.push('/admin/analytics')}
+            onClick={() => {
+              console.log('[Admin Dashboard] Navigating to analytics page...');
+              window.location.href = '/admin/analytics';
+            }}
             variant="outline"
             className="gap-2 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 hover:from-violet-100 hover:to-purple-100 dark:hover:from-violet-900/30 dark:hover:to-purple-900/30 border-violet-200 dark:border-violet-800"
           >

@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase';
-import { collection, getDocs, query, orderBy, limit, where, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, where } from 'firebase/firestore';
 import { QuestionUsageEvent } from '@/lib/analytics';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, BarChart3, TrendingUp, Users, BookOpen, Target, Calendar, RefreshCw } from 'lucide-react';
@@ -13,7 +13,6 @@ interface AnalyticsData {
   subjectPopularity: { subject: string; count: number }[];
   levelDistribution: { level: string; count: number }[];
   topTopics: { topic: string; count: number }[];
-  difficultyDistribution: { difficulty: string; count: number }[];
   dailyUsage: { date: string; count: number }[];
   uniqueUsers: number;
 }
@@ -21,39 +20,24 @@ interface AnalyticsData {
 export default function AnalyticsPage() {
   const router = useRouter();
   const { user, firestore } = useFirebase();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [dateRange, setDateRange] = useState<'7d' | '30d' | 'all'>('7d');
+  const [dateRange, setDateRange] = useState<'7d' | '30d' | 'all'>('all');
 
-  const loadAnalytics = async () => {
-    if (!firestore) {
-      setError('Firebase not initialized');
-      setLoading(false);
+  const loadAnalytics = useCallback(async () => {
+    if (!firestore || !user) {
+      console.log('[Analytics] Waiting for Firebase/User...');
       return;
     }
 
+    console.log('[Analytics] Loading analytics data...');
     setLoading(true);
     setError(null);
 
     try {
-      // Get analytics data from Firestore
       const analyticsRef = collection(firestore, 'subjects', '__analytics', 'questionUsage');
-      
-      // Calculate date filter
-      let q = query(analyticsRef, orderBy('timestamp', 'desc'), limit(1000));
-      
-      if (dateRange !== 'all') {
-        const days = dateRange === '7d' ? 7 : 30;
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - days);
-        q = query(
-          analyticsRef,
-          where('timestamp', '>=', startDate.getTime()),
-          orderBy('timestamp', 'desc'),
-          limit(1000)
-        );
-      }
+      let q = query(analyticsRef, orderBy('timestamp', 'desc'), limit(500));
 
       const snapshot = await getDocs(q);
       const events: QuestionUsageEvent[] = [];
@@ -62,92 +46,73 @@ export default function AnalyticsPage() {
         events.push(doc.data() as QuestionUsageEvent);
       });
 
+      console.log(`[Analytics] Loaded ${events.length} events`);
+
       // Process analytics data
       const subjectMap = new Map<string, number>();
       const levelMap = new Map<string, number>();
       const topicMap = new Map<string, number>();
-      const difficultyMap = new Map<string, number>();
       const dailyMap = new Map<string, number>();
       const userSet = new Set<string>();
 
       events.forEach((event) => {
-        // Subject popularity
-        const subject = event.subject || 'Unknown';
-        subjectMap.set(subject, (subjectMap.get(subject) || 0) + event.questionCount);
-
-        // Level distribution
-        const level = event.level || 'Unknown';
-        levelMap.set(level, (levelMap.get(level) || 0) + event.questionCount);
-
-        // Topics
+        subjectMap.set(event.subject || 'Unknown', (subjectMap.get(event.subject || 'Unknown') || 0) + event.questionCount);
+        levelMap.set(event.level || 'Unknown', (levelMap.get(event.level || 'Unknown') || 0) + event.questionCount);
         event.topics?.forEach((topic) => {
           topicMap.set(topic, (topicMap.get(topic) || 0) + 1);
         });
-
-        // Difficulty
-        const difficulty = event.difficulty || 'Unknown';
-        difficultyMap.set(difficulty, (difficultyMap.get(difficulty) || 0) + event.questionCount);
-
-        // Daily usage
         const date = new Date(event.timestamp).toISOString().split('T')[0];
         dailyMap.set(date, (dailyMap.get(date) || 0) + 1);
-
-        // Unique users
-        if (event.userId) {
-          userSet.add(event.userId);
-        }
+        if (event.userId) userSet.add(event.userId);
       });
-
-      // Convert to arrays and sort
-      const subjectPopularity = Array.from(subjectMap.entries())
-        .map(([subject, count]) => ({ subject, count }))
-        .sort((a, b) => b.count - a.count);
-
-      const levelDistribution = Array.from(levelMap.entries())
-        .map(([level, count]) => ({ level, count }))
-        .sort((a, b) => b.count - a.count);
-
-      const topTopics = Array.from(topicMap.entries())
-        .map(([topic, count]) => ({ topic, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 15); // Top 15 topics
-
-      const difficultyDistribution = Array.from(difficultyMap.entries())
-        .map(([difficulty, count]) => ({ difficulty, count }))
-        .sort((a, b) => b.count - a.count);
-
-      const dailyUsage = Array.from(dailyMap.entries())
-        .map(([date, count]) => ({ date, count }))
-        .sort((a, b) => a.date.localeCompare(b.date));
 
       setAnalytics({
         totalEvents: events.length,
-        subjectPopularity,
-        levelDistribution,
-        topTopics,
-        difficultyDistribution,
-        dailyUsage,
+        subjectPopularity: Array.from(subjectMap.entries())
+          .map(([subject, count]) => ({ subject, count }))
+          .sort((a, b) => b.count - a.count),
+        levelDistribution: Array.from(levelMap.entries())
+          .map(([level, count]) => ({ level, count }))
+          .sort((a, b) => b.count - a.count),
+        topTopics: Array.from(topicMap.entries())
+          .map(([topic, count]) => ({ topic, count }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 15),
+        dailyUsage: Array.from(dailyMap.entries())
+          .map(([date, count]) => ({ date, count }))
+          .sort((a, b) => a.date.localeCompare(b.date)),
         uniqueUsers: userSet.size,
       });
     } catch (err: any) {
-      console.error('Analytics load error:', err);
+      console.error('[Analytics] Load error:', err);
       setError(err.message || 'Failed to load analytics');
     } finally {
       setLoading(false);
     }
-  };
+  }, [firestore, user]);
 
   useEffect(() => {
-    if (!user) {
-      router.push('/admin/dashboard');
-      return;
+    if (user && firestore) {
+      loadAnalytics();
     }
-    loadAnalytics();
-  }, [user, dateRange]);
+  }, [user, firestore, loadAnalytics]);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-gray-900 dark:to-gray-950 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🔐</div>
+          <h1 className="text-2xl font-bold mb-2">Authentication Required</h1>
+          <p className="text-muted-foreground mb-4">Please sign in to view analytics</p>
+          <Button onClick={() => router.push('/profile')}>Sign In</Button>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-gray-900 dark:to-gray-950 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600 mx-auto mb-4" />
           <p className="text-muted-foreground">Loading analytics...</p>
@@ -157,10 +122,10 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-purple-50 dark:from-gray-900 dark:to-gray-950 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -175,41 +140,28 @@ export default function AnalyticsPage() {
                 📊 Usage Analytics
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
-                Understand what users do on the app to prioritize upgrades
+                Understand what users do on the app
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <select
-              value={dateRange}
-              onChange={(e) => setDateRange(e.target.value as '7d' | '30d' | 'all')}
-              className="px-3 py-2 rounded-lg border bg-white dark:bg-gray-800 text-sm"
-            >
-              <option value="7d">Last 7 Days</option>
-              <option value="30d">Last 30 Days</option>
-              <option value="all">All Time</option>
-            </select>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={loadAnalytics}
-              className="gap-2"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Refresh
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={loadAnalytics}
+            className="gap-2"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Refresh
+          </Button>
         </div>
 
         {error && (
           <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-            <p className="text-red-600 dark:text-red-400 text-sm">
-              ⚠️ {error}
-            </p>
+            <p className="text-red-600 dark:text-red-400 text-sm">⚠️ {error}</p>
           </div>
         )}
 
-        {!analytics && !error && (
+        {!analytics && !error && !loading && (
           <div className="bg-white dark:bg-gray-800 rounded-lg border p-8 text-center">
             <BarChart3 className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground">No analytics data available yet.</p>
@@ -222,7 +174,7 @@ export default function AnalyticsPage() {
         {analytics && (
           <>
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="p-2 bg-violet-100 dark:bg-violet-900/20 rounded-lg">
@@ -258,21 +210,9 @@ export default function AnalyticsPage() {
                   {analytics.subjectPopularity[0]?.subject || 'N/A'}
                 </p>
               </div>
-
-              <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-pink-100 dark:bg-pink-900/20 rounded-lg">
-                    <Target className="w-5 h-5 text-pink-600 dark:text-pink-400" />
-                  </div>
-                  <h3 className="font-semibold text-sm text-muted-foreground">Top Level</h3>
-                </div>
-                <p className="text-lg font-bold text-pink-600 dark:text-pink-400">
-                  {analytics.levelDistribution[0]?.level || 'N/A'}
-                </p>
-              </div>
             </div>
 
-            {/* Charts Row */}
+            {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Subject Popularity */}
               <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
@@ -281,7 +221,7 @@ export default function AnalyticsPage() {
                   Subject Popularity
                 </h2>
                 <div className="space-y-3">
-                  {analytics.subjectPopularity.slice(0, 8).map((item, index) => {
+                  {analytics.subjectPopularity.slice(0, 8).map((item) => {
                     const maxCount = analytics.subjectPopularity[0]?.count || 1;
                     const percentage = (item.count / maxCount) * 100;
                     return (
@@ -302,116 +242,41 @@ export default function AnalyticsPage() {
                 </div>
               </div>
 
-              {/* Level Distribution */}
+              {/* Top Topics */}
               <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Target className="w-5 h-5 text-indigo-600" />
-                  Level Distribution
+                  <TrendingUp className="w-5 h-5 text-purple-600" />
+                  Top Topics
                 </h2>
-                <div className="space-y-3">
-                  {analytics.levelDistribution.map((item) => {
-                    const maxCount = analytics.levelDistribution[0]?.count || 1;
-                    const percentage = (item.count / maxCount) * 100;
-                    return (
-                      <div key={item.level} className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium">{item.level}</span>
-                          <span className="text-muted-foreground">{item.count} questions</span>
-                        </div>
-                        <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-indigo-500 to-blue-500"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div className="grid grid-cols-1 gap-2">
+                  {analytics.topTopics.slice(0, 10).map((item, index) => (
+                    <div
+                      key={item.topic}
+                      className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10 rounded-lg border flex items-center justify-between"
+                    >
+                      <span className="text-sm font-medium truncate flex-1">{item.topic}</span>
+                      <span className="text-xs font-bold text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 px-2 py-1 rounded ml-2">
+                        {item.count}x
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* Top Topics */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-purple-600" />
-                Top 15 Topics (Most Used)
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {analytics.topTopics.map((item, index) => (
-                  <div
-                    key={item.topic}
-                    className="p-3 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10 rounded-lg border"
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="text-sm font-medium flex-1">{item.topic}</span>
-                      <span className="text-xs font-bold text-purple-600 dark:text-purple-400 bg-white dark:bg-gray-800 px-2 py-1 rounded">
-                        {item.count}x
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Daily Usage Trend */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border p-6">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-pink-600" />
-                Daily Usage Trend
-              </h2>
-              <div className="space-y-2">
-                {analytics.dailyUsage.slice(-14).map((item) => {
-                  const maxCount = Math.max(...analytics.dailyUsage.map((d) => d.count));
-                  const percentage = (item.count / maxCount) * 100;
-                  const date = new Date(item.date);
-                  const formattedDate = date.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                  });
-                  return (
-                    <div key={item.date} className="space-y-1">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-medium">{formattedDate}</span>
-                        <span className="text-muted-foreground">{item.count} challenges</span>
-                      </div>
-                      <div className="h-2 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-pink-500 to-rose-500"
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Insights & Recommendations */}
+            {/* Insights */}
             <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/10 dark:to-purple-900/10 rounded-lg border border-violet-200 dark:border-violet-800 p-6">
               <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-violet-600" />
-                📈 Insights & Recommendations
+                📈 Key Insights
               </h2>
               <div className="space-y-3 text-sm">
                 {analytics.subjectPopularity[0] && (
                   <div className="flex items-start gap-3">
                     <span className="text-lg">🔥</span>
                     <p>
-                      <strong>{analytics.subjectPopularity[0].subject}</strong> is the most popular subject with{' '}
-                      <strong>{analytics.subjectPopularity[0].count} questions used</strong>. Consider adding more
-                      content here.
-                    </p>
-                  </div>
-                )}
-                {analytics.subjectPopularity[analytics.subjectPopularity.length - 1] && (
-                  <div className="flex items-start gap-3">
-                    <span className="text-lg">⚠️</span>
-                    <p>
-                      <strong>
-                        {analytics.subjectPopularity[analytics.subjectPopularity.length - 1].subject}
-                      </strong>{' '}
-                      has the lowest usage. Consider promoting it or improving its content quality.
+                      <strong>{analytics.subjectPopularity[0].subject}</strong> is the most popular with{' '}
+                      <strong>{analytics.subjectPopularity[0].count} questions used</strong>. Consider adding more content.
                     </p>
                   </div>
                 )}
@@ -419,9 +284,8 @@ export default function AnalyticsPage() {
                   <div className="flex items-start gap-3">
                     <span className="text-lg">👥</span>
                     <p>
-                      <strong>{analytics.uniqueUsers} unique users</strong> have played challenges. Average of{' '}
-                      <strong>{(analytics.totalEvents / analytics.uniqueUsers).toFixed(1)} challenges per user</strong>
-                      .
+                      <strong>{analytics.uniqueUsers} unique users</strong> active. Average of{' '}
+                      <strong>{(analytics.totalEvents / analytics.uniqueUsers).toFixed(1)} challenges per user</strong>.
                     </p>
                   </div>
                 )}
@@ -429,8 +293,8 @@ export default function AnalyticsPage() {
                   <div className="flex items-start gap-3">
                     <span className="text-lg">🎯</span>
                     <p>
-                      Most popular topic: <strong>{analytics.topTopics[0].topic}</strong> ({analytics.topTopics[0].count}
-                      x). Focus quality improvements here for maximum impact.
+                      Most popular topic: <strong>{analytics.topTopics[0].topic}</strong> ({analytics.topTopics[0].count}x).
+                      Focus quality improvements here.
                     </p>
                   </div>
                 )}
