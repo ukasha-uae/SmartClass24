@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Challenge Cache - SmartClass24 Debug Tool</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #b91c1c;
+        }
+        .success {
+            background: #16a34a;
+        }
+        .success:hover {
+            background: #15803d;
+        }
+        pre {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        h1 {
+            color: #1f2937;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Challenge Cache Debug Tool</h1>
+        <p>Use this tool to clear challenge data from localStorage if you're experiencing sync issues.</p>
+        
+        <div class="warning">
+            <strong>⚠️ Warning:</strong> This will clear cached challenge data from your browser. Active challenges will reload from Firestore.
+        </div>
+
+        <h3>Current Cache Status:</h3>
+        <div id="status" class="status"></div>
+
+        <h3>Actions:</h3>
+        <button onclick="viewCache()">📋 View Cache</button>
+        <button onclick="clearChallenges()">🗑️ Clear Challenges</button>
+        <button onclick="clearPlayerProfile()">👤 Clear Player Profile</button>
+        <button onclick="clearAll()" style="background: #dc2626;">🔥 Clear Everything</button>
+        <button onclick="location.reload()" class="success">🔄 Refresh Page</button>
+
+        <h3>Cache Data:</h3>
+        <pre id="output">Click "View Cache" to see current data...</pre>
+    </div>
+
+    <script>
+        function updateStatus() {
+            const challenges = localStorage.getItem('challenges');
+            const players = localStorage.getItem('players');
+            const challengeCount = challenges ? JSON.parse(challenges).length : 0;
+            const playerCount = players ? JSON.parse(players).length : 0;
+            
+            document.getElementById('status').innerHTML = `
+                <strong>Challenges:</strong> ${challengeCount} cached<br>
+                <strong>Players:</strong> ${playerCount} cached<br>
+                <strong>Total localStorage items:</strong> ${localStorage.length}
+            `;
+        }
+
+        function viewCache() {
+            const data = {
+                challenges: localStorage.getItem('challenges'),
+                players: localStorage.getItem('players'),
+                allKeys: Object.keys(localStorage)
+            };
+            
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+
+        function clearChallenges() {
+            if (confirm('Clear all cached challenges? They will reload from Firestore.')) {
+                localStorage.removeItem('challenges');
+                alert('✅ Challenges cleared!');
+                updateStatus();
+            }
+        }
+
+        function clearPlayerProfile() {
+            if (confirm('Clear player profile cache?')) {
+                localStorage.removeItem('players');
+                alert('✅ Player profiles cleared!');
+                updateStatus();
+            }
+        }
+
+        function clearAll() {
+            if (confirm('⚠️ Clear ALL localStorage data? This cannot be undone.')) {
+                localStorage.clear();
+                alert('✅ All cache cleared!');
+                updateStatus();
+            }
+        }
+
+        // Initialize
+        updateStatus();
+    </script>
+</body>
+</html>

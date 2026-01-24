@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   GraduationCap, BookOpen, ArrowRight, Sparkles, 
-  Users, Trophy, Target, Brain, Info
+  Users, Trophy, Target, Brain, Info, Building2
 } from "lucide-react";
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -129,7 +129,22 @@ export default function Home() {
       emoji: '🎓',
       tagline: 'Your Path to University',
       v1Note: 'V1: Arena + Virtual Labs'
-    }
+    },
+    ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity ? [{
+      id: 'university',
+      name: 'University Campus',
+      shortName: 'University',
+      description: 'Tech-Focused Programs with Hands-On Projects',
+      gradient: 'from-green-600 to-emerald-700',
+      icon: BookOpen,
+      features: ['Code Editor', 'Live Projects', 'Certifications', 'Real-World Skills'],
+      href: '/university',
+      studentCount: '50+',
+      classes: 'Beginner-Expert',
+      emoji: '💻',
+      tagline: 'Build Your Tech Career',
+      v1Note: 'NEW: Full Learning Platform'
+    }] : [])
   ];
 
   const stats = [

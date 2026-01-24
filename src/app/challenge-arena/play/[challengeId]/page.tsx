@@ -44,6 +44,7 @@ import { useFullscreen } from '@/contexts/FullscreenContext';
 import { ShareChallengeDialog } from '@/components/challenge/ShareChallengeDialog';
 import { useBotChallenge } from '@/lib/use-bot-challenge';
 import { isBot } from '@/lib/ai-bot-profiles';
+import { getUserDisplayName } from '@/lib/user-display';
 
 export default function QuizBattlePage() {
   const params = useParams();
@@ -123,7 +124,7 @@ export default function QuizBattlePage() {
     let playerProfile = getPlayerProfile(userId);
     if (!playerProfile) {
       // Try to get student name from Firestore profile
-      let displayName = user?.displayName || 'Player';
+      let displayName = getUserDisplayName(user);
       
       // Async fetch of student profile name (non-blocking)
       if (firestore) {
@@ -133,7 +134,7 @@ export default function QuizBattlePage() {
             const profileSnap = await getDoc(profileRef);
             if (profileSnap.exists()) {
               const profileData = profileSnap.data();
-              const studentName = profileData?.studentName;
+              const studentName = getUserDisplayName({ ...profileData, ...user });
               if (studentName && playerProfile) {
                 // Update player profile with actual student name
                 const updatedProfile = createOrUpdatePlayer({
@@ -316,7 +317,7 @@ export default function QuizBattlePage() {
             // Update player profile with real data
             const enhancedProfile = createOrUpdatePlayer({
               userId,
-              userName: profileData.studentName || user?.displayName || user?.email?.split('@')[0] || 'Player',
+              userName: getUserDisplayName({ ...profileData, ...user }),
               school: profileData.schoolName || 'Unknown School',
               rating: playerProfile?.rating || 1000,
               wins: playerProfile?.wins || 0,
@@ -865,6 +866,8 @@ export default function QuizBattlePage() {
     console.log('[Results Debug] Challenge type:', challenge?.type);
     console.log('[Results Debug] Challenge creatorId:', challenge?.creatorId);
     console.log('[Results Debug] Challenge opponents:', challenge?.opponents?.map((o: any) => ({ userId: o.userId, userName: o.userName, status: o.status })));
+    console.log('[Results Debug] Challenge.results from Firestore:', challenge?.results?.map((r: any) => ({ userId: r.userId, userName: r.userName, score: r.score })));
+    console.log('[Results Debug] Results state:', results?.map((r: any) => ({ userId: r.userId, userName: r.userName, score: r.score })));
     console.log('[Results Debug] All results count:', allResults.length);
     console.log('[Results Debug] All results:', allResults.map((r: any) => ({ userId: r.userId, userName: r.userName, score: r.score, rank: r.rank })));
     
@@ -875,6 +878,8 @@ export default function QuizBattlePage() {
       }
       return acc;
     }, []);
+    
+    console.log('[Results Debug] After deduplication - uniqueResults:', uniqueResults.map((r: any) => ({ userId: r.userId, userName: r.userName, score: r.score })));
     
     // Ensure ranks are assigned - if all ranks are 0 or undefined, sort and assign them
     // For 2-player challenges, assign ranks even if only 1 result exists (so we can show winner/loser when both are available)
@@ -902,6 +907,9 @@ export default function QuizBattlePage() {
     console.log('[Results Debug] Unique results count:', uniqueResults.length);
     console.log('[Results Debug] Unique results:', uniqueResults.map((r: any) => ({ userId: r.userId, userName: r.userName, score: r.score, rank: r.rank })));
     console.log('[Results Debug] Expected results:', challenge?.opponents?.length + 1, '(creator +', challenge?.opponents?.length, 'opponents)');
+    console.log('[Results Debug] Current user ID:', user?.uid);
+    console.log('[Results Debug] Has current user result?:', uniqueResults.some((r: any) => r.userId === user?.uid));
+    console.log('[Results Debug] Has bot result?:', uniqueResults.some((r: any) => r.userId?.startsWith('bot-')));
 
     // ASYNC MODEL: Detect if match is complete (both players have submitted) vs incomplete (only one player has submitted)
     const isMatchComplete = challenge?.status === 'completed';

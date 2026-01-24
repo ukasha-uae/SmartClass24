@@ -8,6 +8,8 @@ import { trackQuestionUsage } from './analytics';
 import { createUserNotification } from './realtime-notifications';
 import { initializeFirebase } from '@/firebase';
 import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, onSnapshot, serverTimestamp, runTransaction } from 'firebase/firestore';
+import { getUserDisplayName } from './user-display';
+
 
 export interface Player {
   userId: string;
@@ -735,18 +737,18 @@ export const syncPlayerNameFromFirestore = async (userId: string): Promise<strin
     
     if (profileSnap.exists()) {
       const profileData = profileSnap.data();
-      const studentName = profileData?.studentName;
+      const displayName = getUserDisplayName(profileData);
       
-      if (studentName) {
+      if (displayName && displayName !== 'Player') {
         // Update player profile with actual student name
         const player = getPlayerProfile(userId);
         if (player) {
           createOrUpdatePlayer({
             ...player,
-            userName: studentName
+            userName: displayName
           });
         }
-        return studentName;
+        return displayName;
       }
     }
     return null;
@@ -1290,7 +1292,7 @@ export const submitChallengeAnswers = async (
   } else {
     // Real player - get from localStorage and sync with Firestore
     const player = getPlayerProfile(userId);
-    displayName = player?.userName || 'Unknown';
+    displayName = player?.userName || getUserDisplayName(null);
     schoolName = player?.school || 'Unknown';
     
     // Try to get actual student name from Firestore (non-blocking)

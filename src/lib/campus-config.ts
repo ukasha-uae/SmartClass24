@@ -83,28 +83,28 @@ export const CAMPUSES: Record<string, CampusConfig> = {
     active: true,
   },
 
-  // Template for future campuses
-  // university: {
-  //   id: 'university',
-  //   name: 'university',
-  //   displayName: 'University Prep',
-  //   description: 'University entrance exam preparation and career guidance.',
-  //   icon: Building2,
-  //   color: 'green',
-  //   schools: ['University of Ghana', 'KNUST', 'UCC', 'Others'],
-  //   levels: ['Year 1', 'Year 2', 'Year 3', 'Year 4'],
-  //   features: {
-  //     hasSubjects: true,
-  //     hasLessons: true,
-  //     hasQuiz: true,
-  //     hasGame: true,
-  //     hasLeaderboard: true,
-  //     hasChallengeArena: false,
-  //   },
-  //   questionBank: 'university-questions',
-  //   dataSource: 'university-data',
-  //   active: false,
-  // },
+  university: {
+    id: 'university',
+    name: 'university',
+    displayName: 'University Campus',
+    description: 'Technology-focused programs with hands-on projects, integrated code editor, and real-world learning.',
+    icon: Building2,
+    color: 'green',
+    schools: ['Technology', 'Engineering', 'Business', 'Science', 'Arts', 'Health'],
+    levels: ['Beginner', 'Intermediate', 'Advanced', 'Expert'],
+    features: {
+      hasSubjects: true,
+      hasLessons: true,
+      hasQuiz: true,
+      hasGame: false,
+      hasLeaderboard: false,
+      hasChallengeArena: false,
+      hasVirtualLab: false,
+    },
+    questionBank: 'university-questions',
+    dataSource: 'university-data',
+    active: true,
+  },
 };
 
 /**

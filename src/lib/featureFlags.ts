@@ -10,6 +10,7 @@ export const FEATURE_FLAGS = {
     showPrimary: true,              // Primary can access Arena Challenge only
     showJHS: true,                 // JHS can access Arena Challenge only
     showSHS: true,                 // SHS has full access
+    showUniversity: true,          // University has full access (NEW)
     // Feature Access by Campus - V1: Arena + Virtual Labs Only
     primaryHasLessons: false,       // Primary: no lessons (V2)
     primaryHasVirtualLabs: true,   // Primary: can access virtual labs (all students can use)
@@ -20,6 +21,9 @@ export const FEATURE_FLAGS = {
     shsHasLessons: false,          // SHS: no lessons (V2) - Redirect to Arena
     shsHasVirtualLabs: true,       // SHS: virtual labs access (V1)
     shsHasArena: true,            // SHS: Arena Challenge access (V1)
+    universityHasLessons: true,    // University: full lesson access (NEW)
+    universityHasCodeEditor: true, // University: integrated code editor (NEW)
+    universityHasProjects: true,   // University: project-based learning (NEW)
     // Global Settings
     showNigeria: false,            // Ghana only for V1
     showCarousel: true,           // Carousel mode for SHS lessons

@@ -44,6 +44,7 @@ import { formatGHS } from '@/lib/payments';
 import { useFirebase } from '@/firebase/provider';
 import { isAdmin, isSuperAdmin, addAdmin, removeAdmin, getAllAdmins } from '@/lib/admin-config';
 import { collection, getDocs } from 'firebase/firestore';
+import { getUserDisplayName } from '@/lib/user-display';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -166,36 +167,19 @@ export default function AdminDashboard() {
         const data = doc.data();
         const userId = doc.id;
         
-        // Try to get Firebase Auth user data for better display names
-        let displayName = data.studentName || data.userName;
-        let email = data.email;
-        
-        // If no name in Firestore, try to get from Firebase Auth
-        if (!displayName || displayName === 'Unknown') {
-          try {
-            // Check if this is an anonymous user
-            if (userId.startsWith('anon-')) {
-              displayName = 'Guest Student';
-            } else {
-              // Try to get auth user data (this works for the current session)
-              // For a full solution, you'd need Firebase Admin SDK
-              // For now, use email username as fallback
-              if (email) {
-                displayName = email.split('@')[0];
-              } else {
-                displayName = 'Unknown';
-              }
-            }
-          } catch (authError) {
-            console.warn(`Could not fetch auth data for user ${userId}:`, authError);
-          }
-        }
+        // Use the centralized getUserDisplayName utility
+        const displayName = getUserDisplayName({
+          studentName: data.studentName,
+          userName: data.userName,
+          displayName: data.displayName,
+          email: data.email
+        });
         
         firestoreUsers.push({
           userId,
           userName: displayName,
           name: displayName,
-          email: email || undefined,
+          email: data.email || undefined,
           school: data.school || 'Unknown',
           schoolId: data.schoolId,
           schoolRegion: data.schoolRegion,
