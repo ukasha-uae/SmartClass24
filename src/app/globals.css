@@ -403,4 +403,61 @@
   .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: rgb(37 99 235);
   }
-}
+}  
+  /* University Lesson Markdown Content Styling */
+  .markdown-content {
+    @apply text-base leading-relaxed;
+  }
+
+  .markdown-content p {
+    @apply mb-4 text-gray-700;
+  }
+
+  .markdown-content p:last-child {
+    @apply mb-0;
+  }
+
+  .markdown-content strong {
+    @apply font-bold text-gray-900;
+  }
+
+  .markdown-content em {
+    @apply italic text-gray-700;
+  }
+
+  .markdown-content h1 {
+    @apply text-2xl font-bold text-gray-900 mb-4 mt-6;
+  }
+
+  .markdown-content h2 {
+    @apply text-xl font-bold text-gray-900 mb-3 mt-5;
+  }
+
+  .markdown-content h3 {
+    @apply text-lg font-bold text-gray-900 mb-2 mt-4;
+  }
+
+  .markdown-content ul {
+    @apply space-y-2 my-4;
+  }
+
+  .markdown-content li {
+    @apply flex items-start text-gray-700 ml-0;
+  }
+
+  .markdown-content li::before {
+    content: '';
+    @apply text-green-600 font-bold mr-3 mt-0.5 flex-shrink-0;
+  }
+
+  .markdown-content .inline-code {
+    @apply px-2 py-0.5 bg-gray-100 text-green-700 rounded font-mono text-sm border border-gray-200;
+  }
+
+  .markdown-content .code-block {
+    @apply bg-[#1e1e1e] text-gray-100 p-4 rounded-lg overflow-x-auto my-4 border border-gray-700;
+  }
+
+  .markdown-content .code-block code {
+    @apply font-mono text-sm;
+  }

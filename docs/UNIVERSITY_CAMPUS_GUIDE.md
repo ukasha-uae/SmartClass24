@@ -1,8 +1,8 @@
-# University Campus Module - Complete Architecture Guide
+# S24 Innovation Academy Module - Complete Architecture Guide
 
 ## Overview
 
-The University Campus is a **separate, standalone product** within SmartClass24 designed for technology-focused learning with hands-on projects. Unlike other campuses that redirect to the Arena Challenge system, University Campus provides a complete learning platform with:
+The S24 Innovation Academy is a **separate, standalone product** within SmartClass24 designed for technology-focused learning with hands-on projects. Unlike other campuses that redirect to the Arena Challenge system, S24 Innovation Academy provides a complete learning platform with:
 
 - 🎓 **Structured Programs & Courses**
 - 💻 **Integrated Code Editor** with live preview
@@ -224,14 +224,14 @@ UniversityProgram
 
 ## Campus Configuration
 
-### Enabling University Campus
+### Enabling S24 Innovation Academy
 
 **File**: `src/lib/campus-config.ts`
 ```typescript
 university: {
   id: 'university',
   name: 'university',
-  displayName: 'University Campus',
+  displayName: 'S24 Innovation Academy',
   description: 'Technology-focused programs with hands-on projects...',
   icon: Building2,
   color: 'green',

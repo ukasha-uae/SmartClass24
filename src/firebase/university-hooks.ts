@@ -1,6 +1,6 @@
 /**
- * University Firebase Integration
- * Hooks and utilities for managing university progress, submissions, and code saves
+ * S24 Innovation Academy Firebase Integration
+ * Hooks and utilities for managing academy progress, submissions, and code saves
  */
 
 'use client';

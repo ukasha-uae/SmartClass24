@@ -1,4 +1,4 @@
-# University Campus Module - Installation Guide
+# S24 Innovation Academy Module - Installation Guide
 
 ## Quick Start
 
@@ -38,7 +38,7 @@ firebase deploy --only firestore:rules
 npm run dev
 ```
 
-### 5. Access University Campus
+### 5. Access S24 Innovation Academy
 
 Navigate to: `http://localhost:9002/university`
 

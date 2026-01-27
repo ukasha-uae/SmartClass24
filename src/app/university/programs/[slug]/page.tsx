@@ -1,5 +1,5 @@
 /**
- * University Program Detail Page
+ * S24 Innovation Academy Program Detail Page
  * Shows program overview, courses, and enrollment options
  */
 
@@ -20,7 +20,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
     <div className="min-h-screen bg-gray-50">
       {/* Under Construction Banner */}
       <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 text-center text-sm font-medium">
-        🚧 Under Construction - Features being actively developed
+        � AI-Powered Learning Platform - New features launching regularly
       </div>
 
       {/* Header */}
@@ -31,7 +31,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
             className="inline-flex items-center text-green-100 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Programs
+            Back to Academy Home
           </Link>
           <div className="flex flex-wrap items-center gap-3 mb-4">
             <span className="px-3 py-1 bg-white/20 text-white text-sm font-semibold rounded-full">
@@ -67,7 +67,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
           <div className="lg:col-span-2 space-y-8">
             {/* Learning Outcomes */}
             <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900">What You'll Learn</h2>
+              <h2 className="text-2xl font-bold mb-4 text-gray-900">Skills You'll Master</h2>
               <ul className="space-y-3">
                 {program.learningOutcomes.map((outcome, idx) => (
                   <li key={idx} className="flex items-start space-x-3">
@@ -80,7 +80,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
 
             {/* Prerequisites */}
             <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900">Prerequisites</h2>
+              <h2 className="text-2xl font-bold mb-4 text-gray-900">Who This Is For</h2>
               <ul className="space-y-2">
                 {program.prerequisites.map((prereq, idx) => (
                   <li key={idx} className="flex items-start space-x-3">
@@ -93,7 +93,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
 
             {/* Courses */}
             <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-2xl font-bold mb-6 text-gray-900">Program Curriculum</h2>
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">Learning Path</h2>
               <div className="space-y-4">
                 {program.courses.map((course, idx) => (
                   <div key={course.id} className="border border-gray-200 rounded-lg p-4 hover:border-green-500 transition-colors">
@@ -118,7 +118,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
                         className="inline-flex items-center text-green-600 hover:text-green-700 font-semibold text-sm"
                       >
                         <Play className="w-4 h-4 mr-1" />
-                        Start Course
+                        Start Learning
                       </Link>
                     </div>
                   </div>
@@ -130,10 +130,10 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
             <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 border-2 border-yellow-300 rounded-lg p-6">
               <div className="flex items-center space-x-3 mb-3">
                 <Award className="w-8 h-8 text-yellow-600" />
-                <h2 className="text-2xl font-bold text-gray-900">Certificate</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Your Achievement</h2>
               </div>
               <p className="text-gray-700 mb-2">
-                Upon successful completion of this program, you will receive:
+                Complete this program and earn your certificate to showcase your new skills:
               </p>
               <div className="bg-white rounded-lg p-4 border-2 border-yellow-300">
                 <div className="font-bold text-lg text-gray-900">{program.certificate.title}</div>

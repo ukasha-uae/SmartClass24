@@ -132,17 +132,17 @@ export default function Home() {
     },
     ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity ? [{
       id: 'university',
-      name: 'University Campus',
-      shortName: 'University',
-      description: 'Tech-Focused Programs with Hands-On Projects',
+      name: 'S24 Innovation Academy',
+      shortName: 'Academy',
+      description: 'Empowering Beginners to Become Tech Builders & Founders',
       gradient: 'from-green-600 to-emerald-700',
       icon: BookOpen,
-      features: ['Code Editor', 'Live Projects', 'Certifications', 'Real-World Skills'],
+      features: ['AI-Driven Learning', 'Real-World Projects', 'Automation Skills', 'Build & Launch'],
       href: '/university',
       studentCount: '50+',
       classes: 'Beginner-Expert',
       emoji: '💻',
-      tagline: 'Build Your Tech Career',
+      tagline: 'Your AI-Powered Tech Journey',
       v1Note: 'NEW: Full Learning Platform'
     }] : [])
   ];

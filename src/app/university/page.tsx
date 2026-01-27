@@ -1,5 +1,5 @@
 /**
- * University Campus - Main Landing Page
+ * S24 Innovation Academy - Main Landing Page
  * Browse available programs and courses
  */
 
@@ -9,8 +9,8 @@ import { ArrowRight, BookOpen, Code, Zap, Shield, Globe, TrendingUp } from 'luci
 import { getAllActivePrograms } from '@/lib/university-data';
 
 export const metadata: Metadata = {
-  title: 'University Campus - SmartClass24',
-  description: 'Technology-focused university programs with hands-on projects and integrated code editor'
+  title: 'S24 Innovation Academy - SmartClass24',
+  description: 'Empowering beginners to become tech builders and founders using AI-driven learning and real-world project-based training'
 };
 
 export default function UniversityCampusPage() {
@@ -23,7 +23,7 @@ export default function UniversityCampusPage() {
         <div className="container mx-auto px-4 text-center">
           <p className="font-semibold flex items-center justify-center space-x-2">
             <span className="text-2xl">🚧</span>
-            <span>University Campus is under active development - Explore our early features!</span>
+            <span>S24 Innovation Academy is under active development - Explore our early features!</span>
             <span className="text-2xl">🚧</span>
           </p>
         </div>
@@ -35,10 +35,10 @@ export default function UniversityCampusPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              University Campus
+              S24 Innovation Academy
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-green-100">
-              Master technology skills with hands-on projects, integrated code editor, and real-world learning
+              Empowering beginners to become tech builders and founders using AI-driven learning and real-world projects
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
@@ -63,7 +63,7 @@ export default function UniversityCampusPage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">
-            Why Choose University Campus?
+            Why Choose S24 Innovation Academy?
           </h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="text-center p-6">

@@ -1,4 +1,4 @@
-# 🎓 University Campus - Quick Reference
+# 🎓 S24 Innovation Academy - Quick Reference
 
 ## Access Points
 

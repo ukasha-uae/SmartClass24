@@ -1,5 +1,5 @@
 /**
- * University Module Type Definitions
+ * S24 Innovation Academy Module Type Definitions
  * Scalable architecture for tech-focused and future academic programs
  */
 
@@ -23,7 +23,7 @@ export type CodeEnvironment =
   | 'nextjs';          // Next.js applications
 
 // ============================================================================
-// University Program Structure
+// S24 Innovation Academy Program Structure
 // ============================================================================
 
 export interface UniversityProgram {
@@ -149,6 +149,8 @@ export interface CodeEditorConfig {
     maxMemory?: number; // in MB
     networkAccess?: boolean;
   };
+  successMessage?: string;
+  celebrationEmoji?: string;
 }
 
 export interface CodeFile {
@@ -159,9 +161,10 @@ export interface CodeFile {
 }
 
 export interface ValidationRule {
-  type: 'output' | 'code-pattern' | 'test-case' | 'visual';
+  type: 'output' | 'code-pattern' | 'test-case' | 'visual' | 'word-count';
   description: string;
-  validate: string; // Function as string or regex pattern
+  validate?: string; // Function as string or regex pattern
+  minWords?: number; // For word-count type
   points: number;
 }
 
@@ -269,13 +272,20 @@ export interface Assessment {
 
 export interface Question {
   id: string;
-  type: 'multiple-choice' | 'code' | 'short-answer' | 'essay';
-  question: string;
+  type: 'multiple-choice' | 'code' | 'short-answer' | 'essay' | 'fill-in-blank' | 'code-completion';
+  question?: string;
+  instruction?: string;
   options?: string[]; // for multiple-choice
   correctAnswer?: string | string[];
   codeConfig?: CodeEditorConfig;
   points: number;
   explanation?: string;
+  // For fill-in-blank
+  code?: string;
+  blanks?: Record<string, { answer: string; alternatives?: string[]; hint?: string }>;
+  // For code-completion
+  template?: string;
+  expectedElements?: string[];
 }
 
 export interface QuizConfig {
@@ -300,7 +310,7 @@ export interface Checkpoint {
   id: string;
   title: string;
   description: string;
-  type: 'quiz' | 'code-challenge' | 'reflection';
+  type: 'quiz' | 'code-challenge' | 'reflection' | 'code' | 'practice';
   content: Question | CodeEditorConfig | { prompt: string };
   required: boolean;
   order: number;
@@ -313,7 +323,7 @@ export interface Checkpoint {
 export interface Resource {
   id: string;
   title: string;
-  type: 'article' | 'video' | 'documentation' | 'book' | 'tool' | 'cheatsheet';
+  type: 'article' | 'video' | 'documentation' | 'book' | 'tool' | 'cheatsheet' | 'practice' | 'tips';
   url?: string;
   content?: string;
   description?: string;

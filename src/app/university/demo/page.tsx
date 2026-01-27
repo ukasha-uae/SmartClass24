@@ -1,5 +1,5 @@
 /**
- * University Demo Page
+ * S24 Innovation Academy Demo Page
  * Try the code editor without signing in
  */
 
@@ -31,7 +31,7 @@ const demoFiles: CodeFile[] = [
   <main>
     <section class="card">
       <h2>About Me</h2>
-      <p>I'm learning web development on SmartClass24 University Campus!</p>
+      <p>I'm learning web development on SmartClass24 Innovation Academy!</p>
       <button onclick="changeColor()">Change Color</button>
     </section>
     
@@ -46,7 +46,7 @@ const demoFiles: CodeFile[] = [
   </main>
   
   <footer>
-    <p>&copy; 2026 SmartClass24 University</p>
+    <p>&copy; 2026 SmartClass24 Innovation Academy</p>
   </footer>
   
   <script src="script.js"></script>
@@ -180,7 +180,7 @@ footer {
     path: 'script.js',
     language: 'javascript',
     content: `// JavaScript for interactive features
-console.log('Welcome to SmartClass24 University! 🎓');
+console.log('Welcome to SmartClass24 Innovation Academy! 🎓');
 
 // Color change functionality
 let colorIndex = 0;
@@ -278,7 +278,7 @@ export default function UniversityDemoPage() {
             className="inline-flex items-center text-green-100 hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to University Campus
+            Back to S24 Innovation Academy
           </Link>
           <div className="flex items-center space-x-3 mb-3">
             <Sparkles className="w-8 h-8" />
@@ -348,7 +348,7 @@ export default function UniversityDemoPage() {
             Ready to Start Learning?
           </h2>
           <p className="text-green-100 mb-6 max-w-2xl mx-auto">
-            Join University Campus and access complete courses with projects, certificates, and career support.
+            Join S24 Innovation Academy and access complete courses with projects, certificates, and career support.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link

@@ -86,8 +86,8 @@ export const CAMPUSES: Record<string, CampusConfig> = {
   university: {
     id: 'university',
     name: 'university',
-    displayName: 'University Campus',
-    description: 'Technology-focused programs with hands-on projects, integrated code editor, and real-world learning.',
+    displayName: 'S24 Innovation Academy',
+    description: 'Empowering beginners to become tech builders and founders using AI-driven learning and real-world project-based training.',
     icon: Building2,
     color: 'green',
     schools: ['Technology', 'Engineering', 'Business', 'Science', 'Arts', 'Health'],

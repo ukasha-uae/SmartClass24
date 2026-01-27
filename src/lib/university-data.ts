@@ -1,5 +1,5 @@
 /**
- * University Technology Programs - Initial Curriculum Data
+ * S24 Innovation Academy Technology Programs - Initial Curriculum Data
  * Comprehensive tech-focused courses with hands-on projects
  */
 
@@ -14,72 +14,67 @@ export const webDevelopmentProgram: UniversityProgram = {
   slug: 'web-development-fundamentals',
   title: 'Web Development Fundamentals',
   discipline: 'technology',
-  description: 'Master the core technologies of web development: HTML, CSS, and JavaScript. Build responsive, interactive websites from scratch.',
-  duration: '3 months',
+  description: 'Learn web development through bite-sized, interactive lessons. Build real projects from day one using HTML, CSS, and JavaScript.',
+  duration: '8 weeks',
   difficulty: 'beginner',
-  prerequisites: ['Basic computer literacy', 'No prior coding experience required'],
+  prerequisites: ['Access to a computer or smartphone', 'Internet connection', 'Curiosity and willingness to learn'],
   learningOutcomes: [
-    'Build responsive websites using HTML5 and CSS3',
-    'Create interactive web applications with JavaScript',
-    'Understand web development best practices',
-    'Deploy websites to production',
-    'Work with modern development tools and workflows'
+    'Build and deploy your first website in Week 1',
+    'Create responsive layouts that work on all devices',
+    'Add interactivity with JavaScript',
+    'Use AI tools to boost your productivity',
+    'Launch real projects to showcase your skills'
   ],
   courses: [
     {
       id: 'html-css-basics',
       slug: 'html-css-basics',
-      title: 'HTML & CSS Basics',
-      description: 'Learn the building blocks of the web',
+      title: 'HTML & CSS Essentials',
+      description: 'Start coding today! Learn by doing with interactive exercises and instant feedback.',
       instructor: {
-        name: 'SmartClass Teacher',
-        title: 'Senior Web Developer',
-        bio: 'Experienced web developer with 10+ years in the industry'
+        name: 'AI Learning Assistant',
+        title: 'Your Personal Coding Mentor',
+        bio: 'I adapt to your pace and provide instant feedback on every lesson'
       },
-      duration: '4 weeks',
+      duration: '3 weeks',
       modules: [
         {
           id: 'module-1-html-intro',
           slug: 'html-introduction',
-          title: 'Introduction to HTML',
-          description: 'Learn HTML structure, tags, and semantic markup',
-          estimatedTime: '3 hours',
+          title: 'Your First Webpage',
+          description: 'Create your first webpage in the next 5 minutes',
+          estimatedTime: '15 minutes',
           order: 1,
           lessons: [
             {
               id: 'lesson-1-1',
               slug: 'what-is-html',
-              title: 'What is HTML?',
+              title: 'Hello, Web! 👋',
               type: 'theory',
               order: 1,
-              estimatedTime: '30 minutes',
+              estimatedTime: '3 minutes',
               content: {
-                introduction: 'HTML (HyperText Markup Language) is the standard language for creating web pages. It provides the structure and content of websites.',
+                introduction: '🎉 Welcome to web development! In just 3 minutes, you\'ll understand what HTML is and write your first line of code.',
                 sections: [
                   {
                     id: 'section-1',
-                    title: 'Understanding HTML',
-                    content: `HTML uses "markup" to annotate text, images, and other content for display in a web browser. HTML markup includes special "elements" such as:
-                    
-- \`<head>\`, \`<title>\`, \`<body>\`, \`<header>\`, \`<footer>\`, \`<article>\`, \`<section>\`, \`<p>\`, \`<div>\`, \`<span>\`, \`<img>\`, \`<aside>\`, \`<audio>\`, \`<canvas>\`, \`<datalist>\`, \`<details>\`, \`<embed>\`, \`<nav>\`, \`<output>\`, \`<progress>\`, \`<video>\`, \`<ul>\`, \`<ol>\`, \`<li>\` and many others.
+                    title: '💡 What is HTML?',
+                    content: `HTML (HyperText Markup Language) is like the skeleton of a website. Just like your body has bones that give it structure, HTML gives structure to web pages.
 
-An HTML element is set off from other text in a document by "tags", which consist of the element name surrounded by "<" and ">".`,
+**Think of it this way:**
+- 🏗️ HTML = The building blocks
+- 🎨 CSS = The paint and decoration (coming soon!)
+- ⚡ JavaScript = The electricity that makes things move
+
+**Key Point:** You don't need to be a "techie" to learn HTML. If you can use a smartphone, you can learn HTML!`,
                     order: 1,
                     codeExamples: [
                       {
                         id: 'example-1',
                         language: 'html',
-                        code: `<!DOCTYPE html>
-<html>
-  <head>
-    <title>My First Web Page</title>
-  </head>
-  <body>
-    <h1>Welcome to Web Development!</h1>
-    <p>This is my first HTML page.</p>
-  </body>
-</html>`,
-                        explanation: 'A basic HTML document structure',
+                        code: `<h1>Hello, World!</h1>
+<p>I just wrote my first HTML!</p>`,
+                        explanation: '👆 This is HTML! The <h1> tag creates a big heading, and <p> creates a paragraph. Try it!',
                         editable: true,
                         showLineNumbers: true
                       }
@@ -87,121 +82,185 @@ An HTML element is set off from other text in a document by "tags", which consis
                   },
                   {
                     id: 'section-2',
-                    title: 'HTML Document Structure',
-                    content: `Every HTML document follows a basic structure:
+                    title: '🔖 Tags: The Building Blocks',
+                    content: `HTML uses **tags** - think of them as labels that tell the browser "this is a heading" or "this is a paragraph".
 
-1. **DOCTYPE declaration**: Tells the browser this is an HTML5 document
-2. **html element**: Root element containing all other elements
-3. **head element**: Contains metadata about the document
-4. **body element**: Contains the visible content`,
+**The Pattern:**
+\`\`\`
+<tagname>Your content here</tagname>
+\`\`\`
+
+- Opening tag: \`<tagname>\`
+- Content: What you want to show
+- Closing tag: \`</tagname>\` (notice the /)
+
+**Real Example:**
+\`\`\`html
+<h1>My Amazing Website</h1>
+\`\`\`
+
+This tells the browser: "Hey! This text is super important - make it BIG!"`,
                     order: 2,
-                    codeExamples: []
+                    codeExamples: [
+                      {
+                        id: 'example-2',
+                        language: 'html',
+                        code: `<h1>I'm a Big Heading</h1>
+<h2>I'm a smaller heading</h2>
+<p>I'm a regular paragraph</p>`,
+                        explanation: 'See the difference? h1 is biggest, h2 is smaller, p is normal text. Each tag has a purpose!',
+                        editable: true,
+                        showLineNumbers: false
+                      }
+                    ]
                   }
                 ],
-                summary: 'HTML is the foundation of web development. It provides structure and meaning to web content through a system of tags and elements.',
+                summary: '🎯 You just learned the foundation of web development! HTML uses tags to structure content, just like labels organize items in a store.',
                 keyTakeaways: [
-                  'HTML stands for HyperText Markup Language',
-                  'HTML uses tags to structure content',
-                  'Every HTML document has a standard structure',
-                  'HTML is not a programming language - it\'s a markup language'
+                  '🏗️ HTML is the structure of websites',
+                  '🔖 Tags are like labels: <tag>content</tag>',
+                  '✅ Opening and closing tags work together',
+                  '🚀 You can start building websites RIGHT NOW'
                 ]
               },
               checkpoints: [
                 {
                   id: 'checkpoint-1',
-                  title: 'Understanding HTML Basics',
-                  description: 'Test your knowledge of HTML fundamentals',
+                  title: '⚡ Quick Check!',
+                  description: 'Let\'s see what you learned (30 seconds)',
                   type: 'quiz',
                   required: true,
                   order: 1,
                   content: {
                     id: 'quiz-1',
                     type: 'multiple-choice',
-                    question: 'What does HTML stand for?',
+                    question: '🤔 Which one creates a heading in HTML?',
                     options: [
-                      'HyperText Markup Language',
-                      'HighText Machine Language',
-                      'HyperText Making Language',
-                      'HyperTech Markup Language'
+                      '<h1>My Heading</h1>',
+                      '<heading>My Heading</heading>',
+                      '<title>My Heading</title>',
+                      'My Heading (h1)'
                     ],
-                    correctAnswer: 'HyperText Markup Language',
+                    correctAnswer: '<h1>My Heading</h1>',
                     points: 10,
-                    explanation: 'HTML stands for HyperText Markup Language. It is used to structure content on the web.'
+                    explanation: '🎉 Correct! <h1> is the tag for the biggest heading. h1-h6 are the heading tags, with h1 being the largest!'
+                  }
+                },
+                {
+                  id: 'checkpoint-2',
+                  title: '💪 Practice Challenge',
+                  description: 'Write your first HTML',
+                  type: 'code',
+                  required: true,
+                  order: 2,
+                  content: {
+                    id: 'practice-1',
+                    type: 'fill-in-blank',
+                    instruction: 'Complete the code to create a heading that says "I Love Coding"',
+                    code: '<_1_>I Love Coding</_2_>',
+                    blanks: {
+                      1: { answer: 'h1', alternatives: ['h2', 'h3'], hint: 'Use a heading tag!' },
+                      2: { answer: 'h1', alternatives: ['h2', 'h3'], hint: 'Don\'t forget the closing tag!' }
+                    },
+                    points: 15,
+                    explanation: '🌟 Awesome! You just wrote your first HTML code!'
                   }
                 }
               ],
               resources: [
                 {
                   id: 'resource-1',
-                  title: 'MDN HTML Guide',
-                  type: 'documentation',
-                  url: 'https://developer.mozilla.org/en-US/docs/Web/HTML',
-                  description: 'Comprehensive HTML reference from Mozilla'
+                  title: '📚 HTML Cheat Sheet',
+                  type: 'cheatsheet',
+                  description: 'Quick reference for your first 10 HTML tags'
                 },
                 {
                   id: 'resource-2',
-                  title: 'HTML Cheat Sheet',
-                  type: 'cheatsheet',
-                  description: 'Quick reference for common HTML tags'
+                  title: '🎮 Practice Playground',
+                  type: 'practice',
+                  description: 'Interactive sandbox to experiment with HTML'
+                },
+                {
+                  id: 'resource-3',
+                  title: '💡 Pro Tips',
+                  type: 'tips',
+                  description: 'How professional developers write clean HTML'
                 }
               ]
             },
             {
               id: 'lesson-1-2',
-              slug: 'html-tags-elements',
-              title: 'HTML Tags and Elements',
+              slug: 'your-first-webpage',
+              title: 'Build Your First Page 🎨',
               type: 'practical',
               order: 2,
-              estimatedTime: '1 hour',
+              estimatedTime: '5 minutes',
               content: {
-                introduction: 'Learn how to use HTML tags to create structured content including headings, paragraphs, lists, links, and images.',
+                introduction: '🚀 Let\'s build something REAL! In 5 minutes, you\'ll have your first working webpage.',
                 sections: [
                   {
                     id: 'section-1',
-                    title: 'Common HTML Tags',
-                    content: 'HTML provides various tags for different types of content. Let\'s explore the most commonly used ones.',
+                    title: '🏗️ The Basic Structure',
+                    content: `Every webpage has the same basic structure. Think of it like a house:
+
+🏠 **The House (HTML Document):**
+- 📋 DOCTYPE: The blueprint
+- 🏛️ <html>: The entire house
+- 🧠 <head>: The attic (hidden info)
+- 🏡 <body>: The rooms (what you see)
+
+**Here's the template:**`,
                     order: 1,
                     codeExamples: [
                       {
                         id: 'example-1',
                         language: 'html',
-                        code: `<!-- Headings -->
-<h1>Main Heading</h1>
-<h2>Subheading</h2>
-<h3>Smaller Heading</h3>
-
-<!-- Paragraphs -->
-<p>This is a paragraph of text.</p>
-
-<!-- Lists -->
-<ul>
-  <li>Unordered list item 1</li>
-  <li>Unordered list item 2</li>
-</ul>
-
-<ol>
-  <li>Ordered list item 1</li>
-  <li>Ordered list item 2</li>
-</ol>
-
-<!-- Links -->
-<a href="https://example.com">Visit Example</a>
-
-<!-- Images -->
-<img src="image.jpg" alt="Description of image">`,
-                        explanation: 'Common HTML tags for structuring content',
+                        code: `<!DOCTYPE html>
+<html>
+<head>
+  <title>My Cool Page</title>
+</head>
+<body>
+  <h1>Welcome! 👋</h1>
+  <p>This is my first webpage!</p>
+</body>
+</html>`,
+                        explanation: '👆 Copy this! It\'s your starter template for EVERY webpage you\'ll ever make.',
                         editable: true,
                         showLineNumbers: true
                       }
                     ]
+                  },
+                  {
+                    id: 'section-2',
+                    title: '✨ Add Some Content',
+                    content: `Now let's make it YOUR page! Add:
+- 📝 A heading with your name
+- 📖 A paragraph about yourself
+- 🎯 Your goals for learning web development`,
+                    order: 2,
+                    codeExamples: [
+                      {
+                        id: 'example-2',
+                        language: 'html',
+                        code: `<body>
+  <h1>Hi, I'm Sarah! 🌟</h1>
+  <p>I'm learning web development at S24 Innovation Academy.</p>
+  <p>My goal: Build my own startup website in 30 days!</p>
+</body>`,
+                        explanation: '✏️ Change the name and goals to match YOUR story!',
+                        editable: true,
+                        showLineNumbers: false
+                      }
+                    ]
                   }
                 ],
-                summary: 'HTML tags are the building blocks of web pages. Each tag serves a specific purpose in structuring and presenting content.',
+                summary: '🎉 Congratulations! You just built a real webpage. It might be simple, but EVERY website starts exactly like this.',
                 keyTakeaways: [
-                  'Use semantic tags for better structure',
-                  'Always close your tags',
-                  'Use headings in hierarchical order',
-                  'Add alt text to images for accessibility'
+                  '📋 Every page needs <!DOCTYPE html>',
+                  '🏠 <html> wraps everything',
+                  '🧠 <head> has the title (shows in browser tab)',
+                  '🏡 <body> has what visitors see'
                 ]
               },
               interactive: {
@@ -215,61 +274,113 @@ An HTML element is set off from other text in a document by "tags", which consis
                       content: `<!DOCTYPE html>
 <html>
 <head>
-  <title>My Profile</title>
+  <title>About Me</title>
 </head>
 <body>
-  <!-- Create your profile page here -->
-  <h1>Your Name</h1>
-  <p>Write a short bio about yourself</p>
+  <!-- 👇 Replace this with YOUR info -->
+  <h1>Your Name Here</h1>
+  <p>Tell us about yourself...</p>
   
-  <!-- Add more content: -->
-  <!-- - A list of your hobbies -->
-  <!-- - A list of your skills -->
-  <!-- - Links to your social media -->
+  <!-- 🎯 Your challenge:
+  1. Add your real name
+  2. Write 2 paragraphs about yourself
+  3. Add a heading that says "My Goals"
+  4. List 3 goals using <p> tags
+  -->
 </body>
 </html>`
                     }
                   ],
-                  instructions: 'Create a personal profile page using HTML tags. Include headings, paragraphs, lists, and at least one link.',
+                  instructions: '🎯 Make this page about YOU! Add your name, write about yourself, and list your goals.',
                   hints: [
-                    'Use <h1> for your name',
-                    'Use <p> for your bio',
-                    'Use <ul> or <ol> for lists',
-                    'Use <a> for links'
+                    '💡 Stuck? Just type <p> then your text, then </p>',
+                    '🔥 Pro tip: Click "Run" to see your page live!',
+                    '⚡ Each goal should be in its own <p> tag'
                   ],
                   allowFileCreation: false,
                   allowInstallPackages: false,
-                  maxFileSize: 100,
+                  maxFileSize: 50,
                   timeout: 5,
                   validation: [
                     {
                       type: 'code-pattern',
-                      description: 'Page includes at least one heading',
-                      validate: '<h[1-6]>',
-                      points: 20
+                      description: '✅ Used <h1> for your name',
+                      validate: '<h1>(?!Your Name Here)',
+                      points: 25
                     },
                     {
                       type: 'code-pattern',
-                      description: 'Page includes at least one paragraph',
-                      validate: '<p>',
-                      points: 20
+                      description: '✅ Added at least 2 paragraphs',
+                      validate: '(<p>.*?</p>.*?){2,}',
+                      points: 25
                     },
                     {
                       type: 'code-pattern',
-                      description: 'Page includes a list',
-                      validate: '(<ul>|<ol>)',
-                      points: 30
+                      description: '✅ Created a goals section',
+                      validate: '<h[2-3]>.*?[Gg]oals?.*?</h[2-3]>',
+                      points: 25
                     },
                     {
-                      type: 'code-pattern',
-                      description: 'Page includes a link',
-                      validate: '<a\\s+href',
-                      points: 30
+                      type: 'word-count',
+                      description: '✅ Wrote at least 30 words total',
+                      minWords: 30,
+                      points: 25
                     }
-                  ]
+                  ],
+                  successMessage: '🎉 Amazing! You just built your first personalized webpage!',
+                  celebrationEmoji: '🚀'
                 }
               },
-              checkpoints: [],
+              checkpoints: [
+                {
+                  id: 'checkpoint-1',
+                  title: '⚡ Quick Quiz',
+                  description: 'Test what you just learned!',
+                  type: 'quiz',
+                  required: true,
+                  order: 1,
+                  content: {
+                    id: 'quiz-2',
+                    type: 'multiple-choice',
+                    question: '🤔 What does <body> contain?',
+                    options: [
+                      'Everything visible on the webpage',
+                      'The page title',
+                      'Hidden metadata',
+                      'CSS styles'
+                    ],
+                    correctAnswer: 'Everything visible on the webpage',
+                    points: 10,
+                    explanation: '✨ Perfect! The <body> tag contains everything visitors see on your page.'
+                  }
+                },
+                {
+                  id: 'checkpoint-2',
+                  title: '🏆 Code Challenge',
+                  description: 'Write the complete structure',
+                  type: 'code',
+                  required: true,
+                  order: 2,
+                  content: {
+                    id: 'practice-2',
+                    type: 'code-completion',
+                    instruction: 'Create a complete HTML page with a heading and paragraph',
+                    template: `<!DOCTYPE html>
+<html>
+<head>
+  <title>_____</title>
+</head>
+<body>
+  _____
+  _____
+</body>
+</html>`,
+                    expectedElements: ['h1', 'p'],
+                    points: 20,
+                    explanation: '🌟 You\'re getting the hang of this! Every webpage follows this structure.'
+                  }
+                }
+              ],
               resources: []
             }
           ],
@@ -419,7 +530,7 @@ An HTML element is set off from other text in a document by "tags", which consis
   ],
   certificate: {
     title: 'Web Development Fundamentals Certificate',
-    issuer: 'SmartClass24 University',
+    issuer: 'SmartClass24 Innovation Academy',
     verifiable: true
   },
   tags: ['web-development', 'html', 'css', 'javascript', 'beginner-friendly'],

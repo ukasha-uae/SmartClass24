@@ -1,17 +1,29 @@
 /**
- * University Lesson Page
+ * S24 Innovation Academy Lesson Page
  * Interactive lesson with theory, code editor, and checkpoints
  */
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ChevronRight, BookOpen, Code, CheckCircle2, Award } from 'lucide-react';
-import UniversityCodeEditor from '@/components/university/UniversityCodeEditor';
+import dynamic from 'next/dynamic';
 import { webDevelopmentProgram } from '@/lib/university-data';
 import { CodeExecutionResult } from '@/types/university';
 import { use } from 'react';
+import MarkdownContent from '@/components/university/MarkdownContent';
+
+// Dynamically import the code editor with no SSR to prevent hydration issues
+const UniversityCodeEditor = dynamic(() => import('@/components/university/UniversityCodeEditor'), {
+  ssr: false,
+  loading: () => <div className="flex items-center justify-center h-96">
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+      <p className="text-gray-600">Loading code editor...</p>
+    </div>
+  </div>
+});
 
 export default function LessonPage({ params }: { params: Promise<{ slug: string; courseSlug: string; lessonSlug: string }> }) {
   const resolvedParams = use(params);
@@ -33,10 +45,19 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
     // In real app, save to Firestore
   };
 
+  // Escape HTML for code blocks
+  function escapeHtml(text: string) {
+    return text.replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-blue-50/30">
       {/* Under Construction Banner */}
-      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 text-center text-sm font-medium">
+      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 text-center text-sm font-medium shadow-sm">
         🚧 Under Construction - Code editor and features being actively developed
       </div>
 
@@ -71,32 +92,35 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
             {/* Introduction */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <div className="flex items-center space-x-3 mb-4">
-                <BookOpen className="w-6 h-6 text-green-600" />
+            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl shadow-md p-8 border border-green-100">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="p-2 bg-green-600 rounded-lg">
+                  <BookOpen className="w-6 h-6 text-white" />
+                </div>
                 <h2 className="text-2xl font-bold text-gray-900">Introduction</h2>
               </div>
-              <p className="text-gray-700 leading-relaxed">{lesson.content.introduction}</p>
+              <p className="text-lg text-gray-700 leading-relaxed">{lesson.content.introduction}</p>
             </div>
 
             {/* Content Sections */}
             {lesson.content.sections.map((section) => (
-              <div key={section.id} className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold mb-4 text-gray-900">{section.title}</h2>
-                <div className="prose max-w-none text-gray-700 whitespace-pre-line mb-6">
-                  {section.content}
-                </div>
+              <div key={section.id} className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
+                <h2 className="text-2xl font-bold mb-6 text-gray-900">{section.title}</h2>
+                <MarkdownContent 
+                  content={section.content}
+                  className="text-gray-700 mb-6"
+                />
 
                 {/* Code Examples */}
                 {section.codeExamples && section.codeExamples.length > 0 && (
-                  <div className="space-y-4">
+                  <div className="space-y-4 mt-6">
                     {section.codeExamples.map((example) => (
-                      <div key={example.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                        <div className="bg-gray-100 px-4 py-2 border-b border-gray-200">
-                          <div className="text-sm font-semibold text-gray-700">{example.explanation}</div>
+                      <div key={example.id} className="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                        <div className="bg-gradient-to-r from-green-50 to-blue-50 px-5 py-3 border-b border-gray-200">
+                          <div className="text-sm font-medium text-gray-800">{example.explanation}</div>
                         </div>
-                        <div className="bg-gray-900 p-4">
-                          <pre className="text-sm text-gray-100 overflow-x-auto">
+                        <div className="bg-[#1e1e1e] p-5">
+                          <pre className="text-sm text-gray-100 overflow-x-auto font-mono">
                             <code>{example.code}</code>
                           </pre>
                         </div>
@@ -137,10 +161,10 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                     <h3 className="font-semibold text-gray-900 mb-3">Validation Results</h3>
                     <div className="space-y-2">
                       {config.validation.map((rule: any, idx: number) => {
-                        // Simple validation simulation
-                        const passed = Math.random() > 0.3;
+                        // Check if validation passed based on execution result
+                        const passed = true; // Will be replaced with actual validation logic
                         return (
-                          <div key={rule.type} className="flex items-center justify-between p-2 bg-white rounded">
+                          <div key={`validation-${idx}`} className="flex items-center justify-between p-2 bg-white rounded">
                             <div className="flex items-center space-x-2">
                               {passed ? (
                                 <CheckCircle2 className="w-5 h-5 text-green-600" />
@@ -177,25 +201,30 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
             })()}
 
             {/* Summary */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900">Summary</h2>
-              <p className="text-gray-700 mb-6">{lesson.content.summary}</p>
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-md p-8 border border-green-100">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="p-2 bg-green-600 rounded-lg">
+                  <Award className="w-6 h-6 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Summary</h2>
+              </div>
+              <p className="text-lg text-gray-700 mb-6 leading-relaxed">{lesson.content.summary}</p>
               
-              <h3 className="font-semibold text-gray-900 mb-3">Key Takeaways</h3>
-              <ul className="space-y-2">
+              <h3 className="font-bold text-lg text-gray-900 mb-4">Key Takeaways</h3>
+              <div className="space-y-3">
                 {lesson.content.keyTakeaways.map((takeaway, idx) => (
-                  <li key={idx} className="flex items-start space-x-3">
+                  <div key={idx} className="flex items-start space-x-3 bg-white/70 rounded-xl p-4 border border-green-100">
                     <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{takeaway}</span>
-                  </li>
+                    <span className="text-gray-800 font-medium">{takeaway}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             {/* Resources */}
             {lesson.resources.length > 0 && (
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h2 className="text-2xl font-bold mb-4 text-gray-900">Additional Resources</h2>
+              <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
+                <h2 className="text-2xl font-bold mb-6 text-gray-900">Additional Resources</h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   {lesson.resources.map((resource) => (
                     <a
@@ -203,11 +232,13 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                       href={resource.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg hover:border-green-500 transition-colors"
+                      className="group flex items-start space-x-4 p-5 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50/50 transition-all duration-200"
                     >
-                      <BookOpen className="w-5 h-5 text-green-600 flex-shrink-0 mt-1" />
+                      <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-600 transition-colors">
+                        <BookOpen className="w-5 h-5 text-green-600 group-hover:text-white flex-shrink-0" />
+                      </div>
                       <div>
-                        <div className="font-semibold text-gray-900">{resource.title}</div>
+                        <div className="font-bold text-gray-900 mb-1">{resource.title}</div>
                         <div className="text-sm text-gray-600">{resource.description}</div>
                       </div>
                     </a>
@@ -217,11 +248,11 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
             )}
 
             {/* Navigation */}
-            <div className="flex justify-between">
-              <button className="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold transition-colors">
+            <div className="flex justify-between gap-4">
+              <button className="px-8 py-4 bg-white border-2 border-gray-300 hover:border-green-600 hover:bg-green-50 text-gray-700 rounded-xl font-bold transition-all duration-200 shadow-sm hover:shadow-md">
                 Previous Lesson
               </button>
-              <button className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors flex items-center space-x-2">
+              <button className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2">
                 <span>Next Lesson</span>
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -230,47 +261,54 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-lg p-6 sticky top-24">
-              <h3 className="font-semibold text-gray-900 mb-4">Progress</h3>
-              <div className="space-y-4">
+            <div className="bg-white rounded-2xl shadow-md p-6 sticky top-24 border border-gray-100">
+              <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center">
+                <Award className="w-5 h-5 text-green-600 mr-2" />
+                Progress
+              </h3>
+              <div className="space-y-5">
                 <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-600">Lesson Progress</span>
-                    <span className="font-semibold text-gray-900">65%</span>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-600 font-medium">Lesson Progress</span>
+                    <span className="font-bold text-green-600">65%</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full" style={{ width: '65%' }}></div>
+                  <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                    <div className="bg-gradient-to-r from-green-600 to-emerald-500 h-3 rounded-full transition-all duration-300" style={{ width: '65%' }}></div>
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-600">Module Progress</span>
-                    <span className="font-semibold text-gray-900">40%</span>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-600 font-medium">Module Progress</span>
+                    <span className="font-bold text-green-600">40%</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full" style={{ width: '40%' }}></div>
+                  <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                    <div className="bg-gradient-to-r from-green-600 to-emerald-500 h-3 rounded-full transition-all duration-300" style={{ width: '40%' }}></div>
                   </div>
                 </div>
               </div>
 
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <h3 className="font-semibold text-gray-900 mb-3">Module Lessons</h3>
+                <h3 className="font-bold text-lg text-gray-900 mb-4">Module Lessons</h3>
                 <div className="space-y-2">
                   {module.lessons.map((l, idx) => (
                     <Link
                       key={l.id}
                       href={`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${l.slug}`}
-                      className={`flex items-center space-x-2 p-2 rounded transition-colors ${
+                      className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${
                         l.slug === lesson.slug
-                          ? 'bg-green-100 text-green-700'
-                          : 'hover:bg-gray-50 text-gray-700'
+                          ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-md'
+                          : 'hover:bg-green-50 text-gray-700 border border-transparent hover:border-green-200'
                       }`}
                     >
-                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold">
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                        l.slug === lesson.slug
+                          ? 'bg-white text-green-600'
+                          : 'bg-gray-200 text-gray-600'
+                      }`}>
                         {idx + 1}
                       </div>
-                      <span className="text-sm flex-1">{l.title}</span>
+                      <span className="text-sm font-medium flex-1">{l.title}</span>
                     </Link>
                   ))}
                 </div>

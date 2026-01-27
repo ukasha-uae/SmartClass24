@@ -235,6 +235,24 @@ export default function UniversityCodeEditor({
     }
   }, [files, environment, showPreview, previewVisible, executeCode]);
 
+  // Cleanup Monaco Editor on unmount to prevent InstantiationService error
+  useEffect(() => {
+    return () => {
+      if (editorRef.current && typeof editorRef.current.dispose === 'function') {
+        try {
+          // Only dispose if not already disposed
+          if (!editorRef.current._isDisposed) {
+            editorRef.current.dispose();
+            editorRef.current = null;
+          }
+        } catch (error) {
+          // Silently handle disposal errors
+          console.debug('Editor cleanup error:', error);
+        }
+      }
+    };
+  }, []);
+
   const handleSave = () => {
     onSave?.(files);
     const message: ConsoleMessage = {

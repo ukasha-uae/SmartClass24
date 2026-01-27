@@ -6,7 +6,7 @@ SmartClass24 is a Next.js 16 (App Router) progressive web app providing personal
 ## Critical Architectural Patterns
 
 ### Campus-Based Architecture
-- **Multi-level system**: Supports JHS, SHS, and extensible for Primary/University
+- **Multi-level system**: Supports JHS, SHS, and extensible for Primary/S24 Innovation Academy
 - **Dynamic routing**: `/campus/[campusType]/*` handles all campus types dynamically
 - **Central config**: All campus settings in `src/lib/campus-config.ts` - add new campuses here, NOT in routes
 - **Feature flags**: `src/lib/featureFlags.ts` controls carousel mode, virtual labs, and per-subject/level features
