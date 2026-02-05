@@ -59,11 +59,11 @@ service cloud.firestore {
 
     // Challenges - accessible to creator and opponents
     match /challenges/{challengeId} {
-      // Helper function to check if any opponent is a bot
-      function hasBot() {
-        return request.resource.data.opponents != null && 
-               request.resource.data.opponents.size() > 0 &&
-               request.resource.data.opponents[0].userId.matches('bot-.*');
+      // Helper function to check if challenge currently has a bot (from existing data)
+      function hasExistingBot() {
+        return resource.data.opponents != null && 
+               resource.data.opponents.size() > 0 &&
+               resource.data.opponents[0].userId.matches('bot-.*');
       }
       
       // Allow read for authenticated users
@@ -72,10 +72,8 @@ service cloud.firestore {
       // Allow create if user is authenticated
       allow create: if request.auth != null;
       
-      // Allow update if:
-      // 1. User is authenticated, OR
-      // 2. Challenge involves a bot opponent (Sarah)
-      allow update: if request.auth != null || hasBot();
+      // Allow update if user is authenticated OR challenge already has bot opponent
+      allow update: if request.auth != null || hasExistingBot();
       
       allow delete: if false;
     }
@@ -186,9 +184,9 @@ service cloud.firestore {
       allow delete: if request.auth != null && saveId.matches(request.auth.uid + '_.*');
     }
 
+    // Deny all other access by default (security best practice)
     match /{document=**} {
-      allow read: if true;
-      allow write: if false; // Block all other writes for security
+      allow read, write: if false;
     }
   }
 }
