@@ -5,6 +5,7 @@ import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'luci
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocalization } from '@/lib/localization/localization-context';
+import { useTenant } from '@/hooks/useTenant';
 import { useFullscreen } from '@/contexts/FullscreenContext';
 import { useState, useEffect } from 'react';
 
@@ -15,14 +16,16 @@ import { useState, useEffect } from 'react';
  */
 export default function Footer() {
   const { country } = useLocalization();
+  const { branding, market, hasLocalization } = useTenant();
   const { isFullscreen } = useFullscreen();
   const [email, setEmail] = useState('');
   const [mounted, setMounted] = useState(false);
   const currentYear = new Date().getFullYear();
   
   // Use localized values directly from context (client-side only)
-  const phoneNumber = country?.supportPhone || '+233 XX XXX XXXX';
-  const location = country?.capital && country?.name ? `${country.capital}, ${country.name}` : 'Ghana';
+  // Fix hydration by deferring client-only values to mounted state
+  const phoneNumber = mounted && hasLocalization && country?.supportPhone ? country.supportPhone : '+970589549030';
+  const location = mounted && hasLocalization && country?.capital && country?.name ? `${country.capital}, ${country.name}` : branding.name;
   
   // Ensure client-side mounting for hydration
   useEffect(() => {
@@ -64,7 +67,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="hidden md:block border-t-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-br from-slate-50 via-violet-50/50 to-indigo-50/50 dark:from-slate-900 dark:via-violet-950/50 dark:to-indigo-950/50 backdrop-blur-xl mt-auto relative overflow-hidden">
+    <footer className="hidden md:block border-t-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-br from-slate-50 via-violet-50/50 to-indigo-50/50 dark:from-slate-900 dark:via-violet-950/50 dark:to-indigo-950/50 backdrop-blur-xl mt-auto relative overflow-hidden" suppressHydrationWarning>
       {/* Animated background gradient */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-violet-300/10 via-indigo-300/10 to-purple-300/10 rounded-full blur-3xl animate-pulse"></div>
@@ -98,9 +101,13 @@ export default function Footer() {
                 </div>
               </div>
               <p className="text-sm text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
-                Empowering {country?.name || 'African'} students with smart, interactive learning experiences. 
-                Master {country?.academicStructure.juniorSecondary.name} & {country?.academicStructure.seniorSecondary.name} curriculum 
-                with AI-powered tools.
+                {market === 'us' ? (
+                  <>Empowering students with smart, interactive learning experiences. Master every subject with AI-powered tools and personalized education.</>
+                ) : hasLocalization && country ? (
+                  <>Empowering {country.name} students with smart, interactive learning experiences. Master {country.academicStructure.juniorSecondary.name} & {country.academicStructure.seniorSecondary.name} curriculum with AI-powered tools.</>
+                ) : (
+                  <>Empowering students worldwide with smart, interactive learning experiences and AI-powered tools.</>
+                )}
               </p>
             </div>
 
@@ -225,13 +232,17 @@ export default function Footer() {
         <div className="border-t-2 border-violet-200/30 dark:border-violet-800/30 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
           <div className="p-3 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 rounded-xl border border-violet-200/50 dark:border-violet-800/50">
             <p className="text-slate-700 dark:text-slate-300">
-              © {currentYear} S24. All rights reserved. 
-              <span className="ml-2 font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Made with ❤️ for {country?.name || 'Africa'}</span>
+              © {currentYear} {branding.name}. All rights reserved.
+              {mounted && market === 'ghana' && hasLocalization && (
+                <span className="ml-2 font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Made with ❤️ for {country?.name || 'Ghana'}</span>
+              )}
             </p>
           </div>
+          {mounted && hasLocalization && country && (
           <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 rounded-xl border border-violet-200/50 dark:border-violet-800/50">
-            <span className="text-slate-700 dark:text-slate-300 font-medium">Currently serving: <span className="text-2xl">{country?.flag}</span> <span className="font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{country?.name}</span></span>
+            <span className="text-slate-700 dark:text-slate-300 font-medium">Currently serving: <span className="text-2xl">{country.flag}</span> <span className="font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{country.name}</span></span>
           </div>
+          )}
         </div>
       </div>
     </footer>

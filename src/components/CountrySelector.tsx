@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocalization } from '@/hooks/useLocalization';
 import { getActiveCountries } from '@/lib/localization/countries';
 import type { CountryConfig } from '@/lib/localization/country-config';
@@ -25,6 +25,7 @@ export default function CountrySelector({
 }: CountrySelectorProps) {
   const { countryId, setCountry } = useLocalization();
   const [searchQuery, setSearchQuery] = useState('');
+  const [mounted, setMounted] = useState(false);
   
   // Use selectedCountryId prop if provided, otherwise use global countryId
   const currentCountryId = selectedCountryId ?? countryId;
@@ -34,6 +35,10 @@ export default function CountrySelector({
   const filteredCountries = countries.filter((country) =>
     country.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleCountrySelect = (country: CountryConfig) => {
     if (autoApply) {
@@ -48,6 +53,7 @@ export default function CountrySelector({
         value={currentCountryId}
         onChange={(e) => handleCountrySelect(countries.find(c => c.id === e.target.value)!)}
         className={`px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-colors ${className}`}
+        suppressHydrationWarning
       >
         {countries.map((country) => (
           <option key={country.id} value={country.id}>

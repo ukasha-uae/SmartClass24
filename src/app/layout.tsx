@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import Header from '@/components/HeaderNoSSR';
+import Footer from '@/components/FooterNoSSR';
 import BottomNav from '@/components/BottomNav';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
@@ -17,6 +17,7 @@ import { NotificationHandler } from '@/components/NotificationHandler';
 import { NotificationPermissionPrompt } from '@/components/NotificationPermissionPrompt';
 import { UpdateNotification } from '@/components/update-notification';
 import { ForceCacheClear } from '@/components/force-cache-clear';
+import { TenantThemeProvider } from '@/components/tenancy/TenantThemeProvider';
 
 export const metadata: Metadata = {
   title: 'Smartclass24',
@@ -47,32 +48,34 @@ export default function RootLayout({
          <meta name="theme-color" content="#7c3aed" />
       </head>
       <body className={cn('font-body antialiased bg-background h-full')}>
-        <ForceCacheClear />
-        <FirebaseClientProvider>
-          <LocalizationProvider>
-            <FullscreenProvider>
-              {/* Push Notification Components */}
-              <NotificationHandler />
-              <NotificationPermissionPrompt delay={8000} />
-              
-              <div className="relative flex min-h-screen w-full flex-col">
-                <Header />
-                <FullscreenMain>{children}</FullscreenMain>
-                <Footer />
-                <PWAInstallPrompt />
-                <PWAUpdatePrompt />
-                <FirstTimeProfileModal />
-                <Suspense fallback={null}>
-                  <ReferralHandler />
-                </Suspense>
-                <BottomNav />
-                <Toaster />
-                {/* Update notification for new versions */}
-                <UpdateNotification />
-              </div>
-            </FullscreenProvider>
-          </LocalizationProvider>
-        </FirebaseClientProvider>
+        <TenantThemeProvider>
+          <ForceCacheClear />
+          <FirebaseClientProvider>
+            <LocalizationProvider>
+              <FullscreenProvider>
+                {/* Push Notification Components */}
+                <NotificationHandler />
+                <NotificationPermissionPrompt delay={8000} />
+
+                <div className="relative flex min-h-screen w-full flex-col">
+                  <Header />
+                  <FullscreenMain>{children}</FullscreenMain>
+                  <Footer />
+                  <PWAInstallPrompt />
+                  <PWAUpdatePrompt />
+                  <FirstTimeProfileModal />
+                  <Suspense fallback={null}>
+                    <ReferralHandler />
+                  </Suspense>
+                  <BottomNav />
+                  <Toaster />
+                  {/* Update notification for new versions */}
+                  <UpdateNotification />
+                </div>
+              </FullscreenProvider>
+            </LocalizationProvider>
+          </FirebaseClientProvider>
+        </TenantThemeProvider>
       </body>
     </html>
   );
