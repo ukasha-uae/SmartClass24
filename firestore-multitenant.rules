@@ -1,0 +1,287 @@
+rules_version = '2';
+
+/**
+ * Multi-Tenant Firestore Security Rules
+ * 
+ * Architecture: Shared collections with tenantId field
+ * - Each document has a tenantId field
+ * - User auth tokens contain tenantId claim (set by Cloud Functions)
+ * - Super admins have superAdmin=true claim (can access all tenants)
+ * 
+ * Preview Mode: tenantId can be overridden in app via ?tenant=xyz
+ * but security rules use the tenantId claim from Firebase Auth
+ * 
+ * @version 1.0.0 (Simplified)
+ */
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // =========================================================================
+    // HELPER FUNCTIONS
+    // =========================================================================
+    
+    /**
+     * Check if user is authenticated
+     */
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    /**
+     * Check if user belongs to a specific tenant
+     * Requires tenantId claim to be set on user's auth token
+     */
+    function belongsToTenant(tenantId) {
+      return isAuthenticated() && 
+             request.auth.token.tenantId == tenantId;
+    }
+    
+    /**
+     * Check if user is super admin (can access all tenants)
+     */
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.superAdmin == true;
+    }
+    
+    /**
+     * Check if user is admin (tenant-specific or super admin)
+     */
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        request.auth.token.superAdmin == true
+      );
+    }
+    
+    /**
+     * Check if user owns the document
+     */
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // =========================================================================
+    // MULTI-TENANT COLLECTIONS (Shared with tenantId field)
+    // =========================================================================
+    
+    /**
+     * Students Collection
+     * - Each student document has tenantId field
+     * - Students can read/update own profile within their tenant
+     */
+    match /students/{studentId} {
+      allow read: if isOwner(studentId) || isSuperAdmin();
+      
+      allow create: if isOwner(studentId) && 
+        request.resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow update: if isOwner(studentId) && 
+        resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow delete: if false; // Never allow deletion
+    }
+    
+    /**
+     * Quiz Attempts Collection
+     * - Per-user subcollection with tenantId field
+     * - Users can only read/create their own attempts within their tenant
+     */
+    match /users/{userId}/quizAttempts/{attemptId} {
+      allow read: if isOwner(userId) && 
+        (isSuperAdmin() || belongsToTenant(resource.data.tenantId));
+      
+      allow create: if isOwner(userId) && 
+        request.resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow update, delete: if false; // Quiz attempts are immutable
+    }
+    
+    /**
+     * Challenges Collection (Arena)
+     * - Multi-tenant challenges with tenantId field
+     * - Users can create challenges within their tenant
+     * - Cross-tenant challenges possible but filtered by app logic
+     */
+    match /challenges/{challengeId} {
+      // Helper function to check if challenge has bot opponent
+      function hasBot() {
+        return request.resource.data.opponents != null && 
+               request.resource.data.opponents.size() > 0 &&
+               request.resource.data.opponents[0].userId.matches('bot-.*');
+      }
+      
+      allow read: if isAuthenticated(); // Public within tenant (filtered by app)
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow update: if isAuthenticated() || hasBot(); // Allow bot updates
+      
+      allow delete: if isAdmin() || isSuperAdmin();
+    }
+    
+    /**
+     * Notifications Collection
+     * - Per-user subcollection with tenantId field
+     * - Users can read/manage own notifications
+     */
+    match /users/{userId}/notifications/{notificationId} {
+      allow read: if isOwner(userId);
+      
+      allow create: if isAuthenticated(); // Anyone can send notifications
+      
+      allow update, delete: if isOwner(userId);
+    }
+    
+    /**
+     * Subscriptions Collection
+     * - Multi-tenant subscriptions with tenantId field
+     * - Users can read/write own subscription
+     */
+    match /subscriptions/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      
+      allow create, update: if isOwner(userId) && 
+        request.resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow delete: if false; // Never delete subscriptions
+    }
+    
+    /**
+     * Referrals Collection
+     * - Multi-tenant referrals with tenantId field
+     * - Users can read their own referrals and create new ones
+     */
+    match /referrals/{referralId} {
+      allow read: if isAuthenticated() && (
+        resource.data.referrerUid == request.auth.uid || 
+        (resource.data.referredUid != null && resource.data.referredUid == request.auth.uid) ||
+        resource.data.referredUid == null ||
+        isSuperAdmin()
+      );
+      
+      allow create: if isAuthenticated() && 
+        request.resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow update: if isAuthenticated() && (
+        resource.data.referredUid == request.auth.uid ||
+        resource.data.referrerUid == request.auth.uid ||
+        isSuperAdmin()
+      );
+      
+      allow delete: if false;
+    }
+    
+    /**
+     * Users Collection (Metadata)
+     * - Multi-tenant user metadata with tenantId field
+     * - Users can read/update own data
+     */
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      
+      allow create, update: if isOwner(userId);
+      
+      allow delete: if false;
+    }
+    
+    /**
+     * FCM Tokens Collection
+     * - Per-user subcollection with tenantId field
+     * - Users can manage own push notification tokens
+     */
+    match /users/{userId}/fcmTokens/{tokenId} {
+      allow read: if isOwner(userId) || isAdmin();
+      
+      allow create, update: if isOwner(userId) && 
+        request.resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow delete: if isOwner(userId);
+    }
+    
+    /**
+     * University Progress Collection (S24 Innovation Academy)
+     * - Multi-tenant progress with tenantId field
+     * - progressId format: {userId}_{programId}_{courseId}
+     */
+    match /university-progress/{progressId} {
+      allow read: if isAuthenticated() && 
+        progressId.matches(request.auth.uid + '_.*') &&
+        belongsToTenant(resource.data.tenantId);
+      
+      allow create, update: if isAuthenticated() && 
+        progressId.matches(request.auth.uid + '_.*') &&
+        request.resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow delete: if false;
+    }
+    
+    /**
+     * University Submissions Collection (S24 Innovation Academy)
+     * - Multi-tenant submissions with tenantId field
+     * - Students can read/create own submissions
+     */
+    match /university-submissions/{submissionId} {
+      allow read: if isOwner(resource.data.studentId) || isAdmin();
+      
+      allow create: if isOwner(request.resource.data.studentId) && 
+        request.resource.data.tenantId == request.auth.token.tenantId;
+      
+      allow update: if isOwner(resource.data.studentId) && 
+        belongsToTenant(resource.data.tenantId);
+      
+      allow delete: if false;
+    }
+    
+    /**
+     * University Code Saves Collection (S24 Innovation Academy)
+     * - Multi-tenant code autosaves with tenantId field
+     * - saveId format: {userId}_{lessonId}
+     */
+    match /university-code-saves/{saveId} {
+      allow read: if isAuthenticated() && 
+        saveId.matches(request.auth.uid + '_.*');
+      
+      allow create, update, delete: if isAuthenticated() && 
+        saveId.matches(request.auth.uid + '_.*') &&
+        request.resource.data.tenantId == request.auth.token.tenantId;
+    }
+    
+    /**
+     * Subjects Collection (Curriculum Content)
+     * - Multi-tenant subjects with tenantId field
+     * - Public read access (filtered by app logic)
+     * - Admin write access
+     */
+    match /subjects/{subjectId}/{document=**} {
+      allow read: if true; // Public (app filters by tenant)
+      
+      allow write: if isAdmin() || isSuperAdmin();
+    }
+    
+    /**
+     * Admins Collection
+     * - Tenant-specific admin emails
+     * - Public read for access checks
+     */
+    match /admins/{email} {
+      allow read: if isAuthenticated(); // Public (for access checks)
+      
+      allow create, update, delete: if isSuperAdmin();
+    }
+    
+    // =========================================================================
+    // CATCH-ALL RULE (Security)
+    // =========================================================================
+    
+    /**
+     * Deny all other operations by default
+     * This ensures no unintended access to collections
+     */
+    match /{document=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}

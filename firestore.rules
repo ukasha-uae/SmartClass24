@@ -1,21 +1,60 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow reads to all documents so the app can display data
-    // Restrict writes so only authenticated users can create quiz attempts on their own profile
-    match /users/{userId}/quizAttempts/{attemptId} {
-      // Only the owner can read their own quiz attempts
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow create: if request.auth != null && request.auth.uid == userId;
-      allow update, delete: if false;
+    
+    // =========================================================================
+    // HELPER FUNCTIONS
+    // =========================================================================
+    
+    // Check if user belongs to a specific tenant
+    function belongsToTenant(tenantId) {
+      return request.auth != null && (
+        request.auth.token.tenantId == tenantId ||
+        !('tenantId' in request.auth.token)  // Allow if tenantId claim not set (dev mode)
+      );
     }
     
+    // Check if user is super admin (can access all tenants)
+    function isSuperAdmin() {
+      return request.auth != null && 
+             request.auth.token.superAdmin == true;
+    }
+    
+    // =========================================================================
+    // SHARED COLLECTIONS WITH tenantId FIELD (v1 - Simplified)
+    // =========================================================================
+    
+    // Students (shared collection, filtered by tenantId)
     match /students/{studentId} {
-      // Allow authenticated users to read other students' profiles for friend challenges
-      allow read: if request.auth != null;
-      // Only allow users to create/update their own profile
-      allow create, update: if request.auth != null && request.auth.uid == studentId;
+      allow read: if request.auth != null && (
+        request.auth.uid == studentId ||
+        belongsToTenant(resource.data.tenantId) ||
+        isSuperAdmin()
+      );
+      allow create: if request.auth != null && 
+        request.auth.uid == studentId &&
+        (!('tenantId' in request.resource.data) || 
+         !('tenantId' in request.auth.token) ||
+         request.resource.data.tenantId == request.auth.token.tenantId);
+      allow update: if request.auth != null && 
+        request.auth.uid == studentId &&
+        (!('tenantId' in resource.data) ||
+         !('tenantId' in request.auth.token) ||
+         resource.data.tenantId == request.auth.token.tenantId);
       allow delete: if false;
+    }
+    
+    // Quiz attempts (shared collection, filtered by tenantId)
+    match /users/{userId}/quizAttempts/{attemptId} {
+      allow read: if request.auth != null && 
+        request.auth.uid == userId &&
+        belongsToTenant(resource.data.tenantId);
+      allow create: if request.auth != null && 
+        request.auth.uid == userId &&
+        (!('tenantId' in request.resource.data) ||
+         !('tenantId' in request.auth.token) ||
+         request.resource.data.tenantId == request.auth.token.tenantId);
+      allow update, delete: if false;
     }
 
     // Challenges - accessible to creator and opponents
