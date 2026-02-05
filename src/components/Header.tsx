@@ -1,15 +1,16 @@
 "use client";
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { GraduationCap, Users, MessagesSquare, Trophy, HelpCircle, ChevronDown, Menu, Calendar, BookOpen, Globe, ChevronRight, MessageCircle, Lock } from 'lucide-react';
 import AuthModal from './AuthModal';
 import { ThemeToggle } from './ThemeToggle';
 import CountrySelector from './CountrySelector';
 import NotificationBell from './NotificationBell';
 import { FlagIcon } from './FlagIcon';
+import { TenantLogo } from './tenancy/TenantLogo';
 import { useFirebase, useDoc } from '@/firebase';
-import { useHasMounted } from '@/hooks/use-has-mounted';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { useTenant } from '@/hooks/useTenant';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { SubscriptionStatusBadge } from '@/components/SubscriptionStatusBadge';
 import { Button } from '@/components/ui/button';
@@ -90,12 +91,12 @@ function WhatsAppHeaderButton({ isMobile = false }: { isMobile?: boolean }) {
 
 export default function Header() {
   const { user, firestore } = useFirebase();
-  const hasMounted = useHasMounted();
+  const searchParams = useSearchParams();
   const scrolled = useScrollPosition(10);
-  const isMobile = useIsMobile();
   const [sheetOpen, setSheetOpen] = useState(false);
   const [countryOpen, setCountryOpen] = useState(false);
   const { country } = useLocalization();
+  const { tenantId, branding, hasLocalization, features } = useTenant();
   const { isFullscreen } = useFullscreen();
   const profileRef = useMemo(() => (user && firestore) ? doc(firestore, `students/${user.uid}`) : null, [user, firestore]);
   const { data: profile } = useDoc<any>(profileRef as any);
@@ -115,6 +116,7 @@ export default function Header() {
         "fixed top-0 left-0 right-0 z-50 border-b-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-r from-white/90 via-violet-50/90 to-indigo-50/90 dark:from-slate-900/90 dark:via-violet-950/90 dark:to-indigo-950/90 backdrop-blur-xl transition-all duration-300",
         scrolled && "shadow-xl shadow-violet-200/20 dark:shadow-violet-900/20"
       )}
+      suppressHydrationWarning
     >
       {/* Animated background gradient */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -122,43 +124,34 @@ export default function Header() {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-purple-300/10 to-pink-300/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 relative">
-        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-          {/* Premium Logo Icon with Enhanced Glow */}
-          <div className="relative">
-            {/* Multi-layer glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 rounded-full blur-xl opacity-60 group-hover:opacity-80 transition-opacity animate-pulse"></div>
-            <div className="absolute inset-0 bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full blur-md opacity-40 group-hover:opacity-60 transition-opacity"></div>
-            {/* Icon container with premium styling */}
-            <div className="relative p-1.5 bg-gradient-to-br from-violet-500/20 via-indigo-500/20 to-purple-500/20 rounded-xl backdrop-blur-sm border border-violet-300/30 dark:border-violet-700/30 group-hover:border-violet-400/50 dark:group-hover:border-violet-600/50 transition-all">
-              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-violet-600 dark:text-violet-400 relative transition-all group-hover:scale-110 group-hover:rotate-12 duration-300 drop-shadow-lg" />
-            </div>
-          </div>
-          {/* Premium Text Logo - Clean & Minimal */}
-          <div className="relative flex items-baseline gap-2">
-            {/* Main text - Single clean version */}
-            <span className="text-base sm:text-lg md:text-xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent group-hover:scale-105 transition-transform inline-block tracking-tight drop-shadow-sm">
-              S24
-            </span>
-            {/* Elegant Premium Tagline Badge */}
-            <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-gradient-to-r from-violet-100/80 to-indigo-100/80 dark:from-violet-900/30 dark:to-indigo-900/30 text-violet-700 dark:text-violet-300 border border-violet-200/50 dark:border-violet-700/50 backdrop-blur-sm group-hover:scale-105 transition-transform tracking-wide">
-              Smart Learning
-            </span>
-          </div>
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 relative" suppressHydrationWarning>
+        {(() => {
+          const tenantFromQuery = searchParams?.get('tenant');
+          const homeHref = tenantFromQuery ? `/?tenant=${tenantFromQuery}` : '/';
+
+          return (
+        <Link 
+          href={homeHref}
+          className="flex items-center gap-2.5 group shrink-0"
+          suppressHydrationWarning
+        >
+          {/* Tenant-aware logo */}
+          <TenantLogo size="md" className="transition-transform group-hover:scale-105" />
         </Link>
+          );
+        })()}
         
-        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2" suppressHydrationWarning>
           {/* Mobile Hamburger Menu */}
-          {hasMounted && isMobile && (
-            <>
-              <WhatsAppHeaderButton isMobile={true} />
-              <Sheet open={sheetOpen} onOpenChange={setSheetOpen} modal={false}>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <Menu className="h-5 w-5" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </SheetTrigger>
+          <div className="md:hidden flex items-center gap-1">
+            <WhatsAppHeaderButton isMobile={true} />
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen} modal={false}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </SheetTrigger>
               <SheetContent side="left" className="w-[300px] overflow-y-auto p-0 bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-purple-950/30 dark:to-indigo-950/30 border-r-2 border-purple-200/30 dark:border-purple-800/30">
                 {/* Premium Animated Background */}
                 <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -188,7 +181,8 @@ export default function Header() {
                   
                   <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                   
-                  {/* Premium Country Selector - Collapsible */}
+                  {/* Premium Country Selector - Collapsible (only show if localization enabled) */}
+                  {hasLocalization && (
                   <Collapsible open={countryOpen} onOpenChange={setCountryOpen}>
                     <CollapsibleTrigger className="w-full">
                       <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] group shadow-md">
@@ -220,6 +214,7 @@ export default function Header() {
                       </div>
                     </CollapsibleContent>
                   </Collapsible>
+                  )}
                   
                   <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                   
@@ -288,7 +283,8 @@ export default function Header() {
                           <ChevronRight className="h-4 w-4 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
                         
-                        {/* Pricing */}
+                        {/* Pricing - Only show for tenants with public pricing enabled */}
+                        {features.enablePublicPricing !== false && (
                         <Link 
                           href="/pricing" 
                           onClick={() => setSheetOpen(false)}
@@ -302,25 +298,25 @@ export default function Header() {
                           <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-green-600 group-hover:to-emerald-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Pricing</span>
                           <ChevronRight className="h-4 w-4 text-green-600 dark:text-green-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
+                        )}
                       </nav>
                 </div>
               </SheetContent>
             </Sheet>
-            </>
-          )}
+          </div>
           
           {/* Desktop Navigation */}
           <CountrySelector 
             variant="compact" 
             showSearch={false} 
-            className="hidden md:flex border-0 bg-transparent hover:bg-accent" 
+            className={hasLocalization ? "hidden md:flex border-0 bg-transparent hover:bg-accent" : "hidden"}
           />
           <ThemeToggle className="hidden md:flex" />
           {/* WhatsApp Button - Desktop (Hidden on Mobile) */}
           <div className="hidden md:block">
             <WhatsAppHeaderButton isMobile={false} />
           </div>
-          {hasMounted && user && (
+          {user && (
             <>
               {/* Virtual Labs - Available for All Students */}
               <Link href="/virtual-labs" className="hidden md:block">
@@ -332,6 +328,7 @@ export default function Header() {
                 </Button>
               </Link>
 
+              {features.enablePublicPricing !== false && (
               <Link href="/pricing" className="hidden md:block">
                 <Button variant="ghost" size="sm" className="flex items-center gap-2 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-gradient-to-r hover:from-green-500/10 hover:to-emerald-500/10 hover:border-green-300/50 dark:hover:border-green-700/50 border border-transparent transition-all hover:scale-105">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -340,6 +337,7 @@ export default function Header() {
                   <span className="font-semibold">Pricing</span>
                 </Button>
               </Link>
+              )}
               <Link href="/challenge-arena" className="hidden md:block">
                 <Button variant="ghost" size="sm" className="flex items-center gap-2 text-primary hover:bg-gradient-to-r hover:from-violet-500/10 hover:to-indigo-500/10 hover:border-violet-300/50 dark:hover:border-violet-700/50 border border-transparent transition-all hover:scale-105">
                   <Trophy className="h-4 w-4" />
@@ -370,13 +368,9 @@ export default function Header() {
               )}
             </>
           )}
-          {hasMounted ? (
-            <div className="hidden md:block">
-              <AuthModal />
-            </div>
-          ) : (
-            <div className="h-8 w-8 hidden md:block" />
-          )}
+          <div className="hidden md:block">
+            <AuthModal />
+          </div>
         </div>
       </div>
     </header>

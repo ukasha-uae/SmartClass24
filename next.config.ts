@@ -25,7 +25,21 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'wisdomwarehouseuae.com',
+        port: '',
+        pathname: '/wp-content/uploads/**',
+      },
     ],
+    // Allow unoptimized images from all domains (for development)
+    unoptimized: process.env.NODE_ENV === 'development',
   },
   turbopack: {},
   // Force dynamic rendering for virtual labs to prevent stale cache

@@ -46,18 +46,10 @@ export function ThemeToggle({ className }: { className?: string }) {
     applyTheme(newTheme);
   };
 
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="icon" className={className}>
-        <Sun className="h-5 w-5" />
-      </Button>
-    );
-  }
-
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className={className}>
+      <DropdownMenuTrigger asChild suppressHydrationWarning>
+        <Button variant="ghost" size="icon" className={className} suppressHydrationWarning>
           <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
           <span className="sr-only">Toggle theme</span>

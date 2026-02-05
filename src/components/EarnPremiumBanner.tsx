@@ -7,6 +7,7 @@ import { X, Gift, Users, Sparkles, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useFirebase } from '@/firebase/provider';
 import { getUserReferralStats } from '@/lib/referrals';
+import { useTenant } from '@/hooks/useTenant';
 
 interface EarnPremiumBannerProps {
   variant?: 'full' | 'compact' | 'floating';
@@ -20,9 +21,21 @@ export function EarnPremiumBanner({
   showProgress = false 
 }: EarnPremiumBannerProps) {
   const { user } = useFirebase();
+  const { branding, features } = useTenant();
   const [isDismissed, setIsDismissed] = useState(false);
   const [referralCount, setReferralCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure client-side mounting for hydration
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Hide banner if referrals are disabled for this tenant
+  if (!features.enableReferrals) {
+    return null;
+  }
 
   useEffect(() => {
     // Check if banner was dismissed (expires after 24 hours)
@@ -165,7 +178,7 @@ export function EarnPremiumBanner({
                 <h3 className="text-xl md:text-2xl font-bold">Get Premium Access FREE!</h3>
               </div>
               <p className="text-white/90 mb-4 text-sm md:text-base">
-                Share SmartClass24 with friends. For every 10 friends who join and complete their profile + first activity, 
+                Share {branding.name} with friends. For every 10 friends who join and complete their profile + first activity, 
                 you earn <strong>1 month premium access</strong> - completely free! Keep earning unlimited months.
               </p>
               

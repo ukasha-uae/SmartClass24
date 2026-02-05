@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { IntelligentWelcome } from '@/components/IntelligentWelcome';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useTenant } from '@/hooks/useTenant';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { EarnPremiumBanner } from '@/components/EarnPremiumBanner';
 import { useFirebase } from '@/firebase/provider';
@@ -22,7 +23,21 @@ export default function Home() {
   const [userName, setUserName] = useState('there');
   const [selectedCampus, setSelectedCampus] = useState<'JHS' | 'SHS' | 'Primary'>('JHS');
   const { country } = useLocalization();
+  const { branding, market, hasLocalization, tenantId } = useTenant();
   const { user } = useFirebase();
+
+  // Log for debugging - check if tenant is correctly resolved
+  useEffect(() => {
+    console.log('[HomePage] Tenant:', { tenantId, market, brandingName: branding.name });
+  }, [tenantId, market, branding.name]);
+
+  // Force remount when tenant changes to prevent state pollution
+  useEffect(() => {
+    console.log('[HomePage] Tenant changed, forcing remount:', tenantId);
+    setMounted(false);
+    const timer = setTimeout(() => setMounted(true), 10);
+    return () => clearTimeout(timer);
+  }, [tenantId]);
 
   useEffect(() => {
     setMounted(true);
@@ -50,7 +65,10 @@ export default function Home() {
     setShowWelcome(false);
   };
 
-  if (!mounted) return null;
+  // Wait for client-side mount AND tenant context to prevent hydration issues
+  if (!mounted || !market) {
+    return null;
+  }
 
   // Get country-specific academic structure
   const juniorLevel = country?.academicStructure?.juniorSecondary?.name || 'JHS';
@@ -104,7 +122,7 @@ export default function Home() {
       id: 'jhs',
       name: country?.academicStructure?.juniorSecondary?.officialName || 'Junior High School',
       shortName: juniorLevel,
-      description: `Ace Your ${juniorExam} Exams`,
+      description: market === 'middle-east' ? 'Building Critical Thinking Skills' : `Ace Your ${juniorExam} Exams`,
       gradient: colors.primary,
       icon: Trophy,
       features: ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', 'Progress Tracking'],
@@ -112,17 +130,19 @@ export default function Home() {
       studentCount: '350+',
       classes: juniorClasses,
       emoji: '📚',
-      tagline: country?.id === 'nigeria' ? 'Excel in Basic Education' : `Master ${juniorExam}`,
+      tagline: market === 'middle-east' ? 'Discover Your Learning Style' : country?.id === 'nigeria' ? 'Excel in Basic Education' : `Master ${juniorExam}`,
       v1Note: 'V1: Arena + Virtual Labs'
     },
     {
       id: 'shs',
       name: country?.academicStructure?.seniorSecondary?.officialName || 'Senior High School',
       shortName: country?.academicStructure?.seniorSecondary?.name || 'SHS',
-      description: `Conquer ${seniorExam} & Beyond`,
+      description: market === 'middle-east' ? 'Preparing for Higher Education' : `Conquer ${seniorExam} & Beyond`,
       gradient: colors.secondary,
       icon: GraduationCap,
-      features: ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', `${seniorExam} Prep`],
+      features: market === 'middle-east' 
+        ? ['Arena Challenge', 'Virtual Labs', 'Collaborative Learning', 'Mentorship']
+        : ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', `${seniorExam} Prep`],
       href: `/challenge-arena/${country?.id || 'ghana'}?level=SHS`,
       studentCount: '280+',
       classes: seniorClasses,
@@ -130,7 +150,7 @@ export default function Home() {
       tagline: 'Your Path to University',
       v1Note: 'V1: Arena + Virtual Labs'
     },
-    ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity ? [{
+    ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity && market === 'ghana' ? [{
       id: 'university',
       name: 'S24 Innovation Academy',
       shortName: 'Academy',
@@ -168,8 +188,8 @@ export default function Home() {
       <section className="container mx-auto px-4 py-8 md:py-12 relative z-10">
 
         <div className="text-center mb-12 relative z-10">
-          {/* Country Flag Badge */}
-          {country && (
+          {/* Country Flag Badge - Only show for Ghana market with localization */}
+          {hasLocalization && country && market === 'ghana' && (
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="text-4xl">{country.flag}</span>
               <div className={`h-1 w-16 bg-gradient-to-r ${colors.primary} rounded-full`}></div>
@@ -185,35 +205,45 @@ export default function Home() {
                 <Sparkles className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-violet-600 dark:text-violet-400 animate-pulse drop-shadow-lg" />
               </div>
             </div>
-            {/* Premium Text Logo with Enhanced Effects */}
+            {/* Premium Text Logo with Enhanced Effects - Tenant-aware */}
             <div className="relative">
               {/* Glow layer */}
               <h1 className="absolute inset-0 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent blur-md opacity-40 animate-pulse">
-                S24
+                {market === 'ghana' ? 'S24' : branding.name}
               </h1>
               {/* Main text */}
               <h1 className="relative text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent tracking-tight drop-shadow-lg animate-gradient">
-                S24
+                {market === 'ghana' ? 'S24' : branding.name}
               </h1>
             </div>
           </div>
 
-          {/* Country-Specific Tagline */}
+          {/* Tenant & Country-Specific Tagline */}
           <p className="text-lg sm:text-xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-3">
-            {country?.id === 'nigeria' ? (
-              <>🇳🇬 Nigeria's Premier Learning Platform</>
-            ) : country?.id === 'ghana' ? (
+            {market === 'middle-east' ? (
+              <>Personalized Learning for Every Student</>
+            ) : market === 'us' ? (
+              <>🇺🇸 Your Path to Academic Excellence</>
+            ) : market === 'ghana' && country?.id === 'ghana' ? (
               <>🇬🇭 Ghana's #1 Education Platform</>
+            ) : hasLocalization && country?.id === 'nigeria' ? (
+              <>🇳🇬 Nigeria's Premier Learning Platform</>
+            ) : hasLocalization && country ? (
+              <>{country.flag || '🌍'} {country.name || 'West Africa'}'s Premier Learning Platform</>
             ) : (
-              <>{country?.flag || '🌍'} {country?.name || 'West Africa'}'s Premier Learning Platform</>
+              <>Smart Learning Platform</>
             )}
           </p>
 
           <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto mb-6">
-            {country?.id === 'nigeria' ? (
-              <>Master every subject from Primary to SSS. Prepare for BECE, WAEC, NECO, and beyond with Nigeria's most comprehensive e-learning platform.</>
-            ) : country?.id === 'ghana' ? (
+            {market === 'middle-east' ? (
+              <>Empowering diverse learners with individualized, hands-on education. Build real-world skills, emotional resilience, and discover your unique potential through personalized mentorship and creative learning.</>
+            ) : market === 'us' ? (
+              <>Comprehensive learning platform with interactive lessons, virtual labs, and competitive challenges. Master every subject with AI-powered personalized education.</>
+            ) : market === 'ghana' ? (
               <>Your complete journey from Primary through SHS. Excel in BECE, WASSCE with Ghana's trusted learning companion.</>
+            ) : hasLocalization && country?.id === 'nigeria' ? (
+              <>Master every subject from Primary to SSS. Prepare for BECE, WAEC, NECO, and beyond with Nigeria's most comprehensive e-learning platform.</>
             ) : (
               <>Your complete educational journey with AI-powered lessons and exam preparation.</>
             )}
@@ -432,12 +462,22 @@ export default function Home() {
           {/* Premium Trust Indicators */}
           <div className="mt-12 text-center">
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 mb-6 font-medium">
-              Trusted by schools and students across <span className="font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{country?.name || 'West Africa'}</span>
+              Trusted by schools and students {market === 'middle-east' ? (
+                <>in <span className="font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Dubai & UAE</span></>
+              ) : market === 'us' ? (
+                <>across <span className="font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">the United States</span></>
+              ) : hasLocalization && country ? (
+                <>across <span className="font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{country.name}</span></>
+              ) : (
+                <>worldwide</>
+              )}
             </p>
             <div className="flex flex-wrap gap-4 justify-center items-center">
               <div className="group px-5 py-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-200/30 dark:border-blue-800/30 backdrop-blur-sm hover:scale-105 transition-all shadow-lg hover:shadow-xl">
                 <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Curriculum Aligned</p>
-                <p className="font-bold text-sm bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">{country?.examSystem?.conductor || 'WAEC'} Standard</p>
+                <p className="font-bold text-sm bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                  {market === 'middle-east' ? 'Personalized Curriculum' : market === 'us' ? 'Common Core' : market === 'ghana' && country?.examSystem?.conductor ? `${country.examSystem.conductor} Standard` : 'International Standard'}
+                </p>
               </div>
               <div className="group px-5 py-3 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200/30 dark:border-amber-800/30 backdrop-blur-sm hover:scale-105 transition-all shadow-lg hover:shadow-xl">
                 <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Updated</p>
