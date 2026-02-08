@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, BookOpen, Trophy, Zap, Gamepad2, Users } from 'lucide-react';
 import { useCollection, useFirebase } from '@/firebase';
@@ -23,6 +24,7 @@ type EducationLevel = 'primary' | 'jhs' | 'shs';
 type PrimaryClass = 'Class 1' | 'Class 2' | 'Class 3' | 'Class 4' | 'Class 5' | 'Class 6' | 'All';
 
 export default function LevelSubjectsPage() {
+    const addTenantParam = useTenantLink();
   const params = useParams();
   const levelParam = params.level as string;
   const { firestore } = useFirebase();
@@ -250,7 +252,7 @@ export default function LevelSubjectsPage() {
 
         {/* Challenge Arena Section */}
         <div className="mt-12 max-w-4xl mx-auto">
-        <Link href="/challenge-arena">
+        <Link href={addTenantParam('/challenge-arena')}>
           <Card className={`relative overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer group border-2 ${
             educationLevel === 'primary' 
               ? 'bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-green-500/10 border-green-300 dark:border-green-700'

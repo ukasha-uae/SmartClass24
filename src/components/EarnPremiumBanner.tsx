@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useFirebase } from '@/firebase/provider';
 import { getUserReferralStats } from '@/lib/referrals';
 import { useTenant } from '@/hooks/useTenant';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 interface EarnPremiumBannerProps {
   variant?: 'full' | 'compact' | 'floating';
@@ -22,6 +23,7 @@ export function EarnPremiumBanner({
 }: EarnPremiumBannerProps) {
   const { user } = useFirebase();
   const { branding, features } = useTenant();
+  const addTenantParam = useTenantLink();
   const [isDismissed, setIsDismissed] = useState(false);
   const [referralCount, setReferralCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -207,7 +209,7 @@ export function EarnPremiumBanner({
                     Start Earning Now
                   </Button>
                 </Link>
-                <Link href="/pricing">
+                <Link href={addTenantParam('/pricing')}>
                   <Button 
                     size="lg" 
                     variant="outline" 

@@ -17,8 +17,10 @@ import {
 } from '@/lib/referrals';
 import { Gift, Copy, CheckCircle2, XCircle, Share2, MessageCircle, Trophy, Star } from 'lucide-react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function RedeemCodesPage() {
+  const addTenantParam = useTenantLink();
   const { user, isUserLoading } = useFirebase();
   const router = useRouter();
   const { toast } = useToast();
@@ -151,7 +153,7 @@ export default function RedeemCodesPage() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-purple-950/30 dark:to-blue-950/30 p-4 md:p-8">
       <div className="container mx-auto max-w-4xl">
         <div className="mb-6">
-          <Link href="/profile" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+          <Link href={addTenantParam('/profile')} className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
             ← Back to Profile
           </Link>
         </div>

@@ -5,9 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { coreSubjects } from '@/lib/shs-data';
 import { BookOpen, GraduationCap, ArrowRight, Trophy, Zap, Gamepad2, Users, Target } from 'lucide-react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { useState, useEffect } from 'react';
 
 export default function SHSSubjectsPage() {
+  const addTenantParam = useTenantLink();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function SHSSubjectsPage() {
         </div>
         
         <div className="mt-4">
-          <Link href="/shs-programmes">
+          <Link href={addTenantParam('/shs-programmes')}>
             <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80 text-sm px-4 py-2 hover:border-violet-400 transition-colors">
               <GraduationCap className="h-4 w-4 mr-2" />
               View SHS Programmes & Electives
@@ -158,7 +160,7 @@ export default function SHSSubjectsPage() {
 
       {/* Challenge Arena Section - Redesigned */}
       <div className="mt-8 md:mt-12 max-w-5xl mx-auto">
-        <Link href="/challenge-arena">
+        <Link href={addTenantParam('/challenge-arena')}>
           <Card className="relative overflow-hidden hover:shadow-2xl transition-all duration-300 hover:scale-[1.01] cursor-pointer group bg-gradient-to-br from-violet-500/5 via-purple-500/5 to-indigo-500/5 border-2 border-violet-200 dark:border-violet-800 hover:border-violet-400 dark:hover:border-violet-600">
             {/* Decorative Background */}
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-violet-400/15 to-purple-400/15 rounded-full blur-3xl -z-0 group-hover:scale-110 transition-transform" />

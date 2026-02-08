@@ -11,11 +11,10 @@ import { ArrowLeft, ChevronRight, BookOpen, Code, CheckCircle2, Award } from 'lu
 import dynamic from 'next/dynamic';
 import { webDevelopmentProgram } from '@/lib/university-data';
 import { CodeExecutionResult } from '@/types/university';
-import { use } from 'react';
 import MarkdownContent from '@/components/university/MarkdownContent';
 
 // Dynamically import the code editor with no SSR to prevent hydration issues
-const UniversityCodeEditor = dynamic(() => import('@/components/university/UniversityCodeEditor'), {
+const UniversityCodeEditor = dynamic(() => import('@/components/university/UniversityCodeEditor').then(mod => mod.default ?? mod), {
   ssr: false,
   loading: () => <div className="flex items-center justify-center h-96">
     <div className="text-center">
@@ -25,8 +24,8 @@ const UniversityCodeEditor = dynamic(() => import('@/components/university/Unive
   </div>
 });
 
-export default function LessonPage({ params }: { params: Promise<{ slug: string; courseSlug: string; lessonSlug: string }> }) {
-  const resolvedParams = use(params);
+export default function LessonPage({ params }: { params: { slug: string; courseSlug: string; lessonSlug: string } }) {
+  const resolvedParams = params;
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [executionResult, setExecutionResult] = useState<CodeExecutionResult | null>(null);
 

@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { 
   Zap, Trophy, Loader2, Users, Target, X
 } from 'lucide-react';
@@ -33,6 +34,7 @@ import { getSarahBot, getSarahAdaptedDifficulty, isBot } from '@/lib/ai-bot-prof
 
 export default function QuickMatchPage() {
   const router = useRouter();
+  const addTenantParam = useTenantLink();
   const { user, firestore } = useFirebase();
   const { playSound } = useSoundEffects();
   const { toast } = useToast();
@@ -167,9 +169,14 @@ export default function QuickMatchPage() {
           console.log('[Quick Match] Online players found:', playersList.length, playersList.map(p => p.userName));
           
           setOnlinePlayers(playersList);
-        }, (error) => {
-          console.error('Error fetching online players:', error);
-          setOnlinePlayers([]);
+        }, (error: any) => {
+          if (error?.code === 'permission-denied') {
+            console.warn('[Quick Match] Permission denied - cannot access students collection');
+            setOnlinePlayers([]);
+          } else {
+            console.error('Error fetching online players:', error);
+            setOnlinePlayers([]);
+          }
         });
       } catch (error) {
         console.error('Error setting up online players listener:', error);
@@ -235,8 +242,12 @@ export default function QuickMatchPage() {
                 displayName = studentName;
               }
             }
-          } catch (err) {
-            console.warn('[QuickMatch] Could not fetch student profile:', err);
+          } catch (err: any) {
+            if (err?.code === 'permission-denied') {
+              console.warn('[QuickMatch] Permission denied - cannot fetch student profile');
+            } else {
+              console.warn('[QuickMatch] Could not fetch student profile:', err);
+            }
           }
         }
         
@@ -554,7 +565,7 @@ export default function QuickMatchPage() {
           <div className="mb-6 sm:mb-8">
             <Button
               variant="ghost"
-              onClick={() => router.push('/challenge-arena')}
+              onClick={() => router.push(addTenantParam('/challenge-arena'))}
               className="mb-4 hover:bg-white/80 backdrop-blur-sm"
             >
               ← Back to Arena

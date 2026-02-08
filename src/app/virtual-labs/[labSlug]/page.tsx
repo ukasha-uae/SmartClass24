@@ -6,7 +6,7 @@ import { isPremiumUser } from '@/lib/monetization';
 import { ArrowLeft, FlaskConical, CheckCircle2, ArrowRight, Trophy, Star, Zap, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -16,6 +16,7 @@ import { LabNotes } from '@/components/virtual-labs/LabNotes';
 import confetti from 'canvas-confetti';
 import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
 import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLabDialog';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 interface QuizQuestion {
   question: string;
@@ -24,11 +25,13 @@ interface QuizQuestion {
   explanation: string;
 }
 
-export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: string }> }) {
+export default function VirtualLabPage({ params }: { params: { labSlug: string } }) {
   // V1 Route Guard: Check if user has access to virtual labs
   const { hasAccess, campus } = useV1FeatureAccess('virtualLabs');
   const { user, isUserLoading } = useFirebase();
+  const addTenantParam = useTenantLink();
   
+  const { labSlug } = params;
   const [mounted, setMounted] = useState(false);
   const [experimentCompleted, setExperimentCompleted] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
@@ -37,7 +40,6 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const [labCompleted, setLabCompleted] = useState(false);
   const [userInteracted, setUserInteracted] = useState(false);
   const { markLabComplete, isLabCompleted } = useLabProgress();
-  const resolvedParams = use(params);
 
   useEffect(() => {
     setMounted(true);
@@ -72,7 +74,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
 
   const userId = user?.uid || 'guest';
   console.log('[Virtual Lab Page] Checking access with userId:', userId, 'isUserLoading:', isUserLoading);
-  const experiment = getVirtualLabBySlug(resolvedParams.labSlug, userId);
+  const experiment = getVirtualLabBySlug(labSlug, userId);
   
   if (!experiment) {
     notFound();
@@ -168,7 +170,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
         <div className="container mx-auto px-4 py-8 relative z-10">
           {/* Premium Back Button */}
           <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
-            <Link href="/virtual-labs">
+            <Link href={addTenantParam('/virtual-labs')}>
               <Button variant="ghost" className="hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-violet-500/10 border-2 border-transparent hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:scale-105">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Virtual Labs
@@ -509,7 +511,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                               >
                                 Retry Quiz
                               </Button>
-                              <Link href="/virtual-labs" className="flex-1">
+                              <Link href={addTenantParam('/virtual-labs')} className="flex-1">
                                 <Button className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105">
                                   Back to Virtual Labs
                                   <ArrowRight className="ml-2 h-4 w-4" />

@@ -7,12 +7,14 @@ import { getCampusConfig } from '@/lib/campus-config';
 import { BookOpen, FlaskConical, Trophy, GraduationCap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function CampusHomePage({ params }: { params: { campusType: string } }) {
   const [mounted, setMounted] = useState(false);
   const { country } = useLocalization();
+  const addTenantParam = useTenantLink();
 
   useEffect(() => {
     setMounted(true);
@@ -51,13 +53,13 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
   
   const educationLevel = getEducationLevel(campus.id);
 
-  // Feature cards based on campus type
-  const features = campus.id === 'shs' ? [
+  // Feature cards based on campus type - use useMemo to recreate when tenant changes
+  const features = useMemo(() => campus.id === 'shs' ? [
     {
       icon: BookOpen,
       title: 'Core Subjects',
       description: 'Master English, Mathematics, Science, and Social Studies',
-      href: '/shs-subjects',
+      href: addTenantParam('/shs-subjects'),
       color: 'violet',
       badge: '4 Subjects'
     },
@@ -65,7 +67,7 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
       icon: FlaskConical,
       title: 'Virtual Labs',
       description: '35 interactive science experiments for hands-on learning',
-      href: '/virtual-labs',
+      href: addTenantParam('/virtual-labs'),
       color: 'orange',
       badge: '35 Labs'
     },
@@ -73,7 +75,7 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
       icon: Trophy,
       title: 'WASSCE Questions',
       description: 'Step-by-step solutions to past WASSCE exam questions',
-      href: '/wassce-questions',
+      href: addTenantParam('/wassce-questions'),
       color: 'amber',
       badge: 'Past Papers'
     },
@@ -81,7 +83,7 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
       icon: GraduationCap,
       title: 'Practice Games',
       description: 'Interactive quizzes and challenge games',
-      href: `/campus/${campus.id}/game`,
+      href: addTenantParam(`/campus/${campus.id}/game`),
       color: 'indigo',
       badge: 'Coming Soon'
     }
@@ -90,7 +92,7 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
       icon: BookOpen,
       title: 'Subject Library',
       description: 'Comprehensive lessons across all JHS subjects',
-      href: '/subjects',
+      href: addTenantParam('/subjects'),
       color: 'blue',
       badge: '9 Subjects'
     },
@@ -98,7 +100,7 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
       icon: Trophy,
       title: 'BECE Questions',
       description: 'Practice with real BECE past questions',
-      href: '/past-questions',
+      href: addTenantParam('/past-questions'),
       color: 'green',
       badge: 'Past Papers'
     },
@@ -106,7 +108,7 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
       icon: GraduationCap,
       title: 'Challenge Arena',
       description: 'Compete with other students in quiz battles',
-      href: `/challenge-arena/${country?.id || 'ghana'}?level=${educationLevel}`,
+      href: addTenantParam(`/challenge-arena/${country?.id || 'ghana'}?level=${educationLevel}`),
       color: 'purple',
       badge: 'Live'
     },
@@ -114,11 +116,11 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
       icon: FlaskConical,
       title: 'Practice Games',
       description: 'Interactive learning games and activities',
-      href: `/campus/${campus.id}/game`,
+      href: addTenantParam(`/campus/${campus.id}/game`),
       color: 'orange',
       badge: 'New'
     }
-  ];
+  ], [addTenantParam, campus.id, country?.id, educationLevel]);
 
   const colorClasses = {
     violet: 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/30',

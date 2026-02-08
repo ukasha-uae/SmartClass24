@@ -53,6 +53,36 @@ interface LocalizationContextValue {
 
 const LocalizationContext = createContext<LocalizationContextValue | undefined>(undefined);
 
+const defaultLocalizationContext: LocalizationContextValue = {
+  country: ghanaConfig,
+  countryId: DEFAULT_COUNTRY,
+  userRegion: null,
+  setCountry: () => {},
+  setRegion: () => {},
+  localizeContent: (text: string) => localizeText(text, ghanaConfig),
+  localizeObject: <T extends Record<string, any>>(obj: T) => localizeObject(obj, ghanaConfig),
+  formatCurrency: (amount: number, includeCode = false) => {
+    const formatted = `${ghanaConfig.currency.symbol}${amount.toLocaleString()}`;
+    return includeCode ? `${formatted} ${ghanaConfig.currency.code}` : formatted;
+  },
+  formatDate: (date: Date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return ghanaConfig.localizationRules.dateFormat
+      .replace('DD', day)
+      .replace('MM', month)
+      .replace('YYYY', year.toString());
+  },
+  formatPhoneNumber: (phone: string) => phone,
+  getCurrencySymbol: () => ghanaConfig.currency.symbol,
+  getPrimaryExam: () => ghanaConfig.examSystem.primary,
+  getSecondaryExam: () => ghanaConfig.examSystem.secondary,
+  getCapital: () => ghanaConfig.capital,
+  getJuniorSecondaryName: () => ghanaConfig.academicStructure.juniorSecondary.name,
+  getSeniorSecondaryName: () => ghanaConfig.academicStructure.seniorSecondary.name,
+};
+
 // ============================================================================
 // STORAGE KEYS
 // ============================================================================
@@ -247,7 +277,10 @@ export function useLocalization(): LocalizationContextValue {
   const context = useContext(LocalizationContext);
   
   if (context === undefined) {
-    throw new Error('useLocalization must be used within a LocalizationProvider');
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+      console.warn('[Localization] Missing LocalizationProvider. Falling back to default country config.');
+    }
+    return defaultLocalizationContext;
   }
   
   return context;

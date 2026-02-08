@@ -8,10 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { getBookmarks, removeBookmark, LessonBookmark } from '@/lib/lesson-tools';
 import { useToast } from '@/hooks/use-toast';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function BookmarksPage() {
   const [bookmarks, setBookmarks] = useState<LessonBookmark[]>([]);
   const { toast } = useToast();
+  const addTenantParam = useTenantLink();
 
   useEffect(() => {
     setBookmarks(getBookmarks());
@@ -52,7 +54,7 @@ export default function BookmarksPage() {
               Bookmark your favorite lessons to access them quickly here
             </p>
             <Button asChild>
-              <Link href="/subjects">
+              <Link href={addTenantParam('/subjects')}>
                 <BookOpen className="h-4 w-4 mr-2" />
                 Browse Subjects
               </Link>

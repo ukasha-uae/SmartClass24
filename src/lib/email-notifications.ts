@@ -33,7 +33,11 @@ export async function getUserEmail(userId: string): Promise<string | null> {
     }
     
     return null;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Email] Permission denied - cannot read user email');
+      return null;
+    }
     console.error('[Email] Failed to get user email:', error);
     return null;
   }
@@ -56,7 +60,11 @@ export async function getUserWhatsApp(userId: string): Promise<string | null> {
     }
     
     return null;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[WhatsApp] Permission denied - cannot read user WhatsApp');
+      return null;
+    }
     console.error('[WhatsApp] Failed to get user WhatsApp:', error);
     return null;
   }

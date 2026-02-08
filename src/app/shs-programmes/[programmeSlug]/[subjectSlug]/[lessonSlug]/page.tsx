@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import { getProgrammeBySlug } from '@/lib/shs-data';
 import { useLocalization } from '@/hooks/useLocalization';
@@ -121,22 +121,22 @@ function ComingSoonPage({
 export default function ElectiveLessonPage({ 
   params 
 }: { 
-  params: Promise<{ 
+  params: { 
     programmeSlug: string; 
     subjectSlug: string; 
     lessonSlug: string 
-  }> 
+  } 
 }) {
   const [mounted, setMounted] = useState(false);
-  const resolvedParams = use(params);
+  const { programmeSlug, subjectSlug, lessonSlug } = params;
   const router = useRouter();
   
   // Get the localized lesson data at the top level (before any conditional logic)
   // This ensures hooks are always called in the same order
   const lesson = useLocalizedLesson(
-    resolvedParams.subjectSlug, 
-    resolvedParams.lessonSlug, 
-    resolvedParams.lessonSlug
+    subjectSlug, 
+    lessonSlug, 
+    lessonSlug
   );
 
   useEffect(() => {
@@ -145,29 +145,29 @@ export default function ElectiveLessonPage({
 
   if (!mounted) return null;
 
-  const programme = getProgrammeBySlug(resolvedParams.programmeSlug);
+  const programme = getProgrammeBySlug(programmeSlug);
   
   if (!programme) {
     notFound();
   }
 
-  const subject = programme.electiveSubjects.find(s => s.slug === resolvedParams.subjectSlug);
+  const subject = programme.electiveSubjects.find(s => s.slug === subjectSlug);
 
   if (!subject) {
     notFound();
   }
 
   // Find the topic to get its name for Coming Soon page
-  const topic = subject.topics.find(t => t.slug === resolvedParams.lessonSlug);
+  const topic = subject.topics.find(t => t.slug === lessonSlug);
 
   // If lesson doesn't exist, show Coming Soon page instead of 404
   if (!lesson) {
     return (
       <ComingSoonPage
-        topicName={topic?.name || resolvedParams.lessonSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+        topicName={topic?.name || lessonSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
         subjectName={subject.name}
         programmeName={programme.name}
-        backUrl={`/shs-programmes/${resolvedParams.programmeSlug}/${resolvedParams.subjectSlug}`}
+        backUrl={`/shs-programmes/${programmeSlug}/${subjectSlug}`}
       />
     );
   }
@@ -178,31 +178,31 @@ export default function ElectiveLessonPage({
   // Create custom intro component based on lesson slug
   const getIntroComponent = () => {
     // Financial Accounting SHS1 intros
-    if (resolvedParams.lessonSlug === 'facc-shs1-intro-definition-objectives') {
+    if (lessonSlug === 'facc-shs1-intro-definition-objectives') {
       return <AccountingDefinitionIntro onComplete={() => {}} />;
     }
-    if (resolvedParams.lessonSlug === 'facc-shs1-intro-users-information') {
+    if (lessonSlug === 'facc-shs1-intro-users-information') {
       return <UsersOfInformationIntro onComplete={() => {}} />;
     }
-    if (resolvedParams.lessonSlug === 'facc-shs1-intro-branches') {
+    if (lessonSlug === 'facc-shs1-intro-branches') {
       return <BranchesOfAccountingIntro onComplete={() => {}} />;
     }
-    if (resolvedParams.lessonSlug === 'facc-shs1-concepts-business-entity') {
+    if (lessonSlug === 'facc-shs1-concepts-business-entity') {
       return <BusinessEntityIntro onComplete={() => {}} />;
     }
-    if (resolvedParams.lessonSlug === 'facc-shs1-concepts-going-concern') {
+    if (lessonSlug === 'facc-shs1-concepts-going-concern') {
       return <GoingConcernIntro onComplete={() => {}} />;
     }
-    if (resolvedParams.lessonSlug === 'facc-shs1-concepts-accrual') {
+    if (lessonSlug === 'facc-shs1-concepts-accrual') {
       return <AccrualConceptIntro onComplete={() => {}} />;
     }
-    if (resolvedParams.lessonSlug === 'facc-shs1-concepts-consistency-prudence') {
+    if (lessonSlug === 'facc-shs1-concepts-consistency-prudence') {
       return <ConsistencyPrudenceIntro onComplete={() => {}} />;
     }
-    if (resolvedParams.lessonSlug === 'facc-shs1-boe-sales-purchases-journals') {
+    if (lessonSlug === 'facc-shs1-boe-sales-purchases-journals') {
       return <SalesPurchasesJournalsIntro onComplete={() => {}} />;
     }
-    if (resolvedParams.lessonSlug === 'facc-shs1-boe-cash-petty-cash-book') {
+    if (lessonSlug === 'facc-shs1-boe-cash-petty-cash-book') {
       return <CashPettyCashBookWorkshop onComplete={() => {}} />;
     }
     
@@ -222,18 +222,18 @@ export default function ElectiveLessonPage({
       {isCarouselLesson ? (
         <CarouselLesson
           lesson={lesson}
-          subjectSlug={resolvedParams.subjectSlug}
-          topicSlug={resolvedParams.lessonSlug}
-          lessonSlug={resolvedParams.lessonSlug}
+          subjectSlug={subjectSlug}
+          topicSlug={lessonSlug}
+          lessonSlug={lessonSlug}
           educationLevel="SHS"
           localQuizzes={lesson.endOfLessonQuiz || []}
           introComponent={customIntro}
-          onExit={() => router.push(`/shs-programmes/${resolvedParams.programmeSlug}/${resolvedParams.subjectSlug}`)}
+          onExit={() => router.push(`/shs-programmes/${programmeSlug}/${subjectSlug}`)}
         />
       ) : (
         <div className="container mx-auto px-4 py-8">
           {/* Back button */}
-          <Link href={`/shs-programmes/${resolvedParams.programmeSlug}/${resolvedParams.subjectSlug}`}>
+          <Link href={`/shs-programmes/${programmeSlug}/${subjectSlug}`}>
             <Button variant="ghost" className="mb-6">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to {subject.name}
@@ -410,9 +410,9 @@ export default function ElectiveLessonPage({
                   </p>
                   <LessonCompleteQuiz 
                     lessonId={lesson.id}
-                    subjectSlug={resolvedParams.subjectSlug}
+                    subjectSlug={subjectSlug}
                     topicSlug="elective"
-                    lessonSlug={resolvedParams.lessonSlug}
+                    lessonSlug={lessonSlug}
                     localQuizzes={lesson.endOfLessonQuiz}
                   />
                 </CardContent>

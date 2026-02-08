@@ -1,6 +1,5 @@
 "use client";
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { GraduationCap, Users, MessagesSquare, Trophy, HelpCircle, ChevronDown, Menu, Calendar, BookOpen, Globe, ChevronRight, MessageCircle, Lock } from 'lucide-react';
 import AuthModal from './AuthModal';
 import { ThemeToggle } from './ThemeToggle';
@@ -11,6 +10,7 @@ import { TenantLogo } from './tenancy/TenantLogo';
 import { useFirebase, useDoc } from '@/firebase';
 import { useScrollPosition } from '@/hooks/use-scroll-position';
 import { useTenant } from '@/hooks/useTenant';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { SubscriptionStatusBadge } from '@/components/SubscriptionStatusBadge';
 import { Button } from '@/components/ui/button';
@@ -91,13 +91,13 @@ function WhatsAppHeaderButton({ isMobile = false }: { isMobile?: boolean }) {
 
 export default function Header() {
   const { user, firestore } = useFirebase();
-  const searchParams = useSearchParams();
   const scrolled = useScrollPosition(10);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [countryOpen, setCountryOpen] = useState(false);
   const { country } = useLocalization();
   const { tenantId, branding, hasLocalization, features } = useTenant();
   const { isFullscreen } = useFullscreen();
+  const addTenantParam = useTenantLink();
   const profileRef = useMemo(() => (user && firestore) ? doc(firestore, `students/${user.uid}`) : null, [user, firestore]);
   const { data: profile } = useDoc<any>(profileRef as any);
   
@@ -125,21 +125,14 @@ export default function Header() {
       </div>
 
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 relative" suppressHydrationWarning>
-        {(() => {
-          const tenantFromQuery = searchParams?.get('tenant');
-          const homeHref = tenantFromQuery ? `/?tenant=${tenantFromQuery}` : '/';
-
-          return (
         <Link 
-          href={homeHref}
+          href={addTenantParam('/')}
           className="flex items-center gap-2.5 group shrink-0"
           suppressHydrationWarning
         >
           {/* Tenant-aware logo */}
           <TenantLogo size="md" className="transition-transform group-hover:scale-105" />
         </Link>
-          );
-        })()}
         
         <div className="ml-auto flex items-center gap-1 sm:gap-2" suppressHydrationWarning>
           {/* Mobile Hamburger Menu */}
@@ -222,7 +215,7 @@ export default function Header() {
                   {user && (
                     <>
                       <Link 
-                        href="/profile" 
+                        href={addTenantParam("/profile")} 
                         onClick={() => setSheetOpen(false)}
                         className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-950/30 dark:to-violet-950/30 backdrop-blur-sm border-2 border-purple-200/50 dark:border-purple-800/50 hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:scale-[1.02] shadow-md group"
                       >
@@ -255,7 +248,7 @@ export default function Header() {
                   <nav className="flex flex-col gap-2">
                         {/* Challenge Arena - Always Visible */}
                         <Link 
-                          href="/challenge-arena" 
+                          href={addTenantParam("/challenge-arena")} 
                           onClick={() => setSheetOpen(false)}
                           className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 backdrop-blur-sm border-2 border-amber-200/50 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700 transition-all hover:scale-[1.02] shadow-md"
                         >
@@ -268,7 +261,7 @@ export default function Header() {
                         
                         {/* Virtual Labs - Available for All Students */}
                         <Link 
-                          href="/virtual-labs" 
+                          href={addTenantParam("/virtual-labs")} 
                           onClick={() => setSheetOpen(false)}
                           className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] shadow-md"
                         >
@@ -286,7 +279,7 @@ export default function Header() {
                         {/* Pricing - Only show for tenants with public pricing enabled */}
                         {features.enablePublicPricing !== false && (
                         <Link 
-                          href="/pricing" 
+                          href={addTenantParam("/pricing")} 
                           onClick={() => setSheetOpen(false)}
                           className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 backdrop-blur-sm border-2 border-green-200/50 dark:border-green-800/50 hover:border-green-300 dark:hover:border-green-700 transition-all hover:scale-[1.02] shadow-md"
                         >
@@ -319,7 +312,7 @@ export default function Header() {
           {user && (
             <>
               {/* Virtual Labs - Available for All Students */}
-              <Link href="/virtual-labs" className="hidden md:block">
+              <Link href={addTenantParam("/virtual-labs")} className="hidden md:block">
                 <Button variant="ghost" size="sm" className="flex items-center gap-2">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
@@ -329,7 +322,7 @@ export default function Header() {
               </Link>
 
               {features.enablePublicPricing !== false && (
-              <Link href="/pricing" className="hidden md:block">
+              <Link href={addTenantParam("/pricing")} className="hidden md:block">
                 <Button variant="ghost" size="sm" className="flex items-center gap-2 text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 hover:bg-gradient-to-r hover:from-green-500/10 hover:to-emerald-500/10 hover:border-green-300/50 dark:hover:border-green-700/50 border border-transparent transition-all hover:scale-105">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -338,7 +331,7 @@ export default function Header() {
                 </Button>
               </Link>
               )}
-              <Link href="/challenge-arena" className="hidden md:block">
+              <Link href={addTenantParam("/challenge-arena")} className="hidden md:block">
                 <Button variant="ghost" size="sm" className="flex items-center gap-2 text-primary hover:bg-gradient-to-r hover:from-violet-500/10 hover:to-indigo-500/10 hover:border-violet-300/50 dark:hover:border-violet-700/50 border border-transparent transition-all hover:scale-105">
                   <Trophy className="h-4 w-4" />
                   <span className="font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Arena</span>
@@ -349,14 +342,14 @@ export default function Header() {
                 <div className="hidden sm:flex items-center gap-2">
                   <SubscriptionStatusBadge variant="compact" />
                   {profile?.profilePictureUrl ? (
-                    <Link href="/profile">
+                    <Link href={addTenantParam("/profile")}>
                       <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity border-2 border-violet-300 dark:border-violet-700">
                         <AvatarImage src={profile.profilePictureUrl} alt={profile.studentName || 'Student'} />
                         <AvatarFallback>{profile.studentName?.charAt(0)?.toUpperCase() || 'S'}</AvatarFallback>
                       </Avatar>
                     </Link>
                   ) : (
-                    <Link href="/profile">
+                    <Link href={addTenantParam("/profile")}>
                       <Avatar className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity border-2 border-violet-300 dark:border-violet-700">
                         <AvatarFallback className="bg-gradient-to-br from-violet-500 to-indigo-600 text-white">
                           {user.email?.charAt(0)?.toUpperCase() || 'U'}

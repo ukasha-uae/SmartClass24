@@ -5,8 +5,10 @@ import MultipleSelect from '@/components/quiz/MultipleSelect';
 import Ordering from '@/components/quiz/Ordering';
 import Matching from '@/components/quiz/Matching';
 import { SHSQuestions } from '@/lib/shs-questions';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function SHSGamePage() {
+  const addTenantParam = useTenantLink();
   const [current, setCurrent] = useState(0);
   const [selected, setSelected] = useState<any>(null);
   const [score, setScore] = useState(0);
@@ -93,7 +95,7 @@ export default function SHSGamePage() {
         <div className="w-full max-w-md bg-white rounded-lg shadow p-6">
           <h3 className="text-xl font-bold mb-2">Game Complete!</h3>
           <p className="mb-4">Your score: <span className="font-bold">{score} / {SHSQuestions.length}</span></p>
-          <a href="/shs-campus" className="text-primary underline">Back to SHS Campus</a>
+          <a href={addTenantParam('/shs-campus')} className="text-primary underline">Back to SHS Campus</a>
         </div>
       )}
     </div>

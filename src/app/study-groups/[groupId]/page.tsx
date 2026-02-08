@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import {
   getAllGroups,
   getGroupPosts,
@@ -25,6 +26,7 @@ export default function GroupDetailPage() {
   const params = useParams();
   const router = useRouter();
   const groupId = params?.groupId as string;
+  const addTenantParam = useTenantLink();
   
   const [group, setGroup] = useState<StudyGroup | null>(null);
   const [posts, setPosts] = useState<GroupPost[]>([]);
@@ -108,7 +110,7 @@ export default function GroupDetailPage() {
   return (
     <div className="container mx-auto p-3 sm:p-4 md:p-6 lg:p-8 pb-20">
       <Link
-        href="/study-groups"
+        href={addTenantParam('/study-groups')}
         className="inline-flex items-center text-primary mb-3 sm:mb-4 hover:underline"
       >
         <ArrowLeft className="h-4 w-4 mr-2" />

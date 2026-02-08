@@ -25,6 +25,7 @@ import {
   GraduationCap,
   ArrowRight,
 } from 'lucide-react';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,6 +45,7 @@ import CountryMigrationDialog from '@/components/localization/CountryMigrationDi
 import { MasteryProgressSection } from '@/components/promotion/MasteryProgressSection';
 
 export default function SettingsPage() {
+  const addTenantParam = useTenantLink();
   const router = useRouter();
   const { toast } = useToast();
   const { country, countryId, setCountry } = useLocalization();
@@ -240,7 +242,7 @@ export default function SettingsPage() {
     
     // Redirect to profile to update school
     setTimeout(() => {
-      router.push('/profile');
+      router.push(addTenantParam('/profile'));
     }, 2000);
   };
 
@@ -271,7 +273,7 @@ export default function SettingsPage() {
     
     // Redirect to profile to update school
     setTimeout(() => {
-      router.push('/profile');
+      router.push(addTenantParam('/profile'));
     }, 2000);
   };
 
@@ -304,7 +306,7 @@ export default function SettingsPage() {
         <div className="mb-6">
           <Button
             variant="ghost"
-            onClick={() => router.push('/profile')}
+            onClick={() => router.push(addTenantParam('/profile'))}
             className="mb-4"
           >
             ← Back to Profile
@@ -930,7 +932,7 @@ export default function SettingsPage() {
             <Separator />
             
             <div className="flex flex-wrap gap-2">
-              <Link href="/about">
+              <Link href={addTenantParam('/about')}>
                 <Button variant="link" className="h-auto p-0 text-xs">About Us</Button>
               </Link>
               <Link href="/privacy-policy">

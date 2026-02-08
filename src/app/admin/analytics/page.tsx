@@ -7,6 +7,7 @@ import { collection, getDocs, query, orderBy, limit, where } from 'firebase/fire
 import { QuestionUsageEvent } from '@/lib/analytics';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, BarChart3, TrendingUp, Users, BookOpen, Target, Calendar, RefreshCw } from 'lucide-react';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 interface AnalyticsData {
   totalEvents: number;
@@ -20,6 +21,7 @@ interface AnalyticsData {
 export default function AnalyticsPage() {
   const router = useRouter();
   const { user, firestore } = useFirebase();
+  const addTenantParam = useTenantLink();
   const [loading, setLoading] = useState(false);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -104,7 +106,7 @@ export default function AnalyticsPage() {
           <div className="text-6xl mb-4">🔐</div>
           <h1 className="text-2xl font-bold mb-2">Authentication Required</h1>
           <p className="text-muted-foreground mb-4">Please sign in to view analytics</p>
-          <Button onClick={() => router.push('/profile')}>Sign In</Button>
+          <Button onClick={() => router.push(addTenantParam('/profile'))}>Sign In</Button>
         </div>
       </div>
     );

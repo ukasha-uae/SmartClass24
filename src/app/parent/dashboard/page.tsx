@@ -106,8 +106,12 @@ export default function ParentDashboard() {
         if (students.length > 0 && !selectedStudent) {
           setSelectedStudent(students[0].id);
         }
-      } catch (error) {
-        console.error('Error loading students:', error);
+      } catch (error: any) {
+        if (error?.code === 'permission-denied') {
+          console.warn('[Parent Dashboard] Permission denied - cannot access student data');
+        } else {
+          console.error('Error loading students:', error);
+        }
       } finally {
         setLoading(false);
       }

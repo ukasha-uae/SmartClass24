@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SHSSchools } from "@/lib/shs-schools";
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function SHSRegisterPage() {
   const [name, setName] = useState("");
@@ -10,12 +11,13 @@ export default function SHSRegisterPage() {
   const [level, setLevel] = useState("");
   const [parentPhone, setParentPhone] = useState("");
   const router = useRouter();
+  const addTenantParam = useTenantLink();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     // Save profile info (replace with real backend integration)
     localStorage.setItem("shsProfile", JSON.stringify({ name, school, level, parentPhone }));
-    router.push("/shs-campus/game");
+    router.push(addTenantParam("/shs-campus/game"));
   }
 
   return (

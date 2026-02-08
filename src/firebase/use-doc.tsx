@@ -10,6 +10,23 @@ import {
 } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { getAuth } from 'firebase/auth';
+
+const AUTH_REQUIRED_PREFIXES = [
+  'students/',
+  'users/',
+  'subscriptions/',
+  'referrals/',
+  'admins/',
+  'challenges/',
+  'university-progress/',
+  'university-submissions/',
+  'university-code-saves/',
+];
+
+function requiresAuthForPath(path: string): boolean {
+  return AUTH_REQUIRED_PREFIXES.some(prefix => path.startsWith(prefix));
+}
 
 /** Utility type to add an 'id' field to a given type T. */
 type WithId<T> = T & { id: string };
@@ -55,6 +72,14 @@ export function useDoc<T = any>(
       return;
     }
 
+    const currentUser = getAuth().currentUser;
+    if (requiresAuthForPath(memoizedDocRef.path) && (!currentUser || currentUser.isAnonymous)) {
+      setData(null);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     // Optional: setData(null); // Clear previous data instantly
@@ -72,6 +97,15 @@ export function useDoc<T = any>(
         setIsLoading(false);
       },
       (error: FirestoreError) => {
+        if (error.code === 'permission-denied') {
+          // Suppress permission-denied errors completely (don't set error state or emit events)
+          console.warn('[useDoc] Permission denied - skipping:', memoizedDocRef.path);
+          setError(null); // Don't set error state
+          setData(null);
+          setIsLoading(false);
+          return;
+        }
+
         const contextualError = new FirestorePermissionError({
           operation: 'get',
           path: memoizedDocRef.path,
@@ -81,7 +115,7 @@ export function useDoc<T = any>(
         setData(null)
         setIsLoading(false)
 
-        // trigger global error propagation
+        // trigger global error propagation (only for non-permission errors)
         errorEmitter.emit('permission-error', contextualError);
       }
     );

@@ -17,6 +17,7 @@ import {
   Share2, Download, Camera, Globe, AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
 import {
@@ -49,6 +50,7 @@ import { getUserDisplayName } from '@/lib/user-display';
 export default function QuizBattlePage() {
   const params = useParams();
   const router = useRouter();
+  const addTenantParam = useTenantLink();
   const { playSound, isMuted, toggleMute } = useSoundEffects();
   const { user, firestore, isUserLoading } = useFirebase();
   const { toast } = useToast();
@@ -110,7 +112,7 @@ export default function QuizBattlePage() {
     // This prevents interruption during auth persistence loading or HMR
     if (!userId && !isUserLoading) {
       // No user after loading complete - redirect to sign in
-      router.push('/challenge-arena');
+      router.push(addTenantParam('/challenge-arena'));
       return;
     }
     
@@ -144,8 +146,12 @@ export default function QuizBattlePage() {
                 setPlayer(updatedProfile);
               }
             }
-          } catch (err) {
-            console.warn('[Challenge] Could not fetch student profile:', err);
+          } catch (err: any) {
+            if (err?.code === 'permission-denied') {
+              console.warn('[Challenge] Permission denied - cannot fetch student profile');
+            } else {
+              console.warn('[Challenge] Could not fetch student profile:', err);
+            }
           }
         });
       }
@@ -173,7 +179,7 @@ export default function QuizBattlePage() {
       try {
         const challengeData = await getChallenge(challengeId);
         if (!challengeData) {
-          router.push('/challenge-arena');
+          router.push(addTenantParam('/challenge-arena'));
           return;
         }
         setChallenge(challengeData);
@@ -198,7 +204,7 @@ export default function QuizBattlePage() {
         }
       } catch (error) {
         console.error('Failed to load challenge:', error);
-        router.push('/challenge-arena');
+        router.push(addTenantParam('/challenge-arena'));
       }
     };
     
@@ -293,8 +299,12 @@ export default function QuizBattlePage() {
                 });
               }
             },
-            (error) => {
-              console.error('Error listening to challenge updates:', error);
+            (error: any) => {
+              if (error?.code === 'permission-denied') {
+                console.warn('[Challenge Listener] Permission denied - cannot access challenge');
+              } else {
+                console.error('Error listening to challenge updates:', error);
+              }
             }
           );
         } catch (err) {
@@ -682,7 +692,7 @@ export default function QuizBattlePage() {
           });
           // Navigate back to challenge arena after a short delay
           setTimeout(() => {
-            router.push('/challenge-arena');
+            router.push(addTenantParam('/challenge-arena'));
           }, 1500);
         } else {
           toast({ title: 'Error', description: 'Failed to decline challenge', variant: 'destructive' });
@@ -791,7 +801,7 @@ export default function QuizBattlePage() {
                   }}
                 />
               )}
-              <Button variant="outline" onClick={() => router.push('/challenge-arena')}>
+              <Button variant="outline" onClick={() => router.push(addTenantParam('/challenge-arena'))}>
                 Cancel Challenge
               </Button>
             </div>
@@ -812,7 +822,7 @@ export default function QuizBattlePage() {
         <p className="text-muted-foreground mb-6 max-w-md">
           We couldn't load the question data. This might happen if the selected subject doesn't have enough questions available yet.
         </p>
-        <Button onClick={() => router.push('/challenge-arena')}>
+        <Button onClick={() => router.push(addTenantParam('/challenge-arena'))}>
           Return to Arena
         </Button>
       </div>
@@ -1137,22 +1147,22 @@ export default function QuizBattlePage() {
         }
         
         toast({ title: 'Rematch Created!', description: `Challenging ${opponentUserName} again!` });
-        router.push(`/challenge-arena/play/${newChallenge.id}`);
+        router.push(addTenantParam(`/challenge-arena/play/${newChallenge.id}`));
         return;
       }
       
       // For other challenge types, use the default redirect behavior
       if (isPractice) {
-        router.push(`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`);
+        router.push(addTenantParam(`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`));
       } else if (isBossBattle && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss) {
-        router.push("/challenge-arena/boss-battle");
+        router.push(addTenantParam('/challenge-arena/boss-battle'));
       } else if (isSchoolBattle && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool) {
-        router.push("/challenge-arena/school-battle");
+        router.push(addTenantParam('/challenge-arena/school-battle'));
       } else if (isTournament && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
-        router.push("/challenge-arena/tournaments");
+        router.push(addTenantParam('/challenge-arena/tournaments'));
       } else {
         // Default: redirect to quick-match
-        router.push("/challenge-arena/quick-match");
+        router.push(addTenantParam('/challenge-arena/quick-match'));
       }
     };
 
@@ -2073,7 +2083,7 @@ export default function QuizBattlePage() {
 
           {/* Quick Actions with Share */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-            <Link href="/challenge-arena" className="w-full">
+            <Link href={addTenantParam('/challenge-arena')} className="w-full">
               <Button variant="outline" className="w-full h-12">
                 <Home className="h-4 w-4 mr-2" />
                 Back to Arena
@@ -2150,14 +2160,14 @@ export default function QuizBattlePage() {
                     <div className="flex flex-wrap gap-2">
                       {isPractice && accuracy >= 80 && (
                         <>
-                          <Link href="/challenge-arena/quick-match">
+                          <Link href={addTenantParam('/challenge-arena/quick-match')}>
                             <Button size="sm" variant="outline" className="h-8 text-xs">
                               <Zap className="h-3 w-3 mr-1" />
                               Quick Match
                             </Button>
                           </Link>
                           {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss && (
-                            <Link href="/challenge-arena/boss-battle">
+                            <Link href={addTenantParam('/challenge-arena/boss-battle')}>
                               <Button size="sm" variant="outline" className="h-8 text-xs">
                                 <BrainCircuit className="h-3 w-3 mr-1" />
                                 Boss Battle
@@ -2167,7 +2177,7 @@ export default function QuizBattlePage() {
                         </>
                       )}
                       {isPractice && accuracy < 80 && (
-                        <Link href={`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`}>
+                        <Link href={addTenantParam(`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`)}>
                           <Button size="sm" variant="outline" className="h-8 text-xs">
                             <RotateCcw className="h-3 w-3 mr-1" />
                             Practice Again
@@ -2177,7 +2187,7 @@ export default function QuizBattlePage() {
                       {isBossBattle && (
                         <>
                           {isWin && FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss && (
-                            <Link href="/challenge-arena/boss-battle">
+                            <Link href={addTenantParam('/challenge-arena/boss-battle')}>
                               <Button size="sm" variant="outline" className="h-8 text-xs">
                                 <Target className="h-3 w-3 mr-1" />
                                 Harder Boss
@@ -2185,7 +2195,7 @@ export default function QuizBattlePage() {
                             </Link>
                           )}
                           {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament && (
-                            <Link href="/challenge-arena/tournaments">
+                            <Link href={addTenantParam('/challenge-arena/tournaments')}>
                               <Button size="sm" variant="outline" className="h-8 text-xs">
                                 <Trophy className="h-3 w-3 mr-1" />
                                 Join Tournament
@@ -2197,14 +2207,14 @@ export default function QuizBattlePage() {
                       {isSchoolBattle && (
                         <>
                           {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool && (
-                            <Link href="/challenge-arena/school-battle">
+                            <Link href={addTenantParam('/challenge-arena/school-battle')}>
                               <Button size="sm" variant="outline" className="h-8 text-xs">
                                 <Award className="h-3 w-3 mr-1" />
                                 Another Battle
                               </Button>
                             </Link>
                           )}
-                          <Link href={`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`}>
+                          <Link href={addTenantParam(`/challenge-arena/practice?level=${challenge?.level || 'JHS'}`)}>
                             <Button size="sm" variant="outline" className="h-8 text-xs">
                               <BookOpen className="h-3 w-3 mr-1" />
                               Practice
@@ -2215,7 +2225,7 @@ export default function QuizBattlePage() {
                       {isQuickMatch && (
                         <>
                           {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss && (
-                            <Link href="/challenge-arena/boss-battle">
+                            <Link href={addTenantParam('/challenge-arena/boss-battle')}>
                               <Button size="sm" variant="outline" className="h-8 text-xs">
                                 <BrainCircuit className="h-3 w-3 mr-1" />
                                 Boss Battle
@@ -2223,7 +2233,7 @@ export default function QuizBattlePage() {
                             </Link>
                           )}
                           {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament && (
-                            <Link href="/challenge-arena/tournaments">
+                            <Link href={addTenantParam('/challenge-arena/tournaments')}>
                               <Button size="sm" variant="outline" className="h-8 text-xs">
                                 <Trophy className="h-3 w-3 mr-1" />
                                 Tournament

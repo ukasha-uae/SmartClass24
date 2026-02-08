@@ -1,20 +1,23 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
-import { resolveTenantFromWindow } from '@/tenancy/resolveTenant';
+import { useEffect, useState } from 'react';
 import { applyTenantTheme } from '@/tenancy/theme';
-import type { TenantConfig } from '@/tenancy/types';
+import { useTenant } from '@/hooks/useTenant';
 
 interface TenantThemeProviderProps {
   children: React.ReactNode;
 }
 
-export function TenantThemeProvider({ children }: TenantThemeProviderProps) {
-  const tenant = useMemo<TenantConfig>(() => resolveTenantFromWindow(), []);
+function TenantThemeProviderInner({ children }: TenantThemeProviderProps) {
+  const { tenant } = useTenant();
 
   useEffect(() => {
     applyTenantTheme(tenant);
   }, [tenant]);
 
   return <>{children}</>;
+}
+
+export function TenantThemeProvider({ children }: TenantThemeProviderProps) {
+  return <TenantThemeProviderInner>{children}</TenantThemeProviderInner>;
 }

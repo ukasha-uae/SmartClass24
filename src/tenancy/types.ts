@@ -13,6 +13,20 @@ export interface TenantBranding {
   accentColor: string;    // Secondary/accent color
   domain: string;
   supportEmail: string;
+  
+  // Footer customization (optional)
+  footer?: {
+    tagline?: string;          // Short description/mission statement
+    emoji?: string;            // Brand emoji (defaults to 🎓)
+    showSocialMedia?: boolean; // Show social media links (defaults to true)
+    socialLinks?: {            // Optional custom social links
+      facebook?: string;
+      twitter?: string;
+      instagram?: string;
+      youtube?: string;
+      linkedin?: string;
+    };
+  };
 }
 
 /**

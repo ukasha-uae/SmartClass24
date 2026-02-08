@@ -17,6 +17,11 @@ export function resolveTenant({
   hostname?: string | null;
   previewTenant?: string | null;
 }): TenantConfig {
+  // Debug logging
+  if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+    console.log('[resolveTenant] Input:', { tenantId, hostname, previewTenant });
+  }
+
   // Priority 1: Preview mode (for demos, QA, onboarding)
   if (previewTenant) {
     const tenant = getTenantById(previewTenant);
@@ -52,6 +57,7 @@ export function resolveTenant({
 /**
  * Resolve tenant from browser window
  * Includes preview mode support via ?tenant=xyz
+ * @deprecated Use resolveTenantFromParams with useSearchParams instead for React components
  */
 export function resolveTenantFromWindow(): TenantConfig {
   if (typeof window === 'undefined') {
@@ -61,9 +67,27 @@ export function resolveTenantFromWindow(): TenantConfig {
   // Check for preview mode
   const urlParams = new URLSearchParams(window.location.search);
   const previewTenant = urlParams.get('tenant');
+  
+  // Debug logging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[resolveTenantFromWindow] DEPRECATED - URL:', window.location.href);
+    console.log('[resolveTenantFromWindow] Search params:', window.location.search);
+    console.log('[resolveTenantFromWindow] Tenant param:', previewTenant);
+  }
 
   const hostname = window.location.hostname;
   const tenantId = process.env.NEXT_PUBLIC_TENANT_ID ?? null;
 
   return resolveTenant({ tenantId, hostname, previewTenant });
+}
+
+/**
+ * Resolve tenant from React state (useSearchParams)
+ * This is the preferred method for React components
+ */
+export function resolveTenantFromParams(tenantParam: string | null): TenantConfig {
+  const hostname = typeof window !== 'undefined' ? window.location.hostname : null;
+  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID ?? null;
+
+  return resolveTenant({ tenantId, hostname, previewTenant: tenantParam });
 }

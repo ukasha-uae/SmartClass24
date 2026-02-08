@@ -9,10 +9,12 @@ import {
   Beaker, Microscope, Calculator, Globe 
 } from 'lucide-react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { useState, useEffect } from 'react';
 import { useLocalization } from '@/hooks/useLocalization';
 
 export default function SHSHubPage() {
+    const addTenantParam = useTenantLink();
   const [mounted, setMounted] = useState(false);
   const { country } = useLocalization();
 
@@ -249,7 +251,7 @@ export default function SHSHubPage() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Link href={`/challenge-arena/${country?.id || 'ghana'}?level=SHS`}>
+          <Link href={addTenantParam(`/challenge-arena/${country?.id || 'ghana'}?level=SHS`)}>
             <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
               <CardContent className="p-6 text-center">
                 <Trophy className="h-10 w-10 mx-auto mb-3 text-yellow-600" />
@@ -259,7 +261,7 @@ export default function SHSHubPage() {
             </Card>
           </Link>
 
-          <Link href="/virtual-labs">
+          <Link href={addTenantParam('/virtual-labs')}>
             <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
               <CardContent className="p-6 text-center">
                 <Microscope className="h-10 w-10 mx-auto mb-3 text-blue-600" />
@@ -269,7 +271,7 @@ export default function SHSHubPage() {
             </Card>
           </Link>
 
-          <Link href="/past-questions">
+          <Link href={addTenantParam('/past-questions')}>
             <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
               <CardContent className="p-6 text-center">
                 <BookOpen className="h-10 w-10 mx-auto mb-3 text-green-600" />
@@ -279,7 +281,7 @@ export default function SHSHubPage() {
             </Card>
           </Link>
 
-          <Link href="/study-groups">
+          <Link href={addTenantParam('/study-groups')}>
             <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer">
               <CardContent className="p-6 text-center">
                 <Users className="h-10 w-10 mx-auto mb-3 text-purple-600" />

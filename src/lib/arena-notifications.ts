@@ -54,7 +54,11 @@ export async function getUserFCMTokens(
     });
     
     return tokens;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Arena Notifications] Permission denied - cannot access FCM tokens');
+      return [];
+    }
     console.error('[Arena Notifications] Error getting user tokens:', error);
     return [];
   }
@@ -136,6 +140,14 @@ export async function sendArenaNotificationViaFirestore(
 ): Promise<void> {
   try {
     const { addDoc, collection, serverTimestamp } = await import('firebase/firestore');
+    const { getAuth } = await import('firebase/auth');
+    
+    // Check if user is authenticated
+    const auth = getAuth();
+    if (!auth.currentUser || auth.currentUser.isAnonymous) {
+      console.warn('[Arena Notifications] Skipping notification: user not authenticated');
+      return;
+    }
     
     const notificationsRef = collection(firestore, 'users', recipientUid, 'notifications');
     
@@ -153,9 +165,13 @@ export async function sendArenaNotificationViaFirestore(
     });
     
     console.log('[Arena Notifications] Notification queued for delivery');
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Arena Notifications] Permission denied - skipping notification write');
+      return;
+    }
     console.error('[Arena Notifications] Error queueing notification:', error);
-    throw error;
+    // Don't re-throw - allow app to continue
   }
 }
 

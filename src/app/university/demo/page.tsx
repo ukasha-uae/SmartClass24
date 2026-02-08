@@ -9,6 +9,7 @@ import UniversityCodeEditor from '@/components/university/UniversityCodeEditor';
 import Link from 'next/link';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import { CodeFile } from '@/types/university';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 const demoFiles: CodeFile[] = [
   {
@@ -263,6 +264,8 @@ setTimeout(() => {
 ];
 
 export default function UniversityDemoPage() {
+  const addTenantParam = useTenantLink();
+  
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Under Construction Banner */}
@@ -274,7 +277,7 @@ export default function UniversityDemoPage() {
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-8">
         <div className="container mx-auto px-4">
           <Link
-            href="/university"
+            href={addTenantParam('/university')}
             className="inline-flex items-center text-green-100 hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

@@ -8,9 +8,12 @@
 
 'use client';
 
-import { useMemo } from 'react';
-import { resolveTenantFromWindow } from '@/tenancy/resolveTenant';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { resolveTenantFromParams } from '@/tenancy/resolveTenant';
 import type { TenantConfig } from '@/tenancy/types';
+import { TenantParamContext } from '@/components/tenancy/TenantParamProvider';
+
+
 
 export interface UseTenantResult {
   tenant: TenantConfig;
@@ -60,11 +63,56 @@ export interface UseTenantResult {
  * ```
  */
 export function useTenant(): UseTenantResult {
+  const initialTenantParam = useContext(TenantParamContext);
   // Track URL search params to re-resolve tenant when ?tenant= changes
-  const searchParams = typeof window !== 'undefined' ? window.location.search : '';
+  const [tenantParam, setTenantParam] = useState<string | null>(() => {
+    if (initialTenantParam) return initialTenantParam;
+    if (typeof window === 'undefined') return null;
+    const params = new URLSearchParams(window.location.search);
+    return params.get('tenant');
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const readTenantParam = () => {
+      const params = new URLSearchParams(window.location.search);
+      setTenantParam(params.get('tenant'));
+    };
+
+    const notifyLocationChange = () => readTenantParam();
+
+    const originalPushState = window.history.pushState;
+    const originalReplaceState = window.history.replaceState;
+
+    window.history.pushState = function pushState(...args) {
+      const result = originalPushState.apply(this, args as unknown as [any, any, any]);
+      window.dispatchEvent(new Event('locationchange'));
+      return result;
+    };
+
+    window.history.replaceState = function replaceState(...args) {
+      const result = originalReplaceState.apply(this, args as unknown as [any, any, any]);
+      window.dispatchEvent(new Event('locationchange'));
+      return result;
+    };
+
+    window.addEventListener('popstate', notifyLocationChange);
+    window.addEventListener('locationchange', notifyLocationChange);
+
+    readTenantParam();
+
+    return () => {
+      window.removeEventListener('popstate', notifyLocationChange);
+      window.removeEventListener('locationchange', notifyLocationChange);
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+    };
+  }, []);
   
   const tenant = useMemo<TenantConfig>(() => {
-    const resolved = resolveTenantFromWindow();
+    // Use the new resolveTenantFromParams that accepts tenant directly
+    const resolved = resolveTenantFromParams(tenantParam);
     
     // Log tenant for debugging (includes tenantId in all logs)
     if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
@@ -73,11 +121,12 @@ export function useTenant(): UseTenantResult {
         name: resolved.name,
         market: resolved.market,
         domain: resolved.branding.domain,
+        fromURL: tenantParam,
       });
     }
     
     return resolved;
-  }, [searchParams]);
+  }, [tenantParam]);
   
   return {
     tenant,

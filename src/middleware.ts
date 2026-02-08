@@ -3,6 +3,15 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const response = NextResponse.next();
+
+  // Persist preview tenant from query string for SSR consistency
+  const tenant = request.nextUrl.searchParams.get('tenant');
+  if (tenant) {
+    response.cookies.set('tenant', tenant, {
+      path: '/',
+      sameSite: 'lax',
+    });
+  }
   
   // Ensure UTF-8 encoding for all responses
   response.headers.set('Content-Type', 'text/html; charset=utf-8');

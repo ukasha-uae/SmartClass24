@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import {FirestorePermissionError} from '@/firebase/errors';
+import { getAuth } from 'firebase/auth';
 
 /**
  * Initiates a setDoc operation for a document reference.
@@ -18,6 +19,10 @@ import {FirestorePermissionError} from '@/firebase/errors';
  */
 export function setDocumentNonBlocking(docRef: DocumentReference, data: any, options: SetOptions) {
   setDoc(docRef, data, options).catch(error => {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Firestore] Permission denied - write skipped:', docRef.path);
+      return;
+    }
     errorEmitter.emit(
       'permission-error',
       new FirestorePermissionError({
@@ -39,6 +44,10 @@ export function setDocumentNonBlocking(docRef: DocumentReference, data: any, opt
 export function addDocumentNonBlocking(colRef: CollectionReference, data: any) {
   const promise = addDoc(colRef, data)
     .catch(error => {
+      if (error?.code === 'permission-denied') {
+        console.warn('[Firestore] Permission denied - add skipped:', colRef.path);
+        return;
+      }
       errorEmitter.emit(
         'permission-error',
         new FirestorePermissionError({
@@ -59,6 +68,10 @@ export function addDocumentNonBlocking(colRef: CollectionReference, data: any) {
 export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) {
   updateDoc(docRef, data)
     .catch(error => {
+      if (error?.code === 'permission-denied') {
+        console.warn('[Firestore] Permission denied - update skipped:', docRef.path);
+        return;
+      }
       errorEmitter.emit(
         'permission-error',
         new FirestorePermissionError({
@@ -78,6 +91,10 @@ export function updateDocumentNonBlocking(docRef: DocumentReference, data: any) 
 export function deleteDocumentNonBlocking(docRef: DocumentReference) {
   deleteDoc(docRef)
     .catch(error => {
+      if (error?.code === 'permission-denied') {
+        console.warn('[Firestore] Permission denied - delete skipped:', docRef.path);
+        return;
+      }
       errorEmitter.emit(
         'permission-error',
         new FirestorePermissionError({

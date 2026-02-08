@@ -11,7 +11,7 @@ import { Play, Save, RotateCcw, Download, Upload, FileCode, Eye, EyeOff, Maximiz
 import { CodeFile, CodeExecutionResult, ConsoleMessage, SandboxConfig } from '@/types/university';
 
 // Dynamically import Monaco Editor to avoid SSR issues
-const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
+const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(mod => mod.default ?? mod), {
   ssr: false,
   loading: () => <div className="flex items-center justify-center h-full">Loading editor...</div>
 });

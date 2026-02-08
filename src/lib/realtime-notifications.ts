@@ -85,14 +85,8 @@ export async function createUserNotification(
   const currentUser = auth?.currentUser;
   
   if (!currentUser) {
-    const error = new Error('User not authenticated - cannot create notification');
-    console.error('[Notification] ❌', error.message);
-    console.error('[Notification] Auth state:', {
-      authExists: !!auth,
-      currentUser: null,
-      authReady: auth ? 'checking...' : 'no auth instance'
-    });
-    throw error;
+    console.warn('[Notification] Skipping notification: user not authenticated');
+    return null;
   }
   
   console.log('[Notification] User authenticated:', currentUser.uid);
@@ -150,11 +144,8 @@ export async function createUserNotification(
       
       // Provide context based on error type
       if (addDocError?.code === 'permission-denied') {
-        console.error('[Notification] Permission denied - check Firestore rules');
-        console.error('[Notification] Collection path:', colRef.path);
-        console.error('[Notification] Current user:', currentUser.uid);
-        console.error('[Notification] Target user:', userId);
-        console.error('[Notification] Rule should allow: allow create: if request.auth != null;');
+        console.warn('[Notification] Permission denied - skipping notification write');
+        return null;
       } else if (addDocError?.code === 'unavailable') {
         console.error('[Notification] Firestore service unavailable - check network connection');
       } else if (addDocError?.code === 'unauthenticated') {
@@ -163,20 +154,15 @@ export async function createUserNotification(
         console.error('[Notification] Unknown error - full details:', addDocError);
       }
       
-      throw addDocError;
+      return null;
     }
   } catch (error: any) {
-    console.error('[Notification] ❌ Failed to create notification for user:', userId, 'Error:', error);
-    console.error('[Notification] Error details:', {
-      code: error.code,
-      message: error.message,
-      stack: error.stack
-    });
-    if (error.code === 'permission-denied') {
-      console.error('[Notification] Permission denied - check Firestore rules for users/' + userId + '/notifications');
-      console.error('[Notification] Current user:', currentUser?.uid || 'not authenticated');
+    if (error?.code === 'permission-denied') {
+      console.warn('[Notification] Permission denied - notification suppressed');
+      return null;
     }
-    throw error; // Re-throw so caller can handle it
+    console.error('[Notification] ❌ Failed to create notification for user:', userId, 'Error:', error);
+    return null;
   }
 }
 
@@ -185,6 +171,8 @@ export async function markUserNotificationAsRead(
   notificationId: string
 ) {
   if (!userId || !notificationId) return;
+  const { auth } = initializeFirebase();
+  if (!auth?.currentUser) return;
   const { firestore } = initializeFirebase();
   const ref = doc(firestore, 'users', userId, 'notifications', notificationId);
   await updateDoc(ref, { read: true });
@@ -201,6 +189,8 @@ export async function deleteUserNotification(
   notificationId: string
 ) {
   if (!userId || !notificationId) return;
+  const { auth } = initializeFirebase();
+  if (!auth?.currentUser) return;
   const { firestore } = initializeFirebase();
   const ref = doc(firestore, 'users', userId, 'notifications', notificationId);
   await deleteDoc(ref);

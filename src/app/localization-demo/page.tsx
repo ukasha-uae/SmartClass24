@@ -1,11 +1,9 @@
+'use client';
 import LocalizationDemo from '@/components/LocalizationDemo';
-
-export const metadata = {
-  title: 'Internationalization Demo | SmartClass24',
-  description: 'Interactive demonstration of multi-country support for SmartClass24',
-};
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function LocalizationDemoPage() {
+  const addTenantParam = useTenantLink();
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
@@ -24,7 +22,7 @@ export default function LocalizationDemoPage() {
 
         <div className="mt-12 text-center">
           <a 
-            href="/settings"
+            href={addTenantParam('/settings')}
             className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
           >
             Change Country in Settings →

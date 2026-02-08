@@ -130,8 +130,12 @@ export async function getAllAdmins(firestore: any): Promise<Array<{ email: strin
     }
     
     return admins;
-  } catch (error) {
-    console.error('[Admin] Error getting admins:', error);
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Admin] Permission denied - cannot access admins collection');
+    } else {
+      console.error('[Admin] Error getting admins:', error);
+    }
     return [{
       email: SUPER_ADMIN_EMAIL,
       addedBy: 'System',

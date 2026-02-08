@@ -2,15 +2,18 @@
  * University Course Detail Page
  * Shows course overview and all modules/lessons
  */
+'use client';
 
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, BookOpen, Clock, CheckCircle, Play } from 'lucide-react';
 import { getUniversityProgram } from '@/lib/university-data';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
-export default async function CoursePage({ params }: { params: Promise<{ slug: string; courseSlug: string }> }) {
-  const { slug, courseSlug } = await params;
+export default function CoursePage({ params }: { params: { slug: string; courseSlug: string } }) {
+  const { slug, courseSlug } = params;
   const program = getUniversityProgram(slug);
+  const addTenantParam = useTenantLink();
 
   if (!program) {
     notFound();
@@ -36,7 +39,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-12">
         <div className="container mx-auto px-4">
           <Link
-            href={`/university/programs/${slug}`}
+            href={addTenantParam(`/university/programs/${slug}`)}
             className="inline-flex items-center text-green-100 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -110,7 +113,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
                     {module.lessons.map((lesson, lessonIdx) => (
                       <Link
                         key={lesson.id}
-                        href={`/university/programs/${slug}/courses/${courseSlug}/lessons/${lesson.slug}`}
+                        href={addTenantParam(`/university/programs/${slug}/courses/${courseSlug}/lessons/${lesson.slug}`)}
                         className="block p-4 hover:bg-gray-50 transition-colors group"
                       >
                         <div className="flex items-center justify-between">
@@ -171,7 +174,7 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
             <h2 className="text-2xl font-bold mb-4">Ready to Start Learning?</h2>
             <p className="text-green-100 mb-6">Begin with the first lesson and build your skills step by step.</p>
             <Link
-              href={`/university/programs/${slug}/courses/${courseSlug}/lessons/${course.modules[0].lessons[0].slug}`}
+              href={addTenantParam(`/university/programs/${slug}/courses/${courseSlug}/lessons/${course.modules[0].lessons[0].slug}`)}
               className="inline-block px-8 py-4 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors"
             >
               Start First Lesson

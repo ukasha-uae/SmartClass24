@@ -45,9 +45,11 @@ import { useFirebase } from '@/firebase/provider';
 import { isAdmin, isSuperAdmin, addAdmin, removeAdmin, getAllAdmins } from '@/lib/admin-config';
 import { collection, getDocs } from 'firebase/firestore';
 import { getUserDisplayName } from '@/lib/user-display';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function AdminDashboard() {
   const router = useRouter();
+  const addTenantParam = useTenantLink();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState<Player | null>(null);
   const [users, setUsers] = useState<Player[]>([]);
@@ -77,7 +79,7 @@ export default function AdminDashboard() {
           description: 'Please sign in to access the admin dashboard',
           variant: 'destructive',
         });
-        router.push('/profile');
+        router.push(addTenantParam('/profile'));
         return;
       }
 

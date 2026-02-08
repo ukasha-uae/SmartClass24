@@ -7,14 +7,16 @@ import { Button } from '@/components/ui/button';
 import { AlertCircle, ArrowRight } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function StudyGroupsPage() {
   const router = useRouter();
+  const addTenantParam = useTenantLink();
 
   useEffect(() => {
     // Redirect to Challenge Arena for V1
     // Study Groups is a V2 feature
-    router.replace('/challenge-arena/ghana');
+    router.replace(addTenantParam('/challenge-arena/ghana'));
   }, [router]);
 
   return (
@@ -35,7 +37,7 @@ export default function StudyGroupsPage() {
               Study Groups and other social features will be available in V2.
             </AlertDescription>
           </Alert>
-          <Link href="/challenge-arena/ghana">
+          <Link href={addTenantParam('/challenge-arena/ghana')}>
             <Button className="w-full">
               Go to Challenge Arena
               <ArrowRight className="ml-2 h-4 w-4" />

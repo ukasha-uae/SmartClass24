@@ -325,8 +325,12 @@ export const getLeaderboard = async (firestore?: any, currentUserId?: string, li
     
     return rankedUsers;
     
-  } catch (error) {
-    console.error('[Leaderboard] Error fetching leaderboard:', error);
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Leaderboard] Permission denied - cannot access leaderboard data');
+    } else {
+      console.error('[Leaderboard] Error fetching leaderboard:', error);
+    }
     
     // Fallback to local data
     const currentUserProgress = getUserProgress();

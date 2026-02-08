@@ -1,13 +1,14 @@
 "use client";
 
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocalization } from '@/lib/localization/localization-context';
 import { useTenant } from '@/hooks/useTenant';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { useFullscreen } from '@/contexts/FullscreenContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 /**
  * Footer Component - Traditional website footer
@@ -16,11 +17,12 @@ import { useState, useEffect } from 'react';
  */
 export default function Footer() {
   const { country } = useLocalization();
-  const { branding, market, hasLocalization } = useTenant();
+  const { branding, market, hasLocalization, tenantId } = useTenant();
   const { isFullscreen } = useFullscreen();
   const [email, setEmail] = useState('');
   const [mounted, setMounted] = useState(false);
   const currentYear = new Date().getFullYear();
+  const addTenantParam = useTenantLink();
   
   // Use localized values directly from context (client-side only)
   // Fix hydration by deferring client-only values to mounted state
@@ -44,26 +46,82 @@ export default function Footer() {
     setEmail('');
   };
 
-  const footerSections = {
-    // V1: Only Challenge Arena and Virtual Labs
-    features: [
-      { label: 'Challenge Arena', href: '/challenge-arena' },
-      { label: 'Virtual Labs', href: '/virtual-labs' },
-      { label: 'Pricing', href: '/pricing' },
-    ],
-    legal: [
-      { label: 'About Us', href: '/about' },
-      { label: 'Privacy Policy', href: '/privacy' },
-      { label: 'Terms of Service', href: '/terms' },
-      { label: 'Contact Us', href: '/contact' },
-    ],
-  };
+  // Get tenant-specific footer customization (only after mount to avoid hydration mismatch)
+  const footerConfig = mounted ? branding.footer : undefined;
+  const brandEmoji = (mounted && footerConfig?.emoji) || '🎓';
+  const brandTagline = mounted && footerConfig?.tagline ? footerConfig.tagline : (
+    market === 'us' 
+      ? 'Empowering students with smart, interactive learning experiences. Master every subject with AI-powered tools and personalized education.'
+      : mounted && hasLocalization && country
+        ? `Empowering ${country.name} students with smart, interactive learning experiences. Master ${country.academicStructure.juniorSecondary.name} & ${country.academicStructure.seniorSecondary.name} curriculum with AI-powered tools.`
+        : 'Empowering students worldwide with smart, interactive learning experiences and AI-powered tools.'
+  );
+  const showSocialMedia = mounted ? (footerConfig?.showSocialMedia !== false) : true; // Default to true
 
-  const socialLinks = [
+  const footerSections = useMemo(() => {
+    const features = [
+      { label: 'Challenge Arena', href: addTenantParam('/challenge-arena') },
+      { label: 'Virtual Labs', href: addTenantParam('/virtual-labs') },
+      { label: 'Pricing', href: addTenantParam('/pricing') },
+    ];
+
+    return {
+      // V1: Only Challenge Arena and Virtual Labs
+      features: tenantId === 'wisdomwarehouse'
+        ? features.filter(item => item.label !== 'Pricing')
+        : features,
+      legal: [
+        { label: 'About Us', href: addTenantParam('/about') },
+        { label: 'Privacy Policy', href: addTenantParam('/privacy') },
+        { label: 'Terms of Service', href: addTenantParam('/terms') },
+        { label: 'Contact Us', href: addTenantParam('/contact') },
+      ],
+    };
+  }, [addTenantParam, tenantId]);
+
+  // Build social links from tenant config or use defaults (only after mount)
+  const socialLinks = mounted ? [
+    { 
+      icon: Facebook, 
+      href: footerConfig?.socialLinks?.facebook || '#', 
+      label: 'Facebook', 
+      ariaLabel: 'Visit our Facebook page',
+      enabled: !footerConfig?.socialLinks || footerConfig?.socialLinks?.facebook !== undefined
+    },
+    { 
+      icon: Twitter, 
+      href: footerConfig?.socialLinks?.twitter || '#', 
+      label: 'Twitter', 
+      ariaLabel: 'Visit our Twitter profile',
+      enabled: !footerConfig?.socialLinks || footerConfig?.socialLinks?.twitter !== undefined
+    },
+    { 
+      icon: Instagram, 
+      href: footerConfig?.socialLinks?.instagram || '#', 
+      label: 'Instagram', 
+      ariaLabel: 'Visit our Instagram page',
+      enabled: !footerConfig?.socialLinks || footerConfig?.socialLinks?.instagram !== undefined
+    },
+    { 
+      icon: Youtube, 
+      href: footerConfig?.socialLinks?.youtube || '#', 
+      label: 'YouTube', 
+      ariaLabel: 'Visit our YouTube channel',
+      enabled: !footerConfig?.socialLinks || footerConfig?.socialLinks?.youtube !== undefined
+    },
+    { 
+      icon: Linkedin, 
+      href: footerConfig?.socialLinks?.linkedin || '#', 
+      label: 'LinkedIn', 
+      ariaLabel: 'Visit our LinkedIn page',
+      enabled: !footerConfig?.socialLinks || footerConfig?.socialLinks?.linkedin !== undefined
+    },
+  ].filter(link => link.enabled) : [
     { icon: Facebook, href: '#', label: 'Facebook', ariaLabel: 'Visit our Facebook page' },
     { icon: Twitter, href: '#', label: 'Twitter', ariaLabel: 'Visit our Twitter profile' },
     { icon: Instagram, href: '#', label: 'Instagram', ariaLabel: 'Visit our Instagram page' },
     { icon: Youtube, href: '#', label: 'YouTube', ariaLabel: 'Visit our YouTube channel' },
+    { icon: Linkedin, href: '#', label: 'LinkedIn', ariaLabel: 'Visit our LinkedIn page' },
   ];
 
   return (
@@ -86,28 +144,22 @@ export default function Footer() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 rounded-full blur-xl opacity-40 animate-pulse"></div>
                   <div className="relative p-2 bg-gradient-to-br from-violet-500/20 via-indigo-500/20 to-purple-500/20 rounded-xl backdrop-blur-sm border border-violet-300/30 dark:border-violet-700/30">
-                    <div className="text-3xl">🎓</div>
+                    <div className="text-3xl">{brandEmoji}</div>
                   </div>
                 </div>
                 <div className="relative">
                   {/* Text glow */}
                   <h3 className="absolute inset-0 text-2xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent blur-sm opacity-50">
-                    S24
+                    {branding.name}
                   </h3>
                   {/* Main text */}
                   <h3 className="relative text-2xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent tracking-tight drop-shadow-sm">
-                    S24
+                    {branding.name}
                   </h3>
                 </div>
               </div>
               <p className="text-sm text-slate-700 dark:text-slate-300 mb-4 leading-relaxed">
-                {market === 'us' ? (
-                  <>Empowering students with smart, interactive learning experiences. Master every subject with AI-powered tools and personalized education.</>
-                ) : hasLocalization && country ? (
-                  <>Empowering {country.name} students with smart, interactive learning experiences. Master {country.academicStructure.juniorSecondary.name} & {country.academicStructure.seniorSecondary.name} curriculum with AI-powered tools.</>
-                ) : (
-                  <>Empowering students worldwide with smart, interactive learning experiences and AI-powered tools.</>
-                )}
+                {brandTagline}
               </p>
             </div>
 
@@ -138,22 +190,28 @@ export default function Footer() {
 
             {/* Premium Social Media Links */}
             <div className="mt-6">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="text-xl">🌐</div>
-                <h4 className="text-sm font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Connect With Us</h4>
-              </div>
-              <div className="flex gap-3">
-                {socialLinks.map(({ icon: Icon, href, label, ariaLabel }) => (
-                  <Link
-                    key={label}
-                    href={href}
-                    className="group relative h-10 w-10 rounded-xl bg-gradient-to-br from-white to-violet-50 dark:from-gray-800 dark:to-violet-950/50 border-2 border-violet-200/50 dark:border-violet-800/50 hover:border-violet-500 dark:hover:border-violet-400 hover:scale-110 transition-all shadow-md hover:shadow-lg flex items-center justify-center"
-                    aria-label={ariaLabel}
-                  >
-                    <Icon className="h-4 w-4 text-violet-600 dark:text-violet-400 group-hover:scale-110 transition-transform" />
-                  </Link>
-                ))}
-              </div>
+              {showSocialMedia && socialLinks.length > 0 && (
+                <>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="text-xl">🌐</div>
+                    <h4 className="text-sm font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Connect With Us</h4>
+                  </div>
+                  <div className="flex gap-3">
+                    {socialLinks.map(({ icon: Icon, href, label, ariaLabel }) => (
+                      <Link
+                        key={label}
+                        href={href}
+                        className="group relative h-10 w-10 rounded-xl bg-gradient-to-br from-white to-violet-50 dark:from-gray-800 dark:to-violet-950/50 border-2 border-violet-200/50 dark:border-violet-800/50 hover:border-violet-500 dark:hover:border-violet-400 hover:scale-110 transition-all shadow-md hover:shadow-lg flex items-center justify-center"
+                        aria-label={ariaLabel}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon className="h-4 w-4 text-violet-600 dark:text-violet-400 group-hover:scale-110 transition-transform" />
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -164,7 +222,7 @@ export default function Footer() {
               {footerSections.features.map((link) => (
                 <li key={link.href}>
                   <Link
-                    href={link.href}
+                    href={addTenantParam(link.href)}
                     className="text-sm text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:translate-x-1 transition-all inline-block"
                   >
                     {link.label}
@@ -181,7 +239,7 @@ export default function Footer() {
               {footerSections.legal.map((link) => (
                 <li key={link.href}>
                   <Link
-                    href={link.href}
+                    href={addTenantParam(link.href)}
                     className="text-sm text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 hover:translate-x-1 transition-all inline-block"
                   >
                     {link.label}

@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { coreSubjects } from '@/lib/shs-data';
 import { BookOpen, ArrowLeft, Lock, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { notFound } from 'next/navigation';
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSlug: string }> }) {
+export default function SHSSubjectPage({ params }: { params: { subjectSlug: string } }) {
+  const addTenantParam = useTenantLink();
   const [mounted, setMounted] = useState(false);
-  const resolvedParams = use(params);
+  const { subjectSlug } = params;
 
   useEffect(() => {
     setMounted(true);
@@ -19,7 +21,7 @@ export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSl
 
   if (!mounted) return null;
 
-  const subject = coreSubjects.find(s => s.slug === resolvedParams.subjectSlug);
+  const subject = coreSubjects.find(s => s.slug === subjectSlug);
   
   if (!subject) {
     notFound();
@@ -38,7 +40,7 @@ export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSl
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Back Button */}
-      <Link href="/shs-subjects">
+      <Link href={addTenantParam('/shs-subjects')}>
         <Button variant="ghost" className="mb-6">
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back to Subjects
@@ -138,7 +140,7 @@ export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSl
                         </div>
                       )}
                       
-                      <Link href={isLocked ? '#' : `/subjects/shs/${resolvedParams.subjectSlug}/${topic.slug}/${topic.slug}`}>
+                      <Link href={isLocked ? '#' : `/subjects/shs/${subjectSlug}/${topic.slug}/${topic.slug}`}>
                         <Button 
                           className="w-full" 
                           variant={isCompleted ? "outline" : "default"}
@@ -180,7 +182,7 @@ export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSl
                 <h3 className="font-bold text-lg mb-2">🚧 Full Lessons Coming Soon!</h3>
                 <p className="text-muted-foreground">
                   We're currently building comprehensive lessons for each topic. In the meantime, explore our 
-                  <Link href="/virtual-labs" className="text-violet-600 dark:text-violet-400 font-semibold mx-1">Virtual Labs</Link>
+                  <Link href={addTenantParam('/virtual-labs')} className="text-violet-600 dark:text-violet-400 font-semibold mx-1">Virtual Labs</Link>
                   and
                   <Link href="/wassce-questions" className="text-violet-600 dark:text-violet-400 font-semibold mx-1">WASSCE Questions</Link>
                   to start practicing!

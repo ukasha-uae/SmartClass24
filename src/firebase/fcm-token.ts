@@ -74,6 +74,11 @@ export async function saveFCMToken(
     await setDoc(tokenRef, tokenData, { merge: true });
     console.log('[FCM Token] Token saved to Firestore');
   } catch (error) {
+    const err = error as { code?: string; message?: string };
+    if (err?.code === 'permission-denied') {
+      console.warn('[FCM Token] Permission denied while saving token (non-critical).');
+      return;
+    }
     console.error('[FCM Token] Error saving token:', error);
     throw error;
   }
@@ -247,8 +252,12 @@ export function setupTokenRefreshListener(
         refreshFCMToken(messaging, firestore, userId, storedToken);
       }
     },
-    (error) => {
-      console.error('[FCM Token] Error listening to token changes:', error);
+    (error: any) => {
+      if (error?.code === 'permission-denied') {
+        console.warn('[FCM Token] Permission denied - cannot listen to token changes');
+      } else {
+        console.error('[FCM Token] Error listening to token changes:', error);
+      }
     }
   );
 

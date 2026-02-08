@@ -11,6 +11,35 @@ import {
 } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
+import { getAuth } from 'firebase/auth';
+
+const AUTH_REQUIRED_PREFIXES = [
+  'students/',
+  'users/',
+  'subscriptions/',
+  'referrals/',
+  'admins/',
+  'challenges/',
+  'university-progress/',
+  'university-submissions/',
+  'university-code-saves/',
+];
+
+function getQueryPath(
+  target: CollectionReference<DocumentData> | Query<DocumentData>
+): string | null {
+  if ('path' in target) {
+    return (target as CollectionReference<DocumentData>).path;
+  }
+
+  const internal = target as InternalQuery;
+  return internal?._query?.path?.canonicalString?.() ?? internal?._query?.path?.toString?.() ?? null;
+}
+
+function requiresAuthForPath(path: string | null): boolean {
+  if (!path) return false;
+  return AUTH_REQUIRED_PREFIXES.some(prefix => path.startsWith(prefix));
+}
 
 /** Utility type to add an 'id' field to a given type T. */
 export type WithId<T> = T & { id: string };
@@ -69,6 +98,15 @@ export function useCollection<T = any>(
       return;
     }
 
+    const targetPath = getQueryPath(memoizedTargetRefOrQuery);
+    const currentUser = getAuth().currentUser;
+    if (requiresAuthForPath(targetPath) && (!currentUser || currentUser.isAnonymous)) {
+      setData(null);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -85,11 +123,16 @@ export function useCollection<T = any>(
         setIsLoading(false);
       },
       (error: FirestoreError) => {
-        let path = 'unknown';
-        // Attempt to get path if available (e.g. on CollectionReference)
-        if ('path' in memoizedTargetRefOrQuery) {
-            path = (memoizedTargetRefOrQuery as any).path;
+        if (error.code === 'permission-denied') {
+          // Suppress permission-denied errors completely (don't set error state or emit events)
+          console.warn('[useCollection] Permission denied - skipping:', targetPath ?? 'unknown');
+          setError(null); // Don't set error state
+          setData(null);
+          setIsLoading(false);
+          return;
         }
+
+        const path = targetPath ?? 'unknown';
 
         const contextualError = new FirestorePermissionError({
           operation: 'list',
@@ -100,7 +143,7 @@ export function useCollection<T = any>(
         setData(null);
         setIsLoading(false);
 
-        // trigger global error propagation
+        // trigger global error propagation (only for non-permission errors)
         errorEmitter.emit('permission-error', contextualError);
       }
     );

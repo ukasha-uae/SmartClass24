@@ -2,15 +2,17 @@
  * S24 Innovation Academy Program Detail Page
  * Shows program overview, courses, and enrollment options
  */
-
+'use client';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, Award, BookOpen, CheckCircle, Play } from 'lucide-react';
 import { getUniversityProgram } from '@/lib/university-data';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
-export default async function ProgramPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default function ProgramPage({ params }: { params: { slug: string } }) {
+  const { slug } = params;
   const program = getUniversityProgram(slug);
+  const addTenantParam = useTenantLink();
 
   if (!program) {
     notFound();
@@ -27,7 +29,7 @@ export default async function ProgramPage({ params }: { params: Promise<{ slug: 
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-12">
         <div className="container mx-auto px-4">
           <Link
-            href="/university"
+            href={addTenantParam('/university')}
             className="inline-flex items-center text-green-100 hover:text-white mb-6 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />

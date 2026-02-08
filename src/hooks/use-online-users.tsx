@@ -20,7 +20,7 @@ export function useOnlineUsers(maxUsers: number = 50): OnlineUser[] {
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
 
   useEffect(() => {
-    if (!firestore || !user) {
+    if (!firestore || !user || user.isAnonymous) {
       setOnlineUsers([]);
       return;
     }
@@ -76,9 +76,14 @@ export function useOnlineUsers(maxUsers: number = 50): OnlineUser[] {
         
         setOnlineUsers(users);
       },
-      (error) => {
-        console.error('Error listening to online users:', error);
-        setOnlineUsers([]);
+      (error: any) => {
+        if (error?.code === 'permission-denied') {
+          console.warn('[Online Users] Permission denied - cannot access students collection');
+          setOnlineUsers([]);
+        } else {
+          console.error('Error listening to online users:', error);
+          setOnlineUsers([]);
+        }
       }
     );
 

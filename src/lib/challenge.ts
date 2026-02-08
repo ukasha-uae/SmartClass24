@@ -752,7 +752,11 @@ export const syncPlayerNameFromFirestore = async (userId: string): Promise<strin
       }
     }
     return null;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Challenge] Permission denied - cannot sync player name from Firestore');
+      return null;
+    }
     console.warn('[Challenge] Failed to sync player name from Firestore:', error);
     return null;
   }
@@ -847,7 +851,11 @@ async function saveChallengeToFirestore(challenge: Challenge): Promise<void> {
     
     // Use setDoc with merge:true - this replaces arrays, but that's OK because we always pass the complete merged results array
     await setDoc(challengeRef, challengeData, { merge: true });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Challenge] Permission denied - cannot save challenge to Firestore');
+      return;
+    }
     console.error('Failed to save challenge to Firestore:', error);
   }
 }
@@ -862,7 +870,11 @@ async function getChallengeFromFirestore(challengeId: string): Promise<Challenge
       return challengeSnap.data() as Challenge;
     }
     return undefined;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Challenge] Permission denied - cannot read challenge from Firestore');
+      return undefined;
+    }
     console.error('Failed to get challenge from Firestore:', error);
     return undefined;
   }

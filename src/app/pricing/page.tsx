@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,12 +12,26 @@ import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 import { formatGHS } from '@/lib/payments';
 import { virtualLabExperiments } from '@/lib/virtual-labs-data';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 
 export default function PricingPage() {
   const router = useRouter();
+  const addTenantParam = useTenantLink();
+  const { tenantId } = useTenant();
   const { user } = useFirebase();
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');
+
+  useEffect(() => {
+    if (tenantId === 'wisdomwarehouse') {
+      router.replace('/');
+    }
+  }, [tenantId, router]);
+
+  if (tenantId === 'wisdomwarehouse') {
+    return null;
+  }
   
   const userId = user?.uid || 'guest';
   const isPremium = isPremiumUser(userId);
@@ -206,7 +220,7 @@ export default function PricingPage() {
                 className="w-full" 
                 variant={isPremium ? "outline" : "default"}
                 disabled={isPremium}
-                onClick={() => router.push('/challenge-arena/ghana')}
+                onClick={() => router.push(addTenantParam('/challenge-arena/ghana'))}
               >
                 {isPremium ? 'Current Plan' : 'Get Started Free'}
               </Button>
@@ -534,7 +548,7 @@ export default function PricingPage() {
                   </CardDescription>
                 </div>
                 <Button
-                  onClick={() => router.push('/virtual-labs')}
+                  onClick={() => router.push(addTenantParam('/virtual-labs'))}
                   variant="outline"
                   className="w-full md:w-auto border-purple-300 dark:border-purple-700 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900 shrink-0"
                 >

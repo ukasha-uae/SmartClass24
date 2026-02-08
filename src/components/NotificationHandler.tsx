@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase';
 import { setupForegroundMessageListener } from '@/firebase/messaging';
 import { X } from 'lucide-react';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 /**
  * Simple toast notification for foreground messages
@@ -96,6 +97,7 @@ export function NotificationHandler() {
   const router = useRouter();
   const { firebaseApp, user } = useFirebase();
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
+  const addTenantParam = useTenantLink();
 
   useEffect(() => {
     // Only setup if user is authenticated
@@ -203,11 +205,11 @@ export function NotificationHandler() {
     dismissToast(notification.id);
     
     if (action === 'accept') {
-      router.push(`/arena?accept=${notification.data.challengeId}`);
+      router.push(addTenantParam(`/arena?accept=${notification.data.challengeId}`));
     } else if (action === 'start') {
-      router.push(`/arena?start=${notification.data.challengeId}`);
+      router.push(addTenantParam(`/arena?start=${notification.data.challengeId}`));
     } else if (action === 'view') {
-      router.push('/arena');
+      router.push(addTenantParam('/arena'));
     }
   };
 

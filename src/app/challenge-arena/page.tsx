@@ -1,16 +1,17 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocalization } from '@/hooks/useLocalization';
 import { Loader2 } from 'lucide-react';
 
 export default function ChallengeArenaPage() {
   const { country } = useLocalization();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    // Redirect to the localized challenge arena page, preserving education level
+    // Redirect to the localized challenge arena page, preserving education level and tenant
     const countryId = country?.id || 'ghana';
     
     // Get saved education level from localStorage to preserve user's selection
@@ -21,9 +22,12 @@ export default function ChallengeArenaPage() {
         levelParam = `?level=${savedLevel}`;
       }
     }
-    
-    router.replace(`/challenge-arena/${countryId}${levelParam}`);
-  }, [country, router]);
+    const tenantParam = searchParams?.get('tenant');
+    const separator = levelParam ? '&' : '?';
+    const tenantSuffix = tenantParam ? `${separator}tenant=${tenantParam}` : '';
+
+    router.replace(`/challenge-arena/${countryId}${levelParam}${tenantSuffix}`);
+  }, [country, router, searchParams]);
 
   return (
     <div className="container mx-auto p-6">

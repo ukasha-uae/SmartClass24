@@ -1,11 +1,18 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-
-const Header = dynamic(() => import('./Header'), {
-  ssr: false,
-});
+import { useEffect, useState } from 'react';
+import Header from './Header';
 
 export default function HeaderNoSSR() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   return <Header />;
 }

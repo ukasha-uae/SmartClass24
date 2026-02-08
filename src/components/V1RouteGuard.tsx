@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 interface V1RouteGuardProps {
   campus: 'primary' | 'jhs' | 'shs';
@@ -30,6 +31,7 @@ export function V1RouteGuard({
 }: V1RouteGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const addTenantParam = useTenantLink();
   const [mounted, setMounted] = useState(false);
   
   // Prevent hydration mismatch by only checking access after mount
@@ -85,7 +87,7 @@ export function V1RouteGuard({
             <p className="mb-4 text-sm text-muted-foreground">
               {feature === 'lessons' && 'Lessons will be available in V2. For now, enjoy Arena Challenge and Virtual Labs!'}
             </p>
-            <Link href="/challenge-arena/ghana">
+            <Link href={addTenantParam('/challenge-arena/ghana')}>
               <Button className="w-full">
                 Go to Arena Challenge
                 <ArrowRight className="ml-2 h-4 w-4" />

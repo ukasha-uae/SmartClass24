@@ -12,6 +12,7 @@ import {
 } from '@/lib/monetization';
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 interface SubscriptionStatusBadgeProps {
   userId?: string;
@@ -27,6 +28,7 @@ export function SubscriptionStatusBadge({
   className = ''
 }: SubscriptionStatusBadgeProps) {
   const { user, firestore, auth } = useFirebase();
+  const addTenantParam = useTenantLink();
   const [mounted, setMounted] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   
@@ -238,7 +240,7 @@ export function SubscriptionStatusBadge({
                 </Badge>
               </Link>
               {showUpgrade && (
-                <Link href="/pricing">
+                <Link href={addTenantParam('/pricing')}>
                   <Badge 
                     variant="outline" 
                     className="cursor-pointer hover:bg-primary/10 border-primary/50 hover:border-primary transition-colors"
@@ -340,7 +342,7 @@ export function SubscriptionStatusBadge({
               </Badge>
             </Link>
             {showUpgrade && (
-              <Link href="/pricing">
+              <Link href={addTenantParam('/pricing')}>
                 <Badge 
                   variant="outline" 
                   className="cursor-pointer hover:bg-primary/10 border-primary/50 hover:border-primary transition-colors"
@@ -381,7 +383,7 @@ export function SubscriptionStatusBadge({
       )}
       
       {isFree && showUpgrade && (
-        <Link href="/pricing">
+        <Link href={addTenantParam('/pricing')}>
           <Badge 
             variant="outline" 
             className="cursor-pointer hover:bg-primary/10 border-primary/50 hover:border-primary transition-colors text-xs"

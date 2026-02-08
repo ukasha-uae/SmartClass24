@@ -1,3 +1,6 @@
+'use client';
+import { useTenantLink } from '@/hooks/useTenantLink';
+
 const sampleLeaderboard = [
   { name: "Ama Mensah", school: "Accra SHS", score: 5 },
   { name: "Kwame Boateng", school: "Kumasi SHS", score: 4 },
@@ -5,6 +8,8 @@ const sampleLeaderboard = [
 ];
 
 export default function SHSLeaderboardPage() {
+  const addTenantParam = useTenantLink();
+  
   return (
     <div className="container mx-auto p-6 min-h-screen flex flex-col items-center justify-center text-center">
       <h2 className="text-2xl font-bold mb-4">SHS Leaderboard</h2>
@@ -28,7 +33,7 @@ export default function SHSLeaderboardPage() {
           </tbody>
         </table>
       </div>
-      <a href="/shs-campus" className="text-primary underline mt-6">Back to SHS Campus</a>
+      <a href={addTenantParam('/shs-campus')} className="text-primary underline mt-6">Back to SHS Campus</a>
     </div>
   );
 }

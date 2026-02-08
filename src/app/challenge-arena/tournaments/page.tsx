@@ -22,12 +22,14 @@ import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { isPremiumUser, hasPremiumFeature } from '@/lib/monetization';
 import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 import { useFirebase } from '@/firebase/provider';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 // V1 Route Guard: Redirect to practice if tournaments are disabled
 export default function TournamentsPage() {
   const router = useRouter();
   const { user } = useFirebase();
   const { toast } = useToast();
+  const addTenantParam = useTenantLink();
   
   // Check premium access
   const userId = user?.uid || 'test-user-1';
@@ -37,7 +39,7 @@ export default function TournamentsPage() {
   
   useEffect(() => {
     if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
-      router.replace('/challenge-arena/practice');
+      router.replace(addTenantParam('/challenge-arena/practice'));
     } else if (!isPremium && !hasTournamentAccess) {
       setShowUnlockModal(true);
     }
@@ -161,7 +163,7 @@ export default function TournamentsPage() {
         open={showUnlockModal}
         onClose={() => {
           setShowUnlockModal(false);
-          router.push('/challenge-arena/ghana');
+          router.push(addTenantParam('/challenge-arena/ghana'));
         }}
         feature="tournaments"
         onSuccess={() => {

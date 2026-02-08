@@ -59,7 +59,16 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
       primaryColor: '#1e40af',  // Deep blue (professional, trustworthy)
       accentColor: '#f59e0b',   // Warm amber (creativity, growth)
       domain: 'learn.wisdomwarehouseuae.com',
-      supportEmail: 'admin@wisdomwarehousedubai.com',
+      supportEmail: 'admin@wisdomwarehousedubai.com',  // Verified from wisdomwarehouseuae.com
+      footer: {
+        tagline: 'Empowering curious, creative, and developing young minds through alternative, holistic education rooted in real-world learning, emotional resilience, and individual potential.',
+        emoji: '🧠',  // Brain emoji - representing wisdom and learning
+        showSocialMedia: true,
+        socialLinks: {
+          instagram: 'https://www.instagram.com/wisdomwarehousedubai/',
+          // Facebook and LinkedIn links not provided on their website
+        },
+      },
     },
     features: {
       enableJHSCampus: true,       // Support for diverse age groups

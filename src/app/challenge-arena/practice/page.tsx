@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { 
   BookOpen, 
   Calculator, 
@@ -102,6 +103,7 @@ const getSubjectBg = (subject: string, index: number) => {
 
 export default function PracticeModePage() {
   const router = useRouter();
+  const addTenantParam = useTenantLink();
   const { toast } = useToast();
   const { user } = useFirebase();
   
@@ -481,7 +483,7 @@ export default function PracticeModePage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => router.push('/challenge-arena')}
+              onClick={() => router.push(addTenantParam('/challenge-arena'))}
               className="gap-1"
             >
               <ArrowLeft className="h-4 w-4" />

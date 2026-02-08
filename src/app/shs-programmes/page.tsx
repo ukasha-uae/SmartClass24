@@ -7,9 +7,11 @@ import { shsProgrammes } from '@/lib/shs-data';
 import { GraduationCap, ArrowRight, BookOpen, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function SHSProgrammesPage() {
   const [mounted, setMounted] = useState(false);
+  const addTenantParam = useTenantLink();
 
   useEffect(() => {
     setMounted(true);
@@ -133,22 +135,22 @@ export default function SHSProgrammesPage() {
                 In addition to your electives, all SHS students study these 4 core subjects:
               </p>
               <div className="flex flex-wrap gap-2">
-                <Link href="/shs-subjects/english-language">
+                <Link href={addTenantParam('/shs-subjects/english-language')}>
                   <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
                     Core English Language
                   </Badge>
                 </Link>
-                <Link href="/shs-subjects/core-mathematics">
+                <Link href={addTenantParam('/shs-subjects/core-mathematics')}>
                   <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
                     Core Mathematics
                   </Badge>
                 </Link>
-                <Link href="/shs-subjects/integrated-science">
+                <Link href={addTenantParam('/shs-subjects/integrated-science')}>
                   <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
                     Integrated Science
                   </Badge>
                 </Link>
-                <Link href="/shs-subjects/social-studies">
+                <Link href={addTenantParam('/shs-subjects/social-studies')}>
                   <Badge variant="secondary" className="cursor-pointer hover:bg-secondary/80">
                     Social Studies
                   </Badge>

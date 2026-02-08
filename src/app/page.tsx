@@ -9,13 +9,13 @@ import {
   Users, Trophy, Target, Brain, Info, Building2
 } from "lucide-react";
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import { IntelligentWelcome } from '@/components/IntelligentWelcome';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useTenant } from '@/hooks/useTenant';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { EarnPremiumBanner } from '@/components/EarnPremiumBanner';
-import { useFirebase } from '@/firebase/provider';
+import { FirebaseContext } from '@/firebase/provider';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -24,12 +24,22 @@ export default function Home() {
   const [selectedCampus, setSelectedCampus] = useState<'JHS' | 'SHS' | 'Primary'>('JHS');
   const { country } = useLocalization();
   const { branding, market, hasLocalization, tenantId } = useTenant();
-  const { user } = useFirebase();
+  const firebaseContext = useContext(FirebaseContext);
+  const user = firebaseContext?.user ?? null;
+  const addTenantParam = useCallback(
+    (href: string) => {
+      if (!tenantId || tenantId === 'smartclass24') return href;
+      const separator = href.includes('?') ? '&' : '?';
+      return `${href}${separator}tenant=${tenantId}`;
+    },
+    [tenantId]
+  );
 
   // Log for debugging - check if tenant is correctly resolved
   useEffect(() => {
     console.log('[HomePage] Tenant:', { tenantId, market, brandingName: branding.name });
-  }, [tenantId, market, branding.name]);
+    console.log('[HomePage] addTenantParam test:', addTenantParam('/virtual-labs'));
+  }, [tenantId, market, branding.name, addTenantParam]);
 
   // Force remount when tenant changes to prevent state pollution
   useEffect(() => {
@@ -65,24 +75,19 @@ export default function Home() {
     setShowWelcome(false);
   };
 
-  // Wait for client-side mount AND tenant context to prevent hydration issues
-  if (!mounted || !market) {
-    return null;
-  }
-
-  // Get country-specific academic structure
+  // Get country-specific academic structure - Define BEFORE early return
   const juniorLevel = country?.academicStructure?.juniorSecondary?.name || 'JHS';
   const juniorExam = country?.examSystem?.primary || 'BECE';
   const seniorExam = country?.examSystem?.secondary || 'WASSCE';
   const juniorClasses = country?.academicStructure?.juniorSecondary?.levels?.join(', ') || 'JHS 1-3';
   const seniorClasses = country?.academicStructure?.seniorSecondary?.levels?.join(', ') || 'SHS 1-3';
 
-  // Get country-specific colors from flag
+  // Get country-specific colors from flag - Define BEFORE early return
   const getCountryColors = () => {
     if (country?.id === 'nigeria') {
       return {
-        primary: 'from-green-600 to-green-700', // Nigerian green
-        secondary: 'from-green-700 to-emerald-800', // Darker green for SSS
+        primary: 'from-green-600 to-green-700',
+        secondary: 'from-green-700 to-emerald-800',
         accent: 'from-emerald-500 to-green-600'
       };
     } else if (country?.id === 'ghana') {
@@ -92,7 +97,6 @@ export default function Home() {
         accent: 'from-green-600 to-green-700'
       };
     }
-    // Default colors
     return {
       primary: 'from-blue-600 to-indigo-600',
       secondary: 'from-purple-600 to-violet-700',
@@ -173,6 +177,35 @@ export default function Home() {
     { label: 'Education Levels', value: '3', icon: Target },
     { label: 'AI-Powered', value: 'Yes', icon: Brain }
   ];
+
+  // Feature links for "More Ways to Excel" section
+  const featureLinks = [
+    { 
+      href: '/challenge-arena/ghana', 
+      label: 'Challenge Arena', 
+      icon: '⚔️', 
+      desc: 'Battle & Compete', 
+      tooltip: 'Compete with classmates in timed quiz battles. Earn XP, climb leaderboards, and win achievements!',
+      show: true, 
+      gradient: 'from-orange-500 to-red-600' 
+    },
+    { href: '/study-groups', label: 'Study Groups', icon: '👥', desc: 'Learn Together', show: false, gradient: 'from-blue-500 to-indigo-600' },
+    { 
+      href: '/virtual-labs', 
+      label: 'Virtual Labs', 
+      icon: '🔬', 
+      desc: 'Hands-On Science', 
+      tooltip: 'Interactive science experiments you can do online. Test acids & bases, explore circuits, and more!',
+      show: FEATURE_FLAGS.V1_LAUNCH.shsHasVirtualLabs, 
+      gradient: 'from-purple-500 to-pink-600' 
+    },
+    { href: '/past-questions', label: 'Past Questions', icon: '📝', desc: 'Practice Tests', show: true, gradient: 'from-green-500 to-emerald-600' }
+  ];
+
+  // Wait for client-side mount AND tenant context to prevent hydration issues
+  if (!mounted || !market) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-violet-950/30 dark:to-indigo-950/30 relative overflow-hidden">
@@ -347,7 +380,7 @@ export default function Home() {
 
                     {/* CTA Button */}
                     <Link 
-                      href={campus.href}
+                      href={addTenantParam(campus.href)}
                       onClick={() => {
                         if (typeof window !== 'undefined') {
                           const levelMap: Record<string, string> = {
@@ -403,31 +436,20 @@ export default function Home() {
           
           <TooltipProvider>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-              {[
-                { 
-                  href: '/challenge-arena/ghana', 
-                  label: 'Challenge Arena', 
-                  icon: '⚔️', 
-                  desc: 'Battle & Compete', 
-                  tooltip: 'Compete with classmates in timed quiz battles. Earn XP, climb leaderboards, and win achievements!',
-                  show: true, 
-                  gradient: 'from-orange-500 to-red-600' 
-                },
-                { href: '/study-groups', label: 'Study Groups', icon: '👥', desc: 'Learn Together', show: false, gradient: 'from-blue-500 to-indigo-600' }, // Hidden for V1
-                { 
-                  href: '/virtual-labs', 
-                  label: 'Virtual Labs', 
-                  icon: '🔬', 
-                  desc: 'Hands-On Science', 
-                  tooltip: 'Interactive science experiments you can do online. Test acids & bases, explore circuits, and more!',
-                  show: FEATURE_FLAGS.V1_LAUNCH.shsHasVirtualLabs, 
-                  gradient: 'from-purple-500 to-pink-600' 
-                },
-                { href: '/past-questions', label: 'Past Questions', icon: '📝', desc: 'Practice Tests', show: true, gradient: 'from-green-500 to-emerald-600' }
-              ].filter(item => item.show).map((item) => (
+              {featureLinks.filter(item => item.show).map((item) => (
                 <Tooltip key={item.href} delayDuration={300}>
                   <TooltipTrigger asChild>
-                    <Link href={item.href}>
+                    <Link 
+                      href={item.href}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const finalUrl = addTenantParam(item.href);
+                        console.log('[HomePage] Link clicked:', item.label, 'original:', item.href, 'final:', finalUrl, 'tenant:', tenantId);
+                        if (typeof window !== 'undefined') {
+                          window.location.href = finalUrl;
+                        }
+                      }}
+                    >
                       <Card className="group relative hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer border-2 border-slate-200/50 dark:border-slate-700/50 hover:border-violet-400 dark:hover:border-violet-600 h-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden">
                         <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-10 transition-opacity`}></div>
                         <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20 rounded-full blur-2xl group-hover:scale-150 transition-all`}></div>

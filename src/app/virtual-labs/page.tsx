@@ -14,6 +14,8 @@ import { useFirebase } from '@/firebase/provider';
 import { hasVirtualLabAccess } from '@/lib/monetization';
 import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLabDialog';
+import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 
 export default function VirtualLabsPage() {
   // V1 Route Guard: Check if user has access to virtual labs
@@ -24,9 +26,11 @@ export default function VirtualLabsPage() {
   const { completedLabs, totalXP, streak, isLabCompleted } = useLabProgress();
   const [mounted, setMounted] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const addTenantParam = useTenantLink();
+  const { tenantId } = useTenant();
   
   const userId = user?.uid || 'guest';
-  const hasVirtualLab = hasVirtualLabAccess(userId);
+  const hasVirtualLab = tenantId === 'wisdomwarehouse' ? true : hasVirtualLabAccess(userId);
 
   useEffect(() => {
     setMounted(true);
@@ -331,7 +335,7 @@ export default function VirtualLabsPage() {
                       </div>
                     </div>
                   )}
-                  <Link href={isLocked ? '#' : `/virtual-labs/${experiment.slug}`} onClick={(e) => isLocked && (e.preventDefault(), setShowUnlockModal(true))}>
+                  <Link href={isLocked ? '#' : addTenantParam(`/virtual-labs/${experiment.slug}`)} onClick={(e) => isLocked && (e.preventDefault(), setShowUnlockModal(true))}>
                     <Card className={`group h-full hover:shadow-2xl transition-all duration-300 ${isLocked ? 'cursor-not-allowed opacity-60' : 'hover:scale-[1.02] cursor-pointer'} border-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl overflow-hidden ${
                       isCompleted 
                         ? 'border-green-400/50 dark:border-green-600/50 bg-green-50/50 dark:bg-green-950/20' 

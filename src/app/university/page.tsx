@@ -3,18 +3,15 @@
  * Browse available programs and courses
  */
 
+'use client';
 import Link from 'next/link';
-import { Metadata } from 'next';
 import { ArrowRight, BookOpen, Code, Zap, Shield, Globe, TrendingUp } from 'lucide-react';
 import { getAllActivePrograms } from '@/lib/university-data';
-
-export const metadata: Metadata = {
-  title: 'S24 Innovation Academy - SmartClass24',
-  description: 'Empowering beginners to become tech builders and founders using AI-driven learning and real-world project-based training'
-};
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function UniversityCampusPage() {
   const programs = getAllActivePrograms();
+  const addTenantParam = useTenantLink();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
@@ -49,7 +46,7 @@ export default function UniversityCampusPage() {
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
-                href="/university/demo"
+                href={addTenantParam('/university/demo')}
                 className="px-8 py-4 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800 transition-colors border-2 border-white/30"
               >
                 Try Demo Lesson

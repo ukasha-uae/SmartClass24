@@ -23,15 +23,25 @@ const OFFLINE_GRACE_PERIOD = 5 * 1000; // 5 seconds - grace period before markin
  */
 export async function updateUserPresence(userId: string): Promise<void> {
   try {
-    const { firestore } = initializeFirebase();
+    const { firestore, auth } = initializeFirebase();
     if (!firestore || !userId) return;
+    
+    // Skip for unauthenticated users
+    const currentUser = auth?.currentUser;
+    if (!currentUser || currentUser.isAnonymous) {
+      return;
+    }
     
     // Store lastSeen directly in students document
     const studentRef = doc(firestore, 'students', userId);
     await setDoc(studentRef, {
       lastSeen: serverTimestamp(),
     }, { merge: true });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Presence] Permission denied - user not authenticated');
+      return;
+    }
     console.error('Failed to update user presence:', error);
   }
 }
@@ -59,7 +69,11 @@ export async function getUserPresence(userId: string): Promise<UserPresence | nu
       lastSeen,
       status: isOnline ? 'online' : 'offline',
     };
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Presence] Permission denied - skipping presence check');
+      return null;
+    }
     console.error('Failed to get user presence:', error);
     return null;
   }
@@ -70,8 +84,14 @@ export async function getUserPresence(userId: string): Promise<UserPresence | nu
  */
 export async function markUserOffline(userId: string): Promise<void> {
   try {
-    const { firestore } = initializeFirebase();
+    const { firestore, auth } = initializeFirebase();
     if (!firestore || !userId) return;
+    
+    // Skip for unauthenticated users
+    const currentUser = auth?.currentUser;
+    if (!currentUser || currentUser.isAnonymous) {
+      return;
+    }
     
     const studentRef = doc(firestore, 'students', userId);
     await setDoc(studentRef, {
@@ -80,7 +100,11 @@ export async function markUserOffline(userId: string): Promise<void> {
     }, { merge: true });
     
     console.log('[Presence] User marked offline:', userId);
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Presence] Permission denied - user not authenticated');
+      return;
+    }
     console.error('[Presence] Failed to mark user offline:', error);
   }
 }

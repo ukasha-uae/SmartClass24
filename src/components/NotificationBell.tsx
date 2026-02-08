@@ -50,7 +50,7 @@ export default function NotificationBell() {
   };
 
   const notifQuery = useMemo(() => {
-    if (!firestore || !user) return null;
+    if (!firestore || !user || user.isAnonymous) return null;
     return collection(firestore, 'users', user.uid, 'notifications');
   }, [firestore, user]);
 

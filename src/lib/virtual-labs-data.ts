@@ -385,6 +385,10 @@ export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperimen
     let hasAccess = false;
     if (typeof window !== 'undefined') {
         try {
+            const tenant = new URLSearchParams(window.location.search).get('tenant');
+            if (tenant === 'wisdomwarehouse') {
+                return allLabs as VirtualLabExperiment[];
+            }
             const { hasVirtualLabAccess } = require('./monetization');
             hasAccess = hasVirtualLabAccess(userId);
         } catch (e) {
@@ -425,6 +429,10 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
     let hasAccess = false;
     if (typeof window !== 'undefined') {
         try {
+            const tenant = new URLSearchParams(window.location.search).get('tenant');
+            if (tenant === 'wisdomwarehouse') {
+                return experiment;
+            }
             const { hasVirtualLabAccess } = require('./monetization');
             hasAccess = hasVirtualLabAccess(userId);
             console.log(`[Virtual Labs] Access check for ${slug}: hasAccess=${hasAccess}, userId=${userId}`);

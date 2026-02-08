@@ -123,9 +123,13 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             presenceCleanupRef.current = startPresenceHeartbeat(firebaseUser.uid);
             
             // Initialize FCM for push notifications (non-blocking)
-            initializeFCMForUser(firebaseUser.uid).catch(err => {
-              console.warn('[FCM] Failed to initialize (non-critical):', err);
-            });
+            if (!firebaseUser.isAnonymous) {
+              initializeFCMForUser(firebaseUser.uid).catch(err => {
+                console.warn('[FCM] Failed to initialize (non-critical):', err);
+              });
+            } else if (process.env.NODE_ENV === 'development') {
+              console.log('[FCM] Skipping initialization for anonymous users');
+            }
             
             // Migrate local quiz attempts to Firestore
             migrateLocalAttemptsToFirestore(auth, firestore);
@@ -139,7 +143,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             });
             
             // Create referral code for new users (non-blocking)
-            if (typeof window !== 'undefined') {
+            if (typeof window !== 'undefined' && !firebaseUser.isAnonymous) {
               try {
                 const { createUserReferralCode } = await import('@/lib/referrals');
                 const pendingReferrerUid = localStorage.getItem('pendingReferrerUid');

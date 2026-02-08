@@ -67,7 +67,11 @@ export const seedDatabase = async (db: Firestore) => {
   try {
     await batch.commit();
     console.log('Database seeded successfully!');
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Seed] Permission denied - batch write skipped');
+      return;
+    }
     const permissionError = new FirestorePermissionError({
         path: 'batch write to multiple collections',
         operation: 'write',

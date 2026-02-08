@@ -82,6 +82,7 @@ export async function linkAnonymousToEmail(authInstance: Auth, email: string, pa
  */
 export async function migrateLocalAttemptsToFirestore(authInstance: Auth, firestoreInstance?: Firestore): Promise<number> {
   if (!authInstance.currentUser) return 0;
+  if (authInstance.currentUser.isAnonymous) return 0;
   if (!firestoreInstance) return 0;
   const localAttempts = getLocalQuizAttempts();
   if (!localAttempts || localAttempts.length === 0) return 0;
@@ -113,8 +114,15 @@ export async function migrateLocalAttemptsToFirestore(authInstance: Auth, firest
         report: attempt.report || null,
         migrated: true,
       });
-    } catch (err) {
-      console.error('Failed to migrate local attempt to Firestore', err);
+    } catch (err: any) {
+      const isPermissionDenied =
+        err?.code === 'permission-denied' ||
+        (typeof err?.message === 'string' && err.message.includes('Missing or insufficient permissions'));
+      if (isPermissionDenied) {
+        console.warn('[Auth] Permission denied - skipping local attempt migration');
+      } else {
+        console.error('Failed to migrate local attempt to Firestore', err);
+      }
       // Continue with other attempts
     }
     migratedCount++;

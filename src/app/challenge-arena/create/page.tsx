@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { 
   BookOpen, 
   Calculator, 
@@ -37,6 +38,7 @@ import { getSarahBot } from '@/lib/ai-bot-profiles';
 // Create challenge page is now enabled for friend challenges
 export default function CreateChallengePage() {
   const router = useRouter();
+  const addTenantParam = useTenantLink();
   const { toast } = useToast();
   const { user, firestore } = useFirebase();
   const [step, setStep] = useState(1);
@@ -266,8 +268,12 @@ export default function CreateChallengePage() {
             // Add Sarah at the beginning (she's always online)
             setFriends([sarahPlayer, ...usersList]);
           }
-        }, (error) => {
-          console.error('Error fetching users:', error);
+        }, (error: any) => {
+          if (error?.code === 'permission-denied') {
+            console.warn('[Create Challenge] Permission denied - cannot access students collection');
+          } else {
+            console.error('Error fetching users:', error);
+          }
           // Fall back to Sarah only for anonymous users
           const sarahBot = getSarahBot();
           const sarahPlayer: Player = {
@@ -351,8 +357,12 @@ export default function CreateChallengePage() {
             creatorName = profileData.studentName || creatorName;
             creatorSchool = profileData.schoolName || creatorSchool;
           }
-        } catch (err) {
-          console.error('Failed to fetch creator profile:', err);
+        } catch (err: any) {
+          if (err?.code === 'permission-denied') {
+            console.warn('[Create Challenge] Permission denied - cannot fetch creator profile');
+          } else {
+            console.error('Failed to fetch creator profile:', err);
+          }
         }
       }
       
@@ -733,7 +743,7 @@ export default function CreateChallengePage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => router.push('/challenge-arena')}
+              onClick={() => router.push(addTenantParam('/challenge-arena'))}
               className="gap-1"
             >
               <ArrowLeft className="h-4 w-4" />

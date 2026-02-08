@@ -75,9 +75,14 @@ export async function createUserReferralCode(
   referrerUid: string | null
 ): Promise<string | null> {
   try {
-    const { firestore } = initializeFirebase();
+    const { firestore, auth } = initializeFirebase();
     if (!firestore) {
       console.error('[Referrals] Firestore not available');
+      return null;
+    }
+    const currentUser = auth?.currentUser;
+    if (!currentUser || currentUser.isAnonymous) {
+      console.warn('[Referrals] Skipping referral code creation for anonymous user');
       return null;
     }
 
@@ -122,6 +127,13 @@ export async function createUserReferralCode(
     
     return code;
   } catch (error: any) {
+    const isPermissionDenied =
+      error?.code === 'permission-denied' ||
+      (typeof error?.message === 'string' && error.message.includes('Missing or insufficient permissions'));
+    if (isPermissionDenied) {
+      console.warn('[Referrals] Permission denied - cannot create referral code');
+      return null;
+    }
     console.error('[Referrals] Error creating referral code:', error);
     return null;
   }
@@ -136,8 +148,13 @@ export async function createReferralRecord(
   code: string
 ): Promise<void> {
   try {
-    const { firestore } = initializeFirebase();
+    const { firestore, auth } = initializeFirebase();
     if (!firestore) return;
+    const currentUser = auth?.currentUser;
+    if (!currentUser || currentUser.isAnonymous) {
+      console.warn('[Referrals] Skipping referral record creation for anonymous user');
+      return;
+    }
 
     const { collection, addDoc, query, where, getDocs } = await import('firebase/firestore');
     const referralsRef = collection(firestore, 'referrals');
@@ -165,6 +182,10 @@ export async function createReferralRecord(
       createdAt: new Date().toISOString(),
     });
   } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Referrals] Permission denied - cannot create referral record');
+      return;
+    }
     console.error('[Referrals] Error creating referral record:', error);
   }
 }

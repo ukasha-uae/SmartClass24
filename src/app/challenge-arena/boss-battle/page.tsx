@@ -28,15 +28,17 @@ import type { Player } from '@/lib/challenge';
 import { useFirebase } from '@/firebase/provider';
 import { useToast } from '@/hooks/use-toast';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function BossBattlePage() {
   const router = useRouter();
+  const addTenantParam = useTenantLink();
   const { user } = useFirebase();
   
   // V1 Route Guard: Check feature flag (premium check removed for V1)
   useEffect(() => {
     if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss) {
-      router.replace('/challenge-arena/practice');
+      router.replace(addTenantParam('/challenge-arena/practice'));
     }
   }, [router]);
   
@@ -250,7 +252,7 @@ export default function BossBattlePage() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => router.push('/challenge-arena')}
+              onClick={() => router.push(addTenantParam('/challenge-arena'))}
               className="gap-1"
             >
               <ArrowLeft className="h-4 w-4" />

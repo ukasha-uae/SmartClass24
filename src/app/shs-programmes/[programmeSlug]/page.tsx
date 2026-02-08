@@ -8,11 +8,13 @@ import { getProgrammeBySlug } from '@/lib/shs-data';
 import { GraduationCap, ArrowLeft, BookOpen, List, Info } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
+import { useTenantLink } from '@/hooks/useTenantLink';
 
-export default function ProgrammePage({ params }: { params: Promise<{ programmeSlug: string }> }) {
+export default function ProgrammePage({ params }: { params: { programmeSlug: string } }) {
   const [mounted, setMounted] = useState(false);
-  const resolvedParams = use(params);
+  const { programmeSlug } = params;
+  const addTenantParam = useTenantLink();
 
   useEffect(() => {
     setMounted(true);
@@ -20,7 +22,7 @@ export default function ProgrammePage({ params }: { params: Promise<{ programmeS
 
   if (!mounted) return null;
 
-  const programme = getProgrammeBySlug(resolvedParams.programmeSlug);
+  const programme = getProgrammeBySlug(programmeSlug);
 
   if (!programme) {
     notFound();
@@ -42,7 +44,7 @@ export default function ProgrammePage({ params }: { params: Promise<{ programmeS
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Back Button */}
-      <Link href="/shs-programmes">
+      <Link href={addTenantParam('/shs-programmes')}>
         <Button variant="ghost" className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Programmes
@@ -144,16 +146,16 @@ export default function ProgrammePage({ params }: { params: Promise<{ programmeS
             In addition to these electives, continue studying your core subjects:
           </p>
           <div className="flex flex-wrap gap-2">
-            <Link href="/shs-subjects/english-language">
+            <Link href={addTenantParam('/shs-subjects/english-language')}>
               <Button variant="secondary" size="sm">Core English</Button>
             </Link>
-            <Link href="/shs-subjects/core-mathematics">
+            <Link href={addTenantParam('/shs-subjects/core-mathematics')}>
               <Button variant="secondary" size="sm">Core Mathematics</Button>
             </Link>
-            <Link href="/shs-subjects/integrated-science">
+            <Link href={addTenantParam('/shs-subjects/integrated-science')}>
               <Button variant="secondary" size="sm">Integrated Science</Button>
             </Link>
-            <Link href="/shs-subjects/social-studies">
+            <Link href={addTenantParam('/shs-subjects/social-studies')}>
               <Button variant="secondary" size="sm">Social Studies</Button>
             </Link>
           </div>

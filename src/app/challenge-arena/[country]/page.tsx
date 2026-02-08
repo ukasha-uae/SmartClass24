@@ -12,6 +12,7 @@ import {
   BrainCircuit, ChevronRight, ChevronDown, ChevronUp, BookOpen, Calculator, FlaskConical, Globe, Languages, Palette, Computer, Music
 } from 'lucide-react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import {
   getPlayerProfile,
   createOrUpdatePlayer,
@@ -32,7 +33,6 @@ import { doc } from 'firebase/firestore';
 import { useMemo } from 'react';
 import CampusSelector from '@/components/CampusSelector';
 import { useLocalization } from '@/hooks/useLocalization';
-import CountrySelector from '@/components/CountrySelector';
 import { useParams, notFound, useRouter, useSearchParams } from 'next/navigation';
 import { COUNTRIES } from '@/lib/localization/countries/index';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
@@ -47,6 +47,7 @@ export default function LocalizedChallengeArenaPage() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const addTenantParam = useTenantLink();
   const countryParam = params.country as string;
   
   // Validate country parameter
@@ -149,8 +150,8 @@ export default function LocalizedChallengeArenaPage() {
         secondary: 'from-green-700 to-emerald-800',
         accent: 'from-emerald-500 to-green-600',
         cardBg: 'from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30',
-        flag: '🇳🇬',
-        tagline: "Nigeria's Challenge Arena"
+        badgeIcon: '🏆',
+        tagline: 'Challenge Arena'
       };
     } else if (country?.id === 'ghana') {
       return {
@@ -158,8 +159,8 @@ export default function LocalizedChallengeArenaPage() {
         secondary: 'from-yellow-500 to-orange-500',
         accent: 'from-green-600 to-green-700',
         cardBg: 'from-red-50 to-yellow-50 dark:from-red-950/30 dark:to-yellow-950/30',
-        flag: '🇬🇭',
-        tagline: "Ghana's Challenge Arena"
+        badgeIcon: '🏆',
+        tagline: 'Challenge Arena'
       };
     } else if (country?.id === 'sierra-leone') {
       return {
@@ -167,8 +168,8 @@ export default function LocalizedChallengeArenaPage() {
         secondary: 'from-blue-600 to-blue-700',
         accent: 'from-blue-500 to-green-600',
         cardBg: 'from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30',
-        flag: '🇸🇱',
-        tagline: "Sierra Leone's Challenge Arena"
+        badgeIcon: '🏆',
+        tagline: 'Challenge Arena'
       };
     } else if (country?.id === 'liberia') {
       return {
@@ -176,8 +177,8 @@ export default function LocalizedChallengeArenaPage() {
         secondary: 'from-blue-700 to-red-800',
         accent: 'from-blue-500 to-red-600',
         cardBg: 'from-red-50 to-blue-50 dark:from-red-950/30 dark:to-blue-950/30',
-        flag: '🇱🇷',
-        tagline: "Liberia's Challenge Arena"
+        badgeIcon: '🏆',
+        tagline: 'Challenge Arena'
       };
     } else if (country?.id === 'gambia') {
       return {
@@ -185,8 +186,8 @@ export default function LocalizedChallengeArenaPage() {
         secondary: 'from-blue-700 to-green-800',
         accent: 'from-green-500 to-blue-600',
         cardBg: 'from-red-50 to-green-50 dark:from-red-950/30 dark:to-green-950/30',
-        flag: '🇬🇲',
-        tagline: "Gambia's Challenge Arena"
+        badgeIcon: '🏆',
+        tagline: 'Challenge Arena'
       };
     }
     return {
@@ -194,7 +195,7 @@ export default function LocalizedChallengeArenaPage() {
       secondary: 'from-indigo-600 to-purple-600',
       accent: 'from-violet-500 to-purple-600',
       cardBg: 'from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30',
-      flag: '🌍',
+      badgeIcon: '🏆',
       tagline: 'Challenge Arena'
     };
   };
@@ -460,7 +461,7 @@ export default function LocalizedChallengeArenaPage() {
             <div className="flex-1">
               <div className="inline-block mb-6 px-6 py-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-full border border-amber-200/50 dark:border-amber-800/50">
                 <span className="text-amber-700 dark:text-amber-400 font-semibold text-sm flex items-center gap-2">
-                  <span className="text-xl">{colors.flag}</span>
+                  <span className="text-xl">{colors.badgeIcon}</span>
                   <span>{colors.tagline}</span>
                 </span>
               </div>
@@ -475,14 +476,13 @@ export default function LocalizedChallengeArenaPage() {
               <div className="flex items-center justify-center sm:justify-start gap-3 mb-6">
                 <div className="h-px w-16 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
                 <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-400 max-w-3xl">
-                  Compete with classmates and schools across {country?.name || 'West Africa'}
+                  Compete with classmates and schools across your region
                 </p>
                 <div className="h-px w-16 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
               </div>
             </div>
             <div className="flex flex-col gap-2">
               <CampusSelector onLevelChange={handleLevelChange} defaultLevel={educationLevel} />
-              <CountrySelector variant="compact" autoApply={true} />
             </div>
           </div>
         </div>
@@ -495,17 +495,10 @@ export default function LocalizedChallengeArenaPage() {
                 <Users className="h-6 w-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-bold mb-2">🌍 Welcome to Cross-Country Challenges!</h3>
+                <h3 className="text-lg font-bold mb-2">Welcome to Regional Challenges!</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  You're now part of a West African learning community! Challenge students from:
+                  You're now part of a broader learning community. Challenge students from other schools and regions.
                 </p>
-                <div className="flex flex-wrap gap-2 mb-3">
-                  <Badge variant="outline" className="gap-1 bg-white dark:bg-gray-900">🇬🇭 Ghana</Badge>
-                  <Badge variant="outline" className="gap-1 bg-white dark:bg-gray-900">🇳🇬 Nigeria</Badge>
-                  <Badge variant="outline" className="gap-1 bg-white dark:bg-gray-900">🇸🇱 Sierra Leone</Badge>
-                  <Badge variant="outline" className="gap-1 bg-white dark:bg-gray-900">🇱🇷 Liberia</Badge>
-                  <Badge variant="outline" className="gap-1 bg-white dark:bg-gray-900">🇬🇲 Gambia</Badge>
-                </div>
                 <p className="text-sm text-muted-foreground">
                   💡 <strong>Tip:</strong> Use the country selector above to switch between countries and see different school rankings. School battles are filtered by your selected country!
                 </p>
@@ -733,7 +726,7 @@ export default function LocalizedChallengeArenaPage() {
             </Card>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Link href="/challenge-arena/practice">
+              <Link href={addTenantParam('/challenge-arena/practice')}>
                 <Card className="relative bg-gradient-to-br from-green-500 to-emerald-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                   <div className="relative">
@@ -833,7 +826,7 @@ export default function LocalizedChallengeArenaPage() {
 
               {/* Premium Game Modes */}
               {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss && (
-                <Link href="/challenge-arena/boss-battle">
+                <Link href={addTenantParam('/challenge-arena/boss-battle')}>
                   <Card className="relative bg-gradient-to-br from-red-500 to-orange-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-0">
@@ -877,7 +870,7 @@ export default function LocalizedChallengeArenaPage() {
               )}
 
               {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament && (
-                <Link href="/challenge-arena/tournaments">
+                <Link href={addTenantParam('/challenge-arena/tournaments')}>
                   <Card className="relative bg-gradient-to-br from-yellow-500 to-amber-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-0">
@@ -921,7 +914,7 @@ export default function LocalizedChallengeArenaPage() {
               )}
 
               {FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool && (
-                <Link href="/challenge-arena/school-battle">
+                <Link href={addTenantParam('/challenge-arena/school-battle')}>
                   <Card className="relative bg-gradient-to-br from-purple-500 to-pink-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                     <div className="relative z-0">
@@ -931,7 +924,7 @@ export default function LocalizedChallengeArenaPage() {
                         <Badge className="text-xs bg-green-500/30 text-white border border-green-400/50">5 Countries</Badge>
                       </h3>
                       <p className="text-base sm:text-lg mb-3 sm:mb-4 opacity-90">
-                        Represent your school in inter-school battles across {country?.name || 'West Africa'}
+                        Represent your school in inter-school battles across regions
                       </p>
                       <div className="space-y-2 mb-4 sm:mb-6">
                         <div className="flex items-center">
@@ -943,8 +936,8 @@ export default function LocalizedChallengeArenaPage() {
                           <span className="text-sm sm:text-base">School pride</span>
                         </div>
                         <div className="flex items-center">
-                          <span className="text-white/80 mr-2">{country?.flag || '🌍'}</span>
-                          <span className="text-sm sm:text-base">5 Countries</span>
+                          <span className="text-white/80 mr-2">🏆</span>
+                          <span className="text-sm sm:text-base">Multi-region</span>
                         </div>
                         <div className="flex items-center">
                           <span className="text-white/80 mr-2">📝</span>

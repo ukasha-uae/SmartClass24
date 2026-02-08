@@ -28,6 +28,7 @@ import {
   SchoolRanking, 
   Player 
 } from '@/lib/challenge';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
 import type { EducationLevel } from '@/lib/challenge-questions-exports';
 import { GHANA_SCHOOLS } from '@/lib/schools';
@@ -40,6 +41,7 @@ import { FEATURE_FLAGS } from '@/lib/featureFlags';
 
 export default function SchoolBattlePage() {
   const router = useRouter();
+  const addTenantParam = useTenantLink();
   
   const { toast } = useToast();
   const { country } = useLocalization();
@@ -48,7 +50,7 @@ export default function SchoolBattlePage() {
   // V1 Route Guard: Check feature flag (premium check removed for V1)
   useEffect(() => {
     if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool) {
-      router.replace('/challenge-arena/practice');
+      router.replace(addTenantParam('/challenge-arena/practice'));
     }
   }, [router]);
   

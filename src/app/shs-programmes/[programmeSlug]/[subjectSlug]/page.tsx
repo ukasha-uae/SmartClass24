@@ -7,12 +7,13 @@ import { Progress } from "@/components/ui/progress";
 import { getProgrammeBySlug } from '@/lib/shs-data';
 import { GraduationCap, ArrowLeft, BookOpen, Lock, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { notFound } from 'next/navigation';
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect } from 'react';
 
-export default function ElectiveSubjectPage({ params }: { params: Promise<{ programmeSlug: string; subjectSlug: string }> }) {
+export default function ElectiveSubjectPage({ params }: { params: { programmeSlug: string; subjectSlug: string } }) {
   const [mounted, setMounted] = useState(false);
-  const resolvedParams = use(params);
+  const { programmeSlug, subjectSlug } = params;
 
   useEffect(() => {
     setMounted(true);
@@ -20,13 +21,14 @@ export default function ElectiveSubjectPage({ params }: { params: Promise<{ prog
 
   if (!mounted) return null;
 
-  const programme = getProgrammeBySlug(resolvedParams.programmeSlug);
+  const programme = getProgrammeBySlug(programmeSlug);
+  const addTenantParam = useTenantLink();
 
   if (!programme) {
     notFound();
   }
 
-  const subject = programme.electiveSubjects.find(s => s.slug === resolvedParams.subjectSlug);
+  const subject = programme.electiveSubjects.find(s => s.slug === subjectSlug);
 
   if (!subject) {
     notFound();
@@ -166,7 +168,7 @@ export default function ElectiveSubjectPage({ params }: { params: Promise<{ prog
         <CardContent className="p-6">
           <h3 className="text-lg font-semibold mb-3">Additional Resources</h3>
           <div className="flex flex-wrap gap-3">
-            <Link href="/virtual-labs">
+            <Link href={addTenantParam('/virtual-labs')}>
               <Button variant="secondary">
                 <BookOpen className="mr-2 h-4 w-4" />
                 Virtual Labs
