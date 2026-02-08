@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { cookies } from 'next/headers';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import Header from '@/components/HeaderNoSSR';
-import Footer from '@/components/FooterNoSSR';
+import HeaderNoSSR from '@/components/HeaderNoSSR';
+import FooterNoSSR from '@/components/FooterNoSSR';
 import BottomNav from '@/components/BottomNav';
 import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
@@ -18,6 +19,7 @@ import { NotificationPermissionPrompt } from '@/components/NotificationPermissio
 import { UpdateNotification } from '@/components/update-notification';
 import { ForceCacheClear } from '@/components/force-cache-clear';
 import { TenantThemeProvider } from '@/components/tenancy/TenantThemeProvider';
+import { TenantParamProvider } from '@/components/tenancy/TenantParamProvider';
 
 export const metadata: Metadata = {
   title: 'Smartclass24',
@@ -25,11 +27,14 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const initialTenantId = cookieStore.get('tenant')?.value ?? null;
+
   return (
     <html lang="en" className="h-full">
       <head>
@@ -48,6 +53,7 @@ export default function RootLayout({
          <meta name="theme-color" content="#7c3aed" />
       </head>
       <body className={cn('font-body antialiased bg-background h-full')}>
+        <TenantParamProvider initialTenantId={initialTenantId}>
         <TenantThemeProvider>
           <ForceCacheClear />
           <FirebaseClientProvider>
@@ -58,16 +64,16 @@ export default function RootLayout({
                 <NotificationPermissionPrompt delay={8000} />
 
                 <div className="relative flex min-h-screen w-full flex-col">
-                  <Header />
+                  <HeaderNoSSR />
                   <FullscreenMain>{children}</FullscreenMain>
-                  <Footer />
+                  <FooterNoSSR />
                   <PWAInstallPrompt />
                   <PWAUpdatePrompt />
                   <FirstTimeProfileModal />
                   <Suspense fallback={null}>
                     <ReferralHandler />
                   </Suspense>
-                  <BottomNav />
+                  <BottomNav initialTenantId={initialTenantId} />
                   <Toaster />
                   {/* Update notification for new versions */}
                   <UpdateNotification />
@@ -76,6 +82,7 @@ export default function RootLayout({
             </LocalizationProvider>
           </FirebaseClientProvider>
         </TenantThemeProvider>
+        </TenantParamProvider>
       </body>
     </html>
   );
