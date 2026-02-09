@@ -11,10 +11,10 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
   smartclass24: {
     id: 'smartclass24',
     slug: 'smartclass24',
-    name: 'SmartClass24',
+    name: 'S24',
     market: 'ghana',
     branding: {
-      name: 'SmartClass24',
+      name: 'S24',
       logoUrl: undefined,  // Uses default logo
       primaryColor: '#7c3aed',  // Purple
       accentColor: '#ec4899',   // Pink

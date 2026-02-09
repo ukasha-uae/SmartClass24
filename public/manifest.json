@@ -1,6 +1,6 @@
 {
-  "name": "Smartclass24 - Smart Learning Platform",
-  "short_name": "SmartC24",
+  "name": "S24 - Smart Learning Platform",
+  "short_name": "S24",
   "description": "Smart learning platform for JHS & SHS students across Ghana. Learn, practice, and excel together.",
   "start_url": "/",
   "display": "standalone",

@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
+import { useTenant } from '@/hooks/useTenant';
 
 interface WelcomeScene {
   id: number;
@@ -39,6 +40,7 @@ export function IntelligentWelcome({
   campus = 'JHS',
   onComplete 
 }: IntelligentWelcomeProps) {
+  const { branding } = useTenant();
   const [currentScene, setCurrentScene] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [showTip, setShowTip] = useState(false);
@@ -50,7 +52,7 @@ export function IntelligentWelcome({
       welcome: {
         id: 0,
         emoji: "👋",
-        narration: `Hello ${studentName}! Welcome to SmartClass24, Ghana's most exciting learning adventure! I'm your AI teacher, and I'm absolutely thrilled to be your guide today.`,
+        narration: `Hello ${studentName}! Welcome to ${branding.name}, Ghana's most exciting learning adventure! I'm your AI teacher, and I'm absolutely thrilled to be your guide today.`,
         visualContent: "Welcome to Your Learning Journey!",
         highlightWords: ['Welcome', 'exciting', 'adventure'],
         teacherTip: "Get ready for an amazing experience!"
@@ -265,7 +267,7 @@ export function IntelligentWelcome({
 
             <div className="space-y-2">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-                Welcome to SmartClass24!
+                Welcome to {branding.name}!
               </h2>
               <p className="text-muted-foreground">
                 Get ready for an interactive learning experience with your AI teacher

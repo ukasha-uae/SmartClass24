@@ -9,11 +9,11 @@ import { GraduationCap, ArrowLeft, BookOpen, Lock, CheckCircle2 } from 'lucide-r
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { notFound } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 
-export default function ElectiveSubjectPage({ params }: { params: { programmeSlug: string; subjectSlug: string } }) {
+export default function ElectiveSubjectPage({ params }: { params: Promise<{ programmeSlug: string; subjectSlug: string }> }) {
+  const { programmeSlug, subjectSlug } = use(params);
   const [mounted, setMounted] = useState(false);
-  const { programmeSlug, subjectSlug } = params;
 
   useEffect(() => {
     setMounted(true);

@@ -7,11 +7,12 @@ import { getCampusConfig } from '@/lib/campus-config';
 import { BookOpen, FlaskConical, Trophy, GraduationCap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, use } from 'react';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useTenantLink } from '@/hooks/useTenantLink';
 
-export default function CampusHomePage({ params }: { params: { campusType: string } }) {
+export default function CampusHomePage({ params }: { params: Promise<{ campusType: string }> }) {
+  const { campusType } = use(params);
   const [mounted, setMounted] = useState(false);
   const { country } = useLocalization();
   const addTenantParam = useTenantLink();
@@ -22,7 +23,7 @@ export default function CampusHomePage({ params }: { params: { campusType: strin
 
   if (!mounted) return null;
 
-  const campus = getCampusConfig(params.campusType);
+  const campus = getCampusConfig(campusType);
   
   if (!campus) {
     notFound();

@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ChevronRight, BookOpen, Code, CheckCircle2, Award } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -24,8 +24,8 @@ const UniversityCodeEditor = dynamic(() => import('@/components/university/Unive
   </div>
 });
 
-export default function LessonPage({ params }: { params: { slug: string; courseSlug: string; lessonSlug: string } }) {
-  const resolvedParams = params;
+export default function LessonPage({ params }: { params: Promise<{ slug: string; courseSlug: string; lessonSlug: string }> }) {
+  const resolvedParams = use(params);
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [executionResult, setExecutionResult] = useState<CodeExecutionResult | null>(null);
 

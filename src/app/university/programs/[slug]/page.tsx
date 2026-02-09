@@ -3,14 +3,15 @@
  * Shows program overview, courses, and enrollment options
  */
 'use client';
+import { use } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Clock, Award, BookOpen, CheckCircle, Play } from 'lucide-react';
 import { getUniversityProgram } from '@/lib/university-data';
 import { useTenantLink } from '@/hooks/useTenantLink';
 
-export default function ProgramPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default function ProgramPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const program = getUniversityProgram(slug);
   const addTenantParam = useTenantLink();
 

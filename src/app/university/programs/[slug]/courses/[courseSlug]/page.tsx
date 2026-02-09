@@ -4,14 +4,15 @@
  */
 'use client';
 
+import { use } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, BookOpen, Clock, CheckCircle, Play } from 'lucide-react';
 import { getUniversityProgram } from '@/lib/university-data';
 import { useTenantLink } from '@/hooks/useTenantLink';
 
-export default function CoursePage({ params }: { params: { slug: string; courseSlug: string } }) {
-  const { slug, courseSlug } = params;
+export default function CoursePage({ params }: { params: Promise<{ slug: string; courseSlug: string }> }) {
+  const { slug, courseSlug } = use(params);
   const program = getUniversityProgram(slug);
   const addTenantParam = useTenantLink();
 

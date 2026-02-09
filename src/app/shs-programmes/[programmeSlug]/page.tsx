@@ -8,12 +8,12 @@ import { getProgrammeBySlug } from '@/lib/shs-data';
 import { GraduationCap, ArrowLeft, BookOpen, List, Info } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useTenantLink } from '@/hooks/useTenantLink';
 
-export default function ProgrammePage({ params }: { params: { programmeSlug: string } }) {
+export default function ProgrammePage({ params }: { params: Promise<{ programmeSlug: string }> }) {
+  const { programmeSlug } = use(params);
   const [mounted, setMounted] = useState(false);
-  const { programmeSlug } = params;
   const addTenantParam = useTenantLink();
 
   useEffect(() => {

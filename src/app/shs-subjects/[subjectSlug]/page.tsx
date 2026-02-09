@@ -8,12 +8,12 @@ import { BookOpen, ArrowLeft, Lock, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { notFound } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 
-export default function SHSSubjectPage({ params }: { params: { subjectSlug: string } }) {
+export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSlug: string }> }) {
+  const { subjectSlug } = use(params);
   const addTenantParam = useTenantLink();
   const [mounted, setMounted] = useState(false);
-  const { subjectSlug } = params;
 
   useEffect(() => {
     setMounted(true);

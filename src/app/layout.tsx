@@ -22,7 +22,7 @@ import { TenantThemeProvider } from '@/components/tenancy/TenantThemeProvider';
 import { TenantParamProvider } from '@/components/tenancy/TenantParamProvider';
 
 export const metadata: Metadata = {
-  title: 'Smartclass24',
+  title: 'S24',
   description: 'Smart learning for JHS & SHS students across Ghana',
   manifest: '/manifest.json',
 };
