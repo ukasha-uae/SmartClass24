@@ -1,18 +1,29 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useTenant } from '@/hooks/useTenant';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { Loader2 } from 'lucide-react';
 
 export default function ChallengeArenaPage() {
   const { country } = useLocalization();
+  const { hasArenaChallenge, market, tenantId } = useTenant();
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const addTenantParam = useTenantLink();
 
   useEffect(() => {
+    // Check if tenant has arena challenge enabled
+    if (!hasArenaChallenge) {
+      // Redirect to home page if arena is not available for this tenant
+      router.replace(addTenantParam('/'));
+      return;
+    }
+
     // Redirect to the localized challenge arena page, preserving education level and tenant
-    const countryId = country?.id || 'ghana';
+    // Use country from localization if available, otherwise fall back to tenant's market
+    const countryId = country?.id || market || 'global';
     
     // Get saved education level from localStorage to preserve user's selection
     let levelParam = '';
@@ -22,12 +33,11 @@ export default function ChallengeArenaPage() {
         levelParam = `?level=${savedLevel}`;
       }
     }
-    const tenantParam = searchParams?.get('tenant');
     const separator = levelParam ? '&' : '?';
-    const tenantSuffix = tenantParam ? `${separator}tenant=${tenantParam}` : '';
+    const tenantSuffix = tenantId && tenantId !== 'smartclass24' ? `${separator}tenant=${tenantId}` : '';
 
     router.replace(`/challenge-arena/${countryId}${levelParam}${tenantSuffix}`);
-  }, [country, router, searchParams]);
+  }, [country, router, hasArenaChallenge, market, tenantId, addTenantParam]);
 
   return (
     <div className="container mx-auto p-6">

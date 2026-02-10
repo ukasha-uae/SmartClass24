@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 import { 
   Zap, Trophy, Loader2, Users, Target, X
 } from 'lucide-react';
@@ -35,11 +36,19 @@ import { getSarahBot, getSarahAdaptedDifficulty, isBot } from '@/lib/ai-bot-prof
 export default function QuickMatchPage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
+  const { hasArenaChallenge } = useTenant();
   const { user, firestore } = useFirebase();
   const { playSound } = useSoundEffects();
   const { toast } = useToast();
   
   const [userSelectedLevel, setUserSelectedLevel] = useState<'Primary' | 'JHS' | 'SHS'>('JHS');
+  
+  // Tenant Route Guard: Check if arena is enabled for this tenant
+  useEffect(() => {
+    if (!hasArenaChallenge) {
+      router.replace(addTenantParam('/'));
+    }
+  }, [hasArenaChallenge, router, addTenantParam]);
   
   // Read level from URL client-side only
   useEffect(() => {

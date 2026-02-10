@@ -33,11 +33,6 @@ export default function Footer() {
   useEffect(() => {
     setMounted(true);
   }, []);
-  
-  // Hide footer during fullscreen (gameplay/lessons)
-  if (isFullscreen) {
-    return null;
-  }
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -123,6 +118,11 @@ export default function Footer() {
     { icon: Youtube, href: '#', label: 'YouTube', ariaLabel: 'Visit our YouTube channel' },
     { icon: Linkedin, href: '#', label: 'LinkedIn', ariaLabel: 'Visit our LinkedIn page' },
   ];
+
+  // Hide footer during fullscreen (gameplay/lessons) - AFTER all hooks
+  if (isFullscreen) {
+    return null;
+  }
 
   return (
     <footer className="hidden md:block border-t-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-br from-slate-50 via-violet-50/50 to-indigo-50/50 dark:from-slate-900 dark:via-violet-950/50 dark:to-indigo-950/50 backdrop-blur-xl mt-auto relative overflow-hidden" suppressHydrationWarning>

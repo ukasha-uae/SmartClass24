@@ -29,23 +29,27 @@ import { useFirebase } from '@/firebase/provider';
 import { useToast } from '@/hooks/use-toast';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 
 export default function BossBattlePage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
+  const { hasArenaChallenge } = useTenant();
   const { user } = useFirebase();
+  
+  // Tenant Route Guard: Check if arena is enabled for this tenant
+  useEffect(() => {
+    if (!hasArenaChallenge) {
+      router.replace(addTenantParam('/'));
+    }
+  }, [hasArenaChallenge, router, addTenantParam]);
   
   // V1 Route Guard: Check feature flag (premium check removed for V1)
   useEffect(() => {
     if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss) {
       router.replace(addTenantParam('/challenge-arena/practice'));
     }
-  }, [router]);
-  
-  // Don't render if feature is disabled
-  if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaBoss) {
-    return null;
-  }
+  }, [router, addTenantParam]);
   const { toast } = useToast();
   
   const [step, setStep] = useState(1);

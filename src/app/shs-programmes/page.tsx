@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function SHSProgrammesPage() {
+  // Call all hooks before any conditional returns
   const [mounted, setMounted] = useState(false);
   const addTenantParam = useTenantLink();
 
@@ -17,6 +18,7 @@ export default function SHSProgrammesPage() {
     setMounted(true);
   }, []);
 
+  // Safe to return null after all hooks
   if (!mounted) return null;
 
   return (

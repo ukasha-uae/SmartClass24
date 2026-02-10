@@ -2,20 +2,29 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
-
-  // Persist preview tenant from query string for SSR consistency
+  // Persist preview tenant from query string and make it available to SSR.
+  // Note: the cookie set on the response is NOT visible to SSR for this same request,
+  // so we also forward it via a request header.
   const tenant = request.nextUrl.searchParams.get('tenant');
+
+  const requestHeaders = new Headers(request.headers);
+  if (tenant) {
+    requestHeaders.set('x-tenant', tenant);
+  }
+
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+
   if (tenant) {
     response.cookies.set('tenant', tenant, {
       path: '/',
       sameSite: 'lax',
     });
   }
-  
-  // Ensure UTF-8 encoding for all responses
-  response.headers.set('Content-Type', 'text/html; charset=utf-8');
-  
+
   return response;
 }
 
@@ -25,11 +34,10 @@ export const config = {
     /*
      * Match all request paths except for the ones starting with:
      * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
+     * - _next (Next.js internals: static, image, RSC/Flight, HMR, etc.)
      * - favicon.ico (favicon file)
      * - public assets (images, fonts, etc.)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2)$).*)',
+    '/((?!api|_next|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2)$).*)',
   ],
 };

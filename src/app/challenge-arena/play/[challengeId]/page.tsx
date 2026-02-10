@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 import confetti from 'canvas-confetti';
 import html2canvas from 'html2canvas';
 import {
@@ -51,6 +52,7 @@ export default function QuizBattlePage() {
   const params = useParams();
   const router = useRouter();
   const addTenantParam = useTenantLink();
+  const { hasArenaChallenge } = useTenant();
   const { playSound, isMuted, toggleMute } = useSoundEffects();
   const { user, firestore, isUserLoading } = useFirebase();
   const { toast } = useToast();
@@ -58,6 +60,13 @@ export default function QuizBattlePage() {
   const challengeId = params.challengeId as string;
   
   const [challenge, setChallenge] = useState<Challenge | null>(null);
+  
+  // Tenant Route Guard: Check if arena is enabled for this tenant
+  useEffect(() => {
+    if (!hasArenaChallenge) {
+      router.replace(addTenantParam('/'));
+    }
+  }, [hasArenaChallenge, router, addTenantParam]);
   const [player, setPlayer] = useState<Player | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);

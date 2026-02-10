@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 import { 
   BookOpen, 
   Calculator, 
@@ -39,8 +40,16 @@ import { getSarahBot } from '@/lib/ai-bot-profiles';
 export default function CreateChallengePage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
+  const { hasArenaChallenge } = useTenant();
   const { toast } = useToast();
   const { user, firestore } = useFirebase();
+  
+  // Tenant Route Guard: Check if arena is enabled for this tenant
+  useEffect(() => {
+    if (!hasArenaChallenge) {
+      router.replace(addTenantParam('/'));
+    }
+  }, [hasArenaChallenge, router, addTenantParam]);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [friends, setFriends] = useState<Player[]>([]);

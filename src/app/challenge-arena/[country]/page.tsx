@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 import {
   getPlayerProfile,
   createOrUpdatePlayer,
@@ -33,7 +34,7 @@ import { doc } from 'firebase/firestore';
 import { useMemo } from 'react';
 import CampusSelector from '@/components/CampusSelector';
 import { useLocalization } from '@/hooks/useLocalization';
-import { useParams, notFound, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, notFound, useRouter } from 'next/navigation';
 import { COUNTRIES } from '@/lib/localization/countries/index';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
@@ -43,18 +44,36 @@ import SubscriptionManagement from '@/components/premium/SubscriptionManagement'
 import { isPremiumUser, hasPremiumFeature, getQuestionBankLimit } from '@/lib/monetization';
 import { Coins } from 'lucide-react';
 
+/**
+ * Safe function to get URL search params without triggering React errors
+ */
+function getSafeSearchParam(key: string): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return new URLSearchParams(window.location.search).get(key);
+  } catch {
+    return null;
+  }
+}
+
 export default function LocalizedChallengeArenaPage() {
   const params = useParams();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const addTenantParam = useTenantLink();
+  const { hasArenaChallenge, hasLocalization } = useTenant();
   const countryParam = params.country as string;
   
-  // Validate country parameter
+  // Guard: Check if tenant has arena challenge enabled
+  useEffect(() => {
+    if (!hasArenaChallenge) {
+      router.replace(addTenantParam('/'));
+      return;
+    }
+  }, [hasArenaChallenge, router, addTenantParam]);
+
+  // Compute validity early, but do NOT throw/return before all hooks run.
+  // Throwing (via notFound()) before later hooks can cause hook-order errors (#300).
   const isValidCountry = Object.keys(COUNTRIES).includes(countryParam?.toLowerCase());
-  if (!isValidCountry) {
-    notFound();
-  }
 
   const { country, setCountry } = useLocalization();
   const [player, setPlayer] = useState<Player | null>(null);
@@ -79,13 +98,18 @@ export default function LocalizedChallengeArenaPage() {
   const profileRef = useMemo(() => (user && firestore) ? doc(firestore, `students/${user.uid}`) : null, [user, firestore]);
   const { data: userProfile } = useDoc(profileRef);
 
+  // Now that hooks are initialized, it's safe to 404 for invalid routes.
+  if (!isValidCountry) {
+    notFound();
+  }
+
   // Determine initial education level based on priority:
   // 1. URL parameter (if coming from home page)
   // 2. User profile educationLevel (if logged in)
   // 3. localStorage (if previously selected)
   // 4. Default to 'Primary'
-  // Extract stable values for dependency array
-  const levelParam = searchParams?.get('level') || null;
+  // Extract stable values for dependency array - use safe method to get search params
+  const levelParam = typeof window !== 'undefined' ? getSafeSearchParam('level') : null;
   const profileEducationLevel = userProfile?.educationLevel || null;
   
   useEffect(() => {

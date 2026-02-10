@@ -12,6 +12,8 @@ import { useState, useEffect, use } from 'react';
 
 export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSlug: string }> }) {
   const { subjectSlug } = use(params);
+  
+  // Call all hooks before any conditional returns
   const addTenantParam = useTenantLink();
   const [mounted, setMounted] = useState(false);
 
@@ -19,9 +21,11 @@ export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSl
     setMounted(true);
   }, []);
 
+  // Get data after all hooks
+  const subject = mounted ? coreSubjects.find(s => s.slug === subjectSlug) : null;
+  
+  // Safe to check and return null/notFound after all hooks
   if (!mounted) return null;
-
-  const subject = coreSubjects.find(s => s.slug === subjectSlug);
   
   if (!subject) {
     notFound();

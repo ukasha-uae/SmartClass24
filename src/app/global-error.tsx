@@ -26,6 +26,19 @@ export default function GlobalError({
   const isPermissionError = error.message.includes('permission') || 
                             error.message.includes('Missing or insufficient permissions');
 
+  const isDev = process.env.NODE_ENV === 'development';
+  const detailsText = isDev
+    ? [
+        `env: ${process.env.NODE_ENV}`,
+        `name: ${error.name}`,
+        error.digest ? `digest: ${error.digest}` : null,
+        `message: ${error.message}`,
+        error.stack ? `\nstack:\n${error.stack}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n')
+    : error.message;
+
   return (
     <html>
       <body className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -60,7 +73,7 @@ export default function GlobalError({
                     Technical details
                   </summary>
                   <pre className="mt-2 overflow-auto whitespace-pre-wrap text-red-600">
-                    {error.message}
+                    {detailsText}
                   </pre>
                 </details>
               </>

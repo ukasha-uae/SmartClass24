@@ -48,11 +48,12 @@ export function IntelligentWelcome({
 
   // Get campus-specific content
   const getCampusSpecificScenes = (): WelcomeScene[] => {
+    const brandingName = branding?.name || 'S24';
     const baseScenes = {
       welcome: {
         id: 0,
         emoji: "👋",
-        narration: `Hello ${studentName}! Welcome to ${branding.name}, Ghana's most exciting learning adventure! I'm your AI teacher, and I'm absolutely thrilled to be your guide today.`,
+        narration: `Hello ${studentName}! Welcome to ${brandingName}, Ghana's most exciting learning adventure! I'm your AI teacher, and I'm absolutely thrilled to be your guide today.`,
         visualContent: "Welcome to Your Learning Journey!",
         highlightWords: ['Welcome', 'exciting', 'adventure'],
         teacherTip: "Get ready for an amazing experience!"

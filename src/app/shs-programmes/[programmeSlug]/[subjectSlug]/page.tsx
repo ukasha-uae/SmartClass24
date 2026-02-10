@@ -13,22 +13,25 @@ import { useState, useEffect, use } from 'react';
 
 export default function ElectiveSubjectPage({ params }: { params: Promise<{ programmeSlug: string; subjectSlug: string }> }) {
   const { programmeSlug, subjectSlug } = use(params);
+  
+  // Call all hooks before any conditional returns
   const [mounted, setMounted] = useState(false);
+  const addTenantParam = useTenantLink();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  // Get data after all hooks
+  const programme = mounted ? getProgrammeBySlug(programmeSlug) : null;
+  const subject = mounted && programme ? programme.electiveSubjects.find(s => s.slug === subjectSlug) : null;
 
-  const programme = getProgrammeBySlug(programmeSlug);
-  const addTenantParam = useTenantLink();
+  // Safe to check and return after all hooks
+  if (!mounted) return null;
 
   if (!programme) {
     notFound();
   }
-
-  const subject = programme.electiveSubjects.find(s => s.slug === subjectSlug);
 
   if (!subject) {
     notFound();
@@ -60,7 +63,7 @@ export default function ElectiveSubjectPage({ params }: { params: Promise<{ prog
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Back Button */}
-      <Link href={`/shs-programmes/${programme.slug}`}>
+      <Link href={addTenantParam(`/shs-programmes/${programme.slug}`)}>
         <Button variant="ghost" className="mb-6">
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to {programme.name}

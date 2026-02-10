@@ -29,9 +29,9 @@ import {
   Player 
 } from '@/lib/challenge';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
 import type { EducationLevel } from '@/lib/challenge-questions-exports';
-import { GHANA_SCHOOLS } from '@/lib/schools';
 import { getSchoolsByCountry, getAllMultiCountrySchools } from '@/lib/schools-multi-country';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useToast } from '@/hooks/use-toast';
@@ -42,22 +42,25 @@ import { FEATURE_FLAGS } from '@/lib/featureFlags';
 export default function SchoolBattlePage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
+  const { hasArenaChallenge } = useTenant();
   
   const { toast } = useToast();
   const { country } = useLocalization();
   const { user } = useFirebase();
+  
+  // Tenant Route Guard: Check if arena is enabled for this tenant
+  useEffect(() => {
+    if (!hasArenaChallenge) {
+      router.replace(addTenantParam('/'));
+    }
+  }, [hasArenaChallenge, router, addTenantParam]);
   
   // V1 Route Guard: Check feature flag (premium check removed for V1)
   useEffect(() => {
     if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool) {
       router.replace(addTenantParam('/challenge-arena/practice'));
     }
-  }, [router]);
-  
-  // Don't render if feature is disabled
-  if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaSchool) {
-    return null;
-  }
+  }, [router, addTenantParam]);
   const [rankings, setRankings] = useState<SchoolRanking[]>([]);
   const [mySchool, setMySchool] = useState<SchoolRanking | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);

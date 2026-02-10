@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function CampusSelectorPage() {
+  // Call all hooks before any conditional returns
   const [mounted, setMounted] = useState(false);
   const campuses = getActiveCampuses();
 
@@ -16,6 +17,7 @@ export default function CampusSelectorPage() {
     setMounted(true);
   }, []);
 
+  // Safe to return null after all hooks
   if (!mounted) return null;
 
   return (

@@ -75,7 +75,7 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
       enableSHSCampus: true,       // Alternative high school learning
       enableUniversityCampus: false,
       enableVirtualLabs: true,     // Hands-on learning aligned with their values
-      enableArenaChallenge: false, // Not competitive - focus on individual growth
+      enableArenaChallenge: true,  // ✅ Challenge Arena enabled for gamified learning
       enableLocalization: false,   // Dubai-based, English primary
       enableParentDashboard: true, // Critical - parents are key stakeholders
       enableOfflineMode: false,

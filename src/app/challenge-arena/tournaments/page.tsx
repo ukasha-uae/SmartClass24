@@ -36,6 +36,7 @@ export default function TournamentsPage() {
   const isPremium = isPremiumUser(userId);
   const hasTournamentAccess = hasPremiumFeature(userId, 'tournaments');
   const [showUnlockModal, setShowUnlockModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('upcoming');
   
   useEffect(() => {
     if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
@@ -49,7 +50,6 @@ export default function TournamentsPage() {
   if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
     return null;
   }
-  const [activeTab, setActiveTab] = useState('upcoming');
 
   // Mock Tournament Data
   const TOURNAMENTS = [
@@ -163,7 +163,7 @@ export default function TournamentsPage() {
         open={showUnlockModal}
         onClose={() => {
           setShowUnlockModal(false);
-          router.push(addTenantParam('/challenge-arena/ghana'));
+          router.push(addTenantParam('/challenge-arena'));
         }}
         feature="tournaments"
         onSuccess={() => {

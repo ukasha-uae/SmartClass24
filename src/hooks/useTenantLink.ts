@@ -4,6 +4,18 @@ import { useCallback } from 'react';
 import { useTenant } from '@/hooks/useTenant';
 
 /**
+ * Safe function to get tenant from URL without triggering errors
+ */
+function getSafeTenantFromUrl(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return new URLSearchParams(window.location.search).get('tenant');
+  } catch {
+    return null;
+  }
+}
+
+/**
  * useTenantLink
  * Preserves the current tenant query param in internal links.
  */
@@ -15,9 +27,7 @@ export function useTenantLink() {
       // If the link already includes a tenant param, never append another.
       if (/[?&]tenant=/.test(href)) return href;
 
-      const tenantFromUrl = typeof window !== 'undefined'
-        ? new URLSearchParams(window.location.search).get('tenant')
-        : null;
+      const tenantFromUrl = getSafeTenantFromUrl();
       const tenant = tenantFromUrl || tenantId;
       
       // Debug logging

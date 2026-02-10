@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import { getProgrammeBySlug } from '@/lib/shs-data';
 import { useLocalization } from '@/hooks/useLocalization';
@@ -121,14 +121,14 @@ function ComingSoonPage({
 export default function ElectiveLessonPage({ 
   params 
 }: { 
-  params: { 
+  params: Promise<{ 
     programmeSlug: string; 
     subjectSlug: string; 
     lessonSlug: string 
-  } 
+  }> 
 }) {
+  const { programmeSlug, subjectSlug, lessonSlug } = use(params);
   const [mounted, setMounted] = useState(false);
-  const { programmeSlug, subjectSlug, lessonSlug } = params;
   const router = useRouter();
   
   // Get the localized lesson data at the top level (before any conditional logic)

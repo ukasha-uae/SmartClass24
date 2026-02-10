@@ -1,9 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { User, FlaskConical, Swords, Coins } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useTenant } from '@/hooks/useTenant';
 
 /**
  * BottomNav Component - Mobile-only bottom navigation
@@ -14,54 +16,9 @@ type BottomNavProps = {
   initialTenantId?: string | null;
 };
 
-function getCookieValue(cookieName: string): string | null {
-  if (typeof document === 'undefined') return null;
-  const match = document.cookie.match(new RegExp(`(?:^|; )${cookieName}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
 export default function BottomNav({ initialTenantId = null }: BottomNavProps) {
-  const [pathname, setPathname] = useState('');
-  const [tenantId, setTenantId] = useState<string | null>(initialTenantId);
-
-  useEffect(() => {
-    const updateFromLocation = () => {
-      const nextPathname = window.location.pathname;
-      const urlTenant = new URLSearchParams(window.location.search).get('tenant');
-      const cookieTenant = getCookieValue('tenant');
-      setPathname(nextPathname);
-      setTenantId(urlTenant || cookieTenant || null);
-    };
-
-    updateFromLocation();
-
-    const onLocationChange = () => updateFromLocation();
-    window.addEventListener('popstate', onLocationChange);
-    window.addEventListener('smartclass24:locationchange', onLocationChange);
-
-    const historyAny = window.history as any;
-    const originalPushState = historyAny.pushState;
-    const originalReplaceState = historyAny.replaceState;
-
-    historyAny.pushState = function (...args: any[]) {
-      const result = originalPushState.apply(this, args);
-      window.dispatchEvent(new Event('smartclass24:locationchange'));
-      return result;
-    };
-
-    historyAny.replaceState = function (...args: any[]) {
-      const result = originalReplaceState.apply(this, args);
-      window.dispatchEvent(new Event('smartclass24:locationchange'));
-      return result;
-    };
-
-    return () => {
-      window.removeEventListener('popstate', onLocationChange);
-      window.removeEventListener('smartclass24:locationchange', onLocationChange);
-      historyAny.pushState = originalPushState;
-      historyAny.replaceState = originalReplaceState;
-    };
-  }, []);
+  const pathname = usePathname();
+  const { tenantId, hasArenaChallenge, hasVirtualLabs, features } = useTenant();
 
   const addTenantParam = useCallback(
     (href: string) => {
@@ -80,8 +37,16 @@ export default function BottomNav({ initialTenantId = null }: BottomNavProps) {
       { href: addTenantParam('/profile'), label: 'Profile', icon: User },
     ];
 
-    return items.filter(item => !(tenantId === 'wisdomwarehouse' && item.label === 'Pricing'));
-  }, [addTenantParam, tenantId]);
+    return items.filter(item => {
+      // Filter out pricing for tenants without public pricing
+      if (item.label === 'Pricing' && features.enablePublicPricing === false) return false;
+      // Filter out arena for tenants without arena challenge
+      if (item.label === 'Arena' && !hasArenaChallenge) return false;
+      // Filter out labs for tenants without virtual labs
+      if (item.label === 'Labs' && !hasVirtualLabs) return false;
+      return true;
+    });
+  }, [addTenantParam, hasArenaChallenge, hasVirtualLabs, features]);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-r from-white/95 via-violet-50/95 to-indigo-50/95 dark:from-slate-900/95 dark:via-violet-950/95 dark:to-indigo-950/95 backdrop-blur-xl md:hidden shadow-2xl shadow-violet-200/20 dark:shadow-violet-900/20">
@@ -95,9 +60,10 @@ export default function BottomNav({ initialTenantId = null }: BottomNavProps) {
         navItems.length === 3 ? "grid-cols-3" : "grid-cols-4"
       )}>
         {navItems.map(({ href, label, icon: Icon }) => {
+          const hrefPath = href.split('?')[0];
           const isActive =
-            (pathname === '/' && href === '/') ||
-            (pathname !== '/' && href !== '/' && pathname.startsWith(href));
+            (pathname === '/' && hrefPath === '/') ||
+            (pathname !== '/' && hrefPath !== '/' && pathname.startsWith(hrefPath));
           return (
             <Link
               key={label}

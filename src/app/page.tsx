@@ -37,9 +37,14 @@ export default function Home() {
 
   // Log for debugging - check if tenant is correctly resolved
   useEffect(() => {
-    console.log('[HomePage] Tenant:', { tenantId, market, brandingName: branding.name });
+    console.log('[HomePage] Tenant:', {tenantId, market, branding: {
+      name: branding?.name,
+      logoUrl: branding?.logoUrl,
+      domain: branding?.domain,
+      fullObject: branding
+    }});
     console.log('[HomePage] addTenantParam test:', addTenantParam('/virtual-labs'));
-  }, [tenantId, market, branding.name, addTenantParam]);
+  }, [tenantId, market, branding, addTenantParam]);
 
   // Force remount when tenant changes to prevent state pollution
   useEffect(() => {
@@ -202,8 +207,8 @@ export default function Home() {
     { href: '/past-questions', label: 'Past Questions', icon: '📝', desc: 'Practice Tests', show: true, gradient: 'from-green-500 to-emerald-600' }
   ];
 
-  // Wait for client-side mount AND tenant context to prevent hydration issues
-  if (!mounted || !market) {
+  // Wait for client-side mount to prevent hydration issues
+  if (!mounted) {
     return null;
   }
 
@@ -242,11 +247,11 @@ export default function Home() {
             <div className="relative">
               {/* Glow layer */}
               <h1 className="absolute inset-0 text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent blur-md opacity-40 animate-pulse">
-                {market === 'ghana' ? 'S24' : branding.name}
+                {branding?.name || 'S24'}
               </h1>
               {/* Main text */}
               <h1 className="relative text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black font-headline bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent tracking-tight drop-shadow-lg animate-gradient">
-                {market === 'ghana' ? 'S24' : branding.name}
+                {branding?.name || 'S24'}
               </h1>
             </div>
           </div>

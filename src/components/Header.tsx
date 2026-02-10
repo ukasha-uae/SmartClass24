@@ -95,7 +95,7 @@ export default function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [countryOpen, setCountryOpen] = useState(false);
   const { country } = useLocalization();
-  const { tenantId, branding, hasLocalization, features } = useTenant();
+  const { tenantId, branding, hasLocalization, features, hasArenaChallenge, hasVirtualLabs } = useTenant();
   const { isFullscreen } = useFullscreen();
   const addTenantParam = useTenantLink();
   const profileRef = useMemo(() => (user && firestore) ? doc(firestore, `students/${user.uid}`) : null, [user, firestore]);
@@ -246,7 +246,8 @@ export default function Header() {
                       
                   {/* V1 Navigation Links - Challenge Arena & Virtual Labs Only */}
                   <nav className="flex flex-col gap-2">
-                        {/* Challenge Arena - Always Visible */}
+                        {/* Challenge Arena - Conditional based on tenant */}
+                        {hasArenaChallenge && (
                         <Link 
                           href={addTenantParam("/challenge-arena")} 
                           onClick={() => setSheetOpen(false)}
@@ -258,8 +259,10 @@ export default function Header() {
                           <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-amber-600 group-hover:to-orange-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Challenge Arena</span>
                           <ChevronRight className="h-4 w-4 text-amber-600 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
+                        )}
                         
-                        {/* Virtual Labs - Available for All Students */}
+                        {/* Virtual Labs - Conditional based on tenant */}
+                        {hasVirtualLabs && (
                         <Link 
                           href={addTenantParam("/virtual-labs")} 
                           onClick={() => setSheetOpen(false)}
@@ -275,6 +278,7 @@ export default function Header() {
                           </span>
                           <ChevronRight className="h-4 w-4 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                         </Link>
+                        )}
                         
                         {/* Pricing - Only show for tenants with public pricing enabled */}
                         {features.enablePublicPricing !== false && (
@@ -311,7 +315,8 @@ export default function Header() {
           </div>
           {user && (
             <>
-              {/* Virtual Labs - Available for All Students */}
+              {/* Virtual Labs - Conditional based on tenant */}
+              {hasVirtualLabs && (
               <Link href={addTenantParam("/virtual-labs")} className="hidden md:block">
                 <Button variant="ghost" size="sm" className="flex items-center gap-2">
                   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,6 +325,7 @@ export default function Header() {
                   <span>Virtual Labs</span>
                 </Button>
               </Link>
+              )}
 
               {features.enablePublicPricing !== false && (
               <Link href={addTenantParam("/pricing")} className="hidden md:block">
@@ -331,12 +337,14 @@ export default function Header() {
                 </Button>
               </Link>
               )}
+              {hasArenaChallenge && (
               <Link href={addTenantParam("/challenge-arena")} className="hidden md:block">
                 <Button variant="ghost" size="sm" className="flex items-center gap-2 text-primary hover:bg-gradient-to-r hover:from-violet-500/10 hover:to-indigo-500/10 hover:border-violet-300/50 dark:hover:border-violet-700/50 border border-transparent transition-all hover:scale-105">
                   <Trophy className="h-4 w-4" />
                   <span className="font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Arena</span>
                 </Button>
               </Link>
+              )}
               <NotificationBell />
               {user && (
                 <div className="hidden sm:flex items-center gap-2">

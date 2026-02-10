@@ -7,12 +7,14 @@ import { getCampusConfig } from '@/lib/campus-config';
 import { BookOpen, FlaskConical, Trophy, GraduationCap, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { useState, useEffect, useMemo, use } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function CampusHomePage({ params }: { params: Promise<{ campusType: string }> }) {
   const { campusType } = use(params);
+  
+  // Call all hooks before any conditional returns
   const [mounted, setMounted] = useState(false);
   const { country } = useLocalization();
   const addTenantParam = useTenantLink();
@@ -21,9 +23,11 @@ export default function CampusHomePage({ params }: { params: Promise<{ campusTyp
     setMounted(true);
   }, []);
 
+  // Get data after all hooks
+  const campus = mounted ? getCampusConfig(campusType) : null;
+  
+  // Safe to check and return after all hooks
   if (!mounted) return null;
-
-  const campus = getCampusConfig(campusType);
   
   if (!campus) {
     notFound();
@@ -54,8 +58,8 @@ export default function CampusHomePage({ params }: { params: Promise<{ campusTyp
   
   const educationLevel = getEducationLevel(campus.id);
 
-  // Feature cards based on campus type - use useMemo to recreate when tenant changes
-  const features = useMemo(() => campus.id === 'shs' ? [
+  // Feature cards based on campus type
+  const features = campus.id === 'shs' ? [
     {
       icon: BookOpen,
       title: 'Core Subjects',
@@ -121,7 +125,7 @@ export default function CampusHomePage({ params }: { params: Promise<{ campusTyp
       color: 'orange',
       badge: 'New'
     }
-  ], [addTenantParam, campus.id, country?.id, educationLevel]);
+  ];
 
   const colorClasses = {
     violet: 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/30',

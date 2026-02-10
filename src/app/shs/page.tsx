@@ -14,7 +14,8 @@ import { useState, useEffect } from 'react';
 import { useLocalization } from '@/hooks/useLocalization';
 
 export default function SHSHubPage() {
-    const addTenantParam = useTenantLink();
+  // Call all hooks before any conditional returns
+  const addTenantParam = useTenantLink();
   const [mounted, setMounted] = useState(false);
   const { country } = useLocalization();
 
@@ -26,6 +27,7 @@ export default function SHSHubPage() {
     }
   }, []);
 
+  // Safe to return null after all hooks
   if (!mounted) return null;
 
   // Get country-specific naming and colors

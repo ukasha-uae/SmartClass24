@@ -13,6 +13,8 @@ import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function ProgrammePage({ params }: { params: Promise<{ programmeSlug: string }> }) {
   const { programmeSlug } = use(params);
+  
+  // Call all hooks before any conditional returns
   const [mounted, setMounted] = useState(false);
   const addTenantParam = useTenantLink();
 
@@ -20,9 +22,11 @@ export default function ProgrammePage({ params }: { params: Promise<{ programmeS
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  // Get data after all hooks
+  const programme = mounted ? getProgrammeBySlug(programmeSlug) : null;
 
-  const programme = getProgrammeBySlug(programmeSlug);
+  // Safe to check and return after all hooks
+  if (!mounted) return null;
 
   if (!programme) {
     notFound();

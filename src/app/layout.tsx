@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import HeaderNoSSR from '@/components/HeaderNoSSR';
@@ -20,6 +20,7 @@ import { UpdateNotification } from '@/components/update-notification';
 import { ForceCacheClear } from '@/components/force-cache-clear';
 import { TenantThemeProvider } from '@/components/tenancy/TenantThemeProvider';
 import { TenantParamProvider } from '@/components/tenancy/TenantParamProvider';
+import { TenantTitle } from '@/components/tenancy/TenantTitle';
 
 export const metadata: Metadata = {
   title: 'S24',
@@ -33,7 +34,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const initialTenantId = cookieStore.get('tenant')?.value ?? null;
+  const headerStore = await headers();
+
+  const initialTenantId =
+    headerStore.get('x-tenant') ?? cookieStore.get('tenant')?.value ?? null;
 
   return (
     <html lang="en" className="h-full">
@@ -55,6 +59,7 @@ export default async function RootLayout({
       <body className={cn('font-body antialiased bg-background h-full')}>
         <TenantParamProvider initialTenantId={initialTenantId}>
         <TenantThemeProvider>
+          <TenantTitle />
           <ForceCacheClear />
           <FirebaseClientProvider>
             <LocalizationProvider>
@@ -73,7 +78,9 @@ export default async function RootLayout({
                   <Suspense fallback={null}>
                     <ReferralHandler />
                   </Suspense>
-                  <BottomNav initialTenantId={initialTenantId} />
+                  <Suspense fallback={null}>
+                    <BottomNav initialTenantId={initialTenantId} />
+                  </Suspense>
                   <Toaster />
                   {/* Update notification for new versions */}
                   <UpdateNotification />

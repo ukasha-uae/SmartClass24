@@ -8,6 +8,10 @@ import { useEffect } from 'react';
  */
 export function ForceCacheClear() {
   useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      return;
+    }
+
     const clearCache = async () => {
       if ('serviceWorker' in navigator && 'caches' in window) {
         try {

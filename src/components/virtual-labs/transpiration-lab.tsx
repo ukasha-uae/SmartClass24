@@ -16,6 +16,18 @@ import { cn } from '@/lib/utils';
 import { TextToSpeech } from '../text-to-speech';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+
+/**
+ * Safe function to get URL search params without triggering React errors
+ */
+function getSafeSearchParam(key: string): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return new URLSearchParams(window.location.search).get(key);
+  } catch {
+    return null;
+  }
+}
 import { TeacherVoice } from './TeacherVoice';
 
 // --- SVG Icons for the Lab ---
@@ -85,7 +97,6 @@ const HighlightedText = ({ text, sectionId, highlightedSentenceIndex }: {
 
 export function TranspirationLab() {
     const { toast } = useToast();
-    const searchParams = useSearchParams();
     const [isBagPlaced, setIsBagPlaced] = React.useState(false);
   const [teacherMessage, setTeacherMessage] = useState('Welcome to this experiment! Let\'s explore together.');
     const [isSimulating, setIsSimulating] = React.useState(false);
@@ -105,10 +116,10 @@ export function TranspirationLab() {
 
     const timerRef = React.useRef<NodeJS.Timeout | null>(null);
     
-    // Back to lesson link params
-    const backToLessonSlug = searchParams.get('lesson');
-    const backToProgrammeSlug = searchParams.get('p');
-    const backToSubjectSlug = searchParams.get('s');
+    // Back to lesson link params - use safe method
+    const backToLessonSlug = getSafeSearchParam('lesson');
+    const backToProgrammeSlug = getSafeSearchParam('p');
+    const backToSubjectSlug = getSafeSearchParam('s');
 
 
     // Effect for simulation timer

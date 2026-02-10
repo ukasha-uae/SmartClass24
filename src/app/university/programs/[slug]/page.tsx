@@ -12,9 +12,14 @@ import { useTenantLink } from '@/hooks/useTenantLink';
 
 export default function ProgramPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
-  const program = getUniversityProgram(slug);
+  
+  // Call all hooks before any conditional logic/returns
   const addTenantParam = useTenantLink();
+  
+  // Get data after hooks
+  const program = getUniversityProgram(slug);
 
+  // Now that all hooks are called, it's safe to throw notFound()
   if (!program) {
     notFound();
   }

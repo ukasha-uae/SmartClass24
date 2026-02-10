@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useTenant } from '@/hooks/useTenant';
 import CountrySelector from './CountrySelector';
 import RegionSelector from './RegionSelector';
 import { Button } from './ui/button';
@@ -21,6 +22,7 @@ export default function CountryOnboarding({
   autoShow = true,
 }: CountryOnboardingProps) {
   const { countryId } = useLocalization();
+  const { branding } = useTenant();
   const [step, setStep] = useState(1);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(true);
 
@@ -49,7 +51,7 @@ export default function CountryOnboarding({
               <div className="inline-block p-4 bg-blue-100 rounded-full mb-4">
                 <Globe className="h-12 w-12 text-blue-600" />
               </div>
-              <h1 className="text-3xl font-bold mb-3">Welcome to SmartClass24!</h1>
+              <h1 className="text-3xl font-bold mb-3">Welcome to {branding.name}!</h1>
               <p className="text-lg text-gray-600 max-w-md mx-auto">
                 Let's personalize your learning experience by selecting your country
               </p>

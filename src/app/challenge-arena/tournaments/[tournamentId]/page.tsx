@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useTenant } from '@/hooks/useTenant';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,6 +47,15 @@ const BRACKET_ROUNDS = [
 export default function TournamentBracketPage() {
   const router = useRouter();
   const params = useParams();
+  const addTenantParam = useTenantLink();
+  const { hasArenaChallenge } = useTenant();
+  
+  // Tenant Route Guard: Check if arena is enabled for this tenant
+  useEffect(() => {
+    if (!hasArenaChallenge) {
+      router.replace(addTenantParam('/'));
+    }
+  }, [hasArenaChallenge, router, addTenantParam]);
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-6xl">

@@ -8,10 +8,23 @@
 
 'use client';
 
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useCallback } from 'react';
 import { resolveTenantFromParams } from '@/tenancy/resolveTenant';
 import type { TenantConfig } from '@/tenancy/types';
 import { TenantParamContext } from '@/components/tenancy/TenantParamProvider';
+
+/**
+ * Safe hook to get search params without triggering Suspense errors
+ * Falls back to reading from window.location if useSearchParams is unavailable
+ */
+function useSafeSearchParams(): URLSearchParams | null {
+  try {
+    if (typeof window === 'undefined') return null;
+    return new URLSearchParams(window.location.search);
+  } catch {
+    return null;
+  }
+}
 
 
 
@@ -64,51 +77,8 @@ export interface UseTenantResult {
  */
 export function useTenant(): UseTenantResult {
   const initialTenantParam = useContext(TenantParamContext);
-  // Track URL search params to re-resolve tenant when ?tenant= changes
-  const [tenantParam, setTenantParam] = useState<string | null>(() => {
-    if (initialTenantParam) return initialTenantParam;
-    if (typeof window === 'undefined') return null;
-    const params = new URLSearchParams(window.location.search);
-    return params.get('tenant');
-  });
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const readTenantParam = () => {
-      const params = new URLSearchParams(window.location.search);
-      setTenantParam(params.get('tenant'));
-    };
-
-    const notifyLocationChange = () => readTenantParam();
-
-    const originalPushState = window.history.pushState;
-    const originalReplaceState = window.history.replaceState;
-
-    window.history.pushState = function pushState(...args) {
-      const result = originalPushState.apply(this, args as unknown as [any, any, any]);
-      window.dispatchEvent(new Event('locationchange'));
-      return result;
-    };
-
-    window.history.replaceState = function replaceState(...args) {
-      const result = originalReplaceState.apply(this, args as unknown as [any, any, any]);
-      window.dispatchEvent(new Event('locationchange'));
-      return result;
-    };
-
-    window.addEventListener('popstate', notifyLocationChange);
-    window.addEventListener('locationchange', notifyLocationChange);
-
-    readTenantParam();
-
-    return () => {
-      window.removeEventListener('popstate', notifyLocationChange);
-      window.removeEventListener('locationchange', notifyLocationChange);
-      window.history.pushState = originalPushState;
-      window.history.replaceState = originalReplaceState;
-    };
-  }, []);
+  const searchParams = useSafeSearchParams();
+  const tenantParam = searchParams?.get('tenant') ?? initialTenantParam ?? null;
   
   const tenant = useMemo<TenantConfig>(() => {
     // Use the new resolveTenantFromParams that accepts tenant directly
