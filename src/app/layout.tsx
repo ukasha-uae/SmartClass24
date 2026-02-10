@@ -21,11 +21,13 @@ import { ForceCacheClear } from '@/components/force-cache-clear';
 import { TenantThemeProvider } from '@/components/tenancy/TenantThemeProvider';
 import { TenantParamProvider } from '@/components/tenancy/TenantParamProvider';
 import { TenantTitle } from '@/components/tenancy/TenantTitle';
+import { DynamicManifest } from '@/components/tenancy/DynamicManifest';
+import { DynamicAppleIcon } from '@/components/tenancy/DynamicAppleIcon';
 
 export const metadata: Metadata = {
   title: 'S24',
   description: 'Smart learning for JHS & SHS students across Ghana',
-  manifest: '/manifest.json',
+  // manifest dynamically set by DynamicManifest component
 };
 
 export default async function RootLayout({
@@ -60,6 +62,8 @@ export default async function RootLayout({
         <TenantParamProvider initialTenantId={initialTenantId}>
         <TenantThemeProvider>
           <TenantTitle />
+          <DynamicManifest />
+          <DynamicAppleIcon />
           <ForceCacheClear />
           <FirebaseClientProvider>
             <LocalizationProvider>

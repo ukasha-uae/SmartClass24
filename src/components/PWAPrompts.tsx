@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Download, X } from 'lucide-react';
 import { useHasMounted } from '@/hooks/use-has-mounted';
+import { useTenant } from '@/hooks/useTenant';
 
 export function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const hasMounted = useHasMounted();
+  const { branding } = useTenant();
 
   useEffect(() => {
     // Check if user has previously dismissed
@@ -75,7 +77,7 @@ export function PWAInstallPrompt() {
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-base mb-1">Install S24</h3>
+              <h3 className="font-semibold text-base mb-1">Install {branding.name}</h3>
               <p className="text-sm text-muted-foreground mb-3">
                 Get quick access and work offline!
               </p>

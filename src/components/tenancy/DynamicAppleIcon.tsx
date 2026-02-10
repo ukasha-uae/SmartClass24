@@ -1,0 +1,45 @@
+/**
+ * DynamicAppleIcon Component
+ * Updates Apple Touch Icon dynamically based on tenant
+ * 
+ * @module components/tenancy/DynamicAppleIcon
+ * @version 1.0.0
+ */
+
+'use client';
+
+import { useEffect } from 'react';
+import { useTenant } from '@/hooks/useTenant';
+
+/**
+ * Client component that dynamically updates Apple Touch Icon
+ * based on current tenant's branding (for iOS devices)
+ * 
+ * @example
+ * ```tsx
+ * // In layout head
+ * <DynamicAppleIcon />
+ * ```
+ */
+export function DynamicAppleIcon() {
+  const { branding } = useTenant();
+  
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    
+    // Find or create apple-touch-icon link element
+    let appleIconLink = document.querySelector('link[rel="apple-touch-icon"]') as HTMLLinkElement;
+    
+    if (!appleIconLink) {
+      appleIconLink = document.createElement('link');
+      appleIconLink.rel = 'apple-touch-icon';
+      document.head.appendChild(appleIconLink);
+    }
+    
+    // Use tenant logo for iOS home screen icon
+    const logoUrl = branding?.logoUrl || '/icons/icon-512x512.svg';
+    appleIconLink.href = logoUrl;
+  }, [branding]);
+  
+  return null; // This component doesn't render anything
+}
