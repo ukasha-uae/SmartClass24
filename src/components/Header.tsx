@@ -243,6 +243,37 @@ export default function Header() {
                       <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                     </>
                   )}
+
+                  {/* Parent & Teacher Dashboard Links - Conditional based on tenant */}
+                  {features.enableParentDashboard && (
+                    <>
+                      <Link 
+                        href={addTenantParam("/parent/dashboard")} 
+                        onClick={() => setSheetOpen(false)}
+                        className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-950/30 dark:to-cyan-950/30 backdrop-blur-sm border-2 border-teal-200/50 dark:border-teal-800/50 hover:border-teal-300 dark:hover:border-teal-700 transition-all hover:scale-[1.02] shadow-md"
+                      >
+                        <div className="p-2 bg-gradient-to-br from-teal-500/20 to-cyan-500/20 rounded-lg group-hover:from-teal-500/30 group-hover:to-cyan-500/30 transition-all">
+                          <Users className="h-5 w-5 text-teal-600 dark:text-teal-400" />
+                        </div>
+                        <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-teal-600 group-hover:to-cyan-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Parent Dashboard</span>
+                        <ChevronRight className="h-4 w-4 text-teal-600 dark:text-teal-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
+                      </Link>
+                      
+                      <Link 
+                        href={addTenantParam("/teacher/dashboard")} 
+                        onClick={() => setSheetOpen(false)}
+                        className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30 backdrop-blur-sm border-2 border-rose-200/50 dark:border-rose-800/50 hover:border-rose-300 dark:hover:border-rose-700 transition-all hover:scale-[1.02] shadow-md"
+                      >
+                        <div className="p-2 bg-gradient-to-br from-rose-500/20 to-pink-500/20 rounded-lg group-hover:from-rose-500/30 group-hover:to-pink-500/30 transition-all">
+                          <GraduationCap className="h-5 w-5 text-rose-600 dark:text-rose-400" />
+                        </div>
+                        <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-rose-600 group-hover:to-pink-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Teacher Dashboard</span>
+                        <ChevronRight className="h-4 w-4 text-rose-600 dark:text-rose-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
+                      </Link>
+                      
+                      <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
+                    </>
+                  )}
                       
                   {/* V1 Navigation Links - Challenge Arena & Virtual Labs Only */}
                   <nav className="flex flex-col gap-2">
@@ -315,6 +346,25 @@ export default function Header() {
           </div>
           {user && (
             <>
+              {/* Parent & Teacher Dashboard - Conditional based on tenant */}
+              {features.enableParentDashboard && (
+                <>
+                  <Link href={addTenantParam("/parent/dashboard")} className="hidden md:block">
+                    <Button variant="ghost" size="sm" className="flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:bg-gradient-to-r hover:from-teal-500/10 hover:to-cyan-500/10 hover:border-teal-300/50 dark:hover:border-teal-700/50 border border-transparent transition-all hover:scale-105">
+                      <Users className="h-4 w-4" />
+                      <span className="font-semibold">Parent</span>
+                    </Button>
+                  </Link>
+                  
+                  <Link href={addTenantParam("/teacher/dashboard")} className="hidden md:block">
+                    <Button variant="ghost" size="sm" className="flex items-center gap-2 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-gradient-to-r hover:from-rose-500/10 hover:to-pink-500/10 hover:border-rose-300/50 dark:hover:border-rose-700/50 border border-transparent transition-all hover:scale-105">
+                      <GraduationCap className="h-4 w-4" />
+                      <span className="font-semibold">Teacher</span>
+                    </Button>
+                  </Link>
+                </>
+              )}
+
               {/* Virtual Labs - Conditional based on tenant */}
               {hasVirtualLabs && (
               <Link href={addTenantParam("/virtual-labs")} className="hidden md:block">
