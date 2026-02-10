@@ -4,9 +4,13 @@
  * 
  * IMPORTANT: Subscriptions are stored in BOTH Firestore (for cross-device sync) 
  * and localStorage (for offline access). Firestore is the source of truth.
+ * 
+ * TENANT PREMIUM ACCESS: Enterprise tenants (like Wisdom Warehouse) automatically
+ * get premium access for all their users without requiring individual subscriptions.
  */
 
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { TENANT_REGISTRY } from '@/tenancy/registry';
 
 export type SubscriptionTier = 'free' | 'premium' | 'virtual_lab' | 'full_bundle';
 export type PremiumFeature = 
@@ -113,11 +117,57 @@ export const PREMIUM_FEATURES: Record<PremiumFeature, {
 };
 
 /**
+ * Get current tenant ID from URL or cookie
+ * Used to check for enterprise tenant premium access
+ */
+function getCurrentTenantId(): string | null {
+  if (typeof window === 'undefined') return null;
+  
+  try {
+    // Check URL parameter first
+    const searchParams = new URLSearchParams(window.location.search);
+    const urlTenant = searchParams.get('tenant');
+    if (urlTenant) return urlTenant;
+    
+    // Check cookie
+    const cookieMatch = document.cookie.match(/tenant=([^;]+)/);
+    if (cookieMatch) return cookieMatch[1];
+    
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Check if current tenant has enterprise license
+ * Enterprise tenants get automatic premium access for all users
+ */
+function isEnterpriseTenant(): boolean {
+  const tenantId = getCurrentTenantId();
+  if (!tenantId || tenantId === 'smartclass24') return false;
+  
+  const tenant = TENANT_REGISTRY[tenantId];
+  if (!tenant) return false;
+  
+  // Check if tenant has enterprise tier
+  return tenant.tier === 'enterprise';
+}
+
+/**
  * Check if user has premium subscription (Challenge Arena Premium)
  * Automatically validates expiration date
+ * 
+ * ENTERPRISE TENANTS: Users under enterprise tenants (like Wisdom Warehouse)
+ * automatically get premium access without individual subscriptions
  */
 export function isPremiumUser(userId: string): boolean {
   if (typeof window === 'undefined') return false;
+  
+  // Enterprise tenant users get automatic premium access
+  if (isEnterpriseTenant()) {
+    return true;
+  }
   
   const subscription = getUserSubscription(userId);
   if (!subscription) return false;
@@ -160,8 +210,17 @@ export function hasVirtualLabAccess(userId: string): boolean {
  * Check if user has Full Bundle subscription (both Challenge Arena and Virtual Lab)
  * Automatically validates expiration date
  */
+/**
+ * Check if user has Full Bundle subscription
+ * ENTERPRISE TENANTS: Enterprise tenant users automatically have all features
+ */
 export function hasFullBundle(userId: string): boolean {
   if (typeof window === 'undefined') return false;
+  
+  // Enterprise tenant users get automatic full bundle access
+  if (isEnterpriseTenant()) {
+    return true;
+  }
   
   const subscription = getUserSubscription(userId);
   if (!subscription) return false;
@@ -346,7 +405,16 @@ export async function syncSubscriptionFromFirestore(userId: string, firestore: a
  * Check if user has access to a premium feature
  * Automatically validates expiration date
  */
+/**
+ * Check if user has specific premium feature
+ * ENTERPRISE TENANTS: Enterprise tenant users have access to all features
+ */
 export function hasPremiumFeature(userId: string, feature: PremiumFeature): boolean {
+  // Enterprise tenant users get access to all premium features
+  if (isEnterpriseTenant()) {
+    return true;
+  }
+  
   const subscription = getUserSubscription(userId);
   if (!subscription || !subscription.isActive) return false;
   
@@ -366,7 +434,29 @@ export function hasPremiumFeature(userId: string, feature: PremiumFeature): bool
  * Get all premium features for user
  * Automatically validates expiration date
  */
+/**
+ * Get list of premium features user has access to
+ * ENTERPRISE TENANTS: Enterprise tenant users get all premium features
+ */
 export function getUserPremiumFeatures(userId: string): PremiumFeature[] {
+  // Enterprise tenant users get all premium features
+  if (isEnterpriseTenant()) {
+    return [
+      'boss_battle',
+      'tournaments',
+      'school_battle',
+      'custom_challenges',
+      'advanced_analytics',
+      'ad_free',
+      'double_coins',
+      'priority_matchmaking',
+      'unlimited_practice',
+      'daily_bonus',
+      'virtual_labs',
+      'challenge_arena'
+    ];
+  }
+  
   const subscription = getUserSubscription(userId);
   if (!subscription || !subscription.isActive) return [];
   
