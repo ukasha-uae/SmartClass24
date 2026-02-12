@@ -3344,6 +3344,10 @@ export const subjects: Subject[] = [
                 ],
                 endOfLessonQuiz: [
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q1',
                     type: 'mcq',
                     question: 'Which tense is used for actions happening regularly or habitually?',
@@ -3352,6 +3356,10 @@ export const subjects: Subject[] = [
                     explanation: 'Simple Present Tense is used for habits, repeated actions, and general truths. Example: "I study English every day."'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q2',
                     type: 'mcq',
                     question: 'Choose the correct form: "She _______ to school every day."',
@@ -3360,6 +3368,10 @@ export const subjects: Subject[] = [
                     explanation: 'With third person singular (she), add -s to the base verb in Simple Present. "Go" becomes "goes."'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q3',
                     type: 'mcq',
                     question: 'What is the past form of the irregular verb "buy"?',
@@ -3368,6 +3380,10 @@ export const subjects: Subject[] = [
                     explanation: '"Buy" is irregular. Its past form is "bought," not "buyed."'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q4',
                     type: 'mcq',
                     question: 'Which sentence is in Simple Future Tense?',
@@ -3381,6 +3397,10 @@ export const subjects: Subject[] = [
                     explanation: 'Simple Future uses "will" or "shall" + base verb. "I will eat rice tomorrow" shows future action.'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q5',
                     type: 'mcq',
                     question: 'Identify the tense: "They visited the museum last week."',
@@ -3389,6 +3409,10 @@ export const subjects: Subject[] = [
                     explanation: '"Visited" is the past form, and "last week" indicates past time. This is Simple Past Tense.'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q6',
                     type: 'mcq',
                     question: 'Form the negative: "He plays football." becomes "_______"',
@@ -3402,6 +3426,10 @@ export const subjects: Subject[] = [
                     explanation: 'Use "doesn\'t" with third person singular, followed by the BASE VERB "play" (remove -s).'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q7',
                     type: 'mcq',
                     question: 'Which time expression is used with Simple Past?',
@@ -3410,6 +3438,10 @@ export const subjects: Subject[] = [
                     explanation: '"Yesterday" indicates past time and is used with Simple Past Tense.'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q8',
                     type: 'mcq',
                     question: 'Convert to Simple Present: "I will go to town."',
@@ -3418,6 +3450,10 @@ export const subjects: Subject[] = [
                     explanation: 'Remove "will" and use the base form. With "I," no -s is added.'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q9',
                     type: 'mcq',
                     question: 'Which sentence has an ERROR?',
@@ -3431,6 +3467,10 @@ export const subjects: Subject[] = [
                     explanation: 'After "will," use the BASE FORM. It should be "They will come tomorrow."'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q10',
                     type: 'mcq',
                     question: 'Form a question: "You like pizza." becomes "_______"',
@@ -3439,6 +3479,10 @@ export const subjects: Subject[] = [
                     explanation: 'Use "Do" with you/we/they + base verb to form Simple Present questions.'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q11',
                     type: 'truefalse',
                     statement: 'In Simple Present, we add -s or -es to verbs with he, she, or it.',
@@ -3446,6 +3490,10 @@ export const subjects: Subject[] = [
                     reason: 'TRUE. Third person singular subjects (he, she, it) require -s or -es in Simple Present. Example: "He plays," "She watches."'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q12',
                     type: 'truefalse',
                     statement: 'The past form of "go" is "goed."',
@@ -3453,6 +3501,10 @@ export const subjects: Subject[] = [
                     reason: 'FALSE. "Go" is an irregular verb. Its past form is "went," not "goed."'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q13',
                     type: 'fillblank',
                     sentence: 'The sun _______ (rise) in the east.',
@@ -3460,6 +3512,10 @@ export const subjects: Subject[] = [
                     explanation: 'This is a general truth, so use Simple Present. The subject "sun" is third person singular (it), so add -s: "rises."'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q14',
                     type: 'multiple_select',
                     question: 'Which of the following are irregular past verbs? (Select all that apply)',
@@ -3468,6 +3524,10 @@ export const subjects: Subject[] = [
                     explanation: 'Irregular verbs: write→wrote, buy→bought, teach→taught. Regular verbs: play→played, walk→walked, talk→talked.'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q15',
                     type: 'multiple_select',
                     question: 'Which time expressions are used with Simple Future? (Select all that apply)',
@@ -3476,6 +3536,10 @@ export const subjects: Subject[] = [
                     explanation: 'Simple Future time expressions: tomorrow, next week/month/year, soon, later. Past expressions: yesterday, last week, ago.'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q16',
                     type: 'matching',
                     question: 'Match each sentence with its tense:',
@@ -3488,6 +3552,10 @@ export const subjects: Subject[] = [
                     explanation: 'Simple Present: habits/general truths. Simple Past: completed actions. Simple Future: future actions with "will."'
                   },
                   {
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                     id: 'tenses1-q17',
                     type: 'shortanswer',
                     question: 'Write three sentences about your day: one in Simple Present, one in Simple Past, and one in Simple Future.',
@@ -6370,30 +6438,50 @@ export const subjects: Subject[] = [
                         id: 'math101-1',
                         slug: 'place-value-and-number-types',
                         title: 'Place Value and Number Types',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math101-2',
                         slug: 'operations-on-whole-numbers',
                         title: 'Operations on Whole Numbers (BODMAS)',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                      {
                         id: 'math101-3',
                         slug: 'fractions-decimals-percentages',
                         title: 'Fractions, Decimals & Percentages',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math101-4',
                         slug: 'ratio-proportion-rate',
                         title: 'Ratio, Proportion, and Rate',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math101-5',
                         slug: 'directed-numbers',
                         title: 'Directed Numbers',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     }
                 ]
@@ -6407,18 +6495,30 @@ export const subjects: Subject[] = [
                         id: 'math102-1',
                         slug: 'intro-to-algebra',
                         title: 'Introduction to Algebra',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math102-2',
                         slug: 'simplifying-expressions',
                         title: 'Simplifying Algebraic Expressions',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math102-3',
                         slug: 'simple-equations',
                         title: 'Simple Equations in One Variable',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     }
                 ]
@@ -6432,18 +6532,30 @@ export const subjects: Subject[] = [
                         id: 'math103-1',
                         slug: 'basic-geometric-figures',
                         title: 'Basic Geometric Figures',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math103-2',
                         slug: 'properties-of-shapes',
                         title: 'Properties of Triangles and Quadrilaterals',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math103-3',
                         slug: 'perimeter-and-area',
                         title: 'Perimeter and Area of Plane Figures',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     }
                 ]
@@ -6457,18 +6569,30 @@ export const subjects: Subject[] = [
                         id: 'math104-1',
                         slug: 'data-presentation',
                         title: 'Data Collection and Presentation',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math104-2',
                         slug: 'mean-median-mode',
                         title: 'Mean, Median, Mode',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     },
                     {
                         id: 'math104-3',
                         slug: 'intro-to-probability',
                         title: 'Introduction to Probability',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     }
                 ]
@@ -6482,6 +6606,10 @@ export const subjects: Subject[] = [
                         id: 'math105-1',
                         slug: 'real-life-applications',
                         title: 'Application of Ratio, Percentages, and Decimals',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: ''
                     }
                 ]
@@ -7512,6 +7640,10 @@ In Ghana, statistics help us:
                 id: 'sci202-3',
                 slug: 'photosynthesis-respiration',
                 title: 'Photosynthesis and Respiration',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: ['Define photosynthesis.', 'List the requirements for photosynthesis.', 'Write the chemical equation for photosynthesis.'],
                 introduction: 'Photosynthesis is the amazing process that allows plants to make their own food using sunlight. It is essential for life on Earth.',
                 keyConcepts: [
@@ -7722,6 +7854,10 @@ In Ghana, statistics help us:
                 id: 'soc203-1',
                 slug: 'social-economic-development-lesson',
                 title: 'Social and Economic Development',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: ['Define development.', 'Identify indicators of development.', 'Explain factors that promote development.'],
                 introduction: 'Development is the process of improving the quality of life for all citizens. It includes social, economic, and political progress.',
                 keyConcepts: [
@@ -8362,6 +8498,10 @@ In Ghana, statistics help us:
                 id: 'comp101-1',
                 slug: 'introduction-to-ict',
                 title: 'Introduction to ICT',
+    // Curriculum metadata (v2.0)
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: ['Define ICT and explain its importance in daily life.', 'Identify various ICT tools and devices.', 'Differentiate between hardware and software.'],
                 introduction: 'Information and Communication Technology (ICT) has become an essential part of our modern world. In this lesson, we will explore what ICT is and why it is important.',
                 keyConcepts: [

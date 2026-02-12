@@ -104,8 +104,8 @@ export interface TenantConfig {
   // Content Selection (v1 scope)
   content: TenantContent;
   
-  // Curriculum Configuration (v1.5 scope)
-  curriculum?: CurriculumConfig;  // Explicit curriculum system declaration
+  // Curriculum Configuration (REQUIRED v2.0+ for multi-curriculum)
+  curriculum: CurriculumConfig;  // Explicit curriculum system declaration - MUST be set
   
   // License
   license: TenantLicense;

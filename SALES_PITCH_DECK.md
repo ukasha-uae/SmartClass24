@@ -24,7 +24,7 @@
 **Core Value Propositions:**
 1. **🎯 Personalized Learning** - AI adapts to each student's pace and style
 2. **🏢 White-Label Ready** - Schools get their own branded platform in <24 hours
-3. **📚 Multi-Curriculum Architecture** - Proven with West African (BECE/WASSCE/NECO) & Alternative-Holistic systems, expanding to US Common Core, UK National, IB
+3. **📚 Multi-Curriculum Architecture** - West African curriculum (BECE/WASSCE/NECO) live with 11,500+ questions; architecture validated for multi-curriculum via Wisdom Warehouse custom deployment; expanding to US Common Core, UK National, IB
 4. **🌍 Globally Scalable** - Same platform serves Ghana students AND UAE international schools simultaneously
 5. **⚔️ Engagement First** - Challenge Arena turns learning into competition
 6. **🔬 Interactive Labs** - Virtual science experiments accessible on any device
@@ -169,7 +169,7 @@ Estimated 200 students → $599/month → **$7,188 ARR** from single school
 | Feature | SmartClass24 | Competitor A | Competitor B |
 |---------|--------------|--------------|--------------|
 | **Multi-Tenant** | ✅ Production-ready | ❌ | ❌ |
-| **Multi-Curriculum** | ✅ 2 systems live, 4+ planned | ❌ | ❌ Single curriculum |
+| **Multi-Curriculum** | ✅ Architecture validated, 4+ systems planned | ❌ | ❌ Single curriculum |
 | **White-Label** | ✅ $299/mo | ❌ | ✅ $5,000/mo |
 | **International Proof** | ✅ UAE deployment | ❌ | 🟡 Limited |
 | **African Curriculum** | ✅ 5 countries (BECE/WASSCE) | ✅ Ghana only | ❌ |
@@ -181,10 +181,10 @@ Estimated 200 students → $599/month → **$7,188 ARR** from single school
 | **Setup Time** | **<24 hours** | N/A | 6-8 weeks |
 
 ### Competitive Advantages:
-1. **Only multi-curriculum, multi-tenant platform** - Proven architecture serving 2 curriculum systems simultaneously
-2. **Global scalability validated** - UAE international school + West African students on same codebase
+1. **Only curriculum-agnostic, multi-tenant platform** - Architecture designed to support unlimited curriculum systems; Wisdom Warehouse deployment validates custom curriculum capability
+2. **Global scalability proven** - UAE international school + West African students on same codebase with zero conflicts
 3. **10x cheaper** than international white-label solutions ($299 vs $5,000/month)
-4. **Curriculum-agnostic architecture** - Add new exam systems (US Common Core, UK National, IB) without platform rewrites
+4. **Flexible curriculum system** - TypeScript type system supports curriculum metadata (curriculumId, examAlignment, region); security infrastructure designed for curriculum isolation; 4-week migration path to Firestore for dynamic content management
 5. **Engagement-first** design (Challenge Arena is unique IP)
 6. **Production-grade** technology stack (Next.js 16, Firebase, TypeScript)
 
@@ -231,7 +231,8 @@ Estimated 200 students → $599/month → **$7,188 ARR** from single school
 - JHS & SHS curriculum (Ghana)
 
 ### V2 (Q2 2026) - **IN DEVELOPMENT**
-- **Multi-curriculum selector** - Students/schools choose between curriculum tracks (WASSCE, IGCSE, US Common Core)
+- **Multi-curriculum foundation** - Complete Firestore migration for dynamic curriculum management (4-week sprint, $100K investment allocated)
+- **Curriculum selector UI** - Students/schools choose between curriculum tracks
 - **US Common Core content library** - 1,000+ questions aligned to US standards (K-12)
 - Advanced analytics dashboard for teachers/parents
 - Mobile apps (iOS, Android native)
@@ -328,11 +329,11 @@ Estimated 200 students → $599/month → **$7,188 ARR** from single school
 - **Serviceable Market**: 5,000 schools × $600/mo = **$36M ARR opportunity**
 
 ### Why SmartClass24 Wins:
-✅ **First-mover** in multi-curriculum, multi-tenant EdTech  
-✅ **Proven technology** (2 live tenants, 2 curriculum systems)  
-✅ **Global validation** (Africa + Middle East deployments)  
+✅ **First-mover** in curriculum-agnostic, multi-tenant EdTech  
+✅ **Proven technology** (2 live tenants, custom curriculum capability validated)  
+✅ **Global validation** (Africa + Middle East deployments with zero content leakage)  
 ✅ **Affordable** for emerging markets ($299/mo vs $5,000/mo)  
-✅ **Scalable architecture** (add new curriculums in weeks, not years)  
+✅ **Scalable architecture** (curriculum infrastructure designed and partially implemented; add new curriculums in weeks post-migration)  
 ✅ **Engaged users** (96% satisfaction across diverse markets)
 
 ---
@@ -374,7 +375,7 @@ A: All questions reviewed by certified teachers, aligned with official syllabi, 
 A: Churn mitigation: 30-day notice, data export, annual contracts (discount incentive), dedicated success managers.
 
 **Q: Can you scale beyond Africa?**  
-A: Yes! Our 3-layer architecture (Tenant → Curriculum → Localization) is explicitly designed for global scalability. Wisdom Warehouse (UAE) validates this with alternative-holistic curriculum for US expat students. V2 adds US Common Core, UK National, and IB. The platform is curriculum-agnostic - location doesn't dictate content. Next targets: Southeast Asia (IGCSE schools), Latin America (IB schools), North America (homeschool market).
+A: Yes! Our 3-layer architecture (Tenant → Curriculum → Localization) is explicitly designed for global scalability. Wisdom Warehouse (UAE) validates this with custom curriculum deployment separate from West African content. The platform is curriculum-agnostic by design - we've already built the type system with curriculum metadata fields, security rules with curriculum isolation helpers, and Firestore schema for dynamic content management. V2 completes the 4-week Firestore migration ($100K allocated from seed round), enabling us to add US Common Core, UK National, and IB in weeks rather than months. Next targets: Southeast Asia (IGCSE schools), Latin America (IB schools), North America (homeschool market).
 
 **Q: What's your customer acquisition strategy?**  
 A: Direct outreach to headmasters, EdTech conferences, Ministry partnerships, referral program (schools get commission), content marketing (SEO for "Ghana BECE prep", etc.).

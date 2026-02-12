@@ -9,6 +9,10 @@ export interface McqQuiz {
   answer: string;
   explanation: string;
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }
 
 export interface TrueFalseQuiz {
@@ -18,6 +22,10 @@ export interface TrueFalseQuiz {
   answer: 'true' | 'false';
   reason?: string;
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }
 
 export interface FillBlankQuiz {
@@ -28,6 +36,10 @@ export interface FillBlankQuiz {
   alternatives?: string[];
   explanation?: string;
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }export interface MatchingQuiz {
   id?: string;
   type: 'matching';
@@ -35,6 +47,10 @@ export interface FillBlankQuiz {
   pairs: { left: string; right: string }[];
   explanation?: string;
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }
 
 export interface OrderingQuiz {
@@ -43,6 +59,10 @@ export interface OrderingQuiz {
   items: string[];
   correctOrder: number[]; // Array of indexes
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }
 
 export interface MultipleSelectQuiz {
@@ -54,6 +74,10 @@ export interface MultipleSelectQuiz {
   answers?: string[]; // Alias for correctAnswers for backward compatibility
   explanation?: string;
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }
 
 export interface FlashcardQuiz {
@@ -62,6 +86,10 @@ export interface FlashcardQuiz {
   front: string;
   back: string;
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }
 
 export interface ImageMcqQuiz {
@@ -73,6 +101,10 @@ export interface ImageMcqQuiz {
     answer: string;
   explanation?: string;
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }
 
 export interface ShortAnswerQuiz {
@@ -83,6 +115,10 @@ export interface ShortAnswerQuiz {
     alternatives?: string[];
     explanation?: string;
   style?: QuizStyle;
+  // Curriculum metadata (v2.0+)
+  curriculumId?: string;
+  region?: string[];
+  examAlignment?: string[];
 }
 
 // Quiz UI style sets—authors can choose how quizzes should be rendered
@@ -125,6 +161,15 @@ export interface Lesson {
   id: string;
   slug: string;
   title: string;
+  // Multi-curriculum metadata (v2.0+)
+  curriculumId?: string;          // 'west-african' | 'us-common-core' | 'uk-national' | 'ib'
+  region?: string[];              // Geographic applicability: ['ghana', 'nigeria'] or ['us', 'uk']
+  examAlignment?: string[];       // Exam systems covered: ['BECE', 'WASSCE'] or ['SAT', 'ACT']
+  standardsAlignment?: {          // Educational standards mapping
+    standard: string;             // e.g., 'Common Core Math 8.G.A.1'
+    description: string;
+  }[];
+  // Core content
   objectives: string[];
   introduction: string;
   introductionMedia?: Media;
@@ -147,6 +192,11 @@ export interface Lesson {
   endOfLessonQuiz?: Quiz[];
   defaultQuizStyle?: QuizStyle;
   availability?: ContentAvailability;
+  // Content management (v2.0+)
+  versionId?: string;             // Content version tracking
+  approvalStatus?: 'draft' | 'review' | 'approved' | 'archived';
+  lastModified?: string;          // ISO timestamp
+  author?: string;                // Content creator ID
 }
 
 export interface QuizAttempt {
@@ -167,6 +217,11 @@ export interface Topic {
   id: string;
   slug: string;
   title: string;
+  // Multi-curriculum metadata (v2.0+)
+  curriculumId?: string;          // Curriculum system this topic belongs to
+  gradeLevel?: string;            // 'JHS 1', 'Grade 8', 'Year 9', etc.
+  sequenceOrder?: number;         // Order within curriculum
+  // Content
   lessons: Lesson[];
 }
 
@@ -181,5 +236,16 @@ export interface Subject {
   name: string;
   icon: LucideIcon;
   description: string;
+  // Multi-curriculum support (v2.0+)
+  curriculumId?: string;          // Which curriculum system this subject belongs to
+  standardName?: string;          // Universal name: 'Mathematics', 'Science'
+  localizedNames?: {              // Curriculum-specific names
+    [curriculumId: string]: string; // e.g., 'west-african': 'Integrated Science'
+  };
+  ageRange?: {                    // Target age groups
+    min: number;
+    max: number;
+  };
+  // Legacy structure (to be migrated)
   curriculum: YearGroup[];
 }

@@ -20,6 +20,23 @@ service cloud.firestore {
              request.auth.token.superAdmin == true;
     }
     
+    // Check if user belongs to a specific curriculum (v2.0+)
+    function belongsToCurriculum(curriculumId) {
+      return request.auth != null && 
+             request.auth.token.curriculumId == curriculumId;
+    }
+    
+    // Get tenant's curriculum from tenants collection (v2.0+)
+    function getTenantCurriculum(tenantId) {
+      return get(/databases/$(database)/documents/tenants/$(tenantId)).data.curriculum;
+    }
+    
+    // Check if user has admin role (v2.0+)
+    function hasRole(role) {
+      return request.auth != null && 
+             request.auth.token.role == role;
+    }
+    
     // =========================================================================
     // SHARED COLLECTIONS WITH tenantId FIELD (v1 - Simplified)
     // =========================================================================
@@ -182,6 +199,58 @@ service cloud.firestore {
       allow read: if request.auth != null && saveId.matches(request.auth.uid + '_.*');
       allow create, update: if request.auth != null && saveId.matches(request.auth.uid + '_.*');
       allow delete: if request.auth != null && saveId.matches(request.auth.uid + '_.*');
+    }
+
+    // =========================================================================
+    // V2.0: MULTI-CURRICULUM COLLECTIONS
+    // =========================================================================
+    
+    // Curriculum metadata and content hierarchy (v2.0+)
+    match /curriculums/{curriculumId} {
+      // All authenticated users can browse curriculums
+      allow read: if request.auth != null;
+      // Only admins can modify curriculum metadata
+      allow write: if hasRole('admin') || isSuperAdmin();
+      
+      // Subjects within curriculum
+      match /subjects/{subjectId} {
+        allow read: if request.auth != null;
+        allow write: if hasRole('admin') || isSuperAdmin();
+        
+        // Topics within subject
+        match /topics/{topicId} {
+          allow read: if request.auth != null;
+          allow write: if hasRole('admin') || isSuperAdmin();
+          
+          // Lessons within topic
+          match /lessons/{lessonId} {
+            allow read: if request.auth != null;
+            allow write: if hasRole('admin') || hasRole('content-creator') || isSuperAdmin();
+          }
+        }
+      }
+    }
+    
+    // Quiz questions scoped by curriculum (v2.0+)
+    match /quizzes/{curriculumId}/questions/{questionId} {
+      // Students can read questions IF their tenant uses this curriculum
+      // For now, allow all authenticated users (will add curriculumId to auth token in Phase 2)
+      allow read: if request.auth != null;
+      // Only admins and content creators can write
+      allow write: if hasRole('admin') || hasRole('content-creator') || isSuperAdmin();
+    }
+    
+    // Student quiz attempts with curriculum isolation (v2.0+)
+    match /students/{userId}/quizAttempts/{attemptId} {
+      // Owner can read their own attempts
+      allow read: if request.auth != null && request.auth.uid == userId;
+      // Owner can create attempts, but MUST include curriculumId matching their tenant's curriculum
+      // TODO: Uncomment when curriculumId is in auth token (Phase 2)
+      // allow create: if request.auth != null && 
+      //               request.auth.uid == userId &&
+      //               request.resource.data.curriculumId == getTenantCurriculum(request.auth.token.tenantId);
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update, delete: if false;
     }
 
     // Deny all other access by default (security best practice)
