@@ -7,19 +7,26 @@ const DEFAULT_TENANT_ID = 'smartclass24';
  * Fast onboarding: ~1 hour to add new tenant
  */
 export const TENANT_REGISTRY: Record<string, TenantConfig> = {
-  // Default tenant (Ghana/West Africa focus)
+  // Default tenant (Global platform with multi-country support)
   smartclass24: {
     id: 'smartclass24',
     slug: 'smartclass24',
-    name: 'S24',
-    market: 'ghana',
+    name: 'SmartClass24',
+    market: 'global',
     branding: {
-      name: 'S24',
-      logoUrl: undefined,  // Uses default logo
+      name: 'SmartClass24',
+      logoUrl: undefined,  // Uses default S24 logo
       primaryColor: '#7c3aed',  // Purple
       accentColor: '#ec4899',   // Pink
       domain: 'smartclass24.app',
       supportEmail: 'support@smartclass24.app',
+    },
+    // Explicit curriculum configuration (V1.5)
+    curriculum: {
+      system: 'west-african',
+      examSystems: ['BECE', 'WASSCE', 'NECO'],
+      gradeLevels: ['Primary', 'JHS', 'SHS'],
+      countries: ['ghana', 'nigeria', 'sierra-leone', 'liberia', 'gambia'],
     },
     features: {
       enableJHSCampus: true,
@@ -27,7 +34,7 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
       enableUniversityCampus: true,
       enableVirtualLabs: true,
       enableArenaChallenge: true,
-      enableLocalization: true,  // Ghana-specific localization enabled
+      enableLocalization: true,  // Show country selector for B2C users
       enableParentDashboard: true,
       enableOfflineMode: true,
       enableReferrals: true,
@@ -36,7 +43,7 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
     },
     content: {
       subjectsEnabled: ['all'],  // All subjects available
-      curriculumLabel: 'Ghana BECE/WASSCE',
+      curriculumLabel: 'West African Curriculum (BECE/WASSCE/NECO)',
     },
     license: {
       tier: 'enterprise',
@@ -44,7 +51,7 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
     },
     status: 'active',
     createdAt: '2025-01-01T00:00:00Z',
-    updatedAt: '2026-02-02T00:00:00Z',
+    updatedAt: '2026-02-12T00:00:00Z',
   },
 
   // Wisdom Warehouse (Dubai, UAE - Alternative education for diverse learners)
@@ -70,13 +77,20 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
         },
       },
     },
+    // Explicit curriculum configuration (V1.5)
+    curriculum: {
+      system: 'alternative-holistic',  // Custom alternative education model
+      examSystems: [],  // No standardized exams - focuses on skills & personal development
+      gradeLevels: ['K-12'],
+      description: 'Project-based, hands-on learning focused on emotional resilience and individual potential',
+    },
     features: {
       enableJHSCampus: true,       // Support for diverse age groups
       enableSHSCampus: true,       // Alternative high school learning
       enableUniversityCampus: false,
       enableVirtualLabs: true,     // Hands-on learning aligned with their values
       enableArenaChallenge: true,  // ✅ Challenge Arena enabled for gamified learning
-      enableLocalization: false,   // Dubai-based, English primary
+      enableLocalization: false,   // No country selector - Dubai-based, custom curriculum
       enableParentDashboard: true, // Critical - parents are key stakeholders
       enableOfflineMode: false,
       enableReferrals: false,      // Wisdom Warehouse handles enrollment directly

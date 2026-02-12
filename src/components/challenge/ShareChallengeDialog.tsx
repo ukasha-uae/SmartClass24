@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Share2, Mail, MessageCircle, Copy, Check, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTenant } from '@/hooks/useTenant';
 import { generateWhatsAppLink, getUserWhatsApp } from '@/lib/email-notifications';
 import { getUserPresence } from '@/lib/user-presence';
 
@@ -38,11 +39,12 @@ export function ShareChallengeDialog({
   const [isOpponentOnline, setIsOpponentOnline] = useState<boolean | null>(null);
   const [loadingWhatsApp, setLoadingWhatsApp] = useState(false);
   const { toast } = useToast();
+  const { branding } = useTenant();
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://smartc24.com';
   const challengeUrl = `${baseUrl}/challenge-arena/play/${challengeId}`;
 
-  const message = `${creatorName} from ${creatorSchool} has invited ${opponentName ? `${opponentName} ` : 'you '}to a ${subject} challenge on SmartClass24 (S24).
+  const message = `${creatorName} from ${creatorSchool} has invited ${opponentName ? `${opponentName} ` : 'you '}to a ${subject} challenge on ${branding.name}.
 Click here to play and see who scores higher: ${challengeUrl}
 
 Practice • Compete • Excel in WASSCE & BECE`;
@@ -106,7 +108,7 @@ Practice • Compete • Excel in WASSCE & BECE`;
       return;
     }
 
-    const subjectLine = `${creatorName} has challenged you on S24!`;
+    const subjectLine = `${creatorName} has challenged you on ${branding.name}!`;
     const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subjectLine)}&body=${encodeURIComponent(message)}`;
     window.location.href = mailtoLink;
     

@@ -23,10 +23,65 @@ import { TenantParamProvider } from '@/components/tenancy/TenantParamProvider';
 import { TenantTitle } from '@/components/tenancy/TenantTitle';
 import { DynamicManifest } from '@/components/tenancy/DynamicManifest';
 import { DynamicAppleIcon } from '@/components/tenancy/DynamicAppleIcon';
+import { getCountryConfig } from '@/lib/localization/countries';
 
+// SEO-optimized metadata (default/global)
 export const metadata: Metadata = {
-  title: 'S24',
-  description: 'Smart learning for JHS & SHS students across Ghana',
+  title: 'SmartClass24 - Global AI-Powered Learning Platform',
+  description: 'Personalized education for students worldwide. Master any curriculum with AI-driven learning, interactive labs, and challenge arenas. Serving Africa, Middle East, and expanding globally with white-label solutions for schools.',
+  keywords: [
+    'online learning',
+    'AI education',
+    'global education platform',
+    'white-label learning',
+    'multi-tenant education',
+    'BECE preparation',
+    'WASSCE preparation',
+    'NECO preparation',
+    'virtual labs',
+    'challenge arena',
+    'Africa education',
+    'international curriculum',
+    'exam preparation',
+    'interactive learning',
+    'personalized education'
+  ],
+  authors: [{ name: 'SmartClass24 Team' }],
+  creator: 'SmartClass24',
+  publisher: 'SmartClass24',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://smartclass24.app',
+    siteName: 'SmartClass24',
+    title: 'SmartClass24 - Global AI-Powered Learning Platform',
+    description: 'White-label education platform serving students worldwide. Interactive virtual labs, gamified learning, and personalized AI tutoring. Trusted by schools in Africa, Middle East, and beyond.',
+    images: [
+      {
+        url: '/og-image-global.png', // TODO: Create this image
+        width: 1200,
+        height: 630,
+        alt: 'SmartClass24 - Global Learning Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SmartClass24 - Global AI Learning Platform',
+    description: 'Master West African exams with AI-driven learning, virtual labs, and challenge arenas.',
+    images: ['/og-image-global.png'],
+    creator: '@smartclass24', // TODO: Update with actual Twitter handle
+  },
   // manifest dynamically set by DynamicManifest component
 };
 

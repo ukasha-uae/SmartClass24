@@ -27,7 +27,7 @@ export function TenantTitle() {
   useEffect(() => {
     // Update document title when tenant changes
     if (typeof document !== 'undefined') {
-      document.title = branding?.name || 'S24';
+      document.title = branding?.name || 'SmartClass24';
     }
   }, [branding]);
   

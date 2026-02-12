@@ -61,6 +61,11 @@ export default function QuickMatchPage() {
     }
   }, []);
   
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+  
   const [player, setPlayer] = useState<Player | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [opponent, setOpponent] = useState<Player | null>(null);

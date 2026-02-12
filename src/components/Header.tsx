@@ -14,6 +14,7 @@ import { useTenantLink } from '@/hooks/useTenantLink';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { SubscriptionStatusBadge } from '@/components/SubscriptionStatusBadge';
 import { Button } from '@/components/ui/button';
+import { buildNavigation } from '@/lib/navigation-config';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -95,7 +96,7 @@ export default function Header() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [countryOpen, setCountryOpen] = useState(false);
   const { country } = useLocalization();
-  const { tenantId, branding, hasLocalization, features, hasArenaChallenge, hasVirtualLabs } = useTenant();
+  const { tenant, tenantId, market, branding, hasLocalization, features, hasArenaChallenge, hasVirtualLabs } = useTenant();
   const { isFullscreen } = useFullscreen();
   const addTenantParam = useTenantLink();
   const profileRef = useMemo(() => (user && firestore) ? doc(firestore, `students/${user.uid}`) : null, [user, firestore]);
@@ -178,7 +179,7 @@ export default function Header() {
                   {hasLocalization && (
                   <Collapsible open={countryOpen} onOpenChange={setCountryOpen}>
                     <CollapsibleTrigger className="w-full">
-                      <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] group shadow-md">
+                      <div className="flex items-center justify-between p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/40 dark:hover:to-indigo-900/40 transition-all hover:scale-[1.02] group shadow-md">
                         <div className="flex items-center gap-3">
                           <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg">
                             <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -275,59 +276,192 @@ export default function Header() {
                     </>
                   )}
                       
-                  {/* V1 Navigation Links - Challenge Arena & Virtual Labs Only */}
-                  <nav className="flex flex-col gap-2">
-                        {/* Challenge Arena - Conditional based on tenant */}
-                        {hasArenaChallenge && (
-                        <Link 
-                          href={addTenantParam("/challenge-arena")} 
-                          onClick={() => setSheetOpen(false)}
-                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 backdrop-blur-sm border-2 border-amber-200/50 dark:border-amber-800/50 hover:border-amber-300 dark:hover:border-amber-700 transition-all hover:scale-[1.02] shadow-md"
-                        >
-                          <div className="p-2 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-lg group-hover:from-amber-500/30 group-hover:to-orange-500/30 transition-all">
-                            <Trophy className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                  {/* Dynamic Navigation - Platform, Regional, Global, Utility */}
+                  {(() => {
+                    const nav = buildNavigation(country, tenant);
+                    
+                    return (
+                      <div className="flex flex-col gap-4">
+                        {/* Platform Section */}
+                        {nav.platform.show && (
+                          <div>
+                            <div className="px-4 mb-3">
+                              <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                {nav.platform.title}
+                              </h3>
+                              {nav.platform.description && (
+                                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                                  {nav.platform.description}
+                                </p>
+                              )}
+                            </div>
+                            <nav className="flex flex-col gap-2">
+                              {nav.platform.items.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                  <Link
+                                    key={item.href}
+                                    href={addTenantParam(item.href)}
+                                    onClick={() => setSheetOpen(false)}
+                                    className={`group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br ${item.gradient} backdrop-blur-sm border-2 ${item.borderColor} ${item.hoverBorder} transition-all hover:scale-[1.02] shadow-md`}
+                                  >
+                                    <div className={`p-2 bg-gradient-to-br ${item.iconBg} rounded-lg transition-all`}>
+                                      <Icon className={`h-5 w-5 ${item.iconColor}`} />
+                                    </div>
+                                    <div className="flex-1">
+                                      <span className={`font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r ${item.textGradient} group-hover:bg-clip-text group-hover:text-transparent transition-all`}>
+                                        {item.label}
+                                      </span>
+                                      {item.description && (
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                          {item.description}
+                                        </p>
+                                      )}
+                                    </div>
+                                    {item.showBadge && item.badgeText && (
+                                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.badgeColor}`}>
+                                        {item.badgeText}
+                                      </span>
+                                    )}
+                                    <ChevronRight className={`h-4 w-4 ${item.iconColor} opacity-0 group-hover:opacity-100 transition-opacity ml-auto`} />
+                                  </Link>
+                                );
+                              })}
+                            </nav>
                           </div>
-                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-amber-600 group-hover:to-orange-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Challenge Arena</span>
-                          <ChevronRight className="h-4 w-4 text-amber-600 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
-                        </Link>
                         )}
                         
-                        {/* Virtual Labs - Conditional based on tenant */}
-                        {hasVirtualLabs && (
-                        <Link 
-                          href={addTenantParam("/virtual-labs")} 
-                          onClick={() => setSheetOpen(false)}
-                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 backdrop-blur-sm border-2 border-blue-200/50 dark:border-blue-800/50 hover:border-blue-300 dark:hover:border-blue-700 transition-all hover:scale-[1.02] shadow-md"
-                        >
-                          <div className="p-2 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-lg group-hover:from-blue-500/30 group-hover:to-indigo-500/30 transition-all">
-                            <svg className="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                            </svg>
+                        {/* Regional Section */}
+                        {nav.regional.show && (
+                          <div>
+                            <div className="h-[2px] bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-700 my-3" />
+                            <div className="px-4 mb-3">
+                              <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                {country && <FlagIcon countryCode={country.iso2} size="sm" />}
+                                {nav.regional.title}
+                              </h3>
+                              {nav.regional.description && (
+                                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                                  {nav.regional.description}
+                                </p>
+                              )}
+                            </div>
+                            <nav className="flex flex-col gap-2">
+                              {nav.regional.items.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                  <Link
+                                    key={item.href}
+                                    href={addTenantParam(item.href)}
+                                    onClick={() => setSheetOpen(false)}
+                                    className={`group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br ${item.gradient} backdrop-blur-sm border-2 ${item.borderColor} ${item.hoverBorder} transition-all hover:scale-[1.02] shadow-md`}
+                                  >
+                                    <div className={`p-2 bg-gradient-to-br ${item.iconBg} rounded-lg transition-all`}>
+                                      <Icon className={`h-5 w-5 ${item.iconColor}`} />
+                                    </div>
+                                    <div className="flex-1">
+                                      <span className={`font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r ${item.textGradient} group-hover:bg-clip-text group-hover:text-transparent transition-all`}>
+                                        {item.label}
+                                      </span>
+                                      {item.description && (
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                          {item.description}
+                                        </p>
+                                      )}
+                                    </div>
+                                    {item.showBadge && item.badgeText && (
+                                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.badgeColor}`}>
+                                        {item.badgeText}
+                                      </span>
+                                    )}
+                                    <ChevronRight className={`h-4 w-4 ${item.iconColor} opacity-0 group-hover:opacity-100 transition-opacity ml-auto`} />
+                                  </Link>
+                                );
+                              })}
+                            </nav>
                           </div>
-                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-indigo-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">
-                            Virtual Labs
-                          </span>
-                          <ChevronRight className="h-4 w-4 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
-                        </Link>
                         )}
                         
-                        {/* Pricing - Only show for tenants with public pricing enabled */}
-                        {features.enablePublicPricing !== false && (
-                        <Link 
-                          href={addTenantParam("/pricing")} 
-                          onClick={() => setSheetOpen(false)}
-                          className="group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 backdrop-blur-sm border-2 border-green-200/50 dark:border-green-800/50 hover:border-green-300 dark:hover:border-green-700 transition-all hover:scale-[1.02] shadow-md"
-                        >
-                          <div className="p-2 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-lg group-hover:from-green-500/30 group-hover:to-emerald-500/30 transition-all">
-                            <svg className="h-5 w-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                        {/* Global Section (when no country selected) */}
+                        {nav.global.show && (
+                          <div>
+                            <div className="h-[2px] bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-700 my-3" />
+                            <div className="px-4 mb-3">
+                              <h3 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                🌍 {nav.global.title}
+                              </h3>
+                              {nav.global.description && (
+                                <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                                  {nav.global.description}
+                                </p>
+                              )}
+                            </div>
+                            <nav className="flex flex-col gap-2">
+                              {nav.global.items.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                  <Link
+                                    key={item.href}
+                                    href={addTenantParam(item.href)}
+                                    onClick={() => setSheetOpen(false)}
+                                    className={`group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br ${item.gradient} backdrop-blur-sm border-2 ${item.borderColor} ${item.hoverBorder} transition-all hover:scale-[1.02] shadow-md`}
+                                  >
+                                    <div className={`p-2 bg-gradient-to-br ${item.iconBg} rounded-lg transition-all`}>
+                                      <Icon className={`h-5 w-5 ${item.iconColor}`} />
+                                    </div>
+                                    <div className="flex-1">
+                                      <span className={`font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r ${item.textGradient} group-hover:bg-clip-text group-hover:text-transparent transition-all`}>
+                                        {item.label}
+                                      </span>
+                                      {item.description && (
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                          {item.description}
+                                        </p>
+                                      )}
+                                    </div>
+                                    {item.showBadge && item.badgeText && (
+                                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${item.badgeColor}`}>
+                                        {item.badgeText}
+                                      </span>
+                                    )}
+                                    <ChevronRight className={`h-4 w-4 ${item.iconColor} opacity-0 group-hover:opacity-100 transition-opacity ml-auto`} />
+                                  </Link>
+                                );
+                              })}
+                            </nav>
                           </div>
-                          <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r group-hover:from-green-600 group-hover:to-emerald-600 group-hover:bg-clip-text group-hover:text-transparent transition-all">Pricing</span>
-                          <ChevronRight className="h-4 w-4 text-green-600 dark:text-green-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
-                        </Link>
                         )}
-                      </nav>
+                        
+                        {/* Utility Section */}
+                        {nav.utility.show && (
+                          <div>
+                            <div className="h-[2px] bg-gradient-to-r from-transparent via-slate-200 to-transparent dark:via-slate-700 my-3" />
+                            <nav className="flex flex-col gap-2">
+                              {nav.utility.items.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                  <Link
+                                    key={item.href}
+                                    href={addTenantParam(item.href)}
+                                    onClick={() => setSheetOpen(false)}
+                                    className={`group flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br ${item.gradient} backdrop-blur-sm border-2 ${item.borderColor} ${item.hoverBorder} transition-all hover:scale-[1.02] shadow-md`}
+                                  >
+                                    <div className={`p-2 bg-gradient-to-br ${item.iconBg} rounded-lg transition-all`}>
+                                      <Icon className={`h-5 w-5 ${item.iconColor}`} />
+                                    </div>
+                                    <span className={`font-semibold text-slate-700 dark:text-slate-300 group-hover:bg-gradient-to-r ${item.textGradient} group-hover:bg-clip-text group-hover:text-transparent transition-all`}>
+                                      {item.label}
+                                    </span>
+                                    <ChevronRight className={`h-4 w-4 ${item.iconColor} opacity-0 group-hover:opacity-100 transition-opacity ml-auto`} />
+                                  </Link>
+                                );
+                              })}
+                            </nav>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               </SheetContent>
             </Sheet>
@@ -337,7 +471,7 @@ export default function Header() {
           <CountrySelector 
             variant="compact" 
             showSearch={false} 
-            className={hasLocalization ? "hidden md:flex border-0 bg-transparent hover:bg-accent" : "hidden"}
+            className={hasLocalization ? "hidden md:flex border-0 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-950/30" : "hidden"}
           />
           <ThemeToggle className="hidden md:flex" />
           {/* WhatsApp Button - Desktop (Hidden on Mobile) */}

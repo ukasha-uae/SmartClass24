@@ -80,7 +80,7 @@ export default function CampusHomePage({ params }: { params: Promise<{ campusTyp
       icon: Trophy,
       title: 'WASSCE Questions',
       description: 'Step-by-step solutions to past WASSCE exam questions',
-      href: addTenantParam('/wassce-questions'),
+      href: addTenantParam('/past-questions'),
       color: 'amber',
       badge: 'Past Papers'
     },

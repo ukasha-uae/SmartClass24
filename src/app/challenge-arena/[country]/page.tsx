@@ -73,7 +73,22 @@ export default function LocalizedChallengeArenaPage() {
 
   // Compute validity early, but do NOT throw/return before all hooks run.
   // Throwing (via notFound()) before later hooks can cause hook-order errors (#300).
-  const isValidCountry = Object.keys(COUNTRIES).includes(countryParam?.toLowerCase());
+  // Allow 'global' as a valid country for non-localized tenants (e.g., Wisdom Warehouse)
+  const isValidCountry = countryParam === 'global' || Object.keys(COUNTRIES).includes(countryParam?.toLowerCase());
+  
+  // For non-localized tenants with invalid country params (e.g., /middle-east), redirect to /global
+  useEffect(() => {
+    if (!hasLocalization && !isValidCountry && countryParam !== 'global') {
+      // Non-localized tenant trying to access a market-based route - redirect to global
+      const currentParams = new URLSearchParams(window.location.search);
+      router.replace(`/challenge-arena/global?${currentParams.toString()}`);
+    }
+  }, [hasLocalization, isValidCountry, countryParam, router]);
+  
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
 
   const { country, setCountry } = useLocalization();
   const [player, setPlayer] = useState<Player | null>(null);

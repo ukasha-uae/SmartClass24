@@ -120,21 +120,20 @@ export default function PrivacyPolicyPage() {
             ) : (
               <>
                 <p>
-                  <strong>SmartC24</strong> (formerly SmartJHS) is dedicated to transforming education in Ghana by providing every 
-                  Primary School, Junior High School, and Senior High School student with access to quality learning resources, interactive lessons, 
-                  competitive challenges, and collaborative tools that prepare them from foundational skills (Class 1-6) through BECE, WASSCE, and beyond.
+                  <strong>SmartClass24</strong> is dedicated to transforming education worldwide by providing students 
+                  with access to quality learning resources, interactive lessons, virtual labs, and competitive challenges 
+                  tailored to their local curriculum and exam systems.
                 </p>
                 <p>
                   We believe that every student deserves the opportunity to excel, regardless of their location or 
-                  economic background. Through innovative technology, NSMQ-inspired school competitions, and deep understanding 
-                  of the Ghanaian curriculum, we're making quality education accessible to all while celebrating Ghana's 
-                  rich culture of academic excellence.
+                  economic background. Through innovative multi-tenant technology, personalized AI-driven learning, and 
+                  support for diverse curricula globally, we're making quality education accessible to all.
                 </p>
                 <div className="p-4 bg-violet-50 dark:bg-violet-950/20 rounded-lg border border-violet-200 dark:border-violet-800 mt-4">
                   <p className="text-sm text-violet-900 dark:text-violet-100">
-                    <strong>🎯 Our Vision:</strong> To become Ghana's premier online learning platform that empowers students 
-                    from Primary School (Class 1) through Senior High School, fostering academic excellence through competition, collaboration, and comprehensive 
-                    curriculum coverage at every educational stage.
+                    <strong>🎯 Our Vision:</strong> To become the world's leading white-label learning platform that empowers students 
+                    globally, fostering academic excellence through competition, collaboration, and personalized education 
+                    at every educational stage.
                   </p>
                 </div>
               </>
@@ -466,7 +465,7 @@ export default function PrivacyPolicyPage() {
             ) : (
               <>
                 <p>
-                  <strong>SmartC24</strong> is built in collaboration with educators, curriculum specialists, and students across Ghana 
+                  <strong>SmartClass24</strong> is built in collaboration with educators, curriculum specialists, and students globally 
                   to ensure our content meets the highest standards of educational excellence for both JHS and SHS levels.
                 </p>
                 <p>

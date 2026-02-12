@@ -159,7 +159,7 @@ export function OhmsLawLabEnhanced() {
                 `When you increased resistance, current decreased. The beauty of Ohm's Law is its simplicity and universality - ` +
                 `it applies to every electrical circuit from tiny phone components to massive power grids! ` +
                 `Real-world applications: Engineers use this to design safe circuits, calculate wire thickness for homes, ` +
-                `size fuses and breakers, and optimize power distribution. Ghana's ECG uses Ohm's Law principles daily! ` +
+                `size fuses and breakers, and optimize power distribution. Power utilities worldwide use Ohm's Law principles daily! ` +
                 `Fun fact: This law was discovered by Georg Ohm in 1827 using handmade equipment. ` +
                 `You're now thinking like an electrical engineer! Phenomenal work! 🎉⚡`
             );

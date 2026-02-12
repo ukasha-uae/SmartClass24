@@ -52,7 +52,7 @@ export default function QuizBattlePage() {
   const params = useParams();
   const router = useRouter();
   const addTenantParam = useTenantLink();
-  const { hasArenaChallenge } = useTenant();
+  const { hasArenaChallenge, branding } = useTenant();
   const { playSound, isMuted, toggleMute } = useSoundEffects();
   const { user, firestore, isUserLoading } = useFirebase();
   const { toast } = useToast();
@@ -67,6 +67,12 @@ export default function QuizBattlePage() {
       router.replace(addTenantParam('/'));
     }
   }, [hasArenaChallenge, router, addTenantParam]);
+  
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+  
   const [player, setPlayer] = useState<Player | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
@@ -605,8 +611,8 @@ export default function QuizBattlePage() {
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
           await navigator.share({
-            title: 'S24 Challenge Results',
-            text: '🎯 Check out my results on S24! Join me and excel in WASSCE & BECE!',
+            title: `${branding.name} Challenge Results`,
+            text: `🎯 Check out my results on ${branding.name}! Join me and excel in WASSCE & BECE!`,
             files: [file],
           });
           toast({ title: 'Shared successfully!', description: 'Thanks for spreading the word!' });
@@ -741,7 +747,7 @@ export default function QuizBattlePage() {
           <>
             <h1 className="text-3xl font-bold mb-2">Challenge Invitation</h1>
             <p className="text-muted-foreground mb-8 max-w-md">
-              {challenge?.creatorName} from {challenge?.creatorSchool} has invited you to a {challenge?.subject} challenge on SmartClass24 (S24).
+              {challenge?.creatorName} from {challenge?.creatorSchool} has invited you to a {challenge?.subject} challenge on {branding.name}.
             </p>
             <div className="flex gap-4">
               <Button variant="outline" onClick={handleDeclineChallenge}>
@@ -1212,12 +1218,12 @@ export default function QuizBattlePage() {
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 rounded-full blur-lg opacity-50"></div>
                   <div className="relative bg-gradient-to-br from-violet-500 via-indigo-500 to-purple-500 text-white rounded-full w-12 h-12 flex items-center justify-center font-black text-lg shadow-lg">
-                    S24
+                    {branding.name.substring(0, 3).toUpperCase()}
                   </div>
                 </div>
                 <div className="text-left">
                   <h2 className="font-black text-lg leading-tight bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 dark:from-violet-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent tracking-tight">
-                    S24
+                    {branding.name}
                   </h2>
                   <p className="text-xs text-muted-foreground">Learn • Practice • Excel</p>
                 </div>
@@ -1727,12 +1733,12 @@ export default function QuizBattlePage() {
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-violet-400 via-indigo-400 to-purple-400 rounded-full blur-lg opacity-50"></div>
                     <div className="relative bg-gradient-to-br from-violet-500 via-indigo-500 to-purple-500 text-white rounded-full w-16 h-16 flex items-center justify-center font-black text-xl shadow-lg">
-                      S24
+                      {branding.name.substring(0, 3).toUpperCase()}
                     </div>
                   </div>
                   <div>
                     <h2 className="font-black text-2xl leading-tight bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                      S24 Challenge Results
+                      {branding.name} Challenge Results
                     </h2>
                     <p className="text-sm text-gray-600">Learn • Practice • Excel</p>
                   </div>

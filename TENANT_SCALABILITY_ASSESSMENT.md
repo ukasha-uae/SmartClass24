@@ -161,8 +161,8 @@ DELETE /api/tenants/:tenantId
 **Impact:** High - Can't collect payment
 
 **Missing:**
-- Stripe integration (international)
-- Paystack integration (Ghana)
+- Stripe integration (global)
+- Regional payment providers (Paystack, Flutterwave, etc.)
 - Subscription management
 - Webhook handlers
 - Invoice generation

@@ -35,6 +35,7 @@ export interface UseTenantResult {
   branding: TenantConfig['branding'];
   features: TenantConfig['features'];
   content: TenantConfig['content'];
+  curriculum?: TenantConfig['curriculum'];  // v1.5: Explicit curriculum config
   
   // Computed properties
   isEnterprise: boolean;
@@ -105,6 +106,7 @@ export function useTenant(): UseTenantResult {
     branding: tenant.branding,
     features: tenant.features,
     content: tenant.content,
+    curriculum: tenant.curriculum,  // v1.5: Expose curriculum config
     
     // Computed properties
     isEnterprise: tenant.license.tier === 'enterprise',

@@ -340,7 +340,7 @@ export default function PWATestPage() {
               <Badge variant="outline" className="h-6 w-6 rounded-full flex items-center justify-center flex-shrink-0">4</Badge>
               <div>
                 <p className="font-medium">Tap "Add"</p>
-                <p className="text-muted-foreground">The SmartC24 app icon will appear on your home screen!</p>
+                <p className="text-muted-foreground">The SmartClass24 app icon will appear on your home screen!</p>
               </div>
             </li>
           </ol>
@@ -649,7 +649,7 @@ export default function PWATestPage() {
               <ol className="list-decimal ml-5 space-y-1 text-sm text-muted-foreground">
                 <li>Open in Chrome/Edge</li>
                 <li>Click the install icon in address bar</li>
-                <li>Or go to menu → Install SmartC24</li>
+                <li>Or go to menu → Install SmartClass24</li>
                 <li>App will open in standalone window</li>
               </ol>
             </div>

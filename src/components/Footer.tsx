@@ -291,8 +291,8 @@ export default function Footer() {
           <div className="p-3 bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-950/30 dark:to-indigo-950/30 rounded-xl border border-violet-200/50 dark:border-violet-800/50">
             <p className="text-slate-700 dark:text-slate-300">
               © {currentYear} {branding.name}. All rights reserved.
-              {mounted && market === 'ghana' && hasLocalization && (
-                <span className="ml-2 font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Made with ❤️ for {country?.name || 'Ghana'}</span>
+              {mounted && hasLocalization && country && (
+                <span className="ml-2 font-semibold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">Made with ❤️ for {country.name}</span>
               )}
             </p>
           </div>

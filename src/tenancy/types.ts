@@ -64,6 +64,18 @@ export interface TenantContent {
 }
 
 /**
+ * Curriculum Configuration (v1.5)
+ * Explicit curriculum system declaration
+ */
+export interface CurriculumConfig {
+  system: string;          // 'west-african' | 'us-common-core' | 'uk-national' | 'ib' | 'alternative-holistic'
+  examSystems: string[];   // ['BECE', 'WASSCE', 'NECO'] or ['SAT', 'ACT'] or [] for no exams
+  gradeLevels: string[];   // ['Primary', 'JHS', 'SHS'] or ['K-12'] or ['Elementary', 'Middle', 'High']
+  countries?: string[];    // Optional: specific countries using this curriculum (e.g., West African countries)
+  description?: string;    // Optional: human-readable description
+}
+
+/**
  * License Configuration
  */
 export interface TenantLicense {
@@ -91,6 +103,9 @@ export interface TenantConfig {
   
   // Content Selection (v1 scope)
   content: TenantContent;
+  
+  // Curriculum Configuration (v1.5 scope)
+  curriculum?: CurriculumConfig;  // Explicit curriculum system declaration
   
   // License
   license: TenantLicense;

@@ -1,9 +1,9 @@
 /**
  * TenantLogo Component
- * Displays tenant logo or fallback text
+ * Displays tenant-specific logo or neo-glamorphic "S24" fallback
  * 
  * @module components/tenancy/TenantLogo
- * @version 1.0.0
+ * @version 2.1.0
  */
 
 'use client';
@@ -28,7 +28,7 @@ const SIZES = {
 
 /**
  * Tenant-aware logo component
- * Automatically displays current tenant's logo or name
+ * Shows tenant's custom logo if available, otherwise neo-glamorphic "S24" design
  * 
  * @example
  * ```tsx
@@ -51,24 +51,23 @@ export function TenantLogo({
     setMounted(true);
   }, []);
   
-  // During SSR, render nothing (tenant from URL params is client-only)
+  // During SSR, render placeholder
   if (!mounted) {
-    return null;
+    return <div className={cn('w-12 h-12', className)} />;
   }
   
-  // After mount: If tenant has logo URL, show image with responsive sizing
+  // If tenant has custom logo (e.g., Wisdom Warehouse), show it
   if (branding.logoUrl) {
-    // Generate responsive size classes based on size prop
-    const getSizeClasses = () => {
+    const getImageSizeClasses = () => {
       switch (size) {
         case 'sm':
-          return 'w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8';  // 24px → 28px → 32px
+          return 'w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8';
         case 'md':
-          return 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12';  // 32px → 40px → 48px
+          return 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12';
         case 'lg':
-          return 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16';  // 48px → 56px → 64px
+          return 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16';
         case 'xl':
-          return 'w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20';  // 64px → 72px → 80px
+          return 'w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20';
         default:
           return 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12';
       }
@@ -81,7 +80,7 @@ export function TenantLogo({
           alt={`${branding.name} logo`}
           width={logoSizes.desktop}
           height={logoSizes.desktop}
-          className={cn('object-contain', getSizeClasses())}
+          className={cn('object-contain', getImageSizeClasses())}
           priority
           data-tenant-id={tenantId}
         />
@@ -94,21 +93,86 @@ export function TenantLogo({
     );
   }
   
-  // Fallback: Show text logo with responsive sizing
+  // Fallback: Neo-glamorphic "S24" logo for tenants without custom logos (like SmartClass24)
+  const getSizeClasses = () => {
+    switch (size) {
+      case 'sm':
+        return {
+          container: 'w-8 h-8 sm:w-9 sm:h-9',
+          text: 'text-sm sm:text-base',
+        };
+      case 'md':
+        return {
+          container: 'w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12',
+          text: 'text-base sm:text-lg md:text-xl',
+        };
+      case 'lg':
+        return {
+          container: 'w-14 h-14 sm:w-16 sm:h-16',
+          text: 'text-xl sm:text-2xl',
+        };
+      case 'xl':
+        return {
+          container: 'w-16 h-16 sm:w-20 sm:h-20',
+          text: 'text-2xl sm:text-3xl',
+        };
+      default:
+        return {
+          container: 'w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12',
+          text: 'text-base sm:text-lg md:text-xl',
+        };
+    }
+  };
+  
+  const sizeClasses = getSizeClasses();
+  
   return (
     <div 
-      className={cn('flex items-center', className)}
+      className={cn('flex items-center gap-2', className)}
       data-tenant-id={tenantId}
     >
-      <span 
-        className="font-bold"
-        style={{ 
-          fontSize: size === 'sm' ? '1rem' : size === 'md' ? '1.25rem' : size === 'lg' ? '1.5rem' : '2rem',
-          color: branding.primaryColor,
-        }}
+      {/* Neo-glamorphic "S24" container */}
+      <div 
+        className={cn(
+          'relative flex items-center justify-center rounded-xl',
+          'bg-gradient-to-br from-violet-50 via-white to-indigo-50',
+          'dark:from-violet-950/40 dark:via-slate-900 dark:to-indigo-950/40',
+          'shadow-[6px_6px_12px_rgba(139,92,246,0.15),-6px_-6px_12px_rgba(255,255,255,0.7)]',
+          'dark:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-6px_-6px_12px_rgba(139,92,246,0.1)]',
+          'border border-violet-200/50 dark:border-violet-800/30',
+          'transition-all duration-300 hover:shadow-[8px_8px_16px_rgba(139,92,246,0.2),-8px_-8px_16px_rgba(255,255,255,0.8)]',
+          'dark:hover:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-8px_-8px_16px_rgba(139,92,246,0.15)]',
+          sizeClasses.container
+        )}
       >
-        {branding.name}
-      </span>
+        {/* Subtle inner glow */}
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-400/10 via-transparent to-indigo-400/10 dark:from-violet-500/5 dark:to-indigo-500/5" />
+        
+        {/* S24 text with gradient */}
+        <span 
+          className={cn(
+            'relative font-black tracking-tight',
+            'bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-600',
+            'dark:from-violet-400 dark:via-purple-400 dark:to-indigo-400',
+            'bg-clip-text text-transparent',
+            'drop-shadow-sm',
+            sizeClasses.text
+          )}
+          style={{
+            fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+            letterSpacing: '-0.02em',
+          }}
+        >
+          S24
+        </span>
+      </div>
+      
+      {/* Optional tenant name text */}
+      {showText && (
+        <span className="font-bold text-sm sm:text-base md:text-lg text-slate-700 dark:text-slate-300">
+          {branding.name}
+        </span>
+      )}
     </div>
   );
 }

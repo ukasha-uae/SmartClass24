@@ -19,10 +19,14 @@ export function middleware(request: NextRequest) {
   });
 
   if (tenant) {
+    // Set tenant cookie when tenant parameter is present
     response.cookies.set('tenant', tenant, {
       path: '/',
       sameSite: 'lax',
     });
+  } else {
+    // Clear tenant cookie when no tenant parameter (return to default tenant)
+    response.cookies.delete('tenant');
   }
 
   return response;

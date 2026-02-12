@@ -65,15 +65,8 @@ function generateDescription(tenant: any): string {
     return 'Empowering curious, creative, and developing young minds through alternative, holistic education rooted in real-world learning.';
   }
   
-  if (tenant.market === 'ghana') {
-    return 'Smart learning platform for JHS & SHS students across Ghana. Learn, practice, and excel together.';
-  }
-  
-  if (tenant.market === 'nigeria') {
-    return 'Smart learning platform for JSS & SSS students across Nigeria. Learn, practice, and excel together.';
-  }
-  
-  return `${tenant.branding.name} - Empowering students with smart, interactive learning experiences.`;
+  // Generic description for global platform
+  return `${tenant.branding?.name || 'SmartClass24'} - Master your curriculum with interactive lessons, virtual labs, and gamified learning.`;
 }
 
 /**

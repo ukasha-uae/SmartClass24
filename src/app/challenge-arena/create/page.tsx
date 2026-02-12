@@ -50,6 +50,12 @@ export default function CreateChallengePage() {
       router.replace(addTenantParam('/'));
     }
   }, [hasArenaChallenge, router, addTenantParam]);
+  
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+  
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [friends, setFriends] = useState<Player[]>([]);

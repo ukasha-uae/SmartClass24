@@ -59,7 +59,7 @@ export function SeparationTechniquesLabEnhanced() {
   // Intro message
   React.useEffect(() => {
     if (step === 'intro') {
-      setTeacherMessage(`Welcome to the Separation Techniques Lab! In ${country.name} and around the world, we often need to separate mixtures into their pure components - from purifying water to extracting salt. You'll learn three key techniques: filtration, evaporation, and decantation. Let's gather our equipment!`);
+      setTeacherMessage(`Welcome to the Separation Techniques Lab! ${country ? `In ${country.name} and around the world` : 'Around the world'}, we often need to separate mixtures into their pure components - from purifying water to extracting salt. You'll learn three key techniques: filtration, evaporation, and decantation. Let's gather our equipment!`);
     }
   }, [step]);
 
@@ -294,7 +294,7 @@ export function SeparationTechniquesLabEnhanced() {
     const earnedXP = markLabComplete(labId, 100, 0);
     setXpEarned(earnedXP);
     setStep('complete');
-    setTeacherMessage(`Congratulations! You've mastered separation techniques! These methods are used daily in ${country.name} - from water treatment plants to salt production. You now understand how to separate mixtures based on their physical properties!`);
+    setTeacherMessage(`Congratulations! You've mastered separation techniques! These methods are used daily ${country ? `in ${country.name}` : 'worldwide'} - from water treatment plants to salt production. You now understand how to separate mixtures based on their physical properties!`);
     confetti({
       particleCount: 150,
       spread: 100,

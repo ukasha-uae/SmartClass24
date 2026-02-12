@@ -9,7 +9,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function ChallengeArenaPage() {
   const { country } = useLocalization();
-  const { hasArenaChallenge, market, tenantId } = useTenant();
+  const { hasArenaChallenge, hasLocalization, market, tenantId } = useTenant();
   const router = useRouter();
   const addTenantParam = useTenantLink();
 
@@ -21,9 +21,9 @@ export default function ChallengeArenaPage() {
       return;
     }
 
-    // Redirect to the localized challenge arena page, preserving education level and tenant
-    // Use country from localization if available, otherwise fall back to tenant's market
-    const countryId = country?.id || market || 'global';
+    // Redirect to the global challenge arena page
+    // The [country] page will handle tenant-specific routing and localization
+    const countryId = 'global';
     
     // Get saved education level from localStorage to preserve user's selection
     let levelParam = '';

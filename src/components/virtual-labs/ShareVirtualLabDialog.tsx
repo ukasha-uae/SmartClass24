@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Share2, MessageCircle, Copy, Check, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getReferralLink } from '@/lib/referrals';
+import { useLocalization } from '@/hooks/useLocalization';
 
 interface ShareVirtualLabDialogProps {
   labTitle: string;
@@ -23,6 +24,7 @@ export function ShareVirtualLabDialog({
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
+  const { getPrimaryExam, getSecondaryExam } = useLocalization();
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://smartclass24.com';
   const labUrl = labSlug ? `${baseUrl}/virtual-labs/${labSlug}` : `${baseUrl}/virtual-labs`;
@@ -36,14 +38,14 @@ export function ShareVirtualLabDialog({
       `Want full access to 20+ virtual labs? Sign up using my link:\n${referralLink}\n\n` +
       `💡 Complete your profile and finish your first activity, and I'll earn 1 referral code towards FREE premium access! ` +
       `(10 codes = 1 month premium)\n\n` +
-      `Join thousands of students preparing for WASSCE & BECE! 📚🚀`
+      `Join thousands of students preparing for ${getSecondaryExam()} & ${getPrimaryExam()}! 📚🚀`
     : `🔬 Check out Virtual Labs on SmartClass24!\n\n` +
       `Experience 20+ interactive science experiments covering Biology, Chemistry, and Physics! 🧪✨\n\n` +
       `Try it here: ${labUrl}\n\n` +
       `Sign up using my link to get started:\n${referralLink}\n\n` +
       `💡 Complete your profile and finish your first activity, and I'll earn 1 referral code towards FREE premium access! ` +
       `(10 codes = 1 month premium)\n\n` +
-      `Join thousands of students preparing for WASSCE & BECE! 📚🚀`;
+      `Join thousands of students preparing for ${getSecondaryExam()} & ${getPrimaryExam()}! 📚🚀`;
 
   const handleWhatsAppShare = () => {
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareMessage)}`;

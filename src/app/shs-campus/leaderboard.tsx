@@ -1,39 +1,29 @@
+/**
+ * @deprecated - Use /challenge-arena for leaderboards
+ * Leaderboards now accessed through Challenge Arena
+ * This route maintained for backward compatibility only
+ */
 'use client';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 import { useTenantLink } from '@/hooks/useTenantLink';
 
-const sampleLeaderboard = [
-  { name: "Ama Mensah", school: "Accra SHS", score: 5 },
-  { name: "Kwame Boateng", school: "Kumasi SHS", score: 4 },
-  { name: "Akosua Owusu", school: "Tamale SHS", score: 3 }
-];
-
-export default function SHSLeaderboardPage() {
+export default function SHSLeaderboardRedirect() {
+  const router = useRouter();
   const addTenantParam = useTenantLink();
   
+  useEffect(() => {
+    // Redirect to Challenge Arena
+    router.replace(addTenantParam('/challenge-arena'));
+  }, [router, addTenantParam]);
+  
   return (
-    <div className="container mx-auto p-6 min-h-screen flex flex-col items-center justify-center text-center">
-      <h2 className="text-2xl font-bold mb-4">SHS Leaderboard</h2>
-      <div className="w-full max-w-md bg-white rounded-lg shadow p-6">
-        <table className="w-full text-left">
-          <thead>
-            <tr>
-              <th className="py-2">Name</th>
-              <th className="py-2">School</th>
-              <th className="py-2">Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sampleLeaderboard.map((entry, idx) => (
-              <tr key={idx} className="border-t">
-                <td className="py-2 font-semibold">{entry.name}</td>
-                <td className="py-2">{entry.school}</td>
-                <td className="py-2 text-primary font-bold">{entry.score}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+        <p className="text-muted-foreground">Redirecting to Challenge Arena...</p>
       </div>
-      <a href={addTenantParam('/shs-campus')} className="text-primary underline mt-6">Back to SHS Campus</a>
     </div>
   );
 }

@@ -177,7 +177,7 @@ export default function ElectiveSubjectPage({ params }: { params: Promise<{ prog
                 Virtual Labs
               </Button>
             </Link>
-            <Link href="/wassce-questions">
+            <Link href="/past-questions">
               <Button variant="secondary">
                 <BookOpen className="mr-2 h-4 w-4" />
                 WASSCE Questions

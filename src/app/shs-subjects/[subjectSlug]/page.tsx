@@ -188,7 +188,7 @@ export default function SHSSubjectPage({ params }: { params: Promise<{ subjectSl
                   We're currently building comprehensive lessons for each topic. In the meantime, explore our 
                   <Link href={addTenantParam('/virtual-labs')} className="text-violet-600 dark:text-violet-400 font-semibold mx-1">Virtual Labs</Link>
                   and
-                  <Link href="/wassce-questions" className="text-violet-600 dark:text-violet-400 font-semibold mx-1">WASSCE Questions</Link>
+                  <Link href="/past-questions" className="text-violet-600 dark:text-violet-400 font-semibold mx-1">Past Questions</Link>
                   to start practicing!
                 </p>
               </div>

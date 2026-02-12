@@ -18,16 +18,17 @@ import { localizeText, localizeObject } from './content-adapter';
 // ============================================================================
 
 interface LocalizationContextValue {
-  // Current country
-  country: CountryConfig;
-  countryId: string;
+  // Current country (null if no country selected)
+  country: CountryConfig | null;
+  countryId: string | null;
   
   // User preferences
   userRegion: string | null;
   
   // Setters
-  setCountry: (countryId: string) => void;
+  setCountry: (countryId: string | null) => void;
   setRegion: (region: string) => void;
+  clearCountry: () => void;
   
   // Localization utilities
   localizeContent: (text: string) => string;
@@ -54,33 +55,26 @@ interface LocalizationContextValue {
 const LocalizationContext = createContext<LocalizationContextValue | undefined>(undefined);
 
 const defaultLocalizationContext: LocalizationContextValue = {
-  country: ghanaConfig,
-  countryId: DEFAULT_COUNTRY,
+  country: null,
+  countryId: null,
   userRegion: null,
   setCountry: () => {},
   setRegion: () => {},
-  localizeContent: (text: string) => localizeText(text, ghanaConfig),
-  localizeObject: <T extends Record<string, any>>(obj: T) => localizeObject(obj, ghanaConfig),
+  clearCountry: () => {},
+  localizeContent: (text: string) => text,
+  localizeObject: <T extends Record<string, any>>(obj: T) => obj,
   formatCurrency: (amount: number, includeCode = false) => {
-    const formatted = `${ghanaConfig.currency.symbol}${amount.toLocaleString()}`;
-    return includeCode ? `${formatted} ${ghanaConfig.currency.code}` : formatted;
+    const formatted = `$${amount.toLocaleString()}`;
+    return includeCode ? `${formatted} USD` : formatted;
   },
-  formatDate: (date: Date) => {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return ghanaConfig.localizationRules.dateFormat
-      .replace('DD', day)
-      .replace('MM', month)
-      .replace('YYYY', year.toString());
-  },
+  formatDate: (date: Date) => date.toLocaleDateString('en-US'),
   formatPhoneNumber: (phone: string) => phone,
-  getCurrencySymbol: () => ghanaConfig.currency.symbol,
-  getPrimaryExam: () => ghanaConfig.examSystem.primary,
-  getSecondaryExam: () => ghanaConfig.examSystem.secondary,
-  getCapital: () => ghanaConfig.capital,
-  getJuniorSecondaryName: () => ghanaConfig.academicStructure.juniorSecondary.name,
-  getSeniorSecondaryName: () => ghanaConfig.academicStructure.seniorSecondary.name,
+  getCurrencySymbol: () => '$',
+  getPrimaryExam: () => 'primary exams',
+  getSecondaryExam: () => 'secondary exams',
+  getCapital: () => '',
+  getJuniorSecondaryName: () => 'Junior Secondary',
+  getSeniorSecondaryName: () => 'Senior Secondary',
 };
 
 // ============================================================================
@@ -106,9 +100,11 @@ export function LocalizationProvider({
   children,
   defaultCountry = DEFAULT_COUNTRY 
 }: LocalizationProviderProps) {
-  const [countryId, setCountryIdState] = useState<string>(defaultCountry);
-  const [country, setCountryState] = useState<CountryConfig>(ghanaConfig);
+  // Start with null country for true global platform (user must select)
+  const [countryId, setCountryIdState] = useState<string | null>(null);
+  const [country, setCountryState] = useState<CountryConfig | null>(null);
   const [userRegion, setUserRegionState] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // ============================================================================
   // INITIALIZATION
@@ -121,16 +117,21 @@ export function LocalizationProvider({
       const savedRegion = localStorage.getItem(STORAGE_KEYS.REGION);
 
       if (savedCountryId) {
+        // User has previously selected a country - use it
         const config = getCountryConfig(savedCountryId);
         if (config) {
           setCountryIdState(savedCountryId);
           setCountryState(config);
         }
       }
+      // Note: If no saved country, we leave it as null (global platform)
+      // Users can select their country if needed
 
       if (savedRegion) {
         setUserRegionState(savedRegion);
       }
+      
+      setIsInitialized(true);
     }
   }, []);
 
@@ -138,7 +139,26 @@ export function LocalizationProvider({
   // SETTERS
   // ============================================================================
 
-  const setCountry = useCallback((newCountryId: string) => {
+  const setCountry = useCallback((newCountryId: string | null) => {
+    if (newCountryId === null) {
+      // Clear country selection - return to global platform
+      setCountryIdState(null);
+      setCountryState(null);
+      
+      // Remove from localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(STORAGE_KEYS.COUNTRY_ID);
+      }
+      
+      // Emit custom event for other components to react
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('country-changed', { 
+          detail: { countryId: null, country: null } 
+        }));
+      }
+      return;
+    }
+    
     const config = getCountryConfig(newCountryId);
     
     if (config) {
@@ -159,6 +179,10 @@ export function LocalizationProvider({
     }
   }, []);
 
+  const clearCountry = useCallback(() => {
+    setCountry(null);
+  }, [setCountry]);
+
   const setRegion = useCallback((region: string) => {
     setUserRegionState(region);
     
@@ -173,10 +197,12 @@ export function LocalizationProvider({
   // ============================================================================
 
   const localizeContent = useCallback((text: string): string => {
+    if (!country) return text; // No localization if no country selected
     return localizeText(text, country);
   }, [country]);
 
   const localizeObjectUtil = useCallback(<T extends Record<string, any>>(obj: T): T => {
+    if (!country) return obj; // No localization if no country selected
     return localizeObject(obj, country);
   }, [country]);
 
@@ -185,11 +211,20 @@ export function LocalizationProvider({
   // ============================================================================
 
   const formatCurrency = useCallback((amount: number, includeCode = false): string => {
+    if (!country) {
+      // Global default - use USD
+      const formatted = `$${amount.toLocaleString()}`;
+      return includeCode ? `${formatted} USD` : formatted;
+    }
     const formatted = `${country.currency.symbol}${amount.toLocaleString()}`;
     return includeCode ? `${formatted} ${country.currency.code}` : formatted;
   }, [country]);
 
   const formatDate = useCallback((date: Date): string => {
+    if (!country) {
+      // Global default - use ISO format
+      return date.toLocaleDateString('en-US');
+    }
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
@@ -211,12 +246,12 @@ export function LocalizationProvider({
   // QUICK ACCESS HELPERS
   // ============================================================================
 
-  const getCurrencySymbol = useCallback(() => country.currency.symbol, [country]);
-  const getPrimaryExam = useCallback(() => country.examSystem.primary, [country]);
-  const getSecondaryExam = useCallback(() => country.examSystem.secondary, [country]);
-  const getCapital = useCallback(() => country.capital, [country]);
-  const getJuniorSecondaryName = useCallback(() => country.academicStructure.juniorSecondary.name, [country]);
-  const getSeniorSecondaryName = useCallback(() => country.academicStructure.seniorSecondary.name, [country]);
+  const getCurrencySymbol = useCallback(() => country?.currency?.symbol || '$', [country]);
+  const getPrimaryExam = useCallback(() => country?.examSystem?.primary || 'primary exams', [country]);
+  const getSecondaryExam = useCallback(() => country?.examSystem?.secondary || 'secondary exams', [country]);
+  const getCapital = useCallback(() => country?.capital || '', [country]);
+  const getJuniorSecondaryName = useCallback(() => country?.academicStructure?.juniorSecondary?.name || 'Junior Secondary', [country]);
+  const getSeniorSecondaryName = useCallback(() => country?.academicStructure?.seniorSecondary?.name || 'Senior Secondary', [country]);
 
   // ============================================================================
   // CONTEXT VALUE
@@ -228,6 +263,7 @@ export function LocalizationProvider({
     userRegion,
     setCountry,
     setRegion,
+    clearCountry,
     localizeContent,
     localizeObject: localizeObjectUtil,
     formatCurrency,

@@ -433,8 +433,8 @@ export function WorkEnergyLabEnhanced() {
                       </h4>
                       <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
                         Stored energy due to an object's position. The higher an object, the more potential 
-                        energy it has. At Akosombo Dam, billions of liters of elevated water hold enormous 
-                        potential energy, ready to power Ghana's cities!
+                        energy it has. At hydroelectric dams, billions of liters of elevated water hold enormous 
+                        potential energy, ready to power entire cities!
                       </p>
                       <div className="bg-blue-100 dark:bg-blue-900 p-3 rounded-lg font-mono text-sm text-center font-bold">
                         PE = mgh
@@ -503,13 +503,13 @@ export function WorkEnergyLabEnhanced() {
 
                   <div className="bg-amber-50 dark:bg-amber-950 p-5 rounded-lg border-l-4 border-amber-500 mt-6">
                     <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">
-                      🇬🇭 Real-World Applications in Ghana:
+                      � Real-World Applications:
                     </h4>
                     <ul className="text-sm text-amber-800 dark:text-amber-200 space-y-2">
-                      <li>• <strong>Akosombo Dam:</strong> Water's PE at height converts to electrical energy powering homes</li>
-                      <li>• <strong>Roller Coasters at Fantasy Dome:</strong> PE at peaks → thrilling KE in valleys</li>
+                      <li>• <strong>Hydroelectric Dams:</strong> Water's PE at height converts to electrical energy powering cities</li>
+                      <li>• <strong>Roller Coasters:</strong> PE at peaks → thrilling KE in valleys</li>
                       <li>• <strong>Regenerative Brakes:</strong> Electric vehicles capture KE back to the battery</li>
-                      <li>• <strong>Coconuts Falling:</strong> PE → KE (be careful under coconut trees!)</li>
+                      <li>• <strong>Falling Objects:</strong> PE → KE (demonstrates energy conservation)</li>
                       <li>• <strong>Your Body:</strong> Food stores chemical PE that becomes KE when you run</li>
                     </ul>
                   </div>

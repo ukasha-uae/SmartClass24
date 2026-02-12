@@ -26,6 +26,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,6 +47,7 @@ import { MasteryProgressSection } from '@/components/promotion/MasteryProgressSe
 
 export default function SettingsPage() {
   const addTenantParam = useTenantLink();
+  const { curriculum } = useTenant();
   const router = useRouter();
   const { toast } = useToast();
   const { country, countryId, setCountry } = useLocalization();
@@ -889,7 +891,7 @@ export default function SettingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GraduationCap className="h-5 w-5 text-violet-600" />
-              About SmartC24
+              About SmartClass24
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -916,17 +918,55 @@ export default function SettingsPage() {
             
             <div className="p-3 bg-violet-50 dark:bg-violet-950/20 rounded-lg border border-violet-200 dark:border-violet-800">
               <p className="text-sm text-violet-900 dark:text-violet-100 mb-2">
-                <strong>🎓 Ghana's Premier Learning Platform</strong>
+                <strong>� Global Learning Platform</strong>
               </p>
               <p className="text-xs text-violet-800 dark:text-violet-200">
-                Empowering Primary, JHS, and SHS students with interactive lessons, competitive quizzes, 
-                NSMQ-style school battles, and comprehensive exam preparation (BECE/WASSCE).
+                Empowering students worldwide with interactive lessons, competitive quizzes, 
+                virtual labs, and comprehensive exam preparation tailored to your curriculum.
               </p>
             </div>
-
+            {curriculum && (
+              <div className="p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/30 dark:to-indigo-950/30 rounded-lg border border-purple-200 dark:border-purple-800/50">
+                <div className="flex items-start gap-3">
+                  <GraduationCap className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-0.5 flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <h3 className="font-semibold text-purple-900 dark:text-purple-100 text-sm">
+                      📚 Your Curriculum: {curriculum.system.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                    </h3>
+                    <div className="space-y-1 text-xs text-purple-700 dark:text-purple-300">
+                      {curriculum.examSystems.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                          <span className="font-medium">Exam Systems:</span>
+                          {curriculum.examSystems.map((exam) => (
+                            <Badge key={exam} variant="secondary" className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-100 text-xs px-2 py-0">
+                              {exam}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium">Grade Levels:</span>
+                        <span>{curriculum.gradeLevels.join(' • ')}</span>
+                      </div>
+                      {curriculum.countries && curriculum.countries.length > 0 && (
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">Countries:</span>
+                          <span>{curriculum.countries.map(c => c.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')).join(', ')}</span>
+                        </div>
+                      )}
+                      {curriculum.description && (
+                        <p className="mt-2 text-purple-600 dark:text-purple-400 italic">
+                          {curriculum.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="space-y-2 text-xs text-muted-foreground">
-              <p>© 2025 SmartC24 (formerly SmartJHS). All rights reserved.</p>
-              <p>Serving {currentEducationLevel === 'Primary' ? 'Primary School (Class 1-6)' : currentEducationLevel === 'SHS' ? 'Senior High School' : 'Junior High School'} students across Ghana</p>
+              <p>© 2025 SmartClass24. All rights reserved.</p>
+              <p>Serving students globally with personalized, curriculum-aligned education</p>
             </div>
             
             <Separator />
@@ -942,7 +982,7 @@ export default function SettingsPage() {
                 <Button variant="link" className="h-auto p-0 text-xs">Terms of Service</Button>
               </Link>
               <Button variant="link" className="h-auto p-0 text-xs" asChild>
-                <a href="mailto:support@smartc24.edu.gh">Support</a>
+                <a href="mailto:support@smartclass24.app">Support</a>
               </Button>
               <Button variant="link" className="h-auto p-0 text-xs" asChild>
                 <a href="https://github.com/ukasha-uae/SmartClass24" target="_blank" rel="noopener noreferrer">

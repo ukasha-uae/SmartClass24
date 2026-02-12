@@ -46,6 +46,11 @@ export default function Home() {
     console.log('[HomePage] addTenantParam test:', addTenantParam('/virtual-labs'));
   }, [tenantId, market, branding, addTenantParam]);
 
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   // Force remount when tenant changes to prevent state pollution
   useEffect(() => {
     console.log('[HomePage] Tenant changed, forcing remount:', tenantId);
@@ -57,8 +62,25 @@ export default function Home() {
   useEffect(() => {
     setMounted(true);
     
+    // WELCOME INTRO TEMPORARILY DISABLED
+    // TODO: Fix the carousel/scene navigation issues before re-enabling
+    // To test: add ?welcome=true to URL
+    
     // Check if this is the user's first visit
     if (typeof window !== 'undefined') {
+      // Check for force-show query parameter (for testing)
+      const urlParams = new URLSearchParams(window.location.search);
+      const forceWelcome = urlParams.get('welcome') === 'true';
+      const resetWelcome = urlParams.get('welcome') === 'reset';
+      
+      // Reset flag if requested
+      if (resetWelcome) {
+        localStorage.removeItem('hasSeenWelcome');
+        console.log('[HomePage] Welcome flag reset - will show on next load');
+        // Remove the query param
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+      
       const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
       const storedName = localStorage.getItem('userName');
       const storedLevel = localStorage.getItem('userEducationLevel') as 'JHS' | 'SHS' | 'Primary' | null;
@@ -66,12 +88,17 @@ export default function Home() {
       if (storedName) setUserName(storedName);
       if (storedLevel) setSelectedCampus(storedLevel);
       
-      // Show welcome for first-time visitors
-      if (!hasSeenWelcome) {
+      // TEMPORARILY DISABLED: Only show if explicitly requested via query param
+      // Original logic: Show for first-time visitors
+      // const shouldShowWelcome = forceWelcome || !hasSeenWelcome || (!storedName && user?.isAnonymous);
+      const shouldShowWelcome = forceWelcome; // ONLY show when forced via ?welcome=true
+      
+      if (shouldShowWelcome) {
+        console.log('[HomePage] Showing welcome:', { forceWelcome, hasSeenWelcome, storedName, userIsAnonymous: user?.isAnonymous });
         setShowWelcome(true);
       }
     }
-  }, []);
+  }, [user]);
 
   const handleWelcomeComplete = () => {
     if (typeof window !== 'undefined') {
@@ -120,7 +147,7 @@ export default function Home() {
       gradient: colors.accent,
       icon: Trophy,
       features: ['Arena Challenge', 'Virtual Labs', 'Fun Learning Games', 'Competitive Play'],
-      href: `/challenge-arena/${country?.id || 'ghana'}?level=Primary`,
+      href: `/challenge-arena/global?level=Primary`,
       studentCount: '120+',
       classes: 'Class 1-6',
       emoji: '🎒',
@@ -135,7 +162,7 @@ export default function Home() {
       gradient: colors.primary,
       icon: Trophy,
       features: ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', 'Progress Tracking'],
-      href: `/challenge-arena/${country?.id || 'ghana'}?level=JHS`,
+      href: `/challenge-arena/global?level=JHS`,
       studentCount: '350+',
       classes: juniorClasses,
       emoji: '📚',
@@ -152,14 +179,14 @@ export default function Home() {
       features: market === 'middle-east' 
         ? ['Arena Challenge', 'Virtual Labs', 'Collaborative Learning', 'Mentorship']
         : ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', `${seniorExam} Prep`],
-      href: `/challenge-arena/${country?.id || 'ghana'}?level=SHS`,
+      href: `/challenge-arena/global?level=SHS`,
       studentCount: '280+',
       classes: seniorClasses,
       emoji: '🎓',
       tagline: 'Your Path to University',
       v1Note: 'V1: Arena + Virtual Labs'
     },
-    ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity && market === 'ghana' ? [{
+    ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity && tenantId === 'smartclass24' ? [{
       id: 'university',
       name: 'S24 Innovation Academy',
       shortName: 'Academy',
@@ -226,8 +253,8 @@ export default function Home() {
       <section className="container mx-auto px-4 py-8 md:py-12 relative z-10">
 
         <div className="text-center mb-12 relative z-10">
-          {/* Country Flag Badge - Only show for Ghana market with localization */}
-          {hasLocalization && country && market === 'ghana' && (
+          {/* Country Flag Badge - Show when user has selected a country */}
+          {hasLocalization && country && (
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="text-4xl">{country.flag}</span>
               <div className={`h-1 w-16 bg-gradient-to-r ${colors.primary} rounded-full`}></div>
@@ -262,14 +289,8 @@ export default function Home() {
               <>Personalized Learning for Every Student</>
             ) : market === 'us' ? (
               <>🇺🇸 Your Path to Academic Excellence</>
-            ) : market === 'ghana' && country?.id === 'ghana' ? (
-              <>🇬🇭 Ghana's #1 Education Platform</>
-            ) : hasLocalization && country?.id === 'nigeria' ? (
-              <>🇳🇬 Nigeria's Premier Learning Platform</>
-            ) : hasLocalization && country ? (
-              <>{country.flag || '🌍'} {country.name || 'West Africa'}'s Premier Learning Platform</>
             ) : (
-              <>Smart Learning Platform</>
+              <>World-Class Learning Platform</>
             )}
           </p>
 
@@ -278,12 +299,8 @@ export default function Home() {
               <>Empowering diverse learners with individualized, hands-on education. Build real-world skills, emotional resilience, and discover your unique potential through personalized mentorship and creative learning.</>
             ) : market === 'us' ? (
               <>Comprehensive learning platform with interactive lessons, virtual labs, and competitive challenges. Master every subject with AI-powered personalized education.</>
-            ) : market === 'ghana' ? (
-              <>Your complete journey from Primary through SHS. Excel in BECE, WASSCE with Ghana's trusted learning companion.</>
-            ) : hasLocalization && country?.id === 'nigeria' ? (
-              <>Master every subject from Primary to SSS. Prepare for BECE, WAEC, NECO, and beyond with Nigeria's most comprehensive e-learning platform.</>
             ) : (
-              <>Your complete educational journey with AI-powered lessons and exam preparation.</>
+              <>Interactive lessons, virtual labs, and gamified learning. Master your curriculum with AI-powered personalized education and exam preparation.</>
             )}
           </p>
           
@@ -503,7 +520,7 @@ export default function Home() {
               <div className="group px-5 py-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-200/30 dark:border-blue-800/30 backdrop-blur-sm hover:scale-105 transition-all shadow-lg hover:shadow-xl">
                 <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Curriculum Aligned</p>
                 <p className="font-bold text-sm bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                  {market === 'middle-east' ? 'Personalized Curriculum' : market === 'us' ? 'Common Core' : market === 'ghana' && country?.examSystem?.conductor ? `${country.examSystem.conductor} Standard` : 'International Standard'}
+                  {market === 'middle-east' ? 'Personalized Curriculum' : market === 'us' ? 'Common Core' : hasLocalization && country?.examSystem?.conductor ? `${country.examSystem.conductor} Standard` : 'International Standard'}
                 </p>
               </div>
               <div className="group px-5 py-3 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border-2 border-amber-200/30 dark:border-amber-800/30 backdrop-blur-sm hover:scale-105 transition-all shadow-lg hover:shadow-xl">
@@ -526,6 +543,21 @@ export default function Home() {
           campus={selectedCampus}
           onComplete={handleWelcomeComplete}
         />
+      )}
+      
+      {/* Dev Mode - Welcome Reset Button (only in development) */}
+      {process.env.NODE_ENV === 'development' && !showWelcome && (
+        <button
+          onClick={() => {
+            localStorage.removeItem('hasSeenWelcome');
+            setShowWelcome(true);
+          }}
+          className="fixed bottom-4 right-4 z-40 px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs rounded-lg shadow-lg flex items-center gap-2 transition-all hover:scale-105"
+          title="Feature temporarily disabled - Only shows with ?welcome=true"
+        >
+          <Sparkles className="h-4 w-4" />
+          Show Welcome (Disabled)
+        </button>
       )}
       
       {/* Floating Earn Premium Banner - Only for logged in users */}
