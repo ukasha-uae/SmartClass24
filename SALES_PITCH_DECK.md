@@ -53,9 +53,9 @@ SmartClass24 multi-tenant architecture delivered in 3 weeks.
 
 **Results:**
 - ✅ **100% uptime** since January 2026 launch
-- ✅ **Zero content leakage** - complete tenant isolation
-- ✅ **Custom domain**: learn.wisdomwarehouse.com
-- ✅ **Branded experience**: School logo, colors, curriculum
+- ✅ **Zero content leakage** - complete tenant isolation via URL-based tenancy
+- ✅ **Dedicated tenant URL**: smartclass24.com/?tenant=wisdomwarehouse
+- ✅ **Branded experience**: School logo, colors, custom curriculum
 - ✅ **Happy administrators**: "Exactly what we needed"
 
 **Technical Win:**  
@@ -342,13 +342,14 @@ Estimated 200 students → $599/month → **$7,188 ARR** from single school
 
 ### Let's Transform Education Together
 
-**Demo:** Visit [smartclass24.app](https://smartclass24.app)  
-**Wisdom Warehouse Example:** [learn.wisdomwarehouse.com](https://learn.wisdomwarehouse.com)
+**Demo:** Visit [smartclass24.com](https://www.smartclass24.com)  
+**Wisdom Warehouse Example:** [smartclass24.com/?tenant=wisdomwarehouse](https://www.smartclass24.com/?tenant=wisdomwarehouse)
 
 **For Schools:**
 - Free 30-day trial
-- Custom demo with your branding
+- Custom demo with your branding (tenant-based URL)
 - Dedicated onboarding support
+- Custom domain mapping available (enterprise tier)
 
 **For Investors:**
 - Detailed financials & projections
@@ -357,7 +358,7 @@ Estimated 200 students → $599/month → **$7,188 ARR** from single school
 - Product roadmap walkthrough
 
 **Contact:**
-- Email: hello@smartclass24.app
+- Email: hello@smartclass24.com
 - WhatsApp: +233 24 443 2795
 - LinkedIn: [SmartClass24](#)
 
