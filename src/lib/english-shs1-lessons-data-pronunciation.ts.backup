@@ -3,10 +3,6 @@ export const pronunciationLesson = {
   id: 'eng-shs1-ls-3',
   slug: 'eng-ls-pronunciation-intonation',
   title: 'Pronunciation, Stress, and Intonation',
-  // Curriculum metadata
-  curriculumId: 'west-african',
-  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-  examAlignment: ["BECE","WASSCE","NECO"],
   subject: 'English Language',
   objectives: [
     'Understand the importance of correct pronunciation in effective communication',

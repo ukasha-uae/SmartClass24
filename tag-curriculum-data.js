@@ -69,7 +69,7 @@ function hasCurriculumMetadata(lessonText) {
 
 /**
  * Add curriculum metadata to a lesson object
- * Inserts after the 'title' field to maintain readability
+ * Improved pattern matching for nested lesson structures
  */
 function tagLessonObject(lessonText) {
   // Skip if already tagged
@@ -77,36 +77,22 @@ function tagLessonObject(lessonText) {
     return { modified: false, text: lessonText };
   }
 
-  // Pattern 1: Find lessons with title field (most common)
-  // Match: title: "...", or title: '...',
-  const titlePattern = /(title:\s*["'][^"']+["'],?\s*\n)/;
+  // Improved pattern: Find lesson title field and insert after it
+  // Handles various indentation and quote styles
+  const titlePattern = /(\s+title:\s*['"][^'"]+['"],?\s*\n)/;
   
   if (titlePattern.test(lessonText)) {
-    const curriculumFields = `    // Curriculum metadata (v2.0)\n` +
-      `    curriculumId: '${CURRICULUM_METADATA.curriculumId}',\n` +
-      `    region: ${JSON.stringify(CURRICULUM_METADATA.region)},\n` +
-      `    examAlignment: ${JSON.stringify(CURRICULUM_METADATA.examAlignment)},\n`;
+    const match = lessonText.match(titlePattern);
+    const indent = match[0].match(/^(\s+)/)?.[1] || '    ';
+    
+    const curriculumFields = 
+      `${indent}// Curriculum metadata\n` +
+      `${indent}curriculumId: '${CURRICULUM_METADATA.curriculumId}',\n` +
+      `${indent}region: ${JSON.stringify(CURRICULUM_METADATA.region)},\n` +
+      `${indent}examAlignment: ${JSON.stringify(CURRICULUM_METADATA.examAlignment)},\n`;
     
     const modifiedText = lessonText.replace(
       titlePattern,
-      `$1${curriculumFields}`
-    );
-    
-    return { modified: true, text: modifiedText };
-  }
-
-  // Pattern 2: If no title field found, insert after opening brace
-  // This handles edge cases
-  const openBracePattern = /(\{\s*\n)/;
-  
-  if (openBracePattern.test(lessonText)) {
-    const curriculumFields = `    // Curriculum metadata (v2.0)\n` +
-      `    curriculumId: '${CURRICULUM_METADATA.curriculumId}',\n` +
-      `    region: ${JSON.stringify(CURRICULUM_METADATA.region)},\n` +
-      `    examAlignment: ${JSON.stringify(CURRICULUM_METADATA.examAlignment)},\n`;
-    
-    const modifiedText = lessonText.replace(
-      openBracePattern,
       `$1${curriculumFields}`
     );
     
@@ -136,35 +122,72 @@ function processFile(filePath) {
   // Read file content
   const content = fs.readFileSync(filePath, 'utf8');
   
-  // Check if already tagged
-  const alreadyTagged = content.includes('curriculumId: \'west-african\'') ||
-                        content.includes('curriculumId: "west-african"');
-  
-  if (alreadyTagged) {
-    console.log(`   ✅ Already tagged (skipping)`);
-    return { success: true, reason: 'already_tagged', modified: false };
-  }
-
-  // Count lessons to tag
+  // Count lessons to tag - count lesson objects (not quiz objects)
   // Simple heuristic: count lesson objects (imperfect but good enough)
   const lessonCount = (content.match(/\s+id:\s*["'][^"']+["'],/g) || []).length;
   console.log(`   📊 Estimated lessons: ${lessonCount}`);
 
-  // Tag lessons
+  // Tag lessons using improved line-by-line approach
   let modifiedContent = content;
   let tagsAdded = 0;
 
-  // Split by lesson boundaries (simplistic approach)
-  // Better approach: Parse AST, but this works for our data structure
-  const lessonPattern = /(\{[^{}]*id:\s*["'][^"']+["'][^{}]*?(?:\{[^{}]*\}[^{}]*)*?\})/gs;
+  // Find all lesson objects by looking for the pattern:
+  // - Has 'id:' field
+  // - Has 'slug:' field  
+  // - Has 'title:' field
+  // - NOT already tagged with curriculumId
+  // Insert curriculum metadata right after the title field
   
-  modifiedContent = modifiedContent.replace(lessonPattern, (match) => {
-    const result = tagLessonObject(match);
-    if (result.modified) {
-      tagsAdded++;
+  const lines = content.split('\n');
+  const result = [];
+  let i = 0;
+  
+  while (i < lines.length) {
+    const line = lines[i];
+    result.push(line);
+    
+    // Check if this line contains a title field for a lesson
+    if (/\s+title:\s*['"][^'"]+['"],?\s*$/.test(line)) {
+      // Look back to confirm this is a lesson object (has id and slug)
+      let isLesson = false;
+      for (let j = Math.max(0, i - 5); j < i; j++) {
+        const prevLine = lines[j];
+        if (/\s+id:\s*['"][^'"]+['"],?\s*$/.test(prevLine)) {
+          // Check for slug too
+          for (let k = j; k <= i; k++) {
+            if (/\s+slug:\s*['"][^'"]+['"],?\s*$/.test(lines[k])) {
+              isLesson = true;
+              break;
+            }
+          }
+          break;
+        }
+      }
+      
+      // Check if next few lines already have curriculumId
+      let alreadyTagged = false;
+      for (let j = i + 1; j < Math.min(i + 5, lines.length); j++) {
+        if (/curriculumId:/.test(lines[j])) {
+          alreadyTagged = true;
+          break;
+        }
+      }
+      
+      // If this is a lesson and not already tagged, insert curriculum metadata
+      if (isLesson && !alreadyTagged) {
+        const indent = line.match(/^(\s+)/)?.[1] || '    ';
+        result.push(`${indent}// Curriculum metadata`);
+        result.push(`${indent}curriculumId: '${CURRICULUM_METADATA.curriculumId}',`);
+        result.push(`${indent}region: ${JSON.stringify(CURRICULUM_METADATA.region)},`);
+        result.push(`${indent}examAlignment: ${JSON.stringify(CURRICULUM_METADATA.examAlignment)},`);
+        tagsAdded++;
+      }
     }
-    return result.text;
-  });
+    
+    i++;
+  }
+  
+  modifiedContent = result.join('\n');
 
   if (DRY_RUN) {
     console.log(`   [DRY RUN] Would add curriculum metadata to ~${tagsAdded} lessons`);

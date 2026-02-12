@@ -10,10 +10,6 @@ export const integratedScienceSHS2Lessons: Lesson[] = [
     id: 'is-shs2-cy-1',
     slug: 'is-cy-life-cycles-plants-animals',
     title: 'Life Cycles: Plants and Animals',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define life cycle and explain its importance in biology',
       'Describe the stages of plant life cycles including germination and reproduction',
@@ -679,10 +675,6 @@ Understanding life cycles enables humans to work with natural processes for food
     id: 'is-shs2-cy-2',
     slug: 'is-cy-life-cycles-human-development',
     title: 'Life Cycles: Human Development',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Describe the stages of human development from conception to old age',
       'Explain the physical, cognitive, and emotional changes during each life stage',
@@ -1386,10 +1378,6 @@ Understanding human development helps us support healthy growth, make informed p
     id: 'is-shs2-cy-3',
     slug: 'is-cy-nutrient-cycles-nitrogen-carbon',
     title: 'Nutrient Cycles: Nitrogen and Carbon',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Explain the importance of nutrient cycles in maintaining ecosystem balance',
       'Describe the nitrogen cycle in detail, including all stages and organisms involved',
@@ -3037,10 +3025,6 @@ The nitrogen and carbon cycles are not just academic topics - they are the invis
     id: 'is-shs2-cy-4',
     slug: 'is-cy-nutrient-cycles-water',
     title: 'Nutrient Cycles: Water Cycle',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Explain the importance of water for life on Earth',
       'Describe the stages of the water cycle in detail',
@@ -4264,10 +4248,6 @@ Ghana\'s water security depends on:
     id: 'is-shs2-re-5',
     slug: 'is-cy-reproduction-asexual-sexual',
     title: 'Reproduction: Asexual and Sexual',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define reproduction and explain its importance for species survival',
       'Distinguish between asexual and sexual reproduction',
@@ -4777,10 +4757,6 @@ Meiosis → Gametes (haploid) → Fertilization → Zygote (diploid) → Develop
     id: 'is-shs2-re-6',
     slug: 'is-cy-reproduction-fertilization-development',
     title: 'Reproduction: Fertilization and Development',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define fertilization and explain its importance in sexual reproduction',
       'Distinguish between external and internal fertilization',
@@ -5440,10 +5416,6 @@ Egg → Nymph → Adult
     id: 'is-shs2-electricity-magnetism-concepts',
     slug: 'is-em-electricity-magnetism-concepts',
     title: 'Electricity and Magnetism - Electric Charge, Current, and Voltage',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     
     objectives: [
       'Distinguish between static electricity and current electricity',
@@ -6112,10 +6084,6 @@ $$\\boxed{V = IR}$$
     id: 'is-shs2-electricity-magnetism-simple-circuits',
     slug: 'is-en-electricity-magnetism-simple-circuits',
     title: 'Electricity and Magnetism - Simple Circuits',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     
     objectives: [
       'Describe what constitutes an electric circuit and its essential components',
@@ -6830,10 +6798,6 @@ Standard symbols are used in all circuit diagrams:
     id: 'is-shs2-work-machines-force-work-power',
     slug: 'is-en-work-machines-force-work-power',
     title: 'Work and Machines - Force, Work, and Power',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     
     objectives: [
       'Define force and identify different types of forces',
@@ -7484,10 +7448,6 @@ Efficiency = (Useful output / Total input) × 100%
     id: 'is-shs2-work-machines-simple-machines',
     slug: 'is-en-work-machines-simple-machines-uses',
     title: 'Work and Machines: Simple Machines & Uses',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     
     objectives: [
       'Define a machine and explain its purpose',

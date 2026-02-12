@@ -9,10 +9,6 @@ export const englishSHS1Lessons: Lesson[] = [
     id: 'eng-shs1-ls-1',
     slug: 'eng-ls-effective-listening',
     title: 'Effective Listening Strategies',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define listening and explain its importance in effective communication',
       'Differentiate between hearing and listening',
@@ -844,10 +840,6 @@ Listening comprehension is directly tested in Oral English examinations. Strong 
     id: 'eng-shs1-ls-2',
     slug: 'eng-ls-oral-presentations',
     title: 'Oral Presentations and Discussions',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Understand the structure and purpose of effective oral presentations',
       'Prepare and deliver well-organized presentations on various topics',
@@ -1003,10 +995,6 @@ Listening comprehension is directly tested in Oral English examinations. Strong 
     id: 'eng-shs1-ls-3',
     slug: 'eng-ls-pronunciation-intonation',
     title: 'Pronunciation, Stress, and Intonation',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Understand the importance of correct pronunciation in effective communication',
       'Identify and pronounce the 44 English sounds using phonetic symbols',
@@ -1077,10 +1065,6 @@ Pronunciation is more than just producing individual sounds – it includes unde
     id: 'eng-shs1-rw-1',
     slug: 'eng-rw-reading-comprehension',
     title: 'Reading Comprehension Strategies',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Understand the difference between surface reading and deep comprehension',
       'Apply active reading strategies before, during, and after reading',

@@ -5,10 +5,6 @@ export const integratedScienceSHS3Lessons: Lesson[] = [
     id: 'is-shs3-sy-1',
     slug: 'is-sy-human-body-systems-overview',
     title: 'Human Body Systems: Overview',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'List and identify the 11 major organ systems of the human body',
       'Describe the main function of each organ system',
@@ -593,10 +589,6 @@ All systems work together to maintain stable internal conditions:
     id: 'is-shs3-sy-2',
     slug: 'is-sy-human-body-systems-functions-interactions',
     title: 'Human Body Systems: Functions & Interactions',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Explain how systems interact',
       'Give examples of coordinated responses'
@@ -613,10 +605,6 @@ All systems work together to maintain stable internal conditions:
     id: 'is-shs3-sy-3',
     slug: 'is-sy-plant-systems-photosynthesis',
     title: 'Plant Systems: Photosynthesis',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define photosynthesis',
       'State the photosynthesis equation'
@@ -634,10 +622,6 @@ All systems work together to maintain stable internal conditions:
     id: 'is-shs3-sy-4',
     slug: 'is-sy-plant-systems-transport',
     title: 'Plant Systems: Transport',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Describe the structure and function of xylem and phloem',
       'Explain water uptake by roots through osmosis',
@@ -1039,10 +1023,6 @@ Understanding plant transport helps Ghanaian farmers optimize irrigation, improv
     id: 'is-shs3-sy-5',
     slug: 'is-sy-ecosystems-components-relationships',
     title: 'Ecosystems: Components & Relationships',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define ecosystem and distinguish between biotic and abiotic components',
       'Explain the relationships between organisms: symbiosis, competition, predation',
@@ -1623,10 +1603,6 @@ Understanding ecosystems helps conserve biodiversity and manage resources sustai
     id: 'is-shs3-sy-6',
     slug: 'is-sy-ecosystems-energy-flow-food-chains',
     title: 'Ecosystems: Energy Flow & Food Chains',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     
     objectives: [
       'Explain the ultimate source of energy for most ecosystems',
@@ -2611,10 +2587,6 @@ Understanding ecological pyramids helps explain:
     id: 'is-shs3-im-1',
     slug: 'is-im-environmental-chemistry-pollution-effects',
     title: 'Environmental Chemistry: Pollution & Effects',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     
     objectives: [
       'Define pollution and distinguish between natural and anthropogenic pollutants',
@@ -3557,10 +3529,6 @@ As students, you're future leaders, scientists, businesspeople, and citizens. Th
     id: 'is-shs3-im-2',
     slug: 'is-im-environmental-chemistry-waste-management',
     title: 'Environmental Chemistry: Waste Management',
-    // Curriculum metadata
-    curriculumId: 'west-african',
-    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
-    examAlignment: ["BECE","WASSCE","NECO"],
     
     objectives: [
       'Define waste and classify types of waste: solid, liquid, gaseous, and hazardous',

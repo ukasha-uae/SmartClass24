@@ -219,6 +219,8 @@ export interface Topic {
   title: string;
   // Multi-curriculum metadata (v2.0+)
   curriculumId?: string;          // Curriculum system this topic belongs to
+  region?: string[];              // Geographic applicability
+  examAlignment?: string[];       // Exam systems covered
   gradeLevel?: string;            // 'JHS 1', 'Grade 8', 'Year 9', etc.
   sequenceOrder?: number;         // Order within curriculum
   // Content
@@ -238,6 +240,8 @@ export interface Subject {
   description: string;
   // Multi-curriculum support (v2.0+)
   curriculumId?: string;          // Which curriculum system this subject belongs to
+  region?: string[];              // Geographic applicability
+  examAlignment?: string[];       // Exam systems covered
   standardName?: string;          // Universal name: 'Mathematics', 'Science'
   localizedNames?: {              // Curriculum-specific names
     [curriculumId: string]: string; // e.g., 'west-african': 'Integrated Science'

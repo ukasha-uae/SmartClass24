@@ -125,6 +125,19 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
     slug: 'demo',
     name: 'Demo Academy',
     market: 'global',
+    curriculum: {
+      id: 'west-african',
+      name: 'West African Curriculum',
+      description: 'Demo deployment using West African curriculum for testing',
+      region: ['ghana', 'nigeria', 'sierra-leone', 'liberia', 'gambia'],
+      examSystems: ['BECE', 'WASSCE', 'NECO'],
+      supportedLanguages: ['en'],
+      academicStructure: {
+        primary: { name: 'Primary', grades: ['1', '2', '3', '4', '5', '6'] },
+        junior: { name: 'JHS', grades: ['1', '2', '3'] },
+        senior: { name: 'SHS', grades: ['1', '2', '3'] },
+      },
+    },
     branding: {
       name: 'Demo Academy',
       logoUrl: undefined,

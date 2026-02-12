@@ -32,11 +32,19 @@ export const subjects: Subject[] = [
             id: 'eng101',
             slug: 'listening-speaking-1',
             title: 'Listening & Speaking',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                {
                 id: 'eng101-1',
                 slug: 'listening-comprehension',
                 title: 'Listening Comprehension',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Define listening comprehension and explain its importance in daily life and examinations.',
                   'Identify the main idea and supporting details from spoken passages.',
@@ -375,6 +383,10 @@ export const subjects: Subject[] = [
                 id: 'eng101-2',
                 slug: 'alphabet-pronunciation',
                 title: 'The Alphabet and Pronunciation',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Recognize and recite all 26 letters of the English alphabet in the correct order.',
                   'Distinguish clearly between vowels and consonants and explain their roles.',
@@ -434,6 +446,10 @@ export const subjects: Subject[] = [
                 id: 'eng101-3',
                 slug: 'greetings-introductions',
                 title: 'Greetings and Introductions',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Identify and use appropriate greetings for different times of the day (morning, afternoon, evening, night).',
                   'Distinguish between formal and informal greetings and know when to use each.',
@@ -600,11 +616,19 @@ export const subjects: Subject[] = [
             id: 'eng102',
             slug: 'reading-1',
             title: 'Reading',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               {
                 id: 'eng102-1',
                 slug: 'reading-comprehension-basics',
                 title: 'Reading Comprehension Basics',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Define reading comprehension and explain its importance for academic success and daily life.',
                   'Identify topic sentences, main ideas, and supporting details in different types of passages.',
@@ -939,6 +963,10 @@ export const subjects: Subject[] = [
                 id: 'eng102-2',
                 slug: 'silent-oral-reading-skills',
                 title: 'Silent and Oral Reading Skills',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Define silent reading and oral reading, explaining their distinct purposes and applications in academic and social contexts.',
                   'Demonstrate effective silent reading strategies including speed adjustment, comprehension monitoring, and focus techniques.',
@@ -1265,6 +1293,10 @@ export const subjects: Subject[] = [
                 id: 'eng102-3',
                 slug: 'summary-writing-note-taking',
                 title: 'Summary Writing & Note-Taking (JHS Basics)',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Define summary writing and note-taking as essential academic skills for information processing and retention.',
                   'Identify the main idea, supporting details, and key concepts in various types of texts including passages, lessons, and media.',
@@ -1585,11 +1617,19 @@ export const subjects: Subject[] = [
             id: 'eng103',
             slug: 'writing-1',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                  {
                 id: 'eng103-1',
                 slug: 'sentence-construction',
                 title: 'Sentence Construction & Paragraphs',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Define sentences and paragraphs, explaining their roles as fundamental units of written communication.',
                   'Identify and construct the four basic sentence types: simple, compound, complex, and compound-complex sentences.',
@@ -1910,11 +1950,19 @@ export const subjects: Subject[] = [
             id: 'eng104',
             slug: 'grammar-usage-1',
             title: 'Grammar & Usage',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                {
                 id: 'eng104-1',
                 slug: 'parts-of-speech',
                 title: 'Parts of Speech',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Define what parts of speech are and explain their importance in English grammar.',
                   'Identify and classify all eight parts of speech in sentences: nouns, pronouns, verbs, adjectives, adverbs, prepositions, conjunctions, and interjections.',
@@ -2615,6 +2663,10 @@ export const subjects: Subject[] = [
                 id: 'eng104-2',
                 slug: 'nouns',
                 title: 'Nouns',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Define what nouns are and explain their functions in sentences.',
                   'Identify and classify the five main types of nouns (proper, common, concrete, abstract, collective).',
@@ -2831,6 +2883,10 @@ export const subjects: Subject[] = [
                 id: 'eng104-3',
                 slug: 'pronouns',
                 title: 'Pronouns',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   "Define what a pronoun is and explain its function in sentences.",
                   "Identify and classify the eight main types of pronouns (personal, possessive, reflexive, demonstrative, interrogative, relative, indefinite, reciprocal).",
@@ -3206,6 +3262,10 @@ export const subjects: Subject[] = [
                 id: 'eng104-4',
                 slug: 'tenses-1',
                 title: 'Tenses (Simple Present, Past, Future)',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 objectives: [
                   'Define what tenses are and explain their importance in communication.',
                   'Identify and use the Simple Present Tense correctly for habits, general truths, and regular actions.',
@@ -3576,11 +3636,19 @@ export const subjects: Subject[] = [
             id: 'eng201',
             slug: 'grammar-usage-2',
             title: 'Grammar & Usage',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                 { 
                   id: 'eng201-1', 
                   slug: 'advanced-tenses', 
                   title: 'Tenses (Perfect, Progressive)', 
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     'Define and differentiate between perfect and progressive (continuous) tenses.',
                     'Construct sentences using the present perfect and present perfect progressive tenses correctly.',
@@ -3877,6 +3945,10 @@ export const subjects: Subject[] = [
                   id: 'eng201-2', 
                   slug: 'sentence-structures', 
                   title: 'Sentence Types & Structures', 
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     'Define and differentiate between phrases and clauses (independent and dependent).',
                     'Identify and construct simple sentences, recognizing their basic subject-verb structure.',
@@ -4179,6 +4251,10 @@ export const subjects: Subject[] = [
                   id: 'eng201-3', 
                   slug: 'speech', 
                   title: 'Direct and Indirect Speech', 
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     'Define Direct and Indirect (Reported) Speech and distinguish between them.',
                     'Use correct punctuation for Direct Speech, including inverted commas and commas.',
@@ -4470,6 +4546,10 @@ export const subjects: Subject[] = [
                   id: 'eng201-4', 
                   slug: 'voice', 
                   title: 'Active and Passive Voice', 
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     'Define Active and Passive Voice and distinguish between them.',
                     'Identify the Subject, Verb, and Object in a sentence.',
@@ -4635,11 +4715,19 @@ export const subjects: Subject[] = [
             id: 'eng202',
             slug: 'writing-2',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                 {
                   id: 'eng202-1',
                   slug: 'guided-composition',
                   title: 'Guided Composition',
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     "Understand the nature and purpose of guided composition.",
                     "Analyze prompts and outlines provided in examination questions.",
@@ -4716,6 +4804,10 @@ export const subjects: Subject[] = [
                   id: 'eng202-2',
                   slug: 'functional-writing',
                   title: 'Functional Writing',
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     "Define functional writing and identify its key purposes.",
                     "Write formal and informal letters following proper format and structure.",
@@ -5013,11 +5105,19 @@ export const subjects: Subject[] = [
             id: 'eng203',
             slug: 'literature-2',
             title: 'Literature',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                 { 
                   id: 'eng203-1', 
                   slug: 'prose', 
                   title: 'Prose (Short Stories)', 
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     'Define Prose and distinguish it from Poetry and Drama.',
                     'Differentiate between Fiction (made-up) and Non-Fiction (real).',
@@ -5166,6 +5266,10 @@ export const subjects: Subject[] = [
                   id: 'eng203-2', 
                   slug: 'poetry', 
                   title: 'Poetry Appreciation', 
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     'Define Poetry and distinguish it from Prose and Drama.',
                     'Identify the structural elements of poetry: Verse (Line) and Stanza.',
@@ -5309,6 +5413,10 @@ export const subjects: Subject[] = [
                   id: 'eng203-3', 
                   slug: 'drama', 
                   title: 'Drama (Dialogues & Roleplay)', 
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     'Define Drama and distinguish it from Prose and Poetry.',
                     'Identify the key elements of drama: Plot, Character, Setting, Dialogue, and Theme.',
@@ -5465,11 +5573,19 @@ export const subjects: Subject[] = [
             id: 'eng204',
             slug: 'vocabulary-development-2',
             title: 'Vocabulary Development',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                 {
                   id: 'eng204-1',
                   slug: 'synonyms-antonyms',
                   title: 'Synonyms, Antonyms, Homonyms',
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     "Define and differentiate between synonyms, antonyms, and homonyms.",
                     "Identify synonyms and use them to improve vocabulary and avoid repetition.",
@@ -5735,6 +5851,10 @@ export const subjects: Subject[] = [
                   id: 'eng204-2',
                   slug: 'idioms-proverbs',
                   title: 'Idiomatic Expressions & Proverbs',
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     "Define idioms and proverbs and explain their functions in language.",
                     "Identify and interpret common English idioms in context.",
@@ -6035,6 +6155,10 @@ export const subjects: Subject[] = [
                   id: 'eng204-3',
                   slug: 'collocations-phrasal-verbs',
                   title: 'Collocations & Phrasal Verbs',
+                  // Curriculum metadata
+                  curriculumId: 'west-african',
+                  region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                  examAlignment: ["BECE","WASSCE","NECO"],
                   objectives: [
                     "Define and identify collocations and phrasal verbs in sentences.",
                     "Distinguish between different types of collocations (e.g., verb+noun, adjective+noun).",
@@ -6314,11 +6438,19 @@ export const subjects: Subject[] = [
                 id: 'eng301',
                 slug: 'writing-3',
                 title: 'Writing (BECE Focus)',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     {
                       id: 'eng301-1',
                       slug: 'free-composition',
                       title: 'Free Composition (Essays)',
+                      // Curriculum metadata
+                      curriculumId: 'west-african',
+                      region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                      examAlignment: ["BECE","WASSCE","NECO"],
                       objectives: [
                         "Understand the structure of an essay (Introduction, Body, Conclusion).",
                         "Write different types of essays: Narrative, Descriptive, Argumentative, Expository.",
@@ -6390,6 +6522,10 @@ export const subjects: Subject[] = [
                 id: 'eng302',
                 slug: 'grammar-3',
                 title: 'Grammar (BECE Focus)',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'eng302-1', slug: 'concord', title: 'Concord (Subject-Verb Agreement)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'eng302-2', slug: 'punctuation', title: 'Punctuation & Capitalization', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -6400,6 +6536,10 @@ export const subjects: Subject[] = [
                 id: 'eng303',
                 slug: 'literature-3',
                 title: 'Literature (BECE Focus)',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'eng303-1', slug: 'literary-analysis', title: 'Themes, Characters, Setting, Plot Analysis', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'eng303-2', slug: 'african-literature', title: 'African & Global Literature', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -6409,6 +6549,10 @@ export const subjects: Subject[] = [
                 id: 'eng304',
                 slug: 'bece-preparation',
                 title: 'BECE Preparation',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'eng304-1', slug: 'comprehension-practice', title: 'Practice Comprehension Passages', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'eng304-2', slug: 'oral-english', title: 'Oral English Drills', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -6433,6 +6577,10 @@ export const subjects: Subject[] = [
                 id: 'math101',
                 slug: 'number-numerals-1',
                 title: 'Number & Numerals',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     {
                         id: 'math101-1',
@@ -6490,6 +6638,10 @@ export const subjects: Subject[] = [
                 id: 'math102',
                 slug: 'algebra-1',
                 title: 'Algebra',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                      {
                         id: 'math102-1',
@@ -6527,6 +6679,10 @@ export const subjects: Subject[] = [
                 id: 'math103',
                 slug: 'geometry-mensuration-1',
                 title: 'Geometry & Mensuration',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     {
                         id: 'math103-1',
@@ -6564,6 +6720,10 @@ export const subjects: Subject[] = [
                 id: 'math104',
                 slug: 'statistics-probability-1',
                 title: 'Statistics & Probability',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                      {
                         id: 'math104-1',
@@ -6601,6 +6761,10 @@ export const subjects: Subject[] = [
                 id: 'math105',
                 slug: 'everyday-maths-1',
                 title: 'Everyday Maths',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     {
                         id: 'math105-1',
@@ -6623,6 +6787,10 @@ export const subjects: Subject[] = [
                 id: 'math201',
                 slug: 'number-numerals-2',
                 title: 'Number & Numerals',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math201-1', slug: 'lcm-hcf', title: 'Properties of Numbers (LCM, HCF)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math201-2', slug: 'percentages-advanced', title: 'Percentages (Profit/Loss, Simple Interest)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -6634,6 +6802,10 @@ export const subjects: Subject[] = [
                 id: 'math202',
                 slug: 'algebra-2',
                 title: 'Algebra',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math202-1', slug: 'expanding-brackets', title: 'Expanding Brackets and Simplifying', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math202-2', slug: 'factorization', title: 'Factorization of Simple Expressions', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -6645,6 +6817,10 @@ export const subjects: Subject[] = [
                 id: 'math203',
                 slug: 'geometry-mensuration-2',
                 title: 'Geometry & Mensuration',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math203-1', slug: 'angles-polygons-circles', title: 'Angles in Polygons and Circles', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math203-2', slug: 'congruent-similar-figures', title: 'Congruent and Similar Figures', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -6657,11 +6833,19 @@ export const subjects: Subject[] = [
                 id: 'math204',
                 slug: 'statistics-probability-2',
                 title: 'Statistics & Probability',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { 
                         id: 'math204-1', 
                         slug: 'mean-median-mode-range', 
                         title: 'Statistics: Mean, Median, Mode, Range', 
+                        // Curriculum metadata
+                        curriculumId: 'west-african',
+                        region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                        examAlignment: ["BECE","WASSCE","NECO"],
                         objectives: [
                             'Understand what measures of central tendency and dispersion are',
                             'Calculate the mean (average) of a set of numbers',
@@ -7486,6 +7670,10 @@ In Ghana, statistics help us:
                 id: 'math205',
                 slug: 'everyday-maths-2',
                 title: 'Everyday Maths',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math205-1', slug: 'budgets-scale-drawing', title: 'Simple Household Budgets, Scale Drawing', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math205-2', slug: 'time-speed-distance', title: 'Time, Speed, Distance Problems', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' }
@@ -7500,6 +7688,10 @@ In Ghana, statistics help us:
                 id: 'math301',
                 slug: 'number-numerals-3',
                 title: 'Number & Numerals',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math301-1', slug: 'sets', title: 'Sets and Operations on Sets', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math301-2', slug: 'indices-logarithms', title: 'Indices and Logarithms', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7510,6 +7702,10 @@ In Ghana, statistics help us:
                 id: 'math302',
                 slug: 'algebra-3',
                 title: 'Algebra',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math302-1', slug: 'quadratic-equations', title: 'Quadratic Equations', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math302-2', slug: 'simultaneous-linear-equations', title: 'Simultaneous Linear Equations', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7521,6 +7717,10 @@ In Ghana, statistics help us:
                 id: 'math303',
                 slug: 'geometry-mensuration-3',
                 title: 'Geometry & Mensuration',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math303-1', slug: 'circle-theorems', title: 'Circle Theorems', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math303-2', slug: 'trigonometry', title: 'Trigonometry', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7532,6 +7732,10 @@ In Ghana, statistics help us:
                 id: 'math304',
                 slug: 'statistics-probability-3',
                 title: 'Statistics & Probability',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math304-1', slug: 'measures-central-tendency-grouped', title: 'Measures of Central Tendency (Grouped Data)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math304-2', slug: 'measures-dispersion', title: 'Measures of Dispersion', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7542,6 +7746,10 @@ In Ghana, statistics help us:
                 id: 'math305',
                 slug: 'everyday-maths-3',
                 title: 'Everyday Maths',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'math305-1', slug: 'financial-mathematics', title: 'Financial Mathematics (Compound Interest)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'math305-2', slug: 'advanced-word-problems', title: 'Advanced Word Problems', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' }
@@ -7565,6 +7773,10 @@ In Ghana, statistics help us:
             id: 'sci101',
             slug: 'diversity-of-matter-1',
             title: 'Diversity of Matter',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci101-1', slug: 'nature-of-science', title: 'Nature of Science', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci101-2', slug: 'matter-states', title: 'Matter and Its States', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7576,6 +7788,10 @@ In Ghana, statistics help us:
             id: 'sci102',
             slug: 'cycles-1',
             title: 'Cycles',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci102-1', slug: 'water-cycle', title: 'The Water Cycle', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci102-2', slug: 'life-cycles', title: 'Life Cycles of Living Things', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7586,6 +7802,10 @@ In Ghana, statistics help us:
             id: 'sci103',
             slug: 'systems-1',
             title: 'Systems',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci103-1', slug: 'human-body-systems', title: 'The Human Body: Organs and Systems', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci103-2', slug: 'plants-functions', title: 'Plants: Parts and Functions', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7597,6 +7817,10 @@ In Ghana, statistics help us:
             id: 'sci104',
             slug: 'forces-energy-1',
             title: 'Forces & Energy',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci104-1', slug: 'types-of-forces', title: 'Types of Forces', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci104-2', slug: 'work-energy-power', title: 'Work, Energy, and Power', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7608,6 +7832,10 @@ In Ghana, statistics help us:
             id: 'sci105',
             slug: 'human-env-sustainability-1',
             title: 'Human & Environmental Sustainability',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci105-1', slug: 'sanitation-hygiene', title: 'Sanitation and Personal Hygiene', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci105-2', slug: 'waste-management', title: 'Environmental Cleanliness and Waste Management', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7623,6 +7851,10 @@ In Ghana, statistics help us:
             id: 'sci201',
             slug: 'diversity-of-matter-2',
             title: 'Diversity of Matter',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci201-1', slug: 'atoms-molecules', title: 'Atoms, Molecules, and Particles', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci201-2', slug: 'separation-of-mixtures', title: 'Separation of Mixtures', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7633,6 +7865,10 @@ In Ghana, statistics help us:
             id: 'sci202',
             slug: 'cycles-2',
             title: 'Cycles',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci202-1', slug: 'carbon-cycle', title: 'Carbon Cycle', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci202-2', slug: 'nitrogen-cycle', title: 'Nitrogen Cycle', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7662,6 +7898,10 @@ In Ghana, statistics help us:
             id: 'sci203',
             slug: 'systems-2',
             title: 'Systems',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci203-1', slug: 'circulatory-respiratory', title: 'Circulatory and Respiratory Systems', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci203-2', slug: 'excretory-system', title: 'Excretory System', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7674,6 +7914,10 @@ In Ghana, statistics help us:
             id: 'sci204',
             slug: 'forces-energy-2',
             title: 'Forces & Energy',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci204-1', slug: 'simple-machines', title: 'Simple Machines', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci204-2', slug: 'pressure', title: 'Pressure in Liquids and Gases', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7685,6 +7929,10 @@ In Ghana, statistics help us:
             id: 'sci205',
             slug: 'human-env-sustainability-2',
             title: 'Human & Environmental Sustainability',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci205-1', slug: 'conservation', title: 'Conservation of Natural Resources', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci205-2', slug: 'pollution', title: 'Pollution', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7700,6 +7948,10 @@ In Ghana, statistics help us:
             id: 'sci301',
             slug: 'diversity-of-matter-3',
             title: 'Diversity of Matter',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci301-1', slug: 'atomic-structure', title: 'Atomic Structure', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci301-2', slug: 'periodic-table', title: 'Periodic Table', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7710,6 +7962,10 @@ In Ghana, statistics help us:
             id: 'sci302',
             slug: 'cycles-3',
             title: 'Cycles',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci302-1', slug: 'water-purification', title: 'Water Purification Methods', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci302-2', slug: 'reproduction-humans', title: 'Reproduction and Growth in Humans', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7720,6 +7976,10 @@ In Ghana, statistics help us:
             id: 'sci303',
             slug: 'systems-3',
             title: 'Systems',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci303-1', slug: 'skeletal-muscular', title: 'Skeletal and Muscular Systems', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci03-2', slug: 'nervous-system', title: 'Nervous System', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7731,6 +7991,10 @@ In Ghana, statistics help us:
             id: 'sci304',
             slug: 'forces-energy-3',
             title: 'Forces & Energy',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci304-1', slug: 'work-energy-machines-advanced', title: 'Work, Energy, and Machines (Advanced)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci304-2', slug: 'waves-sound', title: 'Waves and Sound', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7743,6 +8007,10 @@ In Ghana, statistics help us:
             id: 'sci305',
             slug: 'human-env-sustainability-3',
             title: 'Human & Environmental Sustainability',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'sci305-1', slug: 'health-diseases', title: 'Health and Diseases', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'sci305-2', slug: 'first-aid-drug-abuse', title: 'First Aid and Drug Use/Abuse', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7768,6 +8036,10 @@ In Ghana, statistics help us:
             id: 'soc101',
             slug: 'the-environment-1',
             title: 'The Environment',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc101-1', slug: 'environment-components', title: 'The environment and its components', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc101-2', slug: 'physical-environment', title: 'Our physical environment', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7779,6 +8051,10 @@ In Ghana, statistics help us:
             id: 'soc102',
             slug: 'governance-politics-stability-1',
             title: 'Governance, Politics & Stability',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc102-1', slug: 'what-is-society', title: 'What is society? Rules and regulations', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc102-2', slug: 'family-unit', title: 'The family as the basic unit of society', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7790,6 +8066,10 @@ In Ghana, statistics help us:
             id: 'soc103',
             slug: 'social-economic-development-1',
             title: 'Social & Economic Development',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc103-1', slug: 'needs-and-wants', title: 'Human needs and wants', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc103-2', slug: 'production', title: 'Production (farming, fishing, trading, services)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7801,6 +8081,10 @@ In Ghana, statistics help us:
             id: 'soc104',
             slug: 'culture-national-identity-1',
             title: 'Our Culture & National Identity',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc104-1', slug: 'what-is-culture', title: 'What is culture? Elements of culture', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc104-2', slug: 'ghanaian-values', title: 'Ghanaian values and practices', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7812,6 +8096,10 @@ In Ghana, statistics help us:
             id: 'soc105',
             slug: 'globalisation-international-relations-1',
             title: 'Globalisation & International Relations',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc105-1', slug: 'ghana-in-the-world', title: 'Ghana in the world', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc105-2', slug: 'communication-transportation', title: 'Communication and transportation systems', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7827,6 +8115,10 @@ In Ghana, statistics help us:
             id: 'soc201',
             slug: 'the-environment-2',
             title: 'The Environment',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc201-1', slug: 'land-use-ghana', title: 'Land use in Ghana', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc201-2', slug: 'population-distribution', title: 'Population distribution in Ghana', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7838,6 +8130,10 @@ In Ghana, statistics help us:
             id: 'soc202',
             slug: 'governance-politics-stability-2',
             title: 'Governance, Politics & Stability',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc202-1', slug: 'pre-colonial-governance', title: 'Pre-colonial systems of governance in Ghana', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc202-2', slug: 'colonialism-independence', title: 'Colonialism and independence struggle', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7849,6 +8145,10 @@ In Ghana, statistics help us:
             id: 'soc203',
             slug: 'social-economic-development-2',
             title: 'Social & Economic Development',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               {
                 id: 'soc203-1',
@@ -7880,6 +8180,10 @@ In Ghana, statistics help us:
             id: 'soc204',
             slug: 'culture-national-identity-2',
             title: 'Our Culture & National Identity',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc204-1', slug: 'ethnic-groups-diversity', title: 'Ghana\'s ethnic groups and cultural diversity', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc204-2', slug: 'unity-in-diversity', title: 'Unity in diversity', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7891,6 +8195,10 @@ In Ghana, statistics help us:
             id: 'soc205',
             slug: 'globalisation-international-relations-2',
             title: 'Globalisation & International Relations',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc205-1', slug: 'international-trade', title: 'International trade', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc205-2', slug: 'ghana-international-organisations', title: 'Ghana and international organisations', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7906,6 +8214,10 @@ In Ghana, statistics help us:
             id: 'soc301',
             slug: 'the-environment-3',
             title: 'The Environment',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc301-1', slug: 'natural-resources-ghana', title: 'Natural resources of Ghana and their uses', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc301-2', slug: 'resource-management', title: 'Resource management and sustainable development', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7917,6 +8229,10 @@ In Ghana, statistics help us:
             id: 'soc302',
             slug: 'governance-politics-stability-3',
             title: 'Governance, Politics & Stability',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc302-1', slug: 'constitution-of-ghana', title: 'The Constitution of Ghana', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc302-2', slug: 'structure-of-government', title: 'Structure of government', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7928,6 +8244,10 @@ In Ghana, statistics help us:
             id: 'soc303',
             slug: 'social-economic-development-3',
             title: 'Social & Economic Development',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc303-1', slug: 'entrepreneurship-job-creation', title: 'Entrepreneurship and job creation', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc303-2', slug: 'national-development', title: 'National development', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7939,6 +8259,10 @@ In Ghana, statistics help us:
             id: 'soc304',
             slug: 'culture-national-identity-3',
             title: 'Our Culture & National Identity',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc304-1', slug: 'cultural-change-modernization', title: 'Cultural change and modernization', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc304-2', slug: 'cultural-heritage-tourism', title: 'Cultural heritage and tourism in Ghana', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7950,6 +8274,10 @@ In Ghana, statistics help us:
             id: 'soc305',
             slug: 'globalisation-international-relations-3',
             title: 'Globalisation & International Relations',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'soc305-1', slug: 'global-citizenship', title: 'Global citizenship and responsibilities', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'soc305-2', slug: 'international-conflicts-peacekeeping', title: 'International conflicts and Ghana\'s role in peacekeeping', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7975,6 +8303,10 @@ In Ghana, statistics help us:
             id: 'rme101',
             slug: 'god-creation-attributes-1',
             title: 'God, His Creation and Attributes',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme101-1', slug: 'concept-of-god', title: 'The concept of God in Christianity, Islam, and ATR', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme101-2', slug: 'god-as-creator', title: 'God as Creator and Sustainer of life', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7985,6 +8317,10 @@ In Ghana, statistics help us:
             id: 'rme102',
             slug: 'family-community-nation-1',
             title: 'The Family, Community & Nation',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme102-1', slug: 'family-moral-upbringing', title: 'The role of the family in moral upbringing', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme102-2', slug: 'roles-responsibilities', title: 'Roles and responsibilities of children and parents', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -7995,6 +8331,10 @@ In Ghana, statistics help us:
             id: 'rme103',
             slug: 'religious-practices-worship-1',
             title: 'Religious Practices & Worship',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme103-1', slug: 'types-of-prayer', title: 'Types of prayer (Christian, Islamic, Traditional)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme103-2', slug: 'fasting', title: 'Fasting in Christianity and Islam', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8005,6 +8345,10 @@ In Ghana, statistics help us:
             id: 'rme104',
             slug: 'leaders-role-models-1',
             title: 'Leaders and Role Models',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme104-1', slug: 'jesus-early-life', title: 'Jesus Christ\'s early life and ministry', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme104-2', slug: 'muhammad-early-life', title: 'Prophet Muhammad\'s early life and call to prophethood', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8015,6 +8359,10 @@ In Ghana, statistics help us:
             id: 'rme105',
             slug: 'moral-lessons-values-1',
             title: 'Moral Lessons & Values',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme105-1', slug: 'honesty-truthfulness-hard-work', title: 'Honesty, truthfulness, hard work', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme105-2', slug: 'respect-for-elders', title: 'Respect for elders and authority', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8030,6 +8378,10 @@ In Ghana, statistics help us:
             id: 'rme201',
             slug: 'god-creation-attributes-2',
             title: 'God, His Creation and Attributes',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme201-1', slug: 'god-humankind-relationship', title: 'God\'s relationship with humankind', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme201-2', slug: 'stewardship-of-environment', title: 'Stewardship of the environment', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8040,6 +8392,10 @@ In Ghana, statistics help us:
             id: 'rme202',
             slug: 'family-community-nation-2',
             title: 'The Family, Community & Nation',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme202-1', slug: 'extended-family-system', title: 'Extended family system in Ghana', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme202-2', slug: 'communal-living', title: 'Communal living and responsibility', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8050,6 +8406,10 @@ In Ghana, statistics help us:
             id: 'rme203',
             slug: 'religious-practices-worship-2',
             title: 'Religious Practices & Worship',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme203-1', slug: 'christian-worship', title: 'Worship in Christianity (church service, sacraments)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme203-2', slug: 'islamic-worship', title: 'Worship in Islam (Salat, Zakat, Sawm, Hajj)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8060,6 +8420,10 @@ In Ghana, statistics help us:
             id: 'rme204',
             slug: 'leaders-role-models-2',
             title: 'Leaders and Role Models',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme204-1', slug: 'jesus-parables-miracles', title: 'Parables and miracles of Jesus', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme204-2', slug: 'muhammad-teachings', title: 'Teachings of Prophet Muhammad (Hadith)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8070,6 +8434,10 @@ In Ghana, statistics help us:
             id: 'rme205',
             slug: 'moral-lessons-values-2',
             title: 'Moral Lessons & Values',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme205-1', slug: 'tolerance-peaceful-coexistence', title: 'Tolerance and peaceful coexistence', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme205-2', slug: 'patriotism-nation-building', title: 'Patriotism and nation building', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8085,6 +8453,10 @@ In Ghana, statistics help us:
             id: 'rme301',
             slug: 'god-creation-attributes-3',
             title: 'God, His Creation and Attributes',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme301-1', slug: 'sovereignty-of-god', title: 'The sovereignty of God', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme301-2', slug: 'god-judgment-reward', title: 'God\'s judgment and reward (Christian, Islamic, ATR beliefs)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8095,6 +8467,10 @@ In Ghana, statistics help us:
             id: 'rme302',
             slug: 'family-community-nation-3',
             title: 'The Family, Community & Nation',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme302-1', slug: 'marriage-family-life', title: 'Marriage and family life (Christian, Islamic, Traditional views)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme302-2', slug: 'social-vices', title: 'Social vices (corruption, greed, dishonesty, drug abuse, occultism)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8105,6 +8481,10 @@ In Ghana, statistics help us:
             id: 'rme303',
             slug: 'religious-practices-worship-3',
             title: 'Religious Practices & Worship',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme303-1', slug: 'christian-sacraments', title: 'Christian sacraments and ordinances (baptism, communion, confirmation)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme303-2', slug: 'islamic-pillars', title: 'Islamic pillars in practice (detailed study of Hajj, Zakat, Sawm, Hajj)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8115,6 +8495,10 @@ In Ghana, statistics help us:
             id: 'rme304',
             slug: 'leaders-role-models-3',
             title: 'Leaders and Role Models',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme304-1', slug: 'jesus-death-resurrection', title: 'The death and resurrection of Jesus Christ', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme304-2', slug: 'muhammad-last-sermon', title: 'The last sermon of Prophet Muhammad', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8125,6 +8509,10 @@ In Ghana, statistics help us:
             id: 'rme305',
             slug: 'moral-lessons-values-3',
             title: 'Moral Lessons & Values',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'rme305-1', slug: 'human-rights-responsibilities', title: 'Human rights and responsibilities', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'rme305-2', slug: 'justice-fairness', title: 'Justice and fairness in society', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8150,6 +8538,10 @@ In Ghana, statistics help us:
             id: 'cad101',
             slug: 'visual-arts-1',
             title: 'Visual Arts',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'cad101-1', slug: 'intro-drawing', title: 'Introduction to drawing (lines, shapes, shading)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'cad101-2', slug: 'elements-design', title: 'Elements of design (colour, texture, balance, proportion, rhythm)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8161,6 +8553,10 @@ In Ghana, statistics help us:
             id: 'cad102',
             slug: 'music-1',
             title: 'Music',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'cad102-1', slug: 'singing-folk-songs', title: 'Singing Ghanaian folk songs', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'cad102-2', slug: 'traditional-instruments', title: 'Introduction to traditional musical instruments (drums, flutes, rattles)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8172,6 +8568,10 @@ In Ghana, statistics help us:
             id: 'cad103',
             slug: 'dance-drama-1',
             title: 'Dance & Drama',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                 { id: 'cad103-1', slug: 'intro-traditional-dance', title: 'Introduction to traditional Ghanaian dances', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                 { id: 'cad103-2', slug: 'roleplay-storytelling', title: 'Roleplay and storytelling', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8183,6 +8583,10 @@ In Ghana, statistics help us:
             id: 'cad104',
             slug: 'cultural-creative-expression-1',
             title: 'Cultural & Creative Expression',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                 { id: 'cad104-1', slug: 'art-daily-life', title: 'Art in daily life (costumes, hairstyles, body adornment)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                 { id: 'cad104-2', slug: 'traditional-symbols', title: 'Traditional Ghanaian symbols (Adinkra symbols, kente patterns)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8193,6 +8597,10 @@ In Ghana, statistics help us:
             id: 'cad105',
             slug: 'art-appreciation-criticism-1',
             title: 'Art Appreciation & Criticism',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
                 { id: 'cad105-1', slug: 'observing-artworks', title: 'Observing and describing artworks', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                 { id: 'cad105-2', slug: 'talking-about-art', title: 'Talking about music and performances', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8208,6 +8616,10 @@ In Ghana, statistics help us:
                 id: 'cad201',
                 slug: 'visual-arts-2',
                 title: 'Visual Arts',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad201-1', slug: 'perspective-drawing', title: 'Perspective drawing (objects in 3D)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad201-2', slug: 'intermediate-painting', title: 'Intermediate painting techniques (mixing colours, tones, backgrounds)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8219,6 +8631,10 @@ In Ghana, statistics help us:
                 id: 'cad202',
                 slug: 'music-2',
                 title: 'Music',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad202-1', slug: 'singing-harmony', title: 'Singing in harmony', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad202-2', slug: 'music-notation', title: 'Reading and writing basic music notation', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8230,6 +8646,10 @@ In Ghana, statistics help us:
                 id: 'cad203',
                 slug: 'dance-drama-2',
                 title: 'Dance & Drama',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad203-1', slug: 'choreography-basics', title: 'Choreography basics (group dance, timing, patterns)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad203-2', slug: 'acting-techniques', title: 'Acting techniques (dialogues, stage performance)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8240,6 +8660,10 @@ In Ghana, statistics help us:
                 id: 'cad204',
                 slug: 'cultural-creative-expression-2',
                 title: 'Cultural & Creative Expression',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad204-1', slug: 'ghanaian-architecture', title: 'Ghanaian architecture (compounds, shrines, modern influences)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad204-2', slug: 'art-in-ceremonies', title: 'The role of art in Ghanaian festivals and ceremonies', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8250,6 +8674,10 @@ In Ghana, statistics help us:
                 id: 'cad205',
                 slug: 'art-appreciation-criticism-2',
                 title: 'Art Appreciation & Criticism',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad205-1', slug: 'comparing-artworks', title: 'Comparing artworks from different cultures', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad205-2', slug: 'critiquing-performances', title: 'Critiquing performances positively', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8265,6 +8693,10 @@ In Ghana, statistics help us:
                 id: 'cad301',
                 slug: 'visual-arts-3',
                 title: 'Visual Arts',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad301-1', slug: 'advanced-drawing', title: 'Advanced drawing (shading, texture, portraits)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad301-2', slug: 'painting-compositions', title: 'Painting compositions (themes, abstract vs realistic)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8276,6 +8708,10 @@ In Ghana, statistics help us:
                 id: 'cad302',
                 slug: 'music-3',
                 title: 'Music',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad302-1', slug: 'composing-meaningful-songs', title: 'Composing songs with meaning (social, moral, cultural themes)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad302-2', slug: 'performance-instruments', title: 'Performance with traditional and modern instruments', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8287,6 +8723,10 @@ In Ghana, statistics help us:
                 id: 'cad303',
                 slug: 'dance-drama-3',
                 title: 'Dance & Drama',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad303-1', slug: 'advanced-choreography', title: 'Advanced choreography (storytelling through dance)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad303-2', slug: 'stagecraft', title: 'Stagecraft (props, costumes, lighting basics)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8298,6 +8738,10 @@ In Ghana, statistics help us:
                 id: 'cad304',
                 slug: 'cultural-creative-expression-3',
                 title: 'Cultural & Creative Expression',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad304-1', slug: 'ghanaian-art-global', title: 'Ghanaian art in global context', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad304-2', slug: 'creative-industries', title: 'Creative industries (fashion, film, music, crafts, design)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8309,6 +8753,10 @@ In Ghana, statistics help us:
                 id: 'cad305',
                 slug: 'art-appreciation-criticism-3',
                 title: 'Art Appreciation & Criticism',
+                // Curriculum metadata
+                curriculumId: 'west-african',
+                region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+                examAlignment: ["BECE","WASSCE","NECO"],
                 lessons: [
                     { id: 'cad305-1', slug: 'analyzing-artworks', title: 'Analyzing Ghanaian and African artworks', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
                     { id: 'cad305-2', slug: 'art-national-identity', title: 'Art as a tool for national identity', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8333,6 +8781,10 @@ In Ghana, statistics help us:
             id: 'ct101',
             slug: 'home-economics-1',
             title: 'Home Economics',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct101-1', slug: 'intro-food-nutrition', title: 'Introduction to food and nutrition', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct101-2', slug: 'personal-hygiene-kitchen-safety', title: 'Personal hygiene and kitchen safety', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8345,6 +8797,10 @@ In Ghana, statistics help us:
             id: 'ct102',
             slug: 'basic-agriculture-1',
             title: 'Basic Agriculture',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct102-1', slug: 'importance-of-agriculture', title: 'Importance of agriculture in Ghana', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct102-2', slug: 'types-of-crops', title: 'Types of crops (food vs cash crops)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8357,6 +8813,10 @@ In Ghana, statistics help us:
             id: 'ct103',
             slug: 'pre-technical-skills-1',
             title: 'Pre-Technical Skills',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct103-1', slug: 'safety-in-workshop', title: 'Safety in the workshop', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct103-2', slug: 'intro-to-tools', title: 'Introduction to tools and equipment', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8368,6 +8828,10 @@ In Ghana, statistics help us:
             id: 'ct104',
             slug: 'entrepreneurship-1',
             title: 'Entrepreneurship & Career Guidance',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct104-1', slug: 'intro-to-work', title: 'Introduction to work and careers', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct104-2', slug: 'good-work-habits', title: 'Good work habits and time management', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8383,6 +8847,10 @@ In Ghana, statistics help us:
             id: 'ct201',
             slug: 'home-economics-2',
             title: 'Home Economics',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct201-1', slug: 'meal-planning', title: 'Meal planning for families', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct201-2', slug: 'food-preservation', title: 'Food preservation methods', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8395,6 +8863,10 @@ In Ghana, statistics help us:
             id: 'ct202',
             slug: 'basic-agriculture-2',
             title: 'Basic Agriculture',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct202-1', slug: 'soil-types-improvement', title: 'Soil types and soil improvement', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct202-2', slug: 'crop-production', title: 'Crop production', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8407,6 +8879,10 @@ In Ghana, statistics help us:
             id: 'ct203',
             slug: 'pre-technical-skills-2',
             title: 'Pre-Technical Skills',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct203-1', slug: 'technical-drawing-2', title: 'Technical drawing', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct203-2', slug: 'simple-joints-woodwork', title: 'Simple joints in woodwork', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8418,6 +8894,10 @@ In Ghana, statistics help us:
             id: 'ct204',
             slug: 'entrepreneurship-2',
             title: 'Entrepreneurship & Career Guidance',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct204-1', slug: 'identifying-business-opportunities', title: 'Identifying business opportunities', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct204-2', slug: 'producing-selling-products', title: 'Producing and selling small products', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8433,6 +8913,10 @@ In Ghana, statistics help us:
             id: 'ct301',
             slug: 'home-economics-3',
             title: 'Home Economics',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct301-1', slug: 'nutritional-needs', title: 'Nutritional needs of different age groups', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct301-2', slug: 'advanced-cooking-methods', title: 'Advanced cooking methods', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8445,6 +8929,10 @@ In Ghana, statistics help us:
             id: 'ct302',
             slug: 'basic-agriculture-3',
             title: 'Basic Agriculture',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct302-1', slug: 'mixed-farming-crop-rotation', title: 'Mixed farming and crop rotation', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct302-2', slug: 'livestock-farming', title: 'Livestock farming', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8457,6 +8945,10 @@ In Ghana, statistics help us:
             id: 'ct303',
             slug: 'pre-technical-skills-3',
             title: 'Pre-Technical Skills',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct303-1', slug: 'technical-drawing-3', title: 'Technical drawing (building plans, furniture)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct303-2', slug: 'woodwork-projects', title: 'Woodwork projects', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8468,6 +8960,10 @@ In Ghana, statistics help us:
             id: 'ct304',
             slug: 'entrepreneurship-3',
             title: 'Entrepreneurship & Career Guidance',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ct304-1', slug: 'starting-small-business', title: 'Starting a small business', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ct304-2', slug: 'skills-for-self-employment', title: 'Skills for self-employment', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8493,6 +8989,10 @@ In Ghana, statistics help us:
             id: 'comp101',
             slug: 'introduction-to-ict-1',
             title: 'Introduction to ICT & Digital Literacy',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               {
                 id: 'comp101-1',
@@ -8522,6 +9022,10 @@ In Ghana, statistics help us:
             id: 'comp102',
             slug: 'parts-functions-computer-1',
             title: 'Parts & Functions of a Computer',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp102-1', slug: 'input-output-processing-storage', title: 'Input, Output, Processing, and Storage devices', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp102-2', slug: 'setting-up-computer', title: 'Setting up a computer', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8532,6 +9036,10 @@ In Ghana, statistics help us:
             id: 'comp103',
             slug: 'word-processing-1',
             title: 'Word Processing & Office Tools',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp103-1', slug: 'intro-typing', title: 'Introduction to typing', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp103-2', slug: 'formatting-text', title: 'Formatting text', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8542,6 +9050,10 @@ In Ghana, statistics help us:
             id: 'comp104',
             slug: 'internet-communication-1',
             title: 'Internet & Communication',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp104-1', slug: 'intro-internet', title: 'Introduction to the Internet', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp104-2', slug: 'uses-of-internet', title: 'Uses of the Internet', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8552,6 +9064,10 @@ In Ghana, statistics help us:
             id: 'comp105',
             slug: 'safety-ethics-1',
             title: 'Safety, Ethics & Emerging Technologies',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp105-1', slug: 'responsible-use-ict', title: 'Responsible use of ICT devices', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp105-2', slug: 'caring-for-computers', title: 'Caring for computers', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8567,6 +9083,10 @@ In Ghana, statistics help us:
             id: 'comp201',
             slug: 'computer-systems-os-2',
             title: 'Parts & Functions of a Computer',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp201-1', slug: 'components-computer-system', title: 'Components of a computer system', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp201-2', slug: 'functions-operating-system', title: 'Functions of the operating system', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8577,6 +9097,10 @@ In Ghana, statistics help us:
             id: 'comp202',
             slug: 'word-processing-spreadsheets-2',
             title: 'Word Processing & Office Tools',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp202-1', slug: 'advanced-word-processing', title: 'Advanced word processing (tables, lists, pictures)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp202-2', slug: 'intro-spreadsheets', title: 'Introduction to spreadsheets', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8587,6 +9111,10 @@ In Ghana, statistics help us:
             id: 'comp203',
             slug: 'internet-communication-2',
             title: 'Internet & Communication',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp203-1', slug: 'web-browsers-search-engines', title: 'Web browsers and search engines', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp203-2', slug: 'safe-searching', title: 'Safe searching and evaluating websites', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8597,6 +9125,10 @@ In Ghana, statistics help us:
             id: 'comp204',
             slug: 'presentation-software-2',
             title: 'Programming Basics & Problem Solving',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp204-1', slug: 'basics-slide-preparation', title: 'Basics of slide preparation', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp204-2', slug: 'adding-text-pictures-transitions', title: 'Adding text, pictures, and slide transitions', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8607,6 +9139,10 @@ In Ghana, statistics help us:
             id: 'comp205',
             slug: 'safety-ethics-cybersecurity-2',
             title: 'Safety, Ethics & Emerging Technologies',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp205-1', slug: 'cyber-threats', title: 'Cyber threats (viruses, malware, phishing)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp205-2', slug: 'cyber-safety-rules', title: 'Cyber safety rules', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8622,6 +9158,10 @@ In Ghana, statistics help us:
             id: 'comp301',
             slug: 'advanced-office-tools-3',
             title: 'Word Processing & Office Tools',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp301-1', slug: 'mail-merge', title: 'Mail merge and document automation', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp301-2', slug: 'charts-graphs-spreadsheets', title: 'Charts and graphs in spreadsheets', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8632,6 +9172,10 @@ In Ghana, statistics help us:
             id: 'comp302',
             slug: 'presentation-database-3',
             title: 'Internet & Communication',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp302-1', slug: 'advanced-slide-design', title: 'Advanced slide design', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp302-2', slug: 'intro-databases', title: 'Introduction to databases', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8642,6 +9186,10 @@ In Ghana, statistics help us:
             id: 'comp303',
             slug: 'programming-basics-3',
             title: 'Programming Basics & Problem Solving',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp303-1', slug: 'algorithms-flowcharts', title: 'Concept of algorithms and flowcharts', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp303-2', slug: 'intro-basic-coding', title: 'Introduction to basic coding', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8652,6 +9200,10 @@ In Ghana, statistics help us:
             id: 'comp304',
             slug: 'internet-elearning-3',
             title: 'Internet & Communication',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp304-1', slug: 'advanced-internet-use', title: 'Advanced use of the Internet', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp304-2', slug: 'creating-managing-email', title: 'Creating and managing email accounts', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8662,6 +9214,10 @@ In Ghana, statistics help us:
             id: 'comp305',
             slug: 'ict-society-emerging-tech-3',
             title: 'Safety, Ethics & Emerging Technologies',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'comp305-1', slug: 'ict-in-society', title: 'ICT in banking, health, education, and governance', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'comp305-2', slug: 'emerging-technologies', title: 'Emerging technologies', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8689,6 +9245,10 @@ In Ghana, statistics help us:
             id: 'gl101',
             slug: 'oral-listening-1',
             title: 'Oral Literature & Listening Skills',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl101-1', slug: 'greetings-expressions', title: 'Greetings and common expressions', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl101-2', slug: 'listening-stories', title: 'Listening and responding to short stories or dialogues', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8699,6 +9259,10 @@ In Ghana, statistics help us:
             id: 'gl102',
             slug: 'reading-comprehension-1',
             title: 'Reading & Comprehension',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl102-1', slug: 'reading-aloud', title: 'Reading short passages aloud with correct intonation', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl102-2', slug: 'comprehension-questions', title: 'Comprehension questions (main idea, vocabulary, moral lessons)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8708,6 +9272,10 @@ In Ghana, statistics help us:
             id: 'gl103',
             slug: 'writing-1',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl103-1', slug: 'sentence-building', title: 'Sentence building and paragraph writing', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl103-2', slug: 'personal-letters', title: 'Writing personal letters (to a friend/parent)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8718,6 +9286,10 @@ In Ghana, statistics help us:
             id: 'gl104',
             slug: 'grammar-1',
             title: 'Grammar & Structure',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl104-1', slug: 'parts-of-speech', title: 'Nouns, pronouns, verbs, adjectives', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl104-2', slug: 'sentence-types', title: 'Sentence types (simple, compound)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8728,6 +9300,10 @@ In Ghana, statistics help us:
             id: 'gl105',
             slug: 'literature-culture-1',
             title: 'Literature & Cultural Values',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl105-1', slug: 'folktales', title: 'Introduction to folktales (Ananse stories, moonlight stories)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl105-2', slug: 'proverbs', title: 'Simple proverbs and meanings', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8743,6 +9319,10 @@ In Ghana, statistics help us:
             id: 'gl201',
             slug: 'oral-listening-2',
             title: 'Oral & Listening',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl201-1', slug: 'storytelling', title: 'Storytelling (retelling a folk story in your own words)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl201-2', slug: 'oral-poetry', title: 'Oral poetry and performance', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8753,6 +9333,10 @@ In Ghana, statistics help us:
             id: 'gl202',
             slug: 'reading-comprehension-2',
             title: 'Reading & Comprehension',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl202-1', slug: 'reading-texts', title: 'Reading narrative and descriptive texts', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl202-2', slug: 'identifying-elements', title: 'Identifying main characters, themes, and settings', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8763,6 +9347,10 @@ In Ghana, statistics help us:
             id: 'gl203',
             slug: 'writing-2',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl203-1', slug: 'narrative-composition', title: 'Narrative composition (story writing, e.g., "A Visit to My Village")', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl203-2', slug: 'formal-letters', title: 'Formal letters (to Headmaster, local authority, etc.)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8773,6 +9361,10 @@ In Ghana, statistics help us:
             id: 'gl204',
             slug: 'grammar-2',
             title: 'Grammar & Structure',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl204-1', slug: 'subject-verb-agreement', title: 'Sentence agreement (subject-verb)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl204-2', slug: 'complex-sentences', title: 'Complex sentences (conjunctions, clauses)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8783,6 +9375,10 @@ In Ghana, statistics help us:
             id: 'gl205',
             slug: 'literature-culture-2',
             title: 'Literature & Proverbs',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl205-1', slug: 'folk-plays', title: 'Folk plays (drama)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl205-2', slug: 'poetry-intro', title: 'Introduction to selected poems', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8798,6 +9394,10 @@ In Ghana, statistics help us:
             id: 'gl301',
             slug: 'oral-listening-3',
             title: 'Oral & Listening',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl301-1', slug: 'listening-speeches', title: 'Listening to speeches and summarizing', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl301-2', slug: 'oral-debate', title: 'Oral debate and discussions (expressing opinions clearly)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8808,6 +9408,10 @@ In Ghana, statistics help us:
             id: 'gl302',
             slug: 'reading-comprehension-3',
             title: 'Reading & Comprehension',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl302-1', slug: 'advanced-comprehension', title: 'Advanced comprehension passages (narrative, expository, argumentative)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl302-2', slug: 'critical-analysis', title: 'Critical analysis (theme, mood, author\'s intention)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8818,6 +9422,10 @@ In Ghana, statistics help us:
             id: 'gl303',
             slug: 'writing-3',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl303-1', slug: 'argumentative-essays', title: 'Argumentative essays (e.g., "Education is better than money")', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl303-2', slug: 'expository-essays', title: 'Expository essays (e.g., "The Importance of Clean Water")', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8828,6 +9436,10 @@ In Ghana, statistics help us:
             id: 'gl304',
             slug: 'grammar-3',
             title: 'Grammar & Structure',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl304-1', slug: 'advanced-tenses', title: 'Advanced tenses and aspect', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl304-2', slug: 'idiomatic-expressions', title: 'Idiomatic expressions and figurative language', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8838,6 +9450,10 @@ In Ghana, statistics help us:
             id: 'gl305',
             slug: 'literature-culture-3',
             title: 'Literature & Proverbs',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'gl305-1', slug: 'prescribed-prose', title: 'Study of prescribed prose (novel or short story)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'gl305-2', slug: 'selected-drama', title: 'Study of selected drama (play excerpts)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8863,6 +9479,10 @@ In Ghana, statistics help us:
             id: 'fr101',
             slug: 'oral-communication-1',
             title: 'Oral Communication',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr101-1', slug: 'alphabet-pronunciation', title: 'Alphabet & pronunciation', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr101-2', slug: 'greetings-introductions', title: 'Greetings, introductions, asking names & ages', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8875,6 +9495,10 @@ In Ghana, statistics help us:
             id: 'fr102',
             slug: 'reading-comprehension-1',
             title: 'Reading Comprehension',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr102-1', slug: 'short-dialogues', title: 'Short dialogues and passages', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr102-2', slug: 'identifying-familiar-words', title: 'Identifying familiar words and phrases', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8885,6 +9509,10 @@ In Ghana, statistics help us:
             id: 'fr103',
             slug: 'writing-1',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr103-1', slug: 'writing-basic-sentences', title: 'Copying and writing basic sentences', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr103-2', slug: 'writing-about-self', title: 'Writing about self (name, age, nationality)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8895,6 +9523,10 @@ In Ghana, statistics help us:
             id: 'fr104',
             slug: 'grammar-1',
             title: 'Grammar',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr104-1', slug: 'nouns-articles', title: 'Nouns & articles (le, la, les / un, une, des)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr104-2', slug: 'gender-of-nouns', title: 'Gender of nouns (masculine/feminine)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8906,6 +9538,10 @@ In Ghana, statistics help us:
             id: 'fr105',
             slug: 'culture-1',
             title: 'Culture',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr105-1', slug: 'francophonie', title: 'French-speaking countries (La Francophonie)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr105-2', slug: 'simple-songs-rhymes', title: 'Simple songs and rhymes', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8920,6 +9556,10 @@ In Ghana, statistics help us:
             id: 'fr201',
             slug: 'oral-communication-2',
             title: 'Oral Communication',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr201-1', slug: 'daily-routines', title: 'Talking about daily routines', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr201-2', slug: 'asking-giving-directions', title: 'Asking & giving directions', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8931,6 +9571,10 @@ In Ghana, statistics help us:
             id: 'fr202',
             slug: 'reading-comprehension-2',
             title: 'Reading Comprehension',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr202-1', slug: 'short-stories-dialogues', title: 'Short stories and dialogues', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr202-2', slug: 'extracting-main-ideas', title: 'Extracting main ideas & vocabulary', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8941,6 +9585,10 @@ In Ghana, statistics help us:
             id: 'fr203',
             slug: 'writing-2',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr203-1', slug: 'describing-people-places-objects', title: 'Describing people, places, and objects', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr203-2', slug: 'writing-simple-paragraphs', title: 'Writing simple paragraphs', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8951,6 +9599,10 @@ In Ghana, statistics help us:
             id: 'fr204',
             slug: 'grammar-2',
             title: 'Grammar',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr204-1', slug: 'regular-verbs-conjugation', title: 'Regular verbs (-er, -ir, -re conjugations)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr204-2', slug: 'negative-sentences', title: 'Negative sentences (ne … pas)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8962,6 +9614,10 @@ In Ghana, statistics help us:
             id: 'fr205',
             slug: 'culture-2',
             title: 'Culture',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr205-1', slug: 'french-festivals-food', title: 'French festivals, food, and traditions', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr205-2', slug: 'short-french-poems-songs', title: 'Short French poems and songs', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8976,6 +9632,10 @@ In Ghana, statistics help us:
             id: 'fr301',
             slug: 'oral-communication-3',
             title: 'Oral Communication',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr301-1', slug: 'expressing-opinions', title: 'Expressing opinions', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr301-2', slug: 'talking-about-past-events', title: 'Talking about past events', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8987,6 +9647,10 @@ In Ghana, statistics help us:
             id: 'fr302',
             slug: 'reading-comprehension-3',
             title: 'Reading Comprehension',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr302-1', slug: 'longer-texts', title: 'Longer texts (letters, stories, short articles)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr302-2', slug: 'translation-practice', title: 'Translation practice (French ↔ English)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -8997,6 +9661,10 @@ In Ghana, statistics help us:
             id: 'fr303',
             slug: 'writing-3',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr303-1', slug: 'narrative-essays', title: 'Narrative essays', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr303-2', slug: 'formal-letter-writing', title: 'Formal letter writing', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -9007,6 +9675,10 @@ In Ghana, statistics help us:
             id: 'fr304',
             slug: 'grammar-3',
             title: 'Grammar',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr304-1', slug: 'past-tense-passe-compose', title: 'Past tense (passé composé with avoir/être)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr304-2', slug: 'future-tense-futur-proche', title: 'Future tense (futur proche: je vais + infinitive)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -9018,6 +9690,10 @@ In Ghana, statistics help us:
             id: 'fr305',
             slug: 'culture-3',
             title: 'Culture',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'fr305-1', slug: 'francophone-literature', title: 'Francophone literature (short excerpts)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'fr305-2', slug: 'proverbs-sayings-in-french', title: 'Proverbs and sayings in French', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -9042,6 +9718,10 @@ In Ghana, statistics help us:
             id: 'ar101',
             slug: 'alphabet-reading-1',
             title: 'The Arabic Alphabet',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ar101-1', slug: 'arabic-alphabets-1', title: 'Arabic Alphabets and Pronounciations', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ar101-2', slug: 'alphabet-reading-1', title: 'Arabic Alphabet Reading', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' }
@@ -9056,6 +9736,10 @@ In Ghana, statistics help us:
             id: 'ar201',
             slug: 'reading-2',
             title: 'Reading of Common Words',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ar201-1', slug: 'reading-quran', title: 'Reading of Quran and Sunnah', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ar201-2', slug: 'simple-words', title: 'Reading of Simple Words', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' }
@@ -9070,6 +9754,10 @@ In Ghana, statistics help us:
             id: 'ar301',
             slug: 'listening-speaking-3',
             title: 'Listening & Speaking',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ar301-1', slug: 'expressing-opinions', title: 'Expressing opinions', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ar301-2', slug: 'talking-about-past-events', title: 'Talking about past events', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -9080,6 +9768,10 @@ In Ghana, statistics help us:
             id: 'ar302',
             slug: 'reading-comprehension-3',
             title: 'Reading & Comprehension',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ar302-1', slug: 'longer-passages', title: 'Longer passages (stories, articles, Qur\'anic verses)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ar302-2', slug: 'comprehension-summary', title: 'Comprehension and summary', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -9090,6 +9782,10 @@ In Ghana, statistics help us:
             id: 'ar303',
             slug: 'writing-3',
             title: 'Writing',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ar303-1', slug: 'narrative-essays', title: 'Narrative essays (e.g., "رحلة إلى المدينة" - A trip to town)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ar303-2', slug: 'formal-letter-writing', title: 'Formal letter writing', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -9100,6 +9796,10 @@ In Ghana, statistics help us:
             id: 'ar304',
             slug: 'grammar-vocabulary-3',
             title: 'Grammar & Vocabulary',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ar304-1', slug: 'tenses-past-present-future', title: 'Past, present, and future tense verbs', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ar304-2', slug: 'relative-pronouns', title: 'Relative pronouns (الذي، التي)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
@@ -9111,6 +9811,10 @@ In Ghana, statistics help us:
             id: 'ar305',
             slug: 'islamic-culture-3',
             title: 'Islamic Culture',
+            // Curriculum metadata
+            curriculumId: 'west-african',
+            region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+            examAlignment: ["BECE","WASSCE","NECO"],
             lessons: [
               { id: 'ar305-1', slug: 'quranic-themes', title: 'Selected Qur\'anic themes (justice, honesty, kindness)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },
               { id: 'ar305-2', slug: 'life-of-prophet-muhammad', title: 'Life of Prophet Muhammad (Seerah basics)', objectives: [], introduction: '', keyConcepts: [], activities: { type: 'quiz', questions: [] }, pastQuestions: [], summary: '' },

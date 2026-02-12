@@ -9,6 +9,10 @@ export const integratedScienceSHS1Lessons: Lesson[] = [
     id: 'is-shs1-chem-1',
     slug: 'chem-shs1-intro-nature-scope',
     title: 'Nature and Scope of Chemistry',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define chemistry and explain its importance in everyday life',
       'Identify the main branches of chemistry',
@@ -468,6 +472,10 @@ Therefore, chemistry sits at the center, connecting all sciences together.`
     id: 'is-shs1-chem-2',
     slug: 'chem-shs1-intro-scientific-methods-safety',
     title: 'Scientific Methods & Safety',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Understand the steps of the scientific method',
       'Apply the scientific method to solve problems',
@@ -1460,6 +1468,10 @@ If we didn't control these, we couldn't be sure whether growth differences were 
     id: 'is-shs1-matter-3',
     slug: 'is-dm-matter-states-properties',
     title: 'States and Changes of Matter',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Describe the three main states of matter and their properties',
       'Explain the particle arrangement in solids, liquids, and gases',
@@ -2504,6 +2516,10 @@ Both convert liquid water to water vapor (gas), but occur differently!`
     id: 'is-dm-cells-structure-function',
     slug: 'is-dm-cells-structure-function',
     title: 'Cell Structure and Function',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define a cell and explain why it is the basic unit of life',
       'Distinguish between plant and animal cells',
@@ -3834,6 +3850,10 @@ Ribosomes are the **protein factories** of the cell.
     id: 'is-dm-cells-cell-division',
     slug: 'is-dm-cells-cell-division',
     title: 'Cell Division: Mitosis and Meiosis',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Explain why cells need to divide',
       'Describe the cell cycle and its phases',
@@ -5053,6 +5073,10 @@ Meiosis is important for sexual reproduction because it:
     id: 'is-dm-rocks-soil-types-formation',
     slug: 'is-dm-rocks-soil-types-formation',
     title: 'Types and Formation of Rocks',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define rocks and minerals',
       'Identify the three main types of rocks: igneous, sedimentary, and metamorphic',
@@ -6562,6 +6586,10 @@ The rock cycle demonstrates that:
     id: 'is-dm-nutrition-balanced-diet',
     slug: 'is-dm-nutrition-balanced-diet',
     title: 'Nutrition and Balanced Diet',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define nutrition and explain its importance in living organisms',
       'Identify the six classes of food nutrients and their functions',
@@ -7419,6 +7447,10 @@ Simple tests to identify nutrients in food:
     id: 'is-dm-digestion-process',
     slug: 'is-dm-digestion-process',
     title: 'Digestion and the Human Digestive System',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define digestion and distinguish between mechanical and chemical digestion',
       'Identify and describe the organs of the human digestive system',
@@ -8233,6 +8265,10 @@ Starch → Maltose (amylase) → Glucose (maltase) → Absorbed`
     id: 'is-dm-respiration-aerobic-anaerobic',
     slug: 'is-dm-respiration-aerobic-anaerobic',
     title: 'Respiration: Aerobic and Anaerobic',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define respiration and explain its importance to living organisms',
       'Distinguish between breathing and cellular respiration',
@@ -8974,6 +9010,10 @@ Oxygen debt is the extra oxygen needed after exercise to:
     id: 'is-dm-photosynthesis-process',
     slug: 'is-dm-photosynthesis-process',
     title: 'Photosynthesis: Making Food from Sunlight',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define photosynthesis and state its importance',
       'Identify the raw materials and products of photosynthesis',
@@ -9620,6 +9660,10 @@ The part of the leaf exposed to light produced starch (through photosynthesis), 
     id: 'is-dm-genetics-inheritance',
     slug: 'is-dm-genetics-inheritance',
     title: 'Genetics and Inheritance',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define genetics and explain its importance',
       'Describe the structure and function of DNA',
@@ -10300,6 +10344,10 @@ Sickle cell anemia is a genetic blood disorder caused by a mutation in the gene 
     id: 'is-en-forms-of-energy-types',
     slug: 'is-en-forms-of-energy-types',
     title: 'Forms of Energy',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
 
     introduction: `Have you ever wondered what makes a car move, a light bulb glow, or your phone work? 🚗💡📱
 
@@ -10983,6 +11031,10 @@ KE = 600 × 400<br><br>
     id: 'is-en-forms-of-energy-transformation-conservation',
     slug: 'is-en-forms-of-energy-transformation-conservation',
     title: 'Energy Transformation and Conservation',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
 
     introduction: `Imagine dropping a ball from the top of a building. What happens to its energy as it falls? Where does the energy go when it hits the ground and stops? 🏀
 
@@ -11574,6 +11626,10 @@ Gravitational PE → Kinetic Energy → Mechanical Energy → Electrical Energy<
     id: 'is-en-heat-energy-temperature',
     slug: 'is-en-heat-energy-temperature',
     title: 'Heat Energy and Temperature',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
 
     introduction: `Have you ever wondered why your hand feels cold when you touch ice, or why metal feels colder than wood even when they're at the same temperature? 🧊
 
@@ -12232,6 +12288,10 @@ $$Q = \\mathbf{630,000 \\text{ J}}$$
     id: 'is-shs1-acids-bases-salts-1',
     slug: 'is-im-acids-bases-salts-properties-reactions',
     title: 'Acids, Bases, and Salts: Properties and Reactions',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define acids, bases, and salts with examples',
       'Describe the properties of acids and bases',
@@ -12798,6 +12858,10 @@ Answer: <strong>Sodium sulfate (Na₂SO₄)</strong>
     id: 'is-shs1-acids-bases-salts-2',
     slug: 'is-im-acids-bases-salts-ph-scale',
     title: 'The pH Scale',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define pH and explain what it measures',
       'Describe the pH scale from 0 to 14',
@@ -13249,6 +13313,10 @@ While all options have some truth, the PRIMARY reason is enzyme function.`
     id: 'is-shs1-agriculture-1',
     slug: 'is-im-agricultural-science-crop-animal-production',
     title: 'Crop and Animal Production (Basics)',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define crop production and animal production',
       'Identify major crops grown in Ghana and their importance',
@@ -13701,6 +13769,10 @@ Let's explore the fascinating world of farming!
     id: 'is-shs1-agriculture-2',
     slug: 'is-im-agricultural-science-soil-fertility-conservation',
     title: 'Soil Fertility and Conservation',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define soil fertility and explain its importance to agriculture',
       'Identify the factors that affect soil fertility',
@@ -14172,6 +14244,10 @@ A holistic approach combining:
     id: 'is-shs1-diversity-5',
     slug: 'is-dm-rocks-soil-composition',
     title: 'Soil Composition and Importance',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Describe the composition of soil',
       'Explain the role of each soil component',
@@ -14630,6 +14706,10 @@ Let's dig deeper into what makes soil so important! 🌱
     id: 'is-shs1-diversity-6',
     slug: 'is-diversity-matter-shs1',
     title: 'Elements, Compounds and Mixtures',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define and differentiate elements, compounds, and mixtures',
       'Classify substances as elements, compounds, or mixtures',
@@ -15067,6 +15147,10 @@ Other examples: Soil, Blood, Alloys (bronze, brass)`
     id: 'is-shs1-measurement-1',
     slug: 'is-measurement-units-instruments',
     title: 'Units and Instruments',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'State the SI base units and their symbols',
       'Identify appropriate measuring instruments for different quantities',
@@ -15550,6 +15634,10 @@ When measuring fast events, account for human reaction time (~0.2 s).
     id: 'is-shs1-measurement-2',
     slug: 'is-accuracy-precision-measurement',
     title: 'Accuracy and Precision in Measurement',
+    // Curriculum metadata
+    curriculumId: 'west-african',
+    region: ["ghana","nigeria","sierra-leone","liberia","gambia"],
+    examAlignment: ["BECE","WASSCE","NECO"],
     objectives: [
       'Define accuracy and precision in measurement',
       'Distinguish between accuracy and precision',
