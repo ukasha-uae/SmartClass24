@@ -5,6 +5,7 @@ import { GameQuestion } from '@/lib/challenge';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, XCircle, Award } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { getCurrentTenant } from '@/tenancy/context';
 
 interface ArenaQuestionRendererProps {
   question: GameQuestion;
@@ -49,6 +50,10 @@ export default function ArenaQuestionRenderer({
   // - Shows question number only when explicitly verified from WAEC
   // - Primary students (source='practice') should NEVER see WASSCE/BECE badges
   const renderQuestionIdentity = () => {
+    // Hide exam badges for Wisdom Warehouse (brand-neutral experience)
+    const currentTenant = getCurrentTenant();
+    if (currentTenant.id === 'wisdomwarehouse') return null;
+    
     // Don't show badge for Primary/practice questions
     if (question.source === 'practice') return null;
     
@@ -104,11 +109,10 @@ export default function ArenaQuestionRenderer({
             const correctAnswerIndex = typeof question.correctAnswer === 'string' 
               ? question.options.indexOf(question.correctAnswer)
               : -1;
-            const isCorrectOption = showResult && (
-              index === correctAnswerIndex || 
-              option === question.correctAnswer
-            );
-            const isWrongSelected = showResult && isSelected && !isCorrect;
+            const isThisTheCorrectAnswer = (index === correctAnswerIndex || option === question.correctAnswer);
+            const isCorrectOption = showResult && isThisTheCorrectAnswer;
+            // Check if this selected option is wrong by comparing directly with correct answer
+            const isWrongSelected = showResult && isSelected && !isThisTheCorrectAnswer;
 
             return (
               <button
@@ -159,8 +163,10 @@ export default function ArenaQuestionRenderer({
             { value: false, label: 'False', emoji: '❌', color: 'red' },
           ].map(({ value, label, emoji, color }) => {
             const isSelected = selectedAnswer === value;
-            const isCorrectOption = showResult && value === correctAnswer;
-            const isWrongSelected = showResult && isSelected && !isCorrect;
+            const isThisTheCorrectAnswer = value === correctAnswer;
+            const isCorrectOption = showResult && isThisTheCorrectAnswer;
+            // Check if this selected option is wrong by comparing directly with correct answer
+            const isWrongSelected = showResult && isSelected && !isThisTheCorrectAnswer;
 
             return (
               <button

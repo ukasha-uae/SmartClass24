@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
+import { getCurrentTenant } from '@/tenancy/context';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,6 +52,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { country, countryId, setCountry } = useLocalization();
+  const currentTenant = getCurrentTenant();
   const [showCountryDialog, setShowCountryDialog] = useState(false);
   
   // Settings state
@@ -934,7 +936,7 @@ export default function SettingsPage() {
                       📚 Your Curriculum: {curriculum.system.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                     </h3>
                     <div className="space-y-1 text-xs text-purple-700 dark:text-purple-300">
-                      {curriculum.examSystems.length > 0 && (
+                      {curriculum.examSystems.length > 0 && currentTenant.id !== 'wisdomwarehouse' && (
                         <div className="flex flex-wrap gap-1.5">
                           <span className="font-medium">Exam Systems:</span>
                           {curriculum.examSystems.map((exam) => (

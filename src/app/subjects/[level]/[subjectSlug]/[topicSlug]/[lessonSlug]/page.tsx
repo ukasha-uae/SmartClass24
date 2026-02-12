@@ -160,6 +160,8 @@ import {
 } from '@/lib/offline-storage';
 import { useToast } from '@/hooks/use-toast';
 import { V1RouteGuard } from '@/components/V1RouteGuard';
+import { contentAdapter } from '@/lib/curriculum-content-adapter';
+import { getCurrentTenant } from '@/tenancy/context';
 
 export default function LessonPage() {
   const params = useParams();
@@ -324,10 +326,13 @@ export default function LessonPage() {
   const lesson = useMemo(() => {
     const baseLesson = localLesson || jhsLesson || firestoreLesson;
     
+    // Get current tenant for content adaptation
+    const tenant = getCurrentTenant();
+    
     // For Primary and SHS lessons without full content, generate placeholder content
     if ((educationLevel === 'Primary' || educationLevel === 'SHS') && baseLesson && !baseLesson.introduction) {
       const levelText = educationLevel === 'Primary' ? 'primary school' : 'Senior High School';
-      return {
+      const placeholderLesson = {
         ...baseLesson,
         introduction: `Welcome to **${baseLesson.title}**! In this ${levelText} lesson, you will learn important concepts that will help you understand ${localTopic?.name || 'this topic'} better. Let's explore together!`,
         objectives: [
@@ -373,10 +378,18 @@ export default function LessonPage() {
           }
         ]
       };
+      
+      // Apply content adapter to placeholder lesson
+      return contentAdapter.adaptLessonForTenant(placeholderLesson, tenant);
+    }
+    
+    // Apply content adapter to real lesson
+    if (baseLesson) {
+      return contentAdapter.adaptLessonForTenant(baseLesson, tenant);
     }
     
     return baseLesson;
-  }, [localLesson, firestoreLesson, educationLevel, localTopic?.name, subjectInfo?.name]);
+  }, [localLesson, firestoreLesson, educationLevel, localTopic?.name, subjectInfo?.name, jhsLesson]);
 
   // Check carousel eligibility using feature flags - ONLY depends on route parameters
   useEffect(() => {
