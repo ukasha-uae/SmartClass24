@@ -53,13 +53,26 @@
 - [ ] Run migration script in dry-run mode
 - [ ] Review dry-run output for accuracy
 
-### Day 9-10: Execute Migration
-- [ ] Run migration script for JHS curriculum (9,000+ questions)
-- [ ] Run migration script for SHS curriculum (2,500+ questions)
-- [ ] Validate lesson counts in Firestore console
-- [ ] Validate question counts in quiz collection
-- [ ] Test curriculum fetching via Firestore SDK
-- [ ] Spot-check 20 random lessons for data integrity
+### Day 9-10: Execute Migration 🔄 IN PROGRESS
+- [ ] **NEXT:** Download Firebase service account key
+  - Firebase Console → Settings → Service Accounts → Generate new private key
+  - Save as `serviceAccountKey.json` in project root
+  - ⚠️ Already in .gitignore (won't be committed)
+  - See: `MIGRATION_DRY_RUN_GUIDE.md` for step-by-step instructions
+- [x] ✅ Data tagging complete (704+ JHS + 176+ SHS lessons)
+- [ ] Run migration dry-run: `node migrate-curriculum-to-firestore.js --dry-run`
+  - Expected output: 735 lessons, 11,500+ questions
+  - Validation: Zero errors, all curriculum metadata present
+- [ ] Backup Firestore: `firebase firestore:export gs://smartclass24-5e590.appspot.com/backups/[timestamp]`
+- [ ] Execute production migration: `node migrate-curriculum-to-firestore.js --execute`
+  - Duration: 12-15 minutes
+  - Monitor in Firebase Console real-time
+- [ ] Post-migration verification:
+  - `/curriculums/west-african` document exists
+  - 735 lessons in `/lessons` collection  
+  - 11,500+ questions in `/quizzes/west-african/questions`
+  - Test queries with curriculumId filters  
+  - Spot-check 20 random lessons for data integrity
 
 ---
 
