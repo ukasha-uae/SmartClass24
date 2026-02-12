@@ -6,11 +6,13 @@ import { coreSubjects } from '@/lib/shs-data';
 import { BookOpen, GraduationCap, ArrowRight, Trophy, Zap, Gamepad2, Users, Target } from 'lucide-react';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { getCurrentTenant } from '@/tenancy/context';
 import { useState, useEffect } from 'react';
 
 export default function SHSSubjectsPage() {
   // Call all hooks before any conditional returns
   const addTenantParam = useTenantLink();
+  const currentTenant = getCurrentTenant();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -52,10 +54,12 @@ export default function SHSSubjectsPage() {
               {coreSubjects.reduce((sum, subject) => sum + subject.topics.length, 0)} Topics
             </span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800">
-            <Trophy className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-            <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">WASSCE Ready</span>
-          </div>
+          {currentTenant.id !== 'wisdomwarehouse' && (
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800">
+              <Trophy className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+              <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">WASSCE Ready</span>
+            </div>
+          )}
         </div>
         
         <div className="mt-4">
@@ -180,7 +184,11 @@ export default function SHSSubjectsPage() {
                   <CardTitle className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400 bg-clip-text text-transparent mb-1">
                     SHS Challenge Arena
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground">Compete at WASSCE level • School Battles • National Rankings</p>
+                  <p className="text-sm text-muted-foreground">
+                    {currentTenant.id !== 'wisdomwarehouse' 
+                      ? 'Compete at WASSCE level • School Battles • National Rankings'
+                      : 'Compete at senior level • School Battles • National Rankings'}
+                  </p>
                 </div>
                 
                 {/* CTA Arrow */}

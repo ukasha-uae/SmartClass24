@@ -16,8 +16,8 @@ export default function StudyGroupsPage() {
   useEffect(() => {
     // Redirect to Challenge Arena for V1
     // Study Groups is a V2 feature
-    router.replace(addTenantParam('/challenge-arena/ghana'));
-  }, [router]);
+    router.replace(addTenantParam('/challenge-arena'));
+  }, [router, addTenantParam]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -37,7 +37,7 @@ export default function StudyGroupsPage() {
               Study Groups and other social features will be available in V2.
             </AlertDescription>
           </Alert>
-          <Link href={addTenantParam('/challenge-arena/ghana')}>
+          <Link href={addTenantParam('/challenge-arena')}>
             <Button className="w-full">
               Go to Challenge Arena
               <ArrowRight className="ml-2 h-4 w-4" />

@@ -172,7 +172,7 @@ export default function TermsOfServicePage() {
           <CardContent className="text-sm space-y-3">
             <p className="text-muted-foreground">
               SmartClass24 is provided "as is" without warranties of any kind. While we strive for accuracy, we do not 
-              guarantee that content is error-free or that it will guarantee BECE success. Your use of the platform 
+              guarantee that content is error-free or that it will guarantee academic success. Your use of the platform 
               is at your own risk.
             </p>
           </CardContent>
@@ -197,8 +197,8 @@ export default function TermsOfServicePage() {
           </CardHeader>
           <CardContent className="text-sm space-y-3">
             <p className="text-muted-foreground">
-              These Terms of Service are governed by the laws of the Republic of Ghana. Any disputes will be resolved 
-              in Ghanaian courts.
+              These Terms of Service are governed by the laws of the jurisdiction where the service is provided. 
+              Any disputes will be resolved according to applicable local laws.
             </p>
           </CardContent>
         </Card>

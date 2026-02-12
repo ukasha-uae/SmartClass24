@@ -213,7 +213,7 @@ export default function Home() {
   // Feature links for "More Ways to Excel" section
   const featureLinks = [
     { 
-      href: '/challenge-arena/ghana', 
+      href: '/challenge-arena', 
       label: 'Challenge Arena', 
       icon: '⚔️', 
       desc: 'Battle & Compete', 
