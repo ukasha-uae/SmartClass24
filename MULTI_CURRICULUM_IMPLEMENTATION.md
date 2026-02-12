@@ -43,11 +43,11 @@
 
 ---
 
-## Phase 2: Data Migration (Week 2) ⏳ PENDING
+## Phase 2: Data Migration (Week 2) 🔄 IN PROGRESS
 
 ### Day 6-8: Firestore Setup
-- [ ] Deploy Firestore indexes: `firebase deploy --only firestore:indexes`
-- [ ] Deploy security rules: `firebase deploy --only firestore:rules`
+- [x] Deploy Firestore indexes: `firebase deploy --only firestore:indexes` ✅ DEPLOYED
+- [x] Deploy security rules: `firebase deploy --only firestore:rules` ✅ DEPLOYED
 - [ ] Test rules in Firestore console (simulate student/admin access)
 - [ ] Create `serviceAccountKey.json` for migration script
 - [ ] Run migration script in dry-run mode
