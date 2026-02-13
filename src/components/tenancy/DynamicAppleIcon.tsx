@@ -22,7 +22,7 @@ import { useTenant } from '@/hooks/useTenant';
  * ```
  */
 export function DynamicAppleIcon() {
-  const { branding } = useTenant();
+  const { tenantId, branding } = useTenant();
   
   useEffect(() => {
     if (typeof document === 'undefined') return;
@@ -36,10 +36,16 @@ export function DynamicAppleIcon() {
       document.head.appendChild(appleIconLink);
     }
     
-    // Use tenant logo for iOS home screen icon
-    const logoUrl = branding?.logoUrl || '/icons/icon-512x512.svg';
-    appleIconLink.href = logoUrl;
-  }, [branding]);
+    // Use tenant-specific PWA icon for iOS home screen (better than logo)
+    // Wisdom Warehouse: /icons/wisdom-warehouse-192.png
+    let iconUrl = '/icons/icon-192x192.svg'; // default
+    
+    if (tenantId === 'wisdomwarehouse') {
+      iconUrl = '/icons/wisdom-warehouse-192.png';
+    }
+    
+    appleIconLink.href = iconUrl;
+  }, [tenantId, branding]);
   
   return null; // This component doesn't render anything
 }

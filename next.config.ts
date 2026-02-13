@@ -76,7 +76,7 @@ const nextConfig: NextConfig = {
 
 export default withPWA({
   dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
+  disable: false, // Enable PWA in development for testing (was: process.env.NODE_ENV === 'development')
   register: true,
   skipWaiting: true,
   reloadOnOnline: true,

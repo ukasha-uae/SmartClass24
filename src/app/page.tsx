@@ -22,7 +22,7 @@ export default function Home() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [userName, setUserName] = useState('there');
   const [selectedCampus, setSelectedCampus] = useState<'JHS' | 'SHS' | 'Primary'>('JHS');
-  const { country } = useLocalization();
+  const { country, formatCurrency, getCurrencySymbol } = useLocalization();
   const { branding, market, hasLocalization, tenantId } = useTenant();
   const firebaseContext = useContext(FirebaseContext);
   const user = firebaseContext?.user ?? null;
@@ -304,6 +304,23 @@ export default function Home() {
             )}
           </p>
           
+          {/* Affordability Badge */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/40 border-2 border-emerald-200/50 dark:border-emerald-800/50 backdrop-blur-sm shadow-lg mb-4">
+            <span className="text-2xl">🎓</span>
+            <span className="text-sm md:text-base font-bold bg-gradient-to-r from-emerald-700 to-green-700 dark:from-emerald-400 dark:to-green-400 bg-clip-text text-transparent">
+              {market === 'middle-east' ? (
+                'Premium Learning. Exceptional Value.'
+              ) : country?.id === 'ghana' ? (
+                `Quality Education From ${formatCurrency(0)}/month`
+              ) : hasLocalization ? (
+                `Affordable Learning From ${formatCurrency(0)}/month`
+              ) : (
+                'Start Learning Free Today'
+              )}
+            </span>
+            <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          </div>
+          
           {/* Premium Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8 mb-12">
             {stats.map((stat, index) => {
@@ -399,6 +416,23 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
+                    
+                    {/* Free Access Badge with Currency Context */}
+                    {campus.id !== 'university' && (
+                      <div className="mb-4 py-2 px-3 rounded-lg bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/30 dark:to-emerald-950/30 border border-green-200 dark:border-green-800">
+                        <p className="text-xs text-center font-semibold text-green-700 dark:text-green-400">
+                          {market === 'middle-east' ? (
+                            '✨ Free Access • Premium Plans Available'
+                          ) : country?.id === 'ghana' ? (
+                            '✨ Free Forever • Premium from ₵20/month'
+                          ) : hasLocalization ? (
+                            `✨ Free Forever • Premium from ${formatCurrency(5)}/month`
+                          ) : (
+                            '✨ Free Forever • Premium from $5/month'
+                          )}
+                        </p>
+                      </div>
+                    )}
 
                     {/* CTA Button */}
                     <Link 
@@ -496,11 +530,189 @@ export default function Home() {
             </div>
           </TooltipProvider>
 
+          {/* White-Label Showcase Section - Only for SmartClass24 tenant */}
+          {tenantId === 'smartclass24' && (
+            <div className="mt-16 border-t pt-12 dark:border-gray-800">
+              <div className="text-center mb-8">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-purple-200 dark:border-purple-800 mb-4">
+                  <Building2 className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  <span className="text-xs font-bold text-purple-700 dark:text-purple-300">For Schools & Institutions</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+                  Get Your Own Branded Learning Platform
+                </h3>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  Launch your white-label education platform in under 24 hours. Complete branding, custom domain, and curriculum flexibility.
+                </p>
+                
+                {/* Coming Soon Badge */}
+                <div className="flex justify-center gap-3 mt-4">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800">
+                    <Sparkles className="h-3 w-3 text-amber-600 dark:text-amber-400" />
+                    <span className="text-xs font-bold text-amber-700 dark:text-amber-300">Multi-Curriculum Support Coming Soon</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto mb-8">
+                {/* Live Example Card */}
+                <Card className="relative overflow-hidden border-2 border-purple-200/50 dark:border-purple-800/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl">
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-purple-300/20 to-pink-300/20 rounded-full blur-3xl"></div>
+                  <CardContent className="p-6 relative z-10">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 text-white">
+                        <Building2 className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-purple-600 dark:text-purple-400 font-semibold">Live Example</p>
+                        <h4 className="font-bold text-gray-900 dark:text-white">Wisdom Warehouse</h4>
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      International school in UAE launched their custom-branded platform in 3 weeks. Same technology, their identity.
+                    </p>
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center gap-2 text-xs">
+                        <div className="w-1 h-1 rounded-full bg-green-500"></div>
+                        <span className="text-gray-700 dark:text-gray-300">100% uptime since Jan 2026</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <div className="w-1 h-1 rounded-full bg-green-500"></div>
+                        <span className="text-gray-700 dark:text-gray-300">Custom Middle East curriculum</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <div className="w-1 h-1 rounded-full bg-green-500"></div>
+                        <span className="text-gray-700 dark:text-gray-300">Complete brand customization</span>
+                      </div>
+                    </div>
+                    <a 
+                      href="https://smartclass24.com/?tenant=wisdomwarehouse" 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+                    >
+                      View Live Demo
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  </CardContent>
+                </Card>
+
+                {/* What You Get Card */}
+                <Card className="relative overflow-hidden border-2 border-indigo-200/50 dark:border-indigo-800/50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl">
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-indigo-300/20 to-blue-300/20 rounded-full blur-3xl"></div>
+                  <CardContent className="p-6 relative z-10">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 text-white">
+                        <Sparkles className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 dark:text-white">What's Included</h4>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className="mt-1 p-1 rounded bg-indigo-100 dark:bg-indigo-900/30">
+                          <div className="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400"></div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">Your Brand Identity</p>
+                          <p className="text-xs text-muted-foreground">Logo, colors, domain name</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="mt-1 p-1 rounded bg-indigo-100 dark:bg-indigo-900/30">
+                          <div className="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400"></div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">Custom Curriculum</p>
+                          <p className="text-xs text-muted-foreground">West African live • US, UK, IB coming soon</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="mt-1 p-1 rounded bg-indigo-100 dark:bg-indigo-900/30">
+                          <div className="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400"></div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">Full Platform Access</p>
+                          <p className="text-xs text-muted-foreground">Arena, Labs, Analytics, Support</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="mt-1 p-1 rounded bg-indigo-100 dark:bg-indigo-900/30">
+                          <div className="w-2 h-2 rounded-full bg-indigo-600 dark:bg-indigo-400"></div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900 dark:text-white">Data Isolation</p>
+                          <p className="text-xs text-muted-foreground">Complete privacy & security</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="text-center space-y-4">
+                <Link href="/contact?interest=whitelabel">
+                  <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold shadow-lg hover:shadow-xl">
+                    <Building2 className="mr-2 h-5 w-5" />
+                    Get Your Platform
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                
+                <div>
+                  <Link href="/pricing" className="inline-flex items-center gap-2 text-sm font-semibold text-violet-600 dark:text-violet-400 hover:underline">
+                    View Detailed Pricing
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Earn Premium Banner - Only for logged in users */}
           {user && !user.isAnonymous && (
           <div className="mt-12 max-w-5xl mx-auto">
             <EarnPremiumBanner variant="full" dismissible={false} showProgress={true} />
           </div>
+          )}
+
+          {/* Simple Pricing Preview - Only for SmartClass24 */}
+          {tenantId === 'smartclass24' && (
+            <div className="mt-12 text-center">
+              <div className="inline-flex flex-col items-center gap-4 px-8 py-6 rounded-2xl bg-gradient-to-br from-violet-50/80 via-indigo-50/80 to-purple-50/80 dark:from-violet-950/30 dark:via-indigo-950/30 dark:to-purple-950/30 border-2 border-violet-200/50 dark:border-violet-800/50 backdrop-blur-sm shadow-lg max-w-2xl mx-auto">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                  <span className="text-sm font-bold text-violet-700 dark:text-violet-300">Flexible Pricing for Everyone</span>
+                </div>
+                <div className="flex flex-wrap justify-center gap-4 text-sm">
+                  <div className="text-center">
+                    <p className="font-black text-2xl text-gray-900 dark:text-white">{formatCurrency(0)}</p>
+                    <p className="text-xs text-muted-foreground">Free Forever</p>
+                  </div>
+                  <div className="h-12 w-px bg-violet-200 dark:bg-violet-800"></div>
+                  <div className="text-center">
+                    <p className="font-black text-2xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                      {country?.id === 'ghana' ? '₵20-50' : hasLocalization ? `${formatCurrency(5)}-${formatCurrency(10)}` : '$5-10'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">Premium Student</p>
+                  </div>
+                  <div className="h-12 w-px bg-violet-200 dark:bg-violet-800"></div>
+                  <div className="text-center">
+                    <p className="font-black text-2xl bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
+                      {country?.id === 'ghana' ? '₵1,200+' : '$299+'}
+                    </p>
+                    <p className="text-xs text-muted-foreground">For Schools</p>
+                  </div>
+                </div>
+                <Link href="/pricing">
+                  <Button variant="outline" size="sm" className="border-violet-400 text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/30">
+                    View All Plans & Features
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
           )}
 
           {/* Premium Trust Indicators */}
@@ -516,6 +728,28 @@ export default function Home() {
                 <>worldwide</>
               )}
             </p>
+            
+            {/* Value Proposition with Currency */}
+            {(hasLocalization || market !== 'middle-east') && (
+              <div className="mb-6 px-4">
+                <div className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-violet-500/10 via-indigo-500/10 to-purple-500/10 border-2 border-violet-200/30 dark:border-violet-800/30 backdrop-blur-sm shadow-lg">
+                  <span className="text-2xl">💎</span>
+                  <div className="text-left">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Premium Features</p>
+                    <p className="text-sm font-bold bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">
+                      {country?.id === 'ghana' ? (
+                        <>Free to Start • ₵20-50/month Premium</>
+                      ) : hasLocalization ? (
+                        <>Free to Start • {formatCurrency(5)}-{formatCurrency(10)}/month Premium</>
+                      ) : (
+                        <>Free to Start • $5-10/month Premium</>
+                      )}
+                    </p>
+                  </div>
+                  <Sparkles className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                </div>
+              </div>
+            )}
             <div className="flex flex-wrap gap-4 justify-center items-center">
               <div className="group px-5 py-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-200/30 dark:border-blue-800/30 backdrop-blur-sm hover:scale-105 transition-all shadow-lg hover:shadow-xl">
                 <p className="text-xs text-slate-600 dark:text-slate-400 mb-1">Curriculum Aligned</p>

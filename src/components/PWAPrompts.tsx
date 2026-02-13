@@ -15,9 +15,12 @@ export function PWAInstallPrompt() {
   const { branding } = useTenant();
 
   useEffect(() => {
+    console.log('[PWA] Initializing install prompt...');
+    
     // Check if user has previously dismissed
     const hasDissmissed = localStorage.getItem('pwa-prompt-dismissed');
     if (hasDissmissed) {
+      console.log('[PWA] Prompt was previously dismissed');
       setDismissed(true);
       return;
     }
@@ -25,21 +28,33 @@ export function PWAInstallPrompt() {
     // Check if already installed
     const isPWA = window.matchMedia('(display-mode: standalone)').matches;
     if (isPWA) {
+      console.log('[PWA] App already installed');
       return;
     }
 
+    console.log('[PWA] Listening for beforeinstallprompt event...');
+
     // Listen for install prompt
     const handleBeforeInstallPrompt = (e: any) => {
+      console.log('[PWA] beforeinstallprompt event fired!');
       e.preventDefault();
       setDeferredPrompt(e);
       
-      // Show prompt after 10 seconds
+      // Show prompt after 3 seconds (reduced from 10)
+      console.log('[PWA] Will show prompt in 3 seconds...');
       setTimeout(() => {
+        console.log('[PWA] Showing install prompt now!');
         setShowPrompt(true);
-      }, 10000);
+      }, 3000);
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // Add a manual trigger for testing
+    (window as any).__showPWAPrompt = () => {
+      console.log('[PWA] Manual trigger activated!');
+      setShowPrompt(true);
+    };
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);

@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
   const manifest = {
     name: `${tenant.branding.name} - Smart Learning Platform`,
     short_name: tenant.branding.name,
+    id: tenantId !== 'smartclass24' ? `/?tenant=${tenantId}` : '/',
     description: generateDescription(tenant),
     start_url: tenantId !== 'smartclass24' ? `/?tenant=${tenantId}` : '/',
     display: 'standalone',
@@ -29,20 +30,6 @@ export async function GET(request: NextRequest) {
     theme_color: tenant.branding.primaryColor || '#7c3aed',
     orientation: 'portrait',
     icons: generateIcons(tenant),
-    screenshots: [
-      {
-        src: '/screenshots/home.png',
-        sizes: '1280x720',
-        type: 'image/png',
-        form_factor: 'wide'
-      },
-      {
-        src: '/screenshots/mobile.png',
-        sizes: '720x1280',
-        type: 'image/png',
-        form_factor: 'narrow'
-      }
-    ],
     categories: ['education', 'productivity'],
     lang: 'en',
     dir: 'ltr',
@@ -71,34 +58,35 @@ function generateDescription(tenant: any): string {
 
 /**
  * Generate tenant-specific icons
- * Falls back to tenant logo if custom PWA icons don't exist
+ * Uses properly sized PWA icons for each tenant
  */
 function generateIcons(tenant: any): any[] {
-  const logoUrl = tenant.branding.logoUrl;
+  const tenantId = tenant.id || tenant.slug;
   
-  // If tenant has a logo, use it as PWA icon
-  if (logoUrl && logoUrl !== '/icons/logo.svg') {
+  // Check if tenant has dedicated PWA icons
+  // Wisdom Warehouse has: /icons/wisdom-warehouse-192.png and /icons/wisdom-warehouse-512.png
+  if (tenantId === 'wisdomwarehouse') {
     return [
       {
-        src: logoUrl,
+        src: '/icons/wisdom-warehouse-192.png',
         sizes: '192x192',
         type: 'image/png',
         purpose: 'any'
       },
       {
-        src: logoUrl,
+        src: '/icons/wisdom-warehouse-512.png',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any'
       },
       {
-        src: logoUrl,
+        src: '/icons/wisdom-warehouse-192.png',
         sizes: '192x192',
         type: 'image/png',
         purpose: 'maskable'
       },
       {
-        src: logoUrl,
+        src: '/icons/wisdom-warehouse-512.png',
         sizes: '512x512',
         type: 'image/png',
         purpose: 'maskable'
@@ -106,7 +94,8 @@ function generateIcons(tenant: any): any[] {
     ];
   }
   
-  // Fallback to default icons
+  // Fallback to default SmartClass24 icons (PNG for better PWA support)
+  // TODO: Convert default icons to PNG as well
   return [
     {
       src: '/icons/icon-192x192.svg',

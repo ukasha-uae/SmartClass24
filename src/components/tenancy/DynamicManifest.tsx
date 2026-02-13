@@ -36,10 +36,19 @@ export function DynamicManifest() {
       document.head.appendChild(manifestLink);
     }
     
-    // Update manifest URL with tenant parameter
-    const manifestUrl = tenantId && tenantId !== 'smartclass24' 
-      ? `/api/manifest?tenant=${tenantId}`
-      : '/api/manifest';
+    // Use static manifest files for better Chrome compatibility
+    // Static manifests are cached and recognized faster than API routes
+    let manifestUrl: string;
+    
+    if (tenantId === 'wisdomwarehouse') {
+      manifestUrl = '/manifest-wisdomwarehouse.json';
+    } else if (tenantId && tenantId !== 'smartclass24') {
+      // Fallback to dynamic API for other tenants
+      manifestUrl = `/api/manifest?tenant=${tenantId}`;
+    } else {
+      // Default S24 manifest
+      manifestUrl = '/manifest.json';
+    }
     
     manifestLink.href = manifestUrl;
     
