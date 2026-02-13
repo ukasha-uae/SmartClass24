@@ -203,11 +203,19 @@ export default function Home() {
     }] : [])
   ];
 
-  const stats = [
+  // Stats - Different for global platform vs tenants
+  const stats = tenantId === 'smartclass24' ? [
+    // Global SmartClass24 - Institutional focus
     { label: 'Active Students', value: '750+', icon: Users },
     { label: 'Success Rate', value: '96%', icon: Trophy },
     { label: 'Education Levels', value: '3', icon: Target },
-    { label: 'AI-Powered', value: 'Yes', icon: Brain }
+    { label: 'Countries Served', value: '5+', icon: Brain }
+  ] : [
+    // Tenant-specific stats (e.g., Wisdom Warehouse)
+    { label: 'Personalized Learning', value: '100%', icon: Brain },
+    { label: 'Engagement Rate', value: '98%', icon: Trophy },
+    { label: 'Holistic Approach', value: 'Yes', icon: Target },
+    { label: 'Mentorship', value: '1:1', icon: Users }
   ];
 
   // Feature links for "More Ways to Excel" section
@@ -285,7 +293,10 @@ export default function Home() {
 
           {/* Tenant & Country-Specific Tagline */}
           <p className="text-lg sm:text-xl md:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-3">
-            {market === 'middle-east' ? (
+            {tenantId === 'smartclass24' ? (
+              // Global platform - institutional messaging
+              <>🏫 White-Label Learning Platform for Schools & Institutions</>
+            ) : market === 'middle-east' ? (
               <>Personalized Learning for Every Student</>
             ) : market === 'us' ? (
               <>🇺🇸 Your Path to Academic Excellence</>
@@ -295,7 +306,10 @@ export default function Home() {
           </p>
 
           <p className="text-base md:text-lg text-muted-foreground max-w-3xl mx-auto mb-6">
-            {market === 'middle-east' ? (
+            {tenantId === 'smartclass24' ? (
+              // Global platform - institutional value proposition
+              <>Launch your branded learning platform with AI-powered lessons, virtual labs, and gamified challenges. Trusted by 750+ students across Africa and the Middle East. Full curriculum coverage with analytics and student progress tracking.</>
+            ) : market === 'middle-east' ? (
               <>Empowering diverse learners with individualized, hands-on education. Build real-world skills, emotional resilience, and discover your unique potential through personalized mentorship and creative learning.</>
             ) : market === 'us' ? (
               <>Comprehensive learning platform with interactive lessons, virtual labs, and competitive challenges. Master every subject with AI-powered personalized education.</>
@@ -304,11 +318,13 @@ export default function Home() {
             )}
           </p>
           
-          {/* Affordability Badge */}
+          {/* Affordability Badge - Different for global vs tenants */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/40 border-2 border-emerald-200/50 dark:border-emerald-800/50 backdrop-blur-sm shadow-lg mb-4">
-            <span className="text-2xl">🎓</span>
+            <span className="text-2xl">{tenantId === 'smartclass24' ? '🏫' : '🎓'}</span>
             <span className="text-sm md:text-base font-bold bg-gradient-to-r from-emerald-700 to-green-700 dark:from-emerald-400 dark:to-green-400 bg-clip-text text-transparent">
-              {market === 'middle-east' ? (
+              {tenantId === 'smartclass24' ? (
+                '🚀 Launch Your Branded Platform in 48 Hours'
+              ) : market === 'middle-east' ? (
                 'Premium Learning. Exceptional Value.'
               ) : country?.id === 'ghana' ? (
                 `Quality Education From ${formatCurrency(0)}/month`
@@ -322,7 +338,7 @@ export default function Home() {
           </div>
           
           {/* Premium Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8 mb-8">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               const statColors = [
@@ -345,6 +361,17 @@ export default function Home() {
               );
             })}
           </div>
+
+          {/* Institutional Trust Badge - Only for global platform */}
+          {tenantId === 'smartclass24' && (
+            <div className="flex items-center justify-center gap-3 max-w-2xl mx-auto mb-12 p-4 rounded-xl bg-gradient-to-r from-violet-50/50 to-indigo-50/50 dark:from-violet-950/30 dark:to-indigo-950/30 border border-violet-200/50 dark:border-violet-800/30 backdrop-blur-sm">
+              <Building2 className="h-6 w-6 text-violet-600 dark:text-violet-400" />
+              <div className="text-left">
+                <p className="text-sm font-semibold text-violet-900 dark:text-violet-200">Trusted by Educational Institutions</p>
+                <p className="text-xs text-violet-700 dark:text-violet-300">Serving students across Ghana, Nigeria, Sierra Leone, Liberia & UAE</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Campus Selection - Main Focus */}
