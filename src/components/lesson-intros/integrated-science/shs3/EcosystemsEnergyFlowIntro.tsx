@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { Sun, Leaf, Fish, Recycle, TrendingDown, Zap, ChevronLeft, ChevronRight, Play, Pause, Volume2, VolumeX, GraduationCap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 import { localizeString } from '@/lib/localization/content-localizer';
 import type { CountryConfig } from '@/lib/localization/country-config';
 
@@ -13,6 +14,7 @@ interface LessonIntroProps {
 
 const EcosystemsEnergyFlowIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   const { country } = useLocalization();
+  const { labels: educationLabels } = useEducationLevels();
   const [stage, setStage] = useState(0);
   
   // Teacher narration states
@@ -218,7 +220,7 @@ const EcosystemsEnergyFlowIntro: React.FC<LessonIntroProps> = ({ onComplete }) =
             </div>
             <div>
               <h1 className="text-lg font-bold text-white">Ecosystems: Energy Flow & Food Chains</h1>
-              <p className="text-sm text-yellow-200">Integrated Science SHS 3 • Interactive Voice Lesson</p>
+              <p className="text-sm text-yellow-200">Integrated Science {educationLabels.shs} 3 • Interactive Voice Lesson</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

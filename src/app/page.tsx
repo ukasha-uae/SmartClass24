@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +12,7 @@ import { useState, useEffect, useCallback, useContext } from 'react';
 import { IntelligentWelcome } from '@/components/IntelligentWelcome';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useTenant } from '@/hooks/useTenant';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { EarnPremiumBanner } from '@/components/EarnPremiumBanner';
 import { FirebaseContext } from '@/firebase/provider';
@@ -24,6 +24,7 @@ export default function Home() {
   const [selectedCampus, setSelectedCampus] = useState<'JHS' | 'SHS' | 'Primary'>('JHS');
   const { country, formatCurrency, getCurrencySymbol } = useLocalization();
   const { branding, market, hasLocalization, tenantId } = useTenant();
+  const { labels: educationLabels } = useEducationLevels();
   const firebaseContext = useContext(FirebaseContext);
   const user = firebaseContext?.user ?? null;
   const addTenantParam = useCallback(
@@ -108,11 +109,11 @@ export default function Home() {
   };
 
   // Get country-specific academic structure - Define BEFORE early return
-  const juniorLevel = country?.academicStructure?.juniorSecondary?.name || 'JHS';
+  const juniorLevel = country?.academicStructure?.juniorSecondary?.name || educationLabels.jhs;
   const juniorExam = country?.examSystem?.primary || 'BECE';
   const seniorExam = country?.examSystem?.secondary || 'WASSCE';
-  const juniorClasses = country?.academicStructure?.juniorSecondary?.levels?.join(', ') || 'JHS 1-3';
-  const seniorClasses = country?.academicStructure?.seniorSecondary?.levels?.join(', ') || 'SHS 1-3';
+  const juniorClasses = country?.academicStructure?.juniorSecondary?.levels?.join(', ') || `${educationLabels.jhs} 1-3`;
+  const seniorClasses = country?.academicStructure?.seniorSecondary?.levels?.join(', ') || `${educationLabels.shs} 1-3`;
 
   // Get country-specific colors from flag - Define BEFORE early return
   const getCountryColors = () => {
@@ -141,8 +142,8 @@ export default function Home() {
   const campuses = [
     {
       id: 'primary',
-      name: 'Primary School',
-      shortName: 'Primary',
+      name: educationLabels.primary,
+      shortName: educationLabels.primary,
       description: 'Class 1-6: Building Strong Foundations',
       gradient: colors.accent,
       icon: Trophy,
@@ -156,8 +157,8 @@ export default function Home() {
     },
     {
       id: 'jhs',
-      name: country?.academicStructure?.juniorSecondary?.officialName || 'Junior High School',
-      shortName: juniorLevel,
+      name: educationLabels.jhs,
+      shortName: educationLabels.jhs,
       description: market === 'middle-east' ? 'Building Critical Thinking Skills' : `Ace Your ${juniorExam} Exams`,
       gradient: colors.primary,
       icon: Trophy,
@@ -171,8 +172,8 @@ export default function Home() {
     },
     {
       id: 'shs',
-      name: country?.academicStructure?.seniorSecondary?.officialName || 'Senior High School',
-      shortName: country?.academicStructure?.seniorSecondary?.name || 'SHS',
+      name: educationLabels.shs,
+      shortName: educationLabels.shs,
       description: market === 'middle-east' ? 'Preparing for Higher Education' : `Conquer ${seniorExam} & Beyond`,
       gradient: colors.secondary,
       icon: GraduationCap,
@@ -186,21 +187,23 @@ export default function Home() {
       tagline: 'Your Path to University',
       v1Note: 'V1: Arena + Virtual Labs'
     },
-    ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity && tenantId === 'smartclass24' ? [{
-      id: 'university',
-      name: 'S24 Innovation Academy',
-      shortName: 'Academy',
-      description: 'Empowering Beginners to Become Tech Builders & Founders',
-      gradient: 'from-green-600 to-emerald-700',
-      icon: BookOpen,
-      features: ['AI-Driven Learning', 'Real-World Projects', 'Automation Skills', 'Build & Launch'],
-      href: '/university',
-      studentCount: '50+',
-      classes: 'Beginner-Expert',
-      emoji: '💻',
-      tagline: 'Your AI-Powered Tech Journey',
-      v1Note: 'NEW: Full Learning Platform'
-    }] : [])
+    ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity && (tenantId === 'smartclass24' || (tenantId === 'wisdomwarehouse' && branding && branding.name === 'Wisdom Warehouse'))
+        ? [{
+            id: 'university',
+            name: 'S24 Innovation Academy',
+            shortName: 'Academy',
+            description: 'Empowering Beginners to Become Tech Builders & Founders',
+            gradient: 'from-green-600 to-emerald-700',
+            icon: BookOpen,
+            features: ['AI-Driven Learning', 'Real-World Projects', 'Automation Skills', 'Build & Launch'],
+            href: '/university',
+            studentCount: '50+',
+            classes: 'Beginner-Expert',
+            emoji: '💻',
+            tagline: 'Your AI-Powered Tech Journey',
+            v1Note: 'NEW: Full Learning Platform'
+          }]
+        : [])
   ];
 
   // Stats - Different for global platform vs tenants

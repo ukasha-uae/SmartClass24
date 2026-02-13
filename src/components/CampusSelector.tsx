@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { GraduationCap, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 
 interface CampusSelectorProps {
   onLevelChange?: (level: 'Primary' | 'JHS' | 'SHS') => void;
@@ -12,6 +13,7 @@ interface CampusSelectorProps {
 }
 
 export default function CampusSelector({ onLevelChange, defaultLevel, className }: CampusSelectorProps) {
+  const { labels } = useEducationLevels();
   const [selectedLevel, setSelectedLevel] = useState<'Primary' | 'JHS' | 'SHS'>('Primary');
   const hasInitialized = useRef(false);
 
@@ -48,7 +50,7 @@ export default function CampusSelector({ onLevelChange, defaultLevel, className 
         )}
       >
         <BookOpen className="h-4 w-4" />
-        <span className="font-semibold">Primary</span>
+        <span className="font-semibold">{labels.primary}</span>
       </Button>
       <Button
         variant={selectedLevel === 'JHS' ? 'default' : 'ghost'}
@@ -62,7 +64,7 @@ export default function CampusSelector({ onLevelChange, defaultLevel, className 
         )}
       >
         <BookOpen className="h-4 w-4" />
-        <span className="font-semibold">JHS</span>
+        <span className="font-semibold">{labels.jhs}</span>
       </Button>
       <Button
         variant={selectedLevel === 'SHS' ? 'default' : 'ghost'}
@@ -76,7 +78,7 @@ export default function CampusSelector({ onLevelChange, defaultLevel, className 
         )}
       >
         <GraduationCap className="h-4 w-4" />
-        <span className="font-semibold">SHS</span>
+        <span className="font-semibold">{labels.shs}</span>
       </Button>
     </div>
   );

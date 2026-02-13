@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { AlertCircle, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 
 interface V1RouteGuardProps {
   campus: 'primary' | 'jhs' | 'shs';
@@ -32,6 +33,7 @@ export function V1RouteGuard({
   const router = useRouter();
   const pathname = usePathname();
   const addTenantParam = useTenantLink();
+  const { labels } = useEducationLevels();
   const [mounted, setMounted] = useState(false);
   
   // Prevent hydration mismatch by only checking access after mount
@@ -71,9 +73,9 @@ export function V1RouteGuard({
                        feature === 'virtualLabs' ? 'virtual labs' : 
                        'arena challenge';
     
-    const campusName = campus === 'primary' ? 'Primary School' :
-                      campus === 'jhs' ? 'Junior High School' :
-                      'Senior High School';
+    const campusName = campus === 'primary' ? labels.primary :
+                      campus === 'jhs' ? labels.jhs :
+                      labels.shs;
 
     return (
       <div className="container mx-auto p-6 min-h-screen flex items-center justify-center">

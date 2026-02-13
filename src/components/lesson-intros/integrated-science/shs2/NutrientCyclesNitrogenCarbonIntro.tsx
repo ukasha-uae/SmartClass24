@@ -7,6 +7,7 @@ import {
   Leaf, Cloud, Factory, Droplets, Thermometer, RefreshCw
 } from 'lucide-react';
 import Image from 'next/image';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 
 interface NutrientCyclesNitrogenCarbonIntroProps {
   onComplete?: () => void;
@@ -129,6 +130,7 @@ const introStages = [
 ];
 
 export default function NutrientCyclesNitrogenCarbonIntro({ onComplete }: NutrientCyclesNitrogenCarbonIntroProps) {
+  const { labels: educationLabels } = useEducationLevels();
   const [currentStage, setCurrentStage] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
@@ -735,7 +737,7 @@ export default function NutrientCyclesNitrogenCarbonIntro({ onComplete }: Nutrie
               <h1 className="text-sm sm:text-lg font-bold text-gray-800">
                 Nutrient Cycles
               </h1>
-              <p className="text-xs text-gray-500">SHS 2 • Integrated Science</p>
+              <p className="text-xs text-gray-500">{educationLabels.shs} 2 • Integrated Science</p>
             </div>
           </div>
           

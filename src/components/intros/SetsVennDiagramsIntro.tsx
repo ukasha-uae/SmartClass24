@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Circle, Layers, Combine, Calculator, Trophy, Play, Pause, Volume2, VolumeX, GraduationCap, ChevronLeft, ChevronRight, Hash, X, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCountryProperties } from '@/hooks/useCountryConfig';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 
 interface LessonIntroProps {
   onComplete?: () => void;
@@ -11,6 +12,7 @@ interface LessonIntroProps {
 
 const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   const { currencySymbol } = useCountryProperties();
+  const { labels } = useEducationLevels();
   const [stage, setStage] = useState(0);
   
   // Interactive state for demonstrations
@@ -77,7 +79,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
     {
       title: "🌍 Real-World Applications!",
       content: "Sets are everywhere - schools, markets, technology, and statistics!",
-      narration: `Sets are used everywhere in real life! In schools, we group students - the set of JHS students, the set of SHS students, the set of students who play football. In markets, we categorize goods - the set of fruits, the set of vegetables, the set of items costing less than ${currencySymbol}10. In technology, databases use sets to organize information, and search filters use set operations. In statistics, we organize and analyze data using sets. In planning, event attendance and voter registration use set concepts. Understanding sets helps you organize information logically, solve complex counting problems, analyze relationships between groups, and prepare for WASSCE questions on sets, which are very common!`,
+      narration: `Sets are used everywhere in real life! In schools, we group students - the set of ${labels.jhs} students, the set of ${labels.shs} students, the set of students who play football. In markets, we categorize goods - the set of fruits, the set of vegetables, the set of items costing less than ${currencySymbol}10. In technology, databases use sets to organize information, and search filters use set operations. In statistics, we organize and analyze data using sets. In planning, event attendance and voter registration use set concepts. Understanding sets helps you organize information logically, solve complex counting problems, analyze relationships between groups, and prepare for WASSCE questions on sets, which are very common!`,
       highlightWords: ['real-world', 'schools', 'markets', 'technology', 'statistics', 'planning', 'organize', 'WASSCE']
     },
     {

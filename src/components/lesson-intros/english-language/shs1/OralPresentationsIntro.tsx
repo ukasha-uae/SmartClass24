@@ -8,6 +8,7 @@ import {
   ChevronLeft, ChevronRight, MessageCircle, Eye, Zap
 } from 'lucide-react';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 import { localizeString } from '@/lib/localization/content-localizer';
 import type { CountryConfig } from '@/lib/localization/country-config';
 
@@ -17,6 +18,7 @@ interface LessonIntroProps {
 
 const OralPresentationsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   const { country } = useLocalization();
+  const { labels: educationLabels } = useEducationLevels();
   const [stage, setStage] = useState(0);
   
   // Interactive state
@@ -168,7 +170,7 @@ const OralPresentationsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
           </p>
           <div className="mt-4 flex items-center justify-center gap-4">
             <span className="px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
-              SHS 1 - English Language
+              {educationLabels.shs} 1 - English Language
             </span>
             <span className="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-medium">
               Listening & Speaking

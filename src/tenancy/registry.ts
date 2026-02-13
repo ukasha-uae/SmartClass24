@@ -24,9 +24,9 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
     // Explicit curriculum configuration (V1.5)
     curriculum: {
       system: 'west-african',
-      examSystems: ['BECE', 'WASSCE', 'NECO'],
       gradeLevels: ['Primary', 'JHS', 'SHS'],
-      countries: ['ghana', 'nigeria', 'sierra-leone', 'liberia', 'gambia'],
+      description: 'Demo deployment using West African curriculum for testing',
+      examSystems: ['BECE', 'WASSCE', 'NECO'],
     },
     features: {
       enableJHSCampus: true,
@@ -67,6 +67,12 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
       accentColor: '#f59e0b',   // Warm amber (creativity, growth)
       domain: 'learn.wisdomwarehouseuae.com',
       supportEmail: 'admin@wisdomwarehousedubai.com',  // Verified from wisdomwarehouseuae.com
+      educationLevelLabels: {
+        primary: 'Primary School',
+        jhs: 'Middle School',
+        shs: 'High School',
+      },
+      countryLabel: 'Location',
       footer: {
         tagline: 'Empowering curious, creative, and developing young minds through alternative, holistic education rooted in real-world learning, emotional resilience, and individual potential.',
         emoji: '🧠',  // Brain emoji - representing wisdom and learning
@@ -87,7 +93,7 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
     features: {
       enableJHSCampus: true,       // Support for diverse age groups
       enableSHSCampus: true,       // Alternative high school learning
-      enableUniversityCampus: false,
+      enableUniversityCampus: true, // Innovation Academy enabled
       enableVirtualLabs: true,     // Hands-on learning aligned with their values
       enableArenaChallenge: true,  // ✅ Challenge Arena enabled for gamified learning
       enableLocalization: false,   // No country selector - Dubai-based, custom curriculum
@@ -126,17 +132,10 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
     name: 'Demo Academy',
     market: 'global',
     curriculum: {
-      id: 'west-african',
-      name: 'West African Curriculum',
+      system: 'west-african',
+      gradeLevels: ['Primary', 'JHS', 'SHS'],
       description: 'Demo deployment using West African curriculum for testing',
-      region: ['ghana', 'nigeria', 'sierra-leone', 'liberia', 'gambia'],
       examSystems: ['BECE', 'WASSCE', 'NECO'],
-      supportedLanguages: ['en'],
-      academicStructure: {
-        primary: { name: 'Primary', grades: ['1', '2', '3', '4', '5', '6'] },
-        junior: { name: 'JHS', grades: ['1', '2', '3'] },
-        senior: { name: 'SHS', grades: ['1', '2', '3'] },
-      },
     },
     branding: {
       name: 'Demo Academy',

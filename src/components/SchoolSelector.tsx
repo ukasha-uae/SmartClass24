@@ -32,6 +32,7 @@ import {
   requestNewSchool,
   School,
 } from '@/lib/schools';
+import { useTenant } from '@/hooks/useTenant';
 
 interface SchoolSelectorProps {
   value?: string;
@@ -40,11 +41,15 @@ interface SchoolSelectorProps {
 }
 
 export default function SchoolSelector({ value, onChange, required = false }: SchoolSelectorProps) {
+  const { tenant } = useTenant();
   const [hasSchool, setHasSchool] = useState<'yes' | 'no' | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
   const [showRequestDialog, setShowRequestDialog] = useState(false);
+  
+  // Determine if we should show Ghana-specific school selector
+  const isGhanaMarket = tenant.market === 'ghana' || tenant.market === 'west-africa' || tenant.market === 'global';
   
   // Request new school form
   const [newSchoolName, setNewSchoolName] = useState('');
@@ -127,7 +132,7 @@ export default function SchoolSelector({ value, onChange, required = false }: Sc
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="yes" id="school-yes" />
             <Label htmlFor="school-yes" className="font-normal cursor-pointer">
-              I attend a school in Ghana
+              {isGhanaMarket ? 'I attend a school in Ghana' : 'I attend a school/institution'}
             </Label>
           </div>
           <div className="flex items-center space-x-2">
@@ -140,7 +145,7 @@ export default function SchoolSelector({ value, onChange, required = false }: Sc
       </div>
 
       {/* Step 2: School Selection (if hasSchool === 'yes') */}
-      {hasSchool === 'yes' && (
+      {hasSchool === 'yes' && isGhanaMarket && (
         <Card>
           <CardContent className="p-4 space-y-4">
             {/* Region Filter */}
@@ -375,6 +380,37 @@ export default function SchoolSelector({ value, onChange, required = false }: Sc
             )}
           </CardContent>
         </Card>
+      )}
+
+      {/* Simple school name input for non-Ghana markets */}
+      {hasSchool === 'yes' && !isGhanaMarket && (
+        <div className="space-y-2">
+          <Label htmlFor="school-name">School/Institution Name</Label>
+          <Input
+            id="school-name"
+            placeholder={`Enter your school or institution name`}
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              // Create a simple school object
+              if (e.target.value.trim()) {
+                const customSchool: School = {
+                  id: `custom-${Date.now()}`,
+                  name: e.target.value,
+                  region: tenant.branding.countryLabel || 'Location',
+                  type: 'Private',
+                  town: '',
+                  verified: false,
+                  studentCount: 0,
+                };
+                handleSchoolSelect(customSchool);
+              } else {
+                onChange(null);
+              }
+            }}
+          />
+          <p className="text-xs text-muted-foreground">Optional: Enter your school or institution name</p>
+        </div>
       )}
 
       {/* Selected School Display */}

@@ -7,6 +7,7 @@ import {
   Play, Pause, VolumeX, GraduationCap, 
   ChevronLeft, ChevronRight, Users, Target
 } from 'lucide-react';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 
 interface LessonIntroProps {
   onComplete?: () => void;
@@ -65,6 +66,7 @@ const listeningTypes: ListeningType[] = [
 ];
 
 const EffectiveListeningIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
+  const { labels: educationLabels } = useEducationLevels();
   const [stage, setStage] = useState(0);
   
   // Interactive state
@@ -221,7 +223,7 @@ const EffectiveListeningIntro: React.FC<LessonIntroProps> = ({ onComplete }) => 
           </p>
           <div className="mt-4 flex items-center justify-center gap-4">
             <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-              SHS 1 - English Language
+              {educationLabels.shs} 1 - English Language
             </span>
             <span className="px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium">
               Listening & Speaking

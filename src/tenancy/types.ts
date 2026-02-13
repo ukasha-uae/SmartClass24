@@ -14,6 +14,10 @@ export interface TenantBranding {
   domain: string;
   supportEmail: string;
   
+  // Education level labels (optional, for non-Ghana markets)
+  educationLevelLabels?: EducationLevelLabels;
+  countryLabel?: string;  // e.g., "Country", "Region", "Location" (defaults to based on country)
+  
   // Footer customization (optional)
   footer?: {
     tagline?: string;          // Short description/mission statement
@@ -61,6 +65,16 @@ export interface TenantFeatures {
 export interface TenantContent {
   subjectsEnabled: string[];  // 'all' or specific subjects
   curriculumLabel?: string;   // Optional display label (e.g., "Common Core", "IGCSE")
+}
+
+/**
+ * Education Level Labels
+ * Custom naming for education levels per tenant
+ */
+export interface EducationLevelLabels {
+  primary?: string;   // e.g., "Primary School", "Elementary"
+  jhs?: string;       // e.g., "Middle School", "Junior High"
+  shs?: string;       // e.g., "High School", "Senior High"
 }
 
 /**
