@@ -153,7 +153,8 @@ export default async function RootLayout({
                   <HeaderNoSSR />
                   <FullscreenMain>{children}</FullscreenMain>
                   <FooterNoSSR />
-                  {/* <PWAInstallPrompt /> Removed as per request to hide install button */}
+                  {/* Show PWAInstallPrompt only for SmartClass24 tenant */}
+                  {(!initialTenantId || initialTenantId === 'smartclass24') && <PWAInstallPrompt />}
                   <PWAUpdatePrompt />
                   <ManualPWAInstall />
                   <FirstTimeProfileModal />
