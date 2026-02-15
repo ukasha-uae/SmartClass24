@@ -153,7 +153,7 @@ export default async function RootLayout({
                   <HeaderNoSSR />
                   <FullscreenMain>{children}</FullscreenMain>
                   <FooterNoSSR />
-                  <PWAInstallPrompt />
+                  {/* <PWAInstallPrompt /> Removed as per request to hide install button */}
                   <PWAUpdatePrompt />
                   <ManualPWAInstall />
                   <FirstTimeProfileModal />
