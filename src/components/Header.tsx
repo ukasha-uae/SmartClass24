@@ -138,7 +138,7 @@ export default function Header() {
         <div className="ml-auto flex items-center gap-1 sm:gap-2" suppressHydrationWarning>
           {/* Mobile Hamburger Menu */}
           <div className="md:hidden flex items-center gap-1">
-            <WhatsAppHeaderButton isMobile={true} />
+            {tenantId === 'smartclass24' && <WhatsAppHeaderButton isMobile={true} />}
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen} modal={false}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="sm">
@@ -476,7 +476,7 @@ export default function Header() {
           <ThemeToggle className="hidden md:flex" />
           {/* WhatsApp Button - Desktop (Hidden on Mobile) */}
           <div className="hidden md:block">
-            <WhatsAppHeaderButton isMobile={false} />
+            {tenantId === 'smartclass24' && <WhatsAppHeaderButton isMobile={false} />}
           </div>
           {user && (
             <>
