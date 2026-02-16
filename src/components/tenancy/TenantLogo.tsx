@@ -43,6 +43,7 @@ export function TenantLogo({
 }: TenantLogoProps) {
   const { branding, tenantId } = useTenant();
   const [mounted, setMounted] = useState(false);
+  const [logoError, setLogoError] = useState(false);
   
   const logoSizes = SIZES[size];
   
@@ -56,8 +57,8 @@ export function TenantLogo({
     return <div className={cn('w-12 h-12', className)} />;
   }
   
-  // If tenant has custom logo (e.g., Wisdom Warehouse), show it
-  if (branding.logoUrl) {
+  // If tenant has custom logo (e.g., Wisdom Warehouse), show it (with fallback when 404 in production)
+  if (branding.logoUrl && !logoError) {
     const getImageSizeClasses = () => {
       switch (size) {
         case 'sm':
@@ -83,12 +84,31 @@ export function TenantLogo({
           className={cn('object-contain', getImageSizeClasses())}
           priority
           data-tenant-id={tenantId}
+          onError={() => setLogoError(true)}
         />
         {showText && (
           <span className="font-bold text-base sm:text-lg md:text-xl">
             {branding.name}
           </span>
         )}
+      </div>
+    );
+  }
+  
+  // Fallback when logo URL is set but failed to load (e.g. missing file in production): show tenant name
+  if (branding.logoUrl && logoError) {
+    const textSize = size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-lg' : size === 'xl' ? 'text-xl' : 'text-base';
+    return (
+      <div className={cn('flex items-center gap-2', className)} data-tenant-id={tenantId}>
+        <span
+          className={cn(
+            'font-bold text-slate-700 dark:text-slate-300 truncate max-w-[8rem] sm:max-w-[10rem]',
+            textSize
+          )}
+          title={branding.name}
+        >
+          {branding.name}
+        </span>
       </div>
     );
   }
