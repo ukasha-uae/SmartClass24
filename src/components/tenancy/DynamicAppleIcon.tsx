@@ -10,42 +10,28 @@
 
 import { useEffect } from 'react';
 import { useTenant } from '@/hooks/useTenant';
+import { getTenantPwaIconUrls } from '@/tenancy/pwa';
 
 /**
- * Client component that dynamically updates Apple Touch Icon
- * based on current tenant's branding (for iOS devices)
- * 
- * @example
- * ```tsx
- * // In layout head
- * <DynamicAppleIcon />
- * ```
+ * Updates Apple Touch Icon from current tenant's PWA icon
+ * so each tenant gets their own logo when adding to iOS home screen.
  */
 export function DynamicAppleIcon() {
   const { tenantId, branding } = useTenant();
-  
+
   useEffect(() => {
     if (typeof document === 'undefined') return;
-    
-    // Find or create apple-touch-icon link element
+
     let appleIconLink = document.querySelector('link[rel="apple-touch-icon"]') as HTMLLinkElement;
-    
     if (!appleIconLink) {
       appleIconLink = document.createElement('link');
       appleIconLink.rel = 'apple-touch-icon';
       document.head.appendChild(appleIconLink);
     }
-    
-    // Use tenant-specific PWA icon for iOS home screen (better than logo)
-    // Wisdom Warehouse: /icons/wisdom-warehouse-192.png
-    let iconUrl = '/icons/icon-192x192.svg'; // default
-    
-    if (tenantId === 'wisdomwarehouse') {
-      iconUrl = '/icons/wisdom-warehouse-192.png';
-    }
-    
-    appleIconLink.href = iconUrl;
+
+    const urls = getTenantPwaIconUrls(tenantId, branding);
+    appleIconLink.href = urls.icon192;
   }, [tenantId, branding]);
-  
-  return null; // This component doesn't render anything
+
+  return null;
 }

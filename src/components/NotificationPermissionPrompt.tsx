@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, BellOff, X } from 'lucide-react';
 import { getNotificationPermission, requestNotificationPermission } from '@/firebase/messaging';
+import { useTenant } from '@/hooks/useTenant';
 
 interface NotificationPermissionPromptProps {
   /**
@@ -28,11 +29,8 @@ interface NotificationPermissionPromptProps {
 }
 
 /**
- * Non-blocking notification permission prompt
- * Shows a friendly banner to request push notification permission
- * 
- * Usage:
- * <NotificationPermissionPrompt delay={5000} onGranted={() => console.log('Granted!')} />
+ * Non-blocking notification permission prompt (Arena / challenge notifications).
+ * Shown only for SmartClass24 tenant. Wisdom Warehouse and other tenants do not see this.
  */
 export function NotificationPermissionPrompt({
   delay = 3000,
@@ -40,9 +38,13 @@ export function NotificationPermissionPrompt({
   onDenied,
   className = ''
 }: NotificationPermissionPromptProps) {
+  const { tenantId } = useTenant();
   const [showPrompt, setShowPrompt] = useState(false);
   const [isRequesting, setIsRequesting] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission>('default');
+
+  // Only show "Stay in the Arena!" for SmartClass24; Wisdom and other tenants don't get this prompt
+  const showForTenant = !tenantId || tenantId === 'smartclass24';
 
   useEffect(() => {
     // Check current permission status
@@ -102,8 +104,8 @@ export function NotificationPermissionPrompt({
     localStorage.setItem('notification_prompt_dismissed', Date.now().toString());
   };
 
-  // Don't render if permission already granted/denied or prompt is hidden
-  if (permission !== 'default' || !showPrompt) {
+  // Don't render for non-S24 tenants, or if permission already set, or prompt hidden
+  if (!showForTenant || permission !== 'default' || !showPrompt) {
     return null;
   }
 

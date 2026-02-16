@@ -321,10 +321,10 @@ export default function Home() {
             )}
           </p>
           
-          {/* Affordability Badge - Different for global vs tenants */}
+          {/* Affordability Badge - Solid text color so it's visible in all browsers (gradient clip can fail with extensions) */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/40 dark:to-green-950/40 border-2 border-emerald-200/50 dark:border-emerald-800/50 backdrop-blur-sm shadow-lg mb-4">
             <span className="text-2xl">{tenantId === 'smartclass24' ? '🏫' : '🎓'}</span>
-            <span className="text-sm md:text-base font-bold bg-gradient-to-r from-emerald-700 to-green-700 dark:from-emerald-400 dark:to-green-400 bg-clip-text text-transparent">
+            <span className="text-sm md:text-base font-bold text-emerald-700 dark:text-emerald-400">
               {tenantId === 'smartclass24' ? (
                 '🚀 Launch Your Branded Platform in 48 Hours'
               ) : market === 'middle-east' ? (

@@ -67,6 +67,7 @@ export const TENANT_REGISTRY: Record<string, TenantConfig> = {
       accentColor: '#f59e0b',   // Warm amber (creativity, growth)
       domain: 'learn.wisdomwarehouseuae.com',
       supportEmail: 'admin@wisdomwarehousedubai.com',  // Verified from wisdomwarehouseuae.com
+      pwaIcons: { icon192: '/icons/wisdom-warehouse-192.png', icon512: '/icons/wisdom-warehouse-512.png' },
       educationLevelLabels: {
         primary: 'Primary School',
         jhs: 'Middle School',

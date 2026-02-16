@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Serve service worker at /pwa-sw.js so it loads in dev (Turbopack) and native PWA install works
+  async rewrites() {
+    return [{ source: '/pwa-sw.js', destination: '/api/pwa-sw' }];
+  },
   // Generate unique build ID using git commit hash for cache invalidation
   generateBuildId: async () => {
     // Use git commit hash if available, fallback to timestamp
@@ -49,9 +53,18 @@ const nextConfig: NextConfig = {
       static: 180, // Cache static pages for 3 minutes only
     },
   },
-  // Add cache-control headers for virtual labs
+  // Security and cache-control headers
   async headers() {
+    const securityHeaders = [
+      { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+    ];
     return [
+      {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
       {
         source: '/virtual-labs/:path*',
         headers: [

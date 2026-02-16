@@ -6,13 +6,21 @@ export type TenantMarket = 'us' | 'global' | 'ghana' | 'west-africa' | 'middle-e
  * Simplified Branding Configuration
  * v1: Logo + 2 colors + domain
  */
+/** Optional PWA install icons (192x192 and 512x512). Use PNG for best compatibility. */
+export interface TenantPwaIcons {
+  icon192: string;  // e.g. '/icons/acme-192.png'
+  icon512: string;  // e.g. '/icons/acme-512.png'
+}
+
 export interface TenantBranding {
   name: string;
   logoUrl?: string;
   primaryColor: string;   // Main brand color
-  accentColor: string;    // Secondary/accent color
+  accentColor: string;   // Secondary/accent color
   domain: string;
   supportEmail: string;
+  /** Optional: PWA install icons (home screen / splash). If omitted, uses /icons/{tenantId}-192.png and -512.png when present. */
+  pwaIcons?: TenantPwaIcons;
   
   // Education level labels (optional, for non-Ghana markets)
   educationLevelLabels?: EducationLevelLabels;

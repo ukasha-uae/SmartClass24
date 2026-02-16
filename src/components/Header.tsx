@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import { GraduationCap, Users, MessagesSquare, Trophy, HelpCircle, ChevronDown, Menu, Calendar, BookOpen, Globe, ChevronRight, MessageCircle, Lock } from 'lucide-react';
+import { GraduationCap, Users, MessagesSquare, Trophy, HelpCircle, ChevronDown, Menu, Calendar, BookOpen, Globe, ChevronRight, MessageCircle, Lock, Download } from 'lucide-react';
 import AuthModal from './AuthModal';
 import { ThemeToggle } from './ThemeToggle';
 import CountrySelector from './CountrySelector';
@@ -41,6 +41,7 @@ import { cn } from '@/lib/utils';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useV1FeatureAccess } from '@/components/V1RouteGuard';
 import { useFullscreen } from '@/contexts/FullscreenContext';
+import { usePWAInstall } from '@/contexts/PWAInstallContext';
 
 // WhatsApp Header Button Component
 function WhatsAppHeaderButton({ isMobile = false }: { isMobile?: boolean }) {
@@ -98,6 +99,7 @@ export default function Header() {
   const { country } = useLocalization();
   const { tenant, tenantId, market, branding, hasLocalization, features, hasArenaChallenge, hasVirtualLabs } = useTenant();
   const { isFullscreen } = useFullscreen();
+  const pwaInstall = usePWAInstall();
   const addTenantParam = useTenantLink();
   const profileRef = useMemo(() => (user && firestore) ? doc(firestore, `students/${user.uid}`) : null, [user, firestore]);
   const { data: profile } = useDoc<any>(profileRef as any);
@@ -173,6 +175,23 @@ export default function Header() {
                     <AuthModal />
                   </div>
                   
+                  <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
+
+                  {/* Install app - visible for all tenants; in incognito opens instructions */}
+                  {pwaInstall?.canShowInstall && (
+                    <button
+                      type="button"
+                      onClick={() => { setSheetOpen(false); pwaInstall.triggerInstall(); }}
+                      className="w-full flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 backdrop-blur-sm border-2 border-violet-200/50 dark:border-violet-800/50 hover:border-violet-300 dark:hover:border-violet-700 transition-all hover:scale-[1.02] shadow-md group text-left"
+                    >
+                      <div className="p-2 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-lg">
+                        <Download className="h-5 w-5 text-violet-600 dark:text-violet-400" />
+                      </div>
+                      <span className="font-semibold text-slate-700 dark:text-slate-300">Install {branding.name}</span>
+                      <ChevronRight className="h-4 w-4 text-violet-600 dark:text-violet-400 opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
+                    </button>
+                  )}
+
                   <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
                   
                   {/* Premium Country Selector - Collapsible (only show if localization enabled) */}
@@ -467,6 +486,20 @@ export default function Header() {
             </Sheet>
           </div>
           
+          {/* Install app - desktop (opens native prompt or instructions e.g. in incognito) */}
+          {pwaInstall?.canShowInstall && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => pwaInstall.triggerInstall()}
+              className="hidden md:flex items-center gap-2 text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-500/10 border border-transparent hover:border-violet-300/50 transition-all"
+              title={`Install ${branding.name}`}
+            >
+              <Download className="h-4 w-4" />
+              <span className="font-semibold">Install app</span>
+            </Button>
+          )}
+
           {/* Desktop Navigation */}
           <CountrySelector 
             variant="compact" 

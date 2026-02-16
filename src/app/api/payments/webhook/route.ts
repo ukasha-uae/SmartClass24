@@ -1,44 +1,58 @@
 /**
  * Payment Webhook Handler for Flutterwave
- * This endpoint receives payment confirmations from Flutterwave
- * 
- * IMPORTANT: When Flutterwave is integrated, configure the webhook URL:
- * https://yourdomain.com/api/payments/webhook
+ * This endpoint receives payment confirmations from Flutterwave.
+ *
+ * SECURITY: Requests are accepted only when FLUTTERWAVE_SECRET_HASH is set
+ * and the verif-hash signature is valid. Until then, the endpoint returns 503.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 
-// This will be implemented when Flutterwave is integrated
-// For now, this is a placeholder structure
+const SECRET_HASH = process.env.FLUTTERWAVE_SECRET_HASH;
+
+/** Flutterwave sends the secret hash you configure in the dashboard in the verif-hash header. */
+function verifyFlutterwaveWebhook(signature: string | null): boolean {
+  if (!SECRET_HASH || !signature) return false;
+  const a = Buffer.from(signature, 'utf8');
+  const b = Buffer.from(SECRET_HASH, 'utf8');
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
 
 export async function POST(req: NextRequest) {
   try {
+    // Reject all webhook payloads until signature verification is configured (production-safe)
+    if (!SECRET_HASH) {
+      return NextResponse.json(
+        { error: 'Webhook not configured' },
+        { status: 503 }
+      );
+    }
+
     const body = await req.json();
-    
-    // TODO: Verify webhook signature from Flutterwave
-    // const signature = req.headers.get('verif-hash');
-    // if (!verifyFlutterwaveWebhook(signature, body)) {
-    //   return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
-    // }
-    
-    // Handle different webhook events
+    const signature = req.headers.get('verif-hash');
+
+    if (!verifyFlutterwaveWebhook(signature)) {
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+    }
+
     const event = body.event;
-    
+
     switch (event) {
       case 'charge.completed':
-        // Payment was successful
         await handlePaymentSuccess(body.data);
         break;
-        
       case 'charge.failed':
-        // Payment failed
         await handlePaymentFailure(body.data);
         break;
-        
       default:
-        console.log('Unhandled webhook event:', event);
+        // Log without leaking event details in response
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Unhandled webhook event:', event);
+        }
     }
-    
+
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
@@ -81,17 +95,3 @@ async function handlePaymentFailure(data: any) {
   console.log('Payment failed:', data);
 }
 
-/**
- * Verify Flutterwave webhook signature
- * TODO: Implement when Flutterwave is integrated
- */
-function verifyFlutterwaveWebhook(signature: string | null, body: any): boolean {
-  // TODO: Implement signature verification
-  // const secretHash = process.env.FLUTTERWAVE_SECRET_HASH;
-  // const hash = crypto.createHmac('sha256', secretHash)
-  //   .update(JSON.stringify(body))
-  //   .digest('hex');
-  // return hash === signature;
-  
-  return true; // Placeholder
-}

@@ -1,45 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TENANT_REGISTRY } from '@/tenancy/registry';
+import { getTenantPwaIconUrls, buildManifestIcons } from '@/tenancy/pwa';
 
 /**
  * Dynamic PWA Manifest API Route
- * Generates tenant-specific manifest.json for PWA installation
- * 
+ * Generates tenant-specific manifest.json for PWA installation with tenant name and icons.
+ *
  * Usage: /api/manifest?tenant=wisdomwarehouse
+ * Each tenant can install the PWA with their own logo (add pwaIcons in registry or /icons/{tenantId}-192.png and -512.png).
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const tenantParam = searchParams.get('tenant');
-  
-  // Get tenant from cookie if not in query
+
   const cookieTenant = request.cookies.get('tenant')?.value;
   const tenantId = tenantParam || cookieTenant || 'smartclass24';
-  
-  // Get tenant config or fallback to default
+
   const tenant = TENANT_REGISTRY[tenantId] || TENANT_REGISTRY.smartclass24;
-  
-  // Generate tenant-specific manifest
+  const branding = tenant.branding;
+
+  const iconUrls = getTenantPwaIconUrls(tenantId, branding);
+  const icons = buildManifestIcons(iconUrls);
+
+  const basePath = tenantId !== 'smartclass24' ? `/?tenant=${tenantId}` : '/';
   const manifest = {
-    name: `${tenant.branding.name} - Smart Learning Platform`,
-    short_name: tenant.branding.name,
-    id: tenantId !== 'smartclass24' ? `/?tenant=${tenantId}` : '/',
+    name: `${branding.name} - Smart Learning Platform`,
+    short_name: branding.name,
+    id: basePath,
     description: generateDescription(tenant),
-    start_url: tenantId !== 'smartclass24' ? `/?tenant=${tenantId}` : '/',
+    start_url: basePath,
     display: 'standalone',
     background_color: '#ffffff',
-    theme_color: tenant.branding.primaryColor || '#7c3aed',
+    theme_color: branding.primaryColor || '#7c3aed',
     orientation: 'portrait',
-    icons: generateIcons(tenant),
+    icons,
     categories: ['education', 'productivity'],
     lang: 'en',
     dir: 'ltr',
-    scope: tenantId !== 'smartclass24' ? `/?tenant=${tenantId}` : '/',
+    scope: basePath,
   };
-  
+
   return NextResponse.json(manifest, {
     headers: {
       'Content-Type': 'application/manifest+json',
-      'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+      'Cache-Control': 'public, max-age=3600',
     },
   });
 }
@@ -56,70 +60,3 @@ function generateDescription(tenant: any): string {
   return `${tenant.branding?.name || 'SmartClass24'} - Master your curriculum with interactive lessons, virtual labs, and gamified learning.`;
 }
 
-/**
- * Generate tenant-specific icons
- * Uses properly sized PWA icons for each tenant
- */
-function generateIcons(tenant: any): any[] {
-  const tenantId = tenant.id || tenant.slug;
-  
-  // Check if tenant has dedicated PWA icons
-  // Wisdom Warehouse has: /icons/wisdom-warehouse-192.png and /icons/wisdom-warehouse-512.png
-  if (tenantId === 'wisdomwarehouse') {
-    return [
-      {
-        src: '/icons/wisdom-warehouse-192.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'any'
-      },
-      {
-        src: '/icons/wisdom-warehouse-512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'any'
-      },
-      {
-        src: '/icons/wisdom-warehouse-192.png',
-        sizes: '192x192',
-        type: 'image/png',
-        purpose: 'maskable'
-      },
-      {
-        src: '/icons/wisdom-warehouse-512.png',
-        sizes: '512x512',
-        type: 'image/png',
-        purpose: 'maskable'
-      }
-    ];
-  }
-  
-  // Fallback to default SmartClass24 icons (PNG for better PWA support)
-  // TODO: Convert default icons to PNG as well
-  return [
-    {
-      src: '/icons/icon-192x192.svg',
-      sizes: '192x192',
-      type: 'image/svg+xml',
-      purpose: 'any'
-    },
-    {
-      src: '/icons/icon-512x512.svg',
-      sizes: '512x512',
-      type: 'image/svg+xml',
-      purpose: 'any'
-    },
-    {
-      src: '/icons/icon-192x192.svg',
-      sizes: '192x192',
-      type: 'image/svg+xml',
-      purpose: 'maskable'
-    },
-    {
-      src: '/icons/icon-512x512.svg',
-      sizes: '512x512',
-      type: 'image/svg+xml',
-      purpose: 'maskable'
-    }
-  ];
-}
