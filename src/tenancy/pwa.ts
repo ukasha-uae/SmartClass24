@@ -48,14 +48,34 @@ export function getTenantPwaIconUrls(
 }
 
 /**
- * Build manifest icons array for a tenant (any + maskable).
+ * Return production-safe icon URL (use API route when under /logos/ so it works when static public/ is not deployed).
  */
-export function buildManifestIcons(urls: TenantPwaIconUrls): Array<{ src: string; sizes: string; type: string; purpose: string }> {
+export function getProductionSafeIconUrl(tenantId: string, url: string): string {
+  if (url.startsWith('/logos/') && tenantId) {
+    return `/api/tenant-logo?tenant=${encodeURIComponent(tenantId)}`;
+  }
+  return url;
+}
+
+/**
+ * Build manifest icons array for a tenant (any + maskable).
+ * Use productionSafeIcon192/512 when you need icons to work in production (e.g. API manifest).
+ */
+export function buildManifestIcons(
+  urls: TenantPwaIconUrls,
+  options?: { tenantId?: string; useProductionSafeUrls?: boolean }
+): Array<{ src: string; sizes: string; type: string; purpose: string }> {
   const { icon192, icon512, type } = urls;
+  const src192 = options?.useProductionSafeUrls && options?.tenantId
+    ? getProductionSafeIconUrl(options.tenantId, icon192)
+    : icon192;
+  const src512 = options?.useProductionSafeUrls && options?.tenantId
+    ? getProductionSafeIconUrl(options.tenantId, icon512)
+    : icon512;
   return [
-    { src: icon192, sizes: '192x192', type, purpose: 'any' },
-    { src: icon512, sizes: '512x512', type, purpose: 'any' },
-    { src: icon192, sizes: '192x192', type, purpose: 'maskable' },
-    { src: icon512, sizes: '512x512', type, purpose: 'maskable' },
+    { src: src192, sizes: '192x192', type, purpose: 'any' },
+    { src: src512, sizes: '512x512', type, purpose: 'any' },
+    { src: src192, sizes: '192x192', type, purpose: 'maskable' },
+    { src: src512, sizes: '512x512', type, purpose: 'maskable' },
   ];
 }

@@ -4,9 +4,9 @@ Each tenant can have their own installable PWA: **name**, **theme color**, and *
 
 ## How it works
 
-- **Manifest**: For non-default tenants, the app uses `/api/manifest?tenant=yourtenant`, which returns a manifest with your tenant name, theme color, and icons.
-- **Install prompt**: The PWA install prompt is shown for **all** tenants (not only SmartClass24). The prompt title is “Install {Your Tenant Name}”.
-- **Icons**: Home screen and splash use your tenant’s PWA icons (192×192 and 512×512). Apple Touch Icon is set from the same source.
+- **Manifest**: For non-default tenants, the app uses `/api/manifest?tenant=yourtenant`, which returns a manifest with your tenant name, theme color, and icons. (Wisdom and all tenants use this API manifest so icons work in production.)
+- **Install prompt**: Shown when the browser supports the native one-click install prompt. Title is “Install {Your Tenant Name}”.
+- **Icons**: Home screen and splash use your tenant’s PWA icons. If icons are under `/logos/` (e.g. Wisdom), they are served via `/api/tenant-logo?tenant=...` so they load in production even when static `public/` is not deployed.
 
 ## Adding your tenant’s PWA icons
 

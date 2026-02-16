@@ -28,13 +28,11 @@ export function DynamicManifest() {
       document.head.appendChild(manifestLink);
     }
 
-    // Static manifest for wisdomwarehouse (optional; API works too). API for all other non-default tenants.
+    // API manifest for all non-default tenants (Wisdom included) so icons work in production
     const manifestUrl =
-      tenantId === 'wisdomwarehouse'
-        ? '/manifest-wisdomwarehouse.json'
-        : tenantId && tenantId !== 'smartclass24'
-          ? `/api/manifest?tenant=${tenantId}`
-          : '/manifest.json';
+      tenantId && tenantId !== 'smartclass24'
+        ? `/api/manifest?tenant=${tenantId}`
+        : '/manifest.json';
 
     manifestLink.href = manifestUrl;
 

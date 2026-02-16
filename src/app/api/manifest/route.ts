@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   const branding = tenant.branding;
 
   const iconUrls = getTenantPwaIconUrls(tenantId, branding);
-  const icons = buildManifestIcons(iconUrls);
+  const icons = buildManifestIcons(iconUrls, { tenantId, useProductionSafeUrls: true });
 
   const basePath = tenantId !== 'smartclass24' ? `/?tenant=${tenantId}` : '/';
   const manifest = {
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     categories: ['education', 'productivity'],
     lang: 'en',
     dir: 'ltr',
-    scope: basePath,
+    scope: '/',
   };
 
   return NextResponse.json(manifest, {

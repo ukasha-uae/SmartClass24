@@ -27,7 +27,7 @@ import { DynamicManifest } from '@/components/tenancy/DynamicManifest';
 import { DynamicAppleIcon } from '@/components/tenancy/DynamicAppleIcon';
 import { ServiceWorkerRegistration } from '@/components/ServiceWorkerRegistration';
 import { TENANT_REGISTRY } from '@/tenancy/registry';
-import { getTenantPwaIconUrls } from '@/tenancy/pwa';
+import { getTenantPwaIconUrls, getProductionSafeIconUrl } from '@/tenancy/pwa';
 import { getCountryConfig } from '@/lib/localization/countries';
 
 // Base metadata (merged with tenant-specific in generateMetadata)
@@ -111,15 +111,14 @@ export default async function RootLayout({
     ? TENANT_REGISTRY[initialTenantId] 
     : TENANT_REGISTRY.smartclass24;
 
-  // Server-side manifest URL determination for instant PWA detection
-  const manifestUrl = initialTenantId === 'wisdomwarehouse' 
-    ? '/manifest-wisdomwarehouse.json'
-    : initialTenantId && initialTenantId !== 'smartclass24'
+  // Server-side manifest URL: use API for all non-default tenants (Wisdom included) so icons work in production
+  const manifestUrl = initialTenantId && initialTenantId !== 'smartclass24'
     ? `/api/manifest?tenant=${initialTenantId}`
     : '/manifest.json';
 
   const themeColor = tenantConfig.branding.primaryColor;
   const pwaIcons = getTenantPwaIconUrls(initialTenantId ?? 'smartclass24', tenantConfig.branding);
+  const appleTouchIconHref = getProductionSafeIconUrl(initialTenantId ?? '', pwaIcons.icon192);
 
   return (
     <html lang="en" className="h-full">
@@ -128,7 +127,7 @@ export default async function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* PWA Manifest - tenant-specific so install uses tenant name and logo */}
         <link rel="manifest" href={manifestUrl} />
-        <link rel="apple-touch-icon" href={pwaIcons.icon192} />
+        <link rel="apple-touch-icon" href={appleTouchIconHref} />
         {/* Aggressive cache-busting meta tags */}
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />

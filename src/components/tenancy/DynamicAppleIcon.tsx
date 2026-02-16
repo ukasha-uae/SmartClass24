@@ -10,7 +10,7 @@
 
 import { useEffect } from 'react';
 import { useTenant } from '@/hooks/useTenant';
-import { getTenantPwaIconUrls } from '@/tenancy/pwa';
+import { getTenantPwaIconUrls, getProductionSafeIconUrl } from '@/tenancy/pwa';
 
 /**
  * Updates Apple Touch Icon from current tenant's PWA icon
@@ -29,8 +29,8 @@ export function DynamicAppleIcon() {
       document.head.appendChild(appleIconLink);
     }
 
-    const urls = getTenantPwaIconUrls(tenantId, branding);
-    appleIconLink.href = urls.icon192;
+    const urls = getTenantPwaIconUrls(tenantId ?? '', branding);
+    appleIconLink.href = getProductionSafeIconUrl(tenantId ?? '', urls.icon192);
   }, [tenantId, branding]);
 
   return null;
