@@ -73,11 +73,13 @@ export function TenantLogo({
           return 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12';
       }
     };
-    // Use absolute URL on client so production always loads from correct origin (avoids path/CDN issues)
+    // Use API route for /logos/ so production always gets the logo (static public/ may not be deployed)
     const logoSrc =
-      typeof window !== 'undefined' && branding.logoUrl.startsWith('/')
-        ? `${window.location.origin}${branding.logoUrl}`
-        : branding.logoUrl;
+      branding.logoUrl.startsWith('/logos/') && tenantId
+        ? `/api/tenant-logo?tenant=${encodeURIComponent(tenantId)}`
+        : typeof window !== 'undefined' && branding.logoUrl.startsWith('/')
+          ? `${window.location.origin}${branding.logoUrl}`
+          : branding.logoUrl;
 
     return (
       <div className={cn('flex items-center gap-2', className)} suppressHydrationWarning>
