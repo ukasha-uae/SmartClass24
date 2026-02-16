@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { TENANT_REGISTRY } from '@/tenancy/registry';
+import { TENANT_REGISTRY, getTenantByHost } from '@/tenancy/registry';
 import { getTenantPwaIconUrls, buildManifestIcons } from '@/tenancy/pwa';
 
 /**
@@ -7,14 +7,15 @@ import { getTenantPwaIconUrls, buildManifestIcons } from '@/tenancy/pwa';
  * Generates tenant-specific manifest.json for PWA installation with tenant name and icons.
  *
  * Usage: /api/manifest?tenant=wisdomwarehouse
- * Each tenant can install the PWA with their own logo (add pwaIcons in registry or /icons/{tenantId}-192.png and -512.png).
+ * Tenant is resolved from: query param, cookie, or Host (e.g. learn.wisdomwarehouseuae.com).
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const tenantParam = searchParams.get('tenant');
-
   const cookieTenant = request.cookies.get('tenant')?.value;
-  const tenantId = tenantParam || cookieTenant || 'smartclass24';
+  const hostname = request.headers.get('host')?.split(':')[0] ?? null;
+  const tenantFromHost = getTenantByHost(hostname)?.id ?? null;
+  const tenantId = tenantParam || cookieTenant || tenantFromHost || 'smartclass24';
 
   const tenant = TENANT_REGISTRY[tenantId] || TENANT_REGISTRY.smartclass24;
   const branding = tenant.branding;

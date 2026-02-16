@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getTenantByHost } from '@/tenancy/registry';
 
 export function middleware(request: NextRequest) {
-  // Persist preview tenant from query string and make it available to SSR.
-  // Note: the cookie set on the response is NOT visible to SSR for this same request,
-  // so we also forward it via a request header.
-  const tenant = request.nextUrl.searchParams.get('tenant');
+  // Resolve tenant: 1) ?tenant= query (preview), 2) hostname (e.g. learn.wisdomwarehouseuae.com)
+  // so PWA and layout get correct manifest/branding for Wisdom and other domain-based tenants.
+  const tenantFromQuery = request.nextUrl.searchParams.get('tenant');
+  const tenantFromHost = getTenantByHost(request.nextUrl.hostname)?.id ?? null;
+  const tenant = tenantFromQuery ?? tenantFromHost;
 
   const requestHeaders = new Headers(request.headers);
   if (tenant) {
@@ -19,13 +21,11 @@ export function middleware(request: NextRequest) {
   });
 
   if (tenant) {
-    // Set tenant cookie when tenant parameter is present
     response.cookies.set('tenant', tenant, {
       path: '/',
       sameSite: 'lax',
     });
   } else {
-    // Clear tenant cookie when no tenant parameter (return to default tenant)
     response.cookies.delete('tenant');
   }
 

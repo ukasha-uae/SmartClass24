@@ -111,10 +111,13 @@ export default async function RootLayout({
     ? TENANT_REGISTRY[initialTenantId] 
     : TENANT_REGISTRY.smartclass24;
 
-  // Server-side manifest URL: use API for all non-default tenants (Wisdom included) so icons work in production
-  const manifestUrl = initialTenantId && initialTenantId !== 'smartclass24'
-    ? `/api/manifest?tenant=${initialTenantId}`
-    : '/manifest.json';
+  // Use static manifest for Wisdom so PWA install works on production without API/custom domain
+  const manifestUrl =
+    initialTenantId === 'wisdomwarehouse'
+      ? '/manifest-wisdomwarehouse.json'
+      : initialTenantId && initialTenantId !== 'smartclass24'
+        ? `/api/manifest?tenant=${initialTenantId}`
+        : '/manifest.json';
 
   const themeColor = tenantConfig.branding.primaryColor;
   const pwaIcons = getTenantPwaIconUrls(initialTenantId ?? 'smartclass24', tenantConfig.branding);

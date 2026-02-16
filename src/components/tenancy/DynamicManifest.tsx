@@ -28,11 +28,13 @@ export function DynamicManifest() {
       document.head.appendChild(manifestLink);
     }
 
-    // API manifest for all non-default tenants (Wisdom included) so icons work in production
+    // Use static manifest for Wisdom so PWA install works on production without API/custom domain
     const manifestUrl =
-      tenantId && tenantId !== 'smartclass24'
-        ? `/api/manifest?tenant=${tenantId}`
-        : '/manifest.json';
+      tenantId === 'wisdomwarehouse'
+        ? '/manifest-wisdomwarehouse.json'
+        : tenantId && tenantId !== 'smartclass24'
+          ? `/api/manifest?tenant=${tenantId}`
+          : '/manifest.json';
 
     manifestLink.href = manifestUrl;
 
