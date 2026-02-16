@@ -83,6 +83,7 @@ export function TenantLogo({
           height={logoSizes.desktop}
           className={cn('object-contain', getImageSizeClasses())}
           priority
+          unoptimized={branding.logoUrl?.startsWith('/')}
           data-tenant-id={tenantId}
           onError={() => setLogoError(true)}
         />

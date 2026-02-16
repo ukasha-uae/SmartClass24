@@ -54,14 +54,27 @@ async function main() {
     return 0;
   };
   urls.sort(logoFirst);
-  const knownLogoPaths = [
-    base + '/wp-content/uploads/2025/09/Wisdom-Warehouse-Logo.png',
-    base + '/wp-content/uploads/2025/09/Wisdom-Warehouse-Logo.jpg',
+  // Prefer Light (white background) over Dark (black background)
+  const knownLogoPathsLightFirst = [
+    base + '/wp-content/uploads/2025/08/Wisdom-Warehouse-Logo-1000_Light.png',
     base + '/wp-content/uploads/2025/09/Wisdom-Warehouse-Logo-1000_Light.png',
+    base + '/wp-content/uploads/2025/08/Wisdom-Warehouse-Logo.png',
+    base + '/wp-content/uploads/2025/09/Wisdom-Warehouse-Logo.png',
     base + '/wp-content/uploads/2025/01/Wisdom-Warehouse-Logo.png',
     base + '/wp-content/uploads/2024/12/Wisdom-Warehouse-Logo.png',
+    base + '/wp-content/uploads/2025/08/Wisdom-Warehouse-Logo-1000_Dark.png', // fallback
   ];
-  const toTry = [...knownLogoPaths, ...urls];
+  // Sort page URLs: prefer Light over Dark
+  urls.sort((a, b) => {
+    const aLight = /Light|light/.test(a);
+    const bLight = /Light|light/.test(b);
+    if (aLight && !bLight) return -1;
+    if (!aLight && bLight) return 1;
+    if (/Dark|dark/.test(a) && !/Dark|dark/.test(b)) return 1;
+    if (!/Dark|dark/.test(a) && /Dark|dark/.test(b)) return -1;
+    return 0;
+  });
+  const toTry = [...knownLogoPathsLightFirst, ...urls];
   for (const url of toTry) {
     const fullUrl = url.startsWith('http') ? url : base + url;
     console.log('Trying', fullUrl);
