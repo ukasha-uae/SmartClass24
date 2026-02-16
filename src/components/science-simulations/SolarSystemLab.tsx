@@ -1,21 +1,71 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { SolarSystemScene } from './SolarSystemScene';
 import { getPlanetById, getFactForPlanet, SOLAR_SYSTEM_PLANETS } from '@/lib/science-simulations/solar-system-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
-import { Globe, Info, Zap, Pause, Play, ExternalLink } from 'lucide-react';
+import { Globe, Info, Zap, Pause, Play, ExternalLink, Sparkles } from 'lucide-react';
+import { TeacherVoice } from '@/components/virtual-labs/TeacherVoice';
+
+function buildTeacherMessage(planetId: string | null) {
+  if (!planetId) {
+    return "Hi explorer! Click on the Sun or any planet to hear me explain what makes it special. You can also use the Play All button to go on a guided tour of the whole solar system.";
+  }
+  const planet = getPlanetById(planetId);
+  if (!planet) {
+    return "Click on a planet to learn more about it.";
+  }
+  const fact = getFactForPlanet(planet.id);
+  const orbitInfo = planet.orbitLabel
+    ? planet.id === 'sun'
+      ? ''
+      : ` It takes about ${planet.orbitLabel} to go once around the Sun.`
+    : '';
+  if (!fact) {
+    return `This is ${planet.name}. Click the other planets to compare their sizes and distances from the Sun.${orbitInfo}`;
+  }
+  return `${planet.name}: ${fact.headline}. ${fact.description}${orbitInfo}`;
+}
 
 export function SolarSystemLab() {
   const [selectedPlanetId, setSelectedPlanetId] = useState<string | null>(null);
   const [timeScale, setTimeScale] = useState(0.3);
   const [isPaused, setIsPaused] = useState(false);
+  const [teacherMessage, setTeacherMessage] = useState<string>(() => buildTeacherMessage(null));
+  const [isPlayAllMode, setIsPlayAllMode] = useState(false);
+  const [playAllIndex, setPlayAllIndex] = useState<number | null>(null);
+
+  const tourOrder = useMemo(
+    () => SOLAR_SYSTEM_PLANETS.map((p) => p.id),
+    []
+  );
 
   const planet = selectedPlanetId ? getPlanetById(selectedPlanetId) : null;
   const fact = planet ? getFactForPlanet(planet.id) : null;
+
+  const handleSelectPlanet = (id: string) => {
+    setIsPlayAllMode(false);
+    setPlayAllIndex(null);
+    setSelectedPlanetId(id);
+    setTeacherMessage(buildTeacherMessage(id));
+  };
+
+  const handleStartPlayAll = () => {
+    if (!tourOrder.length) return;
+    setIsPlayAllMode(true);
+    setPlayAllIndex(0);
+    const firstId = tourOrder[0];
+    setSelectedPlanetId(firstId);
+    setTeacherMessage(buildTeacherMessage(firstId));
+  };
+
+  const handleStopPlayAll = () => {
+    setIsPlayAllMode(false);
+    setPlayAllIndex(null);
+  };
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-8rem)] min-h-[500px]">
@@ -36,7 +86,7 @@ export function SolarSystemLab() {
             gl={{ antialias: true, alpha: false }}
           >
             <SolarSystemScene
-              onSelectPlanet={setSelectedPlanetId}
+              onSelectPlanet={handleSelectPlanet}
               timeScale={timeScale}
               selectedPlanetId={selectedPlanetId}
               isPaused={isPaused}
@@ -101,7 +151,7 @@ export function SolarSystemLab() {
                   variant={selectedPlanetId === p.id ? 'default' : 'outline'}
                   size="sm"
                   className="text-xs"
-                  onClick={() => setSelectedPlanetId(p.id)}
+                  onClick={() => handleSelectPlanet(p.id)}
                 >
                   <span
                     className="h-2 w-2 rounded-full shrink-0 mr-1"
@@ -158,6 +208,53 @@ export function SolarSystemLab() {
             </CardContent>
           </Card>
         )}
+
+        {/* AI Teacher: optional guided explanations */}
+        <Card className="mt-1">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-violet-500" />
+              AI Teacher Guide
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex gap-2">
+              <Button
+                variant={isPlayAllMode ? 'outline' : 'default'}
+                size="sm"
+                onClick={isPlayAllMode ? handleStopPlayAll : handleStartPlayAll}
+              >
+                {isPlayAllMode ? 'Stop Play All' : 'Play all planets'}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Click any planet to hear an explanation, or use Play all to go on a guided tour of the whole solar system.
+            </p>
+          </CardContent>
+        </Card>
+
+        <TeacherVoice
+          message={teacherMessage}
+          autoPlay={true}
+          theme="science"
+          teacherName="Dr. Galaxy Guide"
+          emotion="explaining"
+          progressiveReveal={true}
+          linesPerChunk={2}
+          onComplete={() => {
+            if (!isPlayAllMode || playAllIndex === null) return;
+            const nextIndex = playAllIndex + 1;
+            if (nextIndex >= tourOrder.length) {
+              setIsPlayAllMode(false);
+              setPlayAllIndex(null);
+              return;
+            }
+            const nextId = tourOrder[nextIndex];
+            setPlayAllIndex(nextIndex);
+            setSelectedPlanetId(nextId);
+            setTeacherMessage(buildTeacherMessage(nextId));
+          }}
+        />
       </div>
     </div>
   );

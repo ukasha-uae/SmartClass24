@@ -325,25 +325,9 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                     </Card>
                   )}
 
-                  {/* Premium Lab Notes with Exam Practice Reminder - Only show after user interaction */}
+                  {/* Premium Lab Notes (without extra banner) - Only show after user interaction */}
                   {userInteracted && (
-                    <>
-                      <Card className="mb-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 backdrop-blur-xl border-2 border-amber-200/50 dark:border-amber-800/50 shadow-xl">
-                        <CardContent className="p-6">
-                          <div className="flex items-start gap-3">
-                            <div className="text-3xl">📝</div>
-                            <div>
-                              <p className="font-bold text-amber-900 dark:text-amber-100 mb-2">Exam Preparation Tip</p>
-                              <p className="text-sm text-amber-800 dark:text-amber-200">
-                                Use digital notes below to capture your observations quickly, 
-                                but <strong>remember to copy important points by hand</strong> into your notebook! Handwriting builds 
-                                muscle memory and prepares you for written exams.
-                              </p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
+                  <>
                       <LabNotes labId={experiment.id} labTitle={experiment.title} />
                     </>
                   )}

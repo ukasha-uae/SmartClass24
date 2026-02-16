@@ -1138,12 +1138,11 @@ export function OxygenTestLabEnhanced() {
                                 <p className="text-sm text-muted-foreground mb-4">
                                     Record your observations, findings, and questions as you work through the experiment
                                 </p>
-                                <Alert className="mb-4 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
+                                <Alert className="mb-4 border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20 hidden md:flex">
                                     <BookOpen className="h-4 w-4 text-amber-600" />
                                     <AlertDescription className="text-sm">
-                                        <strong>📝 Exam Preparation Tip:</strong> Use digital notes to capture your observations quickly, 
-                                        but <strong>remember to copy important points by hand</strong> into your notebook! Handwriting builds 
-                                        muscle memory and prepares you for written exams.
+                                        <strong>📝 Exam Preparation Tip:</strong> Use these notes to capture your observations quickly, 
+                                        but <strong>copy key ideas by hand later</strong> into your notebook to prepare for written exams.
                                     </AlertDescription>
                                 </Alert>
                                 <LabNotes labId="oxygen-test-lab" labTitle="Oxygen Glowing Splint Test" />
