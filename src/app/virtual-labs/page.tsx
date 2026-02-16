@@ -309,8 +309,8 @@ export default function VirtualLabsPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {allLabsIncludingLocked.map((experiment) => {
               const isLocked = !allLabs.some(lab => lab.slug === experiment.slug);
-              const Icon = subjectIcons[experiment.subject as keyof typeof subjectIcons];
-              const colorClass = subjectColors[experiment.subject as keyof typeof subjectColors];
+              const Icon = subjectIcons[experiment.subject as keyof typeof subjectIcons] ?? Globe;
+              const colorClass = subjectColors[experiment.subject as keyof typeof subjectColors] ?? subjectColors.Science;
               const isCompleted = mounted && isLabCompleted(experiment.id);
               const difficulty = getDifficulty(experiment.id);
               const estimatedXP = difficulty === 'Easy' ? 50 : difficulty === 'Medium' ? 75 : 100;
@@ -351,7 +351,7 @@ export default function VirtualLabsPage() {
                     <CardHeader className="relative z-10">
                       <div className="flex items-start justify-between mb-3">
                         <div className="relative">
-                          <div className={`p-3 rounded-xl bg-gradient-to-br ${colorClass.split(' ')[0]} border-2 ${colorClass.split(' ')[2]}`}>
+                          <div className={`p-3 rounded-xl bg-gradient-to-br ${colorClass.split(' ')[0] ?? 'from-purple-500/10'} border-2 ${colorClass.split(' ')[2] ?? 'border-purple-500/30'}`}>
                             <Icon className="h-6 w-6" />
                           </div>
                           {isCompleted && (

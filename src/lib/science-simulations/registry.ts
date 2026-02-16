@@ -29,14 +29,14 @@ export const SCIENCE_SIMULATIONS: ScienceSimulationMeta[] = [
     badge: '3D',
     featured: true,
   },
-  // Add more simulations here as you build them, e.g.:
-  // {
-  //   id: 'sci-sim-2',
-  //   slug: 'earth-moon-system',
-  //   title: 'Moon Phases & Eclipses',
-  //   description: 'See how the positions of the Earth, Moon, and Sun create moon phases and eclipses.',
-  //   subject: 'Science',
-  //   badge: '3D',
-  // },
+  {
+    id: 'sci-sim-2',
+    slug: 'earth-moon-system',
+    title: 'Moon Phases & Eclipses',
+    description: 'See how the positions of the Earth, Moon, and Sun create moon phases and why eclipses are rare.',
+    subject: 'Science',
+    badge: '3D',
+    featured: false,
+  },
 ];
 

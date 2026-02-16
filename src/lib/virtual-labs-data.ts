@@ -36,6 +36,7 @@ import { WaterTestLabEnhanced as WaterTestLab } from "@/components/virtual-labs/
 import { WorkEnergyLabEnhanced as WorkEnergyLab } from "@/components/virtual-labs/work-energy-lab-enhanced";
 import { FEATURE_FLAGS } from "@/lib/featureFlags";
 import { SolarSystemLab } from "@/components/science-simulations/SolarSystemLab";
+import { EarthMoonSystemLab } from "@/components/science-simulations/EarthMoonSystemLab";
 
 
 export interface VirtualLabExperiment {
@@ -270,6 +271,15 @@ export const virtualLabExperiments = {
             learningObjective: 'Understand the structure of our solar system, the order of planets, and key facts about each (K-12 aligned).',
             component: SolarSystemLab,
         },
+        {
+            id: 'sci-sim-2',
+            slug: 'earth-moon-system',
+            title: 'Moon Phases & Eclipses',
+            subject: 'Science',
+            description: 'Explore the Earth–Moon–Sun system in 3D. Watch how the Moon’s orbit creates phases and why eclipses are rare.',
+            learningObjective: 'Understand how relative positions of the Sun, Earth, and Moon create moon phases and why lunar/solar eclipses do not happen every month.',
+            component: EarthMoonSystemLab,
+        },
 
         // Chemistry Labs
         { 
@@ -415,9 +425,9 @@ export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperimen
     // Free users: Get 1 lab per subject (Biology, Chemistry, Physics) + selected showcase labs
     // Food Tests (Biology), Litmus Test (Chemistry), Simple Circuits (Physics)
     // Magnetic Field Mapping (Physics - for testing/development)
-    // Solar System (Science – flagship 3D simulation, free to try)
+    // Solar System & Earth–Moon System (Science – flagship 3D simulations, free to try)
     const freeLabs = allLabs.filter(lab => 
-        ['food-tests', 'litmus-test', 'simple-circuits', 'magnetic-field-mapping', 'solar-system'].includes(lab.slug)
+        ['food-tests', 'litmus-test', 'simple-circuits', 'magnetic-field-mapping', 'solar-system', 'earth-moon-system'].includes(lab.slug)
     );
     return freeLabs as VirtualLabExperiment[];
 };
@@ -452,8 +462,8 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
         }
     }
     
-    // Free labs are always accessible (food-tests, litmus-test, simple-circuits, magnetic-field-mapping, solar-system)
-    const freeLabs = ['food-tests', 'litmus-test', 'simple-circuits', 'magnetic-field-mapping', 'solar-system'];
+    // Free labs are always accessible (food-tests, litmus-test, simple-circuits, magnetic-field-mapping, solar-system, earth-moon-system)
+    const freeLabs = ['food-tests', 'litmus-test', 'simple-circuits', 'magnetic-field-mapping', 'solar-system', 'earth-moon-system'];
     const isFree = freeLabs.includes(slug);
     
     console.log(`[Virtual Labs] ${slug} - isFree=${isFree}, hasAccess=${hasAccess}, allowing=${hasAccess || isFree}`);
