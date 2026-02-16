@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   GraduationCap, BookOpen, ArrowRight, Sparkles, 
-  Users, Trophy, Target, Brain, Info, Building2
+  Users, Trophy, Target, Brain, Info, Building2, Globe
 } from "lucide-react";
 import Link from 'next/link';
 import { useState, useEffect, useCallback, useContext } from 'react';
@@ -16,6 +16,7 @@ import { useEducationLevels } from '@/hooks/useEducationLevels';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { EarnPremiumBanner } from '@/components/EarnPremiumBanner';
 import { FirebaseContext } from '@/firebase/provider';
+import { SCIENCE_SIMULATIONS } from '@/lib/science-simulations/registry';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -375,7 +376,115 @@ export default function Home() {
               </div>
             </div>
           )}
+
         </div>
+
+        {/* Science Simulations Strip (3D & interactive) */}
+        {SCIENCE_SIMULATIONS.length > 0 && (
+          <div className="mb-12 relative z-10">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-4">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold mb-1 bg-gradient-to-r from-indigo-700 to-violet-700 dark:from-indigo-300 dark:to-violet-300 bg-clip-text text-transparent">
+                  Science Simulations
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground">
+                  Hands-on science experiences, starting with our 3D Solar System. More simulations are coming here.
+                </p>
+              </div>
+              <Link
+                href={addTenantParam('/virtual-labs?subject=Science')}
+                className="inline-flex items-center gap-1 text-xs md:text-sm font-semibold text-indigo-700 dark:text-indigo-300 hover:underline"
+              >
+                View all science labs
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="grid md:grid-cols-[minmax(0,2fr)_minmax(0,1.4fr)] gap-4">
+              {/* Featured simulation */}
+              {SCIENCE_SIMULATIONS.filter(sim => sim.featured).slice(0, 1).map((sim) => (
+                <Link
+                  key={sim.id}
+                  href={addTenantParam(`/virtual-labs/${sim.slug}`)}
+                  className="group"
+                >
+                  <Card className="h-full border-2 border-indigo-300/70 dark:border-indigo-700/70 bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-950 text-white overflow-hidden shadow-xl hover:shadow-2xl hover:scale-[1.01] transition-all">
+                    <CardContent className="p-5 flex flex-col h-full relative">
+                      <div className="absolute inset-0 pointer-events-none opacity-60">
+                        <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/40 blur-3xl" />
+                        <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-violet-500/30 blur-3xl" />
+                      </div>
+                      <div className="relative flex items-center gap-3 mb-4">
+                        <div className="p-3 rounded-2xl bg-slate-900/70 border border-indigo-400/40 shadow-lg">
+                          <Globe className="h-7 w-7 text-amber-300" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/30 border border-indigo-300/60 uppercase tracking-wider">
+                              {sim.subject}
+                            </span>
+                            {sim.badge && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 border border-amber-300/60 text-amber-200 uppercase tracking-wider">
+                                {sim.badge}
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="text-lg md:text-xl font-bold leading-tight">
+                            {sim.title}
+                          </h3>
+                        </div>
+                      </div>
+                      <p className="relative text-sm text-slate-200/90 mb-4 flex-1">
+                        {sim.description}
+                      </p>
+                      <div className="relative flex items-center justify-between text-xs text-slate-200/80 mt-auto">
+                        <span>Click to start the simulation</span>
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+
+              {/* Secondary simulations list (future-ready) */}
+              <Card className="border-2 border-slate-200/70 dark:border-slate-700/70 bg-white/80 dark:bg-slate-950/60 backdrop-blur-xl">
+                <CardContent className="p-4 flex flex-col gap-3">
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                    Available & Upcoming Simulations
+                  </p>
+                  <div className="space-y-2">
+                    {SCIENCE_SIMULATIONS.map((sim) => (
+                      <Link
+                        key={sim.id}
+                        href={addTenantParam(`/virtual-labs/${sim.slug}`)}
+                        className="flex items-center justify-between gap-2 px-2 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors group"
+                      >
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0" />
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium text-slate-800 dark:text-slate-100 truncate">
+                              {sim.title}
+                            </p>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                              {sim.description}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1 shrink-0">
+                          {sim.badge || 'Interactive'}
+                          <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                  <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    We are adding more 3D simulations soon (e.g. Moon phases, Earth seasons) and they will automatically appear here.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
 
         {/* Campus Selection - Main Focus */}
         <div className="mb-12 relative z-10">

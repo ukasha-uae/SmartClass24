@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { virtualLabExperiments, getAllVirtualLabs } from '@/lib/virtual-labs-data';
-import { FlaskConical, Atom, Dna, Zap, CheckCircle2, Lock, Trophy, Clock, Star, Crown } from 'lucide-react';
+import { FlaskConical, Atom, Dna, Zap, Globe, CheckCircle2, Lock, Trophy, Clock, Star, Crown } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useLabProgress } from '@/stores/lab-progress-store';
@@ -21,7 +21,7 @@ export default function VirtualLabsPage() {
   // V1 Route Guard: Check if user has access to virtual labs
   const { hasAccess, campus, mounted: accessMounted } = useV1FeatureAccess('virtualLabs');
   const { user, isUserLoading } = useFirebase();
-  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics'>('All');
+  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics' | 'Science'>('All');
   const [difficultyFilter, setDifficultyFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
   const { completedLabs, totalXP, streak, isLabCompleted } = useLabProgress();
   const [mounted, setMounted] = useState(false);
@@ -58,17 +58,20 @@ export default function VirtualLabsPage() {
   const subjectIcons = {
     Biology: Dna,
     Chemistry: FlaskConical,
-    Physics: Zap
+    Physics: Zap,
+    Science: Globe,
   };
 
   const subjectColors = {
     Biology: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30',
     Chemistry: 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/30',
-    Physics: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30'
+    Physics: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30',
+    Science: 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/30',
   };
 
   // Assign difficulty levels to labs (you can customize this)
   const labDifficulty: Record<string, 'Easy' | 'Medium' | 'Hard'> = {
+    'solar-system': 'Easy',
     'food-tests': 'Easy',
     'litmus-test': 'Easy',
     'simple-circuits': 'Easy',
@@ -198,7 +201,7 @@ export default function VirtualLabsPage() {
               <div className="mb-6">
                 <p className="text-sm font-bold mb-3 bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Subject</p>
                 <div className="flex flex-wrap gap-2">
-                  {(['All', 'Biology', 'Chemistry', 'Physics'] as const).map((subject) => (
+                  {(['All', 'Biology', 'Chemistry', 'Physics', 'Science'] as const).map((subject) => (
                     <button
                       key={subject}
                       onClick={() => setFilter(subject)}
@@ -251,7 +254,8 @@ export default function VirtualLabsPage() {
               const colors = {
                 Biology: { bg: 'from-green-500/10 to-emerald-500/10', border: 'border-green-200/30 dark:border-green-800/30', icon: 'text-green-600 dark:text-green-400', text: 'from-green-600 to-emerald-600' },
                 Chemistry: { bg: 'from-orange-500/10 to-amber-500/10', border: 'border-orange-200/30 dark:border-orange-800/30', icon: 'text-orange-600 dark:text-orange-400', text: 'from-orange-600 to-amber-600' },
-                Physics: { bg: 'from-blue-500/10 to-indigo-500/10', border: 'border-blue-200/30 dark:border-blue-800/30', icon: 'text-blue-600 dark:text-blue-400', text: 'from-blue-600 to-indigo-600' }
+                Physics: { bg: 'from-blue-500/10 to-indigo-500/10', border: 'border-blue-200/30 dark:border-blue-800/30', icon: 'text-blue-600 dark:text-blue-400', text: 'from-blue-600 to-indigo-600' },
+                Science: { bg: 'from-violet-500/10 to-purple-500/10', border: 'border-violet-200/30 dark:border-violet-800/30', icon: 'text-violet-600 dark:text-violet-400', text: 'from-violet-600 to-purple-600' }
               };
               const color = colors[subject as keyof typeof colors];
               return (
