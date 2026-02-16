@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { FirebaseClientProvider } from '@/firebase';
 import { PWAInstallPrompt, PWAUpdatePrompt } from '@/components/PWAPrompts';
 import { ManualPWAInstall } from '@/components/ManualPWAInstall';
+import { PWAInstallInstructionsDialog } from '@/components/PWAInstallInstructionsDialog';
 import { PWAInstallProvider } from '@/contexts/PWAInstallContext';
 import FirstTimeProfileModal from '@/components/FirstTimeProfileModal';
 import { LocalizationProvider } from '@/lib/localization/localization-context';
@@ -165,6 +166,7 @@ export default async function RootLayout({
                   {/* PWA install prompt for all tenants (each gets their own branded install with their logo) */}
                   <PWAInstallPrompt />
                   <PWAUpdatePrompt />
+                  <PWAInstallInstructionsDialog />
                   <ManualPWAInstall />
                   <FirstTimeProfileModal />
                   <Suspense fallback={null}>

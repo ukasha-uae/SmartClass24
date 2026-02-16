@@ -53,8 +53,10 @@ export function PWAInstallProvider({ children }: { children: React.ReactNode }) 
     if (deferredPrompt) {
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(() => setDeferredPrompt(null));
+    } else {
+      // No native prompt (e.g. Safari, incognito): show step-by-step instructions so the button always does something
+      setShowInstructions(true);
     }
-    // When no native prompt: do nothing (no 3-dots instruction popup)
   }, [deferredPrompt]);
 
   const canShowInstall = !isStandalone && typeof window !== 'undefined' && window.isSecureContext;

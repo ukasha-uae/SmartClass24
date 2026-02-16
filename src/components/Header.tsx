@@ -137,7 +137,7 @@ export default function Header() {
           <TenantLogo size="md" className="transition-transform group-hover:scale-105" />
         </Link>
         
-        <div className="ml-auto flex items-center gap-1 sm:gap-2" suppressHydrationWarning>
+        <div className="ml-auto flex items-center gap-1 sm:gap-2 relative z-10" suppressHydrationWarning>
           {/* Mobile Hamburger Menu */}
           <div className="md:hidden flex items-center gap-1">
             {tenantId === 'smartclass24' && <WhatsAppHeaderButton isMobile={true} />}
@@ -177,12 +177,12 @@ export default function Header() {
                   
                   <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
 
-                  {/* Install app - visible for all tenants; in incognito opens instructions */}
+                  {/* Install app - visible for all tenants; native prompt or instructions */}
                   {pwaInstall?.canShowInstall && (
                     <button
                       type="button"
-                      onClick={() => { setSheetOpen(false); pwaInstall.triggerInstall(); }}
-                      className="w-full flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 backdrop-blur-sm border-2 border-violet-200/50 dark:border-violet-800/50 hover:border-violet-300 dark:hover:border-violet-700 transition-all hover:scale-[1.02] shadow-md group text-left"
+                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSheetOpen(false); pwaInstall.triggerInstall(); }}
+                      className="w-full flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 backdrop-blur-sm border-2 border-violet-200/50 dark:border-violet-800/50 hover:border-violet-300 dark:hover:border-violet-700 transition-all hover:scale-[1.02] shadow-md group text-left cursor-pointer"
                     >
                       <div className="p-2 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-lg">
                         <Download className="h-5 w-5 text-violet-600 dark:text-violet-400" />
@@ -486,13 +486,14 @@ export default function Header() {
             </Sheet>
           </div>
           
-          {/* Install app - desktop (opens native prompt or instructions e.g. in incognito) */}
+          {/* Install app - desktop: native prompt when available, else instructions dialog */}
           {pwaInstall?.canShowInstall && (
             <Button
+              type="button"
               variant="ghost"
               size="sm"
-              onClick={() => pwaInstall.triggerInstall()}
-              className="hidden md:flex items-center gap-2 text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-500/10 border border-transparent hover:border-violet-300/50 transition-all"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); pwaInstall.triggerInstall(); }}
+              className="hidden md:flex items-center gap-2 cursor-pointer select-none text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-500/10 border border-transparent hover:border-violet-300/50 transition-all relative z-10"
               title={`Install ${branding.name}`}
             >
               <Download className="h-4 w-4" />
