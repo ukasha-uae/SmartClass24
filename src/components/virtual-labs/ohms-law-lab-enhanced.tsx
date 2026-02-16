@@ -14,6 +14,8 @@ import { TeacherVoice } from './TeacherVoice';
 import { LabSupplies } from './LabSupplies';
 import { Slider } from '../ui/slider';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Canvas } from '@react-three/fiber';
+import { OhmsLawConcept3D } from './OhmsLawConcept3D';
 
 type Step = 'intro' | 'collect-supplies' | 'experiment' | 'results' | 'quiz' | 'complete';
 
@@ -110,7 +112,7 @@ export function OhmsLawLabEnhanced() {
         
         // Provide guidance based on number of readings
         if (newReadings.length === 1) {
-            setTeacherMessage(`Great first reading! At ${voltage}V with ${selectedResistor}Ω resistance, current is ${reading.current}A. This follows Ohm's Law: V = I × R. Now try changing the voltage or resistance and take another reading to see how current changes!`);
+            setTeacherMessage(`Great first reading! At ${voltage}V with ${selectedResistor}Ω resistance, current is ${reading.current}A. This follows Ohm's Law: V = I × R. Watch the 3D view above: when you raise voltage, the blue particles flow faster; when you increase resistance, the middle narrows and flow slows. Try changing the sliders and take another reading!`);
         } else if (newReadings.length === 2) {
             setTeacherMessage(`Excellent! You've taken ${newReadings.length} readings. Take at least one more reading with different values to complete your data collection and analyze the relationship between V, I, and R.`);
         } else if (newReadings.length >= 3) {
@@ -486,6 +488,18 @@ export function OhmsLawLabEnhanced() {
                                 <CardDescription className="text-base">Readings taken: {readings.length}</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
+                                {/* 3D concept: current flow in a wire */}
+                                <div className="rounded-lg overflow-hidden border border-yellow-200 dark:border-yellow-800 bg-slate-900">
+                                    <div className="px-3 py-2 bg-yellow-100 dark:bg-yellow-900/50 text-sm font-medium text-yellow-900 dark:text-yellow-100">
+                                        Current flow (I = V ÷ R) — move the sliders to see speed and resistance
+                                    </div>
+                                    <div className="h-[220px] w-full">
+                                        <Canvas camera={{ position: [0, 2, 8], fov: 45 }} gl={{ antialias: true, alpha: false }}>
+                                            <OhmsLawConcept3D voltage={voltage} resistance={selectedResistor} />
+                                        </Canvas>
+                                    </div>
+                                </div>
+
                                 {/* Circuit Controls */}
                                 <div className="space-y-4">
                                     {/* Voltage Control */}
