@@ -177,8 +177,8 @@ export default function Header() {
                   
                   <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
 
-                  {/* Install app - visible for all tenants; native prompt or instructions */}
-                  {pwaInstall?.canShowInstall && (
+                  {/* Install app - only when native one-click prompt is available (no 3-dots) */}
+                  {pwaInstall?.canShowInstall && pwaInstall?.deferredPrompt && (
                     <button
                       type="button"
                       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSheetOpen(false); pwaInstall.triggerInstall(); }}
@@ -486,8 +486,8 @@ export default function Header() {
             </Sheet>
           </div>
           
-          {/* Install app - desktop: native prompt when available, else instructions dialog */}
-          {pwaInstall?.canShowInstall && (
+          {/* Install app - desktop: only when native one-click prompt is available */}
+          {pwaInstall?.canShowInstall && pwaInstall?.deferredPrompt && (
             <Button
               type="button"
               variant="ghost"

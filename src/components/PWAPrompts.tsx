@@ -8,10 +8,8 @@ import { useHasMounted } from '@/hooks/use-has-mounted';
 import { useTenant } from '@/hooks/useTenant';
 import { usePWAInstall } from '@/contexts/PWAInstallContext';
 
-/** Delay before showing the install card when we have native prompt (quick path). */
+/** Delay before showing the install card (only shown when native prompt is available). */
 const PROMPT_DELAY_FAST_MS = 1500;
-/** Delay before showing the install card when we don't have native prompt (Wisdom & others – same visible prompt as S24). */
-const PROMPT_DELAY_FALLBACK_MS = 6000;
 
 export function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
@@ -21,17 +19,15 @@ export function PWAInstallPrompt() {
   const pwa = usePWAInstall();
   const deferredPrompt = pwa?.deferredPrompt ?? null;
 
-  // Show the same install card for ALL tenants (S24 and Wisdom). If the browser fired
-  // beforeinstallprompt we show sooner; otherwise we show after a short delay so everyone sees it.
+  // Only show install card when we have the native one-click prompt (no 3-dots instructions).
   useEffect(() => {
     if (!hasMounted || !pwa) return;
-    if (pwa.isStandalone) return;
+    if (pwa.isStandalone || !deferredPrompt) return;
     if (localStorage.getItem('pwa-prompt-dismissed')) {
       setDismissed(true);
       return;
     }
-    const delayMs = deferredPrompt ? PROMPT_DELAY_FAST_MS : PROMPT_DELAY_FALLBACK_MS;
-    const t = setTimeout(() => setShowPrompt(true), delayMs);
+    const t = setTimeout(() => setShowPrompt(true), PROMPT_DELAY_FAST_MS);
     return () => clearTimeout(t);
   }, [hasMounted, pwa, deferredPrompt]);
 
@@ -39,8 +35,6 @@ export function PWAInstallPrompt() {
     if (deferredPrompt) {
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(() => setShowPrompt(false));
-    } else {
-      pwa?.triggerInstall();
     }
     setShowPrompt(false);
   };
@@ -51,7 +45,7 @@ export function PWAInstallPrompt() {
     localStorage.setItem('pwa-prompt-dismissed', 'true');
   };
 
-  if (!hasMounted || !showPrompt || dismissed || pwa?.isStandalone) {
+  if (!hasMounted || !showPrompt || dismissed || pwa?.isStandalone || !deferredPrompt) {
     return null;
   }
 
