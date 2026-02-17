@@ -6,9 +6,12 @@
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import confetti from 'canvas-confetti';
 import { ArenaEngine, ArenaRegistry, MOCK_QUESTIONS } from '@/lib/arena';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import type { ArenaState, ArenaQuestion, AnswerPayload, TeamId } from '@/lib/arena/core/types';
 import { CityRenderer3D } from './CityRenderer3D';
+import { RocketRace3D } from './RocketRace3D';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Zap } from 'lucide-react';
@@ -33,6 +36,7 @@ export function ArenaScreen({
   const [state, setState] = useState<ArenaState | null>(null);
   const [visualState, setVisualState] = useState<Record<string, number>>({ powerLeft: 0, powerRight: 0 });
   const engineRef = useRef<ArenaEngine | null>(null);
+  const reduceMotion = usePrefersReducedMotion();
 
   const arenaModule = ArenaRegistry.get(arenaId);
   if (!arenaModule) {
@@ -71,6 +75,24 @@ export function ArenaScreen({
     engineRef.current?.start();
   }, []);
 
+  // Confetti when a team wins (Light Your City, Rocket Race, any future arena)
+  const winFiredRef = useRef(false);
+  useEffect(() => {
+    if (state?.phase === 'win' && state.winner && !winFiredRef.current) {
+      winFiredRef.current = true;
+      const side = state.winner === 'left' ? 0.25 : 0.75;
+      if (reduceMotion) {
+        confetti({ particleCount: 20, spread: 50, origin: { x: side, y: 0.5 } });
+      } else {
+        confetti({ particleCount: 120, spread: 80, origin: { x: side, y: 0.5 } });
+        setTimeout(() => {
+          confetti({ particleCount: 80, spread: 100, origin: { x: side, y: 0.6 }, colors: ['#fbbf24', '#f59e0b', '#3b82f6', '#60a5fa'] });
+        }, 150);
+      }
+    }
+    if (state?.phase !== 'win') winFiredRef.current = false;
+  }, [state?.phase, state?.winner, reduceMotion]);
+
   if (!state) return <div className="p-8 animate-pulse text-center">Loading Arena…</div>;
 
   const isQuestionPhase = state.phase === 'question';
@@ -89,16 +111,27 @@ export function ArenaScreen({
           <p className="text-xs text-muted-foreground mt-0.5">Q{state.currentQuestionIndex + 1}/{state.totalQuestions}</p>
         </div>
 
-        {/* Arena – city/experience + compact score overlay (no separate row) */}
+        {/* Arena – city / rocket / experience + compact score overlay */}
         <Card className="overflow-hidden relative">
           <CardContent className="p-0 relative">
-            <CityRenderer3D
-              powerLeft={visualState.powerLeft ?? 0}
-              powerRight={visualState.powerRight ?? 0}
-              leftColor={leftColor}
-              rightColor={rightColor}
-              showPowerFlicker={state.phase === 'scoring'}
-            />
+            {arenaId === 'rocket-race' ? (
+              <RocketRace3D
+                fuelLeft={visualState.fuelLeft ?? 0}
+                fuelRight={visualState.fuelRight ?? 0}
+                leftColor={leftColor}
+                rightColor={rightColor}
+                showPowerFlicker={state.phase === 'scoring'}
+                reduceMotion={reduceMotion}
+              />
+            ) : (
+              <CityRenderer3D
+                powerLeft={visualState.powerLeft ?? 0}
+                powerRight={visualState.powerRight ?? 0}
+                leftColor={leftColor}
+                rightColor={rightColor}
+                showPowerFlicker={state.phase === 'scoring'}
+              />
+            )}
             {/* Compact score – top corners, minimal space for wider arena */}
             <div className="absolute top-2 left-2 right-2 flex justify-between pointer-events-none">
               <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-black/50 backdrop-blur-sm" style={{ color: leftColor }}>
