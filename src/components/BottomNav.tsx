@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { User, FlaskConical, Swords, Coins } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/hooks/useTenant';
+import { useLocalization } from '@/hooks/useLocalization';
 
 /**
  * BottomNav Component - Mobile-only bottom navigation
@@ -19,6 +20,7 @@ type BottomNavProps = {
 export default function BottomNav({ initialTenantId = null }: BottomNavProps) {
   const pathname = usePathname();
   const { tenantId, hasArenaChallenge, hasVirtualLabs, features } = useTenant();
+  const { country } = useLocalization();
 
   const addTenantParam = useCallback(
     (href: string) => {
@@ -33,7 +35,7 @@ export default function BottomNav({ initialTenantId = null }: BottomNavProps) {
     const items = [
       { href: addTenantParam('/challenge-arena'), label: 'Arena', icon: Swords },
       { href: addTenantParam('/virtual-labs'), label: 'Labs', icon: FlaskConical },
-      { href: addTenantParam('/pricing'), label: 'Pricing', icon: Coins },
+      { href: addTenantParam(country ? '/pricing' : '/pricing/global'), label: 'Pricing', icon: Coins },
       { href: addTenantParam('/profile'), label: 'Profile', icon: User },
     ];
 
@@ -46,7 +48,7 @@ export default function BottomNav({ initialTenantId = null }: BottomNavProps) {
       if (item.label === 'Labs' && !hasVirtualLabs) return false;
       return true;
     });
-  }, [addTenantParam, hasArenaChallenge, hasVirtualLabs, features]);
+  }, [addTenantParam, hasArenaChallenge, hasVirtualLabs, features, country]);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-r from-white/95 via-violet-50/95 to-indigo-50/95 dark:from-slate-900/95 dark:via-violet-950/95 dark:to-indigo-950/95 backdrop-blur-xl md:hidden shadow-2xl shadow-violet-200/20 dark:shadow-violet-900/20">

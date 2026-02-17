@@ -249,7 +249,14 @@ export function buildNavigation(
   const platformItems = getPlatformNav(tenant);
   const regionalItems = getRegionalNav(country, tenant);
   const globalItems = getGlobalNav(tenant);
-  const utilityItems = getUtilityNav(tenant);
+  // Utility items: route Pricing based on country selection
+  // - country selected → Ghana pricing (GHS + WhatsApp flow): /pricing
+  // - no country selected (Global) → international pricing page: /pricing/global
+  const utilityItems = getUtilityNav(tenant).map(item =>
+    item.label === 'Pricing'
+      ? { ...item, href: country ? '/pricing' : '/pricing/global' }
+      : item
+  );
   
   return {
     platform: {

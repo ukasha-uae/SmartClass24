@@ -13,6 +13,7 @@ import {
 import { useMemo, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useLocalization } from '@/hooks/useLocalization';
 
 interface SubscriptionStatusBadgeProps {
   userId?: string;
@@ -29,6 +30,7 @@ export function SubscriptionStatusBadge({
 }: SubscriptionStatusBadgeProps) {
   const { user, firestore, auth } = useFirebase();
   const addTenantParam = useTenantLink();
+  const { country } = useLocalization();
   const [mounted, setMounted] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   
@@ -240,7 +242,7 @@ export function SubscriptionStatusBadge({
                 </Badge>
               </Link>
               {showUpgrade && (
-                <Link href={addTenantParam('/pricing')}>
+                <Link href={addTenantParam(country ? '/pricing' : '/pricing/global')}>
                   <Badge 
                     variant="outline" 
                     className="cursor-pointer hover:bg-primary/10 border-primary/50 hover:border-primary transition-colors"
@@ -342,7 +344,7 @@ export function SubscriptionStatusBadge({
               </Badge>
             </Link>
             {showUpgrade && (
-              <Link href={addTenantParam('/pricing')}>
+              <Link href={addTenantParam(country ? '/pricing' : '/pricing/global')}>
                 <Badge 
                   variant="outline" 
                   className="cursor-pointer hover:bg-primary/10 border-primary/50 hover:border-primary transition-colors"
@@ -383,7 +385,7 @@ export function SubscriptionStatusBadge({
       )}
       
       {isFree && showUpgrade && (
-        <Link href={addTenantParam('/pricing')}>
+        <Link href={addTenantParam(country ? '/pricing' : '/pricing/global')}>
           <Badge 
             variant="outline" 
             className="cursor-pointer hover:bg-primary/10 border-primary/50 hover:border-primary transition-colors text-xs"

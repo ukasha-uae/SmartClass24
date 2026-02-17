@@ -57,7 +57,7 @@ export default function Footer() {
     const features = [
       { label: 'Challenge Arena', href: addTenantParam('/challenge-arena') },
       { label: 'Virtual Labs', href: addTenantParam('/virtual-labs') },
-      { label: 'Pricing', href: addTenantParam('/pricing') },
+      { label: 'Pricing', href: addTenantParam(country ? '/pricing' : '/pricing/global') },
     ];
 
     return {
@@ -72,7 +72,7 @@ export default function Footer() {
         { label: 'Contact Us', href: addTenantParam('/contact') },
       ],
     };
-  }, [addTenantParam, tenantId]);
+  }, [addTenantParam, tenantId, country]);
 
   // Build social links from tenant config or use defaults (only after mount)
   const socialLinks = mounted ? [

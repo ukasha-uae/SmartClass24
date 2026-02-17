@@ -147,15 +147,26 @@ export default function PricingPage() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <div className="text-center mb-12">
-          <Badge className="mb-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-            Simple, Transparent Pricing
-          </Badge>
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
+            <Badge className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+              Simple, Transparent Pricing
+            </Badge>
+            <Badge variant="outline" className="border-blue-300/60 dark:border-blue-700/60">
+              Ghana (GHS)
+            </Badge>
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
             Choose Your Plan
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
             Start free, upgrade when you're ready for serious exam preparation. 
             All features accessible, premium unlocks unlimited questions, all virtual labs, and advanced analytics.
+          </p>
+          <p className="text-sm text-muted-foreground mb-6">
+            Need international pricing (USD)?{' '}
+            <Link className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline" href={addTenantParam('/pricing/global')}>
+              View Global Pricing
+            </Link>
           </p>
           <Link href="/redeem-codes">
             <Button 

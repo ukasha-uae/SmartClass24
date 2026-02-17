@@ -795,7 +795,10 @@ export default function Home() {
                 </Link>
                 
                 <div>
-                  <Link href="/pricing" className="inline-flex items-center gap-2 text-sm font-semibold text-violet-600 dark:text-violet-400 hover:underline">
+                  <Link
+                    href={addTenantParam(isGlobal ? '/pricing/global' : '/pricing')}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-violet-600 dark:text-violet-400 hover:underline"
+                  >
                     View Detailed Pricing
                     <ArrowRight className="h-4 w-4" />
                   </Link>
@@ -839,7 +842,7 @@ export default function Home() {
                     <p className="text-xs text-muted-foreground">For Schools</p>
                   </div>
                 </div>
-                <Link href="/pricing">
+                <Link href={addTenantParam(isGlobal ? '/pricing/global' : '/pricing')}>
                   <Button variant="outline" size="sm" className="border-violet-400 text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/30">
                     View All Plans & Features
                     <ArrowRight className="ml-2 h-4 w-4" />

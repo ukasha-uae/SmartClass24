@@ -365,7 +365,7 @@ export default function PartnersPage() {
               <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground">
                 About
               </Link>
-              <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground">
+              <Link href="/pricing/global" className="text-sm text-muted-foreground hover:text-foreground">
                 Pricing
               </Link>
               <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground">

@@ -9,6 +9,7 @@ import { useFirebase } from '@/firebase/provider';
 import { getUserReferralStats } from '@/lib/referrals';
 import { useTenant } from '@/hooks/useTenant';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useLocalization } from '@/hooks/useLocalization';
 
 interface EarnPremiumBannerProps {
   variant?: 'full' | 'compact' | 'floating';
@@ -24,6 +25,7 @@ export function EarnPremiumBanner({
   const { user } = useFirebase();
   const { branding, features } = useTenant();
   const addTenantParam = useTenantLink();
+  const { country } = useLocalization();
   const [isDismissed, setIsDismissed] = useState(false);
   const [referralCount, setReferralCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -209,7 +211,7 @@ export function EarnPremiumBanner({
                     Start Earning Now
                   </Button>
                 </Link>
-                <Link href={addTenantParam('/pricing')}>
+                <Link href={addTenantParam(country ? '/pricing' : '/pricing/global')}>
                   <Button 
                     size="lg" 
                     variant="outline" 
