@@ -712,7 +712,7 @@ export default function Home() {
                       </div>
                       <div className="flex items-center gap-2 text-xs">
                         <div className="w-1 h-1 rounded-full bg-green-500"></div>
-                        <span className="text-gray-700 dark:text-gray-300">Custom Middle East curriculum</span>
+                        <span className="text-gray-700 dark:text-gray-300">US Common Core-aligned + alternative holistic model</span>
                       </div>
                       <div className="flex items-center gap-2 text-xs">
                         <div className="w-1 h-1 rounded-full bg-green-500"></div>
@@ -720,7 +720,7 @@ export default function Home() {
                       </div>
                     </div>
                     <a 
-                      href="https://smartclass24.com/?tenant=wisdomwarehouse" 
+                      href="https://www.smartclass24.com/?tenant=wisdomwarehouse" 
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-2 text-sm font-semibold text-purple-600 dark:text-purple-400 hover:underline"
