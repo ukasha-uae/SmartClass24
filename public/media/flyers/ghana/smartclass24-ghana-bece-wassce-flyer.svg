@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1131">
+  <!-- Background -->
+  <defs>
+    <linearGradient id="gh-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FEF3C7" />
+      <stop offset="50%" stop-color="#FDE68A" />
+      <stop offset="100%" stop-color="#BFDBFE" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1131" fill="url(#gh-bg)" />
+
+  <!-- Header band (Ghana colors hint, but neutral text) -->
+  <rect x="0" y="60" width="800" height="110" fill="#047857" />
+  <text x="60" y="130" fill="#F9FAFB" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="40" font-weight="700">
+    SmartClass24  BECE &amp; WASSCE Prep
+  </text>
+
+  <!-- Subheader -->
+  <text x="60" y="200" fill="#111827" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="26" font-weight="600">
+    Ghana-focused question bank + Virtual Labs + Challenge Arena
+  </text>
+
+  <!-- Left column: BECE -->
+  <text x="60" y="270" fill="#111827" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="28" font-weight="700">
+    Junior High  BECE
+  </text>
+  <text x="80" y="310" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20">
+    " Core Mathematics, English, Integrated Science, Social Studies
+  </text>
+  <text x="80" y="340" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20">
+    " Timed Arena battles + past BECE questions
+  </text>
+  <text x="80" y="370" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20">
+    " Study streaks, weak-area analysis, and detailed feedback
+  </text>
+
+  <!-- Right column: WASSCE -->
+  <text x="60" y="430" fill="#111827" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="28" font-weight="700">
+    Senior High  WASSCE
+  </text>
+  <text x="80" y="470" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20">
+    " Core Maths, English, Integrated Science, plus electives
+  </text>
+  <text x="80" y="500" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20">
+    " 3D Virtual Labs for SHS science  built for NaCCA/WASSCE
+  </text>
+  <text x="80" y="530" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20">
+    " Track readiness across topics and past paper styles
+  </text>
+
+  <!-- Highlight box -->
+  <rect x="60" y="600" width="680" height="130" rx="20" fill="#111827" opacity="0.95" />
+  <text x="80" y="640" fill="#FBBF24" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="24" font-weight="700">
+    Built for Ghanaian schools and students
+  </text>
+  <text x="80" y="675" fill="#E5E7EB" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18">
+    One platform to revise, compete, and practice BECE &amp; WASSCE questionswith data teachers and heads can trust.
+  </text>
+
+  <!-- CTA -->
+  <text x="60" y="760" fill="#111827" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="24" font-weight="600">
+    For schools / heads:
+  </text>
+  <text x="80" y="795" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18">
+    " Request a school demo of Arena + Labs
+  </text>
+  <text x="80" y="825" fill="#374151" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18">
+    " Run Light Your City or Rocket Race arena days for JHS &amp; SHS
+  </text>
+
+  <!-- Footer -->
+  <rect x="0" y="1020" width="800" height="80" fill="#047857" />
+  <text x="60" y="1068" fill="#ECFEFF" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18">
+    SmartClass24 Ghana � BECE &amp; WASSCE Question Bank � Arena � Virtual Labs
+  </text>
+</svg>
+

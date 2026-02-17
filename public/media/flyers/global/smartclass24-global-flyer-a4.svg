@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1131">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EEF2FF" />
+      <stop offset="100%" stop-color="#DBEAFE" />
+    </linearGradient>
+    <linearGradient id="cta" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#22C55E" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="1131" fill="url(#bg)" />
+
+  <!-- Top header bar -->
+  <rect x="0" y="40" width="800" height="120" fill="#111827" opacity="0.96" />
+
+  <!-- Logo block -->
+  <rect x="60" y="60" width="56" height="56" rx="16" fill="#4F46E5" />
+  <circle cx="88" cy="88" r="18" fill="#22C55E" />
+  <text x="88" y="96" text-anchor="middle" fill="#FFFFFF"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20" font-weight="700">
+    S24
+  </text>
+
+  <!-- Brand and title -->
+  <text x="130" y="86" fill="#E5E7EB" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18" font-weight="600">
+    SmartClass24
+  </text>
+  <text x="130" y="118" fill="#FFFFFF" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="26" font-weight="700">
+    Global Learning Platform
+  </text>
+
+  <!-- Simple globe illustration (right) -->
+  <circle cx="640" cy="285" r="45" fill="#EEF2FF" />
+  <circle cx="640" cy="285" r="34" fill="#4F46E5" opacity="0.9" />
+  <path d="M606 285 H674" stroke="#C7D2FE" stroke-width="3" />
+  <path d="M640 251 V319" stroke="#C7D2FE" stroke-width="3" />
+  <ellipse cx="640" cy="285" rx="26" ry="12" fill="none" stroke="#C7D2FE" stroke-width="2" />
+  <ellipse cx="640" cy="285" rx="12" ry="26" fill="none" stroke="#C7D2FE" stroke-width="2" />
+
+  <!-- Main tagline block (left) -->
+  <text x="60" y="210" fill="#111827"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="28" font-weight="700">
+    SmartClass24 - Global Learning Platform
+  </text>
+  <text x="60" y="244" fill="#4B5563"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18">
+    Challenge Arena • 3D Virtual Labs • Past Questions
+  </text>
+  <text x="60" y="272" fill="#6B7280"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="16">
+    One content base mapped to many curricula for Primary, Middle School, and High School.
+  </text>
+
+  <!-- Compact left column: students -->
+  <rect x="60" y="320" width="310" height="190" rx="24" fill="#FFFFFF" opacity="0.97" />
+  <text x="78" y="352" fill="#111827"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18" font-weight="700">
+    For learners
+  </text>
+  <text x="88" y="382" fill="#374151"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="15">
+    • Gamified, competitive Arena
+  </text>
+  <text x="88" y="408" fill="#374151"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="15">
+    • Interactive 3D science labs
+  </text>
+  <text x="88" y="434" fill="#374151"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="15">
+    • Personalized practice and instant feedback
+  </text>
+
+  <!-- Compact right column: schools -->
+  <rect x="400" y="320" width="320" height="190" rx="24" fill="#FFFFFF" opacity="0.97" />
+  <text x="418" y="352" fill="#111827"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18" font-weight="700">
+    For schools &amp; groups
+  </text>
+  <text x="428" y="382" fill="#4B5563"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="15">
+    • White-label portals with your brand
+  </text>
+  <text x="428" y="408" fill="#4B5563"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="15">
+    • Multi-curriculum mapping (Ghana, US, UK)
+  </text>
+  <text x="428" y="434" fill="#4B5563"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="15">
+    • Analytics to track every learner's progress
+  </text>
+
+  <!-- Call to action band -->
+  <rect x="60" y="600" width="680" height="150" rx="28" fill="url(#cta)" />
+  <text x="80" y="645" fill="#FFFFFF"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="26" font-weight="700">
+    Get started with SmartClass24
+  </text>
+  <text x="80" y="677" fill="#E5E7EB"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="18">
+    Visit smartclass24.com or contact us to launch your own branded learning platform.
+  </text>
+  <text x="80" y="707" fill="#DBEAFE"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="16">
+    Email: ukasha.uae@gmail.com
+  </text>
+
+  <!-- Footer strip -->
+  <rect x="0" y="1020" width="800" height="80" fill="#111827" />
+  <text x="400" y="1068" text-anchor="middle" fill="#D1D5DB"
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="16">
+    SmartClass24 · Arena · Virtual Labs · Past Questions · Curriculum Mapping
+  </text>
+</svg>
+

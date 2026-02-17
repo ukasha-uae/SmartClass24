@@ -601,7 +601,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mb-4 flex gap-2">
+        <div className="mb-4 flex flex-wrap gap-2">
           <Button
             onClick={() => {
               console.log('[Admin Dashboard] Navigating to analytics page...');
@@ -612,6 +612,16 @@ export default function AdminDashboard() {
           >
             <BarChart3 className="h-4 w-4" />
             📊 View Usage Analytics
+          </Button>
+          <Button
+            onClick={() => {
+              window.location.href = '/admin/media';
+            }}
+            variant="outline"
+            className="gap-2 bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-900/20 dark:to-green-900/20 hover:from-emerald-100 hover:to-green-100 dark:hover:from-emerald-900/30 dark:hover:to-green-900/30 border-emerald-200 dark:border-emerald-800"
+          >
+            <Megaphone className="h-4 w-4" />
+            📣 Open Media Library
           </Button>
         </div>
 

@@ -60,8 +60,16 @@ export default function Footer() {
       { label: 'Pricing', href: addTenantParam(country ? '/pricing' : '/pricing/global') },
     ];
 
+    // Quick access for you: admin-only media library link (page itself is protected by admin auth)
+    if (tenantId === 'smartclass24') {
+      features.push({
+        label: 'Media Library (Admin)',
+        href: addTenantParam('/admin/media'),
+      });
+    }
+
     return {
-      // V1: Only Challenge Arena and Virtual Labs
+      // V1: Only Challenge Arena and Virtual Labs (and hide Pricing for some tenants)
       features: tenantId === 'wisdomwarehouse'
         ? features.filter(item => item.label !== 'Pricing')
         : features,
