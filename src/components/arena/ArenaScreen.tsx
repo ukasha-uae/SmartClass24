@@ -23,6 +23,7 @@ interface ArenaScreenProps {
   leftColor?: string;
   rightColor?: string;
   className?: string;
+  subtitle?: string;
 }
 
 export function ArenaScreen({
@@ -32,6 +33,7 @@ export function ArenaScreen({
   leftColor = '#f59e0b',
   rightColor = '#3b82f6',
   className,
+  subtitle,
 }: ArenaScreenProps) {
   const [state, setState] = useState<ArenaState | null>(null);
   const [visualState, setVisualState] = useState<Record<string, number>>({ powerLeft: 0, powerRight: 0 });
@@ -103,12 +105,19 @@ export function ArenaScreen({
     <div className={className ?? 'min-h-screen p-4 md:p-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950'}>
       <div className="max-w-6xl mx-auto space-y-3">
         {/* Compact header */}
-        <div className="text-center py-1">
+        <div className="text-center py-1 space-y-0.5">
           <h1 className="text-xl md:text-2xl font-bold flex items-center justify-center gap-2">
             <Zap className="h-6 w-6 text-amber-500" />
             {arenaModule.name}
           </h1>
-          <p className="text-xs text-muted-foreground mt-0.5">Q{state.currentQuestionIndex + 1}/{state.totalQuestions}</p>
+          {subtitle && (
+            <p className="text-[11px] md:text-xs text-muted-foreground">
+              {subtitle}
+            </p>
+          )}
+          <p className="text-[11px] md:text-xs text-muted-foreground">
+            Q{state.currentQuestionIndex + 1}/{state.totalQuestions}
+          </p>
         </div>
 
         {/* Arena – city / rocket / experience + compact score overlay */}

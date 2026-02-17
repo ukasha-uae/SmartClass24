@@ -1006,69 +1006,40 @@ export default function LocalizedChallengeArenaPage() {
                 </Link>
               )}
 
-              {/* Large Screen Arena – Light Your City */}
-              <Link href={addTenantParam('/challenge-arena/light-your-city')}>
-                <Card className="relative bg-gradient-to-br from-amber-500 to-orange-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
+              {/* Large Screen Arena – City & Rocket Games */}
+              <Link href={addTenantParam('/challenge-arena/large-screen')}>
+                <Card className="relative bg-gradient-to-br from-violet-600 via-indigo-700 to-amber-500 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                   <div className="relative z-0">
-                    <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">🏙️</div>
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
-                      Light Your City
-                      <Badge className="text-xs bg-green-500/30 text-white border border-green-400/50">Large Screen</Badge>
+                    <div className="flex items-center gap-3 mb-3 sm:mb-4">
+                      <div className="text-4xl sm:text-5xl lg:text-6xl">🚀</div>
+                      <div className="text-3xl sm:text-4xl lg:text-5xl">🏙️</div>
+                    </div>
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2 flex-wrap">
+                      Large Screen Arena
+                      <Badge className="text-xs bg-green-500/30 text-white border border-green-400/50">
+                        Light Your City &amp; Rocket Race
+                      </Badge>
                     </h3>
                     <p className="text-base sm:text-lg mb-3 sm:mb-4 opacity-90">
-                      Two teams power up their city; first to 100% wins. Built for smartboards and projectors.
+                      High-impact games for smartboards and projectors. Power up your city or race rockets to victory with your whole class.
                     </p>
                     <div className="space-y-2 mb-4 sm:mb-6">
                       <div className="flex items-center">
                         <span className="text-white/80 mr-2">🖥️</span>
-                        <span className="text-sm sm:text-base">Large display</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="text-white/80 mr-2">⚡</span>
-                        <span className="text-sm sm:text-base">Power race</span>
+                        <span className="text-sm sm:text-base">Designed for large displays</span>
                       </div>
                       <div className="flex items-center">
                         <span className="text-white/80 mr-2">👥</span>
-                        <span className="text-sm sm:text-base">Two teams</span>
-                      </div>
-                    </div>
-                    <div className="w-full bg-white text-amber-600 text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold hover:bg-gray-100 transition-colors">
-                      Play Now
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-
-              {/* Large Screen Arena – Rocket Race */}
-              <Link href={addTenantParam('/challenge-arena/rocket-race')}>
-                <Card className="relative bg-gradient-to-br from-violet-600 to-indigo-700 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                  <div className="relative z-0">
-                    <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">🚀</div>
-                    <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
-                      Rocket Race
-                      <Badge className="text-xs bg-green-500/30 text-white border border-green-400/50">Large Screen</Badge>
-                    </h3>
-                    <p className="text-base sm:text-lg mb-3 sm:mb-4 opacity-90">
-                      Two rockets; correct answers fuel up, wrong answers burn. First to 100% wins.
-                    </p>
-                    <div className="space-y-2 mb-4 sm:mb-6">
-                      <div className="flex items-center">
-                        <span className="text-white/80 mr-2">🖥️</span>
-                        <span className="text-sm sm:text-base">Large display</span>
+                        <span className="text-sm sm:text-base">Two-team classroom battles</span>
                       </div>
                       <div className="flex items-center">
-                        <span className="text-white/80 mr-2">⛽</span>
-                        <span className="text-sm sm:text-base">Fuel race</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="text-white/80 mr-2">👥</span>
-                        <span className="text-sm sm:text-base">Two teams</span>
+                        <span className="text-white/80 mr-2">✨</span>
+                        <span className="text-sm sm:text-base">City lights, rockets, and confetti celebrations</span>
                       </div>
                     </div>
-                    <div className="w-full bg-white text-violet-600 text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold hover:bg-gray-100 transition-colors">
-                      Play Now
+                    <div className="w-full bg-white text-violet-700 text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold hover:bg-gray-100 transition-colors">
+                      Open Large Screen Arena
                     </div>
                   </div>
                 </Card>
