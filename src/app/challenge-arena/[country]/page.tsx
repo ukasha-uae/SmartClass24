@@ -37,7 +37,7 @@ import { useLocalization } from '@/hooks/useLocalization';
 import { useParams, notFound, useRouter } from 'next/navigation';
 import { COUNTRIES } from '@/lib/localization/countries/index';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
-import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
+import { getAvailableSubjects, getAvailableSubjectsForGlobalArena } from '@/lib/challenge-questions-exports';
 import CoinStore from '@/components/premium/CoinStore';
 import TransactionHistory from '@/components/premium/TransactionHistory';
 import SubscriptionManagement from '@/components/premium/SubscriptionManagement';
@@ -167,15 +167,22 @@ export default function LocalizedChallengeArenaPage() {
   }, [levelParam, profileEducationLevel]);
 
   // Set country from URL parameter (only on initial load)
+  // When on /global, clear country to stay global; when on a specific country, set it
   useEffect(() => {
-    const matchedCountry = COUNTRIES[countryParam];
-    if (matchedCountry && (!country || country.id !== countryParam)) {
-      setCountry(countryParam);
+    if (countryParam === 'global') {
+      if (country !== null) setCountry(null);
+    } else {
+      const matchedCountry = COUNTRIES[countryParam];
+      if (matchedCountry && (!country || country.id !== countryParam)) {
+        setCountry(countryParam);
+      }
     }
-  }, [countryParam, setCountry]);
+  }, [countryParam, setCountry, country]);
 
   // Handle country changes from CountrySelector - navigate to new URL
+  // Do NOT redirect when on global; user intentionally chose global
   useEffect(() => {
+    if (countryParam === 'global') return;
     if (country && country.id !== countryParam) {
       router.push(`/challenge-arena/${country.id}`);
     }
@@ -296,8 +303,10 @@ export default function LocalizedChallengeArenaPage() {
     }
   }, [player]);
 
-  // Get subjects for the selected level
-  const availableSubjects = getAvailableSubjects(educationLevel);
+  // Get subjects for the selected level – use global-safe filter when on global route
+  const availableSubjects = countryParam === 'global'
+    ? getAvailableSubjectsForGlobalArena(educationLevel)
+    : getAvailableSubjects(educationLevel);
 
   // Group SHS subjects by program
   const groupSubjectsByProgram = (subjects: string[]) => {
@@ -996,6 +1005,40 @@ export default function LocalizedChallengeArenaPage() {
                   </Card>
                 </Link>
               )}
+
+              {/* Large Screen Arena – Light Your City */}
+              <Link href={addTenantParam('/challenge-arena/light-your-city')}>
+                <Card className="relative bg-gradient-to-br from-amber-500 to-orange-600 p-6 sm:p-8 rounded-2xl shadow-xl text-white overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer border-0">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                  <div className="relative z-0">
+                    <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">🏙️</div>
+                    <h3 className="text-2xl sm:text-3xl font-bold mb-2 flex items-center gap-2">
+                      Light Your City
+                      <Badge className="text-xs bg-green-500/30 text-white border border-green-400/50">Large Screen</Badge>
+                    </h3>
+                    <p className="text-base sm:text-lg mb-3 sm:mb-4 opacity-90">
+                      Two teams power up their city; first to 100% wins. Built for smartboards and projectors.
+                    </p>
+                    <div className="space-y-2 mb-4 sm:mb-6">
+                      <div className="flex items-center">
+                        <span className="text-white/80 mr-2">🖥️</span>
+                        <span className="text-sm sm:text-base">Large display</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-white/80 mr-2">⚡</span>
+                        <span className="text-sm sm:text-base">Power race</span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="text-white/80 mr-2">👥</span>
+                        <span className="text-sm sm:text-base">Two teams</span>
+                      </div>
+                    </div>
+                    <div className="w-full bg-white text-amber-600 text-center py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold hover:bg-gray-100 transition-colors">
+                      Play Now
+                    </div>
+                  </div>
+                </Card>
+              </Link>
             </div>
           </TabsContent>
 

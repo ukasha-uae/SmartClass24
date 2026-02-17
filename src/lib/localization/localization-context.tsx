@@ -10,7 +10,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { CountryConfig } from './country-config';
-import { getCountryConfig, DEFAULT_COUNTRY, ghanaConfig } from './countries';
+import { getCountryConfig, getGlobalConfig, DEFAULT_COUNTRY } from './countries';
 import { localizeText, localizeObject } from './content-adapter';
 
 // ============================================================================
@@ -246,12 +246,12 @@ export function LocalizationProvider({
   // QUICK ACCESS HELPERS
   // ============================================================================
 
-  const getCurrencySymbol = useCallback(() => country?.currency?.symbol || '$', [country]);
-  const getPrimaryExam = useCallback(() => country?.examSystem?.primary || 'primary exams', [country]);
-  const getSecondaryExam = useCallback(() => country?.examSystem?.secondary || 'secondary exams', [country]);
-  const getCapital = useCallback(() => country?.capital || '', [country]);
-  const getJuniorSecondaryName = useCallback(() => country?.academicStructure?.juniorSecondary?.name || 'Junior Secondary', [country]);
-  const getSeniorSecondaryName = useCallback(() => country?.academicStructure?.seniorSecondary?.name || 'Senior Secondary', [country]);
+  const getCurrencySymbol = useCallback(() => (country ?? getGlobalConfig()).currency.symbol, [country]);
+  const getPrimaryExam = useCallback(() => (country ?? getGlobalConfig()).examSystem.primary, [country]);
+  const getSecondaryExam = useCallback(() => (country ?? getGlobalConfig()).examSystem.secondary, [country]);
+  const getCapital = useCallback(() => (country ?? getGlobalConfig()).capital, [country]);
+  const getJuniorSecondaryName = useCallback(() => (country ?? getGlobalConfig()).academicStructure.juniorSecondary.name, [country]);
+  const getSeniorSecondaryName = useCallback(() => (country ?? getGlobalConfig()).academicStructure.seniorSecondary.name, [country]);
 
   // ============================================================================
   // CONTEXT VALUE

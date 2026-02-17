@@ -33,6 +33,26 @@ const MOCK_WISDOM_WAREHOUSE_TENANT: TenantConfig = {
     accentColor: '#1e40af',
     domain: 'smartclass24.com',
     supportEmail: 'support@wisdomwarehouse.com',
+    contentTransformationRules: {
+      'Ghana': 'your country',
+      'Ghanaian': 'local',
+      'cedis': 'dollars',
+      'cedi': 'dollar',
+      'BECE': 'assessment',
+      'WASSCE': 'final exam',
+      'JHS 1': 'Grade 7',
+      'JHS 2': 'Grade 8',
+      'JHS 3': 'Grade 9',
+      'SHS 1': 'Grade 10',
+      'SHS 2': 'Grade 11',
+      'SHS 3': 'Grade 12',
+      'Accra': 'the capital',
+      'Kumasi': 'a major city',
+      'chop bar': 'restaurant',
+      'tro-tro': 'bus',
+      'in Ghana': 'locally',
+      'across Ghana': 'in your region',
+    },
   },
   features: {
     enableJHSCampus: false,
@@ -225,7 +245,7 @@ export function testTextTransformation() {
   console.log('\n📋 Transformation Examples:\n');
   
   testCases.forEach((text, idx) => {
-    const preview = contentAdapter.previewTransformation(text, 'wisdomwarehouse');
+    const preview = contentAdapter.previewTransformation(text, MOCK_WISDOM_WAREHOUSE_TENANT);
     console.log(`Example ${idx + 1}:`);
     console.log(`Original:    "${preview.original}"`);
     console.log(`Transformed: "${preview.transformed}"`);
@@ -271,7 +291,7 @@ export function testTransformationRules() {
   console.log('TEST: Transformation Rules Inventory');
   console.log('='.repeat(80));
   
-  const rules = contentAdapter.getTransformationRules('wisdomwarehouse');
+  const rules = contentAdapter.getTransformationRules(MOCK_WISDOM_WAREHOUSE_TENANT);
   
   if (rules) {
     console.log('\n📖 Active Transformation Rules:\n');
@@ -317,7 +337,7 @@ export function testPerformance() {
   const testText = 'Students in Ghana use cedis to buy items at the chop bar in Accra.';
   const startText = performance.now();
   for (let i = 0; i < iterations; i++) {
-    contentAdapter.transformText(testText, 'wisdomwarehouse');
+    contentAdapter.transformText(testText, MOCK_WISDOM_WAREHOUSE_TENANT);
   }
   const endText = performance.now();
   const avgText = (endText - startText) / iterations;

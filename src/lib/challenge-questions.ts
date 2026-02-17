@@ -17866,6 +17866,21 @@ export function getChallengeQuestions(
   return [];
 }
 
+/** Subjects excluded from Global Arena – region/culture-specific (Social Studies, RME, etc.) */
+const GLOBAL_ARENA_EXCLUDED_SUBJECTS = new Set([
+  'Social Studies', 'RME', 'History', 'Geography', 'Government',
+  'Christian Religious Studies', 'Islamic Religious Studies',
+]);
+
+/**
+ * Get subjects suitable for Global Arena – excludes Social Studies, RME, and region-specific content
+ */
+export function getAvailableSubjectsForGlobalArena(level: EducationLevel): string[] {
+  return getAvailableSubjects(level).filter(
+    (s) => !GLOBAL_ARENA_EXCLUDED_SUBJECTS.has(s)
+  );
+}
+
 /**
  * Get available subjects for a given education level
  */

@@ -51,7 +51,7 @@ export default function SettingsPage() {
   const { curriculum } = useTenant();
   const router = useRouter();
   const { toast } = useToast();
-  const { country, countryId, setCountry } = useLocalization();
+  const { country, countryId, setCountry, getPrimaryExam, getSecondaryExam, getJuniorSecondaryName, getSeniorSecondaryName, getCurrencySymbol, getCapital } = useLocalization();
   const currentTenant = getCurrentTenant();
   const [showCountryDialog, setShowCountryDialog] = useState(false);
   
@@ -446,11 +446,11 @@ export default function SettingsPage() {
             <div className="flex items-start justify-between p-4 border rounded-lg">
               <div className="space-y-2 flex-1">
                 <div className="flex items-center gap-2">
-                  {country?.flag && <span className="text-3xl">{country.flag}</span>}
+                  <span className="text-3xl">{country?.flag ?? '🌍'}</span>
                   <div>
-                    <h3 className="font-semibold text-lg">{country?.name || 'Ghana'}</h3>
+                    <h3 className="font-semibold text-lg">{country?.name ?? 'Global'}</h3>
                     <p className="text-sm text-muted-foreground">
-                      {country?.currency?.symbol} {country?.currency?.code} • {country?.capital}
+                      {getCurrencySymbol()} {country?.currency?.code ?? 'USD'} • {getCapital() || '—'}
                     </p>
                   </div>
                 </div>
@@ -458,19 +458,19 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-2 gap-2 text-sm mt-3">
                   <div>
                     <span className="text-muted-foreground">Primary Exam:</span>
-                    <span className="ml-1 font-medium">{country?.examSystem?.primary || 'BECE'}</span>
+                    <span className="ml-1 font-medium">{getPrimaryExam()}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Secondary Exam:</span>
-                    <span className="ml-1 font-medium">{country?.examSystem?.secondary || 'WASSCE'}</span>
+                    <span className="ml-1 font-medium">{getSecondaryExam()}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Junior Level:</span>
-                    <span className="ml-1 font-medium">{country?.academicStructure?.juniorSecondary?.name || 'JHS'}</span>
+                    <span className="ml-1 font-medium">{getJuniorSecondaryName()}</span>
                   </div>
                   <div>
                     <span className="text-muted-foreground">Senior Level:</span>
-                    <span className="ml-1 font-medium">{country?.academicStructure?.seniorSecondary?.name || 'SHS'}</span>
+                    <span className="ml-1 font-medium">{getSeniorSecondaryName()}</span>
                   </div>
                 </div>
               </div>
@@ -680,7 +680,7 @@ export default function SettingsPage() {
                   <li>✓ Keep all your Primary School achievements and progress</li>
                   <li>✓ Access JHS curriculum for all subjects</li>
                   <li>✓ Update your school to a JHS institution</li>
-                  <li>✓ Prepare for BECE examinations</li>
+                  <li>✓ Prepare for {getPrimaryExam()} examinations</li>
                   <li>✓ Compete with other JHS students</li>
                 </ul>
               </div>
@@ -706,7 +706,7 @@ export default function SettingsPage() {
                       <ol className="list-decimal list-inside space-y-2 text-sm">
                         <li>Update your school to a JHS institution</li>
                         <li>Re-verify your student status at your new school</li>
-                        <li>Access JHS curriculum and BECE preparation materials</li>
+                        <li>Access {getJuniorSecondaryName()} curriculum and {getPrimaryExam()} preparation materials</li>
                       </ol>
                       <div className="bg-green-50 dark:bg-green-950/20 p-3 rounded border border-green-200 dark:border-green-800">
                         <p className="text-sm text-green-900 dark:text-green-100">
@@ -856,7 +856,7 @@ export default function SettingsPage() {
                     You're enrolled in Junior High School
                   </p>
                   <p className="text-xs text-green-700 dark:text-green-300 mt-1">
-                    Access JHS curriculum, compete in challenges, and prepare for BECE
+                    Access {getJuniorSecondaryName()} curriculum, compete in challenges, and prepare for {getPrimaryExam()}
                   </p>
                 </div>
               </div>
@@ -880,7 +880,7 @@ export default function SettingsPage() {
                     You're enrolled in Senior High School
                   </p>
                   <p className="text-xs text-green-700 dark:text-green-300 mt-1">
-                    Access SHS curriculum, compete in school battles, and prepare for WASSCE
+                    Access {getSeniorSecondaryName()} curriculum, compete in school battles, and prepare for {getSecondaryExam()}
                   </p>
                 </div>
               </div>
@@ -1001,7 +1001,7 @@ export default function SettingsPage() {
         isOpen={showCountryDialog}
         onClose={() => setShowCountryDialog(false)}
         onConfirm={handleCountryChange}
-        currentCountryName={country?.name || 'Ghana'}
+        currentCountryName={country?.name ?? 'Global'}
       />
     </div>
   );

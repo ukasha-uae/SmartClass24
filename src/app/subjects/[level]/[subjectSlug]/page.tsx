@@ -6,6 +6,13 @@ import { getPrimarySubjectBySlug } from '@/lib/primary-data';
 import { getSHSSubjectBySlug, getSHSLesson } from '@/lib/shs-data';
 import { notFound, useParams } from 'next/navigation';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useTenant } from '@/hooks/useTenant';
+import {
+  resolveCurriculumId,
+  resolveCurriculumLevel,
+  hasMappedTopicsForSubject,
+  isTopicInCurriculum,
+} from '@/lib/curriculum-mapping';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Card,
@@ -32,6 +39,7 @@ export default function SubjectPage() {
   const subjectSlug = params.subjectSlug as string;
   const { firestore } = useFirebase();
   const { country } = useLocalization();
+  const { tenant } = useTenant();
   
   // Country-specific color theming
   const getCountryColors = () => {
@@ -146,6 +154,9 @@ export default function SubjectPage() {
           return match ? parseInt(match[1]) : null;
         };
 
+        // Curriculum mapping: prefer tenant curriculumId, else country-based (e.g. Ghana WASSCE); filter topics by mapping per level
+        const curriculumId = resolveCurriculumId(tenant, country?.id ?? null);
+
         // Group topics by grade level
         // For SHS, check if there's a detailed lesson that matches this topic
         (subjectInfo as any).topics?.forEach((topic: any) => {
@@ -153,8 +164,14 @@ export default function SubjectPage() {
           const gradeLevelMatch = topic.gradeLevel?.match(/(\d+)/);
           const levelNum = gradeLevelMatch ? parseInt(gradeLevelMatch[1]) : 1;
           const displayLevel = `${baseName} ${levelNum}`;
-          
+          const resolvedLevel = curriculumId ? resolveCurriculumLevel(curriculumId, displayLevel) : displayLevel;
+
           if (shsData[displayLevel]) {
+            // If curriculum mapping exists, only show topics that are in the mapping for this subject+level
+            if (curriculumId && hasMappedTopicsForSubject(curriculumId, resolvedLevel, subjectSlug)) {
+              if (!isTopicInCurriculum(curriculumId, resolvedLevel, topic.slug, subjectSlug)) return;
+            }
+
             // Try to get the detailed lesson from shs-lessons-data.ts
             // The topic slug might be "shs3-factorization" but the lesson slug is "factorization"
             const detailedLesson = getSHSLesson(subjectSlug, topic.slug, topic.slug);

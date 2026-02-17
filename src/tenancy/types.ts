@@ -24,6 +24,10 @@ export interface TenantBranding {
   
   // Education level labels (optional, for non-Ghana markets)
   educationLevelLabels?: EducationLevelLabels;
+
+  /** Content transformation rules (find → replace) for whitelabel tenants */
+  contentTransformationRules?: Record<string, string>;
+
   countryLabel?: string;  // e.g., "Country", "Region", "Location" (defaults to based on country)
   
   // Footer customization (optional)
@@ -95,6 +99,8 @@ export interface CurriculumConfig {
   gradeLevels: string[];   // ['Primary', 'JHS', 'SHS'] or ['K-12'] or ['Elementary', 'Middle', 'High']
   countries?: string[];    // Optional: specific countries using this curriculum (e.g., West African countries)
   description?: string;    // Optional: human-readable description
+  /** Optional: curriculum mapping id for topic filtering (e.g. 'ghana-wassce', 'us-common-core', 'uk-gcse'). When set, topic lists are filtered by this mapping. */
+  curriculumId?: string;
 }
 
 /**

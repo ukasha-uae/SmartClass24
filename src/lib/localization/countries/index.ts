@@ -8,6 +8,7 @@
 
 import type { CountryConfig } from '../country-config';
 import { isValidCountryConfig, isActiveCountry } from '../country-config';
+import { globalConfig } from './global';
 import ghanaConfig from './ghana';
 import nigeriaConfig from './nigeria';
 import sierraLeoneConfig from './sierra-leone';
@@ -30,9 +31,17 @@ export const COUNTRIES: Record<string, CountryConfig> = {
 };
 
 /**
- * Default country (used for new users)
+ * Default country (used when user has selected a country)
  */
 export const DEFAULT_COUNTRY = 'ghana';
+
+/**
+ * Global/neutral config used when no country is selected (country === null)
+ * Provides neutral template values for international audience
+ */
+export function getGlobalConfig(): CountryConfig {
+  return globalConfig;
+}
 
 // ============================================================================
 // COUNTRY RETRIEVAL FUNCTIONS

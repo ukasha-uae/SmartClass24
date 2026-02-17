@@ -7,6 +7,7 @@
 import { 
   getChallengeQuestions as _getChallengeQuestions,
   getAvailableSubjects as _getAvailableSubjects,
+  getAvailableSubjectsForGlobalArena as _getAvailableSubjectsForGlobalArena,
   getQuestionBankSize as _getQuestionBankSize,
   type EducationLevel,
   type ClassLevel,
@@ -27,6 +28,10 @@ export function getChallengeQuestions(
 
 export function getAvailableSubjects(level: EducationLevel): string[] {
   return _getAvailableSubjects(level);
+}
+
+export function getAvailableSubjectsForGlobalArena(level: EducationLevel): string[] {
+  return _getAvailableSubjectsForGlobalArena(level);
 }
 
 export function getQuestionBankSize(level: EducationLevel): number {

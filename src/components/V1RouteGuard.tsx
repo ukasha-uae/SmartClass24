@@ -89,7 +89,7 @@ export function V1RouteGuard({
             <p className="mb-4 text-sm text-muted-foreground">
               {feature === 'lessons' && 'Lessons will be available in V2. For now, enjoy Arena Challenge and Virtual Labs!'}
             </p>
-            <Link href={addTenantParam('/challenge-arena/ghana')}>
+            <Link href={addTenantParam('/challenge-arena/global')}>
               <Button className="w-full">
                 Go to Arena Challenge
                 <ArrowRight className="ml-2 h-4 w-4" />

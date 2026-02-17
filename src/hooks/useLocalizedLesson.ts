@@ -4,12 +4,14 @@ import { useMemo } from 'react';
 import { getSHSLesson as getOriginalSHSLesson } from '@/lib/shs-data';
 import { useLocalization } from './useLocalization';
 import { localizeLesson } from '@/lib/localization/content-localizer';
+import { getGlobalConfig } from '@/lib/localization/countries';
 import { isContentAvailableForCountry } from '@/lib/localization/content-availability';
 import type { Lesson } from '@/lib/types';
 
 /**
  * Hook that wraps getSHSLesson and automatically localizes the content
  * Use this in client components instead of calling getSHSLesson directly
+ * When country is null (global mode), uses global config for template resolution
  */
 export function useLocalizedLesson(
   subjectSlug: string,
@@ -17,23 +19,23 @@ export function useLocalizedLesson(
   lessonSlug: string
 ): Lesson | null {
   const { country } = useLocalization();
+  const config = country ?? getGlobalConfig();
 
   return useMemo(() => {
     const lesson = getOriginalSHSLesson(subjectSlug, topicSlug, lessonSlug);
     
-    if (!lesson || !country) {
-      return lesson;
+    if (!lesson) {
+      return null;
     }
 
-    // Check if lesson is available for current country
-    if (lesson.availability && !isContentAvailableForCountry(lesson.availability, country)) {
-      console.log(`Lesson "${lesson.title}" not available for ${country.name}`);
+    // Check if lesson is available for current country/global
+    if (lesson.availability && !isContentAvailableForCountry(lesson.availability, config)) {
       return null; // Hide lesson if not available for this country
     }
 
-    // Localize all content in the lesson
-    return localizeLesson(lesson, country);
-  }, [subjectSlug, topicSlug, lessonSlug, country]);
+    // Localize all content in the lesson (uses global config when country is null)
+    return localizeLesson(lesson, config);
+  }, [subjectSlug, topicSlug, lessonSlug, config]);
 }
 
 /**

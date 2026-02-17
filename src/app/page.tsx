@@ -23,9 +23,10 @@ export default function Home() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [userName, setUserName] = useState('there');
   const [selectedCampus, setSelectedCampus] = useState<'JHS' | 'SHS' | 'Primary'>('JHS');
-  const { country, formatCurrency, getCurrencySymbol } = useLocalization();
+  const { country, formatCurrency, getCurrencySymbol, getPrimaryExam, getSecondaryExam, getJuniorSecondaryName, getSeniorSecondaryName } = useLocalization();
   const { branding, market, hasLocalization, tenantId } = useTenant();
   const { labels: educationLabels } = useEducationLevels();
+  const isGlobal = !country;
   const firebaseContext = useContext(FirebaseContext);
   const user = firebaseContext?.user ?? null;
   const addTenantParam = useCallback(
@@ -37,16 +38,11 @@ export default function Home() {
     [tenantId]
   );
 
-  // Log for debugging - check if tenant is correctly resolved
   useEffect(() => {
-    console.log('[HomePage] Tenant:', {tenantId, market, branding: {
-      name: branding?.name,
-      logoUrl: branding?.logoUrl,
-      domain: branding?.domain,
-      fullObject: branding
-    }});
-    console.log('[HomePage] addTenantParam test:', addTenantParam('/virtual-labs'));
-  }, [tenantId, market, branding, addTenantParam]);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[HomePage] Tenant:', { tenantId, market, branding: { name: branding?.name, logoUrl: branding?.logoUrl, domain: branding?.domain } });
+    }
+  }, [tenantId, market, branding]);
 
   // Scroll to top on page load
   useEffect(() => {
@@ -55,7 +51,7 @@ export default function Home() {
 
   // Force remount when tenant changes to prevent state pollution
   useEffect(() => {
-    console.log('[HomePage] Tenant changed, forcing remount:', tenantId);
+    if (process.env.NODE_ENV === 'development') console.log('[HomePage] Tenant changed:', tenantId);
     setMounted(false);
     const timer = setTimeout(() => setMounted(true), 10);
     return () => clearTimeout(timer);
@@ -78,7 +74,7 @@ export default function Home() {
       // Reset flag if requested
       if (resetWelcome) {
         localStorage.removeItem('hasSeenWelcome');
-        console.log('[HomePage] Welcome flag reset - will show on next load');
+        if (process.env.NODE_ENV === 'development') console.log('[HomePage] Welcome flag reset');
         // Remove the query param
         window.history.replaceState({}, '', window.location.pathname);
       }
@@ -95,10 +91,7 @@ export default function Home() {
       // const shouldShowWelcome = forceWelcome || !hasSeenWelcome || (!storedName && user?.isAnonymous);
       const shouldShowWelcome = forceWelcome; // ONLY show when forced via ?welcome=true
       
-      if (shouldShowWelcome) {
-        console.log('[HomePage] Showing welcome:', { forceWelcome, hasSeenWelcome, storedName, userIsAnonymous: user?.isAnonymous });
-        setShowWelcome(true);
-      }
+      if (shouldShowWelcome) setShowWelcome(true);
     }
   }, [user]);
 
@@ -109,12 +102,15 @@ export default function Home() {
     setShowWelcome(false);
   };
 
-  // Get country-specific academic structure - Define BEFORE early return
-  const juniorLevel = country?.academicStructure?.juniorSecondary?.name || educationLabels.jhs;
-  const juniorExam = country?.examSystem?.primary || 'BECE';
-  const seniorExam = country?.examSystem?.secondary || 'WASSCE';
+  // Get country-specific academic structure (use localization getters so global gets neutral labels)
+  const juniorLevel = getJuniorSecondaryName();
+  const juniorExam = getPrimaryExam();
+  const seniorExam = getSecondaryExam();
   const juniorClasses = country?.academicStructure?.juniorSecondary?.levels?.join(', ') || `${educationLabels.jhs} 1-3`;
   const seniorClasses = country?.academicStructure?.seniorSecondary?.levels?.join(', ') || `${educationLabels.shs} 1-3`;
+  // Neutral copy when no country selected (global view) – avoid BECE/WASSCE
+  const juniorExamLabel = isGlobal ? '' : juniorExam;
+  const seniorExamLabel = isGlobal ? '' : seniorExam;
 
   // Get country-specific colors from flag - Define BEFORE early return
   const getCountryColors = () => {
@@ -145,13 +141,13 @@ export default function Home() {
       id: 'primary',
       name: educationLabels.primary,
       shortName: educationLabels.primary,
-      description: 'Class 1-6: Building Strong Foundations',
+      description: isGlobal ? 'Grades 1-6: Building Strong Foundations' : 'Class 1-6: Building Strong Foundations',
       gradient: colors.accent,
       icon: Trophy,
       features: ['Arena Challenge', 'Virtual Labs', 'Fun Learning Games', 'Competitive Play'],
       href: `/challenge-arena/global?level=Primary`,
       studentCount: '120+',
-      classes: 'Class 1-6',
+      classes: isGlobal ? 'Grades 1-6' : 'Class 1-6',
       emoji: '🎒',
       tagline: 'Start Your Learning Journey',
       v1Note: 'V1: Arena + Virtual Labs'
@@ -160,7 +156,7 @@ export default function Home() {
       id: 'jhs',
       name: educationLabels.jhs,
       shortName: educationLabels.jhs,
-      description: market === 'middle-east' ? 'Building Critical Thinking Skills' : `Ace Your ${juniorExam} Exams`,
+      description: market === 'middle-east' ? 'Building Critical Thinking Skills' : juniorExamLabel ? `Ace Your ${juniorExamLabel} Exams` : 'Master Your Assessments',
       gradient: colors.primary,
       icon: Trophy,
       features: ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', 'Progress Tracking'],
@@ -168,19 +164,19 @@ export default function Home() {
       studentCount: '350+',
       classes: juniorClasses,
       emoji: '📚',
-      tagline: market === 'middle-east' ? 'Discover Your Learning Style' : country?.id === 'nigeria' ? 'Excel in Basic Education' : `Master ${juniorExam}`,
+      tagline: market === 'middle-east' ? 'Discover Your Learning Style' : country?.id === 'nigeria' ? 'Excel in Basic Education' : juniorExamLabel ? `Master ${juniorExamLabel}` : 'Excel in Core Subjects',
       v1Note: 'V1: Arena + Virtual Labs'
     },
     {
       id: 'shs',
       name: educationLabels.shs,
       shortName: educationLabels.shs,
-      description: market === 'middle-east' ? 'Preparing for Higher Education' : `Conquer ${seniorExam} & Beyond`,
+      description: market === 'middle-east' ? 'Preparing for Higher Education' : seniorExamLabel ? `Conquer ${seniorExamLabel} & Beyond` : 'Conquer Your Exams & Beyond',
       gradient: colors.secondary,
       icon: GraduationCap,
       features: market === 'middle-east' 
         ? ['Arena Challenge', 'Virtual Labs', 'Collaborative Learning', 'Mentorship']
-        : ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', `${seniorExam} Prep`],
+        : seniorExamLabel ? ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', `${seniorExamLabel} Prep`] : ['Arena Challenge', 'Virtual Labs', 'Competitive Battles', 'Exam Prep'],
       href: `/challenge-arena/global?level=SHS`,
       studentCount: '280+',
       classes: seniorClasses,
@@ -639,7 +635,6 @@ export default function Home() {
                       onClick={(e) => {
                         e.preventDefault();
                         const finalUrl = addTenantParam(item.href);
-                        console.log('[HomePage] Link clicked:', item.label, 'original:', item.href, 'final:', finalUrl, 'tenant:', tenantId);
                         if (typeof window !== 'undefined') {
                           window.location.href = finalUrl;
                         }
@@ -684,11 +679,11 @@ export default function Home() {
                   Launch your white-label education platform in under 24 hours. Complete branding, custom domain, and curriculum flexibility.
                 </p>
                 
-                {/* Coming Soon Badge */}
-                <div className="flex justify-center gap-3 mt-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800">
-                    <Sparkles className="h-3 w-3 text-amber-600 dark:text-amber-400" />
-                    <span className="text-xs font-bold text-amber-700 dark:text-amber-300">Multi-Curriculum Support Coming Soon</span>
+                {/* Multi-Curriculum Live Badge */}
+                <div className="flex justify-center gap-3 mt-4 flex-wrap">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/30 border border-emerald-200 dark:border-emerald-800">
+                    <Sparkles className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+                    <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Multi-Curriculum: West African (BECE/WASSCE), US Common Core, UK GCSE</span>
                   </div>
                 </div>
               </div>
@@ -764,7 +759,7 @@ export default function Home() {
                         </div>
                         <div>
                           <p className="text-sm font-semibold text-gray-900 dark:text-white">Custom Curriculum</p>
-                          <p className="text-xs text-muted-foreground">West African live • US, UK, IB coming soon</p>
+                          <p className="text-xs text-muted-foreground">West African (BECE/WASSCE), US Common Core, UK GCSE • One content base, any curriculum</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
