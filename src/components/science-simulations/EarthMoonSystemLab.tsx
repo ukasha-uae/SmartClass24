@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { EarthMoonSystemScene } from './EarthMoonSystemScene';
 import {
@@ -15,6 +15,16 @@ import { TeacherVoice } from '@/components/virtual-labs/TeacherVoice';
 
 type BodyId = 'sun' | 'earth' | 'moon';
 
+// Varied lead-ins so the teacher doesn't repeat "We're now at..." every phase.
+const PHASE_LEAD_INS: string[] = [
+  "We're now at %s.",
+  "This is the %s phase.",
+  "Here we have %s.",
+  "The cycle shows %s.",
+  "Notice: %s.",
+  "That's %s.",
+];
+
 function buildTeacherMessage(body: BodyId | null, day: number) {
   const phaseIndex = Math.round((day / EARTH_MOON_CONFIG.lunarMonthDays) * 8) % 8;
   const phaseNames = [
@@ -28,15 +38,15 @@ function buildTeacherMessage(body: BodyId | null, day: number) {
     'Waning Crescent',
   ];
   const phaseName = phaseNames[phaseIndex];
+  const leadIn = PHASE_LEAD_INS[phaseIndex % PHASE_LEAD_INS.length].replace('%s', phaseName);
 
   if (!body || body === 'sun') {
-    return `Welcome to the Earth–Moon–Sun system! Here you can see how the Moon orbits Earth and how that creates different phases like New Moon and Full Moon. Drag the day slider or use Auto play to watch the cycle.`;
+    return `${leadIn} The Moon orbits Earth and we see different phases as the sunlit side faces us.`;
   }
   if (body === 'earth') {
-    return `This is Earth, our home. As the Moon orbits Earth, we see different parts of its sunlit half. Right now the Moon is at a position that gives us the ${phaseName} phase.`;
+    return `${leadIn} From Earth we're looking at a different part of the Moon's sunlit half.`;
   }
-  // moon
-  return `You have selected the Moon. The Moon always keeps the same side facing Earth, but we see different phases because our viewing angle changes. Today in the cycle it appears as a ${phaseName}. Notice how its position around Earth changes that phase.`;
+  return `${leadIn} The Moon's position around Earth changes which part we see lit by the Sun.`;
 }
 
 export function EarthMoonSystemLab() {
@@ -46,6 +56,8 @@ export function EarthMoonSystemLab() {
   const [teacherMessage, setTeacherMessage] = useState<string>(() =>
     buildTeacherMessage(null, 0),
   );
+  const [triggerSpeakKey, setTriggerSpeakKey] = useState(0);
+  const autoPlayRef = useRef(false);
 
   const phaseIndex = useMemo(
     () => Math.round((day / EARTH_MOON_CONFIG.lunarMonthDays) * 8) % 8,
@@ -76,6 +88,39 @@ export function EarthMoonSystemLab() {
     setTeacherMessage(buildTeacherMessage(selectedBody, value));
   };
 
+  autoPlayRef.current = autoPlay;
+
+  // When teacher finishes speaking during auto-play, advance to the next phase. Use ref so stop is immediate.
+  const handleTeacherComplete = useCallback(() => {
+    if (!autoPlayRef.current) return;
+    setDay((currentDay) => {
+      const currentPhaseIndex = Math.round((currentDay / EARTH_MOON_CONFIG.lunarMonthDays) * 8) % 8;
+      const nextPhaseIndex = (currentPhaseIndex + 1) % 8;
+      const nextCenterDay = ((nextPhaseIndex + 0.5) / 8) * EARTH_MOON_CONFIG.lunarMonthDays;
+      setTeacherMessage(buildTeacherMessage(selectedBody, nextCenterDay));
+      return nextCenterDay;
+    });
+  }, [selectedBody]);
+
+  // When user turns on auto-play, set message for current phase (trigger speak is done in click handler).
+  useEffect(() => {
+    if (autoPlay) {
+      setTeacherMessage(buildTeacherMessage(selectedBody, day));
+    }
+  }, [autoPlay]);
+
+  const handleAutoPlayToggle = useCallback(() => {
+    if (autoPlay) {
+      setAutoPlay(false);
+      setTeacherMessage('');
+      setTimeout(() => setTeacherMessage(buildTeacherMessage(selectedBody, day)), 0);
+    } else {
+      setAutoPlay(true);
+      setTeacherMessage(buildTeacherMessage(selectedBody, day));
+      setTriggerSpeakKey((k) => k + 1);
+    }
+  }, [autoPlay, selectedBody, day]);
+
   const currentFact = EARTH_MOON_FACTS[phaseIndex % EARTH_MOON_FACTS.length];
 
   return (
@@ -95,7 +140,6 @@ export function EarthMoonSystemLab() {
           <Canvas camera={{ position: [0, 12, 26], fov: 45 }} gl={{ antialias: true, alpha: false }}>
             <EarthMoonSystemScene
               day={day}
-              autoPlay={autoPlay}
               onSelectBody={handleSelectBody}
             />
           </Canvas>
@@ -117,7 +161,7 @@ export function EarthMoonSystemLab() {
               <Button
                 variant={autoPlay ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setAutoPlay((v) => !v)}
+                onClick={handleAutoPlayToggle}
               >
                 {autoPlay ? (
                   <>
@@ -261,6 +305,8 @@ export function EarthMoonSystemLab() {
         <TeacherVoice
           message={teacherMessage}
           autoPlay={true}
+          onComplete={handleTeacherComplete}
+          triggerSpeakKey={triggerSpeakKey}
           theme="science"
           teacherName="Dr. Galaxy Guide"
           emotion="explaining"

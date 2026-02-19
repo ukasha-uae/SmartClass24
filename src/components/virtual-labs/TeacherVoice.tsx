@@ -10,6 +10,8 @@ interface TeacherVoiceProps {
     message: string;
     autoPlay?: boolean;
     onComplete?: () => void;
+    /** When this value changes, treat as user interaction and speak current message (e.g. parent Play button). */
+    triggerSpeakKey?: number;
     theme?: 'science' | 'accounting' | 'math' | 'default';
     teacherName?: string;
     progressiveReveal?: boolean; // Enable progressive text reveal
@@ -32,6 +34,7 @@ export function TeacherVoice({
     message, 
     autoPlay = true, 
     onComplete,
+    triggerSpeakKey,
     theme = 'default',
     teacherName = 'Teacher',
     progressiveReveal = true,
@@ -114,6 +117,22 @@ export function TeacherVoice({
             window.speechSynthesis.onvoiceschanged = loadVoices;
         }
     }, []);
+
+    // Parent requested speak (e.g. Play button in lab): count as interaction and speak so auto-play starts immediately.
+    const triggerSpeakKeyRef = React.useRef(triggerSpeakKey);
+    React.useEffect(() => {
+        if (triggerSpeakKey == null || triggerSpeakKey === triggerSpeakKeyRef.current) return;
+        triggerSpeakKeyRef.current = triggerSpeakKey;
+        setUserInteracted(true);
+        setShowAudioPrompt(false);
+        if (message && voicesLoaded && !isMuted && 'speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const t = setTimeout(() => {
+                speakMessage(0);
+            }, 100);
+            return () => clearTimeout(t);
+        }
+    }, [triggerSpeakKey, message, voicesLoaded, isMuted]);
 
     React.useEffect(() => {
         // Cancel any ongoing speech when message changes

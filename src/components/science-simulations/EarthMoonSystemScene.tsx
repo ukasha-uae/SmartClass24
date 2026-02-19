@@ -12,17 +12,14 @@ const LERP_SPEED = 0.04;
 interface EarthMoonSystemSceneProps {
   /** Day in the lunar cycle (0 - lunarMonthDays) */
   day: number;
-  /** When true, we gently animate time forward */
-  autoPlay: boolean;
   onSelectBody: (id: 'sun' | 'earth' | 'moon') => void;
 }
 
 export function EarthMoonSystemScene({
   day,
-  autoPlay,
   onSelectBody,
 }: EarthMoonSystemSceneProps) {
-  const { lunarMonthDays, earthTiltDegrees, earthOrbitRadius, moonOrbitRadius } =
+  const { lunarMonthDays, earthTiltDegrees, earthOrbitRadius, moonOrbitRadius, moonOrbitTiltDegrees } =
     EARTH_MOON_CONFIG;
 
   const time = useRef(day);
@@ -32,12 +29,10 @@ export function EarthMoonSystemScene({
   const desiredCamPos = useRef(new THREE.Vector3(0, 12, 26));
   const nodeHighlightColor = '#f97316';
 
-  useFrame((_, delta) => {
-    if (autoPlay) {
-      time.current = (time.current + delta * 2) % lunarMonthDays;
-    } else {
-      time.current = day;
-    }
+  useFrame(() => {
+    // Drive the scene purely from the current day in the lunar cycle.
+    // Auto-play is handled in the parent lab component by updating `day`.
+    time.current = day;
 
     if (controlsRef.current) {
       controlsRef.current.target.lerp(targetPos.current, LERP_SPEED);
@@ -50,7 +45,7 @@ export function EarthMoonSystemScene({
   const earthZ = Math.sin(earthAngle) * earthOrbitRadius;
 
   const moonAngle = (time.current / lunarMonthDays) * Math.PI * 2;
-  const moonOrbitTilt = THREE.MathUtils.degToRad(5);
+  const moonOrbitTilt = THREE.MathUtils.degToRad(moonOrbitTiltDegrees ?? 5);
   const moonY = Math.sin(moonAngle) * moonOrbitRadius * Math.sin(moonOrbitTilt);
   const moonOrbitRadiusProjected = moonOrbitRadius * Math.cos(moonOrbitTilt);
   const moonX = earthX + Math.cos(moonAngle) * moonOrbitRadiusProjected;
