@@ -138,7 +138,7 @@ export default function Header() {
         </Link>
         
         <div className="ml-auto flex items-center gap-1 sm:gap-2 relative z-10" suppressHydrationWarning>
-          {/* Mobile: Install icon in header when one-click install is available */}
+          {/* Mobile: Install icon - only when browser offers one-click install (same as PC, no 3-dots instructions) */}
           <div className="md:hidden flex items-center gap-1">
             {pwaInstall?.canShowInstall && pwaInstall?.deferredPrompt && (
               <Button
@@ -193,7 +193,7 @@ export default function Header() {
                   
                   <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
 
-                  {/* Install app - only when browser offers one-click install (no 3-dots instructions) */}
+                  {/* Install app - only when browser offers one-click install (same as PC, no 3-dots instructions) */}
                   {pwaInstall?.canShowInstall && pwaInstall?.deferredPrompt && (
                     <button
                       type="button"

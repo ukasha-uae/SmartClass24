@@ -24,7 +24,7 @@ export default function Home() {
   const [userName, setUserName] = useState('there');
   const [selectedCampus, setSelectedCampus] = useState<'JHS' | 'SHS' | 'Primary'>('JHS');
   const { country, formatCurrency, getCurrencySymbol, getPrimaryExam, getSecondaryExam, getJuniorSecondaryName, getSeniorSecondaryName } = useLocalization();
-  const { branding, market, hasLocalization, tenantId } = useTenant();
+  const { branding, market, hasLocalization, tenantId, academyDisplayName } = useTenant();
   const { labels: educationLabels } = useEducationLevels();
   const isGlobal = !country;
   const firebaseContext = useContext(FirebaseContext);
@@ -187,7 +187,7 @@ export default function Home() {
     ...(FEATURE_FLAGS.V1_LAUNCH.showUniversity && (tenantId === 'smartclass24' || (tenantId === 'wisdomwarehouse' && branding && branding.name === 'Wisdom Warehouse'))
         ? [{
             id: 'university',
-            name: 'S24 Innovation Academy',
+            name: academyDisplayName,
             shortName: 'Academy',
             description: 'Empowering Beginners to Become Tech Builders & Founders',
             gradient: 'from-green-600 to-emerald-700',

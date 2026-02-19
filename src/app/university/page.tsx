@@ -5,13 +5,15 @@
 
 'use client';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Code, Zap, Shield, Globe, TrendingUp } from 'lucide-react';
+import { ArrowRight, BookOpen, Code, Zap, Shield, Globe, TrendingUp, Award, Home } from 'lucide-react';
 import { getAllActivePrograms } from '@/lib/university-data';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 
 export default function UniversityCampusPage() {
   const programs = getAllActivePrograms();
   const addTenantParam = useTenantLink();
+  const { academyDisplayName } = useTenant();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
@@ -20,7 +22,7 @@ export default function UniversityCampusPage() {
         <div className="container mx-auto px-4 text-center">
           <p className="font-semibold flex items-center justify-center space-x-2">
             <span className="text-2xl">🚧</span>
-            <span>S24 Innovation Academy is under active development - Explore our early features!</span>
+            <span>{academyDisplayName} is under active development - Explore our early features!</span>
             <span className="text-2xl">🚧</span>
           </p>
         </div>
@@ -32,7 +34,7 @@ export default function UniversityCampusPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              S24 Innovation Academy
+              {academyDisplayName}
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-green-100">
               Empowering beginners to become tech builders and founders using AI-driven learning and real-world projects
@@ -60,7 +62,7 @@ export default function UniversityCampusPage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12 text-gray-900">
-            Why Choose S24 Innovation Academy?
+            Why Choose {academyDisplayName}?
           </h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="text-center p-6">
@@ -122,6 +124,16 @@ export default function UniversityCampusPage() {
                 Learn technologies and tools used by professional developers in the industry.
               </p>
             </div>
+
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Certificates & Portfolio</h3>
+              <p className="text-gray-600">
+                Earn verifiable certificates and build a project portfolio to showcase to employers and universities.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -136,7 +148,7 @@ export default function UniversityCampusPage() {
             {programs.map((program) => (
               <Link
                 key={program.id}
-                href={`/university/programs/${program.slug}`}
+                href={addTenantParam(`/university/programs/${program.slug}`)}
                 className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow group"
               >
                 <div className="bg-gradient-to-r from-green-500 to-emerald-500 h-32 flex items-center justify-center">
@@ -206,11 +218,17 @@ export default function UniversityCampusPage() {
             Join thousands of students learning to code with hands-on projects and expert guidance.
           </p>
           <Link
-            href="/signup"
+            href={addTenantParam('/signup')}
             className="inline-block px-8 py-4 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors"
           >
             Get Started Free
           </Link>
+          <p className="mt-6 text-green-100 text-sm">
+            Part of SmartClass24 —{' '}
+            <Link href={addTenantParam('/')} className="underline font-medium hover:text-white inline-flex items-center gap-1">
+              <Home className="w-4 h-4" /> Back to Home
+            </Link>
+          </p>
         </div>
       </section>
     </div>

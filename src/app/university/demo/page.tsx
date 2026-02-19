@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { ArrowLeft, Sparkles } from 'lucide-react';
 import { CodeFile } from '@/types/university';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
 
 const demoFiles: CodeFile[] = [
   {
@@ -265,7 +266,8 @@ setTimeout(() => {
 
 export default function UniversityDemoPage() {
   const addTenantParam = useTenantLink();
-  
+  const { academyDisplayName } = useTenant();
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Under Construction Banner */}
@@ -281,7 +283,7 @@ export default function UniversityDemoPage() {
             className="inline-flex items-center text-green-100 hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to S24 Innovation Academy
+            Back to {academyDisplayName}
           </Link>
           <div className="flex items-center space-x-3 mb-3">
             <Sparkles className="w-8 h-8" />
@@ -351,17 +353,17 @@ export default function UniversityDemoPage() {
             Ready to Start Learning?
           </h2>
           <p className="text-green-100 mb-6 max-w-2xl mx-auto">
-            Join S24 Innovation Academy and access complete courses with projects, certificates, and career support.
+            Join {academyDisplayName} and access complete courses with projects, certificates, and career support.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link
-              href="/university"
+              href={addTenantParam('/university')}
               className="px-8 py-4 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors"
             >
               Browse Programs
             </Link>
             <Link
-              href="/signup"
+              href={addTenantParam('/signup')}
               className="px-8 py-4 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800 transition-colors border-2 border-white/30"
             >
               Sign Up Free

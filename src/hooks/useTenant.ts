@@ -49,6 +49,9 @@ export interface UseTenantResult {
   hasSHSCampus: boolean;
   hasUniversityCampus: boolean;
   hasLocalization: boolean;
+
+  /** Tenant-aware Innovation Academy name: "S24 Innovation Academy" or "Wisdom Warehouse Innovation Academy" */
+  academyDisplayName: string;
 }
 
 /**
@@ -120,6 +123,10 @@ export function useTenant(): UseTenantResult {
     hasSHSCampus: tenant.features.enableSHSCampus,
     hasUniversityCampus: tenant.features.enableUniversityCampus,
     hasLocalization: tenant.features.enableLocalization ?? false,
+
+    academyDisplayName: tenant.id === 'smartclass24'
+      ? 'S24 Innovation Academy'
+      : `${tenant.branding?.name || 'Innovation'} Innovation Academy`,
   };
 }
 
