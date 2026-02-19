@@ -6,22 +6,29 @@ import { EarthMoonSystemScene } from './EarthMoonSystemScene';
 import {
   EARTH_MOON_CONFIG,
   EARTH_MOON_FACTS,
+  PHASE_WHY,
+  MOON_LAB_CHECK_QUESTIONS,
 } from '@/lib/science-simulations/earth-moon-system-data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Button } from '@/components/ui/button';
-import { Globe, Info, Moon, SunMedium, Zap, Play, Pause, Sparkles } from 'lucide-react';
+import type { CheckQuestion } from '@/lib/science-simulations/earth-moon-system-data';
+import { Globe, Info, Moon, SunMedium, Zap, Play, Pause, Sparkles, CheckCircle2, XCircle } from 'lucide-react';
 import { TeacherVoice } from '@/components/virtual-labs/TeacherVoice';
 
 type BodyId = 'sun' | 'earth' | 'moon';
 
-// Varied lead-ins so the teacher doesn't repeat "We're now at..." every phase.
+// Intro used only on first load so the teacher properly introduces the lab.
+const INTRO_MESSAGE =
+  'Welcome to the Moon Phases & Eclipses lab. Here we will see how the Moon orbits Earth, why its shape seems to change, and how this geometry can also create eclipses.';
+
+// Varied lead-ins so the teacher doesn't repeat the same phrase every phase.
 const PHASE_LEAD_INS: string[] = [
   "We're now at %s.",
-  "This is the %s phase.",
-  "Here we have %s.",
-  "The cycle shows %s.",
-  "Notice: %s.",
+  'This is the %s phase.',
+  'Here we have %s.',
+  'The cycle shows %s.',
+  'Notice: %s.',
   "That's %s.",
 ];
 
@@ -53,11 +60,13 @@ export function EarthMoonSystemLab() {
   const [day, setDay] = useState(0);
   const [autoPlay, setAutoPlay] = useState(false);
   const [selectedBody, setSelectedBody] = useState<BodyId | null>(null);
-  const [teacherMessage, setTeacherMessage] = useState<string>(() =>
-    buildTeacherMessage(null, 0),
-  );
+  // Start with a friendly introduction; later updates use phase-based messages.
+  const [teacherMessage, setTeacherMessage] = useState<string>(INTRO_MESSAGE);
   const [triggerSpeakKey, setTriggerSpeakKey] = useState(0);
   const autoPlayRef = useRef(false);
+  const [checkQuestion, setCheckQuestion] = useState<CheckQuestion | null>(null);
+  const [checkSelectedIndex, setCheckSelectedIndex] = useState<number | null>(null);
+  const [checkShowFeedback, setCheckShowFeedback] = useState(false);
 
   const phaseIndex = useMemo(
     () => Math.round((day / EARTH_MOON_CONFIG.lunarMonthDays) * 8) % 8,
@@ -90,9 +99,7 @@ export function EarthMoonSystemLab() {
 
   autoPlayRef.current = autoPlay;
 
-  // When teacher finishes speaking during auto-play, advance to the next phase. Use ref so stop is immediate.
-  const handleTeacherComplete = useCallback(() => {
-    if (!autoPlayRef.current) return;
+  const advanceToNextPhase = useCallback(() => {
     setDay((currentDay) => {
       const currentPhaseIndex = Math.round((currentDay / EARTH_MOON_CONFIG.lunarMonthDays) * 8) % 8;
       const nextPhaseIndex = (currentPhaseIndex + 1) % 8;
@@ -101,6 +108,35 @@ export function EarthMoonSystemLab() {
       return nextCenterDay;
     });
   }, [selectedBody]);
+
+  // When teacher finishes speaking during auto-play: show check question at checkpoint phases, else advance.
+  const handleTeacherComplete = useCallback(() => {
+    if (!autoPlayRef.current) return;
+    if (checkQuestion != null) return;
+    const currentPhaseIndex = Math.round((day / EARTH_MOON_CONFIG.lunarMonthDays) * 8) % 8;
+    const questionAtPhase = MOON_LAB_CHECK_QUESTIONS.find((q) => q.phaseIndex === currentPhaseIndex);
+    if (questionAtPhase) {
+      setCheckQuestion(questionAtPhase);
+      setCheckSelectedIndex(null);
+      setCheckShowFeedback(false);
+      setTeacherMessage(`Quick check: ${questionAtPhase.question}`);
+      return;
+    }
+    advanceToNextPhase();
+  }, [day, checkQuestion, advanceToNextPhase]);
+
+  const handleCheckAnswer = useCallback((optionIndex: number) => {
+    if (checkQuestion == null || checkShowFeedback) return;
+    setCheckSelectedIndex(optionIndex);
+    setCheckShowFeedback(true);
+  }, [checkQuestion, checkShowFeedback]);
+
+  const handleCheckContinue = useCallback(() => {
+    setCheckQuestion(null);
+    setCheckSelectedIndex(null);
+    setCheckShowFeedback(false);
+    advanceToNextPhase();
+  }, [advanceToNextPhase]);
 
   // When user turns on auto-play, set message for current phase (trigger speak is done in click handler).
   useEffect(() => {
@@ -112,6 +148,9 @@ export function EarthMoonSystemLab() {
   const handleAutoPlayToggle = useCallback(() => {
     if (autoPlay) {
       setAutoPlay(false);
+      setCheckQuestion(null);
+      setCheckSelectedIndex(null);
+      setCheckShowFeedback(false);
       setTeacherMessage('');
       setTimeout(() => setTeacherMessage(buildTeacherMessage(selectedBody, day)), 0);
     } else {
@@ -220,6 +259,54 @@ export function EarthMoonSystemLab() {
           </CardContent>
         </Card>
 
+        {/* Check for understanding (during auto-play) */}
+        {checkQuestion != null && (
+          <Card className="border-2 border-amber-500/40 bg-amber-500/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                Quick check
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm font-medium">{checkQuestion.question}</p>
+              {!checkShowFeedback ? (
+                <div className="space-y-1.5">
+                  {checkQuestion.options.map((opt, i) => (
+                    <Button
+                      key={i}
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start text-left h-auto py-2 px-3"
+                      onClick={() => handleCheckAnswer(i)}
+                    >
+                      {opt}
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className={`flex items-start gap-2 rounded-lg p-2.5 ${checkSelectedIndex === checkQuestion.correctIndex ? 'bg-green-500/10 text-green-800 dark:text-green-200' : 'bg-red-500/10 text-red-800 dark:text-red-200'}`}>
+                    {checkSelectedIndex === checkQuestion.correctIndex ? (
+                      <CheckCircle2 className="h-4 w-4 shrink-0 mt-0.5" />
+                    ) : (
+                      <XCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                    )}
+                    <p className="text-sm">
+                      {checkSelectedIndex === checkQuestion.correctIndex
+                        ? checkQuestion.correctFeedback
+                        : checkQuestion.incorrectFeedback}
+                    </p>
+                  </div>
+                  <Button size="sm" className="w-full" onClick={handleCheckContinue}>
+                    Continue
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Quick select bodies */}
         <Card>
           <CardHeader className="pb-2">
@@ -267,6 +354,12 @@ export function EarthMoonSystemLab() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
+            {selectedBody === 'moon' && (
+              <div className="rounded-lg bg-sky-500/10 border border-sky-500/30 p-2.5">
+                <p className="text-xs font-medium text-sky-700 dark:text-sky-300 mb-1">Why does it look like this?</p>
+                <p className="text-sm text-muted-foreground">{PHASE_WHY[phaseIndex]}</p>
+              </div>
+            )}
             <p className="font-medium text-sm">{currentFact.title}</p>
             <p className="text-sm text-muted-foreground">{currentFact.description}</p>
           </CardContent>
