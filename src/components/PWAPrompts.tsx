@@ -105,6 +105,7 @@ export function PWAUpdatePrompt() {
   const [showUpdate, setShowUpdate] = useState(false);
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const hasMounted = useHasMounted();
+  const { branding } = useTenant();
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -155,7 +156,7 @@ export function PWAUpdatePrompt() {
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-base mb-1">Update Available</h3>
               <p className="text-sm text-muted-foreground mb-3">
-                A new version of S24 is ready!
+                A new version of {branding?.name ?? 'the app'} is ready!
               </p>
               <div className="flex gap-2 mt-2">
                 <Button 

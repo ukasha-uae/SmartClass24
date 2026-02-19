@@ -177,11 +177,20 @@ export default function Header() {
                   
                   <div className="h-[2px] bg-gradient-to-r from-transparent via-purple-300/50 to-transparent dark:via-purple-700/50 my-2" />
 
-                  {/* Install app - only when native one-click prompt is available (no 3-dots) */}
-                  {pwaInstall?.canShowInstall && pwaInstall?.deferredPrompt && (
+                  {/* Install app - for all tenants (S24, Wisdom, etc.); native prompt or manual instructions */}
+                  {pwaInstall?.canShowInstall && (
                     <button
                       type="button"
-                      onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSheetOpen(false); pwaInstall.triggerInstall(); }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSheetOpen(false);
+                        if (pwaInstall.deferredPrompt) {
+                          pwaInstall.triggerInstall();
+                        } else {
+                          pwaInstall.setShowInstructions(true);
+                        }
+                      }}
                       className="w-full flex items-center gap-4 p-4 rounded-xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 backdrop-blur-sm border-2 border-violet-200/50 dark:border-violet-800/50 hover:border-violet-300 dark:hover:border-violet-700 transition-all hover:scale-[1.02] shadow-md group text-left cursor-pointer"
                     >
                       <div className="p-2 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-lg">
@@ -486,13 +495,21 @@ export default function Header() {
             </Sheet>
           </div>
           
-          {/* Install app - desktop: only when native one-click prompt is available */}
-          {pwaInstall?.canShowInstall && pwaInstall?.deferredPrompt && (
+          {/* Install app - desktop: for all tenants; native prompt or open manual instructions */}
+          {pwaInstall?.canShowInstall && (
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              onClick={(e) => { e.preventDefault(); e.stopPropagation(); pwaInstall.triggerInstall(); }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (pwaInstall.deferredPrompt) {
+                  pwaInstall.triggerInstall();
+                } else {
+                  pwaInstall.setShowInstructions(true);
+                }
+              }}
               className="hidden md:flex items-center gap-2 cursor-pointer select-none text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-500/10 border border-transparent hover:border-violet-300/50 transition-all relative z-10"
               title={`Install ${branding.name}`}
             >

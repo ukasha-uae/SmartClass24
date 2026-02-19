@@ -3,7 +3,8 @@
  * Provides offline capability for Chrome's install prompt
  */
 
-const CACHE_VERSION = 'v1.0.1';
+// Bump this on deploy so installed PWAs get a fresh cache and see updates
+const CACHE_VERSION = 'v1.0.2';
 const CACHE_NAME = `smartclass24-pwa-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 
