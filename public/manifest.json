@@ -1,7 +1,7 @@
 {
   "name": "S24 - Smart Learning Platform",
   "short_name": "S24",
-  "description": "Smart learning platform for JHS & SHS students across Ghana. Learn, practice, and excel together.",
+  "description": "Global AI-powered learning platform for schools and students. Master your curriculum with interactive lessons, virtual labs, and gamified learning.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
