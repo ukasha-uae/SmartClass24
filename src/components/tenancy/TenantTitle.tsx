@@ -22,14 +22,17 @@ import { useTenant } from '@/hooks/useTenant';
  * ```
  */
 export function TenantTitle() {
-  const { branding } = useTenant();
+  const { branding, tenantId } = useTenant();
   
   useEffect(() => {
-    // Update document title when tenant changes
-    if (typeof document !== 'undefined') {
+    if (typeof document === 'undefined') return;
+    // White-label tenants: show only their name (no "Smart Learning" / S24 in title bar)
+    if (tenantId && tenantId !== 'smartclass24' && branding?.name) {
+      document.title = `${branding.name} - Smart Learning Platform`;
+    } else {
       document.title = branding?.name || 'SmartClass24';
     }
-  }, [branding]);
+  }, [branding, tenantId]);
   
-  return null; // This component doesn't render anything
+  return null;
 }

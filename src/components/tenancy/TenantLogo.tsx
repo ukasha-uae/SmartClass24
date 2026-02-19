@@ -121,7 +121,25 @@ export function TenantLogo({
     );
   }
   
-  // Fallback: Neo-glamorphic "S24" logo for tenants without custom logos (like SmartClass24)
+  // For white-label tenants (non-S24), never show S24 branding - show tenant name only
+  if (tenantId && tenantId !== 'smartclass24') {
+    const textSize = size === 'sm' ? 'text-sm' : size === 'lg' ? 'text-lg' : size === 'xl' ? 'text-xl' : 'text-base';
+    return (
+      <div className={cn('flex items-center gap-2', className)} data-tenant-id={tenantId}>
+        <span
+          className={cn(
+            'font-bold text-slate-700 dark:text-slate-300 truncate max-w-[8rem] sm:max-w-[12rem]',
+            textSize
+          )}
+          title={branding.name}
+        >
+          {branding.name}
+        </span>
+      </div>
+    );
+  }
+
+  // Fallback: Neo-glamorphic "S24" logo for SmartClass24 (no custom logo)
   const getSizeClasses = () => {
     switch (size) {
       case 'sm':

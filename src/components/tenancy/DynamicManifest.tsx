@@ -28,13 +28,11 @@ export function DynamicManifest() {
       document.head.appendChild(manifestLink);
     }
 
-    // Use static manifest for Wisdom so PWA install works on production without API/custom domain
+    // Tenant-specific manifest so install / "Open in App" uses correct name and icon
     const manifestUrl =
-      tenantId === 'wisdomwarehouse'
-        ? '/manifest-wisdomwarehouse.json'
-        : tenantId && tenantId !== 'smartclass24'
-          ? `/api/manifest?tenant=${tenantId}`
-          : '/manifest.json';
+      tenantId && tenantId !== 'smartclass24'
+        ? `/api/manifest?tenant=${tenantId}`
+        : '/manifest.json';
 
     manifestLink.href = manifestUrl;
 

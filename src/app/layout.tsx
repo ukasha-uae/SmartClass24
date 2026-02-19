@@ -111,13 +111,11 @@ export default async function RootLayout({
     ? TENANT_REGISTRY[initialTenantId] 
     : TENANT_REGISTRY.smartclass24;
 
-  // Use static manifest for Wisdom so PWA install works on production without API/custom domain
+  // Tenant-specific manifest so "Open in App" / install uses correct name and icon (Wisdom gets their logo via API)
   const manifestUrl =
-    initialTenantId === 'wisdomwarehouse'
-      ? '/manifest-wisdomwarehouse.json'
-      : initialTenantId && initialTenantId !== 'smartclass24'
-        ? `/api/manifest?tenant=${initialTenantId}`
-        : '/manifest.json';
+    initialTenantId && initialTenantId !== 'smartclass24'
+      ? `/api/manifest?tenant=${initialTenantId}`
+      : '/manifest.json';
 
   const themeColor = tenantConfig.branding.primaryColor;
   const pwaIcons = getTenantPwaIconUrls(initialTenantId ?? 'smartclass24', tenantConfig.branding);

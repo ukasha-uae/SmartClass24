@@ -1,96 +1,83 @@
 # SmartClass24 Sales Pitch Deck
-**Global Multi-Curriculum Learning Platform with Proven African Traction**
+**Global White-Label Learning Platform — One Codebase, Any Curriculum, Any Market**
 
 ---
 
 ## Slide 1: The Problem 🚨
 
-### Fragmented Education Landscape in Africa
-- **1 billion+ students** across Africa struggle with outdated learning methods
-- **Limited access** to quality educational resources outside major cities
-- **One-size-fits-all** approach fails diverse learning needs
-- **High exam failure rates**: 40-60% in West African standardized exams
-- **Teacher shortage**: 70M additional teachers needed by 2030 in Africa
+### Schools Everywhere Are Stuck With the Wrong Tradeoffs
 
-**Quote from Wisdom Warehouse (UAE):**  
-*"We searched for 2 years for a platform that could handle our custom branding and Middle East curriculum. Everything was either too Ghana-specific or too expensive."*
+- **International and private schools** need a learning platform that matches *their* curriculum (US, UK, IB, national) and *their* brand — not a one-size-fits-all product.
+- **Off-the-shelf EdTech** is either **too generic** (no curriculum fit, no white-label) or **too expensive** ($5,000+/month, long implementations).
+- **Curriculum-specific platforms** lock schools into a single system; adding another curriculum or region means a new vendor or a fork.
+- **Result:** Schools spend years searching, pay premium prices, or build in-house — while students get a fragmented, off-brand experience.
+
+**Quote from Wisdom Warehouse (UAE — teaching US students):**  
+*"We searched for 2 years for a platform that could handle our custom branding and our curriculum. Everything was either too narrow (e.g. one country only) or too expensive. SmartClass24 gave us our own platform in weeks."*
 
 ---
 
 ## Slide 2: The Solution ✨
 
-### SmartClass24: AI-Powered, Multi-Tenant Learning Platform
+### SmartClass24: One Platform, Any Curriculum, Any Brand
 
 **Core Value Propositions:**
-1. **🎯 Personalized Learning** - AI adapts to each student's pace and style
-2. **🏢 White-Label Ready** - Schools get their own branded platform in <24 hours
-3. **📚 Multi-Curriculum Architecture** - West African curriculum (BECE/WASSCE/NECO) live with 11,500+ questions; architecture validated for multi-curriculum via Wisdom Warehouse custom deployment; expanding to US Common Core, UK National, IB
-4. **🌍 Globally Scalable** - Same platform serves Ghana students AND UAE international schools simultaneously
-5. **⚔️ Engagement First** - Challenge Arena turns learning into competition
-6. **🔬 Interactive Labs** - Virtual science experiments accessible on any device
+1. **🏢 White-Label First** — Schools get their own branded experience and URL in days, not months. No SmartClass24 branding unless they want it.
+2. **📚 Multi-Curriculum by Design** — Same product serves US-aligned, West African (BECE/WASSCE), or custom curricula. Our live partner (UAE) teaches **US students**; we also serve West African markets from the same codebase.
+3. **🌍 Globally Scalable** — One codebase, multiple tenants and regions. Add a new curriculum or country via configuration and content, not a new product.
+4. **🎯 Personalized Learning** — Adaptive pacing, level/class/subject selection, and progress tracking for each student.
+5. **⚔️ Engagement That Works** — Challenge Arena (Quick Match, Practice, Boss battles, Large Screen games) turns learning into competition and keeps students coming back.
+6. **🔬 Interactive Labs** — 35+ virtual science experiments (Biology, Chemistry, Physics) work on any device, including low bandwidth.
 
 **Platform Architecture:**
-- Multi-tenant SaaS (proven with 2 live tenants)
-- Progressive Web App (works offline, installs like native app)
-- Firebase-powered (scales to millions of users)
-- Next.js 16 (cutting-edge performance)
+- Multi-tenant SaaS (proven: 2 live tenants — flagship brand + UAE international school)
+- Progressive Web App (offline-capable, installable)
+- Firebase (auth, Firestore, hosting) — scales globally
+- Next.js (App Router, TypeScript)
 
 ---
 
-## Slide 3: Proof of Concept - Wisdom Warehouse 🇦🇪
+## Slide 3: Proof of Concept — Wisdom Warehouse 🇦🇪
 
-### Live Case Study: Middle East Deployment
+### Live Case Study: UAE International School Teaching US Students
 
-**Challenge:**  
-International school in UAE needed custom learning platform with:
-- Complete white-label branding
-- Middle East curriculum alignment
-- Zero Ghana-specific content
-- Enterprise-grade reliability
+**Who they are:**  
+An international school in the UAE serving students following a **US-aligned curriculum** — not Ghana, not West Africa. They needed a dedicated learning platform, not a generic or single-country product.
 
-**Solution:**  
-SmartClass24 multi-tenant architecture delivered in 3 weeks.
+**What they needed:**
+- Full **white-label** (their branding, their experience)
+- **Their curriculum** — US-oriented content and structure
+- **Zero content leakage** from other curricula or tenants
+- Reliable, professional platform for daily use
 
-**Results:**
-- ✅ **100% uptime** since January 2026 launch
-- ✅ **Zero content leakage** - complete tenant isolation via URL-based tenancy
-- ✅ **Dedicated tenant URL**: smartclass24.com/?tenant=wisdomwarehouse
-- ✅ **Branded experience**: School logo, colors, custom curriculum
-- ✅ **Happy administrators**: "Exactly what we needed"
+**What we delivered:**
+- **Live in 3 weeks** on SmartClass24 multi-tenant architecture
+- **Dedicated tenant URL**: smartclass24.com/?tenant=wisdomwarehouse
+- **100% uptime** since January 2026 launch
+- **Complete isolation** — their students never see West African or other content
+- **One codebase** — same app serves UAE (US curriculum) and West African (BECE/WASSCE) users with zero conflict
 
-**Technical Win:**  
-Same codebase serves Ghana students AND UAE students simultaneously with zero conflicts.
+**Why it matters:**  
+We are not “an African platform going global.” We are a **global platform** that already runs a UAE school teaching US students today. Africa is one important market we serve alongside the Middle East and beyond.
 
 ---
 
 ## Slide 4: Technology Stack 💻
 
-### Production-Grade Architecture
+### Built for Global, Multi-Curriculum Deployment
 
-**Frontend:**
-- Next.js 16 (React 19) - App Router
-- TypeScript (full type safety)
-- Tailwind CSS (beautiful, responsive UI)
-- Progressive Web App (PWA)
+**Frontend:** Next.js (App Router), TypeScript, Tailwind CSS, PWA  
+**Backend:** Firebase (Auth, Firestore, Hosting, Functions)
 
-**Backend:**
-- Firebase Authentication (anonymous-first, upgradable)
-- Firestore Database (real-time, scalable)
-- Firebase Hosting (CDN-powered, global)
-- Cloud Functions (server-side logic)
+**What makes it global-ready:**
+- **Multi-tenancy** — Isolated data and branding per tenant (URL-based)
+- **Multi-curriculum mapping** — Country/market configs (exam systems, academic structure, subject names, topic inclusion); content filtered by tenant and curriculum
+- **Localization** — Multiple countries and “global” config; add new regions without forking
+- **Offline-first** — PWA for low-connectivity and variable networks
+- **Real-time** — Leaderboards, notifications, live updates
+- **Security & isolation** — Tenant and curriculum boundaries enforced in code and rules
 
-**Key Features:**
-- **Multi-tenancy**: Isolated data, custom branding per tenant
-- **Localization**: 5 countries supported, easily extensible
-- **Offline-first**: Students can learn without internet
-- **Real-time**: Leaderboards, notifications, live updates
-- **Analytics**: Track student progress, engagement, outcomes
-
-**Code Quality:**
-- 694 files, 20.41MB codebase
-- TypeScript throughout
-- Comprehensive feature flags
-- Production-ready security rules
+**Code quality:** TypeScript throughout, feature flags, production-tested with two live tenants.
 
 ---
 
@@ -98,30 +85,22 @@ Same codebase serves Ghana students AND UAE students simultaneously with zero co
 
 ### Current Status (Feb 2026)
 
-**Active Platform:**
-- **750+ students** using platform daily
-- **2 live tenants** (SmartClass24, Wisdom Warehouse)
-- **96% student satisfaction** rate
-- **3 academic levels**: JHS, SHS, Tech Academy
+**Live today:**
+- **2 production tenants** — SmartClass24 flagship and **Wisdom Warehouse (UAE, US curriculum)**
+- **750+ students** on the platform
+- **96% student satisfaction** in feedback
+- **Primary, JHS, SHS, and Tech Academy** levels supported
 
-**Content Library:**
-- **9,000+ quiz questions** (JHS)
-- **2,500+ SHS questions** across 12 subjects
-- **15+ interactive virtual labs**
-- **Comprehensive past questions** bank
+**Content & product:**
+- **11,500+ questions** (Primary, JHS, SHS) with level/class/subject filtering; structure ready for US Common Core and other curricula
+- **35+ virtual labs** (Biology, Chemistry, Physics)
+- **Challenge Arena** — Quick Match, Practice, Boss battles, Large Screen games (e.g. Light Your City, Rocket Race)
+- **White-label** — Custom branding and tenant URLs proven in production
 
-**Platform Features (V1):**
-- ✅ Challenge Arena (competitive learning)
-- ✅ Virtual Labs (interactive science)
-- ✅ Multi-tenant architecture
-- ✅ Anonymous-first authentication
-- ✅ Progressive Web App
-- ✅ White-label branding
-
-**Geographic Reach:**
-- Ghana (primary market)
-- UAE (enterprise client)
-- Nigeria, Sierra Leone, Liberia, Gambia (content ready)
+**Geographic and curriculum reach:**
+- **UAE** — Live (Wisdom Warehouse, US-aligned)
+- **Ghana / West Africa** — Live and content-ready (BECE/WASSCE; Nigeria, Sierra Leone, Liberia, Gambia in config)
+- **Global** — Architecture and roadmap for US Common Core, UK, IB, and more
 
 ---
 
@@ -129,130 +108,128 @@ Same codebase serves Ghana students AND UAE students simultaneously with zero co
 
 ### Revenue Streams
 
-#### 1. **B2C (Direct to Students)**
-- **Freemium Model**: Basic features free forever
-- **Premium Individual**: 500 coins (~$2 USD) monthly
-  - Unlimited quizzes
-  - Priority support
-  - Premium badges
-  
-#### 2. **B2B (Schools & Institutions)**
-**Pricing Tiers:**
+#### 1. **B2B (Schools & Institutions)** — Primary focus
+**Pricing:**
 
-| Tier | Students | Price/Month | Features |
-|------|----------|-------------|----------|
-| **Starter** | Up to 100 | $299 | White-label, basic analytics |
-| **Growth** | 101-500 | $599 | + Custom curriculum, API access |
-| **Professional** | 501-1,000 | $799 | + Dedicated support, training |
-| **Enterprise** | 1,000+ | Custom | + SLA, custom features, integrations |
+| Tier         | Students  | Price/Month | Features                          |
+|-------------|-----------|-------------|------------------------------------|
+| **Starter**  | Up to 100 | $299        | White-label, basic analytics       |
+| **Growth**   | 101–500   | $599        | + Custom curriculum, API access    |
+| **Professional** | 501–1,000 | $799   | + Dedicated support, training     |
+| **Enterprise**   | 1,000+  | Custom      | + SLA, custom features, integrations |
 
-**Wisdom Warehouse Example:**  
-Estimated 200 students → $599/month → **$7,188 ARR** from single school
+**Wisdom Warehouse (UAE):** ~200 students → **$599/month** → **~$7,200 ARR** from one school.
 
-**Unit Economics:**
-- Customer Acquisition Cost (B2B): ~$500 (outreach + demos)
-- Lifetime Value (3-year contract): $21,564
-- LTV:CAC Ratio: 43:1 ✅
+**Unit economics:**
+- B2B CAC: ~$500 (outreach + demos)
+- LTV (3-year): ~$21,600
+- LTV:CAC ≈ **43:1**
 
-#### 3. **Enterprise Add-Ons**
-- Custom integrations: $2,000-$10,000 one-time
-- Curriculum customization: $500-$2,000/subject
-- Dedicated training: $1,000/session
-- API access: $200/month
+#### 2. **B2C (Direct to students)**
+- Freemium: core features free
+- Premium: ~$2/month (unlimited practice, badges, support)
+
+#### 3. **Enterprise add-ons**
+- Custom integrations, curriculum builds, training, API — one-time and recurring.
 
 ---
 
 ## Slide 7: Competitive Landscape 🏆
 
-### Feature Comparison Matrix
+### Why We Win in a Global Market
 
-| Feature | SmartClass24 | Competitor A | Competitor B |
-|---------|--------------|--------------|--------------|
-| **Multi-Tenant** | ✅ Production-ready | ❌ | ❌ |
-| **Multi-Curriculum** | ✅ Architecture validated, 4+ systems planned | ❌ | ❌ Single curriculum |
-| **White-Label** | ✅ $299/mo | ❌ | ✅ $5,000/mo |
-| **International Proof** | ✅ UAE deployment | ❌ | 🟡 Limited |
-| **African Curriculum** | ✅ 5 countries (BECE/WASSCE) | ✅ Ghana only | ❌ |
-| **Interactive Labs** | ✅ 15+ labs | ❌ | ✅ 5 labs |
-| **Challenge Arena** | ✅ Gamified | ❌ | ❌ |
-| **Offline Support** | ✅ PWA | ❌ | ❌ |
-| **AI-Powered** | ✅ Adaptive learning | 🟡 Partial | ❌ |
-| **Price (School)** | **$299-$799/mo** | N/A | **$5,000+/mo** |
-| **Setup Time** | **<24 hours** | N/A | 6-8 weeks |
+| Dimension           | SmartClass24                    | Typical alternatives              |
+|--------------------|----------------------------------|-----------------------------------|
+| **White-label**    | ✅ From day one, $299/mo        | Often $5,000+/mo or not offered   |
+| **Multi-tenant**   | ✅ Production-ready, 2 live tenants | Rare; usually single-tenant   |
+| **Multi-curriculum** | ✅ US (UAE), West Africa, more planned | Usually one curriculum only |
+| **International proof** | ✅ UAE school, US students live | Often domestic or single region   |
+| **Setup time**     | Days to weeks                    | 6–8 weeks or more                 |
+| **Interactive labs** | ✅ 35+                          | Few or none                      |
+| **Gamified learning** | ✅ Challenge Arena             | Rare                              |
+| **Offline / PWA**  | ✅                              | Often no                          |
 
-### Competitive Advantages:
-1. **Only curriculum-agnostic, multi-tenant platform** - Architecture designed to support unlimited curriculum systems; Wisdom Warehouse deployment validates custom curriculum capability
-2. **Global scalability proven** - UAE international school + West African students on same codebase with zero conflicts
-3. **10x cheaper** than international white-label solutions ($299 vs $5,000/month)
-4. **Flexible curriculum system** - TypeScript type system supports curriculum metadata (curriculumId, examAlignment, region); security infrastructure designed for curriculum isolation; 4-week migration path to Firestore for dynamic content management
-5. **Engagement-first** design (Challenge Arena is unique IP)
-6. **Production-grade** technology stack (Next.js 16, Firebase, TypeScript)
+**Differentiators:**
+1. **Curriculum-agnostic, multi-tenant platform** — Built for “any curriculum, any brand”; Wisdom Warehouse (UAE, US students) proves it.
+2. **Multi-curriculum in production** — Not slides: country/curriculum configs, content filtering, same codebase for UAE and West Africa.
+3. **Global from day one** — Current paying partner is an international school in the UAE teaching US curriculum; Africa is one growth market.
+4. **10x more affordable** than many white-label EdTech solutions ($299 vs $5,000+/mo).
+5. **Engagement IP** — Challenge Arena and Large Screen games as retention and differentiation.
+6. **Fast new-market rollout** — New curriculum/country = config + content, not new product.
 
 ---
 
 ## Slide 8: Go-to-Market Strategy 🚀
 
-### Phase 1: Ghana Dominance (Q1-Q2 2026) - **IN PROGRESS**
-**Target:** 50 schools, 10,000 students
-- **Outreach**: Partnership with Ghana Education Service
-- **Demo Program**: Free 30-day trials for schools
-- **Success Stories**: Case studies from pilot schools
-- **Events**: Participate in EdTech conferences in Accra
+### Global First, Then Scale by Region
 
-### Phase 2: West Africa Expansion (Q3-Q4 2026)
-**Target:** Nigeria, Sierra Leone, Liberia, Gambia
-- **Localize** exam content (NECO for Nigeria, etc.)
-- **Partner** with educational ministries
-- **Regional sales teams** in each country
-- **500 schools, 100,000 students** by end of year
+**Phase 1: International schools & white-label (now – Q2 2026)** — **IN PROGRESS**
+- **Focus:** International and private schools (MENA, then Asia, then others) that need US/UK/IB or local curriculum + white-label.
+- **Proof:** Wisdom Warehouse (UAE, US students) as reference and case study.
+- **Actions:** Outbound to international school networks, EdTech events (global + regional), referral from existing partner.
+- **Target:** 10–20 schools, 3,000–5,000 students, $100K+ ARR.
 
-### Phase 3: International Growth (2027)
-**Target:** East Africa (Kenya, Uganda, Tanzania)
-- **New curriculum** systems (KCSE, UNEB, NECTA)
-- **Enterprise focus**: International schools across Africa
-- **Strategic partnerships**: EdTech accelerators, NGOs
-- **1,000 schools, 500,000 students**
+**Phase 2: Expand curricula and regions (Q3–Q4 2026)**
+- **US Common Core** — Content and config for K–12; sell to US-facing international schools and homeschool.
+- **West Africa** — Scale existing BECE/WASSCE footprint (Ghana, Nigeria, etc.); ministry and school partnerships.
+- **Target:** 50 schools, 25,000 students, $500K+ ARR.
 
-### Phase 4: Global Platform (2028+)
-- **South America, Southeast Asia** expansion
-- **Franchise model** for regional operators
-- **Marketplace** for educators to create content
-- **AI Teacher Assistant** powered by LLMs
+**Phase 3: Multi-region scale (2027)**
+- **UK / IB** — Content and config for UK and IB schools globally.
+- **East Africa, Southeast Asia** — Local curricula and partners.
+- **Target:** 150+ schools, 100,000+ students.
+
+**Phase 4: Platform & ecosystem (2028+)**
+- Marketplace or partner content, AI tutoring, more curricula and languages, franchise or regional operators.
+
+---
+
+## Slide 8b: Multi-Curriculum Mapping 🗺️
+
+### How One Platform Serves Many Curricula
+
+**Per-market configuration:**
+- **Exam systems** — e.g. US state standards, BECE/WASSCE, IB, A-Levels
+- **Academic structure** — Grade names, levels, durations (Primary 1–6, JHS/JSS, SHS/SSS, or K–12)
+- **Subject names and scope** — Same concept, different labels (e.g. Integrated Science vs Basic Science)
+- **Topic inclusion** — Excluded/additional/emphasized topics per curriculum
+- **Cultural context** — Currency, regions, examples (for localized word problems and contexts)
+
+**In the product:**
+- **Tenant** → which brand and which curriculum(s)
+- **Country/curriculum config** → exam system, structure, subject names, topic rules
+- **Content availability** → filter by tenant, level, subject, class, and curriculum
+- **Question bank** — Level/subject/class filtering today; same pattern for US/UK/IB content
+
+**Market this creates:**
+- **One codebase** for international schools (US, UK, IB), West African schools (BECE/WASSCE), and future regions.
+- **Same product, different content** — Add a curriculum without building a new product.
+- **Enterprise appeal** — UAE school gets US curriculum and full branding; Ghana school gets BECE/WASSCE; same platform.
 
 ---
 
 ## Slide 9: Roadmap 🗺️
 
-### V1 (Complete ✅) - February 2026
-- Challenge Arena (competitive learning)
-- Virtual Labs (15+ interactive experiments)
-- Multi-tenant architecture
-- White-label branding
-- JHS & SHS curriculum (Ghana)
+### V1 (Complete ✅) — February 2026
+- Multi-tenant white-label (2 live tenants)
+- Challenge Arena, Virtual Labs (35+)
+- Primary, JHS, SHS, Tech Academy
+- West African curriculum content; UAE tenant live with US-aligned experience
 
-### V2 (Q2 2026) - **IN DEVELOPMENT**
-- **Multi-curriculum foundation** - Complete Firestore migration for dynamic curriculum management (4-week sprint, $100K investment allocated)
-- **Curriculum selector UI** - Students/schools choose between curriculum tracks
-- **US Common Core content library** - 1,000+ questions aligned to US standards (K-12)
-- Advanced analytics dashboard for teachers/parents
-- Mobile apps (iOS, Android native)
-- Collaborative learning (study groups, peer matching)
-- AI-powered tutoring chatbot
-- Expanded past questions bank (10 years coverage)
+### V2 (Q2 2026) — **IN DEVELOPMENT**
+- **US Common Core** — Content and config for K–12; priority for international schools and US-facing partners
+- Firestore-backed curriculum management for faster rollout of new curricula
+- Curriculum selector and school-level config
+- Advanced analytics, mobile/PWA improvements, AI tutoring experiments
 
-### V3 (Q3-Q4 2026)
-- Live classes integration
-- Marketplace for verified educators
-- Parental controls and monitoring
-- Assessment creation tools for teachers
-- Integration with school management systems
+### V3 (Q3–Q4 2026)
+- UK / IB alignment; more international school features
+- Live classes, parent dashboards, teacher tools
+- Integrations (SIS, LMS where relevant)
 
 ### Beyond (2027+)
-- AI-generated personalized lesson plans
-- VR/AR science labs
-- Blockchain-based certificates
-- AI proctored exams
-- Global student exchange programs
+- More curricula and languages; marketplace or partner content
+- AI personalization, VR/AR labs, global expansion
 
 ---
 
@@ -261,22 +238,13 @@ Estimated 200 students → $599/month → **$7,188 ARR** from single school
 ### Core Team
 *[To be filled with actual team information]*
 
-**Technical Leadership:**
-- Experienced in scalable web applications
-- Firebase & Next.js expertise
-- Multi-tenant architecture specialists
-- EdTech domain knowledge
+**Technical leadership:** Scalable web apps, Firebase/Next.js, multi-tenant systems, EdTech experience.  
+**Advisory:** Educators and operators from UAE, West Africa, and other markets; EdTech founders and consultants.
 
-**Advisory Board:**
-- Educators from Ghana, Nigeria, UAE
-- EdTech founders (previous exits)
-- Ministry of Education consultants
-
-**Development Status:**
-- **750+ students** proving product-market fit
-- **2 live tenants** validating multi-tenancy
-- **6+ months** of production stability
-- **Active development** - weekly releases
+**Proof points:**
+- **2 live tenants** — flagship + UAE (US curriculum)
+- **750+ students**, 96% satisfaction
+- **Production stability** — ongoing weekly releases and improvements
 
 ---
 
@@ -284,107 +252,108 @@ Estimated 200 students → $599/month → **$7,188 ARR** from single school
 
 ### Seeking: $500,000 Seed Round
 
-**Use of Funds:**
+**Use of funds:**
 
-| Area | Amount | Purpose |
-|------|--------|---------|
-| **Product Development** | $200,000 | Mobile apps, AI features, V2 completion |
-| **Sales & Marketing** | $150,000 | School outreach, demo team, conferences |
-| **Content Creation** | $75,000 | Nigeria curriculum, new virtual labs |
-| **Operations** | $50,000 | Customer success, infrastructure scaling |
-| **Legal & Compliance** | $25,000 | Data privacy, contracts, IP protection |
+| Area                  | Amount    | Purpose |
+|-----------------------|-----------|---------|
+| **Product & content** | $200,000  | US Common Core content, curriculum tooling, V2 completion |
+| **Sales & marketing** | $150,000  | International school outreach, demos, global/regional events |
+| **Content & curriculum** | $75,000 | New curricula, virtual labs, localization |
+| **Operations**       | $50,000   | Customer success, infrastructure |
+| **Legal & compliance** | $25,000  | Privacy, contracts, IP |
 
-**Key Milestones (12-18 months):**
-1. **50 B2B schools** signed ($299-$799/month each)
-2. **25,000 active students** (B2C + B2B)
-3. **$500K ARR** achieved
-4. **Nigeria launch** completed (NECO curriculum)
-5. **Mobile apps** launched on iOS & Android
+**Milestones (12–18 months):**
+1. **50 B2B schools** ($299–$799/mo mix)
+2. **25,000 active students**
+3. **$500K+ ARR**
+4. **US Common Core** live for international schools; **West Africa** scaled (e.g. Nigeria)
+5. **Mobile/PWA** and engagement features strengthened
 
-**Projected Revenue (18 months):**
-- **B2B**: 50 schools × $500 avg/month × 18 = $450K
-- **B2C Premium**: 1,000 students × $2/month × 18 = $36K
-- **Enterprise Add-Ons**: $50K
-- **Total**: **~$536K ARR**
+**Projected revenue (18 months):**  
+B2B 50 schools × ~$500/mo × 18 ≈ $450K; B2C premium and add-ons ≈ $86K → **~$536K ARR**.
 
-**Break-even**: Month 14  
-**Series A readiness**: Month 18
+**Break-even:** ~Month 14  
+**Series A readiness:** Month 18 (traction, multi-curriculum, multi-region)
 
 ---
 
 ## Slide 12: Why Now? ⏰
 
-### Perfect Market Timing
+### Global EdTech Is Ready for One Platform, Many Curricula
 
-1. **COVID-19 Acceleration**: Education shifted online permanently
-2. **African Digital Growth**: 300M+ smartphones, 50% internet penetration
-3. **Exam Pressure**: Governments pushing for higher pass rates
-4. **Teacher Shortage**: Technology must bridge the gap
-5. **Investor Interest**: EdTech seeing record funding in Africa
+1. **Post-COVID norm** — Digital and hybrid learning are permanent; schools expect a real platform, not a patchwork.
+2. **International school growth** — 12,000+ international schools globally; demand for US/UK/IB-aligned, branded tools.
+3. **White-label demand** — Schools want *their* brand and *their* curriculum, not a generic app.
+4. **Cost sensitivity** — Premium solutions ($5K+/mo) exclude most schools; affordable white-label ($299–$799/mo) unlocks large segments.
+5. **Teacher and content gaps** — Technology that adapts and engages (e.g. Challenge Arena, labs) fills real gaps in many markets.
 
-### Market Size:
-- **Africa EdTech Market**: $4.6B (2025) → $10B (2030)
-- **West Africa**: ~200M students (potential TAM)
-- **International Schools**: 12,000+ schools in Africa
-- **Serviceable Market**: 5,000 schools × $600/mo = **$36M ARR opportunity**
+### Market size (global lens)
+- **Global EdTech:** ~$340B+ (2025), growing double-digit; K–12 digital learning is a major segment.
+- **International schools:** 12,000+ worldwide; 1,000+ in MENA; many teach US/UK/IB and need curriculum-aligned, white-label platforms.
+- **Serviceable opportunity:** 5,000+ schools × $600/mo ≈ **$36M ARR**; seed target: 50 schools → **$500K+ ARR**.
 
-### Why SmartClass24 Wins:
-✅ **First-mover** in curriculum-agnostic, multi-tenant EdTech  
-✅ **Proven technology** (2 live tenants, custom curriculum capability validated)  
-✅ **Global validation** (Africa + Middle East deployments with zero content leakage)  
-✅ **Affordable** for emerging markets ($299/mo vs $5,000/mo)  
-✅ **Scalable architecture** (curriculum infrastructure designed and partially implemented; add new curriculums in weeks post-migration)  
-✅ **Engaged users** (96% satisfaction across diverse markets)
+### Valuation context (seed)
+- **Pre-money:** EdTech seed typically $2M–$6M (product + early traction).
+- **Post-$500K:** Target 15–25% dilution; runway to 50 schools, $500K ARR, US curriculum live.
+- **Series A:** $500K+ ARR, 25K+ students, 2+ curricula/regions; typical pre-money $8M–$15M.
+- **Value drivers:** Multi-tenant + multi-curriculum (defensibility), live UAE/US proof, 2 tenants, 11,500+ questions, 35+ labs.
+
+### Why SmartClass24 wins
+- **Global from day one** — Paying partner is UAE school teaching US students; we are not “Africa-only going global.”
+- **Only curriculum-agnostic, multi-tenant white-label** at this price and setup speed.
+- **Proven tech** — 2 live tenants, zero content leakage, same codebase for different curricula.
+- **Affordable** — $299–$799/mo vs $5,000+/mo for many white-label alternatives.
+- **Scalable** — New curriculum = config + content; architecture supports US, UK, IB, West Africa, and more.
 
 ---
 
 ## Slide 13: Contact & Next Steps 📧
 
-### Let's Transform Education Together
+### Let’s Talk
 
-**Demo:** Visit [smartclass24.com](https://www.smartclass24.com)  
-**Wisdom Warehouse Example:** [smartclass24.com/?tenant=wisdomwarehouse](https://www.smartclass24.com/?tenant=wisdomwarehouse)
+**Live demo:** [smartclass24.com](https://www.smartclass24.com)  
+**White-label example (UAE, US curriculum):** [smartclass24.com/?tenant=wisdomwarehouse](https://www.smartclass24.com/?tenant=wisdomwarehouse)
 
-**For Schools:**
-- Free 30-day trial
-- Custom demo with your branding (tenant-based URL)
-- Dedicated onboarding support
-- Custom domain mapping available (enterprise tier)
+**For schools:**
+- Free trial and custom demo (your branding, your URL)
+- Onboarding and, where needed, custom domain (enterprise)
 
-**For Investors:**
-- Detailed financials & projections
-- Technical deep-dive
-- Customer interviews & testimonials
-- Product roadmap walkthrough
+**For investors:**
+- Full deck, financials, roadmap
+- Technical and product walkthrough
+- Customer call (e.g. Wisdom Warehouse)
 
-**Contact:**
-- Email: hello@smartclass24.com
-- WhatsApp: +233 24 443 2795
+**Contact:**  
+- Email: hello@smartclass24.com  
+- WhatsApp: +233 24 443 2795  
 - LinkedIn: [SmartClass24](#)
 
 ---
 
 ## Appendix: FAQs 🤔
 
-**Q: What prevents competitors from copying your model?**  
-A: Multi-tenant architecture is complex to build correctly. We have 6+ months head start, proven reliability (Wisdom Warehouse), and deep curriculum knowledge. Additionally, our Challenge Arena engagement model is unique IP.
+**Q: Are you an African product trying to go global?**  
+No. We are a **global platform** that supports multiple curricula and brands. Our first white-label partner is in the **UAE and teaches US students**. We also serve West African curricula (BECE/WASSCE) from the same codebase. Africa is one important market, not the only one.
+
+**Q: What stops competitors from copying you?**  
+Multi-tenant, multi-curriculum architecture is hard to build and operate. We have production proof (2 tenants, UAE + flagship), clear isolation and security, and engagement IP (Challenge Arena). Content and curriculum tooling compound over time.
 
 **Q: How do you ensure content quality?**  
-A: All questions reviewed by certified teachers, aligned with official syllabi, tested with 750+ students. Continuous feedback loop improves content.
+Content is aligned to official syllabi and standards; reviewed by qualified educators; tested with real students. We iterate with feedback and quality checks per curriculum.
 
-**Q: What happens if a school cancels?**  
-A: Churn mitigation: 30-day notice, data export, annual contracts (discount incentive), dedicated success managers.
+**Q: What if a school churns?**  
+We mitigate with contracts, data export, success support, and product stickiness (engagement, progress data). Unit economics (LTV:CAC) assume some churn and still work.
 
-**Q: Can you scale beyond Africa?**  
-A: Yes! Our 3-layer architecture (Tenant → Curriculum → Localization) is explicitly designed for global scalability. Wisdom Warehouse (UAE) validates this with custom curriculum deployment separate from West African content. The platform is curriculum-agnostic by design - we've already built the type system with curriculum metadata fields, security rules with curriculum isolation helpers, and Firestore schema for dynamic content management. V2 completes the 4-week Firestore migration ($100K allocated from seed round), enabling us to add US Common Core, UK National, and IB in weeks rather than months. Next targets: Southeast Asia (IGCSE schools), Latin America (IB schools), North America (homeschool market).
+**Q: Can you scale to more curricula (e.g. UK, IB)?**  
+Yes. The product is curriculum-agnostic. We add a new curriculum via configuration and content (and, where needed, Firestore-backed content). Wisdom Warehouse already proves a non–West African curriculum (US-aligned) on the same codebase.
 
-**Q: What's your customer acquisition strategy?**  
-A: Direct outreach to headmasters, EdTech conferences, Ministry partnerships, referral program (schools get commission), content marketing (SEO for "Ghana BECE prep", etc.).
+**Q: How do you acquire customers?**  
+International school networks, EdTech events (global and regional), referrals from existing partners (e.g. Wisdom Warehouse), outbound to school leaders and groups. West Africa: ministry and school partnerships, local events.
 
-**Q: How do you handle data privacy?**  
-A: GDPR-compliant architecture, anonymized data by default, tenant data isolation (Firestore rules), regular security audits, parent consent for minors.
+**Q: How do you handle data and privacy?**  
+Tenant data isolation (Firestore rules and app logic), anonymization where appropriate, compliance with applicable regulations (e.g. GDPR), and parent consent for minors where required.
 
 ---
 
-**Thank you!** 🚀  
-*Empowering the next generation of African innovators.*
+**Thank you.**  
+*One platform. Any curriculum. Any market.*
