@@ -138,6 +138,22 @@ export default function Header() {
         </Link>
         
         <div className="ml-auto flex items-center gap-1 sm:gap-2 relative z-10" suppressHydrationWarning>
+          {/* Mobile: Install icon in header when one-click install is available */}
+          <div className="md:hidden flex items-center gap-1">
+            {pwaInstall?.canShowInstall && pwaInstall?.deferredPrompt && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); pwaInstall.triggerInstall(); }}
+                className="shrink-0 p-2 text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 hover:bg-violet-500/10"
+                title={`Install ${branding.name}`}
+                aria-label={`Install ${branding.name}`}
+              >
+                <Download className="h-5 w-5" />
+              </Button>
+            )}
+          </div>
           {/* Mobile Hamburger Menu */}
           <div className="md:hidden flex items-center gap-1">
             {tenantId === 'smartclass24' && <WhatsAppHeaderButton isMobile={true} />}
