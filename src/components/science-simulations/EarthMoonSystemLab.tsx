@@ -19,8 +19,9 @@ import { TeacherVoice } from '@/components/virtual-labs/TeacherVoice';
 type BodyId = 'sun' | 'earth' | 'moon';
 
 // Intro used only on first load so the teacher properly introduces the lab.
+// Slightly wordy on purpose so we can easily confirm in production.
 const INTRO_MESSAGE =
-  'Welcome to the Moon Phases & Eclipses lab. Here we will see how the Moon orbits Earth, why its shape seems to change, and how this geometry can also create eclipses.';
+  'Welcome to the Moon Phases & Eclipses lab. In this activity we will explore how the Moon orbits Earth, why its shape seems to change over a month, and how this same geometry can also create eclipses.';
 
 // Varied lead-ins so the teacher doesn't repeat the same phrase every phase.
 const PHASE_LEAD_INS: string[] = [
