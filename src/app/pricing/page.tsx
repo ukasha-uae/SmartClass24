@@ -9,25 +9,64 @@ import { useRouter } from 'next/navigation';
 import { useFirebase } from '@/firebase/provider';
 import { isPremiumUser, hasVirtualLabAccess, hasFullBundle } from '@/lib/monetization';
 import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
-import { formatGHS } from '@/lib/payments';
 import { virtualLabExperiments } from '@/lib/virtual-labs-data';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
+import { useLocalization } from '@/hooks/useLocalization';
+import {
+  defaultAdminPricingConfig,
+  getEffectiveUsdBasePrice,
+  getDiscountedUsdPrice,
+  loadAdminPricingConfig,
+  type ConcretePricingCategory,
+} from '@/lib/pricing/admin-pricing-config';
+
+const WAEC5_COUNTRY_IDS = new Set(['ghana', 'nigeria', 'sierra-leone', 'liberia', 'gambia']);
 
 export default function PricingPage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
   const { tenantId } = useTenant();
+  const { country, formatCurrency } = useLocalization();
   const { user } = useFirebase();
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'annual'>('monthly');
+  const [pricingConfig, setPricingConfig] = useState(defaultAdminPricingConfig);
+  const [liveRates, setLiveRates] = useState<Record<string, number> | null>(null);
 
   useEffect(() => {
     if (tenantId === 'wisdomwarehouse') {
       router.replace('/');
     }
   }, [tenantId, router]);
+
+  useEffect(() => {
+    let mounted = true;
+    // Public pricing should not require Firestore read permissions.
+    // Use local/default config; admin dashboard handles Firestore sync.
+    loadAdminPricingConfig().then((cfg) => {
+      if (mounted) setPricingConfig(cfg);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/exchange-rates')
+      .then((res) => res.json())
+      .then((data: { rates?: Record<string, number> }) => {
+        if (mounted && data?.rates) setLiveRates(data.rates);
+      })
+      .catch(() => {
+        // Keep admin-config fallback rates if live fetch fails.
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   if (tenantId === 'wisdomwarehouse') {
     return null;
@@ -37,6 +76,7 @@ export default function PricingPage() {
   const isPremium = isPremiumUser(userId);
   const hasVirtualLab = hasVirtualLabAccess(userId);
   const hasBundle = hasFullBundle(userId);
+  const isWaec5Country = !!country?.id && WAEC5_COUNTRY_IDS.has(country.id);
 
   const features = {
     free: [
@@ -46,7 +86,7 @@ export default function PricingPage() {
       { name: 'Quick Match', included: true },
       { name: 'Boss Battle', included: true },
       { name: 'Tournaments', included: true },
-      { name: 'School vs School', included: true },
+      { name: 'School vs School', included: false, note: 'Coming soon' },
       { name: 'Basic Progress Tracking', included: true },
       { name: 'Daily Challenge (1 per day)', included: true },
       { name: 'Basic Leaderboards', included: true },
@@ -69,7 +109,7 @@ export default function PricingPage() {
       { name: 'Quick Match', included: true },
       { name: 'Boss Battle', included: true },
       { name: 'Tournaments', included: true },
-      { name: 'School vs School', included: true },
+      { name: 'School vs School', included: false, note: 'Coming soon' },
       { name: 'Advanced Analytics Dashboard', included: true, highlight: true },
       { name: 'Performance by Subject', included: true },
       { name: 'Weak Areas Identification', included: true },
@@ -86,45 +126,120 @@ export default function PricingPage() {
   const plans = {
     challengeArena: {
       monthly: {
-        price: 15,
+        price: pricingConfig.baseUsd.challengeArenaMonthly,
         period: 'month',
         savings: null,
       },
       annual: {
-        price: 120,
+        price: pricingConfig.baseUsd.challengeArenaAnnual,
         period: 'year',
         savings: 'Save 33%',
-        originalPrice: 180,
+        originalPrice: pricingConfig.baseUsd.challengeArenaMonthly * 12,
       },
     },
     virtualLab: {
       monthly: {
-        price: 10,
+        price: pricingConfig.baseUsd.virtualLabMonthly,
         period: 'month',
         savings: null,
       },
       annual: {
-        price: 80,
+        price: pricingConfig.baseUsd.virtualLabAnnual,
         period: 'year',
         savings: 'Save 33%',
-        originalPrice: 120,
+        originalPrice: pricingConfig.baseUsd.virtualLabMonthly * 12,
       },
     },
     fullBundle: {
       monthly: {
-        price: 20,
+        price: pricingConfig.baseUsd.fullBundleMonthly,
         period: 'month',
         savings: 'Save 20%',
-        originalPrice: 25, // 15 + 10
+        originalPrice:
+          pricingConfig.baseUsd.challengeArenaMonthly + pricingConfig.baseUsd.virtualLabMonthly,
       },
       annual: {
-        price: 160,
+        price: pricingConfig.baseUsd.fullBundleAnnual,
         period: 'year',
         savings: 'Save 33%',
-        originalPrice: 240, // 120 + 120
+        originalPrice:
+          pricingConfig.baseUsd.challengeArenaAnnual + pricingConfig.baseUsd.virtualLabAnnual,
       },
     },
   };
+
+  const getDiscountedForDisplay = (usdAmount: number, category: ConcretePricingCategory) => {
+    const effectiveUsd = getEffectiveUsdBasePrice(
+      usdAmount,
+      category,
+      pricingConfig,
+      country?.id ?? null
+    );
+    const discounted = getDiscountedUsdPrice(
+      effectiveUsd,
+      category,
+      pricingConfig,
+      country?.id ?? null
+    );
+    return discounted;
+  };
+
+  const toDisplayAmount = (usdAmount: number) => {
+    if (!country) return usdAmount;
+    const code = country.currency.code.toUpperCase();
+    // Admin-configured rate has priority so dashboard changes reflect immediately.
+    const rate = pricingConfig.usdToLocalRates[code] ?? liveRates?.[code] ?? 1;
+    return Math.round(usdAmount * rate);
+  };
+
+  const formatPlanPrice = (usdAmount: number) => {
+    return formatCurrency(toDisplayAmount(usdAmount));
+  };
+
+  const formatPlanPriceWithDiscount = (usdAmount: number, category: ConcretePricingCategory) => {
+    const effectiveUsd = getEffectiveUsdBasePrice(
+      usdAmount,
+      category,
+      pricingConfig,
+      country?.id ?? null
+    );
+    const discounted = getDiscountedForDisplay(usdAmount, category);
+    return {
+      formatted: formatPlanPrice(discounted.amount),
+      originalFormatted: formatPlanPrice(effectiveUsd),
+      appliedDiscount: discounted.appliedDiscount,
+      hasDiscount: discounted.amount < effectiveUsd,
+    };
+  };
+
+  const currencyBadgeLabel = country
+    ? `${country.name} (${country.currency.code})`
+    : 'Global (USD)';
+
+  const challengeDisplay = formatPlanPriceWithDiscount(
+    plans.challengeArena[selectedPlan].price,
+    'challengeArena'
+  );
+  const virtualLabDisplay = formatPlanPriceWithDiscount(
+    plans.virtualLab[selectedPlan].price,
+    'virtualLab'
+  );
+  const fullBundleDisplay = formatPlanPriceWithDiscount(
+    plans.fullBundle[selectedPlan].price,
+    'fullBundle'
+  );
+  const institutionStarterDisplay = formatPlanPriceWithDiscount(
+    pricingConfig.baseUsd.institutionStarterMonthly,
+    'institutionStarter'
+  );
+  const institutionGrowthDisplay = formatPlanPriceWithDiscount(
+    pricingConfig.baseUsd.institutionGrowthMonthly,
+    'institutionGrowth'
+  );
+  const institutionEnterpriseDisplay = formatPlanPriceWithDiscount(
+    pricingConfig.baseUsd.institutionEnterpriseMonthly,
+    'institutionEnterprise'
+  );
 
   const handleUpgrade = (plan: 'monthly' | 'annual', subscriptionType: 'challengeArena' | 'virtualLab' | 'fullBundle' = 'challengeArena') => {
     if (!user) {
@@ -152,7 +267,7 @@ export default function PricingPage() {
               Simple, Transparent Pricing
             </Badge>
             <Badge variant="outline" className="border-blue-300/60 dark:border-blue-700/60">
-              Ghana (GHS)
+              {currencyBadgeLabel}
             </Badge>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
@@ -162,12 +277,48 @@ export default function PricingPage() {
             Start free, upgrade when you're ready for serious exam preparation. 
             All features accessible, premium unlocks unlimited questions, all virtual labs, and advanced analytics.
           </p>
-          <p className="text-sm text-muted-foreground mb-6">
-            Need international pricing (USD)?{' '}
-            <Link className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline" href={addTenantParam('/pricing/global')}>
-              View Global Pricing
-            </Link>
+          <p className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2">
+            {isWaec5Country
+              ? 'K-12 pricing only (Primary, JHS/JSS, SHS/SSS).'
+              : 'K-12 pricing only (Primary, Middle School, High School).'}
           </p>
+          <p className="text-xs text-muted-foreground mb-6">
+            Innovation Academy pricing is separate and will be published when the Academy launches.
+          </p>
+          <p className="text-sm text-muted-foreground mb-6">
+            {country ? (
+              <>
+                Need global USD pricing?{' '}
+                <Link className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline" href={addTenantParam('/pricing/global')}>
+                  View Global Pricing
+                </Link>
+              </>
+            ) : (
+              <>Prices are shown in USD for global users.</>
+            )}
+          </p>
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const el = document.getElementById('student-plans');
+                el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              Student Pricing
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const el = document.getElementById('institution-pricing');
+                el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            >
+              Institution Pricing
+            </Button>
+          </div>
           <Link href="/redeem-codes">
             <Button 
               variant="outline" 
@@ -210,7 +361,7 @@ export default function PricingPage() {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div id="student-plans" className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 scroll-mt-24">
           {/* Free Plan */}
           <Card className="relative border-2">
             <CardHeader>
@@ -219,7 +370,7 @@ export default function PricingPage() {
                 <Badge variant="outline">Perfect to Start</Badge>
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold">GHS 0</span>
+                <span className="text-4xl font-bold">{formatPlanPrice(0)}</span>
                 <span className="text-muted-foreground">/forever</span>
               </div>
               <CardDescription className="mt-2">
@@ -280,12 +431,17 @@ export default function PricingPage() {
                 )}
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold">GHS {plans.challengeArena[selectedPlan].price}</span>
+                <span className="text-4xl font-bold">{challengeDisplay.formatted}</span>
                 <span className="text-muted-foreground">/{plans.challengeArena[selectedPlan].period}</span>
               </div>
+              {challengeDisplay.hasDiscount && (
+                <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                  Promo: {challengeDisplay.appliedDiscount?.name}
+                </div>
+              )}
               {selectedPlan === 'annual' && (
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-sm text-muted-foreground line-through">GHS {plans.challengeArena.annual.originalPrice}</span>
+                  <span className="text-sm text-muted-foreground line-through">{formatPlanPrice(plans.challengeArena.annual.originalPrice)}</span>
                   <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                     {plans.challengeArena.annual.savings}
                   </Badge>
@@ -317,11 +473,20 @@ export default function PricingPage() {
               <div className="space-y-3 pt-4 border-t">
                 {features.premium.map((feature, idx) => (
                   <div key={idx} className="flex items-start gap-3">
-                    <Check className={`h-5 w-5 shrink-0 mt-0.5 ${feature.highlight ? 'text-blue-500' : 'text-green-500'}`} />
+                    {feature.included ? (
+                      <Check className={`h-5 w-5 shrink-0 mt-0.5 ${feature.highlight ? 'text-blue-500' : 'text-green-500'}`} />
+                    ) : (
+                      <X className="h-5 w-5 text-gray-400 shrink-0 mt-0.5" />
+                    )}
                     <div className="flex-1">
-                      <span className={feature.highlight ? 'font-semibold text-blue-600 dark:text-blue-400' : ''}>
+                      <span className={`${!feature.included ? 'text-muted-foreground line-through' : ''} ${feature.highlight ? 'font-semibold text-blue-600 dark:text-blue-400' : ''}`}>
                         {feature.name}
                       </span>
+                      {feature.note && (
+                        <span className="text-xs text-yellow-600 dark:text-yellow-400 ml-2">
+                          ({feature.note})
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -349,12 +514,17 @@ export default function PricingPage() {
                 )}
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold">GHS {plans.virtualLab[selectedPlan].price}</span>
+                <span className="text-4xl font-bold">{virtualLabDisplay.formatted}</span>
                 <span className="text-muted-foreground">/{plans.virtualLab[selectedPlan].period}</span>
               </div>
+              {virtualLabDisplay.hasDiscount && (
+                <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                  Promo: {virtualLabDisplay.appliedDiscount?.name}
+                </div>
+              )}
               {selectedPlan === 'annual' && (
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-sm text-muted-foreground line-through">GHS {plans.virtualLab.annual.originalPrice}</span>
+                  <span className="text-sm text-muted-foreground line-through">{formatPlanPrice(plans.virtualLab.annual.originalPrice)}</span>
                   <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                     {plans.virtualLab.annual.savings}
                   </Badge>
@@ -435,11 +605,16 @@ export default function PricingPage() {
                 )}
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold">GHS {plans.fullBundle[selectedPlan].price}</span>
+                <span className="text-4xl font-bold">{fullBundleDisplay.formatted}</span>
                 <span className="text-muted-foreground">/{plans.fullBundle[selectedPlan].period}</span>
               </div>
+              {fullBundleDisplay.hasDiscount && (
+                <div className="text-xs text-green-600 dark:text-green-400 font-semibold">
+                  Promo: {fullBundleDisplay.appliedDiscount?.name}
+                </div>
+              )}
               <div className="flex items-center gap-2 mt-1">
-                <span className="text-sm text-muted-foreground line-through">GHS {plans.fullBundle[selectedPlan].originalPrice}</span>
+                <span className="text-sm text-muted-foreground line-through">{formatPlanPrice(plans.fullBundle[selectedPlan].originalPrice)}</span>
                 <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                   {plans.fullBundle[selectedPlan].savings}
                 </Badge>
@@ -496,6 +671,57 @@ export default function PricingPage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Institution pricing */}
+        <Card id="institution-pricing" className="mb-12 scroll-mt-24 border-2 border-emerald-300/60 dark:border-emerald-700/60 bg-gradient-to-br from-emerald-50/60 via-teal-50/60 to-cyan-50/60 dark:from-emerald-950/20 dark:via-teal-950/20 dark:to-cyan-950/20">
+          <CardHeader>
+            <CardTitle className="text-2xl flex items-center gap-2">
+              <Users className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+              Institution Plans (Schools & Organizations)
+            </CardTitle>
+            <CardDescription>
+              Institution pricing is separate from student plans: one-time onboarding + monthly subscription based on active student count.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              <span className="font-semibold">Onboarding:</span> from $4,000 one-time. After onboarding, all plans include full platform features; only active student count and support level differ.
+            </p>
+            <div className="grid md:grid-cols-3 gap-3 text-sm">
+              <div className="rounded-lg border bg-background/70 p-3">
+                <p className="font-semibold mb-1">Starter School</p>
+                <p className="text-base font-bold text-emerald-700 dark:text-emerald-300">
+                  from {institutionStarterDisplay.formatted}/month
+                </p>
+                <p className="text-muted-foreground">Up to 300 active students.</p>
+              </div>
+              <div className="rounded-lg border bg-background/70 p-3">
+                <p className="font-semibold mb-1">Growth Institution</p>
+                <p className="text-base font-bold text-emerald-700 dark:text-emerald-300">
+                  from {institutionGrowthDisplay.formatted}/month
+                </p>
+                <p className="text-muted-foreground">301-1,000 active students.</p>
+              </div>
+              <div className="rounded-lg border bg-background/70 p-3">
+                <p className="font-semibold mb-1">Enterprise</p>
+                <p className="text-base font-bold text-emerald-700 dark:text-emerald-300">
+                  from {institutionEnterpriseDisplay.formatted}/month
+                </p>
+                <p className="text-muted-foreground">1,001+ active students.</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Link href={addTenantParam('/partners')}>
+                <Button className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white">
+                  View Institution Options
+                </Button>
+              </Link>
+              <Link href={addTenantParam('/contact?interest=institution-pricing')}>
+                <Button variant="outline">Request Institution Quote</Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* How It Works Section */}
         <Card className="mb-12 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30 border-indigo-200 dark:border-indigo-800">

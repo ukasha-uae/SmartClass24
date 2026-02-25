@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,20 +8,117 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Check, Building2, ArrowRight, Sparkles, Globe, Shield, BarChart3 } from 'lucide-react';
 import { useTenant } from '@/hooks/useTenant';
 import { useTenantLink } from '@/hooks/useTenantLink';
-import { useLocalization } from '@/hooks/useLocalization';
+import {
+  defaultAdminPricingConfig,
+  getEffectiveUsdBasePrice,
+  getDiscountedUsdPrice,
+  loadAdminPricingConfig,
+} from '@/lib/pricing/admin-pricing-config';
 
 export default function GlobalPricingPage() {
   const addTenantParam = useTenantLink();
   const { tenantId, branding } = useTenant();
-  const { formatCurrency } = useLocalization();
+  const [pricingConfig, setPricingConfig] = useState(defaultAdminPricingConfig);
+
+  // Global pricing is always in USD; do not localize the numeric amount to GHS/NGN.
+  const formatUsd = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  useEffect(() => {
+    let mounted = true;
+    // Public global pricing should not depend on Firestore read permissions.
+    loadAdminPricingConfig().then((cfg) => {
+      if (mounted) setPricingConfig(cfg);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const premiumStudentBase = getEffectiveUsdBasePrice(
+    pricingConfig.baseUsd.premiumStudentMonthly,
+    'premiumStudent',
+    pricingConfig,
+    'global'
+  );
+  const premiumStudent = getDiscountedUsdPrice(
+    premiumStudentBase,
+    'premiumStudent',
+    pricingConfig,
+    'global'
+  );
+  const premiumPlusBase = getEffectiveUsdBasePrice(
+    pricingConfig.baseUsd.premiumPlusMonthly,
+    'premiumPlus',
+    pricingConfig,
+    'global'
+  );
+  const premiumPlus = getDiscountedUsdPrice(
+    premiumPlusBase,
+    'premiumPlus',
+    pricingConfig,
+    'global'
+  );
+  const institutionStarterBase = getEffectiveUsdBasePrice(
+    pricingConfig.baseUsd.institutionStarterMonthly,
+    'institutionStarter',
+    pricingConfig,
+    'global'
+  );
+  const institutionStarter = getDiscountedUsdPrice(
+    institutionStarterBase,
+    'institutionStarter',
+    pricingConfig,
+    'global'
+  );
+  const institutionGrowthBase = getEffectiveUsdBasePrice(
+    pricingConfig.baseUsd.institutionGrowthMonthly,
+    'institutionGrowth',
+    pricingConfig,
+    'global'
+  );
+  const institutionGrowth = getDiscountedUsdPrice(
+    institutionGrowthBase,
+    'institutionGrowth',
+    pricingConfig,
+    'global'
+  );
+  const institutionEnterpriseBase = getEffectiveUsdBasePrice(
+    pricingConfig.baseUsd.institutionEnterpriseMonthly,
+    'institutionEnterprise',
+    pricingConfig,
+    'global'
+  );
+  const institutionEnterprise = getDiscountedUsdPrice(
+    institutionEnterpriseBase,
+    'institutionEnterprise',
+    pricingConfig,
+    'global'
+  );
 
   // Wisdom Warehouse is B2B-only and uses custom pricing
   if (tenantId === 'wisdomwarehouse') return null;
 
-  const studentPlans = [
+  type StudentPlan = {
+    name: string;
+    price: string;
+    period: 'forever' | 'month';
+    highlight: boolean;
+    badge?: string;
+    promo?: string;
+    features: string[];
+    cta: { label: string; href: string };
+  };
+
+  const studentPlans: StudentPlan[] = [
     {
       name: 'Free',
-      price: formatCurrency(0),
+      price: formatUsd(0),
       period: 'forever',
       highlight: false,
       features: ['Arena Challenge', 'Virtual Labs (starter set)', 'Progress tracking basics', 'Community leaderboards'],
@@ -28,22 +126,24 @@ export default function GlobalPricingPage() {
     },
     {
       name: 'Premium Student',
-      price: formatCurrency(5),
+      price: formatUsd(premiumStudent.amount),
       period: 'month',
       highlight: true,
       badge: 'Most Popular',
+      promo: premiumStudent.appliedDiscount?.name,
       features: ['Unlimited question bank', 'All virtual labs', 'Advanced analytics', 'More daily challenges'],
       cta: { label: 'Join Premium', href: addTenantParam('/contact?interest=premium') },
     },
     {
       name: 'Premium Plus',
-      price: formatCurrency(10),
+      price: formatUsd(premiumPlus.amount),
       period: 'month',
       highlight: false,
+      promo: premiumPlus.appliedDiscount?.name,
       features: ['Everything in Premium', 'Priority matchmaking', '2x rewards', 'Early access to new arenas'],
       cta: { label: 'Contact Us', href: addTenantParam('/contact?interest=premium-plus') },
     },
-  ] as const;
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-violet-950/30 dark:to-indigo-950/30">
@@ -63,6 +163,12 @@ export default function GlobalPricingPage() {
           </h1>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Built for global learning: multi-curriculum support, curriculum mapping, 3D arena challenges, and hands-on virtual labs.
+          </p>
+          <p className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mt-3">
+            K-12 pricing only (Primary, Middle School, High School).
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Innovation Academy has a separate pricing model and is currently under construction.
           </p>
           <p className="text-sm text-muted-foreground mt-3">
             Looking for Ghana student pricing in GHS? Visit{' '}
@@ -95,6 +201,11 @@ export default function GlobalPricingPage() {
                   <span className="text-4xl font-black">{plan.price}</span>
                   <span className="text-muted-foreground">/{plan.period}</span>
                 </div>
+                {plan.promo && (
+                  <p className="mt-1 text-xs font-semibold text-green-600 dark:text-green-400">
+                    Promo: {plan.promo}
+                  </p>
+                )}
                 <CardDescription className="mt-2">
                   {plan.name === 'Free'
                     ? 'Great for exploring the platform.'
@@ -135,6 +246,12 @@ export default function GlobalPricingPage() {
             <p className="text-muted-foreground max-w-3xl mx-auto">
               White-label your platform, use your custom domain, and map one content base to multiple curricula (Ghana WASSCE, US Common Core, UK GCSE).
             </p>
+            <p className="text-sm text-muted-foreground mt-3">
+              Typical structure: <span className="font-semibold">one-time onboarding from $4,000</span> + monthly subscription based on active student count.
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              All institution tiers include full platform features; only student volume and support level differ.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -142,12 +259,12 @@ export default function GlobalPricingPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                  White-label
+                  Starter
                 </CardTitle>
-                <CardDescription>Branding + domain + tenant controls</CardDescription>
+                <CardDescription>From {formatUsd(institutionStarter.amount)}/month • Up to 300 active students</CardDescription>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
-                Logo, colors, custom domain, and content transformation rules per school.
+                Includes full platform features after onboarding; ideal for smaller institutions.
               </CardContent>
             </Card>
 
@@ -155,12 +272,12 @@ export default function GlobalPricingPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
-                  Multi-curriculum
+                  Growth
                 </CardTitle>
-                <CardDescription>Curriculum mapping (MVP live)</CardDescription>
+                <CardDescription>From {formatUsd(institutionGrowth.amount)}/month • 301–1,000 active students</CardDescription>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
-                Align topics across curricula without rewriting your entire content base.
+                Same full feature set, with higher volume support for growing institutions.
               </CardContent>
             </Card>
 
@@ -168,12 +285,12 @@ export default function GlobalPricingPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Shield className="h-5 w-5 text-slate-700 dark:text-slate-300" />
-                  Security & analytics
+                  Enterprise
                 </CardTitle>
-                <CardDescription>Data isolation and visibility</CardDescription>
+                <CardDescription>From {formatUsd(institutionEnterprise.amount)}/month • 1,001+ active students</CardDescription>
               </CardHeader>
               <CardContent className="text-sm text-muted-foreground">
-                Separate tenants, progress tracking, and performance insights for leadership.
+                Full platform at large scale, with enterprise operations and governance support.
               </CardContent>
             </Card>
           </div>
