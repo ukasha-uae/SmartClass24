@@ -26,8 +26,16 @@ export default function Footer() {
   
   // Use localized values directly from context (client-side only)
   // Fix hydration by deferring client-only values to mounted state
-  const phoneNumber = mounted && hasLocalization && country?.supportPhone ? country.supportPhone : '+970589549030';
-  const location = mounted && hasLocalization && country?.capital && country?.name ? `${country.capital}, ${country.name}` : branding.name;
+  const phoneNumber = mounted
+    ? (tenantId === 'wisdomwarehouse'
+        ? '+971 54 306 8648'
+        : (hasLocalization && country?.supportPhone ? country.supportPhone : '+970589549030'))
+    : '+970589549030';
+  const location = mounted
+    ? (tenantId === 'wisdomwarehouse'
+        ? 'Alserkal Avenue, Warehouse 49A, Al Quoz 1, Dubai, UAE'
+        : (hasLocalization && country?.capital && country?.name ? `${country.capital}, ${country.name}` : branding.name))
+    : branding.name;
   
   // Ensure client-side mounting for hydration
   useEffect(() => {
@@ -266,8 +274,8 @@ export default function Footer() {
                 <div className="p-2 bg-gradient-to-br from-violet-100 to-indigo-100 dark:from-violet-900/30 dark:to-indigo-900/30 rounded-lg">
                   <Mail className="h-4 w-4 text-violet-600 dark:text-violet-400" />
                 </div>
-                <a href="mailto:support@smartclass24.com" className="text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors font-medium">
-                  support@smartclass24.com
+                <a href={`mailto:${branding.supportEmail}`} className="text-slate-700 dark:text-slate-300 hover:text-violet-600 dark:hover:text-violet-400 transition-colors font-medium">
+                  {branding.supportEmail}
                 </a>
               </div>
               {mounted && (
