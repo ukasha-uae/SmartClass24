@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Building2, ArrowRight, Sparkles, Globe, Shield, BarChart3 } from 'lucide-react';
+import { Check, X, Building2, ArrowRight, Sparkles, Globe, Shield, BarChart3 } from 'lucide-react';
 import { useTenant } from '@/hooks/useTenant';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import {
@@ -111,7 +111,7 @@ export default function GlobalPricingPage() {
     highlight: boolean;
     badge?: string;
     promo?: string;
-    features: string[];
+    features: Array<{ label: string; included: boolean; note?: string }>;
     cta: { label: string; href: string };
   };
 
@@ -121,7 +121,12 @@ export default function GlobalPricingPage() {
       price: formatUsd(0),
       period: 'forever',
       highlight: false,
-      features: ['Arena Challenge', 'Virtual Labs (starter set)', 'Progress tracking basics', 'Community leaderboards'],
+      features: [
+        { label: 'Arena Challenge', included: true },
+        { label: 'Virtual Labs (starter set)', included: true },
+        { label: 'Progress tracking basics', included: true },
+        { label: 'Community leaderboards', included: true },
+      ],
       cta: { label: 'Start Free', href: addTenantParam('/') },
     },
     {
@@ -131,7 +136,12 @@ export default function GlobalPricingPage() {
       highlight: true,
       badge: 'Most Popular',
       promo: premiumStudent.appliedDiscount?.name,
-      features: ['Unlimited question bank', 'All virtual labs', 'Advanced analytics', 'More daily challenges'],
+      features: [
+        { label: 'Unlimited question bank', included: true },
+        { label: 'All virtual labs', included: true },
+        { label: 'Advanced analytics', included: true },
+        { label: 'More daily challenges', included: false, note: 'Coming soon' },
+      ],
       cta: { label: 'Join Premium', href: addTenantParam('/contact?interest=premium') },
     },
     {
@@ -140,7 +150,12 @@ export default function GlobalPricingPage() {
       period: 'month',
       highlight: false,
       promo: premiumPlus.appliedDiscount?.name,
-      features: ['Everything in Premium', 'Priority matchmaking', '2x rewards', 'Early access to new arenas'],
+      features: [
+        { label: 'Everything in Premium', included: true },
+        { label: 'Priority matchmaking', included: false, note: 'Coming soon' },
+        { label: '2x rewards', included: false, note: 'Coming soon' },
+        { label: 'Early access to new arenas', included: false, note: 'Coming soon' },
+      ],
       cta: { label: 'Contact Us', href: addTenantParam('/contact?interest=premium-plus') },
     },
   ];
@@ -216,10 +231,21 @@ export default function GlobalPricingPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  {plan.features.map((f) => (
-                    <div key={f} className="flex items-start gap-2 text-sm">
-                      <Check className="h-4 w-4 mt-0.5 text-green-600 dark:text-green-400 shrink-0" />
-                      <span className="text-slate-700 dark:text-slate-300">{f}</span>
+                  {plan.features.map((feature) => (
+                    <div key={feature.label} className="flex items-start gap-2 text-sm">
+                      {feature.included ? (
+                        <Check className="h-4 w-4 mt-0.5 text-green-600 dark:text-green-400 shrink-0" />
+                      ) : (
+                        <X className="h-4 w-4 mt-0.5 text-gray-400 shrink-0" />
+                      )}
+                      <span className={feature.included ? 'text-slate-700 dark:text-slate-300' : 'text-muted-foreground line-through'}>
+                        {feature.label}
+                      </span>
+                      {feature.note && (
+                        <span className="text-[11px] text-amber-600 dark:text-amber-400">
+                          ({feature.note})
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>

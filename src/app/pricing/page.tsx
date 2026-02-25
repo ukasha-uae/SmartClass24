@@ -95,10 +95,10 @@ export default function PricingPage() {
       { name: 'All Virtual Labs (20+)', included: false },
       { name: 'Advanced Analytics', included: false },
       { name: 'Study Streaks with Recovery', included: false },
-      { name: 'Priority Matchmaking', included: false },
-      { name: 'Double Coins (2x Rewards)', included: false },
+      { name: 'Priority Matchmaking', included: false, note: 'Coming soon' },
+      { name: 'Double Coins (2x Rewards)', included: false, note: 'Coming soon' },
       { name: 'Ad-Free Experience', included: false },
-      { name: 'Multiple Daily Challenges', included: false },
+      { name: 'Multiple Daily Challenges', included: false, note: 'Coming soon' },
     ],
     premium: [
       { name: 'All Game Modes', included: true },
@@ -115,11 +115,11 @@ export default function PricingPage() {
       { name: 'Weak Areas Identification', included: true },
       { name: 'Improvement Trends', included: true },
       { name: 'Study Streaks with Recovery', included: true },
-      { name: '3 Daily Challenges per Day', included: true },
-      { name: 'Priority Matchmaking', included: true },
-      { name: 'Double Coins (2x Rewards)', included: true },
+      { name: '3 Daily Challenges per Day', included: false, note: 'Coming soon' },
+      { name: 'Priority Matchmaking', included: false, note: 'Coming soon' },
+      { name: 'Double Coins (2x Rewards)', included: false, note: 'Coming soon' },
       { name: 'Ad-Free Experience', included: true },
-      { name: 'Achievement Showcase', included: true },
+      { name: 'Achievement Showcase', included: false, note: 'Coming soon' },
     ],
   };
 
@@ -919,7 +919,8 @@ export default function PricingPage() {
               <p className="text-sm text-muted-foreground">
                 Free users get access to all game modes but with a limited question bank (20 questions per subject) and 3 virtual labs (1 per subject). 
                 Premium users get unlimited access to all questions for their education level, all {virtualLabExperiments.experiments.length}+ virtual labs, 
-                plus advanced analytics and additional features like study streaks, priority matchmaking, and double coins.
+                plus advanced analytics and core premium tools available today.
+                Features like priority matchmaking, double coins, and achievement showcase are coming soon.
               </p>
             </div>
             <div>
