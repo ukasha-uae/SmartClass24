@@ -24,6 +24,67 @@ export const EARTH_MOON_CONFIG: EarthMoonConfig = {
   moonOrbitRadius: 3,
 };
 
+/** One-sentence "why we see this shape" per phase (index 0–7). Shown when student focuses on the Moon. */
+export const PHASE_WHY: string[] = [
+  'The Moon is between Earth and the Sun, so we see its unlit side.',
+  'The Moon is just east of the Sun; we see a small sliver of the sunlit side.',
+  'The Moon is 90° from the Sun, so we see half of its sunlit half (the right side).',
+  'The Moon is more than 90° from the Sun, so more than half of its sunlit side faces us.',
+  'The Moon is opposite the Sun, so we see the full sunlit half.',
+  'The Moon is past full; we still see most of the sunlit side, but it is shrinking.',
+  'The Moon is 90° west of the Sun, so we see half of its sunlit half (the left side).',
+  'The Moon is almost between us and the Sun again; we see a small sliver on the left.',
+];
+
+export interface CheckQuestion {
+  phaseIndex: number;
+  question: string;
+  options: string[];
+  correctIndex: number;
+  correctFeedback: string;
+  incorrectFeedback: string;
+}
+
+/** Check-for-understanding questions shown during auto-play at these phases. */
+export const MOON_LAB_CHECK_QUESTIONS: CheckQuestion[] = [
+  {
+    phaseIndex: 1,
+    question: 'Why do we see only a sliver of the Moon in this phase?',
+    options: [
+      'The Moon is between Earth and the Sun, so we see only a small part of its sunlit side.',
+      'The Moon is hiding part of itself.',
+      'Earth blocks the light.',
+    ],
+    correctIndex: 0,
+    correctFeedback: 'Right! The Moon is just east of the Sun, so we see a small sliver of the lit side.',
+    incorrectFeedback: "Not quite. The Moon doesn't change shape—we see a sliver because only a small part of its sunlit half faces Earth.",
+  },
+  {
+    phaseIndex: 4,
+    question: 'Why do we see a Full Moon when the Moon is on the opposite side of Earth from the Sun?',
+    options: [
+      'The Moon makes its own light.',
+      'We see the full sunlit half of the Moon because sunlight is lighting the side facing us.',
+      'The Sun moves to the other side.',
+    ],
+    correctIndex: 1,
+    correctFeedback: 'Correct! The Sun lights the half of the Moon facing it; when that half faces us, we see a full moon.',
+    incorrectFeedback: "The Moon doesn't make its own light. Sunlight lights the side facing the Sun; when that whole side faces Earth, we see a full moon.",
+  },
+  {
+    phaseIndex: 6,
+    question: 'Why do we see exactly half the Moon lit at First or Last Quarter?',
+    options: [
+      'Half the Moon is in shadow by chance.',
+      'The Moon is about 90° from the Sun, so half of its sunlit hemisphere faces Earth.',
+      'The Moon is closest to Earth.',
+    ],
+    correctIndex: 1,
+    correctFeedback: 'Yes! At 90° we see half of the Moon’s sunlit half—so it looks like a half moon.',
+    incorrectFeedback: "Think about the angle: when the Moon is 90° from the Sun, exactly half of its sunlit side faces us.",
+  },
+];
+
 export const EARTH_MOON_FACTS: EarthMoonFact[] = [
   {
     id: 'phases-basics',
