@@ -1,8 +1,6 @@
 "use client";
 
-import { getVirtualLabBySlug } from '@/lib/virtual-labs-data';
 import { useFirebase } from '@/firebase/provider';
-import { isPremiumUser } from '@/lib/monetization';
 import { ArrowLeft, FlaskConical, CheckCircle2, ArrowRight, Trophy, Star, Zap, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -17,6 +15,10 @@ import confetti from 'canvas-confetti';
 import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
 import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLabDialog';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useTenant } from '@/hooks/useTenant';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
+import { FREE_VIRTUAL_LAB_SLUGS, virtualLabExperiments } from '@/lib/virtual-labs-data';
 
 interface QuizQuestion {
   question: string;
@@ -30,6 +32,8 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const { hasAccess, campus } = useV1FeatureAccess('virtualLabs');
   const { user, isUserLoading } = useFirebase();
   const addTenantParam = useTenantLink();
+  const { features } = useTenant();
+  const entitlements = useEntitlements();
   
   const { labSlug } = use(params);
   const [mounted, setMounted] = useState(false);
@@ -74,10 +78,26 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
 
   const userId = user?.uid || 'guest';
   console.log('[Virtual Lab Page] Checking access with userId:', userId, 'isUserLoading:', isUserLoading);
-  const experiment = getVirtualLabBySlug(labSlug, userId);
+  const experiment = virtualLabExperiments.experiments.find((exp) => exp.slug === labSlug);
   
   if (!experiment) {
     notFound();
+  }
+
+  const isFreeLab = FREE_VIRTUAL_LAB_SLUGS.includes(labSlug as typeof FREE_VIRTUAL_LAB_SLUGS[number]);
+  if (!isFreeLab && entitlements.isResolved && !entitlements.canAccess.virtualLabsPremium) {
+    return (
+      <FeatureSoftGate
+        title="Premium Virtual Lab"
+        description="This lab is part of the premium lab library. You can continue using free labs or unlock full access."
+        ctaHref={addTenantParam('/pricing')}
+        ctaLabel="See Virtual Lab Pricing"
+        secondaryHref={addTenantParam('/virtual-labs')}
+        secondaryLabel="Back to Free Labs"
+        auditFeature="virtual_labs_premium"
+        auditRoute="/virtual-labs/[labSlug]"
+      />
+    );
   }
 
   const LabComponent = experiment.component;
@@ -176,7 +196,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                 Back to Virtual Labs
               </Button>
             </Link>
-            {userId !== 'guest' && (
+            {userId !== 'guest' && features.enableReferrals && (
               <ShareVirtualLabDialog
                 labTitle={experiment.title}
                 labSlug={experiment.slug}

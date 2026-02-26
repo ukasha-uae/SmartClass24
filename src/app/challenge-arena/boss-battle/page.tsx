@@ -30,12 +30,15 @@ import { useToast } from '@/hooks/use-toast';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
 
 export default function BossBattlePage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
   const { hasArenaChallenge } = useTenant();
   const { user } = useFirebase();
+  const entitlements = useEntitlements();
   
   // Tenant Route Guard: Check if arena is enabled for this tenant
   useEffect(() => {
@@ -50,6 +53,29 @@ export default function BossBattlePage() {
       router.replace(addTenantParam('/challenge-arena/practice'));
     }
   }, [router, addTenantParam]);
+
+  if (!entitlements.isResolved) {
+    return (
+      <div className="container mx-auto p-4 md:p-6 max-w-2xl">
+        <p className="text-sm text-muted-foreground">Checking access...</p>
+      </div>
+    );
+  }
+
+  if (!entitlements.canAccess.bossBattle) {
+    return (
+      <FeatureSoftGate
+        title="Boss Battle Is Premium"
+        description="Boss Battle is available for premium users and learners under an active institution license."
+        ctaHref={addTenantParam('/pricing')}
+        ctaLabel="View Pricing"
+        secondaryHref={addTenantParam('/challenge-arena')}
+        secondaryLabel="Back to Arena"
+        auditFeature="arena_boss_battle"
+        auditRoute="/challenge-arena/boss-battle"
+      />
+    );
+  }
   const { toast } = useToast();
   
   const [step, setStep] = useState(1);

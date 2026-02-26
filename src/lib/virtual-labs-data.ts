@@ -393,6 +393,15 @@ export const virtualLabExperiments = {
     ]
 };
 
+export const FREE_VIRTUAL_LAB_SLUGS = [
+    'food-tests',
+    'litmus-test',
+    'simple-circuits',
+    'magnetic-field-mapping',
+    'solar-system',
+    'earth-moon-system',
+] as const;
+
 /**
  * Get available virtual labs based on premium status
  * Free users: 1 lab per subject (3 total) - Try before you buy
@@ -405,10 +414,6 @@ export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperimen
     let hasAccess = false;
     if (typeof window !== 'undefined') {
         try {
-            const tenant = new URLSearchParams(window.location.search).get('tenant');
-            if (tenant === 'wisdomwarehouse') {
-                return allLabs as VirtualLabExperiment[];
-            }
             const { hasVirtualLabAccess } = require('./monetization');
             hasAccess = hasVirtualLabAccess(userId);
         } catch (e) {
@@ -426,9 +431,7 @@ export const getAllVirtualLabs = (userId: string = 'guest'): VirtualLabExperimen
     // Food Tests (Biology), Litmus Test (Chemistry), Simple Circuits (Physics)
     // Magnetic Field Mapping (Physics - for testing/development)
     // Solar System & Earth–Moon System (Science – flagship 3D simulations, free to try)
-    const freeLabs = allLabs.filter(lab => 
-        ['food-tests', 'litmus-test', 'simple-circuits', 'magnetic-field-mapping', 'solar-system', 'earth-moon-system'].includes(lab.slug)
-    );
+    const freeLabs = allLabs.filter((lab) => FREE_VIRTUAL_LAB_SLUGS.includes(lab.slug as typeof FREE_VIRTUAL_LAB_SLUGS[number]));
     return freeLabs as VirtualLabExperiment[];
 };
 
@@ -450,10 +453,6 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
     let hasAccess = false;
     if (typeof window !== 'undefined') {
         try {
-            const tenant = new URLSearchParams(window.location.search).get('tenant');
-            if (tenant === 'wisdomwarehouse') {
-                return experiment;
-            }
             const { hasVirtualLabAccess } = require('./monetization');
             hasAccess = hasVirtualLabAccess(userId);
             console.log(`[Virtual Labs] Access check for ${slug}: hasAccess=${hasAccess}, userId=${userId}`);
@@ -463,8 +462,7 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
     }
     
     // Free labs are always accessible (food-tests, litmus-test, simple-circuits, magnetic-field-mapping, solar-system, earth-moon-system)
-    const freeLabs = ['food-tests', 'litmus-test', 'simple-circuits', 'magnetic-field-mapping', 'solar-system', 'earth-moon-system'];
-    const isFree = freeLabs.includes(slug);
+    const isFree = FREE_VIRTUAL_LAB_SLUGS.includes(slug as typeof FREE_VIRTUAL_LAB_SLUGS[number]);
     
     console.log(`[Virtual Labs] ${slug} - isFree=${isFree}, hasAccess=${hasAccess}, allowing=${hasAccess || isFree}`);
     

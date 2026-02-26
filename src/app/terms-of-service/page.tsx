@@ -210,7 +210,7 @@ export default function TermsOfServicePage() {
           <CardContent className="text-sm">
             <p className="mb-3">For questions about these terms:</p>
             <div className="space-y-2 text-muted-foreground">
-              <p>Email: <a href="mailto:legal@smartclass24.edu.gh" className="text-primary hover:underline">legal@smartclass24.edu.gh</a></p>
+              <p>Email: <a href="mailto:ukashasolution@gmail.com" className="text-primary hover:underline">ukashasolution@gmail.com</a></p>
               <p>Phone: +233 30 000 0000</p>
             </div>
           </CardContent>

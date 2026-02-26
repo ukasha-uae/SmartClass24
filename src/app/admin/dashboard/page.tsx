@@ -23,6 +23,7 @@ import {
   DollarSign,
   AlertTriangle,
   Shield,
+  KeyRound,
   Loader2,
   Trash2,
   UserX,
@@ -47,6 +48,31 @@ import { isAdmin, isSuperAdmin, addAdmin, removeAdmin, getAllAdmins } from '@/li
 import { collection, getDocs } from 'firebase/firestore';
 import { getUserDisplayName } from '@/lib/user-display';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import {
+  defaultAdminPricingConfig,
+  loadAdminPricingConfig,
+  saveAdminPricingConfig,
+  type AdminPricingConfig,
+  type PricePolicyMode,
+  type PricingCategory,
+  type PricingDiscountCampaign,
+  WAEC5_COUNTRY_IDS,
+} from '@/lib/pricing/admin-pricing-config';
+
+const DISCOUNT_CATEGORY_OPTIONS: Array<{
+  id: Exclude<PricingCategory, 'all'>;
+  label: string;
+  group: 'student' | 'institution';
+}> = [
+  { id: 'challengeArena', label: 'Challenge Arena', group: 'student' },
+  { id: 'virtualLab', label: 'Virtual Lab', group: 'student' },
+  { id: 'fullBundle', label: 'Full Bundle', group: 'student' },
+  { id: 'premiumStudent', label: 'Premium Student', group: 'student' },
+  { id: 'premiumPlus', label: 'Premium Plus', group: 'student' },
+  { id: 'institutionStarter', label: 'Institution Starter', group: 'institution' },
+  { id: 'institutionGrowth', label: 'Institution Growth', group: 'institution' },
+  { id: 'institutionEnterprise', label: 'Institution Enterprise', group: 'institution' },
+];
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -66,6 +92,17 @@ export default function AdminDashboard() {
   const [adminUsers, setAdminUsers] = useState<Array<{ email: string; addedBy: string; addedAt: any; isSuperAdmin: boolean }>>([]);
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [isLoadingAdmins, setIsLoadingAdmins] = useState(false);
+  const [pricingConfig, setPricingConfig] = useState<AdminPricingConfig>(defaultAdminPricingConfig);
+  const [isLoadingPricing, setIsLoadingPricing] = useState(false);
+  const [isSavingPricing, setIsSavingPricing] = useState(false);
+  const [newDiscountName, setNewDiscountName] = useState('');
+  const [newDiscountType, setNewDiscountType] = useState<'percent' | 'fixedUsd'>('percent');
+  const [newDiscountValue, setNewDiscountValue] = useState<number>(10);
+  const [newDiscountStart, setNewDiscountStart] = useState('');
+  const [newDiscountEnd, setNewDiscountEnd] = useState('');
+  const [newDiscountCountries, setNewDiscountCountries] = useState('all');
+  const [newDiscountCategories, setNewDiscountCategories] = useState<PricingCategory[]>(['all']);
+  const [selectedCountryAdjustment, setSelectedCountryAdjustment] = useState('waec5');
   const { toast } = useToast();
   const { user, firestore, isUserLoading } = useFirebase();
 
@@ -111,6 +148,7 @@ export default function AdminDashboard() {
           setIsSuperAdminUser(true);
           loadAllUsers();
           loadAdminUsers();
+          loadPricingConfig();
           setIsCheckingAuth(false);
           return;
         }
@@ -134,6 +172,7 @@ export default function AdminDashboard() {
         setIsSuperAdminUser(isSuperAdmin(email));
         loadAllUsers();
         loadAdminUsers();
+        loadPricingConfig();
       } catch (error) {
         console.error('[Admin] Error checking access:', error);
         toast({
@@ -250,6 +289,199 @@ export default function AdminDashboard() {
     } finally {
       setIsLoadingAdmins(false);
     }
+  };
+
+  const loadPricingConfig = async () => {
+    setIsLoadingPricing(true);
+    try {
+      const cfg = await loadAdminPricingConfig(firestore);
+      setPricingConfig(cfg);
+    } catch (error) {
+      console.error('[Admin] Error loading pricing config:', error);
+      toast({
+        title: 'Pricing Load Failed',
+        description: 'Could not load pricing config. Using defaults.',
+        variant: 'destructive',
+      });
+      setPricingConfig(defaultAdminPricingConfig);
+    } finally {
+      setIsLoadingPricing(false);
+    }
+  };
+
+  const updateBasePrice = (key: keyof AdminPricingConfig['baseUsd'], value: number) => {
+    setPricingConfig((prev) => ({
+      ...prev,
+      baseUsd: {
+        ...prev.baseUsd,
+        [key]: Number.isFinite(value) ? Math.max(0, value) : 0,
+      },
+    }));
+  };
+
+  const updateFxRate = (currencyCode: string, value: number) => {
+    const code = currencyCode.toUpperCase();
+    setPricingConfig((prev) => ({
+      ...prev,
+      usdToLocalRates: {
+        ...prev.usdToLocalRates,
+        [code]: Number.isFinite(value) ? Math.max(0, value) : 1,
+      },
+    }));
+  };
+
+  const updateCountryMultiplier = (countryId: string, value: number) => {
+    const key = countryId.toLowerCase();
+    setPricingConfig((prev) => ({
+      ...prev,
+      countryAdjustments: {
+        ...prev.countryAdjustments,
+        [key]: {
+          ...(prev.countryAdjustments[key] ?? {}),
+          usdMultiplier: Number.isFinite(value) ? Math.max(0, value) : 1,
+        },
+      },
+    }));
+  };
+
+  const updateCountryOverride = (
+    countryId: string,
+    category: Exclude<PricingCategory, 'all'>,
+    value: number
+  ) => {
+    const key = countryId.toLowerCase();
+    setPricingConfig((prev) => ({
+      ...prev,
+      countryAdjustments: {
+        ...prev.countryAdjustments,
+        [key]: {
+          ...(prev.countryAdjustments[key] ?? {}),
+          overrideUsd: {
+            ...(prev.countryAdjustments[key]?.overrideUsd ?? {}),
+            [category]: Number.isFinite(value) ? Math.max(0, value) : 0,
+          },
+        },
+      },
+    }));
+  };
+
+  const applyWaec5TemplateToAllCountries = () => {
+    setPricingConfig((prev) => {
+      const waecTemplate = prev.countryAdjustments.waec5;
+      if (!waecTemplate) return prev;
+      const next = { ...prev.countryAdjustments };
+      for (const c of WAEC5_COUNTRY_IDS) {
+        next[c] = {
+          ...(next[c] ?? {}),
+          usdMultiplier:
+            typeof waecTemplate.usdMultiplier === 'number'
+              ? waecTemplate.usdMultiplier
+              : next[c]?.usdMultiplier,
+          overrideUsd: {
+            ...(next[c]?.overrideUsd ?? {}),
+            ...(waecTemplate.overrideUsd ?? {}),
+          },
+        };
+      }
+      return {
+        ...prev,
+        countryAdjustments: next,
+      };
+    });
+    toast({
+      title: 'WAEC-5 template applied',
+      description: 'Copied WAEC-5 affordability settings to Ghana, Nigeria, Sierra Leone, Liberia and Gambia.',
+    });
+  };
+
+  const handleSavePricing = async () => {
+    setIsSavingPricing(true);
+    try {
+      await saveAdminPricingConfig(
+        {
+          ...pricingConfig,
+          updatedBy: user?.email || user?.uid || 'admin',
+        },
+        firestore
+      );
+      toast({
+        title: 'Pricing Saved',
+        description: 'Global pricing and promotions updated successfully.',
+      });
+    } catch (error) {
+      console.error('[Admin] Error saving pricing config:', error);
+      toast({
+        title: 'Save Failed',
+        description: 'Could not save pricing config.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSavingPricing(false);
+    }
+  };
+
+  const toggleDiscountCategory = (category: PricingCategory) => {
+    setNewDiscountCategories((prev) => {
+      if (category === 'all') return ['all'];
+      const withoutAll = prev.filter((c) => c !== 'all');
+      const exists = withoutAll.includes(category);
+      if (exists) {
+        const next = withoutAll.filter((c) => c !== category);
+        return next.length > 0 ? next : ['all'];
+      }
+      return [...withoutAll, category];
+    });
+  };
+
+  const handleAddDiscount = () => {
+    if (!newDiscountName.trim()) {
+      toast({
+        title: 'Name Required',
+        description: 'Please enter a discount name.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const countries = newDiscountCountries
+      .split(',')
+      .map((c) => c.trim().toLowerCase())
+      .filter(Boolean);
+    const discount: PricingDiscountCampaign = {
+      id: `disc_${Date.now()}`,
+      name: newDiscountName.trim(),
+      enabled: true,
+      type: newDiscountType,
+      value: Math.max(0, Number(newDiscountValue) || 0),
+      startsAtIso: newDiscountStart ? new Date(newDiscountStart).toISOString() : undefined,
+      endsAtIso: newDiscountEnd ? new Date(newDiscountEnd).toISOString() : undefined,
+      countryIds: countries.length > 0 ? countries : ['all'],
+      appliesTo: newDiscountCategories.length > 0 ? newDiscountCategories : ['all'],
+    };
+    setPricingConfig((prev) => ({
+      ...prev,
+      discounts: [discount, ...prev.discounts],
+    }));
+    setNewDiscountName('');
+    setNewDiscountValue(10);
+    setNewDiscountType('percent');
+    setNewDiscountStart('');
+    setNewDiscountEnd('');
+    setNewDiscountCountries('all');
+    setNewDiscountCategories(['all']);
+  };
+
+  const toggleDiscountEnabled = (id: string) => {
+    setPricingConfig((prev) => ({
+      ...prev,
+      discounts: prev.discounts.map((d) => (d.id === id ? { ...d, enabled: !d.enabled } : d)),
+    }));
+  };
+
+  const removeDiscount = (id: string) => {
+    setPricingConfig((prev) => ({
+      ...prev,
+      discounts: prev.discounts.filter((d) => d.id !== id),
+    }));
   };
 
   // Add new admin (super admin only)
@@ -605,6 +837,16 @@ export default function AdminDashboard() {
         <div className="mb-4 flex flex-wrap gap-2">
           <Button
             onClick={() => {
+              window.location.href = '/admin/tenant-access';
+            }}
+            variant="outline"
+            className="gap-2 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 hover:from-blue-100 hover:to-cyan-100 dark:hover:from-blue-900/30 dark:hover:to-cyan-900/30 border-blue-200 dark:border-blue-800"
+          >
+            <KeyRound className="h-4 w-4" />
+            Tenant Access Keys
+          </Button>
+          <Button
+            onClick={() => {
               console.log('[Admin Dashboard] Navigating to analytics page...');
               window.location.href = '/admin/analytics';
             }}
@@ -631,6 +873,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="search">Search User</TabsTrigger>
             <TabsTrigger value="manage" disabled={!selectedUser}>Manage User</TabsTrigger>
             <TabsTrigger value="stats">Statistics</TabsTrigger>
+            {isAuthorized && <TabsTrigger value="pricing">Pricing</TabsTrigger>}
             {isSuperAdminUser && <TabsTrigger value="admins">Admin Management</TabsTrigger>}
           </TabsList>
 
@@ -1340,6 +1583,352 @@ export default function AdminDashboard() {
               </div>
             </div>
           </TabsContent>
+
+          {/* Pricing Management Tab */}
+          {isAuthorized && (
+            <TabsContent value="pricing">
+              <div className="space-y-6">
+                <Card className="border-2 border-emerald-200 dark:border-emerald-800">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <DollarSign className="h-5 w-5 text-emerald-600" />
+                      Global Pricing Dashboard
+                    </CardTitle>
+                    <CardDescription>
+                      Edit base USD prices once, then country pages convert automatically. Add discounts for promotions and special occasions.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {isLoadingPricing ? (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Loading pricing configuration...
+                      </div>
+                    ) : (
+                      <>
+                        <div>
+                          <h3 className="text-sm font-semibold mb-3">Student Plans (USD base)</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {([
+                              ['premiumStudentMonthly', 'Premium Student Monthly'],
+                              ['premiumPlusMonthly', 'Premium Plus Monthly'],
+                              ['challengeArenaMonthly', 'Challenge Arena Monthly'],
+                              ['challengeArenaAnnual', 'Challenge Arena Annual'],
+                              ['virtualLabMonthly', 'Virtual Lab Monthly'],
+                              ['virtualLabAnnual', 'Virtual Lab Annual'],
+                              ['fullBundleMonthly', 'Full Bundle Monthly'],
+                              ['fullBundleAnnual', 'Full Bundle Annual'],
+                            ] as Array<[keyof AdminPricingConfig['baseUsd'], string]>).map(([key, label]) => (
+                              <div key={key} className="space-y-1">
+                                <label className="text-xs text-muted-foreground">{label}</label>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  step="1"
+                                  value={pricingConfig.baseUsd[key]}
+                                  onChange={(e) => updateBasePrice(key, Number(e.target.value))}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-semibold mb-3">Institution Plans (USD base)</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            {([
+                              ['institutionStarterMonthly', 'Starter / month'],
+                              ['institutionGrowthMonthly', 'Growth / month'],
+                              ['institutionEnterpriseMonthly', 'Enterprise / month'],
+                            ] as Array<[keyof AdminPricingConfig['baseUsd'], string]>).map(([key, label]) => (
+                              <div key={key} className="space-y-1">
+                                <label className="text-xs text-muted-foreground">{label}</label>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  step="1"
+                                  value={pricingConfig.baseUsd[key]}
+                                  onChange={(e) => updateBasePrice(key, Number(e.target.value))}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="rounded-lg border p-3">
+                          <h3 className="text-sm font-semibold mb-2">Price Policy Mode</h3>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Choose how WAEC-5 shared pricing should apply across Ghana, Nigeria, Sierra Leone, Liberia, and Gambia.
+                          </p>
+                          <select
+                            value={pricingConfig.pricePolicyMode}
+                            onChange={(e) =>
+                              setPricingConfig((prev) => ({
+                                ...prev,
+                                pricePolicyMode: e.target.value as PricePolicyMode,
+                              }))
+                            }
+                            className="h-10 rounded-md border border-input bg-background px-3 text-sm w-full md:w-[360px]"
+                          >
+                            <option value="strict_shared">Strict Shared (WAEC-5 must use shared settings)</option>
+                            <option value="shared_with_exceptions">Shared with Exceptions (country override first, then shared fallback)</option>
+                            <option value="fully_country_specific">Fully Country Specific (ignore WAEC-5 shared fallback)</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-semibold mb-3">USD Conversion Rates (1 USD = ?)</h3>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Update country conversion rates used for localized pricing display.
+                          </p>
+                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                            {Object.entries(pricingConfig.usdToLocalRates).map(([code, rate]) => (
+                              <div key={code} className="space-y-1">
+                                <label className="text-xs text-muted-foreground">{code}</label>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  step="0.01"
+                                  value={rate}
+                                  onChange={(e) => updateFxRate(code, Number(e.target.value))}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <h3 className="text-sm font-semibold mb-3">Country Affordability & Overrides</h3>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Set affordability for one country, or use <strong>WAEC-5 shared settings</strong> so all five countries stay equivalent.
+                          </p>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                            <div className="space-y-1">
+                              <label className="text-xs text-muted-foreground">Country / Group</label>
+                              <select
+                                value={selectedCountryAdjustment}
+                                onChange={(e) => setSelectedCountryAdjustment(e.target.value.toLowerCase())}
+                                className="h-10 rounded-md border border-input bg-background px-3 text-sm w-full"
+                              >
+                                <option value="waec5">WAEC-5 Shared (Ghana, Nigeria, Sierra Leone, Liberia, Gambia)</option>
+                                <option value="ghana">Ghana</option>
+                                <option value="nigeria">Nigeria</option>
+                                <option value="sierra-leone">Sierra Leone</option>
+                                <option value="liberia">Liberia</option>
+                                <option value="gambia">Gambia</option>
+                                <option value="global">Global</option>
+                              </select>
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-xs text-muted-foreground">USD Multiplier</label>
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={pricingConfig.countryAdjustments[selectedCountryAdjustment.toLowerCase()]?.usdMultiplier ?? 1}
+                                onChange={(e) =>
+                                  updateCountryMultiplier(
+                                    selectedCountryAdjustment,
+                                    Number(e.target.value)
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="space-y-1 flex items-end">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full"
+                                onClick={applyWaec5TemplateToAllCountries}
+                              >
+                                Copy WAEC-5 to all countries
+                              </Button>
+                            </div>
+                          </div>
+                          <p className="text-xs text-muted-foreground mb-3">
+                            Tip: Keep <code>waec5</code> updated for equivalent pricing across all five countries. Use country-specific overrides only when needed.
+                          </p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            {([
+                              ['challengeArena', 'Challenge Arena'],
+                              ['virtualLab', 'Virtual Lab'],
+                              ['fullBundle', 'Full Bundle'],
+                              ['premiumStudent', 'Premium Student'],
+                              ['premiumPlus', 'Premium Plus'],
+                              ['institutionStarter', 'Institution Starter'],
+                              ['institutionGrowth', 'Institution Growth'],
+                              ['institutionEnterprise', 'Institution Enterprise'],
+                            ] as Array<[Exclude<PricingCategory, 'all'>, string]>).map(([key, label]) => (
+                              <div key={key} className="space-y-1">
+                                <label className="text-xs text-muted-foreground">{label} Override (USD)</label>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  step="1"
+                                  value={
+                                    pricingConfig.countryAdjustments[selectedCountryAdjustment.toLowerCase()]?.overrideUsd?.[key] ??
+                                    ''
+                                  }
+                                  onChange={(e) =>
+                                    updateCountryOverride(
+                                      selectedCountryAdjustment,
+                                      key,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                  placeholder="Leave blank to use multiplier/base"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="pt-4 border-t">
+                          <h3 className="text-sm font-semibold mb-3">Promotion / Discount Campaigns</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+                            <Input
+                              placeholder="Campaign name (e.g. Back to School)"
+                              value={newDiscountName}
+                              onChange={(e) => setNewDiscountName(e.target.value)}
+                            />
+                            <select
+                              value={newDiscountType}
+                              onChange={(e) => setNewDiscountType(e.target.value as 'percent' | 'fixedUsd')}
+                              className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                            >
+                              <option value="percent">Percent discount</option>
+                              <option value="fixedUsd">Fixed USD discount</option>
+                            </select>
+                            <Input
+                              type="number"
+                              min="0"
+                              step="1"
+                              placeholder={newDiscountType === 'percent' ? '10 = 10%' : '5 = $5 off'}
+                              value={newDiscountValue}
+                              onChange={(e) => setNewDiscountValue(Number(e.target.value))}
+                            />
+                            <div className="space-y-1 lg:col-span-2">
+                              <label className="text-xs text-muted-foreground">Promo categories (multi-select)</label>
+                              <div className="flex flex-wrap gap-1.5">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant={newDiscountCategories.includes('all') ? 'default' : 'outline'}
+                                  onClick={() => toggleDiscountCategory('all')}
+                                >
+                                  All categories
+                                </Button>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    setNewDiscountCategories(
+                                      DISCOUNT_CATEGORY_OPTIONS.filter((o) => o.group === 'student').map((o) => o.id)
+                                    )
+                                  }
+                                >
+                                  Student plans
+                                </Button>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() =>
+                                    setNewDiscountCategories(
+                                      DISCOUNT_CATEGORY_OPTIONS.filter((o) => o.group === 'institution').map((o) => o.id)
+                                    )
+                                  }
+                                >
+                                  Institution plans
+                                </Button>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setNewDiscountCategories(['all'])}
+                                >
+                                  Reset
+                                </Button>
+                              </div>
+                              <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5">
+                                {DISCOUNT_CATEGORY_OPTIONS.map((opt) => (
+                                  <Button
+                                    key={opt.id}
+                                    type="button"
+                                    size="sm"
+                                    variant={newDiscountCategories.includes(opt.id) ? 'default' : 'outline'}
+                                    onClick={() => toggleDiscountCategory(opt.id)}
+                                    className="justify-start"
+                                  >
+                                    {opt.label}
+                                  </Button>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-xs text-muted-foreground">Start (optional)</label>
+                              <Input type="date" value={newDiscountStart} onChange={(e) => setNewDiscountStart(e.target.value)} />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-xs text-muted-foreground">End (optional)</label>
+                              <Input type="date" value={newDiscountEnd} onChange={(e) => setNewDiscountEnd(e.target.value)} />
+                            </div>
+                            <div className="md:col-span-2 space-y-1">
+                              <label className="text-xs text-muted-foreground">Country scope (comma-separated: all, global, ghana, nigeria...)</label>
+                              <Input
+                                value={newDiscountCountries}
+                                onChange={(e) => setNewDiscountCountries(e.target.value)}
+                                placeholder="all"
+                              />
+                            </div>
+                          </div>
+                          <Button onClick={handleAddDiscount} variant="outline">
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Discount Campaign
+                          </Button>
+
+                          <div className="mt-4 space-y-2">
+                            {pricingConfig.discounts.length === 0 && (
+                              <p className="text-sm text-muted-foreground">No discount campaigns yet.</p>
+                            )}
+                            {pricingConfig.discounts.map((d) => (
+                              <div key={d.id} className="p-3 rounded-lg border flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                                <div>
+                                  <p className="font-semibold">{d.name}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {d.type === 'percent' ? `${d.value}% off` : `$${d.value} off`} • Categories: {d.appliesTo.join(', ')} • Countries: {d.countryIds.join(', ')}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {d.startsAtIso ? `Start: ${new Date(d.startsAtIso).toLocaleDateString()}` : 'Start: immediately'} • {d.endsAtIso ? `End: ${new Date(d.endsAtIso).toLocaleDateString()}` : 'No end date'}
+                                  </p>
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button size="sm" variant={d.enabled ? 'default' : 'outline'} onClick={() => toggleDiscountEnabled(d.id)}>
+                                    {d.enabled ? 'Enabled' : 'Disabled'}
+                                  </Button>
+                                  <Button size="sm" variant="destructive" onClick={() => removeDiscount(d.id)}>
+                                    Remove
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="pt-2">
+                          <Button onClick={handleSavePricing} disabled={isSavingPricing}>
+                            {isSavingPricing ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <CheckCircle2 className="h-4 w-4 mr-2" />}
+                            Save Pricing Changes
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          )}
 
           {/* Admin Management Tab - Super Admin Only */}
           {isSuperAdminUser && (

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useTenant } from '@/hooks/useTenant';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -49,6 +51,7 @@ export default function TournamentBracketPage() {
   const params = useParams();
   const addTenantParam = useTenantLink();
   const { hasArenaChallenge } = useTenant();
+  const entitlements = useEntitlements();
   
   // Tenant Route Guard: Check if arena is enabled for this tenant
   useEffect(() => {
@@ -56,6 +59,29 @@ export default function TournamentBracketPage() {
       router.replace(addTenantParam('/'));
     }
   }, [hasArenaChallenge, router, addTenantParam]);
+
+  if (!entitlements.isResolved) {
+    return (
+      <div className="container mx-auto p-4 md:p-6 max-w-6xl">
+        <p className="text-sm text-muted-foreground">Checking access...</p>
+      </div>
+    );
+  }
+
+  if (!entitlements.canAccess.tournaments) {
+    return (
+      <FeatureSoftGate
+        title="Tournament Access Required"
+        description="This tournament bracket is available to premium users and licensed institution members."
+        ctaHref={addTenantParam('/pricing')}
+        ctaLabel="Upgrade to Access"
+        secondaryHref={addTenantParam('/challenge-arena/tournaments')}
+        secondaryLabel="Back to Tournaments"
+        auditFeature="arena_tournaments"
+        auditRoute="/challenge-arena/tournaments/[tournamentId]"
+      />
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 max-w-6xl">

@@ -178,7 +178,7 @@ export default function PrivacyPolicyPage() {
               If you have questions or concerns about our Privacy Policy, please contact us:
             </p>
             <div className="space-y-2 text-muted-foreground">
-              <p>Email: <a href="mailto:privacy@smartclass24.edu.gh" className="text-primary hover:underline">privacy@smartclass24.edu.gh</a></p>
+              <p>Email: <a href="mailto:ukashasolution@gmail.com" className="text-primary hover:underline">ukashasolution@gmail.com</a></p>
               <p>Phone: +233 30 000 0000</p>
               <p>Address: Accra Digital Centre, Accra, Ghana</p>
             </div>

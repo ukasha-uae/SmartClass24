@@ -8,10 +8,9 @@ service cloud.firestore {
     
     // Check if user belongs to a specific tenant
     function belongsToTenant(tenantId) {
-      return request.auth != null && (
-        request.auth.token.tenantId == tenantId ||
-        !('tenantId' in request.auth.token)  // Allow if tenantId claim not set (dev mode)
-      );
+      return request.auth != null &&
+             ('tenantId' in request.auth.token) &&
+             request.auth.token.tenantId == tenantId;
     }
     
     // Check if user is super admin (can access all tenants)
@@ -51,12 +50,12 @@ service cloud.firestore {
       allow create: if request.auth != null && 
         request.auth.uid == studentId &&
         (!('tenantId' in request.resource.data) || 
-         !('tenantId' in request.auth.token) ||
+         ('tenantId' in request.auth.token) &&
          request.resource.data.tenantId == request.auth.token.tenantId);
       allow update: if request.auth != null && 
         request.auth.uid == studentId &&
         (!('tenantId' in resource.data) ||
-         !('tenantId' in request.auth.token) ||
+         ('tenantId' in request.auth.token) &&
          resource.data.tenantId == request.auth.token.tenantId);
       allow delete: if false;
     }
@@ -69,7 +68,7 @@ service cloud.firestore {
       allow create: if request.auth != null && 
         request.auth.uid == userId &&
         (!('tenantId' in request.resource.data) ||
-         !('tenantId' in request.auth.token) ||
+         ('tenantId' in request.auth.token) &&
          request.resource.data.tenantId == request.auth.token.tenantId);
       allow update, delete: if false;
     }

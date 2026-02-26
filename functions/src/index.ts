@@ -9,6 +9,15 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import {
+  onUserCreate,
+  setSuperAdminClaim,
+  setUserTenantClaim,
+  createTenantAccessKey,
+  listTenantAccessKeys,
+  revokeTenantAccessKey,
+  redeemTenantAccessKey,
+} from './auth-tenant-claims';
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
@@ -256,3 +265,14 @@ export const cleanupOrphanedTokens = functions.pubsub
     console.log(`Cleaned up ${totalDeleted} orphaned FCM tokens`);
     return null;
   });
+
+// Export auth claim functions so they are deployed and active.
+export {
+  onUserCreate,
+  setUserTenantClaim,
+  setSuperAdminClaim,
+  createTenantAccessKey,
+  listTenantAccessKeys,
+  revokeTenantAccessKey,
+  redeemTenantAccessKey,
+};

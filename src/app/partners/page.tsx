@@ -56,36 +56,36 @@ export default function PartnersPage() {
   const plans = [
     {
       name: 'Starter',
-      price: '$299',
-      period: '/month',
-      description: 'Perfect for small schools',
+      price: '$4,000',
+      period: ' one-time onboarding',
+      description: 'White-label onboarding, setup, training, and launch support',
       features: [
-        'Up to 200 students',
-        'All campuses (Primary, JHS, SHS)',
-        'Virtual Labs access',
-        'Challenge Arena',
-        'Basic analytics',
-        'Email support'
+        'White-label setup (branding + domain)',
+        'Teacher/admin onboarding',
+        'Rollout plan for your institution',
+        'Go-live support',
+        'Technical handover',
+        'Success check-ins'
       ],
-      cta: 'Get Started',
+      cta: 'Start Onboarding',
       popular: false
     },
     {
-      name: 'Professional',
-      price: '$799',
-      period: '/month',
-      description: 'Best for growing institutions',
+      name: 'Monthly Subscription (Student-based)',
+      price: 'Custom',
+      period: ' / month',
+      description: 'After onboarding, pricing scales by active student count',
       features: [
-        'Up to 1,000 students',
-        'Everything in Starter',
-        'Custom branding',
-        'Custom domain',
-        'Advanced analytics',
-        'Priority support',
-        'Teacher dashboard',
-        'Parent portal'
+        'Equivalent pricing model for WAEC-5 markets',
+        'Tiered student bands (example: 1-200, 201-1000, 1000+)',
+        'Arena + Virtual Labs + analytics',
+        'Institution dashboard',
+        'Parent/teacher visibility',
+        'Quarterly pricing review option',
+        'Promotion windows for seasonal campaigns',
+        'Priority support'
       ],
-      cta: 'Most Popular',
+      cta: 'Get Student-Based Quote',
       popular: true
     },
     {
@@ -243,7 +243,7 @@ export default function PartnersPage() {
               Simple, Transparent Pricing
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Choose the plan that fits your institution. All plans include setup support and training.
+              One-time onboarding plus monthly subscription based on active students. Designed for scalable institution rollout.
             </p>
           </div>
           
@@ -359,7 +359,7 @@ export default function PartnersPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              Questions? Email us at <a href="mailto:partners@smartclass24.app" className="text-purple-600 hover:underline">partners@smartclass24.app</a>
+              Questions? Email us at <a href="mailto:ukashasolution@gmail.com" className="text-purple-600 hover:underline">ukashasolution@gmail.com</a>
             </p>
             <div className="flex gap-6">
               <Link href="/about" className="text-sm text-muted-foreground hover:text-foreground">

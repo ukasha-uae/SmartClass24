@@ -17,12 +17,20 @@ import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { EarnPremiumBanner } from '@/components/EarnPremiumBanner';
 import { FirebaseContext } from '@/firebase/provider';
 import { SCIENCE_SIMULATIONS } from '@/lib/science-simulations/registry';
+import { convertUsdToLocal, roundPrice } from '@/lib/pricing/currency';
+import {
+  defaultAdminPricingConfig,
+  getEffectiveUsdBasePrice,
+  loadAdminPricingConfig,
+} from '@/lib/pricing/admin-pricing-config';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [userName, setUserName] = useState('there');
   const [selectedCampus, setSelectedCampus] = useState<'JHS' | 'SHS' | 'Primary'>('JHS');
+  const [liveRates, setLiveRates] = useState<Record<string, number> | null>(null);
+  const [pricingConfig, setPricingConfig] = useState(defaultAdminPricingConfig);
   const { country, formatCurrency, getCurrencySymbol, getPrimaryExam, getSecondaryExam, getJuniorSecondaryName, getSeniorSecondaryName } = useLocalization();
   const { branding, market, hasLocalization, tenantId, academyDisplayName } = useTenant();
   const { labels: educationLabels } = useEducationLevels();
@@ -43,6 +51,31 @@ export default function Home() {
       console.log('[HomePage] Tenant:', { tenantId, market, branding: { name: branding?.name, logoUrl: branding?.logoUrl, domain: branding?.domain } });
     }
   }, [tenantId, market, branding]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/exchange-rates')
+      .then((res) => res.json())
+      .then((data: { rates?: Record<string, number> }) => {
+        if (mounted && data?.rates) setLiveRates(data.rates);
+      })
+      .catch(() => {
+        // Keep static fallback converter if live rates fail.
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    loadAdminPricingConfig().then((cfg) => {
+      if (mounted) setPricingConfig(cfg);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Scroll to top on page load
   useEffect(() => {
@@ -135,6 +168,36 @@ export default function Home() {
   };
 
   const colors = getCountryColors();
+  const convertWithBestRate = (usdAmount: number, currencyCode: string) => {
+    const code = currencyCode.toUpperCase();
+    // Use admin-configured rates first so dashboard changes show immediately.
+    const adminRate = pricingConfig.usdToLocalRates[code];
+    if (adminRate) {
+      return roundPrice(usdAmount * adminRate);
+    }
+    if (liveRates?.[code]) {
+      return roundPrice(usdAmount * liveRates[code]);
+    }
+    return roundPrice(convertUsdToLocal(usdAmount, code));
+  };
+  const minPremiumUsd = getEffectiveUsdBasePrice(
+    pricingConfig.baseUsd.premiumStudentMonthly,
+    'premiumStudent',
+    pricingConfig,
+    country?.id ?? null
+  );
+  const maxPremiumUsd = getEffectiveUsdBasePrice(
+    pricingConfig.baseUsd.premiumPlusMonthly,
+    'premiumPlus',
+    pricingConfig,
+    country?.id ?? null
+  );
+  const minPremiumLocal = country
+    ? formatCurrency(convertWithBestRate(minPremiumUsd, country.currency.code))
+    : `$${Math.round(minPremiumUsd)}`;
+  const maxPremiumLocal = country
+    ? formatCurrency(convertWithBestRate(maxPremiumUsd, country.currency.code))
+    : `$${Math.round(maxPremiumUsd)}`;
 
   const campuses = [
     {
@@ -558,10 +621,8 @@ export default function Home() {
                         <p className="text-xs text-center font-semibold text-green-700 dark:text-green-400">
                           {market === 'middle-east' ? (
                             '✨ Free Access • Premium Plans Available'
-                          ) : country?.id === 'ghana' ? (
-                            '✨ Free Forever • Premium from ₵20/month'
                           ) : hasLocalization ? (
-                            `✨ Free Forever • Premium from ${formatCurrency(5)}/month`
+                            `✨ Free Forever • Premium from ${minPremiumLocal}/month`
                           ) : (
                             '✨ Free Forever • Premium from $5/month'
                           )}
@@ -830,7 +891,7 @@ export default function Home() {
                   <div className="h-12 w-px bg-violet-200 dark:bg-violet-800"></div>
                   <div className="text-center">
                     <p className="font-black text-2xl bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
-                      {country?.id === 'ghana' ? '₵20-50' : hasLocalization ? `${formatCurrency(5)}-${formatCurrency(10)}` : '$5-10'}
+                      {hasLocalization ? `${minPremiumLocal}-${maxPremiumLocal}` : '$5-10'}
                     </p>
                     <p className="text-xs text-muted-foreground">Premium Student</p>
                   </div>
@@ -877,7 +938,7 @@ export default function Home() {
                       {country?.id === 'ghana' ? (
                         <>Free to Start • ₵20-50/month Premium</>
                       ) : hasLocalization ? (
-                        <>Free to Start • {formatCurrency(5)}-{formatCurrency(10)}/month Premium</>
+                        <>Free to Start • {minPremiumLocal}-{maxPremiumLocal}/month Premium</>
                       ) : (
                         <>Free to Start • $5-10/month Premium</>
                       )}

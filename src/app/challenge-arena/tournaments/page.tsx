@@ -19,10 +19,10 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
-import { isPremiumUser, hasPremiumFeature } from '@/lib/monetization';
-import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 import { useFirebase } from '@/firebase/provider';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
 
 // V1 Route Guard: Redirect to practice if tournaments are disabled
 export default function TournamentsPage() {
@@ -30,25 +30,42 @@ export default function TournamentsPage() {
   const { user } = useFirebase();
   const { toast } = useToast();
   const addTenantParam = useTenantLink();
+  const entitlements = useEntitlements();
   
-  // Check premium access
-  const userId = user?.uid || 'test-user-1';
-  const isPremium = isPremiumUser(userId);
-  const hasTournamentAccess = hasPremiumFeature(userId, 'tournaments');
-  const [showUnlockModal, setShowUnlockModal] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming');
   
   useEffect(() => {
     if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
       router.replace(addTenantParam('/challenge-arena/practice'));
-    } else if (!isPremium && !hasTournamentAccess) {
-      setShowUnlockModal(true);
     }
-  }, [router, isPremium, hasTournamentAccess]);
+  }, [router, addTenantParam]);
   
   // Don't render if feature is disabled
   if (!FEATURE_FLAGS.V1_LAUNCH.showChallengeArenaTournament) {
     return null;
+  }
+
+  if (!entitlements.isResolved) {
+    return (
+      <div className="container mx-auto p-4 md:p-6 max-w-5xl">
+        <p className="text-sm text-muted-foreground">Checking access...</p>
+      </div>
+    );
+  }
+
+  if (!entitlements.canAccess.tournaments) {
+    return (
+      <FeatureSoftGate
+        title="Tournaments Are Premium"
+        description="You can preview tournaments, but joining live competitions requires an active premium plan or your institution license."
+        ctaHref={addTenantParam('/pricing')}
+        ctaLabel="View Pricing"
+        secondaryHref={addTenantParam('/challenge-arena')}
+        secondaryLabel="Back to Arena"
+        auditFeature="arena_tournaments"
+        auditRoute="/challenge-arena/tournaments"
+      />
+    );
   }
 
   // Mock Tournament Data
@@ -138,7 +155,7 @@ export default function TournamentsPage() {
             <TournamentCard 
               key={tournament.id} 
               tournament={tournament} 
-              onAction={() => router.push(`/challenge-arena/tournaments/${tournament.id}`)}
+              onAction={() => router.push(addTenantParam(`/challenge-arena/tournaments/${tournament.id}`))}
               actionLabel="Enter Arena"
               variant="active"
             />
@@ -150,26 +167,13 @@ export default function TournamentsPage() {
             <TournamentCard 
               key={tournament.id} 
               tournament={tournament} 
-              onAction={() => router.push(`/challenge-arena/tournaments/${tournament.id}`)}
+              onAction={() => router.push(addTenantParam(`/challenge-arena/tournaments/${tournament.id}`))}
               actionLabel="View Results"
               variant="completed"
             />
           ))}
         </TabsContent>
       </Tabs>
-
-      {/* Premium Unlock Modal */}
-      <PremiumUnlockModal
-        open={showUnlockModal}
-        onClose={() => {
-          setShowUnlockModal(false);
-          router.push(addTenantParam('/challenge-arena'));
-        }}
-        feature="tournaments"
-        onSuccess={() => {
-          setShowUnlockModal(false);
-        }}
-      />
     </div>
   );
 }

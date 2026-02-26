@@ -19,6 +19,8 @@ export interface TenantBranding {
   accentColor: string;   // Secondary/accent color
   domain: string;
   supportEmail: string;
+  supportPhone?: string;
+  supportLocation?: string;
   /** Optional: PWA install icons (home screen / splash). If omitted, uses /icons/{tenantId}-192.png and -512.png when present. */
   pwaIcons?: TenantPwaIcons;
   

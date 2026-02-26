@@ -104,7 +104,7 @@ export function ProjectileMotionLabEnhanced() {
         if (isLaunching) return;
         
         setIsLaunching(true);
-        setTeacherMessage(`Launching at ${angle}° with velocity ${velocity} m/s... Watch the parabolic path!`);
+        // Don't set a message here — let the animation run, then teacher explains the result when it completes (natural flow, no mid-sentence break).
         
         const data = calculateTrajectory(angle, velocity);
         setCurrentTrajectory(data.trajectory);

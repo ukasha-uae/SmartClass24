@@ -3,15 +3,19 @@ import type { NextRequest } from 'next/server';
 import { getTenantByHost } from '@/tenancy/registry';
 
 export function middleware(request: NextRequest) {
-  // Resolve tenant: 1) ?tenant= query (preview), 2) hostname (e.g. learn.wisdomwarehouseuae.com)
-  // so PWA and layout get correct manifest/branding for Wisdom and other domain-based tenants.
+  // Security hardening:
+  // - Authorization context must come from trusted host mapping, not ?tenant query.
+  // - Query param remains preview/presentation-only for UI customization.
   const tenantFromQuery = request.nextUrl.searchParams.get('tenant');
   const tenantFromHost = getTenantByHost(request.nextUrl.hostname)?.id ?? null;
-  const tenant = tenantFromQuery ?? tenantFromHost;
+  const tenant = tenantFromHost;
 
   const requestHeaders = new Headers(request.headers);
   if (tenant) {
     requestHeaders.set('x-tenant', tenant);
+  }
+  if (tenantFromQuery) {
+    requestHeaders.set('x-tenant-preview', tenantFromQuery);
   }
 
   const response = NextResponse.next({
@@ -20,13 +24,24 @@ export function middleware(request: NextRequest) {
     },
   });
 
-  if (tenant) {
+  if (tenantFromHost) {
+    // Persist only host-derived tenant as trusted tenant context.
     response.cookies.set('tenant', tenant, {
       path: '/',
       sameSite: 'lax',
     });
   } else {
     response.cookies.delete('tenant');
+  }
+
+  // Keep preview selection isolated from auth context.
+  if (tenantFromQuery) {
+    response.cookies.set('tenant_preview', tenantFromQuery, {
+      path: '/',
+      sameSite: 'lax',
+    });
+  } else {
+    response.cookies.delete('tenant_preview');
   }
 
   return response;

@@ -47,6 +47,24 @@ import { ShareChallengeDialog } from '@/components/challenge/ShareChallengeDialo
 import { useBotChallenge } from '@/lib/use-bot-challenge';
 import { isBot } from '@/lib/ai-bot-profiles';
 import { getUserDisplayName } from '@/lib/user-display';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
+import type { EntitlementFeature } from '@/lib/entitlements/types';
+
+function getRequiredEntitlementFeatureForChallenge(
+  challengeType: Challenge['type']
+): EntitlementFeature | null {
+  switch (challengeType) {
+    case 'tournament':
+      return 'arena_tournaments';
+    case 'boss':
+      return 'arena_boss_battle';
+    case 'school':
+      return 'arena_school_battle';
+    default:
+      return null;
+  }
+}
 
 export default function QuizBattlePage() {
   const params = useParams();
@@ -57,6 +75,7 @@ export default function QuizBattlePage() {
   const { user, firestore, isUserLoading } = useFirebase();
   const { toast } = useToast();
   const { setFullscreen } = useFullscreen();
+  const entitlements = useEntitlements();
   const challengeId = params.challengeId as string;
   
   const [challenge, setChallenge] = useState<Challenge | null>(null);
@@ -659,6 +678,22 @@ export default function QuizBattlePage() {
           <p className="text-muted-foreground">Loading challenge...</p>
         </div>
       </div>
+    );
+  }
+
+  const requiredFeature = getRequiredEntitlementFeatureForChallenge(challenge.type);
+  if (requiredFeature && entitlements.isResolved && !entitlements.canAccess.byFeature(requiredFeature)) {
+    return (
+      <FeatureSoftGate
+        title="Premium Challenge Mode"
+        description="This challenge mode requires premium access or an active institution license. You can still play free modes in Challenge Arena."
+        ctaHref={addTenantParam('/pricing')}
+        ctaLabel="Unlock Premium"
+        secondaryHref={addTenantParam('/challenge-arena')}
+        secondaryLabel="Back to Arena"
+        auditFeature={requiredFeature}
+        auditRoute="/challenge-arena/play/[challengeId]"
+      />
     );
   }
 

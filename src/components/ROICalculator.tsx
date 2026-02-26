@@ -537,7 +537,7 @@ export default function ROICalculator() {
             Schedule Free Demo
           </a>
           <a
-            href="mailto:hello@smartclass24.app"
+            href="mailto:ukashasolution@gmail.com"
             className="px-8 py-4 bg-white hover:bg-gray-50 text-blue-600 font-semibold rounded-lg border-2 border-blue-600 transition"
           >
             Contact Sales

@@ -11,6 +11,7 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import * as crypto from 'crypto';
 
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
@@ -18,6 +19,37 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
+
+type TenantAccessKeyDoc = {
+  tenantId: string;
+  label: string;
+  createdBy: string;
+  createdAt: admin.firestore.FieldValue;
+  expiresAt?: admin.firestore.Timestamp;
+  maxUses?: number;
+  uses: number;
+  isActive: boolean;
+};
+
+function isPrivilegedCaller(context: functions.https.CallableContext): boolean {
+  if (!context.auth) return false;
+  return context.auth.token.superAdmin === true || context.auth.token.admin === true;
+}
+
+function normalizeAccessKey(input: string): string {
+  return input.trim().toUpperCase().replace(/\s+/g, '');
+}
+
+function hashAccessKey(normalizedKey: string): string {
+  return crypto.createHash('sha256').update(normalizedKey).digest('hex');
+}
+
+function generateAccessKey(tenantId: string): string {
+  const prefix = tenantId.slice(0, 6).toUpperCase();
+  const randomPart = crypto.randomBytes(4).toString('hex').toUpperCase();
+  const timePart = Date.now().toString(36).toUpperCase().slice(-4);
+  return `${prefix}-${timePart}-${randomPart}`;
+}
 
 /**
  * Resolve tenant for a user
@@ -252,4 +284,213 @@ export const setSuperAdminClaim = functions.https.onCall(async (data, context) =
     console.error('[setSuperAdminClaim] Error:', error);
     throw new functions.https.HttpsError('internal', 'Failed to set super admin claim');
   }
+});
+
+/**
+ * Create tenant access key (admin only).
+ */
+export const createTenantAccessKey = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  if (!isPrivilegedCaller(context)) {
+    throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+  }
+
+  const tenantId = typeof data?.tenantId === 'string' ? data.tenantId.trim() : '';
+  const label = typeof data?.label === 'string' ? data.label.trim() : '';
+  const expiresAtRaw = typeof data?.expiresAt === 'string' ? data.expiresAt.trim() : '';
+  const maxUsesRaw = typeof data?.maxUses === 'number' ? data.maxUses : undefined;
+
+  if (!tenantId || !/^[a-z0-9-]{2,40}$/.test(tenantId)) {
+    throw new functions.https.HttpsError('invalid-argument', 'Invalid tenantId');
+  }
+  if (!label) {
+    throw new functions.https.HttpsError('invalid-argument', 'label is required');
+  }
+
+  let expiresAt: admin.firestore.Timestamp | undefined;
+  if (expiresAtRaw) {
+    const dt = new Date(expiresAtRaw);
+    if (Number.isNaN(dt.getTime())) {
+      throw new functions.https.HttpsError('invalid-argument', 'Invalid expiresAt');
+    }
+    expiresAt = admin.firestore.Timestamp.fromDate(dt);
+  }
+
+  const maxUses = maxUsesRaw && maxUsesRaw > 0 ? Math.floor(maxUsesRaw) : undefined;
+
+  const key = generateAccessKey(tenantId);
+  const keyHash = hashAccessKey(normalizeAccessKey(key));
+
+  const docData: TenantAccessKeyDoc = {
+    tenantId,
+    label,
+    createdBy: context.auth.uid,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    uses: 0,
+    isActive: true,
+  };
+  if (expiresAt) {
+    docData.expiresAt = expiresAt;
+  }
+  if (typeof maxUses === 'number') {
+    docData.maxUses = maxUses;
+  }
+
+  await db.collection('tenantAccessKeys').doc(keyHash).set(docData);
+
+  return {
+    success: true,
+    tenantId,
+    accessKey: key,
+    keyHash,
+    message: 'Tenant access key created',
+  };
+});
+
+/**
+ * List tenant access keys (admin only).
+ */
+export const listTenantAccessKeys = functions.https.onCall(async (_data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  if (!isPrivilegedCaller(context)) {
+    throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+  }
+
+  const snapshot = await db.collection('tenantAccessKeys').orderBy('createdAt', 'desc').limit(100).get();
+  const keys = snapshot.docs.map((doc) => {
+    const d = doc.data();
+    return {
+      keyHash: doc.id,
+      tenantId: d.tenantId ?? null,
+      label: d.label ?? '',
+      uses: d.uses ?? 0,
+      maxUses: d.maxUses ?? null,
+      isActive: d.isActive === true,
+      expiresAt: d.expiresAt?.toDate?.()?.toISOString?.() ?? null,
+      createdAt: d.createdAt?.toDate?.()?.toISOString?.() ?? null,
+      createdBy: d.createdBy ?? null,
+    };
+  });
+
+  return { success: true, keys };
+});
+
+/**
+ * Revoke tenant access key (admin only).
+ */
+export const revokeTenantAccessKey = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  if (!isPrivilegedCaller(context)) {
+    throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+  }
+
+  const keyHash = typeof data?.keyHash === 'string' ? data.keyHash.trim() : '';
+  if (!keyHash) {
+    throw new functions.https.HttpsError('invalid-argument', 'keyHash is required');
+  }
+
+  await db.collection('tenantAccessKeys').doc(keyHash).set(
+    {
+      isActive: false,
+      revokedAt: admin.firestore.FieldValue.serverTimestamp(),
+      revokedBy: context.auth.uid,
+    },
+    { merge: true }
+  );
+
+  return { success: true };
+});
+
+/**
+ * Redeem tenant access key (authenticated users).
+ */
+export const redeemTenantAccessKey = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+
+  const rawKey = typeof data?.accessKey === 'string' ? data.accessKey : '';
+  if (!rawKey.trim()) {
+    throw new functions.https.HttpsError('invalid-argument', 'accessKey is required');
+  }
+
+  const normalized = normalizeAccessKey(rawKey);
+  const keyHash = hashAccessKey(normalized);
+  const userId = context.auth.uid;
+
+  const keyRef = db.collection('tenantAccessKeys').doc(keyHash);
+  const redemptionRef = db.collection('tenantAccessRedemptions').doc(`${keyHash}_${userId}`);
+
+  const tenantId = await db.runTransaction(async (tx) => {
+    const keySnap = await tx.get(keyRef);
+    if (!keySnap.exists) {
+      throw new functions.https.HttpsError('not-found', 'Invalid access key');
+    }
+
+    const keyData = keySnap.data() as {
+      tenantId: string;
+      isActive?: boolean;
+      uses?: number;
+      maxUses?: number;
+      expiresAt?: admin.firestore.Timestamp;
+    };
+
+    if (!keyData.isActive) {
+      throw new functions.https.HttpsError('failed-precondition', 'This access key has been disabled');
+    }
+
+    if (keyData.expiresAt && keyData.expiresAt.toDate().getTime() < Date.now()) {
+      throw new functions.https.HttpsError('failed-precondition', 'This access key has expired');
+    }
+
+    const uses = keyData.uses ?? 0;
+    const maxUses = keyData.maxUses;
+    if (typeof maxUses === 'number' && uses >= maxUses) {
+      throw new functions.https.HttpsError('resource-exhausted', 'This access key has reached its usage limit');
+    }
+
+    const existingRedemption = await tx.get(redemptionRef);
+    if (!existingRedemption.exists) {
+      tx.set(redemptionRef, {
+        keyHash,
+        tenantId: keyData.tenantId,
+        userId,
+        redeemedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      tx.update(keyRef, {
+        uses: uses + 1,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    }
+
+    return keyData.tenantId;
+  });
+
+  const user = await admin.auth().getUser(userId);
+  const existingClaims = user.customClaims || {};
+  await admin.auth().setCustomUserClaims(userId, {
+    ...existingClaims,
+    tenantId,
+  });
+
+  await db.collection('users').doc(userId).set(
+    {
+      tenantId,
+      tenantAccessGrantedAt: admin.firestore.FieldValue.serverTimestamp(),
+      tenantAccessSource: 'access_key',
+    },
+    { merge: true }
+  );
+
+  return {
+    success: true,
+    tenantId,
+    message: 'Access key redeemed. Please refresh or sign in again to apply access.',
+  };
 });

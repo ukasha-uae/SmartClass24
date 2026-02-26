@@ -38,6 +38,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
 
 export default function SchoolBattlePage() {
   const router = useRouter();
@@ -47,6 +49,7 @@ export default function SchoolBattlePage() {
   const { toast } = useToast();
   const { country } = useLocalization();
   const { user } = useFirebase();
+  const entitlements = useEntitlements();
   
   // Tenant Route Guard: Check if arena is enabled for this tenant
   useEffect(() => {
@@ -61,6 +64,29 @@ export default function SchoolBattlePage() {
       router.replace(addTenantParam('/challenge-arena/practice'));
     }
   }, [router, addTenantParam]);
+
+  if (!entitlements.isResolved) {
+    return (
+      <div className="container mx-auto p-4 md:p-6 max-w-5xl">
+        <p className="text-sm text-muted-foreground">Checking access...</p>
+      </div>
+    );
+  }
+
+  if (!entitlements.canAccess.schoolBattle) {
+    return (
+      <FeatureSoftGate
+        title="School Battle Is Premium"
+        description="School-vs-school competition is available to premium users and learners under active institution licenses."
+        ctaHref={addTenantParam('/pricing')}
+        ctaLabel="View Pricing"
+        secondaryHref={addTenantParam('/challenge-arena')}
+        secondaryLabel="Back to Arena"
+        auditFeature="arena_school_battle"
+        auditRoute="/challenge-arena/school-battle"
+      />
+    );
+  }
   const [rankings, setRankings] = useState<SchoolRanking[]>([]);
   const [mySchool, setMySchool] = useState<SchoolRanking | null>(null);
   const [player, setPlayer] = useState<Player | null>(null);

@@ -3,7 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { virtualLabExperiments, getAllVirtualLabs } from '@/lib/virtual-labs-data';
+import { virtualLabExperiments, FREE_VIRTUAL_LAB_SLUGS } from '@/lib/virtual-labs-data';
 import { FlaskConical, Atom, Dna, Zap, Globe, CheckCircle2, Lock, Trophy, Clock, Star, Crown } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -11,11 +11,11 @@ import { useLabProgress } from '@/stores/lab-progress-store';
 import { Progress } from "@/components/ui/progress";
 import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
 import { useFirebase } from '@/firebase/provider';
-import { hasVirtualLabAccess } from '@/lib/monetization';
 import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLabDialog';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
+import { useEntitlements } from '@/hooks/useEntitlements';
 
 export default function VirtualLabsPage() {
   // V1 Route Guard: Check if user has access to virtual labs
@@ -27,18 +27,19 @@ export default function VirtualLabsPage() {
   const [mounted, setMounted] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
   const addTenantParam = useTenantLink();
-  const { tenantId } = useTenant();
+  const { features } = useTenant();
+  const entitlements = useEntitlements();
   
   const userId = user?.uid || 'guest';
-  const hasVirtualLab = tenantId === 'wisdomwarehouse' ? true : hasVirtualLabAccess(userId);
+  const hasVirtualLab = entitlements.canAccess.virtualLabsPremium;
 
   useEffect(() => {
     setMounted(true);
   }, []);
   
-  // CRITICAL: Wait for both access check AND auth state to complete
+  // CRITICAL: Wait for access check, auth, and entitlements to complete
   // This prevents showing locked labs while auth is still loading
-  if (!accessMounted || isUserLoading) {
+  if (!accessMounted || isUserLoading || !entitlements.isResolved) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-purple-950/30 dark:to-indigo-950/30 relative overflow-hidden">
         <div className="container mx-auto px-4 py-8 relative z-10">
@@ -87,8 +88,12 @@ export default function VirtualLabsPage() {
     return labDifficulty[slug] || 'Medium';
   };
 
-  // Get labs based on premium status
-  const allLabs = getAllVirtualLabs(userId);
+  // Get labs based on server-backed premium entitlements
+  const allLabs = hasVirtualLab
+    ? virtualLabExperiments.experiments
+    : virtualLabExperiments.experiments.filter((lab) =>
+        FREE_VIRTUAL_LAB_SLUGS.includes(lab.slug as typeof FREE_VIRTUAL_LAB_SLUGS[number])
+      );
   const allLabsTotal = virtualLabExperiments.experiments.length; // Total labs available
   const filteredExperiments = allLabs
     .filter(exp => filter === 'All' || exp.subject === filter)
@@ -138,7 +143,7 @@ export default function VirtualLabsPage() {
                 </>
               )}
             </p>
-            {userId !== 'guest' && (
+            {userId !== 'guest' && features.enableReferrals && (
               <div className="flex justify-center">
                 <ShareVirtualLabDialog
                   labTitle="Virtual Labs"
@@ -176,7 +181,7 @@ export default function VirtualLabsPage() {
                     </div>
                     <div className="group p-3 bg-gradient-to-br from-yellow-500/10 to-amber-500/10 rounded-xl border-2 border-yellow-200/30 dark:border-yellow-800/30 hover:scale-105 transition-all">
                       <Star className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mb-1" />
-                      <p className="text-lg font-bold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">{Object.keys(completedLabs).length}/{getAllVirtualLabs().length}</p>
+                      <p className="text-lg font-bold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">{Object.keys(completedLabs).length}/{allLabs.length}</p>
                       <p className="text-xs text-slate-600 dark:text-slate-400">Labs</p>
                     </div>
                     <div className="group p-3 bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-xl border-2 border-orange-200/30 dark:border-orange-800/30 hover:scale-105 transition-all">

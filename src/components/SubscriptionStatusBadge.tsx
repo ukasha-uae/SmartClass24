@@ -14,6 +14,7 @@ import { useMemo, useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useLocalization } from '@/hooks/useLocalization';
+import { useTenant } from '@/hooks/useTenant';
 
 interface SubscriptionStatusBadgeProps {
   userId?: string;
@@ -31,6 +32,7 @@ export function SubscriptionStatusBadge({
   const { user, firestore, auth } = useFirebase();
   const addTenantParam = useTenantLink();
   const { country } = useLocalization();
+  const { features } = useTenant();
   const [mounted, setMounted] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   
@@ -232,15 +234,17 @@ export function SubscriptionStatusBadge({
               Free User
             </Badge>
             <div className="flex flex-wrap gap-2">
-              <Link href="/redeem-codes">
-                <Badge 
-                  variant="outline" 
-                  className="cursor-pointer hover:bg-purple-500/10 border-purple-500/50 hover:border-purple-500 transition-colors bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50"
-                >
-                  <Sparkles className="h-3 w-3 mr-1" />
-                  Earn Premium Free
-                </Badge>
-              </Link>
+              {features.enableReferrals && (
+                <Link href="/redeem-codes">
+                  <Badge 
+                    variant="outline" 
+                    className="cursor-pointer hover:bg-purple-500/10 border-purple-500/50 hover:border-purple-500 transition-colors bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50"
+                  >
+                    <Sparkles className="h-3 w-3 mr-1" />
+                    Earn Premium Free
+                  </Badge>
+                </Link>
+              )}
               {showUpgrade && (
                 <Link href={addTenantParam(country ? '/pricing' : '/pricing/global')}>
                   <Badge 
@@ -334,15 +338,17 @@ export function SubscriptionStatusBadge({
         
         {isFree && (
           <div className="flex flex-wrap gap-2">
-            <Link href="/redeem-codes">
-              <Badge 
-                variant="outline" 
-                className="cursor-pointer hover:bg-purple-500/10 border-purple-500/50 hover:border-purple-500 transition-colors bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50"
-              >
-                <Sparkles className="h-3 w-3 mr-1" />
-                Earn Premium Free
-              </Badge>
-            </Link>
+            {features.enableReferrals && (
+              <Link href="/redeem-codes">
+                <Badge 
+                  variant="outline" 
+                  className="cursor-pointer hover:bg-purple-500/10 border-purple-500/50 hover:border-purple-500 transition-colors bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50"
+                >
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Earn Premium Free
+                </Badge>
+              </Link>
+            )}
             {showUpgrade && (
               <Link href={addTenantParam(country ? '/pricing' : '/pricing/global')}>
                 <Badge 

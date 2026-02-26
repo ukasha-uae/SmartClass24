@@ -24,6 +24,7 @@ import {
   HardDrive,
   GraduationCap,
   ArrowRight,
+  KeyRound,
 } from 'lucide-react';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
@@ -496,6 +497,27 @@ export default function SettingsPage() {
                 Optional: Select your region for more localized content
               </p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Notifications */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <KeyRound className="h-5 w-5" />
+              Tenant Access
+            </CardTitle>
+            <CardDescription>
+              Have an organization key? Use it to unlock your tenant's paid features.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href={addTenantParam('/tenant-access')}>
+              <Button variant="outline" className="w-full justify-start">
+                <KeyRound className="h-4 w-4 mr-2" />
+                Enter Tenant Access Key
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
@@ -984,7 +1006,7 @@ export default function SettingsPage() {
                 <Button variant="link" className="h-auto p-0 text-xs">Terms of Service</Button>
               </Link>
               <Button variant="link" className="h-auto p-0 text-xs" asChild>
-                <a href="mailto:support@smartclass24.app">Support</a>
+                <a href="mailto:ukashasolution@gmail.com">Support</a>
               </Button>
               <Button variant="link" className="h-auto p-0 text-xs" asChild>
                 <a href="https://github.com/ukasha-uae/SmartClass24" target="_blank" rel="noopener noreferrer">
