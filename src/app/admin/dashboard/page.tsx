@@ -26,7 +26,8 @@ import {
   Loader2,
   Trash2,
   UserX,
-  BarChart3
+  BarChart3,
+  Megaphone
 } from 'lucide-react';
 import { getPlayerProfile, getAllPlayers, createOrUpdatePlayer, Player } from '@/lib/challenge';
 import { 
