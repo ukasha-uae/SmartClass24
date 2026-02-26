@@ -1,86 +1,133 @@
-# Smartclass24 (SClass24)
+# SmartClass24
 
-A scalable, multi-campus smart learning platform for JHS & SHS students across Ghana.
+SmartClass24 is a global, multi-tenant, AI-powered learning platform built with Next.js and Firebase. It supports K-12 learning journeys (including WAEC-oriented flows), interactive virtual labs, challenge arena experiences, localized pricing, and tenant-aware branding/access.
+
+## Education Level Naming
+
+The platform supports multiple naming conventions for equivalent stages:
+
+- `Primary` = elementary/basic foundational years
+- `Middle School` = `JHS/JSS` (West African context)
+- `High School` = `SHS/SSS` (West African context)
+
+Use region-appropriate naming in user-facing copy:
+
+- Global/default audiences: `Primary, Middle School, High School`
+- WAEC-oriented audiences: `Primary, JHS/JSS, SHS/SSS`
 
 ## Overview
 
-Smartclass24 is a Next.js 16 App Router application that provides personalized learning experiences for Junior High School (JHS) and Senior High School (SHS) students. The platform features a campus-based architecture that allows easy expansion to additional educational levels.
+- **Frontend**: Next.js 16 App Router + React
+- **Backend services**: Firebase Auth, Firestore, Cloud Functions, Hosting/App Hosting
+- **Core product areas**:
+  - Curriculum-driven lessons and quizzes
+  - Challenge Arena (practice, tournaments, battles)
+  - Virtual Labs (interactive science simulations)
+  - Tenant-aware experiences (branding, feature gating, pricing)
+  - Admin operations (users, subscriptions, pricing policies/promotions)
 
-To get started, take a look at src/app/page.tsx.
+Start from `src/app/page.tsx` for the main product entry point.
 
-## 📚 For Contributors & AI Agents
+## Development Setup
 
-**IMPORTANT**: Before making changes to carousel lessons, read these documents:
+Prerequisites:
 
-- **[Carousel Implementation Guide](docs/CAROUSEL_LESSONS_GUIDE.md)** - Official patterns and antipatterns
-- **[Migration Tracker](docs/CAROUSEL_MIGRATION_TRACKER.md)** - Progress tracking and next steps
-- **[Migration Strategy](docs/CAROUSEL_MIGRATION_STRATEGY.md)** - Overall migration plan
+- Node.js 20+
+- npm
+- Firebase CLI (for emulator/deploy workflows)
 
-These documents define the established patterns to ensure consistency across all carousel lessons.
+Install dependencies:
 
-## End-of-Lesson Quiz Persistence
-
-Completed lesson quizzes will now be saved to Firestore for authenticated users under `users/{uid}/quizAttempts`.
-
-Schema: { lessonId, subjectSlug, topicSlug, lessonSlug, createdAt, scorePercent, rawScore, total, report }
-
-Notes:
-- If a user is not signed in, quiz attempts are saved to localStorage as a fallback.
- - If a user is not signed in, quiz attempts are saved to localStorage as a fallback.
- - When a user signs in or links an anonymous session to an email, any local quiz attempts (saved via localStorage) are automatically migrated into Firestore under `users/{uid}/quizAttempts`.
-
-Troubleshooting Firestore profile save (permission denied)
- - If you see a "Missing or insufficient permissions" error when saving the profile, try the following:
-	1. Confirm you are signed in by checking the header Account button. If you are signed in anonymously, link to an email or sign in with a proper account.
-	2. If you are testing locally, start the Firebase emulator to enable secure, local testing:
-		- Ensure firebase CLI is installed and configured with your project: `firebase login` and `firebase use --add`.
-		- Run: `firebase emulators:start --only auth,firestore` and then reload the app.
-	3. If using your Firebase project, verify Firestore rules are deployed and allow authenticated users to create/update their profile doc at `students/{uid}`:
-		- Deploy rules: `firebase deploy --only firestore:rules`.
-		- The repo's `firestore.rules` file already contains an example rule allowing the owner of `students/{uid}` to create and update their profile; ensure it is the active rule in the Firebase console or your deployed project.
-	4. Verify that the user `uid` seen in the app matches the `students/{uid}` gap (the app's `user.uid` is used as the document id).
-	5. Check browser DevTools console for detailed errors (permission denined will be `permission-denied`). The app will display a helpful toast with troubleshooting steps when permission is denied.
-- Firestore security rules restrict creating quiz attempts to the authenticated owner and restrict reads to the owner as well.
-
-## Quiz Styles
-
-- Lessons and individual quiz items can specify `defaultQuizStyle` or an individual `style` respectively. Supported styles: `classic`, `card`, `compact`, `timed`, `image-first`, `visual`, `rapid`.
-- `visual` is a preset for image-centered style, `rapid` is a fast-timed preset.
-- You can set `defaultQuizStyle` on a lesson in `src/lib/jhs-data.ts` (used by the seeder) or in Firestore lesson documents.
-
-## Student Account & Profiles
-
-We use Firebase Authentication to allow students to create personal accounts. The app still signs users in anonymously by default for a fast entry, but students can optionally create an email account to personalize their profile and save progress to their account.
-
-- Anonymous Sign-in: The app signs users in anonymously on first load to allow immediate access and local progress storage.
-- Create Account (Email/Password): Students can click "Sign in" in the header to open the auth dialog, choose "Sign up", and create an account using email and password. If they were using an anonymous session, we try to link their anonymous session to the new permanent account to keep progress.
-- Profile Setup: After signing up, or for anonymous users who have never completed a profile, the app shows a lightweight profile setup dialog with fields: `studentName`, `studentClass`, `schoolName`, `schoolAddress`, `parentPhoneNumber`.
-- Where profile is stored: Profiles are saved to Firestore at `students/{uid}` (a document in the `students` collection) with the following fields:
-	- studentName
-	- studentClass
-	- schoolName
-	- schoolAddress
-	- parentPhoneNumber
-	- updatedAt (timestamp)
-
-Security & Rules:
-- Firestore rules restrict create/update/read access so only the authenticated owner of the document can read/write their own profile (see `firestore.rules`).
-
-
-Examples:
-
-- Set the lesson default:
-
-```ts
-lesson.defaultQuizStyle = 'card';
+```bash
+npm install
 ```
 
-- Set per-question style:
+Run development server:
 
-```ts
-quiz.style = 'image-first';
+```bash
+npm run dev
 ```
 
+Production build:
 
-To make local testing straightforward, the repo provides a `firebaseConfig` under `src/firebase/config.ts` for development (not for production). Use the Firebase Emulator Suite for offline testing if desired.
+```bash
+npm run build
+```
+
+Type check:
+
+```bash
+npm run typecheck
+```
+
+## Auth, Profiles, and Quiz Persistence
+
+- Users may start anonymously for fast onboarding.
+- Users can create/link email accounts via Firebase Auth.
+- Student profile data is stored under `students/{uid}`.
+- End-of-lesson quiz attempts for authenticated users are stored under `users/{uid}/quizAttempts`.
+- Local fallback is used when users are not signed in; migration to Firestore occurs after authenticated session linkage.
+
+Security is enforced by `firestore.rules` (owner-based access patterns for profile and quiz attempt paths).
+
+## Tenant and Access Model
+
+- Tenant context is resolved from trusted sources (host/middleware path).
+- Public UI customization can be tenant-aware.
+- Paid feature access uses entitlement checks and soft-gating where applicable.
+- Admins can manage pricing policies, campaigns, and tenant-related controls from admin routes.
+
+## Contributor Notes
+
+Before editing lesson/carousel implementations, review:
+
+- `docs/CAROUSEL_LESSONS_GUIDE.md`
+- `docs/CAROUSEL_MIGRATION_TRACKER.md`
+- `docs/CAROUSEL_MIGRATION_STRATEGY.md`
+
+For product/domain context, useful references include:
+
+- `docs/SCIENCE_SIMULATIONS.md`
+- `docs/MULTI_TENANT_IMPLEMENTATION_GUIDE.md`
+- `docs/PRICING_FEATURES_STATUS.md`
+
+## Local Firebase Testing
+
+For local secure testing, use emulators:
+
+```bash
+firebase emulators:start --only auth,firestore
+```
+
+If permissions errors appear during local testing, verify:
+
+- you are authenticated
+- emulator or project rules are correctly deployed
+- document IDs match authenticated `uid` for owner-scoped writes
+
+## Operations (Deploy & Rollback)
+
+### Standard Release Flow
+
+1. Verify local build succeeds:
+
+```bash
+npm run build
+```
+
+2. Commit and push to `master`.
+3. Confirm App Hosting rollout status in Firebase Console (`smartclass24-backend`).
+4. Validate critical paths after rollout (home, pricing, admin dashboard, tenant-specific pages).
+
+### If Deployment Appears Stuck
+
+- Check App Hosting rollouts/builds for queued or failed items.
+- Cancel stale queued builds if a queue lock occurs.
+- Trigger a fresh rollout from the latest `master` commit.
+- Use build logs to identify exact failing import/export or runtime build errors.
+
+### Rollback Strategy
+
+- Roll back by deploying a known-good commit hash through App Hosting rollout selection.
+- Prefer small hotfix commits for urgent production fixes.
 
