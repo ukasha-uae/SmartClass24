@@ -102,6 +102,14 @@ export default function AdminDashboard() {
   const [newDiscountEnd, setNewDiscountEnd] = useState('');
   const [newDiscountCountries, setNewDiscountCountries] = useState('all');
   const [newDiscountCategories, setNewDiscountCategories] = useState<PricingCategory[]>(['all']);
+  const [editingDiscountId, setEditingDiscountId] = useState<string | null>(null);
+  const [editDiscountName, setEditDiscountName] = useState('');
+  const [editDiscountType, setEditDiscountType] = useState<'percent' | 'fixedUsd'>('percent');
+  const [editDiscountValue, setEditDiscountValue] = useState<number>(10);
+  const [editDiscountStart, setEditDiscountStart] = useState('');
+  const [editDiscountEnd, setEditDiscountEnd] = useState('');
+  const [editDiscountCountries, setEditDiscountCountries] = useState('all');
+  const [editDiscountCategories, setEditDiscountCategories] = useState<PricingCategory[]>(['all']);
   const [selectedCountryAdjustment, setSelectedCountryAdjustment] = useState('waec5');
   const { toast } = useToast();
   const { user, firestore, isUserLoading } = useFirebase();
@@ -482,6 +490,88 @@ export default function AdminDashboard() {
       ...prev,
       discounts: prev.discounts.filter((d) => d.id !== id),
     }));
+    if (editingDiscountId === id) {
+      setEditingDiscountId(null);
+    }
+  };
+
+  const toDateInputValue = (iso?: string) => {
+    if (!iso) return '';
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toISOString().slice(0, 10);
+  };
+
+  const beginEditDiscount = (discount: PricingDiscountCampaign) => {
+    setEditingDiscountId(discount.id);
+    setEditDiscountName(discount.name);
+    setEditDiscountType(discount.type);
+    setEditDiscountValue(discount.value);
+    setEditDiscountStart(toDateInputValue(discount.startsAtIso));
+    setEditDiscountEnd(toDateInputValue(discount.endsAtIso));
+    setEditDiscountCountries(discount.countryIds.join(', '));
+    setEditDiscountCategories(discount.appliesTo.length > 0 ? discount.appliesTo : ['all']);
+  };
+
+  const cancelEditDiscount = () => {
+    setEditingDiscountId(null);
+    setEditDiscountName('');
+    setEditDiscountType('percent');
+    setEditDiscountValue(10);
+    setEditDiscountStart('');
+    setEditDiscountEnd('');
+    setEditDiscountCountries('all');
+    setEditDiscountCategories(['all']);
+  };
+
+  const toggleEditDiscountCategory = (category: PricingCategory) => {
+    setEditDiscountCategories((prev) => {
+      if (category === 'all') return ['all'];
+      const withoutAll = prev.filter((c) => c !== 'all');
+      const exists = withoutAll.includes(category);
+      if (exists) {
+        const next = withoutAll.filter((c) => c !== category);
+        return next.length > 0 ? next : ['all'];
+      }
+      return [...withoutAll, category];
+    });
+  };
+
+  const saveDiscountEdit = (id: string) => {
+    if (!editDiscountName.trim()) {
+      toast({
+        title: 'Name Required',
+        description: 'Please enter a discount name.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    const countries = editDiscountCountries
+      .split(',')
+      .map((c) => c.trim().toLowerCase())
+      .filter(Boolean);
+    setPricingConfig((prev) => ({
+      ...prev,
+      discounts: prev.discounts.map((d) =>
+        d.id === id
+          ? {
+              ...d,
+              name: editDiscountName.trim(),
+              type: editDiscountType,
+              value: Math.max(0, Number(editDiscountValue) || 0),
+              startsAtIso: editDiscountStart ? new Date(editDiscountStart).toISOString() : undefined,
+              endsAtIso: editDiscountEnd ? new Date(editDiscountEnd).toISOString() : undefined,
+              countryIds: countries.length > 0 ? countries : ['all'],
+              appliesTo: editDiscountCategories.length > 0 ? editDiscountCategories : ['all'],
+            }
+          : d
+      ),
+    }));
+    toast({
+      title: 'Campaign updated',
+      description: 'Promo changes are staged. Click "Save Pricing Changes" to publish.',
+    });
+    cancelEditDiscount();
   };
 
   // Add new admin (super admin only)
@@ -1893,24 +1983,103 @@ export default function AdminDashboard() {
                               <p className="text-sm text-muted-foreground">No discount campaigns yet.</p>
                             )}
                             {pricingConfig.discounts.map((d) => (
-                              <div key={d.id} className="p-3 rounded-lg border flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                                <div>
-                                  <p className="font-semibold">{d.name}</p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {d.type === 'percent' ? `${d.value}% off` : `$${d.value} off`} • Categories: {d.appliesTo.join(', ')} • Countries: {d.countryIds.join(', ')}
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    {d.startsAtIso ? `Start: ${new Date(d.startsAtIso).toLocaleDateString()}` : 'Start: immediately'} • {d.endsAtIso ? `End: ${new Date(d.endsAtIso).toLocaleDateString()}` : 'No end date'}
-                                  </p>
-                                </div>
-                                <div className="flex gap-2">
-                                  <Button size="sm" variant={d.enabled ? 'default' : 'outline'} onClick={() => toggleDiscountEnabled(d.id)}>
-                                    {d.enabled ? 'Enabled' : 'Disabled'}
-                                  </Button>
-                                  <Button size="sm" variant="destructive" onClick={() => removeDiscount(d.id)}>
-                                    Remove
-                                  </Button>
-                                </div>
+                              <div key={d.id} className="p-3 rounded-lg border space-y-3">
+                                {editingDiscountId === d.id ? (
+                                  <>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                                      <Input
+                                        placeholder="Campaign name"
+                                        value={editDiscountName}
+                                        onChange={(e) => setEditDiscountName(e.target.value)}
+                                      />
+                                      <select
+                                        value={editDiscountType}
+                                        onChange={(e) => setEditDiscountType(e.target.value as 'percent' | 'fixedUsd')}
+                                        className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                                      >
+                                        <option value="percent">Percent discount</option>
+                                        <option value="fixedUsd">Fixed USD discount</option>
+                                      </select>
+                                      <Input
+                                        type="number"
+                                        min="0"
+                                        step="1"
+                                        value={editDiscountValue}
+                                        onChange={(e) => setEditDiscountValue(Number(e.target.value))}
+                                      />
+                                      <Input
+                                        value={editDiscountCountries}
+                                        onChange={(e) => setEditDiscountCountries(e.target.value)}
+                                        placeholder="Country scope: all, ghana, nigeria..."
+                                      />
+                                      <Input
+                                        type="date"
+                                        value={editDiscountStart}
+                                        onChange={(e) => setEditDiscountStart(e.target.value)}
+                                      />
+                                      <Input
+                                        type="date"
+                                        value={editDiscountEnd}
+                                        onChange={(e) => setEditDiscountEnd(e.target.value)}
+                                      />
+                                    </div>
+                                    <div className="space-y-2">
+                                      <label className="text-xs text-muted-foreground">Promo categories (multi-select)</label>
+                                      <div className="flex flex-wrap gap-1.5">
+                                        <Button
+                                          type="button"
+                                          size="sm"
+                                          variant={editDiscountCategories.includes('all') ? 'default' : 'outline'}
+                                          onClick={() => toggleEditDiscountCategory('all')}
+                                        >
+                                          All categories
+                                        </Button>
+                                        {DISCOUNT_CATEGORY_OPTIONS.map((opt) => (
+                                          <Button
+                                            key={`${d.id}-${opt.id}`}
+                                            type="button"
+                                            size="sm"
+                                            variant={editDiscountCategories.includes(opt.id) ? 'default' : 'outline'}
+                                            onClick={() => toggleEditDiscountCategory(opt.id)}
+                                          >
+                                            {opt.label}
+                                          </Button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                      <Button size="sm" onClick={() => saveDiscountEdit(d.id)}>
+                                        Save Campaign Edit
+                                      </Button>
+                                      <Button size="sm" variant="outline" onClick={cancelEditDiscount}>
+                                        Cancel
+                                      </Button>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                                    <div>
+                                      <p className="font-semibold">{d.name}</p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {d.type === 'percent' ? `${d.value}% off` : `$${d.value} off`} • Categories: {d.appliesTo.join(', ')} • Countries: {d.countryIds.join(', ')}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {d.startsAtIso ? `Start: ${new Date(d.startsAtIso).toLocaleDateString()}` : 'Start: immediately'} • {d.endsAtIso ? `End: ${new Date(d.endsAtIso).toLocaleDateString()}` : 'No end date'}
+                                      </p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                      <Button size="sm" variant="outline" onClick={() => beginEditDiscount(d)}>
+                                        Edit
+                                      </Button>
+                                      <Button size="sm" variant={d.enabled ? 'default' : 'outline'} onClick={() => toggleDiscountEnabled(d.id)}>
+                                        {d.enabled ? 'Enabled' : 'Disabled'}
+                                      </Button>
+                                      <Button size="sm" variant="destructive" onClick={() => removeDiscount(d.id)}>
+                                        Remove
+                                      </Button>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>
