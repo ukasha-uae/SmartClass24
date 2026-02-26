@@ -94,7 +94,7 @@ export default withPWA({
   skipWaiting: true,
   reloadOnOnline: true,
   // Include custom service worker logic
-  sw: 'sw.js',
+  sw: 'pwa-sw.js',
   // Add custom service worker handlers
   additionalManifestEntries: [],
   // Force cache version bump to invalidate all caches
