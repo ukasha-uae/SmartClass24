@@ -23,7 +23,9 @@ import {
 } from './auth-tenant-claims';
 
 // Initialize Firebase Admin SDK
-admin.initializeApp();
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
 
 /**
  * Send push notification when a new notification document is created
