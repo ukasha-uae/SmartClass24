@@ -2,6 +2,7 @@ import React from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import { useLocalization } from '@/hooks/useLocalization';
+import { normalizeMathText } from '@/lib/text/normalize-math-text';
 import VennDiagram from './VennDiagram';
 import GeometryDiagram from './GeometryDiagram';
 import EnhancedAnimationPlayer from './EnhancedAnimationPlayer';
@@ -73,7 +74,7 @@ export default function MarkdownRenderer({ content, id, className }: MarkdownRen
   const localizedContent = localizeContent(content);
 
   // Ensure code blocks are separated by double newlines so they are treated as paragraphs
-  const normalizedContent = localizedContent
+  const normalizedContent = normalizeMathText(localizedContent)
     .replace(/([^\n])\n```/g, '$1\n\n```') // Add newline before code block if missing
     .replace(/```\n([^\n])/g, '```\n\n$1'); // Add newline after code block if missing
 
@@ -499,10 +500,11 @@ export default function MarkdownRenderer({ content, id, className }: MarkdownRen
 }
 
 function parseInline(text: string): React.ReactNode[] {
+  const safeText = normalizeMathText(text);
   // Regex to match display math ($$text$$), inline math ($text$), bold (**text**), italic (*text*), and code (`text`)
   // We use a capturing group to split the string including the delimiters
   // Note: Check for $$ first so it doesn't get matched as two $
-  const parts = text.split(/(\$\$.*?\$\$|\$.*?\$|\*\*.*?\*\*|\*.*?\*|`.*?`)/g);
+  const parts = safeText.split(/(\$\$.*?\$\$|\$.*?\$|\*\*.*?\*\*|\*.*?\*|`.*?`)/g);
 
   return parts.map((part, index) => {
     if (part.startsWith('$$') && part.endsWith('$$')) {

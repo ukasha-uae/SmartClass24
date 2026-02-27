@@ -81,6 +81,10 @@
   body {
     @apply bg-background text-foreground;
     transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: Inter, "Segoe UI", "Segoe UI Symbol", "Cambria Math", "Noto Sans", sans-serif;
+  }
+  .katex {
+    font-family: "KaTeX_Main", "Times New Roman", "Cambria Math", serif;
   }
   .tts-highlight {
     @apply bg-primary/20 rounded-md;

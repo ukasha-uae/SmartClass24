@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
   GraduationCap, BookOpen, ArrowRight, Sparkles, 
-  Users, Trophy, Target, Brain, Info, Building2, Globe
+  Users, Trophy, Target, Brain, Info, Building2, Globe, FlaskConical, Calculator, Palette
 } from "lucide-react";
 import Link from 'next/link';
 import { useState, useEffect, useCallback, useContext } from 'react';
@@ -17,6 +17,11 @@ import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { EarnPremiumBanner } from '@/components/EarnPremiumBanner';
 import { FirebaseContext } from '@/firebase/provider';
 import { SCIENCE_SIMULATIONS } from '@/lib/science-simulations/registry';
+import {
+  getVirtualLabTrack,
+  virtualLabExperiments,
+  VIRTUAL_LAB_TRACK_LABELS,
+} from '@/lib/virtual-labs-data';
 import { convertUsdToLocal, roundPrice } from '@/lib/pricing/currency';
 import {
   defaultAdminPricingConfig,
@@ -305,6 +310,16 @@ export default function Home() {
     { href: '/past-questions', label: 'Past Questions', icon: '📝', desc: 'Practice Tests', show: true, gradient: 'from-green-500 to-emerald-600' }
   ];
 
+  const scienceLabCount = virtualLabExperiments.experiments.filter(
+    (lab) => getVirtualLabTrack(lab) === 'science-lab'
+  ).length;
+  const mathsLabCount = virtualLabExperiments.experiments.filter(
+    (lab) => getVirtualLabTrack(lab) === 'maths-lab'
+  ).length;
+  const artLabCount = virtualLabExperiments.experiments.filter(
+    (lab) => getVirtualLabTrack(lab) === 'art-lab'
+  ).length;
+
   // Wait for client-side mount to prevent hydration issues
   if (!mounted) {
     return null;
@@ -436,6 +451,75 @@ export default function Home() {
             </div>
           )}
 
+        </div>
+
+        {/* Lab Tracks Preview */}
+        <div className="mb-12 relative z-10">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-violet-700 to-indigo-700 dark:from-violet-300 dark:to-indigo-300 bg-clip-text text-transparent">
+              Lab Tracks
+            </h2>
+            <p className="text-sm md:text-base text-muted-foreground">
+              Organized pathways for scalable expansion: science today, maths live, art next.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4 max-w-6xl mx-auto">
+            {[
+              {
+                key: 'science-lab',
+                title: VIRTUAL_LAB_TRACK_LABELS['science-lab'],
+                count: scienceLabCount,
+                status: 'Live',
+                icon: FlaskConical,
+                gradient: 'from-indigo-500 to-blue-600',
+              },
+              {
+                key: 'maths-lab',
+                title: VIRTUAL_LAB_TRACK_LABELS['maths-lab'],
+                count: mathsLabCount,
+                status: 'Live',
+                icon: Calculator,
+                gradient: 'from-fuchsia-500 to-purple-600',
+              },
+              {
+                key: 'art-lab',
+                title: VIRTUAL_LAB_TRACK_LABELS['art-lab'],
+                count: artLabCount,
+                status: 'Coming Soon',
+                icon: Palette,
+                gradient: 'from-amber-500 to-orange-600',
+              },
+            ].map((track) => {
+              const Icon = track.icon;
+              return (
+                <Card
+                  key={track.key}
+                  className="relative overflow-hidden border border-white/30 dark:border-white/10 bg-white/45 dark:bg-slate-900/45 backdrop-blur-2xl shadow-[0_20px_60px_-25px_rgba(0,0,0,0.45)] hover:shadow-[0_30px_80px_-30px_rgba(0,0,0,0.55)] hover:-translate-y-0.5 transition-all"
+                >
+                  <div className={`absolute -top-8 -right-8 w-28 h-28 rounded-full bg-gradient-to-br ${track.gradient} opacity-25 blur-2xl`} />
+                  <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(145deg,rgba(255,255,255,0.35),rgba(255,255,255,0.06))] dark:bg-[linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.02))]" />
+                  <CardContent className="p-5 relative">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`p-3 rounded-2xl bg-gradient-to-r ${track.gradient} shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_10px_20px_-8px_rgba(0,0,0,0.55)]`}>
+                        <Icon className="h-5 w-5 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
+                      </div>
+                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${track.status === 'Live' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'}`}>
+                        {track.status}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-900 dark:text-slate-100 mb-1">{track.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-4">{track.count} labs available</p>
+                    <Link href={addTenantParam('/virtual-labs')}>
+                      <Button variant="outline" size="sm" className="w-full">
+                        Open Tracks
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
 
         {/* Science Simulations Strip (3D & interactive) */}

@@ -5,6 +5,7 @@ import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { Volume2, VolumeX, Minimize2, Maximize2, GripVertical, Sparkles, RotateCcw } from 'lucide-react';
 import { Button } from '../ui/button';
 import { TeacherAvatar } from './TeacherAvatar';
+import { normalizeMathText } from '@/lib/text/normalize-math-text';
 
 interface TeacherVoiceProps {
     message: string;
@@ -58,6 +59,7 @@ export function TeacherVoice({
     const utteranceRef = React.useRef<SpeechSynthesisUtterance | null>(null);
     const debounceTimerRef = React.useRef<NodeJS.Timeout | null>(null);
     const chunkTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+    const normalizedMessage = React.useMemo(() => normalizeMathText(message || ''), [message]);
     
     // Detect mobile device for performance optimization
     const isMobile = React.useMemo(() => {
@@ -85,9 +87,9 @@ export function TeacherVoice({
 
     // Split message into chunks for progressive reveal
     React.useEffect(() => {
-        if (progressiveReveal && message) {
+        if (progressiveReveal && normalizedMessage) {
             // Split by sentences (. ! ?) but keep the punctuation
-            const sentences = message.match(/[^.!?]+[.!?]+/g) || [message];
+            const sentences = normalizedMessage.match(/[^.!?]+[.!?]+/g) || [normalizedMessage];
             const chunks: string[] = [];
             
             for (let i = 0; i < sentences.length; i += linesPerChunk) {
@@ -95,13 +97,13 @@ export function TeacherVoice({
                 if (chunk) chunks.push(chunk);
             }
             
-            setMessageChunks(chunks.length > 0 ? chunks : [message]);
+            setMessageChunks(chunks.length > 0 ? chunks : [normalizedMessage]);
             setCurrentChunkIndex(0);
         } else {
-            setMessageChunks([message]);
+            setMessageChunks([normalizedMessage]);
             setCurrentChunkIndex(0);
         }
-    }, [message, progressiveReveal, linesPerChunk]);
+    }, [normalizedMessage, progressiveReveal, linesPerChunk]);
 
     // Pre-load voices on mount
     React.useEffect(() => {
@@ -118,6 +120,20 @@ export function TeacherVoice({
         }
     }, []);
 
+    // Treat any page interaction as an audio unlock signal.
+    React.useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const markInteracted = () => setUserInteracted(true);
+        window.addEventListener('pointerdown', markInteracted, { passive: true });
+        window.addEventListener('keydown', markInteracted, { passive: true });
+        window.addEventListener('touchstart', markInteracted, { passive: true });
+        return () => {
+            window.removeEventListener('pointerdown', markInteracted);
+            window.removeEventListener('keydown', markInteracted);
+            window.removeEventListener('touchstart', markInteracted);
+        };
+    }, []);
+
     // Parent requested speak (e.g. Play button in lab): count as interaction and speak so auto-play starts immediately.
     const triggerSpeakKeyRef = React.useRef(triggerSpeakKey);
     React.useEffect(() => {
@@ -125,14 +141,14 @@ export function TeacherVoice({
         triggerSpeakKeyRef.current = triggerSpeakKey;
         setUserInteracted(true);
         setShowAudioPrompt(false);
-        if (message && voicesLoaded && !isMuted && 'speechSynthesis' in window) {
+        if (normalizedMessage && voicesLoaded && !isMuted && 'speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             const t = setTimeout(() => {
                 speakMessage(0);
             }, 100);
             return () => clearTimeout(t);
         }
-    }, [triggerSpeakKey, message, voicesLoaded, isMuted]);
+    }, [triggerSpeakKey, normalizedMessage, voicesLoaded, isMuted]);
 
     React.useEffect(() => {
         // Cancel any ongoing speech when message changes
@@ -140,9 +156,9 @@ export function TeacherVoice({
             window.speechSynthesis.cancel();
         }
         
-        if (autoPlay && !isMuted && message && voicesLoaded) {
-            // On mobile, require user interaction before auto-play
-            if (!userInteracted) {
+        if (autoPlay && !isMuted && normalizedMessage && voicesLoaded) {
+            // Only gate autoplay on mobile browsers (desktop should flow automatically).
+            if (isMobile && !userInteracted) {
                 setShowAudioPrompt(true);
                 return;
             }
@@ -171,7 +187,7 @@ export function TeacherVoice({
                 clearTimeout(chunkTimerRef.current);
             }
         };
-    }, [message, autoPlay, isMuted, voicesLoaded, userInteracted, messageChunks, currentChunkIndex]);
+    }, [normalizedMessage, autoPlay, isMuted, voicesLoaded, userInteracted, messageChunks, currentChunkIndex]);
 
     const speakMessage = (chunkIndex: number = currentChunkIndex) => {
         if ('speechSynthesis' in window && !isMuted && messageChunks.length > 0) {
@@ -244,7 +260,7 @@ export function TeacherVoice({
         setUserInteracted(true);
         setShowAudioPrompt(false);
         // Trigger speech immediately after user interaction
-        if (message && voicesLoaded && !isMuted) {
+        if (normalizedMessage && voicesLoaded && !isMuted) {
             setTimeout(() => speakMessage(), 100);
         }
     };
@@ -368,7 +384,7 @@ export function TeacherVoice({
             </AnimatePresence>
 
             <AnimatePresence>
-                {message && userInteracted && (
+                {message && (
                     <motion.div
                         drag
                         dragMomentum={false}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { normalizeMathText } from '@/lib/text/normalize-math-text';
 
 interface UseSpeechSynthesisProps {
   text: string;
@@ -30,8 +31,10 @@ export function useSpeechSynthesis({
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const hasStartedRef = useRef(false);
+  const normalizedText = normalizeMathText(text || '');
 
   // Check if browser supports speech synthesis
   useEffect(() => {
@@ -40,9 +43,27 @@ export function useSpeechSynthesis({
     }
   }, []);
 
+  // Browsers may block speech until a user gesture occurs.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const markInteracted = () => setHasUserInteracted(true);
+    window.addEventListener('pointerdown', markInteracted, { passive: true });
+    window.addEventListener('keydown', markInteracted, { passive: true });
+    window.addEventListener('touchstart', markInteracted, { passive: true });
+    return () => {
+      window.removeEventListener('pointerdown', markInteracted);
+      window.removeEventListener('keydown', markInteracted);
+      window.removeEventListener('touchstart', markInteracted);
+    };
+  }, []);
+
   const speak = useCallback(() => {
-    if (!isSupported || !text) {
-      console.log('🔊 Speech not available:', { isSupported, hasText: !!text });
+    if (!isSupported || !normalizedText) {
+      console.log('🔊 Speech not available:', { isSupported, hasText: !!normalizedText });
+      return;
+    }
+    if (!hasUserInteracted) {
+      console.warn('🔊 Waiting for user interaction before speaking');
       return;
     }
 
@@ -52,7 +73,7 @@ export function useSpeechSynthesis({
       return;
     }
 
-    console.log('🔊 Starting speech:', text.substring(0, 50) + '...');
+    console.log('🔊 Starting speech:', normalizedText.substring(0, 50) + '...');
     hasStartedRef.current = true;
 
     // Stop any ongoing speech
@@ -69,14 +90,14 @@ export function useSpeechSynthesis({
       window.speechSynthesis.onvoiceschanged = () => {
         const newVoices = window.speechSynthesis.getVoices();
         console.log('🔊 Voices loaded:', newVoices.length);
-        speakWithVoice(text);
+        speakWithVoice(normalizedText);
       };
       // Also try speaking anyway (some browsers work without explicit voice loading)
-      speakWithVoice(text);
+      speakWithVoice(normalizedText);
     } else {
-      speakWithVoice(text);
+      speakWithVoice(normalizedText);
     }
-  }, [text, rate, pitch, volume, isSupported, onBoundary]);
+  }, [normalizedText, rate, pitch, volume, isSupported, onBoundary, hasUserInteracted]);
 
   const speakWithVoice = useCallback((textToSpeak: string) => {
     // Create new utterance
@@ -118,6 +139,8 @@ export function useSpeechSynthesis({
       // "interrupted" is expected when navigating away or stopping speech - just a warning
       if (event.error === 'interrupted') {
         console.warn('🔊 Speech interrupted (normal when navigating)');
+      } else if (event.error === 'not-allowed') {
+        console.warn('🔊 Speech blocked until user interaction (autoplay policy)');
       } else {
         console.error('🔊 Speech error:', event.error);
       }
@@ -150,19 +173,19 @@ export function useSpeechSynthesis({
 
   // Auto-play when text changes
   useEffect(() => {
-    if (autoPlay && text && !hasStartedRef.current) {
+    if (autoPlay && normalizedText && hasUserInteracted && !hasStartedRef.current) {
       // Small delay to ensure proper rendering
       const timer = setTimeout(() => {
         speak();
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [text, autoPlay, speak]);
+  }, [normalizedText, autoPlay, hasUserInteracted, speak]);
 
   // Reset hasStarted when text changes
   useEffect(() => {
     hasStartedRef.current = false;
-  }, [text]);
+  }, [normalizedText]);
 
   // Cleanup on unmount
   useEffect(() => {

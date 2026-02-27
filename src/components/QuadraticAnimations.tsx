@@ -8,6 +8,7 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { cn } from '@/lib/utils';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
+import MathText from './MathText';
 
 // ============================================
 // 1. FACTORIZATION SOLVER ANIMATION
@@ -17,9 +18,17 @@ interface FactorizationSolverProps {
   a?: number;  // coefficient of x²
   b?: number;  // coefficient of x
   c?: number;  // constant term
+  onNarrationChange?: (text: string) => void;
+  narrationMode?: 'internal' | 'external';
 }
 
-export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: FactorizationSolverProps) {
+export function FactorizationSolverAnimation({
+  a = 1,
+  b = 7,
+  c = 12,
+  onNarrationChange,
+  narrationMode = 'internal',
+}: FactorizationSolverProps) {
   const [step, setStep] = useState(0);
   const totalSteps = 5;
   const cardRef = React.useRef<HTMLDivElement>(null);
@@ -54,17 +63,23 @@ export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: Factoriza
   // Narration text for each step - Teaching style!
   const narrationText = [
     `Let's solve x squared plus ${b}x plus ${c} equals zero by factorization. Watch closely as I guide you through each step!`,
-    `Step one: We need to find two special numbers. These numbers must multiply together to give us ${c}, and when we add them, we get ${b}. Let me show you how we search for them.`,
+    `Step one: We need to find two special numbers. These numbers must multiply together to give us ${c}, and when we add them, we get ${b}. Let me show you how we search for them. I will pause now while you inspect the factor pairs below. When you spot the correct pair, press Next and I will continue.`,
     `Great! We found our magic numbers: ${factor1} and ${factor2}. Notice how ${factor1} times ${factor2} equals ${c}, and ${factor1} plus ${factor2} equals ${b}. Perfect match!`,
     `Now here's where factorization happens. We can rewrite our equation as x plus ${factor1}, times x plus ${factor2}, equals zero. This is the factored form!`,
-    `Finally, we use the zero product property. If two things multiply to give zero, then at least one must be zero. So either x plus ${factor1} equals zero, or x plus ${factor2} equals zero. Solving these gives us x equals ${root1} or x equals ${root2}. Let's verify these solutions!`
+    `Now we use the zero product property. If two expressions multiply to zero, at least one must be zero. So either x plus ${factor1} equals zero, or x plus ${factor2} equals zero. This gives x equals ${root1} or x equals ${root2}.`,
+    `Final conclusion: both roots are correct because substitution gives zero in each case. For x equals ${root1}, the expression simplifies to zero. For x equals ${root2}, it also simplifies to zero. Excellent work; your verified solution set is x equals ${root1} and x equals ${root2}.`
   ];
+  const currentNarration = narrationText[step] || '';
 
   const { speak, stop, isSpeaking, isSupported } = useSpeechSynthesis({
-    text: narrationText[step] || '',
+    text: narrationMode === 'internal' ? currentNarration : '',
     autoPlay: false, // Don't auto-play on mount, we'll control it manually
     rate: 0.9,
   });
+
+  useEffect(() => {
+    onNarrationChange?.(currentNarration);
+  }, [currentNarration, onNarrationChange]);
 
   useEffect(() => {
     if (step > 0 && cardRef.current) {
@@ -74,14 +89,14 @@ export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: Factoriza
 
   // Auto-narrate when step changes (if autoNarrate is enabled)
   useEffect(() => {
-    if (autoNarrate) {
+    if (autoNarrate && narrationMode === 'internal') {
       // Small delay to ensure state is settled
       const timer = setTimeout(() => {
         speak();
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [step, autoNarrate, speak]);
+  }, [step, autoNarrate, speak, narrationMode]);
 
   const handleNext = () => {
     if (step < totalSteps) {
@@ -98,6 +113,7 @@ export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: Factoriza
   };
 
   const toggleNarration = () => {
+    if (narrationMode !== 'internal') return;
     if (isSpeaking) {
       stop();
       setAutoNarrate(false);
@@ -121,7 +137,7 @@ export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: Factoriza
             Factorization Step-by-Step
           </h3>
           <div className="flex gap-2 w-full sm:w-auto">
-            {isSupported && (
+            {isSupported && narrationMode === 'internal' && (
               <Button 
                 size="sm" 
                 onClick={toggleNarration} 
@@ -212,6 +228,9 @@ export function FactorizationSolverAnimation({ a = 1, b = 7, c = 12 }: Factoriza
                           </div>
                         ))}
                       </div>
+                      <p className="text-xs text-muted-foreground mt-3">
+                        Teacher tip: Check each pair below. We need product = {c} and sum = {b}. Press Next when you find it.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -581,13 +600,15 @@ export function CompletingTheSquareAnimation({ a = 1, b = 6, c = 5 }: Completing
                     <div className="text-2xl">
                       (x {halfB >= 0 ? '+' : '-'} {Math.abs(halfB).toFixed(2)})² = {rightSide.toFixed(2)}
                     </div>
-                    <div className="text-2xl text-purple-600">√</div>
+                    <div className="text-2xl text-purple-600">
+                      <MathText latex={'\\sqrt{\\phantom{x}}'} />
+                    </div>
                     <div className="text-3xl font-bold text-cyan-600">
-                      x {halfB >= 0 ? '+' : '-'} {Math.abs(halfB).toFixed(2)} = ±{sqrtRight.toFixed(2)}
+                      <MathText latex={`x ${halfB >= 0 ? '+' : '-'} ${Math.abs(halfB).toFixed(2)} = \\pm ${sqrtRight.toFixed(2)}`} />
                     </div>
                     <div className="bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded mt-4">
                       <div className="text-sm font-semibold text-amber-800 dark:text-amber-200">
-                        ⚠️ Important: Don't forget the ± sign!
+                        ⚠️ Important: Don&apos;t forget the <MathText latex={'\\pm'} className="inline-block align-middle" /> sign!
                       </div>
                     </div>
                   </div>
@@ -600,7 +621,7 @@ export function CompletingTheSquareAnimation({ a = 1, b = 6, c = 5 }: Completing
                   <div className="text-lg font-semibold mb-4">Step 7: Solve for x</div>
                   <div className="p-6 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg shadow-lg text-white">
                     <div className="text-2xl mb-6">
-                      x {halfB >= 0 ? '+' : '-'} {Math.abs(halfB).toFixed(2)} = ±{sqrtRight.toFixed(2)}
+                      <MathText latex={`x ${halfB >= 0 ? '+' : '-'} ${Math.abs(halfB).toFixed(2)} = \\pm ${sqrtRight.toFixed(2)}`} />
                     </div>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="bg-white/20 p-4 rounded">
@@ -769,9 +790,17 @@ interface DiscriminantExplorerProps {
   a?: number;
   b?: number;
   c?: number;
+  onNarrationChange?: (text: string) => void;
+  narrationMode?: 'internal' | 'external';
 }
 
-export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: DiscriminantExplorerProps) {
+export function DiscriminantExplorerAnimation({
+  a = 2,
+  b = 5,
+  c = 2,
+  onNarrationChange,
+  narrationMode = 'internal',
+}: DiscriminantExplorerProps) {
   const [step, setStep] = useState(0);
   const totalSteps = 5; // Steps 0-5 (6 total steps)
   const cardRef = React.useRef<HTMLDivElement>(null);
@@ -829,12 +858,17 @@ export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: Discrimin
     `Now watch the parabola! ${graphBehavior}. ${discriminant > 0 ? `The roots are x equals ${root1?.toFixed(2)} and x equals ${root2?.toFixed(2)}.` : discriminant === 0 ? `The repeated root is x equals ${root1?.toFixed(2)}.` : 'Since there are no real roots, the parabola floats entirely above or below the x-axis.'} This visual connection between the discriminant and the graph is key to understanding quadratic equations!`,
     `Let's review everything we learned! The discriminant of ${discriminant} told us that this equation has ${nature}. ${discriminant >= 0 ? `We found the solutions to be x equals ${root1?.toFixed(2)}${discriminant > 0 ? ` and x equals ${root2?.toFixed(2)}` : ' as a repeated root'}.` : 'Remember, a negative discriminant means the parabola never crosses the x-axis.'} The vertex of the parabola is at x equals ${xVertex.toFixed(2)}, y equals ${yVertex.toFixed(2)}. Understanding the discriminant is a powerful tool that lets you predict the nature of roots before solving! Great work!`
   ];
+  const currentNarration = narrationText[step] || '';
 
   const { speak, stop, isSpeaking, isSupported } = useSpeechSynthesis({
-    text: narrationText[step] || '',
-    autoPlay: autoNarrate,
+    text: narrationMode === 'internal' ? currentNarration : '',
+    autoPlay: narrationMode === 'internal' ? autoNarrate : false,
     rate: 0.9,
   });
+
+  useEffect(() => {
+    onNarrationChange?.(currentNarration);
+  }, [currentNarration, onNarrationChange]);
 
   useEffect(() => {
     if (step > 0 && cardRef.current) {
@@ -863,7 +897,7 @@ export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: Discrimin
             Discriminant Explorer
           </h3>
           <div className="flex gap-2 w-full sm:w-auto">
-            {isSupported && (
+            {isSupported && narrationMode === 'internal' && (
               <Button 
                 size="sm" 
                 onClick={isSpeaking ? stop : speak} 
@@ -924,7 +958,7 @@ export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: Discrimin
                   <div className="text-lg font-semibold mb-4">Step 1: The Discriminant Formula</div>
                   <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg space-y-4">
                     <div className="text-3xl font-bold text-emerald-600 mb-4">
-                      Δ = b² - 4ac
+                      <MathText latex={'\\Delta = b^2 - 4ac'} />
                     </div>
                     <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
                       <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded">
@@ -951,8 +985,12 @@ export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: Discrimin
                   <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg space-y-4">
                     <div className="space-y-3">
                       <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded">
-                        <div className="text-sm mb-1">b² =</div>
-                        <div className="text-xl font-bold">{b}² = {b * b}</div>
+                        <div className="text-sm mb-1">
+                          <MathText latex={'b^2 ='} />
+                        </div>
+                        <div className="text-xl font-bold">
+                          <MathText latex={`${b}^2 = ${b * b}`} />
+                        </div>
                       </div>
                       <div className="p-3 bg-purple-100 dark:bg-purple-900/30 rounded">
                         <div className="text-sm mb-1">4ac =</div>
@@ -962,7 +1000,7 @@ export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: Discrimin
                       <div className="p-4 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-lg">
                         <div className="text-sm mb-2">Discriminant:</div>
                         <div className="text-3xl font-bold">
-                          Δ = {b * b} - {4 * a * c} = {discriminant}
+                          <MathText latex={`\\Delta = ${b * b} - ${4 * a * c} = ${discriminant}`} />
                         </div>
                       </div>
                     </div>
@@ -973,7 +1011,9 @@ export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: Discrimin
               {/* Step 3: Interpret Discriminant */}
               {step === 3 && (
                 <div className="space-y-6 text-center w-full p-4">
-                  <div className="text-lg font-semibold mb-4">Step 3: What Does Δ = {discriminant} Mean?</div>
+                  <div className="text-lg font-semibold mb-4">
+                    Step 3: What Does <MathText latex={`\\Delta = ${discriminant}`} className="inline-block align-middle" /> Mean?
+                  </div>
                   <div className={cn(
                     "p-6 rounded-lg shadow-lg space-y-4",
                     discriminant > 0 ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white" :
@@ -990,7 +1030,7 @@ export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: Discrimin
                     </div>
                     {discriminant > 0 && isPerfectSquare && (
                       <div className="bg-white/20 p-3 rounded text-sm">
-                        ⭐ Bonus: √{discriminant} = {Math.sqrt(discriminant)} (perfect square = rational roots!)
+                        ⭐ Bonus: <MathText latex={`\\sqrt{${discriminant}} = ${Math.sqrt(discriminant)}`} className="inline-block align-middle" /> (perfect square = rational roots!)
                       </div>
                     )}
                   </div>
@@ -1199,7 +1239,7 @@ export function DiscriminantExplorerAnimation({ a = 2, b = 5, c = 2 }: Discrimin
                   <div className="text-lg font-semibold mb-4">Step 5: Complete Analysis</div>
                   <div className="p-6 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg shadow-lg text-white">
                     <div className="text-2xl font-bold mb-6">
-                      Δ = {discriminant}
+                      <MathText latex={`\\Delta = ${discriminant}`} />
                     </div>
                     <div className="space-y-4">
                       <div className="bg-white/20 p-4 rounded">
@@ -1792,24 +1832,24 @@ export function SumProductRootsAnimation({ a = 1, b = -5, c = 6 }: SumProductRoo
                       <div className="text-center space-y-4">
                         <div className="text-base mb-4">The Quadratic Formula:</div>
                         <div className="text-xl font-mono p-4 bg-white/70 dark:bg-black/20 rounded">
-                          x = (-b ± √(b² - 4ac)) / 2a
+                          <MathText latex={'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}'} />
                         </div>
                         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="p-4 bg-purple-100 dark:bg-purple-900/30 rounded">
                             <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Root α (alpha):</div>
                             <div className="text-lg font-mono">
-                              α = (-b + √Δ) / 2a
+                              <MathText latex={'\\alpha = \\frac{-b + \\sqrt{\\Delta}}{2a}'} />
                             </div>
                           </div>
                           <div className="p-4 bg-pink-100 dark:bg-pink-900/30 rounded">
                             <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">Root β (beta):</div>
                             <div className="text-lg font-mono">
-                              β = (-b - √Δ) / 2a
+                              <MathText latex={'\\beta = \\frac{-b - \\sqrt{\\Delta}}{2a}'} />
                             </div>
                           </div>
                         </div>
                         <div className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                          where Δ = b² - 4ac
+                          where <MathText latex={'\\Delta = b^2 - 4ac'} className="inline-block align-middle" />
                         </div>
                       </div>
                     </div>

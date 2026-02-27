@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Hash, Infinity, Divide, Calculator, Trophy, Play, Pause, Volume2, VolumeX, GraduationCap, ChevronLeft, ChevronRight, Minus, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCountryProperties } from '@/hooks/useCountryConfig';
+import { normalizeMathText } from '@/lib/text/normalize-math-text';
+import MathText from '@/components/MathText';
 
 interface LessonIntroProps {
   onComplete?: () => void;
@@ -118,7 +120,7 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
     
     window.speechSynthesis.cancel();
     
-    const narration = stages[stage].narration;
+    const narration = normalizeMathText(stages[stage].narration);
     const utterance = new SpeechSynthesisUtterance(narration);
     
     utterance.rate = 0.9;
@@ -204,7 +206,7 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   };
 
   const renderNarrationText = () => {
-    const words = stages[stage].narration.split(/\s+/);
+    const words = normalizeMathText(stages[stage].narration).split(/\s+/);
     const highlightWords = stages[stage].highlightWords;
     
     return words.map((word, index) => {
@@ -522,11 +524,12 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                       className="p-3 bg-gray-700 rounded-lg text-center"
                     >
                       <div className="text-white font-bold text-lg sm:text-xl">
-                        {symbol.startsWith('√') ? (
-                          <span style={{ fontFamily: 'serif' }}>√{symbol.slice(1)}</span>
-                        ) : (
-                          symbol
-                        )}
+                        {symbol === 'π' && <MathText latex={'\\pi'} />}
+                        {symbol === '√2' && <MathText latex={'\\sqrt{2}'} />}
+                        {symbol === '√3' && <MathText latex={'\\sqrt{3}'} />}
+                        {symbol === '√5' && <MathText latex={'\\sqrt{5}'} />}
+                        {symbol === 'e' && 'e'}
+                        {symbol === 'φ' && <MathText latex={'\\phi'} />}
                       </div>
                       <div className="text-gray-400 text-xs sm:text-sm mt-1">
                         {symbol === 'π' && '≈ 3.14159...'}
@@ -668,13 +671,9 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                     className="bg-gradient-to-br from-yellow-900/50 to-orange-900/50 rounded-lg p-3 sm:p-4 border border-yellow-700"
                   >
                     <div className="text-yellow-300 font-bold text-sm sm:text-base mb-2">
-                      {item.q.includes('√9') ? (
-                        <>Is <span style={{ fontFamily: 'serif' }}>√9</span> irrational?</>
-                      ) : (
-                        item.q
-                      )}
+                      {normalizeMathText(item.q)}
                     </div>
-                    <div className="text-white text-xs sm:text-sm">{item.a}</div>
+                    <div className="text-white text-xs sm:text-sm">{normalizeMathText(item.a)}</div>
                   </motion.div>
                 ))}
               </div>
@@ -699,7 +698,7 @@ const TypesOfNumbersIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
           <Infinity className="w-4 h-4 sm:w-6 sm:h-6 text-purple-400 mx-auto mb-0.5 sm:mb-1" />
           <p className="text-purple-300 text-[10px] sm:text-sm">Irrational</p>
           <p className="text-white font-mono text-xs sm:text-base">
-            π, <span style={{ fontFamily: 'serif' }}>√2</span>
+            <MathText latex={'\\pi,\\ \\sqrt{2}'} />
           </p>
         </div>
       </div>

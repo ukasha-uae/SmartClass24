@@ -18,7 +18,14 @@ import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
-import { FREE_VIRTUAL_LAB_SLUGS, virtualLabExperiments } from '@/lib/virtual-labs-data';
+import {
+  FREE_VIRTUAL_LAB_SLUGS,
+  virtualLabExperiments,
+  getVirtualLabTrack,
+  VIRTUAL_LAB_TRACK_LABELS,
+  getVirtualLabAudience,
+  VIRTUAL_LAB_AUDIENCE_LABELS,
+} from '@/lib/virtual-labs-data';
 
 interface QuizQuestion {
   question: string;
@@ -101,6 +108,8 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   }
 
   const LabComponent = experiment.component;
+  const trackLabel = VIRTUAL_LAB_TRACK_LABELS[getVirtualLabTrack(experiment)];
+  const audienceLabel = VIRTUAL_LAB_AUDIENCE_LABELS[getVirtualLabAudience(experiment)];
   
   // Check if this is a self-contained enhanced lab (has its own quiz/completion flow)
   const isEnhancedLab = LabComponent.name?.includes('Enhanced') || 
@@ -124,7 +133,8 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
     Biology: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30',
     Chemistry: 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/30',
     Physics: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30',
-    Science: 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30'
+    Science: 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30',
+    Mathematics: 'bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-400 border-fuchsia-500/30',
   };
 
   const handleCompleteExperiment = () => {
@@ -220,6 +230,12 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                         <Badge className={`${subjectColors[experiment.subject as keyof typeof subjectColors]} border-2 font-semibold`}>
                           {experiment.subject}
                         </Badge>
+                        <Badge variant="outline" className="border-dashed">
+                          {trackLabel}
+                        </Badge>
+                        <Badge variant="outline">
+                          {audienceLabel}
+                        </Badge>
                       </div>
                       <p className="text-slate-600 dark:text-slate-400">{experiment.description}</p>
                     </div>
@@ -241,6 +257,12 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                         <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 dark:from-purple-400 dark:via-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{experiment.title}</h1>
                         <Badge className={`${subjectColors[experiment.subject as keyof typeof subjectColors]} border-2 font-semibold`}>
                           {experiment.subject}
+                        </Badge>
+                        <Badge variant="outline" className="border-dashed">
+                          {trackLabel}
+                        </Badge>
+                        <Badge variant="outline">
+                          {audienceLabel}
                         </Badge>
                       </div>
                       <p className="text-slate-600 dark:text-slate-400">{experiment.description}</p>

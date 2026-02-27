@@ -5,6 +5,7 @@ import { Circle, Layers, Combine, Calculator, Trophy, Play, Pause, Volume2, Volu
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCountryProperties } from '@/hooks/useCountryConfig';
 import { useEducationLevels } from '@/hooks/useEducationLevels';
+import { normalizeMathText } from '@/lib/text/normalize-math-text';
 
 interface LessonIntroProps {
   onComplete?: () => void;
@@ -152,7 +153,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
     
     window.speechSynthesis.cancel();
     
-    const narration = stages[stage].narration;
+    const narration = normalizeMathText(stages[stage].narration);
     const utterance = new SpeechSynthesisUtterance(narration);
     
     utterance.rate = 0.9;
@@ -234,7 +235,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   };
 
   const renderNarrationText = () => {
-    const words = stages[stage].narration.split(/\s+/);
+    const words = normalizeMathText(stages[stage].narration).split(/\s+/);
     const highlightWords = stages[stage].highlightWords;
     
     return words.map((word, index) => {
@@ -262,7 +263,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
   };
 
   const formatSet = (set: Set<string>): string => {
-    if (set.size === 0) return '∅';
+    if (set.size === 0) return normalizeMathText('∅');
     return `{${Array.from(set).sort().join(', ')}}`;
   };
 
@@ -299,7 +300,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                   top: `${pos.y}px`
                 }}
               >
-                {symbol}
+                {normalizeMathText(symbol)}
               </div>
             );
           })}
@@ -463,7 +464,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                           selectedOperation === 'union' ? 'bg-green-600 ring-2 ring-green-400' : 'bg-gray-700 hover:bg-gray-600'
                         }`}
                       >
-                        A ∪ B (Union)
+                        {normalizeMathText('A ∪ B (Union)')}
                       </button>
                       <button
                         onClick={() => setSelectedOperation('intersection')}
@@ -471,7 +472,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                           selectedOperation === 'intersection' ? 'bg-green-600 ring-2 ring-green-400' : 'bg-gray-700 hover:bg-gray-600'
                         }`}
                       >
-                        A ∩ B (Intersection)
+                        {normalizeMathText('A ∩ B (Intersection)')}
                       </button>
                       <button
                         onClick={() => setSelectedOperation('difference')}
@@ -493,20 +494,20 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                         {selectedOperation === 'union' && (
                           <div className="text-green-200 text-sm sm:text-base text-center">
                             <p className="font-mono mb-2">
-                              A ∪ B = <span className="text-white">{formatSet(new Set(unionResult))}</span>
+                              {normalizeMathText('A ∪ B = ')}<span className="text-white">{formatSet(new Set(unionResult))}</span>
                             </p>
                             <p className="text-xs text-green-300">
-                              n(A ∪ B) = {unionResult.length} = {parsedSetA.size} + {parsedSetB.size} - {intersectionResult.length}
+                              {normalizeMathText('n(A ∪ B)')} = {unionResult.length} = {parsedSetA.size} + {parsedSetB.size} - {intersectionResult.length}
                             </p>
                           </div>
                         )}
                         {selectedOperation === 'intersection' && (
                           <div className="text-green-200 text-sm sm:text-base text-center">
                             <p className="font-mono mb-2">
-                              A ∩ B = <span className="text-white">{formatSet(new Set(intersectionResult))}</span>
+                              {normalizeMathText('A ∩ B = ')}<span className="text-white">{formatSet(new Set(intersectionResult))}</span>
                             </p>
                             <p className="text-xs text-green-300">
-                              n(A ∩ B) = {intersectionResult.length}
+                              {normalizeMathText('n(A ∩ B)')} = {intersectionResult.length}
                             </p>
                           </div>
                         )}
@@ -593,7 +594,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                         onChange={(e) => setVennAOnly(parseInt(e.target.value) || 0)}
                         className="w-16 px-2 py-1 bg-gray-700 text-white rounded text-center"
                       />
-                      <span className="text-gray-300">A ∩ B:</span>
+                      <span className="text-gray-300">{normalizeMathText('A ∩ B:')}</span>
                       <input
                         type="number"
                         min="0"
@@ -611,7 +612,7 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
                       />
                     </div>
                     <div className="text-center text-xs text-purple-300">
-                      Total: {vennAOnly + vennAB + vennBOnly} | n(A) = {vennAOnly + vennAB} | n(B) = {vennBOnly + vennAB} | n(A ∪ B) = {vennAOnly + vennAB + vennBOnly}
+                      {normalizeMathText('Total:')} {vennAOnly + vennAB + vennBOnly} | n(A) = {vennAOnly + vennAB} | n(B) = {vennBOnly + vennAB} | {normalizeMathText('n(A ∪ B)')} = {vennAOnly + vennAB + vennBOnly}
                     </div>
                   </div>
                 </div>
@@ -625,12 +626,12 @@ const SetsVennDiagramsIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
           <div className="bg-blue-900/50 rounded-lg p-2 sm:p-3 text-center border border-blue-700">
             <Plus className="w-4 h-4 sm:w-6 sm:h-6 text-blue-400 mx-auto mb-0.5 sm:mb-1" />
             <p className="text-blue-300 text-[10px] sm:text-sm">Union</p>
-            <p className="text-white font-mono text-xs sm:text-base">A ∪ B</p>
+            <p className="text-white font-mono text-xs sm:text-base">{normalizeMathText('A ∪ B')}</p>
           </div>
           <div className="bg-green-900/50 rounded-lg p-2 sm:p-3 text-center border border-green-700">
             <X className="w-4 h-4 sm:w-6 sm:h-6 text-green-400 mx-auto mb-0.5 sm:mb-1" />
             <p className="text-green-300 text-[10px] sm:text-sm">Intersection</p>
-            <p className="text-white font-mono text-xs sm:text-base">A ∩ B</p>
+            <p className="text-white font-mono text-xs sm:text-base">{normalizeMathText('A ∩ B')}</p>
           </div>
           <div className="bg-purple-900/50 rounded-lg p-2 sm:p-3 text-center border border-purple-700">
             <Circle className="w-4 h-4 sm:w-6 sm:h-6 text-purple-400 mx-auto mb-0.5 sm:mb-1" />

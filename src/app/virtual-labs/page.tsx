@@ -3,8 +3,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { virtualLabExperiments, FREE_VIRTUAL_LAB_SLUGS } from '@/lib/virtual-labs-data';
-import { FlaskConical, Atom, Dna, Zap, Globe, CheckCircle2, Lock, Trophy, Clock, Star, Crown } from 'lucide-react';
+import {
+  virtualLabExperiments,
+  FREE_VIRTUAL_LAB_SLUGS,
+  getVirtualLabTrack,
+  VIRTUAL_LAB_TRACK_LABELS,
+  getVirtualLabAudience,
+  VIRTUAL_LAB_AUDIENCE_LABELS,
+  type VirtualLabTrack,
+  type VirtualLabAudience,
+} from '@/lib/virtual-labs-data';
+import { FlaskConical, Dna, Zap, Globe, CheckCircle2, Trophy, Clock, Star, Crown, Calculator } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useLabProgress } from '@/stores/lab-progress-store';
@@ -21,8 +30,9 @@ export default function VirtualLabsPage() {
   // V1 Route Guard: Check if user has access to virtual labs
   const { hasAccess, campus, mounted: accessMounted } = useV1FeatureAccess('virtualLabs');
   const { user, isUserLoading } = useFirebase();
-  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics' | 'Science'>('All');
-  const [difficultyFilter, setDifficultyFilter] = useState<'All' | 'Easy' | 'Medium' | 'Hard'>('All');
+  const [trackFilter, setTrackFilter] = useState<'All' | VirtualLabTrack>('All');
+  const [audienceFilter, setAudienceFilter] = useState<'All' | VirtualLabAudience>('All');
+  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics'>('All');
   const { completedLabs, totalXP, streak, isLabCompleted } = useLabProgress();
   const [mounted, setMounted] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
@@ -61,6 +71,7 @@ export default function VirtualLabsPage() {
     Chemistry: FlaskConical,
     Physics: Zap,
     Science: Globe,
+    Mathematics: Calculator,
   };
 
   const subjectColors = {
@@ -68,6 +79,7 @@ export default function VirtualLabsPage() {
     Chemistry: 'bg-orange-500/10 text-orange-700 dark:text-orange-400 border-orange-500/30',
     Physics: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30',
     Science: 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/30',
+    Mathematics: 'bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-400 border-fuchsia-500/30',
   };
 
   // Assign difficulty levels to labs (you can customize this)
@@ -95,14 +107,11 @@ export default function VirtualLabsPage() {
         FREE_VIRTUAL_LAB_SLUGS.includes(lab.slug as typeof FREE_VIRTUAL_LAB_SLUGS[number])
       );
   const allLabsTotal = virtualLabExperiments.experiments.length; // Total labs available
-  const filteredExperiments = allLabs
-    .filter(exp => filter === 'All' || exp.subject === filter)
-    .filter(exp => difficultyFilter === 'All' || getDifficulty(exp.slug) === difficultyFilter);
-  
   // Get all labs (including locked ones) for display
   const allLabsIncludingLocked = virtualLabExperiments.experiments
-    .filter(exp => filter === 'All' || exp.subject === filter)
-    .filter(exp => difficultyFilter === 'All' || getDifficulty(exp.slug) === difficultyFilter);
+    .filter(exp => trackFilter === 'All' || getVirtualLabTrack(exp) === trackFilter)
+    .filter(exp => audienceFilter === 'All' || getVirtualLabAudience(exp) === audienceFilter)
+    .filter(exp => filter === 'All' || exp.subject === filter);
 
   const completionRate = allLabs.length > 0
     ? Math.round((Object.keys(completedLabs).length / allLabs.length) * 100)
@@ -131,7 +140,7 @@ export default function VirtualLabsPage() {
               </h1>
             </div>
             <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-4">
-              Master science through hands-on experiments.{' '}
+              Master science and mathematics through hands-on simulations.{' '}
               {!hasVirtualLab ? (
                 <>
                   <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{allLabs.length}</span> labs free,{' '}
@@ -142,6 +151,9 @@ export default function VirtualLabsPage() {
                   <span className="font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">{allLabsTotal}</span> interactive labs unlocked!
                 </>
               )}
+            </p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Tracks: {VIRTUAL_LAB_TRACK_LABELS['science-lab']} • {VIRTUAL_LAB_TRACK_LABELS['maths-lab']} • {VIRTUAL_LAB_TRACK_LABELS['art-lab']} (coming soon)
             </p>
             {userId !== 'guest' && features.enableReferrals && (
               <div className="flex justify-center">
@@ -204,9 +216,33 @@ export default function VirtualLabsPage() {
           <Card className="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-xl">
             <CardContent className="p-6">
               <div className="mb-6">
+                <p className="text-sm font-bold mb-3 bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Track</p>
+                <div className="flex flex-wrap gap-2">
+                  {([
+                    ['All', 'All Tracks'],
+                    ['science-lab', VIRTUAL_LAB_TRACK_LABELS['science-lab']],
+                    ['maths-lab', VIRTUAL_LAB_TRACK_LABELS['maths-lab']],
+                    ['art-lab', `${VIRTUAL_LAB_TRACK_LABELS['art-lab']} (Coming Soon)`],
+                  ] as const).map(([trackValue, label]) => (
+                    <button
+                      key={trackValue}
+                      onClick={() => setTrackFilter(trackValue)}
+                      className={`px-5 py-2.5 rounded-xl font-semibold transition-all hover:scale-105 ${
+                        trackFilter === trackValue
+                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg hover:shadow-xl'
+                          : 'bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 text-slate-700 dark:text-slate-300 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-700 dark:hover:to-slate-600 border-2 border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-6">
                 <p className="text-sm font-bold mb-3 bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Subject</p>
                 <div className="flex flex-wrap gap-2">
-                  {(['All', 'Biology', 'Chemistry', 'Physics', 'Science'] as const).map((subject) => (
+                  {(['All', 'Biology', 'Chemistry', 'Physics', 'Science', 'Mathematics'] as const).map((subject) => (
                     <button
                       key={subject}
                       onClick={() => setFilter(subject)}
@@ -221,33 +257,32 @@ export default function VirtualLabsPage() {
                   ))}
                 </div>
               </div>
-              
-              <div>
-                <p className="text-sm font-bold mb-3 bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Difficulty</p>
+
+              <div className="mb-6">
+                <p className="text-sm font-bold mb-3 bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Level Band</p>
                 <div className="flex flex-wrap gap-2">
-                  {(['All', 'Easy', 'Medium', 'Hard'] as const).map((diff) => {
-                    const diffColors = {
-                      All: 'from-slate-500 to-slate-600',
-                      Easy: 'from-green-500 to-emerald-600',
-                      Medium: 'from-yellow-500 to-amber-600',
-                      Hard: 'from-red-500 to-orange-600'
-                    };
-                    return (
-                      <button
-                        key={diff}
-                        onClick={() => setDifficultyFilter(diff)}
-                        className={`px-5 py-2.5 rounded-xl font-semibold transition-all hover:scale-105 ${
-                          difficultyFilter === diff
-                            ? `bg-gradient-to-r ${diffColors[diff]} text-white shadow-lg hover:shadow-xl`
-                            : 'bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 text-slate-700 dark:text-slate-300 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-700 dark:hover:to-slate-600 border-2 border-slate-200 dark:border-slate-700'
-                        }`}
-                      >
-                        {diff}
-                      </button>
-                    );
-                  })}
+                  {([
+                    ['All', 'All Levels'],
+                    ['primary-school', VIRTUAL_LAB_AUDIENCE_LABELS['primary-school']],
+                    ['middle-school', VIRTUAL_LAB_AUDIENCE_LABELS['middle-school']],
+                    ['high-school', VIRTUAL_LAB_AUDIENCE_LABELS['high-school']],
+                    ['all-levels', VIRTUAL_LAB_AUDIENCE_LABELS['all-levels']],
+                  ] as const).map(([audienceValue, label]) => (
+                    <button
+                      key={audienceValue}
+                      onClick={() => setAudienceFilter(audienceValue)}
+                      className={`px-5 py-2.5 rounded-xl font-semibold transition-all hover:scale-105 ${
+                        audienceFilter === audienceValue
+                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg hover:shadow-xl'
+                          : 'bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 text-slate-700 dark:text-slate-300 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-700 dark:hover:to-slate-600 border-2 border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
                 </div>
               </div>
+              
             </CardContent>
           </Card>
 
@@ -260,14 +295,17 @@ export default function VirtualLabsPage() {
                 Biology: { bg: 'from-green-500/10 to-emerald-500/10', border: 'border-green-200/30 dark:border-green-800/30', icon: 'text-green-600 dark:text-green-400', text: 'from-green-600 to-emerald-600' },
                 Chemistry: { bg: 'from-orange-500/10 to-amber-500/10', border: 'border-orange-200/30 dark:border-orange-800/30', icon: 'text-orange-600 dark:text-orange-400', text: 'from-orange-600 to-amber-600' },
                 Physics: { bg: 'from-blue-500/10 to-indigo-500/10', border: 'border-blue-200/30 dark:border-blue-800/30', icon: 'text-blue-600 dark:text-blue-400', text: 'from-blue-600 to-indigo-600' },
-                Science: { bg: 'from-violet-500/10 to-purple-500/10', border: 'border-violet-200/30 dark:border-violet-800/30', icon: 'text-violet-600 dark:text-violet-400', text: 'from-violet-600 to-purple-600' }
+                Science: { bg: 'from-violet-500/10 to-purple-500/10', border: 'border-violet-200/30 dark:border-violet-800/30', icon: 'text-violet-600 dark:text-violet-400', text: 'from-violet-600 to-purple-600' },
+                Mathematics: { bg: 'from-fuchsia-500/10 to-pink-500/10', border: 'border-fuchsia-200/30 dark:border-fuchsia-800/30', icon: 'text-fuchsia-600 dark:text-fuchsia-400', text: 'from-fuchsia-600 to-pink-600' },
               };
               const color = colors[subject as keyof typeof colors];
               return (
                 <div key={subject} className={`group relative p-5 bg-gradient-to-br ${color.bg} backdrop-blur-sm rounded-2xl border-2 ${color.border} shadow-lg hover:shadow-xl transition-all hover:scale-105 overflow-hidden`}>
                   <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${color.bg.replace('/10', '/20')} rounded-full blur-2xl group-hover:scale-150 transition-transform`}></div>
                   <div className="relative flex items-center gap-3">
-                    <Icon className={`h-8 w-8 ${color.icon} group-hover:scale-110 transition-transform`} />
+                    <div className="p-2 rounded-xl bg-white/60 dark:bg-black/20 border border-white/30 dark:border-white/10 shadow-inner">
+                      <Icon className={`h-8 w-8 ${color.icon} group-hover:scale-110 transition-transform`} />
+                    </div>
                     <div>
                       <p className={`text-3xl font-bold bg-gradient-to-r ${color.text} bg-clip-text text-transparent`}>
                         {hasVirtualLab ? totalCount : `${availableCount}/${totalCount}`}
@@ -316,6 +354,8 @@ export default function VirtualLabsPage() {
               const isLocked = !allLabs.some(lab => lab.slug === experiment.slug);
               const Icon = subjectIcons[experiment.subject as keyof typeof subjectIcons] ?? Globe;
               const colorClass = subjectColors[experiment.subject as keyof typeof subjectColors] ?? subjectColors.Science;
+              const trackLabel = VIRTUAL_LAB_TRACK_LABELS[getVirtualLabTrack(experiment)];
+              const audienceLabel = VIRTUAL_LAB_AUDIENCE_LABELS[getVirtualLabAudience(experiment)];
               const isCompleted = mounted && isLabCompleted(experiment.id);
               const difficulty = getDifficulty(experiment.id);
               const estimatedXP = difficulty === 'Easy' ? 50 : difficulty === 'Medium' ? 75 : 100;
@@ -368,6 +408,12 @@ export default function VirtualLabsPage() {
                         <div className="flex flex-col gap-2 items-end">
                           <Badge className={`${colorClass} border-2 font-semibold`}>
                             {experiment.subject}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs border-dashed">
+                            {trackLabel}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {audienceLabel}
                           </Badge>
                           {isLocked ? (
                             <Badge className="bg-gradient-to-r from-yellow-500 to-amber-600 text-white border-0 font-semibold">
@@ -425,11 +471,13 @@ export default function VirtualLabsPage() {
             })}
           </div>
 
-          {filteredExperiments.length === 0 && (
+          {allLabsIncludingLocked.length === 0 && (
             <Card className="text-center py-12 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-xl">
               <CardContent>
                 <div className="text-6xl mb-4 opacity-50">🔬</div>
-                <p className="text-xl text-slate-600 dark:text-slate-400 font-medium">No experiments found for {filter}</p>
+                <p className="text-xl text-slate-600 dark:text-slate-400 font-medium">
+                  No labs found for this track/filter combination.
+                </p>
               </CardContent>
             </Card>
           )}

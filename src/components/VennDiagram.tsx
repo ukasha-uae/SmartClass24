@@ -24,6 +24,10 @@ export interface VennDiagramProps {
   shade?: string[]; // Array of region keys to shade (e.g., ['A', 'AB'] for Set A)
   width?: number;
   height?: number;
+  interactive2Set?: {
+    onRegionDrop?: (region: 'A' | 'AB' | 'B' | 'U', draggedItem?: string) => void;
+    regionItems?: Partial<Record<'A' | 'AB' | 'B' | 'U', string[]>>;
+  };
 }
 
 export default function VennDiagram({ 
@@ -32,20 +36,42 @@ export default function VennDiagram({
   values = {}, 
   shade = [],
   width = 400, 
-  height = 300 
+  height = 300,
+  interactive2Set
 }: VennDiagramProps) {
   
   const isShaded = (region: string) => shade.includes(region);
   const shadeColor = "rgba(59, 130, 246, 0.3)"; // blue-500 with opacity
   const strokeColor = "currentColor";
   const textColor = "currentColor";
+  const renderRegionText = (
+    regionKey: 'A' | 'AB' | 'B' | 'U',
+    fallback: string | number | undefined,
+    x: number,
+    y: number
+  ) => {
+    const items = interactive2Set?.regionItems?.[regionKey];
+    const content = items && items.length > 0 ? items.join(', ') : fallback;
+    if (!content) return null;
+    return (
+      <text x={x} y={y} textAnchor="middle" fill={textColor} fontSize={items ? 12 : 16} fontWeight={items ? 600 : 400}>
+        {content}
+      </text>
+    );
+  };
 
   if (type === '1set') {
     // 1-Set Venn Diagram
     // Circle A: cx=200, cy=150, r=100
     
     return (
-      <svg width={width} height={height} viewBox="0 0 400 300" className="mx-auto font-sans">
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 400 300"
+        preserveAspectRatio="xMidYMid meet"
+        className="mx-auto font-sans w-full h-auto max-w-[400px]"
+      >
         {/* Universal Set Box */}
         <rect x="10" y="10" width="380" height="280" fill={isShaded('U') ? shadeColor : 'none'} stroke={strokeColor} strokeWidth="2" rx="5" />
         <text x="25" y="35" fontSize="16" fontWeight="bold" fill={textColor}>{labels.U}</text>
@@ -89,9 +115,31 @@ export default function VennDiagram({
     // Circle B: cx=260, cy=150, r=80
     
     return (
-      <svg width={width} height={height} viewBox="0 0 400 300" className="mx-auto font-sans">
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 400 300"
+        preserveAspectRatio="xMidYMid meet"
+        className="mx-auto font-sans w-full h-auto max-w-[400px]"
+      >
         {/* Universal Set Box */}
-        <rect x="10" y="10" width="380" height="280" fill="none" stroke={strokeColor} strokeWidth="2" rx="5" />
+        <rect
+          x="10"
+          y="10"
+          width="380"
+          height="280"
+          fill="transparent"
+          stroke={strokeColor}
+          strokeWidth="2"
+          rx="5"
+          onDragOver={(e) => interactive2Set?.onRegionDrop && e.preventDefault()}
+          onDrop={(e) => {
+            if (!interactive2Set?.onRegionDrop) return;
+            e.preventDefault();
+            const item = e.dataTransfer.getData('text/plain') || undefined;
+            interactive2Set.onRegionDrop('U', item);
+          }}
+        />
         <text x="25" y="35" fontSize="16" fontWeight="bold" fill={textColor}>{labels.U}</text>
         
         {/* Shading Definitions */}
@@ -111,15 +159,39 @@ export default function VennDiagram({
         
         {/* Region: A only */}
         <path d="M 140 70 A 80 80 0 1 0 140 230 A 80 80 0 0 0 200 202.9 A 80 80 0 0 1 200 97.1 A 80 80 0 0 0 140 70 Z" 
-              fill={isShaded('A') ? shadeColor : 'none'} />
+              fill={isShaded('A') ? shadeColor : 'transparent'}
+              pointerEvents="all"
+              onDragOver={(e) => interactive2Set?.onRegionDrop && e.preventDefault()}
+              onDrop={(e) => {
+                if (!interactive2Set?.onRegionDrop) return;
+                e.preventDefault();
+                const item = e.dataTransfer.getData('text/plain') || undefined;
+                interactive2Set.onRegionDrop('A', item);
+              }} />
               
         {/* Region: B only */}
         <path d="M 260 70 A 80 80 0 0 1 260 230 A 80 80 0 0 1 200 202.9 A 80 80 0 0 0 200 97.1 A 80 80 0 0 1 260 70 Z" 
-              fill={isShaded('B') ? shadeColor : 'none'} />
+              fill={isShaded('B') ? shadeColor : 'transparent'}
+              pointerEvents="all"
+              onDragOver={(e) => interactive2Set?.onRegionDrop && e.preventDefault()}
+              onDrop={(e) => {
+                if (!interactive2Set?.onRegionDrop) return;
+                e.preventDefault();
+                const item = e.dataTransfer.getData('text/plain') || undefined;
+                interactive2Set.onRegionDrop('B', item);
+              }} />
 
         {/* Region: Intersection AB */}
         <path d="M 200 97.1 A 80 80 0 0 0 200 202.9 A 80 80 0 0 0 200 97.1 Z" 
-              fill={isShaded('AB') ? shadeColor : 'none'} />
+              fill={isShaded('AB') ? shadeColor : 'transparent'}
+              pointerEvents="all"
+              onDragOver={(e) => interactive2Set?.onRegionDrop && e.preventDefault()}
+              onDrop={(e) => {
+                if (!interactive2Set?.onRegionDrop) return;
+                e.preventDefault();
+                const item = e.dataTransfer.getData('text/plain') || undefined;
+                interactive2Set.onRegionDrop('AB', item);
+              }} />
 
         {/* Circles Outlines */}
         <circle cx="140" cy="150" r="80" fill="none" stroke={strokeColor} strokeWidth="2" />
@@ -130,10 +202,10 @@ export default function VennDiagram({
         <text x="260" y="60" textAnchor="middle" fontWeight="bold" fill={textColor}>{labels.B}</text>
 
         {/* Values */}
-        {values.A && <text x="100" y="155" textAnchor="middle" fill={textColor}>{values.A}</text>}
-        {values.B && <text x="300" y="155" textAnchor="middle" fill={textColor}>{values.B}</text>}
-        {values.AB && <text x="200" y="155" textAnchor="middle" fill={textColor}>{values.AB}</text>}
-        {values.U && <text x="360" y="270" textAnchor="middle" fill={textColor}>{values.U}</text>}
+        {renderRegionText('A', values.A, 100, 155)}
+        {renderRegionText('B', values.B, 300, 155)}
+        {renderRegionText('AB', values.AB, 200, 155)}
+        {renderRegionText('U', values.U, 360, 270)}
       </svg>
     );
   } else {
@@ -145,7 +217,13 @@ export default function VennDiagram({
     // r = 90
     
     return (
-      <svg width={width} height={height} viewBox="0 0 400 350" className="mx-auto font-sans">
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 400 350"
+        preserveAspectRatio="xMidYMid meet"
+        className="mx-auto font-sans w-full h-auto max-w-[400px]"
+      >
         {/* Universal Set Box */}
         <rect x="10" y="10" width="380" height="330" fill={isShaded('U') ? shadeColor : 'none'} stroke={strokeColor} strokeWidth="2" rx="5" />
         <text x="25" y="35" fontSize="16" fontWeight="bold" fill={textColor}>{labels.U}</text>
