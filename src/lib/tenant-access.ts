@@ -15,6 +15,13 @@ export type TenantAccessKeySummary = {
   createdBy: string | null;
 };
 
+export type TenantBillingSummary = {
+  tenantId: string;
+  userCount: number;
+  activeKeys: number;
+  totalKeys: number;
+};
+
 export async function redeemTenantAccessKey(user: User, accessKey: string): Promise<{ tenantId: string }> {
   return callCallableFunction<{ accessKey: string }, { success: boolean; tenantId: string }>(
     'redeemTenantAccessKey',
@@ -44,4 +51,34 @@ export async function listTenantAccessKeys(user: User): Promise<TenantAccessKeyS
 
 export async function revokeTenantAccessKey(user: User, keyHash: string): Promise<void> {
   await callCallableFunction<{ keyHash: string }, { success: boolean }>('revokeTenantAccessKey', { keyHash }, user);
+}
+
+export async function listTenantBillingOverview(user: User): Promise<TenantBillingSummary[]> {
+  const res = await callCallableFunction<Record<string, never>, { success: boolean; tenants: TenantBillingSummary[] }>(
+    'listTenantBillingOverview',
+    {},
+    user
+  );
+  return res.tenants || [];
+}
+
+export async function rotateTenantAccessKey(
+  user: User,
+  params: { tenantId: string; label: string; expiresAt?: string; maxUses?: number }
+): Promise<{ accessKey: string; keyHash: string; tenantId: string; revokedCount: number }> {
+  return callCallableFunction<
+    { tenantId: string; label: string; expiresAt?: string; maxUses?: number },
+    { success: boolean; accessKey: string; keyHash: string; tenantId: string; revokedCount: number }
+  >('rotateTenantAccessKey', params, user);
+}
+
+export async function updateTenantAccessKeyMaxUses(
+  user: User,
+  params: { keyHash: string; maxUses: number | null }
+): Promise<void> {
+  await callCallableFunction<{ keyHash: string; maxUses: number | null }, { success: boolean }>(
+    'updateTenantAccessKeyMaxUses',
+    params,
+    user
+  );
 }

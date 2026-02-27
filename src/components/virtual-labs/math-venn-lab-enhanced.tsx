@@ -343,8 +343,8 @@ export function MathVennLabEnhanced() {
                     </div>
 
                     <div className="lg:col-span-8 mt-3 lg:mt-0 space-y-3">
-                      <div className="rounded-xl border border-purple-200 dark:border-purple-800 bg-gradient-to-b from-violet-50 to-white dark:from-violet-950/20 dark:to-transparent p-3 lg:grid lg:grid-cols-12 lg:gap-4 lg:items-start">
-                        <div className="lg:col-span-8 max-w-[340px] sm:max-w-[420px] lg:max-w-[520px] w-full mx-auto lg:mx-0">
+                      <div className="rounded-xl border border-purple-200 dark:border-purple-800 bg-gradient-to-b from-violet-50 to-white dark:from-violet-950/20 dark:to-transparent p-2.5 sm:p-3 lg:grid lg:grid-cols-12 lg:gap-4 lg:items-start">
+                        <div className="lg:col-span-8 w-full max-w-[440px] sm:max-w-[520px] lg:max-w-[620px] mx-auto lg:mx-0">
                           <VennDiagram
                             type="2set"
                             labels={{ A: 'A', B: 'B', U: 'U' }}

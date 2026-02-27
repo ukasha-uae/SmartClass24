@@ -94,21 +94,29 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const isFreeLab = FREE_VIRTUAL_LAB_SLUGS.includes(labSlug as typeof FREE_VIRTUAL_LAB_SLUGS[number]);
   if (!isFreeLab && entitlements.isResolved && !entitlements.canAccess.virtualLabsPremium) {
     return (
-      <FeatureSoftGate
-        title="Premium Virtual Lab"
-        description="This lab is part of the premium lab library. You can continue using free labs or unlock full access."
-        ctaHref={addTenantParam('/pricing')}
-        ctaLabel="See Virtual Lab Pricing"
-        secondaryHref={addTenantParam('/virtual-labs')}
-        secondaryLabel="Back to Free Labs"
-        auditFeature="virtual_labs_premium"
-        auditRoute="/virtual-labs/[labSlug]"
-      />
+      <>
+        <FeatureSoftGate
+          title="Premium Virtual Lab"
+          description="This lab is part of the premium lab library. If your school gave you a tenant access key, redeem it to unlock without buying individually."
+          ctaHref={addTenantParam('/pricing')}
+          ctaLabel="See Virtual Lab Pricing"
+          secondaryHref={addTenantParam('/virtual-labs')}
+          secondaryLabel="Back to Free Labs"
+          auditFeature="virtual_labs_premium"
+          auditRoute="/virtual-labs/[labSlug]"
+        />
+        <div className="container mx-auto px-4 pb-8">
+          <Link href={addTenantParam('/tenant-access')}>
+            <Button className="w-full sm:w-auto">Have a school access key? Unlock here</Button>
+          </Link>
+        </div>
+      </>
     );
   }
 
   const LabComponent = experiment.component;
-  const trackLabel = VIRTUAL_LAB_TRACK_LABELS[getVirtualLabTrack(experiment)];
+  const labTrack = getVirtualLabTrack(experiment);
+  const trackLabel = VIRTUAL_LAB_TRACK_LABELS[labTrack];
   const audienceLabel = VIRTUAL_LAB_AUDIENCE_LABELS[getVirtualLabAudience(experiment)];
   
   // Check if this is a self-contained enhanced lab (has its own quiz/completion flow)
@@ -128,6 +136,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                           'grease-spot-test-for-fats', 'cell-division-simulator', 'respiration-in-seeds',
                           'transpiration-in-plants', 'enzyme-starch-digestion'
                         ].includes(experiment.slug);
+  const useCompactEnhancedShell = isEnhancedLab && labTrack === 'maths-lab';
 
   const subjectColors = {
     Biology: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30',
@@ -197,7 +206,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-300/20 via-blue-300/20 to-cyan-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
 
-        <div className="container mx-auto px-4 py-8 relative z-10">
+        <div className={`${useCompactEnhancedShell ? 'w-full px-2 sm:px-4 py-4' : 'container mx-auto px-4 py-8'} relative z-10`}>
           {/* Premium Back Button */}
           <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
             <Link href={addTenantParam('/virtual-labs')}>
@@ -220,24 +229,24 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
           {isEnhancedLab ? (
             <>
               {/* Premium header for enhanced labs */}
-              <Card className="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl">
-                <CardContent className="p-6">
+              <Card className={`${useCompactEnhancedShell ? 'mb-4 bg-white/85 dark:bg-gray-900/85 border border-purple-200/40 dark:border-purple-800/40 shadow-sm' : 'mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl'}`}>
+                <CardContent className={useCompactEnhancedShell ? 'p-3 sm:p-4' : 'p-6'}>
                   <div className="flex items-center gap-4">
-                    <div className="text-5xl">🔬</div>
+                    <div className={useCompactEnhancedShell ? 'text-3xl' : 'text-5xl'}>🔬</div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3 flex-wrap">
-                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 dark:from-purple-400 dark:via-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{experiment.title}</h1>
-                        <Badge className={`${subjectColors[experiment.subject as keyof typeof subjectColors]} border-2 font-semibold`}>
+                      <div className={`flex items-center ${useCompactEnhancedShell ? 'gap-2 mb-2' : 'gap-3 mb-3'} flex-wrap`}>
+                        <h1 className={`${useCompactEnhancedShell ? 'text-xl sm:text-2xl' : 'text-3xl sm:text-4xl'} font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 dark:from-purple-400 dark:via-violet-400 dark:to-indigo-400 bg-clip-text text-transparent`}>{experiment.title}</h1>
+                        <Badge className={`${subjectColors[experiment.subject as keyof typeof subjectColors]} ${useCompactEnhancedShell ? 'border' : 'border-2'} font-semibold`}>
                           {experiment.subject}
                         </Badge>
-                        <Badge variant="outline" className="border-dashed">
+                        <Badge variant="outline" className={`${useCompactEnhancedShell ? 'text-xs' : ''} border-dashed`}>
                           {trackLabel}
                         </Badge>
-                        <Badge variant="outline">
+                        <Badge variant="outline" className={useCompactEnhancedShell ? 'text-xs' : ''}>
                           {audienceLabel}
                         </Badge>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-400">{experiment.description}</p>
+                      <p className={`${useCompactEnhancedShell ? 'text-sm' : ''} text-slate-600 dark:text-slate-400`}>{experiment.description}</p>
                     </div>
                   </div>
                 </CardContent>

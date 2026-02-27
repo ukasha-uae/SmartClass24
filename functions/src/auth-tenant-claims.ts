@@ -494,3 +494,172 @@ export const redeemTenantAccessKey = functions.https.onCall(async (data, context
     message: 'Access key redeemed. Please refresh or sign in again to apply access.',
   };
 });
+
+/**
+ * Tenant billing overview (admin only).
+ * Returns current user counts and key posture per tenant.
+ */
+export const listTenantBillingOverview = functions.https.onCall(async (_data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  if (!isPrivilegedCaller(context)) {
+    throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+  }
+
+  const [usersSnap, keysSnap] = await Promise.all([
+    db.collection('users').get(),
+    db.collection('tenantAccessKeys').get(),
+  ]);
+
+  const userCounts = new Map<string, number>();
+  usersSnap.forEach((doc) => {
+    const tenantId = (doc.data()?.tenantId as string | undefined)?.trim();
+    if (!tenantId) return;
+    userCounts.set(tenantId, (userCounts.get(tenantId) ?? 0) + 1);
+  });
+
+  const keyCounts = new Map<string, { activeKeys: number; totalKeys: number }>();
+  keysSnap.forEach((doc) => {
+    const data = doc.data();
+    const tenantId = (data?.tenantId as string | undefined)?.trim();
+    if (!tenantId) return;
+    const current = keyCounts.get(tenantId) ?? { activeKeys: 0, totalKeys: 0 };
+    current.totalKeys += 1;
+    if (data?.isActive === true) current.activeKeys += 1;
+    keyCounts.set(tenantId, current);
+  });
+
+  const tenantIds = new Set<string>([...userCounts.keys(), ...keyCounts.keys()]);
+  const tenants = Array.from(tenantIds)
+    .map((tenantId) => ({
+      tenantId,
+      userCount: userCounts.get(tenantId) ?? 0,
+      activeKeys: keyCounts.get(tenantId)?.activeKeys ?? 0,
+      totalKeys: keyCounts.get(tenantId)?.totalKeys ?? 0,
+    }))
+    .sort((a, b) => b.userCount - a.userCount);
+
+  return { success: true, tenants };
+});
+
+/**
+ * Rotate tenant access key (admin only).
+ * Creates a new key and revokes currently active keys for the tenant.
+ */
+export const rotateTenantAccessKey = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  if (!isPrivilegedCaller(context)) {
+    throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+  }
+
+  const tenantId = typeof data?.tenantId === 'string' ? data.tenantId.trim() : '';
+  const label = typeof data?.label === 'string' ? data.label.trim() : '';
+  const expiresAtRaw = typeof data?.expiresAt === 'string' ? data.expiresAt.trim() : '';
+  const maxUsesRaw = typeof data?.maxUses === 'number' ? data.maxUses : undefined;
+
+  if (!tenantId || !/^[a-z0-9-]{2,40}$/.test(tenantId)) {
+    throw new functions.https.HttpsError('invalid-argument', 'Invalid tenantId');
+  }
+  if (!label) {
+    throw new functions.https.HttpsError('invalid-argument', 'label is required');
+  }
+
+  let expiresAt: admin.firestore.Timestamp | undefined;
+  if (expiresAtRaw) {
+    const dt = new Date(expiresAtRaw);
+    if (Number.isNaN(dt.getTime())) {
+      throw new functions.https.HttpsError('invalid-argument', 'Invalid expiresAt');
+    }
+    expiresAt = admin.firestore.Timestamp.fromDate(dt);
+  }
+
+  const maxUses = maxUsesRaw && maxUsesRaw > 0 ? Math.floor(maxUsesRaw) : undefined;
+
+  const activeKeysSnap = await db
+    .collection('tenantAccessKeys')
+    .where('tenantId', '==', tenantId)
+    .where('isActive', '==', true)
+    .get();
+
+  const key = generateAccessKey(tenantId);
+  const keyHash = hashAccessKey(normalizeAccessKey(key));
+  const now = admin.firestore.FieldValue.serverTimestamp();
+
+  const batch = db.batch();
+  activeKeysSnap.forEach((doc) => {
+    batch.set(
+      doc.ref,
+      {
+        isActive: false,
+        revokedAt: now,
+        revokedBy: context.auth?.uid ?? 'system',
+        rotationReplacedBy: keyHash,
+      },
+      { merge: true }
+    );
+  });
+
+  const docData: TenantAccessKeyDoc = {
+    tenantId,
+    label,
+    createdBy: context.auth.uid,
+    createdAt: now,
+    uses: 0,
+    isActive: true,
+  };
+  if (expiresAt) docData.expiresAt = expiresAt;
+  if (typeof maxUses === 'number') docData.maxUses = maxUses;
+
+  batch.set(db.collection('tenantAccessKeys').doc(keyHash), docData);
+  await batch.commit();
+
+  return {
+    success: true,
+    tenantId,
+    accessKey: key,
+    keyHash,
+    revokedCount: activeKeysSnap.size,
+    message: 'Tenant access key rotated',
+  };
+});
+
+/**
+ * Update maxUses for an existing tenant access key (admin only).
+ */
+export const updateTenantAccessKeyMaxUses = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  if (!isPrivilegedCaller(context)) {
+    throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+  }
+
+  const keyHash = typeof data?.keyHash === 'string' ? data.keyHash.trim() : '';
+  const maxUsesRaw = typeof data?.maxUses === 'number' ? data.maxUses : null;
+  if (!keyHash) {
+    throw new functions.https.HttpsError('invalid-argument', 'keyHash is required');
+  }
+  if (maxUsesRaw !== null && (!Number.isFinite(maxUsesRaw) || maxUsesRaw <= 0)) {
+    throw new functions.https.HttpsError('invalid-argument', 'maxUses must be a positive number or null');
+  }
+
+  const keyRef = db.collection('tenantAccessKeys').doc(keyHash);
+  const snap = await keyRef.get();
+  if (!snap.exists) {
+    throw new functions.https.HttpsError('not-found', 'Access key not found');
+  }
+
+  await keyRef.set(
+    {
+      maxUses: maxUsesRaw === null ? admin.firestore.FieldValue.delete() : Math.floor(maxUsesRaw),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedBy: context.auth.uid,
+    },
+    { merge: true }
+  );
+
+  return { success: true, keyHash };
+});

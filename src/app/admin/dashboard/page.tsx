@@ -933,7 +933,7 @@ export default function AdminDashboard() {
             className="gap-2 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 hover:from-blue-100 hover:to-cyan-100 dark:hover:from-blue-900/30 dark:hover:to-cyan-900/30 border-blue-200 dark:border-blue-800"
           >
             <KeyRound className="h-4 w-4" />
-            Tenant Access Keys
+            Tenant Access & User Billing
           </Button>
           <Button
             onClick={() => {

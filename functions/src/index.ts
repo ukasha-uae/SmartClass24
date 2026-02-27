@@ -17,6 +17,9 @@ import {
   listTenantAccessKeys,
   revokeTenantAccessKey,
   redeemTenantAccessKey,
+  listTenantBillingOverview,
+  rotateTenantAccessKey,
+  updateTenantAccessKeyMaxUses,
 } from './auth-tenant-claims';
 
 // Initialize Firebase Admin SDK
@@ -275,4 +278,7 @@ export {
   listTenantAccessKeys,
   revokeTenantAccessKey,
   redeemTenantAccessKey,
+  listTenantBillingOverview,
+  rotateTenantAccessKey,
+  updateTenantAccessKeyMaxUses,
 };

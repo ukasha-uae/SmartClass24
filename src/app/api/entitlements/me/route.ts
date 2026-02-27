@@ -142,12 +142,6 @@ export async function GET(request: NextRequest) {
     const previewTenant = getTenantById(devPreviewTenant);
     if (previewTenant) {
       requestTenant = previewTenant;
-      if (verified && !verified.claimsTenantId) {
-        verified = {
-          ...verified,
-          claimsTenantId: devPreviewTenant,
-        };
-      }
     }
   }
 
