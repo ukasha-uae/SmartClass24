@@ -32,12 +32,30 @@ import { useToast } from '@/hooks/use-toast';
 import { startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
 import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
 import { getSarahBot, getSarahAdaptedDifficulty, isBot } from '@/lib/ai-bot-profiles';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
+
+function normalizeLevelParam(raw: string | null): 'Primary' | 'JHS' | 'SHS' | null {
+  if (!raw) return null;
+  const value = raw.trim().toLowerCase();
+  if (value === 'primary') return 'Primary';
+  if (value === 'jhs' || value === 'middle-school' || value === 'middle school') return 'JHS';
+  if (value === 'shs' || value === 'high-school' || value === 'high school') return 'SHS';
+  return null;
+}
+
+function formatClassLevelLabel(classLevel: string, labels: { jhs: string; shs: string; primary: string }) {
+  if (classLevel.startsWith('JHS ')) return classLevel.replace('JHS', labels.jhs);
+  if (classLevel.startsWith('SHS ')) return classLevel.replace('SHS', labels.shs);
+  if (classLevel.startsWith('Primary ')) return classLevel.replace('Primary', labels.primary);
+  return classLevel;
+}
 
 export default function QuickMatchPage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
   const { hasArenaChallenge } = useTenant();
   const { user, firestore } = useFirebase();
+  const { labels } = useEducationLevels();
   const { playSound } = useSoundEffects();
   const { toast } = useToast();
   
@@ -54,7 +72,7 @@ export default function QuickMatchPage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const levelParam = params.get('level') as 'Primary' | 'JHS' | 'SHS' | null;
+      const levelParam = normalizeLevelParam(params.get('level'));
       if (levelParam) {
         setUserSelectedLevel(levelParam);
       }
@@ -231,12 +249,12 @@ export default function QuickMatchPage() {
       
       // Set default subject based on player's level
       if (!subject) {
-        const defaultSubjects = getAvailableSubjects(playerProfile.level || 'JHS').filter(s => s !== 'Mixed');
+        const defaultSubjects = getAvailableSubjects(updatedProfile.level || 'JHS').filter(s => s !== 'Mixed');
         setSubject(defaultSubjects[0] || 'Mathematics');
       }
       // Set default class level based on player's level
-      if (!classLevel) {
-        const defaultClassLevels = getClassLevels(playerProfile.level || 'JHS');
+      if (!classLevel || !classLevel.startsWith(userSelectedLevel)) {
+        const defaultClassLevels = getClassLevels(updatedProfile.level || 'JHS');
         setClassLevel(defaultClassLevels[0]?.id || 'JHS 1');
       }
     } else {
@@ -276,13 +294,13 @@ export default function QuickMatchPage() {
         setPlayer(newPlayer);
         
         // Set default class level for new player
-        const defaultClassLevels = getClassLevels('JHS');
+        const defaultClassLevels = getClassLevels(userSelectedLevel);
         setClassLevel(defaultClassLevels[0]?.id || 'JHS 1');
       };
       
       createPlayer();
     }
-  }, [user, router, firestore]);
+  }, [user, router, firestore, userSelectedLevel, subject, classLevel]);
 
   useEffect(() => {
     if (!isSearching) return;
@@ -643,7 +661,7 @@ export default function QuickMatchPage() {
                               : 'hover:scale-105'
                           }`}
                         >
-                          {level.name}
+                          {formatClassLevelLabel(level.name, labels)}
                         </Button>
                       );
                     })}
@@ -758,7 +776,7 @@ export default function QuickMatchPage() {
                     </div>
                     <div>
                       <p className="text-muted-foreground">Class Level</p>
-                      <p className="font-semibold">{classLevel}</p>
+                      <p className="font-semibold">{formatClassLevelLabel(classLevel, labels)}</p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Questions</p>

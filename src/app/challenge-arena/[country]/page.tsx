@@ -43,6 +43,7 @@ import TransactionHistory from '@/components/premium/TransactionHistory';
 import SubscriptionManagement from '@/components/premium/SubscriptionManagement';
 import { isPremiumUser, hasPremiumFeature, getQuestionBankLimit } from '@/lib/monetization';
 import { Coins } from 'lucide-react';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
 
 /**
  * Safe function to get URL search params without triggering React errors
@@ -54,6 +55,21 @@ function getSafeSearchParam(key: string): string | null {
   } catch {
     return null;
   }
+}
+
+function normalizeArenaLevel(raw: string | null): 'Primary' | 'JHS' | 'SHS' | null {
+  if (!raw) return null;
+  const value = raw.trim().toLowerCase();
+  if (value === 'primary') return 'Primary';
+  if (value === 'jhs' || value === 'middle-school' || value === 'middle school') return 'JHS';
+  if (value === 'shs' || value === 'high-school' || value === 'high school') return 'SHS';
+  return null;
+}
+
+function formatArenaLevel(level: 'Primary' | 'JHS' | 'SHS', labels: { primary: string; jhs: string; shs: string }) {
+  if (level === 'Primary') return labels.primary;
+  if (level === 'JHS') return labels.jhs;
+  return labels.shs;
 }
 
 export default function LocalizedChallengeArenaPage() {
@@ -91,6 +107,7 @@ export default function LocalizedChallengeArenaPage() {
   }, []);
 
   const { country, setCountry } = useLocalization();
+  const { labels } = useEducationLevels();
   const [player, setPlayer] = useState<Player | null>(null);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -132,9 +149,9 @@ export default function LocalizedChallengeArenaPage() {
     
     // Priority 1: Check URL parameter
     if (levelParam) {
-      const normalizedLevel = levelParam.toUpperCase();
-      if (normalizedLevel === 'SHS' || normalizedLevel === 'JHS' || normalizedLevel === 'PRIMARY') {
-        initialLevel = normalizedLevel === 'PRIMARY' ? 'Primary' : normalizedLevel as 'Primary' | 'JHS' | 'SHS';
+      const normalized = normalizeArenaLevel(levelParam);
+      if (normalized) {
+        initialLevel = normalized;
       }
     } else {
       // Priority 2: Check user profile
@@ -646,7 +663,7 @@ export default function LocalizedChallengeArenaPage() {
               <div className="flex-1">
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">{player.userName}</h2>
                 <p className="text-sm text-muted-foreground">{player.school}</p>
-                <Badge variant="outline" className="mt-1">{player.level || 'JHS'}</Badge>
+                <Badge variant="outline" className="mt-1">{formatArenaLevel((player.level || 'JHS') as 'Primary' | 'JHS' | 'SHS', labels)}</Badge>
               </div>
               <div className="text-right">
                 <div className="text-sm font-semibold text-primary">Level {Math.floor((player.xp || 0) / 100) + 1}</div>

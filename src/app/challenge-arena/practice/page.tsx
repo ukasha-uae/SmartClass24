@@ -31,6 +31,13 @@ import { useFirebase } from '@/firebase/provider';
 import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
 import { PromotionProgress } from '@/components/promotion/PromotionProgress';
 import { PromotionNotification } from '@/components/promotion/PromotionNotification';
+import { useEducationLevels } from '@/hooks/useEducationLevels';
+
+function formatLevelLabel(level: EducationLevel, labels: { primary: string; jhs: string; shs: string }) {
+  if (level === 'Primary') return labels.primary;
+  if (level === 'JHS') return labels.jhs;
+  return labels.shs;
+}
 
 // Get class levels based on education level
 const getClassLevels = (level: 'Primary' | 'JHS' | 'SHS') => {
@@ -108,6 +115,7 @@ export default function PracticeModePage() {
   const { hasArenaChallenge } = useTenant();
   const { toast } = useToast();
   const { user } = useFirebase();
+  const { labels } = useEducationLevels();
   
   // Tenant Route Guard: Check if arena is enabled for this tenant
   useEffect(() => {
@@ -329,7 +337,7 @@ export default function PracticeModePage() {
                       : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
                 >
-                  {lvl}
+                  {formatLevelLabel(lvl, labels)}
                 </button>
               ))}
             </div>
@@ -407,7 +415,7 @@ export default function PracticeModePage() {
                 Select Class Level
               </CardTitle>
               <CardDescription className="text-base">
-                Choose your class level ({level}) - {formData.classLevel} is pre-selected
+                Choose your class level ({formatLevelLabel(level, labels)}) - {formData.classLevel} is pre-selected
               </CardDescription>
             </CardHeader>
             <CardContent className="pb-4 space-y-4">
