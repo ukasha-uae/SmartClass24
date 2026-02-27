@@ -33,10 +33,15 @@ export function evaluateEntitlements(input: EntitlementEvaluationInput): Entitle
     subscriptionActive && (tier === 'virtual_lab' || tier === 'full_bundle');
 
   const tenantLicenseActive = isTenantLicenseActive(input.tenant, now);
+  // Temporary business hotfix:
+  // Wisdom Warehouse is a paid institution and needs uninterrupted access while
+  // key-onboarding is being finalized for all users.
+  const bypassTenantClaimForTrustedTenant = input.tenant.id === 'wisdomwarehouse';
   const tenantLicenseEligible =
-    input.user.hasTenantClaim &&
-    !!input.user.claimsTenantId &&
-    input.user.claimsTenantId === input.tenant.id &&
+    (bypassTenantClaimForTrustedTenant ||
+      (input.user.hasTenantClaim &&
+        !!input.user.claimsTenantId &&
+        input.user.claimsTenantId === input.tenant.id)) &&
     tenantLicenseActive;
 
   const challengeArenaPremium = tenantLicenseEligible || subscriptionHasPremium;
@@ -51,8 +56,11 @@ export function evaluateEntitlements(input: EntitlementEvaluationInput): Entitle
     reasons.push('No active tenant license match or qualifying subscription.');
   }
 
-  if (!input.user.hasTenantClaim && input.tenant.id !== 'smartclass24') {
+  if (!input.user.hasTenantClaim && input.tenant.id !== 'smartclass24' && !bypassTenantClaimForTrustedTenant) {
     reasons.push('User has no tenant claim; institution license cannot be trusted yet.');
+  }
+  if (bypassTenantClaimForTrustedTenant) {
+    reasons.push('Temporary override: Wisdom Warehouse tenant license bypasses per-user claim checks.');
   }
 
   return {
