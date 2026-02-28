@@ -129,8 +129,8 @@ export function FactorizationSolverAnimation({
   };
 
   return (
-    <Card ref={cardRef} className="my-6 overflow-hidden bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30">
-      <CardContent className="p-4 sm:p-6">
+    <Card ref={cardRef} className="my-3 sm:my-6 overflow-hidden bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30">
+      <CardContent className="p-3 sm:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
           <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
             <Calculator className="h-4 w-4 sm:h-5 sm:w-5 text-violet-600" />
@@ -195,9 +195,9 @@ export function FactorizationSolverAnimation({
 
               {/* Step 1: Finding Factors */}
               {step === 1 && (
-                <div className="space-y-6 text-center w-full p-4">
+                <div className="space-y-4 text-center w-full p-2 sm:p-4">
                   <div className="text-lg font-semibold mb-4">Step 1: Find Two Numbers</div>
-                  <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg">
+                  <div className="w-full p-3 sm:p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg">
                     <div className="mb-4">
                       <div className="text-sm text-muted-foreground mb-2">We need numbers that:</div>
                       <div className="flex flex-col gap-3">
@@ -211,7 +211,7 @@ export function FactorizationSolverAnimation({
                     </div>
                     <div className="mt-6">
                       <div className="text-xs text-muted-foreground mb-3">Testing factor pairs...</div>
-                      <div className="grid grid-cols-2 gap-2 max-w-xs mx-auto">
+                      <div className="grid grid-cols-2 gap-2 w-full">
                         {allFactors.slice(0, 4).map(([x, y], i) => (
                           <div 
                             key={i} 
@@ -316,7 +316,7 @@ export function FactorizationSolverAnimation({
                     <div className="text-3xl font-bold mb-6">
                       Solutions: x = {root1} or x = {root2}
                     </div>
-                    <div className="space-y-4 text-left max-w-md mx-auto">
+                    <div className="space-y-4 text-left w-full sm:max-w-md sm:mx-auto">
                       <div className="bg-white/20 p-4 rounded">
                         <div className="font-semibold mb-2">Check x = {root1}:</div>
                         <div className="text-sm">
@@ -889,8 +889,8 @@ export function DiscriminantExplorerAnimation({
   };
 
   return (
-    <Card ref={cardRef} className="my-6 overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30">
-      <CardContent className="p-4 sm:p-6">
+    <Card ref={cardRef} className="my-3 sm:my-6 overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/30">
+      <CardContent className="p-3 sm:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
           <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
             <Calculator className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600" />
@@ -960,7 +960,7 @@ export function DiscriminantExplorerAnimation({
                     <div className="text-3xl font-bold text-emerald-600 mb-4">
                       <MathText latex={'\\Delta = b^2 - 4ac'} />
                     </div>
-                    <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
+                    <div className="grid grid-cols-3 gap-3 w-full sm:max-w-md sm:mx-auto">
                       <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded">
                         <div className="text-sm text-muted-foreground">a</div>
                         <div className="text-2xl font-bold">{a}</div>
@@ -1042,7 +1042,7 @@ export function DiscriminantExplorerAnimation({
                 <div className="space-y-6 text-center w-full p-4">
                   <div className="text-lg font-semibold mb-4">Step 4: See the Parabola!</div>
                   <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow-lg">
-                    <svg width="350" height="350" viewBox="0 0 350 350" className="mx-auto">
+                    <svg viewBox="0 0 350 350" className="mx-auto w-full max-w-[420px] h-auto">
                       {/* Grid lines */}
                       <line x1="0" y1="175" x2="350" y2="175" stroke="gray" strokeWidth="1" opacity="0.3" />
                       <line x1="175" y1="0" x2="175" y2="350" stroke="gray" strokeWidth="1" opacity="0.3" />

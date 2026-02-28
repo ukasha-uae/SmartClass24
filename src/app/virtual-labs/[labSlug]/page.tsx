@@ -17,6 +17,7 @@ import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLab
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
 import { useEntitlements } from '@/hooks/useEntitlements';
+import { useFullscreen } from '@/contexts/FullscreenContext';
 import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
 import {
   FREE_VIRTUAL_LAB_SLUGS,
@@ -41,6 +42,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const addTenantParam = useTenantLink();
   const { features } = useTenant();
   const entitlements = useEntitlements();
+  const { setFullscreen } = useFullscreen();
   
   const { labSlug } = use(params);
   const [mounted, setMounted] = useState(false);
@@ -51,6 +53,10 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const [labCompleted, setLabCompleted] = useState(false);
   const [userInteracted, setUserInteracted] = useState(false);
   const { markLabComplete, isLabCompleted } = useLabProgress();
+  const isFreeLab = FREE_VIRTUAL_LAB_SLUGS.includes(labSlug as typeof FREE_VIRTUAL_LAB_SLUGS[number]);
+  const hasPremiumLabAccess = entitlements.canAccess.virtualLabsPremium;
+  const isSoftLockedPremiumLab = !isFreeLab && entitlements.isResolved && !hasPremiumLabAccess;
+  const shouldEnableLabImmersive = mounted && !isUserLoading && !isSoftLockedPremiumLab;
 
   useEffect(() => {
     setMounted(true);
@@ -69,6 +75,14 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
       window.removeEventListener('click', handleInteraction);
     };
   }, []);
+
+  useEffect(() => {
+    if (!mounted || isUserLoading) return;
+    setFullscreen(shouldEnableLabImmersive, { lockScroll: false });
+    return () => {
+      setFullscreen(false, { lockScroll: false });
+    };
+  }, [mounted, isUserLoading, shouldEnableLabImmersive, setFullscreen]);
 
   // CRITICAL: Wait for both mount and auth state to be ready
   // This prevents checking lab access with 'guest' userId before user loads
@@ -91,8 +105,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
     notFound();
   }
 
-  const isFreeLab = FREE_VIRTUAL_LAB_SLUGS.includes(labSlug as typeof FREE_VIRTUAL_LAB_SLUGS[number]);
-  if (!isFreeLab && entitlements.isResolved && !entitlements.canAccess.virtualLabsPremium) {
+  if (isSoftLockedPremiumLab) {
     return (
       <>
         <FeatureSoftGate

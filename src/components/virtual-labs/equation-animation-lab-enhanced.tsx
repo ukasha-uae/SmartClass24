@@ -167,6 +167,8 @@ export function EquationAnimationLabEnhanced() {
         message={teacherMessage}
         triggerSpeakKey={teacherKey}
         autoPlay
+        requireExplicitStart
+        showStartOverlay={false}
         theme="math"
         teacherName="Algebra Coach"
         quickActions={[
@@ -184,7 +186,7 @@ export function EquationAnimationLabEnhanced() {
             <CardTitle>Equation Animation Lab</CardTitle>
             <Badge variant="outline">{highSchoolLabel} ({'SHS/SSS'})</Badge>
           </div>
-          <CardDescription>
+          <CardDescription className="hidden sm:block">
             Concept IDs: `algebra.linear.solve`, `algebra.quadratic.factorization`, `algebra.quadratic.discriminant`
           </CardDescription>
         </CardHeader>
@@ -252,7 +254,12 @@ export function EquationAnimationLabEnhanced() {
                     <Lightbulb className="h-4 w-4" />
                     Misconception Hint
                   </Button>
-                  <Button variant="ghost" onClick={() => setTeacherKey((value) => value + 1)}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setTeacherKey((value) => value + 1);
+                    }}
+                  >
                     Replay teacher
                   </Button>
                 </div>

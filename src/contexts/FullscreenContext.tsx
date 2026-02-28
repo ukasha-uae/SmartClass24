@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface FullscreenContextType {
   isFullscreen: boolean;
-  setFullscreen: (value: boolean) => void;
+  setFullscreen: (value: boolean, options?: { lockScroll?: boolean }) => void;
 }
 
 const FullscreenContext = createContext<FullscreenContextType | undefined>(undefined);
@@ -12,10 +12,11 @@ const FullscreenContext = createContext<FullscreenContextType | undefined>(undef
 export function FullscreenProvider({ children }: { children: React.ReactNode }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const setFullscreen = (value: boolean) => {
+  const setFullscreen = (value: boolean, options?: { lockScroll?: boolean }) => {
     setIsFullscreen(value);
-    // Prevent body scroll when in fullscreen mode
-    if (value) {
+    // Preserve old behavior by default (lock scroll), but allow immersive pages
+    // to hide chrome while keeping scroll enabled.
+    if (value && (options?.lockScroll ?? true)) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';

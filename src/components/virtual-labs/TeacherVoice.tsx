@@ -29,6 +29,16 @@ interface TeacherVoiceProps {
         onClick: () => void;
     }>;
     onHintRequest?: () => void;
+    /**
+     * If true, narration only starts after an explicit action
+     * (Start Learning button / triggerSpeakKey).
+     */
+    requireExplicitStart?: boolean;
+    /**
+     * If true, shows full-screen audio-start prompt when required.
+     * Default false to avoid blocking overlays on mobile-first lessons.
+     */
+    showStartOverlay?: boolean;
 }
 
 export function TeacherVoice({ 
@@ -43,7 +53,9 @@ export function TeacherVoice({
     emotion,
     context,
     quickActions = [],
-    onHintRequest
+    onHintRequest,
+    requireExplicitStart = true,
+    showStartOverlay = false
 }: TeacherVoiceProps) {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [isMuted, setIsMuted] = React.useState(false);
@@ -56,6 +68,7 @@ export function TeacherVoice({
     const [currentChunkIndex, setCurrentChunkIndex] = React.useState(0);
     const [messageChunks, setMessageChunks] = React.useState<string[]>([]);
     const [showQuickActions, setShowQuickActions] = React.useState(false);
+    const [hasExplicitStart, setHasExplicitStart] = React.useState(false);
     const utteranceRef = React.useRef<SpeechSynthesisUtterance | null>(null);
     const debounceTimerRef = React.useRef<NodeJS.Timeout | null>(null);
     const chunkTimerRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -140,6 +153,9 @@ export function TeacherVoice({
         if (triggerSpeakKey == null || triggerSpeakKey === triggerSpeakKeyRef.current) return;
         triggerSpeakKeyRef.current = triggerSpeakKey;
         setUserInteracted(true);
+        if (requireExplicitStart) {
+            setHasExplicitStart(true);
+        }
         setShowAudioPrompt(false);
         if (normalizedMessage && voicesLoaded && !isMuted && 'speechSynthesis' in window) {
             window.speechSynthesis.cancel();
@@ -148,7 +164,7 @@ export function TeacherVoice({
             }, 100);
             return () => clearTimeout(t);
         }
-    }, [triggerSpeakKey, normalizedMessage, voicesLoaded, isMuted]);
+    }, [triggerSpeakKey, normalizedMessage, voicesLoaded, isMuted, requireExplicitStart]);
 
     React.useEffect(() => {
         // Cancel any ongoing speech when message changes
@@ -157,9 +173,17 @@ export function TeacherVoice({
         }
         
         if (autoPlay && !isMuted && normalizedMessage && voicesLoaded) {
+            if (requireExplicitStart && !hasExplicitStart) {
+                if (showStartOverlay) {
+                    setShowAudioPrompt(true);
+                }
+                return;
+            }
             // Only gate autoplay on mobile browsers (desktop should flow automatically).
             if (isMobile && !userInteracted) {
-                setShowAudioPrompt(true);
+                if (showStartOverlay) {
+                    setShowAudioPrompt(true);
+                }
                 return;
             }
             
@@ -187,7 +211,18 @@ export function TeacherVoice({
                 clearTimeout(chunkTimerRef.current);
             }
         };
-    }, [normalizedMessage, autoPlay, isMuted, voicesLoaded, userInteracted, messageChunks, currentChunkIndex]);
+    }, [
+        normalizedMessage,
+        autoPlay,
+        isMuted,
+        voicesLoaded,
+        userInteracted,
+        messageChunks,
+        currentChunkIndex,
+        requireExplicitStart,
+        hasExplicitStart,
+        showStartOverlay,
+    ]);
 
     const speakMessage = (chunkIndex: number = currentChunkIndex) => {
         if ('speechSynthesis' in window && !isMuted && messageChunks.length > 0) {
@@ -258,11 +293,16 @@ export function TeacherVoice({
     
     const enableAudio = () => {
         setUserInteracted(true);
+        setHasExplicitStart(true);
         setShowAudioPrompt(false);
         // Trigger speech immediately after user interaction
         if (normalizedMessage && voicesLoaded && !isMuted) {
             setTimeout(() => speakMessage(), 100);
         }
+    };
+
+    const startLesson = () => {
+        enableAudio();
     };
     
     // Theme-based gradient colors
@@ -540,6 +580,18 @@ export function TeacherVoice({
                                             </motion.div>
                                         )}
                                     </div>
+
+                                    {requireExplicitStart && !hasExplicitStart && (
+                                        <div className="mb-2">
+                                            <Button
+                                                size="sm"
+                                                onClick={startLesson}
+                                                className="h-7 px-2.5 text-xs bg-white text-gray-900 hover:bg-gray-100 font-semibold shadow-sm"
+                                            >
+                                                Start Lesson
+                                            </Button>
+                                        </div>
+                                    )}
                                     <AnimatePresence mode="wait">
                                         <motion.p 
                                             key={currentChunkIndex}

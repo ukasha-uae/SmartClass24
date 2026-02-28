@@ -15,6 +15,7 @@ import { LabSupplies, SupplyItem } from './LabSupplies';
 import { Trophy, Award } from 'lucide-react';
 
 type Step = 'intro' | 'collect-supplies' | 'place-bag' | 'tie-bag' | 'select-conditions' | 'observing' | 'results' | 'quiz' | 'complete';
+const OBSERVATION_DURATION_SECONDS = 20;
 
 export function TranspirationLabEnhanced() {
     const { toast } = useToast();
@@ -45,7 +46,6 @@ export function TranspirationLabEnhanced() {
     const [observationTime, setObservationTime] = React.useState(0);
     const [waterDroplets, setWaterDroplets] = React.useState(0);
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Quiz state
     const [selectedAnswer1, setSelectedAnswer1] = React.useState<string | null>(null);
@@ -62,6 +62,10 @@ export function TranspirationLabEnhanced() {
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
     const allSuppliesNotifiedRef = React.useRef(false);
+    const observationProgressPercent = Math.min(
+        100,
+        Math.round((observationTime / OBSERVATION_DURATION_SECONDS) * 100)
+    );
 
     // Show intro message on mount
     React.useEffect(() => {
@@ -75,22 +79,22 @@ export function TranspirationLabEnhanced() {
         if (currentStep === 'observing') {
             const interval = setInterval(() => {
                 setObservationTime(prev => {
-                    if (prev >= 100) {
+                    if (prev >= OBSERVATION_DURATION_SECONDS) {
                         clearInterval(interval);
                         handleObservationComplete();
-                        return 100;
+                        return OBSERVATION_DURATION_SECONDS;
                     }
                     return prev + 1;
                 });
                 
                 // Calculate droplet accumulation based on conditions
-                const baseRate = 0.5;
+                const baseRate = 2.5;
                 const sunMultiplier = sunlight ? 2 : 1;
                 const windMultiplier = wind ? 1.5 : 1;
                 const totalRate = baseRate * sunMultiplier * windMultiplier;
                 
                 setWaterDroplets(prev => Math.min(100, prev + totalRate));
-            }, 80);
+            }, 1000);
             
             return () => clearInterval(interval);
         }
@@ -186,7 +190,7 @@ export function TranspirationLabEnhanced() {
             setXpEarned(earnedXP);
             
             // Mark lab as complete
-            markLabComplete(labId, score, observationTime * 80);
+            markLabComplete(labId, score, observationTime * 1000);
             
             // Show celebration
             setShowCelebration(true);
@@ -721,7 +725,7 @@ export function TranspirationLabEnhanced() {
                                         {currentStep === 'observing' && (
                                             <div className="p-4 bg-gray-50 dark:bg-gray-950/20 rounded-lg border border-gray-200 dark:border-gray-800">
                                                 <h4 className="font-semibold mb-2">Time Elapsed:</h4>
-                                                <p className="text-2xl font-mono">{observationTime}%</p>
+                                                <p className="text-2xl font-mono">{observationTime}s ({observationProgressPercent}%)</p>
                                                 <p className="text-xs text-muted-foreground mt-1">Simulating 4-hour observation</p>
                                             </div>
                                         )}

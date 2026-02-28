@@ -25,9 +25,12 @@ const AquaticPlantIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 // Bubble component for animation
-const Bubble = ({ delay, speed }: { delay: number; speed: number }) => (
+const Bubble = ({ delay, speed, sizeClass }: { delay: number; speed: number; sizeClass: string }) => (
     <motion.div
-        className="absolute w-2 h-2 bg-blue-300/70 rounded-full"
+        className={cn(
+            'absolute rounded-full bg-cyan-200/95 border border-white/80 shadow-[0_0_14px_rgba(125,211,252,0.95)]',
+            sizeClass
+        )}
         initial={{ y: 0, opacity: 1, x: 0 }}
         animate={{ 
             y: -150, 
@@ -50,12 +53,19 @@ const Bubble = ({ delay, speed }: { delay: number; speed: number }) => (
 type Step = 'intro' | 'collect-supplies' | 'select-intensity' | 'running' | 'observe' | 'quiz' | 'complete';
 
 export function PhotosynthesisLabEnhanced() {
+    const OBSERVATION_DURATION_SECONDS = 20;
+    const TARGET_RATES_PER_MINUTE: Record<'low' | 'medium' | 'high', number> = {
+        low: 18,
+        medium: 36,
+        high: 72,
+    };
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [lightIntensity, setLightIntensity] = React.useState<'low' | 'medium' | 'high' | null>(null);
     const [observationTime, setObservationTime] = React.useState(0);
     const [teacherMessage, setTeacherMessage] = React.useState('');
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
+    const pendingTransitionTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
     
     // Track tested light intensities
     const [testedIntensities, setTestedIntensities] = React.useState<Set<string>>(new Set());
@@ -82,6 +92,44 @@ export function PhotosynthesisLabEnhanced() {
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
     const allSuppliesNotifiedRef = React.useRef(false);
+    const bubbleCountRef = React.useRef(0);
+    const observationTimeRef = React.useRef(0);
+
+    const runPendingTransition = React.useCallback(() => {
+        if (pendingTransitionTimeoutRef.current) {
+            clearTimeout(pendingTransitionTimeoutRef.current);
+            pendingTransitionTimeoutRef.current = null;
+        }
+        setPendingTransition((queued) => {
+            if (queued) queued();
+            return null;
+        });
+    }, []);
+
+    const cancelPendingTransition = React.useCallback(() => {
+        if (pendingTransitionTimeoutRef.current) {
+            clearTimeout(pendingTransitionTimeoutRef.current);
+            pendingTransitionTimeoutRef.current = null;
+        }
+        setPendingTransition(null);
+    }, []);
+
+    const transitionWithTeacher = React.useCallback(
+        (nextMessage: string, action: () => void, waitForNarration = true) => {
+            setTeacherMessage(nextMessage);
+            if (!waitForNarration) {
+                action();
+                return;
+            }
+            setPendingTransition(() => action);
+            if (pendingTransitionTimeoutRef.current) {
+                clearTimeout(pendingTransitionTimeoutRef.current);
+            }
+            // Fallback: proceed even if narration cannot complete (muted/no speech support).
+            pendingTransitionTimeoutRef.current = setTimeout(runPendingTransition, 1800);
+        },
+        [runPendingTransition]
+    );
 
     // Show intro message on mount
     React.useEffect(() => {
@@ -93,27 +141,29 @@ export function PhotosynthesisLabEnhanced() {
     // Observation timer and bubble counting
     React.useEffect(() => {
         if (currentStep === 'running' && lightIntensity) {
+            const bubblesPerSecond = TARGET_RATES_PER_MINUTE[lightIntensity] / 60;
             const interval = setInterval(() => {
                 setObservationTime(prev => {
-                    if (prev >= 100) {
+                    if (prev >= OBSERVATION_DURATION_SECONDS) {
                         clearInterval(interval);
                         handleObservationComplete();
-                        return 100;
+                        return OBSERVATION_DURATION_SECONDS;
                     }
-                    return prev + 2;
+                    const next = prev + 1;
+                    observationTimeRef.current = next;
+                    return next;
                 });
                 
-                // Count bubbles based on intensity
-                const bubbleRate = lightIntensity === 'low' ? 0.1 : lightIntensity === 'medium' ? 0.25 : 0.5;
-                setBubbleCount(prev => prev + bubbleRate);
-            }, 100);
+                setBubbleCount(prev => prev + bubblesPerSecond);
+                bubbleCountRef.current += bubblesPerSecond;
+            }, 1000);
             return () => clearInterval(interval);
         }
     }, [currentStep, lightIntensity]);
 
     const handleStartExperiment = () => {
         setCurrentStep('collect-supplies');
-        setTeacherMessage('Before we begin, let\'s collect all the supplies we need for the photosynthesis experiment. Click on each item to collect it!');
+        setTeacherMessage("Great start! Before we begin, let's collect all the supplies we need for the photosynthesis experiment. Click each required item to collect it.");
     };
 
     const handleCollect = (itemId: string) => {
@@ -129,7 +179,7 @@ export function PhotosynthesisLabEnhanced() {
             });
         }
         setShowSupplies(false);
-        setTeacherMessage('Excellent! All supplies collected. Now choose a light intensity to test. Low intensity simulates cloudy conditions, medium is partial sunlight, and high is bright sunlight. Which would you like to test first?');
+        setTeacherMessage('Excellent! All supplies are collected. Now choose a light intensity to test. Low simulates cloudy conditions, medium is partial sunlight, and high is bright sunlight.');
         setCurrentStep('select-intensity');
 }, [toast]);
 
@@ -145,8 +195,10 @@ export function PhotosynthesisLabEnhanced() {
         setLightIntensity(intensity);
         setPlantPlaced(true);
         setBubbleCount(0);
+        bubbleCountRef.current = 0;
         setObservationTime(0);
-        setTeacherMessage(`Great choice! ${intensity === 'high' ? 'Bright sunlight' : intensity === 'medium' ? 'Partial sunlight' : 'Cloudy conditions'}. The plant is now in the beaker with ${intensity} light. Watch carefully as oxygen bubbles are produced!`);
+        observationTimeRef.current = 0;
+        setTeacherMessage(`Great choice! ${intensity === 'high' ? 'Bright sunlight' : intensity === 'medium' ? 'Partial sunlight' : 'Cloudy conditions'} is set. Watch carefully as oxygen bubbles are produced over ${OBSERVATION_DURATION_SECONDS} seconds.`);
         setCurrentStep('running');
     };
 
@@ -154,29 +206,39 @@ export function PhotosynthesisLabEnhanced() {
 
     const handleObservationComplete = () => {
         const bubbleRates = {
-            low: "few bubbles slowly rising",
-            medium: "a steady stream of bubbles",
-            high: "many bubbles rapidly rising"
+            low: 'few bubbles slowly rising',
+            medium: 'a steady stream of bubbles',
+            high: 'many bubbles rapidly rising',
         };
-        
-        // Mark this intensity as tested
-        setTestedIntensities(prev => new Set(prev).add(lightIntensity!));
-        
-        const numTested = testedIntensities.size + 1;
+        const nextTested = new Set(testedIntensities);
+        nextTested.add(lightIntensity!);
+        setTestedIntensities(nextTested);
+
+        const numTested = nextTested.size;
         const suggestion = numTested < 2 
             ? ` Would you like to test another light intensity to compare the results? Or proceed to the quiz?` 
             : ` You can test another intensity or proceed to the quiz to test your knowledge!`;
-        
-        setTeacherMessage(`Observation complete! At ${lightIntensity} intensity, we observed ${Math.round(bubbleCount)} bubbles in total - ${bubbleRates[lightIntensity!]}. This shows us that light intensity directly affects the rate of photosynthesis. More light = more energy = more oxygen produced!${suggestion}`);
+
+        const observedBubbles = Math.round(bubbleCountRef.current);
+        const observedSeconds = Math.max(1, observationTimeRef.current || OBSERVATION_DURATION_SECONDS);
+        const observedRatePerMinute =
+            Math.round((observedBubbles / observedSeconds) * 60);
+        setTeacherMessage(
+            `Observation complete! At ${lightIntensity} intensity, we observed ${observedBubbles} bubbles in ${OBSERVATION_DURATION_SECONDS} seconds (${observedRatePerMinute} bubbles/min) — ${bubbleRates[lightIntensity!]}. In this tested range, higher light gives faster photosynthesis and more oxygen production.${suggestion}`
+        );
         setCurrentStep('observe');
     };
 
     const handleProceedToQuiz = () => {
-        setTeacherMessage("Time to test what you've learned! Answer these questions about photosynthesis and light intensity. Think carefully about what we observed!");
-        setCurrentStep('quiz');
-        setTimeout(() => {
-            document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+        transitionWithTeacher(
+            "Great observations. Time to test what you've learned. Answer the quiz using your experimental results.",
+            () => {
+                setCurrentStep('quiz');
+                setTimeout(() => {
+                    document.getElementById('quiz-section')?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        );
     };
 
     const handleQuizSubmit = () => {
@@ -208,22 +270,23 @@ export function PhotosynthesisLabEnhanced() {
             });
             
             // 3-tier feedback: Perfect score
-            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered photosynthesis!`);
-            setTimeout(() => {
-                setCurrentStep('complete');
-            }, 2000);
+            transitionWithTeacher(
+                `Outstanding! Perfect score! 🎉 You've completely mastered photosynthesis!`,
+                () => setCurrentStep('complete')
+            );
         } else if (correctCount === 2) {
             // Good effort - 2 out of 3 correct
             setQuizFeedback(`Good effort! You got ${correctCount} out of 3 correct. Review the feedback and try again to master photosynthesis!`);
-            setTeacherMessage(`Good try! You got 2 out of 3 correct. Let me clarify the key points: (1) Plants produce OXYGEN (O₂) during photosynthesis - those bubbles you saw were oxygen gas! Plants take in CO₂ and release O₂. (2) We varied LIGHT INTENSITY in this experiment - low, medium, and high light levels. Light is the ENERGY source for photosynthesis. Chlorophyll in chloroplasts captures light photons. (3) When light intensity INCREASES, the rate of photosynthesis INCREASES. More light = more energy = faster reactions = more bubbles! Up to a limiting point. Think about what you observed: high light produced many rapid bubbles, low light produced few slow bubbles. That's the relationship between light and photosynthesis rate. The formula is 6CO₂ + 6H₂O + Light → C₆H₁₂O₆ + 6O₂. Review your observations and try the quiz again!`);
+            setTeacherMessage(`Good try! You got 2 out of 3 correct. Key corrections: (1) The bubbles were oxygen (O₂), produced during photosynthesis. (2) We varied light intensity (low, medium, high), which changes energy available to chlorophyll. (3) In this setup and tested range, higher light gave faster oxygen bubble production, up to limiting factors. Review your observations and try again.`);
         } else {
             // Needs work - 0 or 1 correct
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Don't worry! Review the experiment and try again. Think about how light helps plants make food.`);
-            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Let me explain photosynthesis carefully: PHOTOSYNTHESIS is how plants make food (glucose) using light energy. The word breaks down: "photo" = light, "synthesis" = to make. Here's what happens: Plants absorb LIGHT ENERGY with chlorophyll (green pigment) in chloroplasts. They take in CARBON DIOXIDE (CO₂) from air through stomata and WATER (H₂O) from roots. Using light energy, they combine these to make GLUCOSE (C₆H₁₂O₆) - their food. OXYGEN (O₂) is released as waste - those bubbles you saw! The equation: 6CO₂ + 6H₂O + Light Energy → C₆H₁₂O₆ + 6O₂. Key points: (1) The GAS in bubbles is OXYGEN - we breathe it! (2) We tested LIGHT INTENSITY - how bright the light was. (3) MORE LIGHT = FASTER photosynthesis = MORE BUBBLES. When you increased light from low to high, did you see more bubbles? That's because light provides energy! Without enough light, photosynthesis slows down. Review the experiment, watch the bubbles, and think about what causes them. Then try the quiz again!`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Photosynthesis uses light energy, carbon dioxide, and water to produce glucose and oxygen. In this experiment, oxygen appeared as bubbles. We changed light intensity and observed bubble rate. In this tested range, increasing light increased the photosynthesis rate. Review these links, then retry.`);
         }
     };
 
     const handleRestart = () => {
+        cancelPendingTransition();
         setCurrentStep('intro');
         setLightIntensity(null);
         setObservationTime(0);
@@ -243,8 +306,23 @@ export function PhotosynthesisLabEnhanced() {
         allSuppliesNotifiedRef.current = false;
     };
 
-    const numBubbles = lightIntensity === 'low' ? 3 : lightIntensity === 'medium' ? 6 : 12;
-    const bubbleSpeed = lightIntensity === 'low' ? 3 : lightIntensity === 'medium' ? 2 : 1.5;
+    React.useEffect(() => {
+        return () => {
+            if (pendingTransitionTimeoutRef.current) {
+                clearTimeout(pendingTransitionTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    const bubbleVisualProfile = {
+        low: { count: 6, speed: 3.2, sizeClass: 'w-2.5 h-2.5' },
+        medium: { count: 10, speed: 2.4, sizeClass: 'w-3 h-3' },
+        high: { count: 16, speed: 1.7, sizeClass: 'w-3.5 h-3.5' },
+    } as const;
+    const currentBubbleProfile = lightIntensity ? bubbleVisualProfile[lightIntensity] : bubbleVisualProfile.low;
+    const progressPercent = Math.min(100, Math.round((observationTime / OBSERVATION_DURATION_SECONDS) * 100));
+    const observedRatePerMinute =
+        observationTime > 0 ? Math.round((bubbleCount / observationTime) * 60) : 0;
 
     return (
         <div className="relative min-h-screen pb-20 overflow-hidden">
@@ -288,7 +366,7 @@ export function PhotosynthesisLabEnhanced() {
 
                 <TeacherVoice 
                     message={teacherMessage}
-                    onComplete={() => {}}
+                    onComplete={runPendingTransition}
                     emotion={currentStep === 'complete' ? 'celebrating' : plantPlaced ? 'happy' : 'explaining'}
                     context={{
                         attempts: testedIntensities.size,
@@ -327,7 +405,7 @@ export function PhotosynthesisLabEnhanced() {
                         <div>
                             <h3 className="font-semibold text-green-900 dark:text-green-100">Lab Completed!</h3>
                             <p className="text-sm text-green-700 dark:text-green-300">
-                                Score: {completion?.score}% | XP Earned: {completion?.xpEarned} | Time: {Math.round((completion?.timeSpent || 0) / 60)}min
+                                Score: {completion?.score}% | XP Earned: {completion?.xpEarned} | Time: {(completion?.timeSpent || 0) < 60 ? `${completion?.timeSpent || 0}s` : `${Math.round((completion?.timeSpent || 0) / 60)}min`}
                             </p>
                         </div>
                     </div>
@@ -651,8 +729,13 @@ export function PhotosynthesisLabEnhanced() {
                                     </motion.div>
                                     
                                     {/* Enhanced Bubbles */}
-                                    {currentStep === 'running' && lightIntensity && Array.from({ length: numBubbles }).map((_, i) => (
-                                        <Bubble key={i} delay={i * (bubbleSpeed / numBubbles)} speed={bubbleSpeed} />
+                                    {currentStep === 'running' && lightIntensity && Array.from({ length: currentBubbleProfile.count }).map((_, i) => (
+                                        <Bubble
+                                            key={i}
+                                            delay={i * (currentBubbleProfile.speed / currentBubbleProfile.count)}
+                                            speed={currentBubbleProfile.speed}
+                                            sizeClass={currentBubbleProfile.sizeClass}
+                                        />
                                     ))}
 
                                     {/* Bubble Counter Badge */}
@@ -677,13 +760,13 @@ export function PhotosynthesisLabEnhanced() {
                                             <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-xl p-3 border-2 border-blue-300/50 dark:border-blue-700/50 shadow-xl">
                                                 <div className="flex items-center justify-between mb-2">
                                                     <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">Observation Progress</p>
-                                                    <p className="text-sm font-bold text-blue-600 dark:text-blue-400">{observationTime}%</p>
+                                                    <p className="text-sm font-bold text-blue-600 dark:text-blue-400">{progressPercent}%</p>
                                                 </div>
                                                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                                                     <motion.div 
                                                         className="bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 h-3 rounded-full shadow-lg"
                                                         initial={{ width: 0 }}
-                                                        animate={{ width: `${observationTime}%` }}
+                                                        animate={{ width: `${progressPercent}%` }}
                                                         transition={{ duration: 0.3 }}
                                                     />
                                                 </div>
@@ -711,9 +794,9 @@ export function PhotosynthesisLabEnhanced() {
                                                 <div className="mt-3 flex items-center gap-2 text-sm">
                                                     <span className="font-semibold text-slate-700 dark:text-slate-300">Bubble Rate:</span>
                                                     <span className="text-blue-600 dark:text-blue-400 font-bold">
-                                                        {lightIntensity === 'low' && '~2-3 bubbles/min'}
-                                                        {lightIntensity === 'medium' && '~5-6 bubbles/min'}
-                                                        {lightIntensity === 'high' && '~10-12 bubbles/min'}
+                                                        {observedRatePerMinute > 0
+                                                            ? `~${observedRatePerMinute} bubbles/min`
+                                                            : `~${lightIntensity ? TARGET_RATES_PER_MINUTE[lightIntensity] : 0} bubbles/min`}
                                                     </span>
                                                 </div>
                                             )}
@@ -736,7 +819,7 @@ export function PhotosynthesisLabEnhanced() {
                                                         setPlantPlaced(false);
                                                         setObservationTime(0);
                                                         setBubbleCount(0);
-                                                        setTeacherMessage(`Let's test ${intensity} light intensity! Watch how the bubble production changes.`);
+                                                        setTeacherMessage(`Let's test ${intensity} light intensity next and compare the oxygen bubble rate.`);
                                                         setCurrentStep('select-intensity');
                                                     }}
                                                     variant={testedIntensities.has(intensity) ? "secondary" : "outline"}
@@ -867,10 +950,10 @@ export function PhotosynthesisLabEnhanced() {
 
                                 {/* Question 3 */}
                                 <div className="space-y-3">
-                                    <p className="font-semibold text-lg text-slate-700 dark:text-slate-300">3. As light intensity increases, the rate of photosynthesis:</p>
+                                    <p className="font-semibold text-lg text-slate-700 dark:text-slate-300">3. In this experiment, as light intensity increased from low to high, the photosynthesis rate generally:</p>
                                     <div className="space-y-2">
                                         {[
-                                            { value: 'increases', label: 'Increases (more oxygen bubbles)', isCorrect: true },
+                                            { value: 'increases', label: 'Increased (more oxygen bubbles in this tested range)', isCorrect: true },
                                             { value: 'decreases', label: 'Decreases (fewer oxygen bubbles)', isCorrect: false },
                                             { value: 'stays-same', label: 'Stays the same', isCorrect: false },
                                         ].map((option) => (

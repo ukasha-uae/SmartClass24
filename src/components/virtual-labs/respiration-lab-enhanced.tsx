@@ -22,6 +22,7 @@ const SeedIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 type Step = 'intro' | 'collect-supplies' | 'setup' | 'observing' | 'results' | 'quiz' | 'complete';
+const OBSERVATION_DURATION_SECONDS = 12;
 
 export function RespirationLabEnhanced() {
     const { toast } = useToast();
@@ -30,7 +31,6 @@ export function RespirationLabEnhanced() {
     const [temperatureA, setTemperatureA] = React.useState(50);
     const [limewaterA, setLimewaterA] = React.useState(0); // 0 = clear, 100 = milky
     const [teacherMessage, setTeacherMessage] = React.useState('');
-    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Supplies tracking - using standardized component
     const [showSupplies, setShowSupplies] = React.useState(true);
@@ -94,6 +94,7 @@ export function RespirationLabEnhanced() {
     // Observation animation
     React.useEffect(() => {
         if (currentStep === 'observing') {
+            const tickMs = Math.round((OBSERVATION_DURATION_SECONDS * 1000) / 100);
             const interval = setInterval(() => {
                 setObservationProgress(prev => {
                     if (prev >= 100) {
@@ -114,7 +115,7 @@ export function RespirationLabEnhanced() {
                     
                     return prev + 1;
                 });
-            }, 50);
+            }, tickMs);
             
             return () => clearInterval(interval);
         }
@@ -150,7 +151,7 @@ export function RespirationLabEnhanced() {
     };
 
     const handleBeginObservation = () => {
-        setTeacherMessage("Observation starting! We're monitoring both flasks over 24 hours (simulated as a few seconds here). Watch closely for changes in temperature and limewater color. Living seeds need energy to grow, so they respire!");
+        setTeacherMessage("Observation starting! We're monitoring both flasks over 24 hours (simulated in about 12 seconds here). Watch closely for changes in temperature and limewater color. Living seeds need energy to grow, so they respire!");
         setCurrentStep('observing');
         setObservationProgress(0);
         setTemperatureA(50);
@@ -185,7 +186,7 @@ export function RespirationLabEnhanced() {
             setXpEarned(earnedXP);
             
             // Mark lab as complete
-            markLabComplete(labId, score, observationProgress * 50);
+            markLabComplete(labId, score, OBSERVATION_DURATION_SECONDS * 1000);
             
             // Show celebration
             setShowCelebration(true);
@@ -196,7 +197,7 @@ export function RespirationLabEnhanced() {
             });
             
             // 3-tier feedback: Perfect score
-            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered cellular respiration! Here's what you discovered: (1) FLASK A (germinating seeds) showed BOTH heat production and milky limewater - these are the two key products of respiration! Living seeds respire to release energy for growth. Flask B (boiled seeds) showed NO changes because boiling KILLED the seeds - dead cells cannot respire. (2) CARBON DIOXIDE (CO₂) is the gas that turned limewater milky. This is the waste product of respiration. The chemical test: Ca(OH)₂ + CO₂ → CaCO₃ (white precipitate) + H₂O. (3) Seeds release HEAT ENERGY during respiration because breaking down glucose releases energy in two forms: ATP (for cell work) and HEAT (thermal energy). The equation: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ENERGY (ATP + Heat). Germinating seeds use stored starch, convert it to glucose, and respire aerobically to fuel rapid cell division and growth. Temperature rose from 50°F to 80°F in Flask A! This same process happens in YOUR cells right now - you're respiring to power your muscles, brain, and heart. Every breath you take provides oxygen for respiration. Excellent work! +${earnedXP} XP earned!`);
+            setTeacherMessage(`Outstanding! Perfect score! 🎉 You've completely mastered cellular respiration! Here's what you discovered: (1) FLASK A (germinating seeds) showed BOTH heat production and milky limewater - these are the two key products of respiration! Living seeds respire to release energy for growth. Flask B (boiled seeds) showed NO changes because boiling KILLED the seeds - dead cells cannot respire. (2) CARBON DIOXIDE (CO₂) is the gas that turned limewater milky. This is the waste product of respiration. The chemical test: Ca(OH)₂ + CO₂ → CaCO₃ (white precipitate) + H₂O. (3) Seeds release HEAT ENERGY during respiration because breaking down glucose releases energy in two forms: ATP (for cell work) and HEAT (thermal energy). The equation: C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ENERGY (ATP + Heat). Germinating seeds use stored starch, convert it to glucose, and respire aerobically to fuel rapid cell division and growth. Temperature rose from 20°C to 38°C in Flask A! This same process happens in your cells right now - you're respiring to power your muscles, brain, and heart. Every breath you take provides oxygen for respiration. Excellent work! +${earnedXP} XP earned!`);
             setCurrentStep('complete');
         } else if (correctCount === 2) {
             // Good effort - 2 out of 3 correct
@@ -205,7 +206,7 @@ export function RespirationLabEnhanced() {
         } else {
             // Needs work - 0 or 1 correct
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Think about which flask had living seeds and what changes occurred. Try again!`);
-            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Let me explain cellular respiration from the beginning: RESPIRATION is how ALL living things (plants, animals, bacteria) release ENERGY from food. It's the opposite of photosynthesis! The equation: C₆H₁₂O₆ (glucose) + 6O₂ (oxygen) → 6CO₂ (carbon dioxide) + 6H₂O (water) + ENERGY (ATP + Heat). In our experiment: FLASK A had GERMINATING SEEDS - these are LIVING, growing seeds. They need energy to grow, so they respire actively. We saw TWO changes: (a) Temperature INCREASED from 50°F to 80°F - that's HEAT energy being released! (b) Limewater turned MILKY WHITE - that's CO₂ gas being produced! FLASK B had BOILED SEEDS - these are DEAD seeds. Boiling killed all the cells. Dead cells CANNOT respire, so we saw NO temperature change and NO milky limewater. This proves respiration is a LIFE PROCESS! Key points to remember: (1) Living seeds (Flask A) respire; dead seeds (Flask B) don't. (2) CO₂ is the gas produced - it turns limewater milky. (3) HEAT energy is released - that's why temperature rises. Germinating seeds use stored food (starch), break it down through respiration, and use the energy to grow roots and shoots. Review the experiment carefully and look at Flask A vs Flask B. What differences did you see? Try the quiz again!`);
+            setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Let me explain cellular respiration from the beginning: RESPIRATION is how ALL living things (plants, animals, bacteria) release ENERGY from food. It's the opposite of photosynthesis! The equation: C₆H₁₂O₆ (glucose) + 6O₂ (oxygen) → 6CO₂ (carbon dioxide) + 6H₂O (water) + ENERGY (ATP + Heat). In our experiment: FLASK A had GERMINATING SEEDS - these are LIVING, growing seeds. They need energy to grow, so they respire actively. We saw TWO changes: (a) Temperature INCREASED from 20°C to 38°C - that's HEAT energy being released! (b) Limewater turned MILKY WHITE - that's CO₂ gas being produced! FLASK B had BOILED SEEDS - these are DEAD seeds. Boiling killed all the cells. Dead cells CANNOT respire, so we saw NO temperature change and NO milky limewater. This proves respiration is a LIFE PROCESS! Key points to remember: (1) Living seeds (Flask A) respire; dead seeds (Flask B) don't. (2) CO₂ is the gas produced - it turns limewater milky. (3) HEAT energy is released - that's why temperature rises. Germinating seeds use stored food (starch), break it down through respiration, and use the energy to grow roots and shoots. Review the experiment carefully and look at Flask A vs Flask B. What differences did you see? Try the quiz again!`);
         }
     };
 

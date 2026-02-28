@@ -122,6 +122,10 @@ export function MathVennLabEnhanced() {
       ? `Checkpoint ${checkpointIndex + 1}: ${normalizedPrompt}`
       : `Excellent work. You scored ${score} out of ${checkpoints.length}. Review any missed concept and write your reasoning in notes.`;
 
+  const bumpTeacher = () => {
+    setTeacherKey((value) => value + 1);
+  };
+
   const placedCount = useMemo(
     () => Object.values(placements).filter((region) => region !== 'pool').length,
     [placements]
@@ -140,7 +144,7 @@ export function MathVennLabEnhanced() {
       setExploreCoachMessage(
         `Try again for ${itemToMove}. Hint: check whether it is even, a multiple of 3, or both before placing it.`
       );
-      setTeacherKey((value) => value + 1);
+      bumpTeacher();
     }
     setDraggingItem(null);
     setSelectedMobileItem(null);
@@ -152,7 +156,7 @@ export function MathVennLabEnhanced() {
       setExploreCoachMessage(
         `You still have ${unplaced.length} card(s) not placed: ${unplaced.join(', ')}. Place all cards, then check again.`
       );
-      setTeacherKey((value) => value + 1);
+      bumpTeacher();
       return;
     }
 
@@ -161,7 +165,7 @@ export function MathVennLabEnhanced() {
       setExploreCoachMessage(
         `Excellent sorting. You correctly placed all ${DRAG_ITEMS.length} cards. A only has ${regionItems('A').join(', ')}, A ∩ B has ${regionItems('AB').join(', ')}, B only has ${regionItems('B').join(', ')}, and Outside has ${regionItems('U').join(', ')}.`
       );
-      setTeacherKey((value) => value + 1);
+      bumpTeacher();
       return;
     }
 
@@ -169,7 +173,7 @@ export function MathVennLabEnhanced() {
     setExploreCoachMessage(
       `Good attempt. You got ${DRAG_ITEMS.length - wrong.length} out of ${DRAG_ITEMS.length} correct. Recheck these: ${sample}. Remember: even numbers go to A, multiples of 3 go to B, both rules means A ∩ B.`
     );
-    setTeacherKey((value) => value + 1);
+    bumpTeacher();
   };
 
   const resetDragBoard = () => {
@@ -179,7 +183,7 @@ export function MathVennLabEnhanced() {
     setExploreCoachMessage(
       `Board reset. A = even numbers, B = multiples of 3. Drag each number card and ask me for a hint if needed.`
     );
-    setTeacherKey((value) => value + 1);
+    bumpTeacher();
   };
 
   const submitAnswer = (optionIndex: number) => {
@@ -228,7 +232,7 @@ export function MathVennLabEnhanced() {
     setHintCount(0);
     setShowHint(false);
     resetDragBoard();
-    setTeacherKey((value) => value + 1);
+    bumpTeacher();
   };
 
   return (
@@ -236,11 +240,14 @@ export function MathVennLabEnhanced() {
       <TeacherVoice
         message={teacherMessage}
         triggerSpeakKey={teacherKey}
+        autoPlay
+        requireExplicitStart
+        showStartOverlay={false}
         theme="math"
         teacherName="Math Coach"
         quickActions={[
           {
-            label: 'Play instruction',
+            label: 'Replay instruction',
             onClick: () => setTeacherKey((value) => value + 1),
           },
         ]}
@@ -440,7 +447,12 @@ export function MathVennLabEnhanced() {
                     <Lightbulb className="h-4 w-4" />
                     Hint
                   </Button>
-                  <Button variant="ghost" onClick={() => setTeacherKey((value) => value + 1)}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setTeacherKey((value) => value + 1);
+                    }}
+                  >
                     Replay teacher
                   </Button>
                 </div>

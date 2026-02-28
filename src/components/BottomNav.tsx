@@ -7,6 +7,7 @@ import { User, FlaskConical, Swords, Coins } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/hooks/useTenant';
 import { getDefaultTenant, getTenantById } from '@/tenancy/registry';
+import { useFullscreen } from '@/contexts/FullscreenContext';
 
 /**
  * BottomNav Component - Mobile-only bottom navigation
@@ -20,6 +21,7 @@ type BottomNavProps = {
 export default function BottomNav({ initialTenantId = null }: BottomNavProps) {
   const pathname = usePathname();
   const { tenantId, hasArenaChallenge, hasVirtualLabs, features } = useTenant();
+  const { isFullscreen } = useFullscreen();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -61,6 +63,10 @@ export default function BottomNav({ initialTenantId = null }: BottomNavProps) {
       return true;
     });
   }, [addTenantParam, effectiveEnablePublicPricing, effectiveHasArenaChallenge, effectiveHasVirtualLabs]);
+
+  if (isFullscreen) {
+    return null;
+  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-violet-200/30 dark:border-violet-800/30 bg-gradient-to-r from-white/95 via-violet-50/95 to-indigo-50/95 dark:from-slate-900/95 dark:via-violet-950/95 dark:to-indigo-950/95 backdrop-blur-xl md:hidden shadow-2xl shadow-violet-200/20 dark:shadow-violet-900/20">
