@@ -36,6 +36,7 @@ import { WaterTestLabEnhanced as WaterTestLab } from "@/components/virtual-labs/
 import { WorkEnergyLabEnhanced as WorkEnergyLab } from "@/components/virtual-labs/work-energy-lab-enhanced";
 import { MathVennLabEnhanced } from "@/components/virtual-labs/math-venn-lab-enhanced";
 import { EquationAnimationLabEnhanced } from "@/components/virtual-labs/equation-animation-lab-enhanced";
+import { ArtColorTheoryLabEnhanced } from "@/components/virtual-labs/art-color-theory-lab-enhanced";
 import { FEATURE_FLAGS } from "@/lib/featureFlags";
 import { SolarSystemLab } from "@/components/science-simulations/SolarSystemLab";
 import { EarthMoonSystemLab } from "@/components/science-simulations/EarthMoonSystemLab";
@@ -45,7 +46,7 @@ export interface VirtualLabExperiment {
     id: string;
     slug: string;
     title: string;
-    subject: 'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics';
+    subject: 'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics' | 'Art';
     track?: VirtualLabTrack;
     labAudience?: VirtualLabAudience;
     description: string;
@@ -100,6 +101,17 @@ export const virtualLabExperiments: { experiments: VirtualLabExperiment[] } = {
             description: 'Use step-by-step animations to reason through linear and quadratic equations.',
             learningObjective: 'Connect algebra steps to meaning, detect misconceptions, and apply discriminant reasoning.',
             component: EquationAnimationLabEnhanced,
+        },
+        {
+            id: 'art-lab-1',
+            slug: 'art-color-theory-studio',
+            title: 'Color Theory Studio',
+            subject: 'Art',
+            track: 'art-lab',
+            labAudience: 'middle-school',
+            description: 'Build strong visual communication with color mixing, value, and contrast decisions.',
+            learningObjective: 'Apply color-wheel logic, complementary contrast, and value control to create educationally effective visual designs.',
+            component: ArtColorTheoryLabEnhanced,
         },
 
         // Biology Labs
@@ -483,6 +495,7 @@ export const virtualLabExperiments: { experiments: VirtualLabExperiment[] } = {
 
 export const FREE_VIRTUAL_LAB_SLUGS = [
     'maths-sets-venn',
+    'art-color-theory-studio',
     'food-tests',
     'litmus-test',
     'simple-circuits',
@@ -532,7 +545,7 @@ export const getVirtualLabBySlug = (slug: string, userId: string = 'guest'): Vir
     }
     
     // Ensure the subject matches the expected union type
-    const validSubjects: Array<'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics'> = ['Biology', 'Chemistry', 'Physics', 'Science', 'Mathematics'];
+    const validSubjects: Array<'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics' | 'Art'> = ['Biology', 'Chemistry', 'Physics', 'Science', 'Mathematics', 'Art'];
     if (!validSubjects.includes(experiment.subject as any)) {
         console.warn(`[Virtual Labs] Invalid subject for ${slug}: ${experiment.subject}`);
         return undefined;

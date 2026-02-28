@@ -130,6 +130,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const LabComponent = experiment.component;
   const labTrack = getVirtualLabTrack(experiment);
   const trackLabel = VIRTUAL_LAB_TRACK_LABELS[labTrack];
+  const isArtUnderConstruction = labTrack === 'art-lab';
   const audienceLabel = VIRTUAL_LAB_AUDIENCE_LABELS[getVirtualLabAudience(experiment)];
   
   // Check if this is a self-contained enhanced lab (has its own quiz/completion flow)
@@ -161,6 +162,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
     Physics: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30',
     Science: 'bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30',
     Mathematics: 'bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-400 border-fuchsia-500/30',
+    Art: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30',
   };
 
   const handleCompleteExperiment = () => {
@@ -259,6 +261,11 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                         <Badge variant="outline" className={`${useCompactEnhancedShell ? 'text-xs' : ''} border-dashed`}>
                           {trackLabel}
                         </Badge>
+                        {isArtUnderConstruction && (
+                          <Badge variant="secondary" className={useCompactEnhancedShell ? 'text-[10px]' : ''}>
+                            Under Construction
+                          </Badge>
+                        )}
                         <Badge variant="outline" className={useCompactEnhancedShell ? 'text-xs' : ''}>
                           {audienceLabel}
                         </Badge>
@@ -287,6 +294,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                         <Badge variant="outline" className="border-dashed">
                           {trackLabel}
                         </Badge>
+                        {isArtUnderConstruction && <Badge variant="secondary">Under Construction</Badge>}
                         <Badge variant="outline">
                           {audienceLabel}
                         </Badge>

@@ -13,7 +13,7 @@ import {
   type VirtualLabTrack,
   type VirtualLabAudience,
 } from '@/lib/virtual-labs-data';
-import { FlaskConical, Dna, Zap, Globe, CheckCircle2, Trophy, Clock, Star, Crown, Calculator } from 'lucide-react';
+import { FlaskConical, Dna, Zap, Globe, CheckCircle2, Trophy, Clock, Star, Crown, Calculator, Palette } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useLabProgress } from '@/stores/lab-progress-store';
@@ -32,7 +32,7 @@ export default function VirtualLabsPage() {
   const { user, isUserLoading } = useFirebase();
   const [trackFilter, setTrackFilter] = useState<'All' | VirtualLabTrack>('All');
   const [audienceFilter, setAudienceFilter] = useState<'All' | VirtualLabAudience>('All');
-  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics'>('All');
+  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics' | 'Art'>('All');
   const { completedLabs, totalXP, streak, isLabCompleted } = useLabProgress();
   const [mounted, setMounted] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
@@ -72,6 +72,7 @@ export default function VirtualLabsPage() {
     Physics: Zap,
     Science: Globe,
     Mathematics: Calculator,
+    Art: Palette,
   };
 
   const subjectColors = {
@@ -80,6 +81,7 @@ export default function VirtualLabsPage() {
     Physics: 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30',
     Science: 'bg-violet-500/10 text-violet-700 dark:text-violet-400 border-violet-500/30',
     Mathematics: 'bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-400 border-fuchsia-500/30',
+    Art: 'bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/30',
   };
 
   // Assign difficulty levels to labs (you can customize this)
@@ -153,7 +155,7 @@ export default function VirtualLabsPage() {
               )}
             </p>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Tracks: {VIRTUAL_LAB_TRACK_LABELS['science-lab']} • {VIRTUAL_LAB_TRACK_LABELS['maths-lab']} • {VIRTUAL_LAB_TRACK_LABELS['art-lab']} (coming soon)
+              Tracks: {VIRTUAL_LAB_TRACK_LABELS['science-lab']} • {VIRTUAL_LAB_TRACK_LABELS['maths-lab']} • {VIRTUAL_LAB_TRACK_LABELS['art-lab']} (Under Construction)
             </p>
             {userId !== 'guest' && features.enableReferrals && (
               <div className="flex justify-center">
@@ -222,7 +224,7 @@ export default function VirtualLabsPage() {
                     ['All', 'All Tracks'],
                     ['science-lab', VIRTUAL_LAB_TRACK_LABELS['science-lab']],
                     ['maths-lab', VIRTUAL_LAB_TRACK_LABELS['maths-lab']],
-                    ['art-lab', `${VIRTUAL_LAB_TRACK_LABELS['art-lab']} (Coming Soon)`],
+                    ['art-lab', `${VIRTUAL_LAB_TRACK_LABELS['art-lab']} (Under Construction)`],
                   ] as const).map(([trackValue, label]) => (
                     <button
                       key={trackValue}
@@ -242,7 +244,7 @@ export default function VirtualLabsPage() {
               <div className="mb-6">
                 <p className="text-sm font-bold mb-3 bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Subject</p>
                 <div className="flex flex-wrap gap-2">
-                  {(['All', 'Biology', 'Chemistry', 'Physics', 'Science', 'Mathematics'] as const).map((subject) => (
+                  {(['All', 'Biology', 'Chemistry', 'Physics', 'Science', 'Mathematics', 'Art'] as const).map((subject) => (
                     <button
                       key={subject}
                       onClick={() => setFilter(subject)}
@@ -297,6 +299,7 @@ export default function VirtualLabsPage() {
                 Physics: { bg: 'from-blue-500/10 to-indigo-500/10', border: 'border-blue-200/30 dark:border-blue-800/30', icon: 'text-blue-600 dark:text-blue-400', text: 'from-blue-600 to-indigo-600' },
                 Science: { bg: 'from-violet-500/10 to-purple-500/10', border: 'border-violet-200/30 dark:border-violet-800/30', icon: 'text-violet-600 dark:text-violet-400', text: 'from-violet-600 to-purple-600' },
                 Mathematics: { bg: 'from-fuchsia-500/10 to-pink-500/10', border: 'border-fuchsia-200/30 dark:border-fuchsia-800/30', icon: 'text-fuchsia-600 dark:text-fuchsia-400', text: 'from-fuchsia-600 to-pink-600' },
+                Art: { bg: 'from-rose-500/10 to-pink-500/10', border: 'border-rose-200/30 dark:border-rose-800/30', icon: 'text-rose-600 dark:text-rose-400', text: 'from-rose-600 to-pink-600' },
               };
               const color = colors[subject as keyof typeof colors];
               return (
@@ -355,6 +358,7 @@ export default function VirtualLabsPage() {
               const Icon = subjectIcons[experiment.subject as keyof typeof subjectIcons] ?? Globe;
               const colorClass = subjectColors[experiment.subject as keyof typeof subjectColors] ?? subjectColors.Science;
               const trackLabel = VIRTUAL_LAB_TRACK_LABELS[getVirtualLabTrack(experiment)];
+              const isArtUnderConstruction = getVirtualLabTrack(experiment) === 'art-lab';
               const audienceLabel = VIRTUAL_LAB_AUDIENCE_LABELS[getVirtualLabAudience(experiment)];
               const isCompleted = mounted && isLabCompleted(experiment.id);
               const difficulty = getDifficulty(experiment.id);
@@ -412,6 +416,11 @@ export default function VirtualLabsPage() {
                           <Badge variant="outline" className="text-xs border-dashed">
                             {trackLabel}
                           </Badge>
+                          {isArtUnderConstruction && (
+                            <Badge variant="secondary" className="text-[10px]">
+                              Under Construction
+                            </Badge>
+                          )}
                           <Badge variant="outline" className="text-xs">
                             {audienceLabel}
                           </Badge>
