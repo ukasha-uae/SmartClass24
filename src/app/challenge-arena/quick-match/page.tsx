@@ -125,6 +125,8 @@ export default function QuickMatchPage() {
   };
 
   const classLevels = player ? getClassLevels(player.level || 'JHS') : [];
+  const classLevelGridClass =
+    classLevels.length >= 3 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2';
 
   // Start presence heartbeat for current user
   useEffect(() => {
@@ -641,7 +643,7 @@ export default function QuickMatchPage() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">Class Level</label>
-                  <div className={`grid gap-3 ${classLevels.length === 3 ? 'grid-cols-3' : classLevels.length === 6 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+                  <div className={`grid gap-2 sm:gap-3 ${classLevelGridClass}`}>
                     {classLevels.map((level) => {
                       const isSelected = classLevel === level.id;
                       const colorClass = level.color.includes('green') 
@@ -655,13 +657,15 @@ export default function QuickMatchPage() {
                           key={level.id}
                           variant={isSelected ? 'default' : 'outline'}
                           onClick={() => setClassLevel(level.id)}
-                          className={`h-14 font-bold text-base transition-all ${
+                          className={`h-auto min-h-[3.25rem] py-2 px-2 sm:px-3 font-bold text-xs sm:text-sm md:text-base leading-tight text-center whitespace-normal break-words transition-all ${
                             isSelected 
                               ? `bg-gradient-to-r ${colorClass} text-white shadow-lg hover:shadow-xl scale-105` 
                               : 'hover:scale-105'
                           }`}
                         >
-                          {formatClassLevelLabel(level.name, labels)}
+                          <span className="block w-full">
+                            {formatClassLevelLabel(level.name, labels)}
+                          </span>
                         </Button>
                       );
                     })}
@@ -776,7 +780,9 @@ export default function QuickMatchPage() {
                     </div>
                     <div>
                       <p className="text-muted-foreground">Class Level</p>
-                      <p className="font-semibold">{formatClassLevelLabel(classLevel, labels)}</p>
+                      <p className="font-semibold text-sm sm:text-base leading-tight break-words">
+                        {formatClassLevelLabel(classLevel, labels)}
+                      </p>
                     </div>
                     <div>
                       <p className="text-muted-foreground">Questions</p>
