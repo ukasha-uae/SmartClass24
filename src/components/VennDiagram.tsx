@@ -70,7 +70,7 @@ export default function VennDiagram({
         height={height}
         viewBox="0 0 400 300"
         preserveAspectRatio="xMidYMid meet"
-        className="mx-auto font-sans w-full h-auto max-w-[400px]"
+        className="mx-auto font-sans w-full h-auto max-w-[520px] sm:max-w-[560px]"
       >
         {/* Universal Set Box */}
         <rect x="10" y="10" width="380" height="280" fill={isShaded('U') ? shadeColor : 'none'} stroke={strokeColor} strokeWidth="2" rx="5" />
@@ -120,7 +120,7 @@ export default function VennDiagram({
         height={height}
         viewBox="0 0 400 300"
         preserveAspectRatio="xMidYMid meet"
-        className="mx-auto font-sans w-full h-auto max-w-[400px]"
+        className="mx-auto font-sans w-full h-auto max-w-[520px] sm:max-w-[560px]"
       >
         {/* Universal Set Box */}
         <rect
@@ -222,7 +222,7 @@ export default function VennDiagram({
         height={height}
         viewBox="0 0 400 350"
         preserveAspectRatio="xMidYMid meet"
-        className="mx-auto font-sans w-full h-auto max-w-[400px]"
+        className="mx-auto font-sans w-full h-auto max-w-[520px] sm:max-w-[560px]"
       >
         {/* Universal Set Box */}
         <rect x="10" y="10" width="380" height="330" fill={isShaded('U') ? shadeColor : 'none'} stroke={strokeColor} strokeWidth="2" rx="5" />

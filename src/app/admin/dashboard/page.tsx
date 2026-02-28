@@ -114,6 +114,113 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const { user, firestore, isUserLoading } = useFirebase();
 
+  const buildFallbackPlayer = (uid: string, email?: string | null, displayName?: string | null): Player => {
+    const resolvedName =
+      displayName?.trim() ||
+      (email ? getUserDisplayName({ email }) : 'User');
+    return {
+      userId: uid,
+      userName: resolvedName,
+      name: resolvedName,
+      email: email || undefined,
+      school: 'Unknown',
+      rating: 1000,
+      wins: 0,
+      losses: 0,
+      draws: 0,
+      totalGames: 0,
+      winStreak: 0,
+      highestStreak: 0,
+      xp: 0,
+      coins: 0,
+      achievements: [],
+      level: 'JHS',
+    };
+  };
+
+  const buildPlayerFromStudentDoc = (userId: string, data: any): Player => {
+    const displayName = getUserDisplayName({
+      studentName: data?.studentName,
+      userName: data?.userName,
+      displayName: data?.displayName,
+      email: data?.email,
+    });
+    return {
+      userId,
+      userName: displayName,
+      name: displayName,
+      email: data?.email || undefined,
+      school: data?.school || 'Unknown',
+      schoolId: data?.schoolId,
+      schoolRegion: data?.schoolRegion,
+      rating: data?.rating || 1000,
+      wins: data?.wins || 0,
+      losses: data?.losses || 0,
+      draws: data?.draws || 0,
+      totalGames: data?.totalGames || 0,
+      winStreak: data?.winStreak || 0,
+      highestStreak: data?.highestStreak || 0,
+      xp: data?.xp || 0,
+      coins: data?.coins || 0,
+      achievements: data?.achievements || [],
+      level: data?.level || 'JHS',
+    };
+  };
+
+  const findUserBySearchQuery = async (rawQuery: string): Promise<Player | null> => {
+    const query = rawQuery.trim();
+    if (!query) return null;
+
+    const lower = query.toLowerCase();
+    const localMatch = users.find(
+      (u) =>
+        u.userId.toLowerCase() === lower ||
+        u.email?.toLowerCase() === lower ||
+        u.name?.toLowerCase() === lower ||
+        u.userName?.toLowerCase() === lower ||
+        u.userId.toLowerCase().includes(lower) ||
+        u.email?.toLowerCase().includes(lower) ||
+        u.name?.toLowerCase().includes(lower)
+    );
+    if (localMatch) return localMatch;
+
+    const directLocal = getPlayerProfile(query);
+    if (directLocal) return directLocal;
+
+    if (firestore) {
+      try {
+        const { doc, getDoc, collection, query: fsQuery, where, limit, getDocs } = await import('firebase/firestore');
+
+        const byId = await getDoc(doc(firestore, 'students', query));
+        if (byId.exists()) {
+          return buildPlayerFromStudentDoc(byId.id, byId.data());
+        }
+
+        const emailQuery = fsQuery(collection(firestore, 'students'), where('email', '==', lower), limit(1));
+        let byEmail = await getDocs(emailQuery);
+
+        // Some legacy rows may store mixed-case emails.
+        if (byEmail.empty && lower !== query) {
+          const mixedCaseQuery = fsQuery(collection(firestore, 'students'), where('email', '==', query), limit(1));
+          byEmail = await getDocs(mixedCaseQuery);
+        }
+
+        if (!byEmail.empty) {
+          const matchDoc = byEmail.docs[0];
+          return buildPlayerFromStudentDoc(matchDoc.id, matchDoc.data());
+        }
+      } catch (error) {
+        console.warn('[Admin] Firestore search fallback failed:', error);
+      }
+    }
+
+    if (user && (query === user.uid || user.email?.toLowerCase() === lower)) {
+      return buildFallbackPlayer(user.uid, user.email, user.displayName);
+    }
+
+    return null;
+  };
+
   // Admin authentication check
   useEffect(() => {
     async function checkAdminAccess() {
@@ -217,34 +324,7 @@ export default function AdminDashboard() {
         const data = doc.data();
         const userId = doc.id;
         
-        // Use the centralized getUserDisplayName utility
-        const displayName = getUserDisplayName({
-          studentName: data.studentName,
-          userName: data.userName,
-          displayName: data.displayName,
-          email: data.email
-        });
-        
-        firestoreUsers.push({
-          userId,
-          userName: displayName,
-          name: displayName,
-          email: data.email || undefined,
-          school: data.school || 'Unknown',
-          schoolId: data.schoolId,
-          schoolRegion: data.schoolRegion,
-          rating: data.rating || 1000,
-          wins: data.wins || 0,
-          losses: data.losses || 0,
-          draws: data.draws || 0,
-          totalGames: data.totalGames || 0,
-          winStreak: data.winStreak || 0,
-          highestStreak: data.highestStreak || 0,
-          xp: data.xp || 0,
-          coins: data.coins || 0,
-          achievements: data.achievements || [],
-          level: data.level || 'JHS',
-        });
+        firestoreUsers.push(buildPlayerFromStudentDoc(userId, data));
       }
 
       // Also load from localStorage (for users who haven't synced to Firestore yet)
@@ -640,7 +720,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!searchQuery.trim()) {
       toast({
         title: 'Search Required',
@@ -650,30 +730,16 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Search by userId, email, or name
-    const foundUser = users.find(
-      (u) =>
-        u.userId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        u.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        u.name?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
+    const foundUser = await findUserBySearchQuery(searchQuery);
     if (foundUser) {
       setSelectedUser(foundUser);
       setActiveTab('manage');
     } else {
-      // Try to get by userId directly
-      const directUser = getPlayerProfile(searchQuery);
-      if (directUser) {
-        setSelectedUser(directUser);
-        setActiveTab('manage');
-      } else {
-        toast({
-          title: 'User Not Found',
-          description: 'No user found with that ID, email, or name',
-          variant: 'destructive',
-        });
-      }
+      toast({
+        title: 'User Not Found',
+        description: 'No user found with that ID, email, or name',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -745,7 +811,7 @@ export default function AdminDashboard() {
         ? `virtual_lab_${duration}`
         : `full_bundle_${duration}`;
       
-      addSubscription(selectedUser.userId, planId, duration, subscriptionType);
+      addSubscription(selectedUser.userId, planId, duration, subscriptionType, firestore);
       
       const updatedUser = getPlayerProfile(selectedUser.userId);
       setSelectedUser(updatedUser);
@@ -961,7 +1027,7 @@ export default function AdminDashboard() {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <TabsList>
             <TabsTrigger value="search">Search User</TabsTrigger>
-            <TabsTrigger value="manage" disabled={!selectedUser}>Manage User</TabsTrigger>
+            <TabsTrigger value="manage">Manage User</TabsTrigger>
             <TabsTrigger value="stats">Statistics</TabsTrigger>
             {isAuthorized && <TabsTrigger value="pricing">Pricing</TabsTrigger>}
             {isSuperAdminUser && <TabsTrigger value="admins">Admin Management</TabsTrigger>}
@@ -1065,16 +1131,21 @@ export default function AdminDashboard() {
                         className="flex-1"
                       />
                       <Button
-                        onClick={() => {
-                          const userId = searchQuery.trim() || user?.uid;
-                          if (!userId) {
+                        onClick={async () => {
+                          const rawInput = searchQuery.trim();
+                          const resolvedUser =
+                            (rawInput ? await findUserBySearchQuery(rawInput) : null) ??
+                            (user ? buildFallbackPlayer(user.uid, user.email, user.displayName) : null);
+
+                          if (!resolvedUser?.userId) {
                             toast({
                               title: 'Error',
-                              description: 'Please enter a user ID or log in',
+                              description: 'Enter a valid user ID/email or search and select a user first.',
                               variant: 'destructive',
                             });
                             return;
                           }
+
                           try {
                             const duration = subscriptionPlan.includes('annual') ? 'annual' : 'monthly';
                             const planId = subscriptionType === 'challengeArena' 
@@ -1083,15 +1154,14 @@ export default function AdminDashboard() {
                               ? `virtual_lab_${duration}`
                               : `full_bundle_${duration}`;
                             
-                            addSubscription(userId, planId, duration, subscriptionType, firestore);
+                            addSubscription(resolvedUser.userId, planId, duration, subscriptionType, firestore);
                             
                             toast({
                               title: 'Premium Granted! ✅',
-                              description: `${subscriptionType === 'challengeArena' ? 'Challenge Arena' : subscriptionType === 'virtualLab' ? 'Virtual Lab' : 'Full Bundle'} Premium activated for ${userId}`,
+                              description: `${subscriptionType === 'challengeArena' ? 'Challenge Arena' : subscriptionType === 'virtualLab' ? 'Virtual Lab' : 'Full Bundle'} Premium activated for ${resolvedUser.userId}`,
                             });
                             
-                            // Refresh if this is the current user
-                            if (userId === user?.uid) {
+                            if (resolvedUser.userId === user?.uid) {
                               window.location.reload();
                             }
                           } catch (error: any) {
@@ -1122,7 +1192,7 @@ export default function AdminDashboard() {
                             : `full_bundle_${duration}`;
                           
                           try {
-                            addSubscription(user.uid, planId, duration, subscriptionType);
+                            addSubscription(user.uid, planId, duration, subscriptionType, firestore);
                             toast({
                               title: 'Premium Granted! ✅',
                               description: `${subscriptionType === 'challengeArena' ? 'Challenge Arena' : subscriptionType === 'virtualLab' ? 'Virtual Lab' : 'Full Bundle'} Premium activated for your account`,

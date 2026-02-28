@@ -51,6 +51,12 @@ export function useEntitlements() {
         }
 
         let endpoint = '/api/entitlements/me';
+        if (typeof window !== 'undefined') {
+          const tenantPreview = new URLSearchParams(window.location.search).get('tenant');
+          if (tenantPreview) {
+            endpoint = `/api/entitlements/me?tenant=${encodeURIComponent(tenantPreview)}`;
+          }
+        }
         if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
           const host = window.location.hostname;
           const tenantPreview = new URLSearchParams(window.location.search).get('tenant');

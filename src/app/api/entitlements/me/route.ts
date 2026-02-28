@@ -116,9 +116,21 @@ function resolveRequestTenant(request: NextRequest) {
   const headerTenant = request.headers.get('x-tenant');
   const hostname = request.headers.get('host')?.split(':')[0] ?? null;
   const hostTenant = getTenantByHost(hostname)?.id ?? null;
+  const previewTenantFromQuery = request.nextUrl.searchParams.get('tenant');
+  const previewTenantFromCookie = request.cookies.get('tenant_preview')?.value ?? null;
 
   const tenantFromTrustedRequest = headerTenant ?? hostTenant;
-  return getTenantById(tenantFromTrustedRequest) ?? getDefaultTenant();
+  const trustedTenant = getTenantById(tenantFromTrustedRequest);
+  if (trustedTenant) return trustedTenant;
+
+  // Temporary paid-tenant hotfix:
+  // allow wisdomwarehouse preview links to resolve tenant context until full claim rollout stabilizes.
+  const previewTenant = previewTenantFromQuery ?? previewTenantFromCookie;
+  if (previewTenant === 'wisdomwarehouse') {
+    return getTenantById(previewTenant) ?? getDefaultTenant();
+  }
+
+  return getDefaultTenant();
 }
 
 export async function GET(request: NextRequest) {
