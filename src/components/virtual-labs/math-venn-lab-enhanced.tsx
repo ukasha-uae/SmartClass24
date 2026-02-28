@@ -248,7 +248,7 @@ export function MathVennLabEnhanced() {
       />
 
       <Card className="border border-purple-200 dark:border-purple-800">
-        <CardHeader className="p-3 sm:p-5">
+        <CardHeader className="p-2.5 sm:p-5">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <CardTitle className="flex items-center gap-2">
               <BookOpen className="h-5 w-5 text-purple-600" />
@@ -260,17 +260,17 @@ export function MathVennLabEnhanced() {
             Concept IDs: `sets.operations.union`, `sets.operations.intersection`, `sets.operations.complement`
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4 p-3 pt-0 sm:p-5 sm:pt-0">
+        <CardContent className="space-y-4 p-2.5 pt-0 sm:p-5 sm:pt-0">
           {stage === 'explore' && (
             <>
               <Card className="border-indigo-300 dark:border-indigo-700">
-                <CardHeader className="p-3 sm:p-5">
+                <CardHeader className="p-2.5 sm:p-5">
                   <CardTitle className="text-base">Interactive Venn Board (Direct-on-Diagram)</CardTitle>
                   <CardDescription>
                     Premium mode: drag number chips directly onto Venn regions. Rule: <strong>A = even numbers</strong>, <strong>B = multiples of 3</strong>
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 p-3 pt-0 sm:p-5 sm:pt-0">
+                <CardContent className="space-y-4 p-2.5 pt-0 sm:p-5 sm:pt-0">
                   <div className="lg:grid lg:grid-cols-12 lg:gap-4 lg:items-start">
                     <div
                       className="lg:col-span-4 lg:sticky lg:top-20 lg:z-30 space-y-3 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 rounded-lg"

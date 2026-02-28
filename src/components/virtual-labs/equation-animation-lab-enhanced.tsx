@@ -162,7 +162,7 @@ export function EquationAnimationLabEnhanced() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <TeacherVoice
         message={teacherMessage}
         triggerSpeakKey={teacherKey}
@@ -178,8 +178,8 @@ export function EquationAnimationLabEnhanced() {
         onHintRequest={stage === 'checkpoint' ? requestHint : undefined}
       />
 
-      <Card className="border-2 border-indigo-200 dark:border-indigo-800">
-        <CardHeader>
+      <Card className="border border-indigo-200 dark:border-indigo-800">
+        <CardHeader className="p-3 sm:p-5">
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <CardTitle>Equation Animation Lab</CardTitle>
             <Badge variant="outline">{highSchoolLabel} ({'SHS/SSS'})</Badge>
@@ -188,7 +188,7 @@ export function EquationAnimationLabEnhanced() {
             Concept IDs: `algebra.linear.solve`, `algebra.quadratic.factorization`, `algebra.quadratic.discriminant`
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 p-3 pt-0 sm:p-5 sm:pt-0">
           {stage === 'explore' && (
             <>
               <div className="flex flex-wrap gap-2">

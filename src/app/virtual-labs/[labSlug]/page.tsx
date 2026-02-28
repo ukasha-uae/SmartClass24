@@ -137,6 +137,10 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
                           'transpiration-in-plants', 'enzyme-starch-digestion'
                         ].includes(experiment.slug);
   const useCompactEnhancedShell = isEnhancedLab && labTrack === 'maths-lab';
+  const compactShellClasses = 'w-full px-0 sm:px-3 py-3 sm:py-4';
+  const compactHeaderCardClasses =
+    'mb-3 rounded-none sm:rounded-xl border-y border-x-0 sm:border bg-white/90 dark:bg-gray-900/90 border-purple-200/40 dark:border-purple-800/40 shadow-sm';
+  const compactHeaderContentClasses = 'p-2.5 sm:p-4';
 
   const subjectColors = {
     Biology: 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30',
@@ -206,7 +210,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-300/20 via-blue-300/20 to-cyan-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
 
-        <div className={`${useCompactEnhancedShell ? 'w-full px-2 sm:px-4 py-4' : 'container mx-auto px-4 py-8'} relative z-10`}>
+        <div className={`${useCompactEnhancedShell ? compactShellClasses : 'container mx-auto px-4 py-8'} relative z-10`}>
           {/* Premium Back Button */}
           <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
             <Link href={addTenantParam('/virtual-labs')}>
@@ -229,8 +233,8 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
           {isEnhancedLab ? (
             <>
               {/* Premium header for enhanced labs */}
-              <Card className={`${useCompactEnhancedShell ? 'mb-4 bg-white/85 dark:bg-gray-900/85 border border-purple-200/40 dark:border-purple-800/40 shadow-sm' : 'mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl'}`}>
-                <CardContent className={useCompactEnhancedShell ? 'p-3 sm:p-4' : 'p-6'}>
+              <Card className={`${useCompactEnhancedShell ? compactHeaderCardClasses : 'mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl'}`}>
+                <CardContent className={useCompactEnhancedShell ? compactHeaderContentClasses : 'p-6'}>
                   <div className="flex items-center gap-4">
                     <div className={useCompactEnhancedShell ? 'text-3xl' : 'text-5xl'}>🔬</div>
                     <div className="flex-1">
