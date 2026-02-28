@@ -29,6 +29,7 @@ export function AmmoniaTestLab() {
     const [showPractice, setShowPractice] = React.useState(false);
     const [practiceInteraction, setPracticeInteraction] = React.useState<'ammonia' | 'litmus' | 'uses' | null>(null);
     const [teacherMessage, setTeacherMessage] = React.useState('');
+    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     const [bunsenPlaced, setBunsenPlaced] = React.useState(false);
     const [litmusPlaced, setLitmusPlaced] = React.useState(false);
     const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
@@ -46,6 +47,26 @@ export function AmmoniaTestLab() {
     const labId = 'ammonia-test-lab';
     const alreadyCompleted = isLabCompleted(labId);
     const allSuppliesNotifiedRef = React.useRef(false);
+    const timeoutHandlesRef = React.useRef<number[]>([]);
+
+    const registerTimeout = (callback: () => void, delayMs: number) => {
+        const handle = window.setTimeout(() => {
+            timeoutHandlesRef.current = timeoutHandlesRef.current.filter((id) => id !== handle);
+            callback();
+        }, delayMs);
+        timeoutHandlesRef.current.push(handle);
+        return handle;
+    };
+
+    const clearAllTimeouts = React.useCallback(() => {
+        timeoutHandlesRef.current.forEach((id) => window.clearTimeout(id));
+        timeoutHandlesRef.current = [];
+    }, []);
+
+    const transitionWithTeacher = React.useCallback((message: string, next?: () => void) => {
+        setTeacherMessage(message);
+        setPendingTransition(() => next ?? null);
+    }, []);
 
     // Quiz State
     const [quizAnswers, setQuizAnswers] = React.useState<{ [key: number]: string }>({});
@@ -63,7 +84,7 @@ export function AmmoniaTestLab() {
     // Scroll to quiz when it appears
     React.useEffect(() => {
         if (currentStep === 'complete') {
-            setTimeout(() => {
+            registerTimeout(() => {
                 const quizElement = document.getElementById('quiz-section');
                 if (quizElement) {
                     quizElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -71,6 +92,12 @@ export function AmmoniaTestLab() {
             }, 500);
         }
     }, [currentStep]);
+
+    React.useEffect(() => {
+        return () => {
+            clearAllTimeouts();
+        };
+    }, [clearAllTimeouts]);
 
     const handleStartLab = () => {
         setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
@@ -109,75 +136,75 @@ export function AmmoniaTestLab() {
     const handleBunsenDrop = () => {
         if (currentStep === 'setup' && !bunsenPlaced) {
             setBunsenPlaced(true);
-            setTeacherMessage("Perfect! The Bunsen burner is now heating the ammonium chloride. Watch carefully as the compound decomposes and releases ammonia gas.");
-            
-            // Small delay before starting heating animation
-            setTimeout(() => {
+            transitionWithTeacher("Perfect! The Bunsen burner is now heating the ammonium chloride. Watch carefully as the compound decomposes and releases ammonia gas.", () => {
                 setCurrentStep('heating');
                 setIsAnimating(true);
                 toast({ title: '🔥 Heating Started...', description: 'Ammonium compound is decomposing' });
-            }, 500);
-            
-            // Transition after heating animation completes
-            setTimeout(() => {
-                setCurrentStep('gas-produced');
-                setTeacherMessage("Excellent observation! Ammonia gas is now being released with its characteristic pungent smell. Now click the red litmus paper to test the gas.");
-                toast({ 
-                    title: '💨 Ammonia Gas Produced!', 
-                    description: 'You can smell the pungent odor',
-                    className: 'bg-blue-100 dark:bg-blue-900 border-blue-500'
-                });
-                setIsAnimating(false);
-            }, 3000);
+                registerTimeout(() => {
+                    setCurrentStep('gas-produced');
+                    setIsAnimating(false);
+                    transitionWithTeacher("Excellent observation! Ammonia gas is now being released with its characteristic pungent smell. Now click the red litmus paper to test the gas.");
+                    toast({
+                        title: '💨 Ammonia Gas Produced!',
+                        description: 'You can smell the pungent odor',
+                        className: 'bg-blue-100 dark:bg-blue-900 border-blue-500'
+                    });
+                }, 3000);
+            });
         }
     };
 
     const handleLitmusDrop = () => {
         if (currentStep === 'gas-produced' && !litmusPlaced) {
             setLitmusPlaced(true);
-            setCurrentStep('testing');
-            setIsAnimating(true);
-            setTeacherMessage("Good work! Now we are holding the moist red litmus paper in the ammonia fumes. Watch carefully what happens to the color.");
-            
-            toast({ title: '📄 Testing with Litmus...', description: 'Observing color change' });
-            
-            // Transition to result after testing animation - show color change
-            setTimeout(() => {
-                setCurrentStep('result');
-                setTeacherMessage("Fantastic! The red litmus paper turned blue! This proves that ammonia is a BASE. Remember, bases turn red litmus blue. Well done!");
-                toast({ 
-                    title: '🔵 Color Change Observed!', 
-                    description: 'Red litmus turned BLUE - Base confirmed!',
-                    className: 'bg-green-100 dark:bg-green-900 border-green-500'
-                });
-                setIsAnimating(false);
-                
-                // Transition to quiz after showing result - give user time to see the blue litmus
-                setTimeout(() => {
-                    setCurrentStep('quiz');
-                    setTeacherMessage("Time to test your understanding! Answer these questions based on what you observed in the experiment. Good luck!");
-                }, 4000);
-            }, 3000);
+            transitionWithTeacher("Good work! Now we are holding the moist red litmus paper in the ammonia fumes. Watch carefully what happens to the color.", () => {
+                setCurrentStep('testing');
+                setIsAnimating(true);
+                toast({ title: '📄 Testing with Litmus...', description: 'Observing color change' });
+
+                registerTimeout(() => {
+                    setCurrentStep('result');
+                    setIsAnimating(false);
+                    transitionWithTeacher(
+                        "Fantastic! The red litmus paper turned blue! This proves that ammonia is a BASE. Remember, bases turn red litmus blue. Well done!",
+                        () => {
+                            registerTimeout(() => {
+                                setCurrentStep('quiz');
+                                transitionWithTeacher("Time to test your understanding! Answer these questions based on what you observed in the experiment. Good luck!");
+                            }, 4000);
+                        }
+                    );
+                    toast({
+                        title: '🔵 Color Change Observed!',
+                        description: 'Red litmus turned BLUE - Base confirmed!',
+                        className: 'bg-green-100 dark:bg-green-900 border-green-500'
+                    });
+                }, 3000);
+            });
         }
     };
 
     const handleReset = () => {
+        clearAllTimeouts();
+        setPendingTransition(null);
         setCurrentStep('intro');
         setIsAnimating(false);
         setBunsenPlaced(false);
         setLitmusPlaced(false);
-        setCollectedSupplies([]);
         setQuizAnswers({});
         setQuizFeedback(null);
         setQuizAttempts(0);
         setQuizIsCorrect(null);
-        setCollectedSupplies([]);
         setTeacherMessage("Let's do the experiment again! I will guide you through each step. Click Begin Experiment when you are ready.");
         toast({ title: '🔄 Lab Reset', description: 'Ready to start fresh' });
     };
 
     const handleTeacherComplete = () => {
-        // Direct state updates - no pending transitions
+        if (pendingTransition) {
+            const runNext = pendingTransition;
+            setPendingTransition(null);
+            runNext();
+        }
     };
 
     const handleQuizSubmit = () => {

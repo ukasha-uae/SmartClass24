@@ -25,14 +25,24 @@ interface ProjectileData {
 }
 
 const GRAVITY = 9.81; // m/s²
-const SCALE = 4; // pixels per meter (increased for better visibility)
-const CANVAS_HEIGHT = 384; // Height of the visualization canvas
-const GROUND_LEVEL = 64; // Ground height from bottom
+
+function getSceneMetrics() {
+    if (typeof window === 'undefined') {
+        return { sceneHeight: 500, sceneScale: 5 };
+    }
+    const width = window.innerWidth;
+    if (width >= 1536) return { sceneHeight: 640, sceneScale: 6 };
+    if (width >= 1280) return { sceneHeight: 580, sceneScale: 5.5 };
+    if (width >= 1024) return { sceneHeight: 520, sceneScale: 5.1 };
+    if (width >= 768) return { sceneHeight: 460, sceneScale: 4.6 };
+    return { sceneHeight: 400, sceneScale: 4 };
+}
 
 export function ProjectileMotionLabEnhanced() {
     const { toast } = useToast();
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [teacherMessage, setTeacherMessage] = React.useState('');
+    const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
     
     // Experiment state
     const [angle, setAngle] = React.useState(45);
@@ -41,6 +51,9 @@ export function ProjectileMotionLabEnhanced() {
     const [isLaunching, setIsLaunching] = React.useState(false);
     const [currentTrajectory, setCurrentTrajectory] = React.useState<{ x: number; y: number }[]>([]);
     const [animationProgress, setAnimationProgress] = React.useState(0);
+    const [sceneMetrics, setSceneMetrics] = React.useState(() => getSceneMetrics());
+    const sceneRef = React.useRef<HTMLDivElement | null>(null);
+    const [sceneWidth, setSceneWidth] = React.useState(960);
     
     // Quiz state
     const [quizAnswer1, setQuizAnswer1] = React.useState<string | undefined>();
@@ -56,12 +69,73 @@ export function ProjectileMotionLabEnhanced() {
     const labId = 'projectile-motion';
     const isCompleted = isLabCompleted(labId);
     const completion = getLabCompletion(labId);
+    const timeoutHandlesRef = React.useRef<number[]>([]);
+
+    const registerTimeout = (callback: () => void, delayMs: number) => {
+        const handle = window.setTimeout(() => {
+            timeoutHandlesRef.current = timeoutHandlesRef.current.filter((id) => id !== handle);
+            callback();
+        }, delayMs);
+        timeoutHandlesRef.current.push(handle);
+        return handle;
+    };
+
+    const clearAllTimeouts = React.useCallback(() => {
+        timeoutHandlesRef.current.forEach((id) => window.clearTimeout(id));
+        timeoutHandlesRef.current = [];
+    }, []);
+
+    const transitionWithTeacher = React.useCallback((message: string, next?: () => void) => {
+        setTeacherMessage(message);
+        setPendingTransition(() => next ?? null);
+    }, []);
+
+    const groundLevel = Math.round(sceneMetrics.sceneHeight * 0.17);
+    const launchOriginX = sceneWidth >= 1280 ? 84 : sceneWidth >= 1024 ? 76 : sceneWidth >= 768 ? 64 : 48;
+    const launcherScale = sceneWidth >= 1400 ? 1.45 : sceneWidth >= 1150 ? 1.3 : sceneWidth >= 900 ? 1.18 : 1;
+    const rightPadding = sceneWidth >= 1024 ? 56 : 36;
+    const expectedCurrentRange = Math.max(
+        20,
+        (velocity * velocity * Math.sin((2 * angle * Math.PI) / 180)) / GRAVITY
+    );
+    const observedMaxRange = Math.max(
+        expectedCurrentRange,
+        ...launches.map((l) => l.range),
+        currentTrajectory.length > 0 ? currentTrajectory[currentTrajectory.length - 1]?.x ?? 0 : 0
+    );
+    const availableHorizontalSpace = Math.max(sceneWidth - launchOriginX - rightPadding, 220);
+    const fillScale = (availableHorizontalSpace / observedMaxRange) * 0.92;
+    const trajectoryScale = Math.min(12, Math.max(sceneMetrics.sceneScale, fillScale));
 
     React.useEffect(() => {
         if (currentStep === 'intro') {
             setTeacherMessage("Welcome to Projectile Motion Lab! We'll launch projectiles at different angles and velocities to discover the laws of motion. Let's explore parabolic trajectories!");
         }
     }, [currentStep]);
+
+    React.useEffect(() => {
+        const onResize = () => setSceneMetrics(getSceneMetrics());
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+
+    React.useEffect(() => {
+        if (!sceneRef.current) return;
+        const updateSceneWidth = () => {
+            const nextWidth = sceneRef.current?.getBoundingClientRect().width;
+            if (nextWidth) setSceneWidth(Math.round(nextWidth));
+        };
+        updateSceneWidth();
+        const observer = new ResizeObserver(updateSceneWidth);
+        observer.observe(sceneRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    React.useEffect(() => {
+        return () => {
+            clearAllTimeouts();
+        };
+    }, [clearAllTimeouts]);
 
     const calculateTrajectory = (angle: number, velocity: number): ProjectileData => {
         const angleRad = (angle * Math.PI) / 180;
@@ -143,7 +217,11 @@ export function ProjectileMotionLabEnhanced() {
     };
 
     const handleTeacherComplete = () => {
-        // Direct state updates - no pending transitions
+        if (pendingTransition) {
+            const runNext = pendingTransition;
+            setPendingTransition(null);
+            runNext();
+        }
     };
 
     const handleViewResults = () => {
@@ -155,13 +233,17 @@ export function ProjectileMotionLabEnhanced() {
             });
             return;
         }
-        setTeacherMessage("Excellent data collection! Let's analyze the results and discover the relationships between angle, velocity, and motion!");
-        setCurrentStep('results');
+        transitionWithTeacher(
+            "Excellent data collection! Let's analyze the results and discover the relationships between angle, velocity, and motion!",
+            () => setCurrentStep('results')
+        );
     };
 
     const handleViewQuiz = () => {
-        setTeacherMessage("Time to test your understanding of projectile motion!");
-        setCurrentStep('quiz');
+        transitionWithTeacher(
+            "Time to test your understanding of projectile motion!",
+            () => setCurrentStep('quiz')
+        );
     };
 
     const handleQuizSubmit = () => {
@@ -189,10 +271,10 @@ export function ProjectileMotionLabEnhanced() {
             );
             setShowCelebration(true);
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-            setTimeout(() => {
+            registerTimeout(() => {
                 setShowCelebration(false);
-                setCurrentStep('complete');
-            }, 2000);
+            }, 5000);
+            setPendingTransition(() => () => setCurrentStep('complete'));
         } else if (correctCount === 2) {
             setQuizFeedback(`Good job! You got ${correctCount} out of 3 correct. Review the trajectory patterns.`);
             setTeacherMessage(
@@ -221,6 +303,8 @@ export function ProjectileMotionLabEnhanced() {
     };
 
     const handleRestart = () => {
+        clearAllTimeouts();
+        setPendingTransition(null);
         setCurrentStep('intro');
         setAngle(45);
         setVelocity(20);
@@ -556,7 +640,11 @@ export function ProjectileMotionLabEnhanced() {
                                 </div>
 
                                 {/* Enhanced Realistic Visual Launcher */}
-                                <div className="bg-gradient-to-b from-sky-100 via-blue-50 to-green-100 dark:from-sky-950/30 dark:via-blue-950/20 dark:to-green-950/30 p-8 rounded-lg border-2 border-blue-200/50 dark:border-blue-800/50 relative overflow-hidden h-96 shadow-inner">
+                                <div
+                                    ref={sceneRef}
+                                    className="bg-gradient-to-b from-sky-100 via-blue-50 to-green-100 dark:from-sky-950/30 dark:via-blue-950/20 dark:to-green-950/30 p-6 lg:p-8 rounded-lg border-2 border-blue-200/50 dark:border-blue-800/50 relative overflow-hidden shadow-inner"
+                                    style={{ height: `${sceneMetrics.sceneHeight}px` }}
+                                >
                                     {/* Sky with clouds */}
                                     <div className="absolute inset-0 bg-gradient-to-b from-sky-200/50 to-blue-100/50 dark:from-sky-900/30 dark:to-blue-950/30">
                                         {[...Array(3)].map((_, i) => (
@@ -582,7 +670,10 @@ export function ProjectileMotionLabEnhanced() {
                                     </div>
                                     
                                     {/* Ground with texture */}
-                                    <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-green-700 via-green-600 to-green-500 dark:from-green-900 dark:via-green-800 dark:to-green-700">
+                                    <div
+                                        className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-green-700 via-green-600 to-green-500 dark:from-green-900 dark:via-green-800 dark:to-green-700"
+                                        style={{ height: `${groundLevel}px` }}
+                                    >
                                         {/* Ground texture lines */}
                                         <div className="absolute top-0 left-0 right-0 h-px bg-green-800/30 dark:bg-green-700/30"></div>
                                         <div className="absolute top-2 left-0 right-0 h-px bg-green-800/20 dark:bg-green-700/20"></div>
@@ -600,7 +691,15 @@ export function ProjectileMotionLabEnhanced() {
                                     </div>
                                     
                                     {/* Enhanced Launcher - Cannon style */}
-                                    <div className="absolute bottom-16 left-12">
+                                    <div
+                                        className="absolute"
+                                        style={{
+                                            bottom: `${groundLevel}px`,
+                                            left: `${launchOriginX}px`,
+                                            transform: `scale(${launcherScale})`,
+                                            transformOrigin: 'bottom left',
+                                        }}
+                                    >
                                         {/* Launcher base */}
                                         <div className="absolute -bottom-2 -left-2 w-20 h-4 bg-gray-800 dark:bg-gray-600 rounded-sm shadow-lg"></div>
                                         {/* Launcher barrel */}
@@ -639,8 +738,8 @@ export function ProjectileMotionLabEnhanced() {
                                                 </linearGradient>
                                             </defs>
                                             <path
-                                                d={`M ${48} ${CANVAS_HEIGHT - GROUND_LEVEL} ${launch.trajectory.map(p => 
-                                                    `L ${48 + p.x * SCALE} ${CANVAS_HEIGHT - GROUND_LEVEL - p.y * SCALE}`
+                                                d={`M ${launchOriginX} ${sceneMetrics.sceneHeight - groundLevel} ${launch.trajectory.map(p => 
+                                                    `L ${launchOriginX + p.x * trajectoryScale} ${sceneMetrics.sceneHeight - groundLevel - p.y * trajectoryScale}`
                                                 ).join(' ')}`}
                                                 fill="none"
                                                 stroke={`url(#trail-${index})`}
@@ -661,8 +760,8 @@ export function ProjectileMotionLabEnhanced() {
                                                     </linearGradient>
                                                 </defs>
                                                 <path
-                                                    d={`M ${48} ${CANVAS_HEIGHT - GROUND_LEVEL} ${currentTrajectory.slice(0, Math.floor(animationProgress * currentTrajectory.length)).map(p => 
-                                                        `L ${48 + p.x * SCALE} ${CANVAS_HEIGHT - GROUND_LEVEL - p.y * SCALE}`
+                                                    d={`M ${launchOriginX} ${sceneMetrics.sceneHeight - groundLevel} ${currentTrajectory.slice(0, Math.floor(animationProgress * currentTrajectory.length)).map(p => 
+                                                        `L ${launchOriginX + p.x * trajectoryScale} ${sceneMetrics.sceneHeight - groundLevel - p.y * trajectoryScale}`
                                                     ).join(' ')}`}
                                                     fill="none"
                                                     stroke="url(#current-trail)"
@@ -674,19 +773,19 @@ export function ProjectileMotionLabEnhanced() {
                                                 const pos = getProjectilePosition();
                                                 if (!pos) return null;
                                                 
-                                                const x = 48 + pos.x * SCALE;
-                                                const y = CANVAS_HEIGHT - GROUND_LEVEL - pos.y * SCALE;
+                                                const x = launchOriginX + pos.x * trajectoryScale;
+                                                const y = sceneMetrics.sceneHeight - groundLevel - pos.y * trajectoryScale;
                                                 
                                                 return (
                                                     <>
                                                         {/* Projectile shadow on ground */}
-                                                        {y < CANVAS_HEIGHT - GROUND_LEVEL && (
+                                                        {y < sceneMetrics.sceneHeight - groundLevel && (
                                                             <motion.div
                                                                 className="absolute w-6 h-3 bg-black/20 dark:bg-black/40 rounded-full blur-sm"
                                                                 style={{
                                                                     left: x - 12,
-                                                                    top: CANVAS_HEIGHT - GROUND_LEVEL - 4,
-                                                                    transform: `scale(${1 - (CANVAS_HEIGHT - GROUND_LEVEL - y) / 200})`,
+                                                                    top: sceneMetrics.sceneHeight - groundLevel - 4,
+                                                                    transform: `scale(${1 - (sceneMetrics.sceneHeight - groundLevel - y) / 200})`,
                                                                 }}
                                                             />
                                                         )}
@@ -707,7 +806,7 @@ export function ProjectileMotionLabEnhanced() {
                                                             }}
                                                         >
                                                             {/* Projectile body - 3D sphere */}
-                                                            <div className="relative w-5 h-5">
+                                                                <div className="relative w-5 h-5 lg:w-6 lg:h-6">
                                                                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 rounded-full shadow-lg border border-purple-700/50"></div>
                                                                 <div className="absolute inset-0.5 bg-gradient-to-tr from-white/30 to-transparent rounded-full"></div>
                                                                 {/* Highlight */}
@@ -739,8 +838,8 @@ export function ProjectileMotionLabEnhanced() {
                                     {/* Impact effect when projectile hits ground */}
                                     {!isLaunching && launches.length > 0 && (
                                         launches.map((launch, index) => {
-                                            const impactX = 48 + launch.range * SCALE;
-                                            const impactY = CANVAS_HEIGHT - GROUND_LEVEL;
+                                            const impactX = launchOriginX + launch.range * trajectoryScale;
+                                            const impactY = sceneMetrics.sceneHeight - groundLevel;
                                             return (
                                                 <motion.div
                                                     key={`impact-${index}`}

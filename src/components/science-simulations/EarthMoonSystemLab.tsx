@@ -152,8 +152,7 @@ export function EarthMoonSystemLab() {
       setCheckQuestion(null);
       setCheckSelectedIndex(null);
       setCheckShowFeedback(false);
-      setTeacherMessage('');
-      setTimeout(() => setTeacherMessage(buildTeacherMessage(selectedBody, day)), 0);
+      setTeacherMessage(buildTeacherMessage(selectedBody, day));
     } else {
       setAutoPlay(true);
       setTeacherMessage(buildTeacherMessage(selectedBody, day));

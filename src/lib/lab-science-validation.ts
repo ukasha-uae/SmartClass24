@@ -168,5 +168,74 @@ export const SCIENCE_LAB_VALIDATION_PROFILES: Record<string, LabValidationProfil
       },
     ],
   },
+  'ammonia-test': {
+    labSlug: 'ammonia-test',
+    title: 'Test for Ammonia Gas',
+    parameters: [
+      ...CORE_SCIENCE_VALIDATION_PARAMETERS,
+      {
+        id: 'indicator-directionality',
+        label: 'Indicator Directionality',
+        description:
+          'Moist red litmus must transition to blue in the presence of ammonia and never the reverse in this setup.',
+        severity: 'critical',
+        required: true,
+      },
+      {
+        id: 'decomposition-to-observation-sequence',
+        label: 'Decomposition-to-Observation Sequence',
+        description:
+          'Teacher narration and visual transitions must follow setup -> heating -> gas production -> indicator test without abrupt jumps.',
+        severity: 'major',
+        required: true,
+      },
+    ],
+  },
+  'projectile-motion': {
+    labSlug: 'projectile-motion',
+    title: 'Projectile Motion',
+    parameters: [
+      ...CORE_SCIENCE_VALIDATION_PARAMETERS,
+      {
+        id: 'trajectory-shape',
+        label: 'Trajectory Shape Validity',
+        description:
+          'Projectile path should remain parabolic under constant gravity assumptions used by the simulator.',
+        severity: 'critical',
+        required: true,
+      },
+      {
+        id: 'angle-range-consistency',
+        label: 'Angle-Range Consistency',
+        description:
+          'Observed launch outcomes should preserve expected trends (e.g., near-45° range optimum in idealized conditions).',
+        severity: 'major',
+        required: true,
+      },
+    ],
+  },
+  'earth-moon-system': {
+    labSlug: 'earth-moon-system',
+    title: 'Moon Phases & Eclipses',
+    parameters: [
+      ...CORE_SCIENCE_VALIDATION_PARAMETERS,
+      {
+        id: 'phase-geometry-consistency',
+        label: 'Phase Geometry Consistency',
+        description:
+          'Displayed phase should be consistent with relative Sun–Earth–Moon geometry at selected day.',
+        severity: 'critical',
+        required: true,
+      },
+      {
+        id: 'checkpoint-sequencing',
+        label: 'Checkpoint Sequencing Continuity',
+        description:
+          'Auto-play narration and phase-check prompts should progress without abrupt context switching.',
+        severity: 'major',
+        required: true,
+      },
+    ],
+  },
 };
 
