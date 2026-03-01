@@ -71,6 +71,21 @@ const LAB_SOUND_PROFILES: Record<string, LabSoundProfile> = {
       restart: 'click',
     },
   },
+  'maths-equation-builder': {
+    defaultSound: 'click',
+    events: {
+      'tile-place': 'click',
+      'step-correct': 'correct',
+      'step-wrong': 'wrong',
+      'checkpoint-start': 'click',
+      hint: 'tick',
+      'answer-correct': 'correct',
+      'answer-wrong': 'wrong',
+      resume: 'click',
+      complete: 'complete',
+      restart: 'click',
+    },
+  },
   'solar-system': {
     defaultSound: 'click',
     events: {

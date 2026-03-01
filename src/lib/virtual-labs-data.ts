@@ -37,6 +37,7 @@ import { WorkEnergyLabEnhanced as WorkEnergyLab } from "@/components/virtual-lab
 import { MathVennLabEnhanced } from "@/components/virtual-labs/math-venn-lab-enhanced";
 import { EquationAnimationLabEnhanced } from "@/components/virtual-labs/equation-animation-lab-enhanced";
 import { FractionsRescueLabEnhanced } from "@/components/virtual-labs/fractions-rescue-lab-enhanced";
+import { EquationBuilderLabEnhanced } from "@/components/virtual-labs/equation-builder-lab-enhanced";
 import { ArtColorTheoryLabEnhanced } from "@/components/virtual-labs/art-color-theory-lab-enhanced";
 import { FEATURE_FLAGS } from "@/lib/featureFlags";
 import { SolarSystemLab } from "@/components/science-simulations/SolarSystemLab";
@@ -112,6 +113,16 @@ export const virtualLabExperiments: { experiments: VirtualLabExperiment[] } = {
             description: 'Build fraction confidence with part-whole models, equivalence tools, and number-line practice.',
             learningObjective: 'Strengthen conceptual understanding of fractions, comparisons, and fraction-decimal bridges through guided practice.',
             component: FractionsRescueLabEnhanced,
+        },
+        {
+            id: 'math-lab-4',
+            slug: 'maths-equation-builder',
+            title: 'Equation Builder Lab',
+            subject: 'Mathematics',
+            labAudience: 'middle-school',
+            description: 'Solve linear equations by dragging numbers and symbols into operation and answer slots.',
+            learningObjective: 'Strengthen inverse-operation reasoning and equation balancing through interactive drag-and-drop solving.',
+            component: EquationBuilderLabEnhanced,
         },
         {
             id: 'art-lab-1',
