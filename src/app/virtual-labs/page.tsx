@@ -27,13 +27,15 @@ import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
 import { useEntitlements } from '@/hooks/useEntitlements';
 
+type LabSubject = 'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics' | 'Art';
+
 export default function VirtualLabsPage() {
   // V1 Route Guard: Check if user has access to virtual labs
   const { hasAccess, campus, mounted: accessMounted } = useV1FeatureAccess('virtualLabs');
   const { user, isUserLoading } = useFirebase();
   const [trackFilter, setTrackFilter] = useState<'All' | VirtualLabTrack>('All');
   const [audienceFilter, setAudienceFilter] = useState<'All' | VirtualLabAudience>('All');
-  const [filter, setFilter] = useState<'All' | 'Biology' | 'Chemistry' | 'Physics' | 'Science' | 'Mathematics' | 'Art'>('All');
+  const [subjectFilter, setSubjectFilter] = useState<'All' | LabSubject>('All');
   const { completedLabs, totalXP, streak, isLabCompleted } = useLabProgress();
   const [mounted, setMounted] = useState(false);
   const [showUnlockModal, setShowUnlockModal] = useState(false);
@@ -47,6 +49,21 @@ export default function VirtualLabsPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const allSubjectOptions: LabSubject[] = ['Biology', 'Chemistry', 'Physics', 'Science', 'Mathematics', 'Art'];
+  const trackSubjectOptions: LabSubject[] = trackFilter === 'science-lab'
+    ? ['Biology', 'Chemistry', 'Physics', 'Science']
+    : trackFilter === 'maths-lab'
+      ? ['Mathematics']
+      : trackFilter === 'art-lab'
+        ? ['Art']
+        : allSubjectOptions;
+
+  useEffect(() => {
+    if (subjectFilter !== 'All' && !trackSubjectOptions.includes(subjectFilter)) {
+      setSubjectFilter('All');
+    }
+  }, [subjectFilter, trackSubjectOptions]);
   
   // CRITICAL: Wait for access check, auth, and entitlements to complete
   // This prevents showing locked labs while auth is still loading
@@ -114,7 +131,7 @@ export default function VirtualLabsPage() {
   const allLabsIncludingLocked = virtualLabExperiments.experiments
     .filter(exp => trackFilter === 'All' || getVirtualLabTrack(exp) === trackFilter)
     .filter(exp => audienceFilter === 'All' || getVirtualLabAudience(exp) === audienceFilter)
-    .filter(exp => filter === 'All' || exp.subject === filter);
+    .filter(exp => subjectFilter === 'All' || exp.subject === subjectFilter);
 
   const completionRate = allLabs.length > 0
     ? Math.round((Object.keys(completedLabs).length / allLabs.length) * 100)
@@ -248,17 +265,17 @@ export default function VirtualLabsPage() {
               <div className="mb-6">
                 <p className="text-sm font-bold mb-3 bg-gradient-to-r from-purple-600 to-violet-600 dark:from-purple-400 dark:to-violet-400 bg-clip-text text-transparent">Subject</p>
                 <div className="flex flex-wrap gap-2">
-                  {(['All', 'Biology', 'Chemistry', 'Physics', 'Science', 'Mathematics', 'Art'] as const).map((subject) => (
+                  {(['All', ...trackSubjectOptions] as const).map((subject) => (
                     <button
                       key={subject}
-                      onClick={() => setFilter(subject)}
+                      onClick={() => setSubjectFilter(subject)}
                       className={`px-5 py-2.5 rounded-xl font-semibold transition-all hover:scale-105 ${
-                        filter === subject
+                        subjectFilter === subject
                           ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-lg hover:shadow-xl'
                           : 'bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 text-slate-700 dark:text-slate-300 hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-700 dark:hover:to-slate-600 border-2 border-slate-200 dark:border-slate-700'
                       }`}
                     >
-                      {subject}
+                      {subject === 'All' ? 'All Subjects' : subject}
                     </button>
                   ))}
                 </div>
@@ -272,7 +289,6 @@ export default function VirtualLabsPage() {
                     ['primary-school', VIRTUAL_LAB_AUDIENCE_LABELS['primary-school']],
                     ['middle-school', VIRTUAL_LAB_AUDIENCE_LABELS['middle-school']],
                     ['high-school', VIRTUAL_LAB_AUDIENCE_LABELS['high-school']],
-                    ['all-levels', VIRTUAL_LAB_AUDIENCE_LABELS['all-levels']],
                   ] as const).map(([audienceValue, label]) => (
                     <button
                       key={audienceValue}
@@ -288,6 +304,10 @@ export default function VirtualLabsPage() {
                   ))}
                 </div>
               </div>
+
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Showing <span className="font-semibold">{allLabsIncludingLocked.length}</span> labs
+              </p>
               
             </CardContent>
           </Card>
