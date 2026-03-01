@@ -6,6 +6,7 @@ import { calculateXP, calculateCoins, checkAchievements } from './gamification';
 import { getCoinMultiplier, getQuestionLimit } from './monetization';
 import { trackQuestionUsage } from './analytics';
 import { createUserNotification } from './realtime-notifications';
+import { isBot } from './ai-bot-profiles';
 import { initializeFirebase } from '@/firebase';
 import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, onSnapshot, serverTimestamp, runTransaction } from 'firebase/firestore';
 import { getUserDisplayName } from './user-display';
@@ -1215,6 +1216,62 @@ const generateSchoolAIResults = (challenge: Challenge, aiUserId: string): void =
   opponent.timeTaken = totalTime;
 };
 
+// Generic bot result generation for 1v1 challenges (e.g., Quick Match vs Sarah)
+const generateBotOpponentResults = (challenge: Challenge, botUserId: string): void => {
+  const opponent = challenge.opponents.find(o => o.userId === botUserId);
+  if (!opponent) return;
+
+  const accuracyRate = challenge.difficulty === 'easy' ? 0.65 :
+                       challenge.difficulty === 'medium' ? 0.75 : 0.80;
+
+  const answers: PlayerAnswer[] = challenge.questions.map(q => {
+    const isCorrect = Math.random() < accuracyRate;
+    let answer: string | number | string[] = q.correctAnswer;
+    if (!isCorrect && q.options) {
+      const wrongOptions = q.options.filter(o => o !== q.correctAnswer);
+      answer = wrongOptions[Math.floor(Math.random() * wrongOptions.length)] || q.correctAnswer;
+    }
+
+    return {
+      questionId: q.id,
+      answer: String(Array.isArray(answer) ? answer.join(',') : answer),
+      isCorrect,
+      timeSpent: 3000 + Math.random() * 2500,
+      points: isCorrect ? q.points : 0
+    };
+  });
+
+  const score = answers.reduce((sum, a) => sum + a.points, 0);
+  const totalTime = answers.reduce((sum, a) => sum + a.timeSpent, 0);
+  const correctAnswersCount = answers.filter(a => a.isCorrect).length;
+  const accuracy = (correctAnswersCount / answers.length) * 100;
+
+  const resultData: GameResult = {
+    userId: botUserId,
+    userName: opponent.userName,
+    school: opponent.school,
+    answers,
+    score,
+    correctAnswers: correctAnswersCount,
+    totalTime,
+    accuracy,
+    rank: 0,
+    ratingChange: 0
+  };
+
+  if (!challenge.results) challenge.results = [];
+  const existingIndex = challenge.results.findIndex(r => r.userId === botUserId);
+  if (existingIndex > -1) {
+    challenge.results[existingIndex] = resultData;
+  } else {
+    challenge.results.push(resultData);
+  }
+
+  opponent.status = 'finished';
+  opponent.score = score;
+  opponent.timeTaken = totalTime;
+};
+
 export const submitChallengeAnswers = async (
   challengeId: string,
   userId: string,
@@ -1353,6 +1410,15 @@ export const submitChallengeAnswers = async (
     const aiOpponent = challenge.opponents.find(o => o.userId.startsWith('ai-'));
     if (aiOpponent && aiOpponent.status === 'accepted') {
       generateSchoolAIResults(challenge, aiOpponent.userId);
+    }
+  }
+
+  // For regular 1v1 modes, auto-generate bot opponent result once creator submits.
+  // This ensures results page always shows both sides for bot matches.
+  if (userId === challenge.creatorId) {
+    const botOpponent = challenge.opponents.find(o => isBot(o.userId));
+    if (botOpponent && botOpponent.status !== 'finished') {
+      generateBotOpponentResults(challenge, botOpponent.userId);
     }
   }
   
@@ -1747,6 +1813,15 @@ const generateGameQuestions = (
   count: number,
   userId: string = 'guest'
 ): GameQuestion[] => {
+  const dedupeById = (questions: any[]) => {
+    const seen = new Set<string>();
+    return questions.filter((q) => {
+      if (!q?.id || seen.has(q.id)) return false;
+      seen.add(q.id);
+      return true;
+    });
+  };
+
   // Handle legacy/lowercase subject names to prevent empty question sets
   let mappedSubject = subject;
   if (subject === 'math' || subject === 'Maths') {
@@ -1782,22 +1857,31 @@ const generateGameQuestions = (
     count,
     userId
   );
-  
-  // Fallback: If no questions found, try with 'Mixed' subject (SAME LEVEL)
+
+  const requestedSubject = subject === 'general' ? 'Mixed' : mappedSubject;
+  const allowsCrossSubjectFallback = requestedSubject === 'Mixed';
+
+  // First fallback: try an easier class level but keep the same subject.
+  // This prevents subject label/content mismatches (e.g. showing Mathematics for another SHS subject).
   if (challengeQuestions.length === 0) {
-    console.warn(`No questions found for ${level} ${mappedSubject}, falling back to mixed questions`);
+    console.warn(`No questions found for ${level} ${requestedSubject} at ${effectiveDifficulty}, trying easier class level`);
+    const classLevels: string[] = level === 'Primary' ? ['Primary 1', 'Primary 2', 'Primary 3'] :
+                                  level === 'JHS' ? ['JHS 1', 'JHS 2', 'JHS 3'] :
+                                  ['SHS 1', 'SHS 2', 'SHS 3'];
+    const currentIndex = classLevels.indexOf(effectiveDifficulty);
+    const fallbackClassLevel = currentIndex > 0 ? classLevels[currentIndex - 1] : classLevels[0];
     challengeQuestions = getChallengeQuestions(
       level, // Keep same level - STRICT filtering
-      'Mixed',
-      effectiveDifficulty as any,
+      requestedSubject,
+      fallbackClassLevel as any,
       count,
       userId
     );
   }
-  
-  // Last resort: Try with easier class level or default subject (SAME LEVEL)
-  if (challengeQuestions.length === 0) {
-    console.warn(`No questions found for ${level}, trying with easier class level`);
+
+  // Only for intentionally mixed sessions, allow cross-subject fallback as a final rescue.
+  if (challengeQuestions.length === 0 && allowsCrossSubjectFallback) {
+    console.warn(`No mixed questions for ${level} at ${effectiveDifficulty}, trying level default subject`);
     const classLevels: string[] = level === 'Primary' ? ['Primary 1', 'Primary 2', 'Primary 3'] :
                                   level === 'JHS' ? ['JHS 1', 'JHS 2', 'JHS 3'] :
                                   ['SHS 1', 'SHS 2', 'SHS 3'];
@@ -1807,12 +1891,41 @@ const generateGameQuestions = (
                             level === 'JHS' ? 'Mathematics' :
                             'Core Mathematics';
     challengeQuestions = getChallengeQuestions(
-      level, // Keep same level - STRICT filtering
+      level,
       fallbackSubject,
       fallbackClassLevel as any,
       count,
       userId
     );
+  }
+
+  // Subject-integrity guard:
+  // For non-mixed sessions, never serve a different subject label.
+  if (requestedSubject !== 'Mixed') {
+    challengeQuestions = challengeQuestions.filter((q) => q.subject === requestedSubject);
+
+    // If class-level filtering is too narrow (e.g., new SHS banks), top up from the
+    // SAME subject across adjacent class levels instead of cross-subject fallback.
+    if (challengeQuestions.length < count) {
+      const levelBands: string[] =
+        level === 'Primary'
+          ? ['Primary 1', 'Primary 2', 'Primary 3', 'Primary 4', 'Primary 5', 'Primary 6']
+          : level === 'JHS'
+          ? ['JHS 1', 'JHS 2', 'JHS 3']
+          : ['SHS 1', 'SHS 2', 'SHS 3'];
+
+      const sameSubjectPool = dedupeById(
+        levelBands.flatMap((band) =>
+          getChallengeQuestions(level, requestedSubject, band as any, Math.max(count, 30), userId)
+        )
+      ).filter((q) => q.subject === requestedSubject);
+
+      if (sameSubjectPool.length > 0) {
+        const shuffled = [...sameSubjectPool].sort(() => Math.random() - 0.5);
+        const strictCount = Math.min(count, shuffled.length);
+        challengeQuestions = shuffled.slice(0, strictCount);
+      }
+    }
   }
   
   // Basic subject/topic usage analytics (for prioritising question banks)
@@ -1865,7 +1978,7 @@ const generateGameQuestions = (
     [questionTypes[i], questionTypes[j]] = [questionTypes[j], questionTypes[i]];
   }
   
-  return challengeQuestions.map((q, index) => {
+  const generatedQuestions = challengeQuestions.map((q, index) => {
     // Calculate points based on classLevel or difficulty
     let points = 5; // Default
     if (difficulty.includes('3') || difficulty === 'hard') points = 15;
@@ -2003,6 +2116,27 @@ const generateGameQuestions = (
         correctAnswer: q.options[q.correctAnswer],
       };
     }
+  });
+
+  // Anti-pattern guard: randomize MCQ option positions at runtime so one letter
+  // (e.g., B) cannot dominate across repeated games.
+  return generatedQuestions.map((question) => {
+    if (question.type !== 'mcq' || !question.options || question.options.length < 2) {
+      return question;
+    }
+
+    const shuffledOptions = [...question.options];
+    for (let i = shuffledOptions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+    }
+
+    // For MCQ, correctAnswer is stored as the correct option text.
+    // Keeping the same text while shuffling options preserves correctness.
+    return {
+      ...question,
+      options: shuffledOptions,
+    };
   });
 };
 

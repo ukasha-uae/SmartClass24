@@ -21,6 +21,15 @@ import { businessManagementQuestions } from './questions/shs/business-management
 import { costAccountingQuestions } from './questions/shs/cost-accounting';
 import { generalKnowledgeArtQuestions } from './questions/shs/general-knowledge-art';
 import { foodNutritionQuestions } from './questions/shs/food-nutrition';
+import { textilesQuestions } from './questions/shs/textiles';
+import { graphicDesignQuestions } from './questions/shs/graphic-design';
+import { managementInLivingQuestions } from './questions/shs/management-in-living';
+import { clothingAndTextilesQuestions } from './questions/shs/clothing-and-textiles';
+import { agriculturalScienceQuestions } from './questions/shs/agricultural-science';
+import { cropHusbandryQuestions } from './questions/shs/crop-husbandry';
+import { animalHusbandryQuestions } from './questions/shs/animal-husbandry';
+import { christianReligiousStudiesQuestions } from './questions/shs/christian-religious-studies';
+import { islamicReligiousStudiesQuestions } from './questions/shs/islamic-religious-studies';
 import { technicalDrawingQuestions } from './questions/shs/technical-drawing';
 import { buildingConstructionQuestions } from './questions/shs/building-construction';
 import { woodworkQuestions } from './questions/shs/woodwork';
@@ -17754,8 +17763,26 @@ export function getChallengeQuestions(
       filtered = filterMCQQuestions(costAccountingQuestions);
     } else if (subject === 'General Knowledge in Art') {
       filtered = filterMCQQuestions(generalKnowledgeArtQuestions);
+    } else if (subject === 'Textiles') {
+      filtered = filterMCQQuestions(textilesQuestions);
+    } else if (subject === 'Graphic Design') {
+      filtered = filterMCQQuestions(graphicDesignQuestions);
     } else if (subject === 'Food and Nutrition') {
       filtered = filterMCQQuestions(foodNutritionQuestions);
+    } else if (subject === 'Management in Living') {
+      filtered = filterMCQQuestions(managementInLivingQuestions);
+    } else if (subject === 'Clothing and Textiles') {
+      filtered = filterMCQQuestions(clothingAndTextilesQuestions);
+    } else if (subject === 'Christian Religious Studies') {
+      filtered = filterMCQQuestions(christianReligiousStudiesQuestions);
+    } else if (subject === 'Islamic Religious Studies') {
+      filtered = filterMCQQuestions(islamicReligiousStudiesQuestions);
+    } else if (subject === 'Agricultural Science') {
+      filtered = filterMCQQuestions(agriculturalScienceQuestions);
+    } else if (subject === 'Crop Husbandry') {
+      filtered = filterMCQQuestions(cropHusbandryQuestions);
+    } else if (subject === 'Animal Husbandry') {
+      filtered = filterMCQQuestions(animalHusbandryQuestions);
     } else if (subject === 'Technical Drawing') {
       filtered = filterMCQQuestions(technicalDrawingQuestions);
     } else if (subject === 'Building Construction') {
@@ -17795,7 +17822,16 @@ export function getChallengeQuestions(
       subject !== 'Business Management' &&
       subject !== 'Cost Accounting' &&
       subject !== 'General Knowledge in Art' &&
+      subject !== 'Textiles' &&
+      subject !== 'Graphic Design' &&
       subject !== 'Food and Nutrition' &&
+      subject !== 'Management in Living' &&
+      subject !== 'Clothing and Textiles' &&
+      subject !== 'Christian Religious Studies' &&
+      subject !== 'Islamic Religious Studies' &&
+      subject !== 'Agricultural Science' &&
+      subject !== 'Crop Husbandry' &&
+      subject !== 'Animal Husbandry' &&
       subject !== 'Technical Drawing' &&
       subject !== 'Building Construction' &&
       subject !== 'Woodwork' &&
