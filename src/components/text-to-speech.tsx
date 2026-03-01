@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Volume2, VolumeX, Pause, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { formatTextForSpeech, splitSentencesForSpeech } from '@/lib/text/format-for-speech';
 
 interface TextToSpeechProps {
   textToSpeak: string;
@@ -86,8 +87,8 @@ export function TextToSpeech({
     // Sanitize text before speaking
     const cleanText = sanitizeForSpeech(textToSpeak);
 
-    // Split text into sentences for better tracking
-    const sentences = cleanText.match(/[^.!?]+[.!?]+/g) || [cleanText];
+    // Split text into sentences without breaking decimals (e.g. 29.5)
+    const sentences = splitSentencesForSpeech(cleanText);
     currentSentenceRef.current = 0;
 
     const speakSentence = (index: number) => {
@@ -97,7 +98,7 @@ export function TextToSpeech({
         return;
       }
 
-      const utterance = new SpeechSynthesisUtterance(sentences[index].trim());
+      const utterance = new SpeechSynthesisUtterance(formatTextForSpeech(sentences[index].trim()));
       utteranceRef.current = utterance;
 
       // Configure speech settings

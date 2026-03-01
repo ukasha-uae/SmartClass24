@@ -6,6 +6,7 @@ import { Volume2, VolumeX, Minimize2, Maximize2, GripVertical, Sparkles, RotateC
 import { Button } from '../ui/button';
 import { TeacherAvatar } from './TeacherAvatar';
 import { normalizeMathText } from '@/lib/text/normalize-math-text';
+import { formatTextForSpeech, splitSentencesForSpeech } from '@/lib/text/format-for-speech';
 
 interface TeacherVoiceProps {
     message: string;
@@ -101,8 +102,8 @@ export function TeacherVoice({
     // Split message into chunks for progressive reveal
     React.useEffect(() => {
         if (progressiveReveal && normalizedMessage) {
-            // Split by sentences (. ! ?) but keep the punctuation
-            const sentences = normalizedMessage.match(/[^.!?]+[.!?]+/g) || [normalizedMessage];
+            // Split by sentence boundaries without breaking decimals like 29.5
+            const sentences = splitSentencesForSpeech(normalizedMessage);
             const chunks: string[] = [];
             
             for (let i = 0; i < sentences.length; i += linesPerChunk) {
@@ -230,7 +231,7 @@ export function TeacherVoice({
             window.speechSynthesis.cancel();
             
             const textToSpeak = messageChunks[chunkIndex] || messageChunks[0];
-            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            const utterance = new SpeechSynthesisUtterance(formatTextForSpeech(textToSpeak));
             utterance.rate = 0.9;
             utterance.pitch = 1.1;
             utterance.volume = 1;

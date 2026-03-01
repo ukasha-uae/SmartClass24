@@ -12,6 +12,7 @@ import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
 import { Slider } from '../ui/slider';
+import { Textarea } from '@/components/ui/textarea';
 
 type Step = 'intro' | 'setup' | 'experiment' | 'results' | 'quiz' | 'complete';
 
@@ -24,7 +25,70 @@ interface ProjectileData {
     trajectory: { x: number; y: number }[];
 }
 
+type TrendPrediction = 'farther' | 'shorter' | 'similar';
+type HeightPrediction = 'higher' | 'lower' | 'similar';
+type ChallengeType = 'range-band' | 'height-min' | 'flight-time-band';
+
+interface LaunchChallenge {
+    type: ChallengeType;
+    target: number;
+    tolerance: number;
+    description: string;
+    hint: string;
+    successMessage: string;
+}
+
 const GRAVITY = 9.81; // m/s²
+const THEORETICAL_MAX_RANGE = (30 * 30) / GRAVITY; // max range in this lab controls (v=30 m/s, angle=45°)
+
+function generateChallenge(): LaunchChallenge {
+    const typeRoll = Math.random();
+    if (typeRoll < 0.4) {
+        const target = 18 + Math.floor(Math.random() * 55);
+        return {
+            type: 'range-band',
+            target,
+            tolerance: 2.5,
+            description: `Range Mission: Land between ${Math.max(8, target - 2.5).toFixed(1)}m and ${(target + 2.5).toFixed(1)}m.`,
+            hint: 'Tune both angle and velocity; small angle changes can move landing distance a lot.',
+            successMessage: 'Target range achieved! Great control of horizontal motion.',
+        };
+    }
+    if (typeRoll < 0.7) {
+        const target = 6 + Math.floor(Math.random() * 13);
+        return {
+            type: 'height-min',
+            target,
+            tolerance: 0,
+            description: `Height Mission: Reach at least ${target.toFixed(1)}m maximum height.`,
+            hint: 'Try a steeper angle or slightly higher velocity to gain height.',
+            successMessage: 'Height mission complete! You controlled vertical motion well.',
+        };
+    }
+    const target = 2 + Math.floor(Math.random() * 4);
+    return {
+        type: 'flight-time-band',
+        target,
+        tolerance: 0.6,
+        description: `Timing Mission: Keep flight time around ${target.toFixed(1)}s (±0.6s).`,
+        hint: 'Flight time is strongly linked to vertical velocity (angle + speed).',
+        successMessage: 'Timing mission completed! Excellent launch calibration.',
+    };
+}
+
+function challengePassed(launch: ProjectileData, challenge: LaunchChallenge) {
+    if (challenge.type === 'range-band') {
+        return Math.abs(launch.range - challenge.target) <= challenge.tolerance;
+    }
+    if (challenge.type === 'height-min') {
+        return launch.maxHeight >= challenge.target;
+    }
+    return Math.abs(launch.timeOfFlight - challenge.target) <= challenge.tolerance;
+}
+
+function toSpeechDecimal(value: number, digits = 2) {
+    return value.toFixed(digits).replace('.', ' point ');
+}
 
 function getSceneMetrics() {
     if (typeof window === 'undefined') {
@@ -35,7 +99,8 @@ function getSceneMetrics() {
     if (width >= 1280) return { sceneHeight: 580, sceneScale: 5.5 };
     if (width >= 1024) return { sceneHeight: 520, sceneScale: 5.1 };
     if (width >= 768) return { sceneHeight: 460, sceneScale: 4.6 };
-    return { sceneHeight: 400, sceneScale: 4 };
+    if (width >= 480) return { sceneHeight: 360, sceneScale: 3.9 };
+    return { sceneHeight: 315, sceneScale: 3.5 };
 }
 
 export function ProjectileMotionLabEnhanced() {
@@ -54,6 +119,9 @@ export function ProjectileMotionLabEnhanced() {
     const [sceneMetrics, setSceneMetrics] = React.useState(() => getSceneMetrics());
     const sceneRef = React.useRef<HTMLDivElement | null>(null);
     const [sceneWidth, setSceneWidth] = React.useState(960);
+    const [viewportWidth, setViewportWidth] = React.useState(() =>
+        typeof window === 'undefined' ? 1024 : window.innerWidth
+    );
     
     // Quiz state
     const [quizAnswer1, setQuizAnswer1] = React.useState<string | undefined>();
@@ -65,6 +133,17 @@ export function ProjectileMotionLabEnhanced() {
     // XP and completion
     const [xpEarned, setXpEarned] = React.useState(0);
     const [showCelebration, setShowCelebration] = React.useState(false);
+    const [rangePrediction, setRangePrediction] = React.useState<TrendPrediction | null>(null);
+    const [heightPrediction, setHeightPrediction] = React.useState<HeightPrediction | null>(null);
+    const [activeChallenge, setActiveChallenge] = React.useState<LaunchChallenge>(() => generateChallenge());
+    const [challengesCompleted, setChallengesCompleted] = React.useState(0);
+    const [reflection, setReflection] = React.useState({
+        changed: '',
+        surprised: '',
+        nextTry: '',
+    });
+    const [reflectionSaved, setReflectionSaved] = React.useState(false);
+    const [showLearningTools, setShowLearningTools] = React.useState(false);
     const { markLabComplete, isLabCompleted, getLabCompletion } = useLabProgress();
     const labId = 'projectile-motion';
     const isCompleted = isLabCompleted(labId);
@@ -91,9 +170,29 @@ export function ProjectileMotionLabEnhanced() {
     }, []);
 
     const groundLevel = Math.round(sceneMetrics.sceneHeight * 0.17);
-    const launchOriginX = sceneWidth >= 1280 ? 84 : sceneWidth >= 1024 ? 76 : sceneWidth >= 768 ? 64 : 48;
-    const launcherScale = sceneWidth >= 1400 ? 1.45 : sceneWidth >= 1150 ? 1.3 : sceneWidth >= 900 ? 1.18 : 1;
-    const rightPadding = sceneWidth >= 1024 ? 56 : 36;
+    const launchOriginX =
+        viewportWidth >= 1280
+            ? 84
+            : viewportWidth >= 1024
+              ? 76
+              : viewportWidth >= 768
+                ? 64
+                : viewportWidth >= 480
+                  ? 36
+                  : 24;
+    const launcherScale =
+        viewportWidth >= 1400
+            ? 1.45
+            : viewportWidth >= 1150
+              ? 1.3
+              : viewportWidth >= 900
+                ? 1.18
+                : viewportWidth >= 768
+                  ? 1
+                  : viewportWidth >= 480
+                    ? 0.74
+                    : 0.58;
+    const rightPadding = viewportWidth >= 1024 ? 40 : viewportWidth >= 768 ? 28 : 18;
     const expectedCurrentRange = Math.max(
         20,
         (velocity * velocity * Math.sin((2 * angle * Math.PI) / 180)) / GRAVITY
@@ -104,8 +203,12 @@ export function ProjectileMotionLabEnhanced() {
         currentTrajectory.length > 0 ? currentTrajectory[currentTrajectory.length - 1]?.x ?? 0 : 0
     );
     const availableHorizontalSpace = Math.max(sceneWidth - launchOriginX - rightPadding, 220);
-    const fillScale = (availableHorizontalSpace / observedMaxRange) * 0.92;
-    const trajectoryScale = Math.min(12, Math.max(sceneMetrics.sceneScale, fillScale));
+    const fillScale = (availableHorizontalSpace / observedMaxRange) * 0.94;
+    const minScaleX = viewportWidth < 768 ? 2.2 : viewportWidth < 1024 ? 2.8 : sceneMetrics.sceneScale;
+    const maxScaleX = viewportWidth < 480 ? 3.0 : viewportWidth < 768 ? 3.8 : viewportWidth < 1024 ? 5.5 : 26;
+    const deviceBoundScaleCap = viewportWidth < 1024 ? (availableHorizontalSpace / THEORETICAL_MAX_RANGE) * 0.97 : Number.POSITIVE_INFINITY;
+    const trajectoryScaleX = Math.min(maxScaleX, deviceBoundScaleCap, Math.max(minScaleX, fillScale));
+    const trajectoryScaleY = Math.max(4, sceneMetrics.sceneScale * (sceneWidth >= 1280 ? 1.08 : 1));
 
     React.useEffect(() => {
         if (currentStep === 'intro') {
@@ -114,10 +217,17 @@ export function ProjectileMotionLabEnhanced() {
     }, [currentStep]);
 
     React.useEffect(() => {
-        const onResize = () => setSceneMetrics(getSceneMetrics());
+        const onResize = () => {
+            setSceneMetrics(getSceneMetrics());
+            setViewportWidth(window.innerWidth);
+        };
         window.addEventListener('resize', onResize);
         return () => window.removeEventListener('resize', onResize);
     }, []);
+
+    React.useEffect(() => {
+        setShowLearningTools(viewportWidth >= 1024);
+    }, [viewportWidth]);
 
     React.useEffect(() => {
         if (!sceneRef.current) return;
@@ -182,6 +292,7 @@ export function ProjectileMotionLabEnhanced() {
         
         const data = calculateTrajectory(angle, velocity);
         setCurrentTrajectory(data.trajectory);
+        const previousLaunch = launches.length > 0 ? launches[launches.length - 1] : null;
         
         // Animate the projectile
         let frame = 0;
@@ -198,14 +309,57 @@ export function ProjectileMotionLabEnhanced() {
                 setIsLaunching(false);
                 setCurrentTrajectory([]);
                 setAnimationProgress(0);
+                const predictionInsights: string[] = [];
+                if (previousLaunch) {
+                    const rangeDelta = data.range - previousLaunch.range;
+                    const heightDelta = data.maxHeight - previousLaunch.maxHeight;
+                    const rangeThreshold = Math.max(0.75, Math.abs(previousLaunch.range) * 0.08);
+                    const heightThreshold = Math.max(0.5, Math.abs(previousLaunch.maxHeight) * 0.1);
+                    const actualRangeTrend: TrendPrediction =
+                        rangeDelta > rangeThreshold ? 'farther' : rangeDelta < -rangeThreshold ? 'shorter' : 'similar';
+                    const actualHeightTrend: HeightPrediction =
+                        heightDelta > heightThreshold ? 'higher' : heightDelta < -heightThreshold ? 'lower' : 'similar';
+
+                    if (rangePrediction) {
+                        predictionInsights.push(
+                            rangePrediction === actualRangeTrend
+                                ? 'Range prediction: correct'
+                                : `Range prediction: expected ${rangePrediction}, observed ${actualRangeTrend}`
+                        );
+                    }
+                    if (heightPrediction) {
+                        predictionInsights.push(
+                            heightPrediction === actualHeightTrend
+                                ? 'Height prediction: correct'
+                                : `Height prediction: expected ${heightPrediction}, observed ${actualHeightTrend}`
+                        );
+                    }
+                }
                 
                 if (launches.length === 0) {
-                    setTeacherMessage(`Perfect first launch! Max height: ${data.maxHeight.toFixed(2)}m, Range: ${data.range.toFixed(2)}m. Try a different angle or velocity to compare!`);
+                    setTeacherMessage(
+                        `Perfect first launch! Max height: ${toSpeechDecimal(data.maxHeight)} meters, ` +
+                        `Range: ${toSpeechDecimal(data.range)} meters. Try a different angle or velocity to compare!`
+                    );
                 } else if (launches.length === 1) {
-                    setTeacherMessage(`Second launch complete! Notice how changing the angle affects the trajectory. One more launch to see patterns!`);
+                    setTeacherMessage(`Second launch complete! ${predictionInsights.length > 0 ? `${predictionInsights.join(' • ')}. ` : ''}Notice how changing the angle affects the trajectory. One more launch to see patterns!`);
                 } else if (launches.length === 2) {
-                    setTeacherMessage(`Excellent! You've completed 3 launches. Notice: 45° gives maximum range. Click 'View Results' to analyze all data!`);
+                    setTeacherMessage(`Excellent! You've completed 3 launches. ${predictionInsights.length > 0 ? `${predictionInsights.join(' • ')}. ` : ''}Notice: 45° gives maximum range. Click 'View Results' to analyze all data!`);
                 }
+
+                const missionPassed = challengePassed(data, activeChallenge);
+                if (missionPassed) {
+                    setChallengesCompleted((count) => count + 1);
+                    setActiveChallenge(generateChallenge());
+                    toast({
+                        title: '🎯 Challenge Complete!',
+                        description: activeChallenge.successMessage,
+                        className: 'bg-purple-100 dark:bg-purple-900 border-purple-500',
+                    });
+                }
+
+                setRangePrediction(null);
+                setHeightPrediction(null);
                 
                 toast({ 
                     title: '🚀 Launch Complete!', 
@@ -318,6 +472,12 @@ export function ProjectileMotionLabEnhanced() {
         setQuizFeedback('');
         setQuizSubmitted(false);
         setShowCelebration(false);
+        setRangePrediction(null);
+        setHeightPrediction(null);
+        setActiveChallenge(generateChallenge());
+        setChallengesCompleted(0);
+        setReflection({ changed: '', surprised: '', nextTry: '' });
+        setReflectionSaved(false);
         setTeacherMessage("Ready to explore projectile motion again!");
     };
 
@@ -360,7 +520,7 @@ export function ProjectileMotionLabEnhanced() {
                 ))}
             </div>
 
-            <div className="relative space-y-6">
+            <div className="relative space-y-4 sm:space-y-6">
             <TeacherVoice 
                 message={teacherMessage}
                 onComplete={handleTeacherComplete}
@@ -576,73 +736,75 @@ export function ProjectileMotionLabEnhanced() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="space-y-6"
+                        className="space-y-3 sm:space-y-4"
                     >
                         <Card className="border-2 border-purple-200/50 dark:border-purple-800/50 bg-gradient-to-br from-white/90 to-purple-50/90 dark:from-gray-900/90 dark:to-purple-950/90 backdrop-blur-sm shadow-xl">
-                            <CardHeader>
+                            <CardHeader className="pb-3 sm:pb-4">
                                 <CardTitle className="flex items-center gap-2 text-xl">
                                     <Target className="h-6 w-6 text-purple-600" />
                                     Projectile Launcher Setup
                                 </CardTitle>
                                 <CardDescription className="text-base">Launches completed: {launches.length}/3</CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-6">
-                                {/* Launch Angle Control */}
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <div className="text-base font-semibold">Launch Angle: {angle}°</div>
-                                        <span className="text-sm text-muted-foreground">
-                                            {angle < 30 ? 'Low angle - Long flat trajectory' : 
-                                             angle < 60 ? 'Medium angle - Balanced trajectory' : 
-                                             'High angle - Steep high arc'}
-                                        </span>
+                            <CardContent className="space-y-3 sm:space-y-4">
+                                <div className="grid gap-2.5 sm:gap-3 lg:grid-cols-2">
+                                    {/* Launch Angle Control */}
+                                    <div className="space-y-2 rounded-md border border-purple-200/60 bg-white/60 p-2.5 sm:p-3 dark:border-purple-800/60 dark:bg-purple-950/15">
+                                        <div className="flex items-center justify-between">
+                                            <div className="text-sm font-semibold sm:text-base">Launch Angle: {angle}°</div>
+                                            <span className="max-w-[56%] text-right text-[11px] text-muted-foreground sm:max-w-none sm:text-sm">
+                                                {angle < 30 ? 'Low angle - long flat trajectory' :
+                                                 angle < 60 ? 'Medium angle - balanced trajectory' :
+                                                 'High angle - steep high arc'}
+                                            </span>
+                                        </div>
+                                        <Slider
+                                            value={[angle]}
+                                            onValueChange={(values) => setAngle(values[0])}
+                                            min={15}
+                                            max={75}
+                                            step={5}
+                                            disabled={isLaunching}
+                                            className="w-full"
+                                        />
+                                        <div className="flex justify-between text-[11px] text-muted-foreground sm:text-xs">
+                                            <span>15°</span>
+                                            <span>45°</span>
+                                            <span>75°</span>
+                                        </div>
                                     </div>
-                                    <Slider
-                                        value={[angle]}
-                                        onValueChange={(values) => setAngle(values[0])}
-                                        min={15}
-                                        max={75}
-                                        step={5}
-                                        disabled={isLaunching}
-                                        className="w-full"
-                                    />
-                                    <div className="flex justify-between text-xs text-muted-foreground">
-                                        <span>15° (Low)</span>
-                                        <span>45° (Optimal)</span>
-                                        <span>75° (High)</span>
-                                    </div>
-                                </div>
 
-                                {/* Launch Velocity Control */}
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <div className="text-base font-semibold">Initial Velocity: {velocity} m/s</div>
-                                        <span className="text-sm text-muted-foreground">
-                                            {velocity < 15 ? 'Slow launch' : 
-                                             velocity < 25 ? 'Medium speed' : 
-                                             'Fast launch'}
-                                        </span>
-                                    </div>
-                                    <Slider
-                                        value={[velocity]}
-                                        onValueChange={(values) => setVelocity(values[0])}
-                                        min={10}
-                                        max={30}
-                                        step={5}
-                                        disabled={isLaunching}
-                                        className="w-full"
-                                    />
-                                    <div className="flex justify-between text-xs text-muted-foreground">
-                                        <span>10 m/s</span>
-                                        <span>20 m/s</span>
-                                        <span>30 m/s</span>
+                                    {/* Launch Velocity Control */}
+                                    <div className="space-y-2 rounded-md border border-purple-200/60 bg-white/60 p-2.5 sm:p-3 dark:border-purple-800/60 dark:bg-purple-950/15">
+                                        <div className="flex items-center justify-between">
+                                            <div className="text-sm font-semibold sm:text-base">Initial Velocity: {velocity} m/s</div>
+                                            <span className="max-w-[56%] text-right text-[11px] text-muted-foreground sm:max-w-none sm:text-sm">
+                                                {velocity < 15 ? 'Slow launch' :
+                                                 velocity < 25 ? 'Medium speed' :
+                                                 'Fast launch'}
+                                            </span>
+                                        </div>
+                                        <Slider
+                                            value={[velocity]}
+                                            onValueChange={(values) => setVelocity(values[0])}
+                                            min={10}
+                                            max={30}
+                                            step={5}
+                                            disabled={isLaunching}
+                                            className="w-full"
+                                        />
+                                        <div className="flex justify-between text-[11px] text-muted-foreground sm:text-xs">
+                                            <span>10 m/s</span>
+                                            <span>20 m/s</span>
+                                            <span>30 m/s</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Enhanced Realistic Visual Launcher */}
                                 <div
                                     ref={sceneRef}
-                                    className="bg-gradient-to-b from-sky-100 via-blue-50 to-green-100 dark:from-sky-950/30 dark:via-blue-950/20 dark:to-green-950/30 p-6 lg:p-8 rounded-lg border-2 border-blue-200/50 dark:border-blue-800/50 relative overflow-hidden shadow-inner"
+                                    className="bg-gradient-to-b from-sky-100 via-blue-50 to-green-100 dark:from-sky-950/30 dark:via-blue-950/20 dark:to-green-950/30 p-3 sm:p-4 lg:p-8 rounded-lg border-2 border-blue-200/50 dark:border-blue-800/50 relative overflow-hidden shadow-inner"
                                     style={{ height: `${sceneMetrics.sceneHeight}px` }}
                                 >
                                     {/* Sky with clouds */}
@@ -739,7 +901,7 @@ export function ProjectileMotionLabEnhanced() {
                                             </defs>
                                             <path
                                                 d={`M ${launchOriginX} ${sceneMetrics.sceneHeight - groundLevel} ${launch.trajectory.map(p => 
-                                                    `L ${launchOriginX + p.x * trajectoryScale} ${sceneMetrics.sceneHeight - groundLevel - p.y * trajectoryScale}`
+                                                    `L ${launchOriginX + p.x * trajectoryScaleX} ${sceneMetrics.sceneHeight - groundLevel - p.y * trajectoryScaleY}`
                                                 ).join(' ')}`}
                                                 fill="none"
                                                 stroke={`url(#trail-${index})`}
@@ -761,7 +923,7 @@ export function ProjectileMotionLabEnhanced() {
                                                 </defs>
                                                 <path
                                                     d={`M ${launchOriginX} ${sceneMetrics.sceneHeight - groundLevel} ${currentTrajectory.slice(0, Math.floor(animationProgress * currentTrajectory.length)).map(p => 
-                                                        `L ${launchOriginX + p.x * trajectoryScale} ${sceneMetrics.sceneHeight - groundLevel - p.y * trajectoryScale}`
+                                                        `L ${launchOriginX + p.x * trajectoryScaleX} ${sceneMetrics.sceneHeight - groundLevel - p.y * trajectoryScaleY}`
                                                     ).join(' ')}`}
                                                     fill="none"
                                                     stroke="url(#current-trail)"
@@ -773,8 +935,8 @@ export function ProjectileMotionLabEnhanced() {
                                                 const pos = getProjectilePosition();
                                                 if (!pos) return null;
                                                 
-                                                const x = launchOriginX + pos.x * trajectoryScale;
-                                                const y = sceneMetrics.sceneHeight - groundLevel - pos.y * trajectoryScale;
+                                                const x = launchOriginX + pos.x * trajectoryScaleX;
+                                                const y = sceneMetrics.sceneHeight - groundLevel - pos.y * trajectoryScaleY;
                                                 
                                                 return (
                                                     <>
@@ -806,7 +968,7 @@ export function ProjectileMotionLabEnhanced() {
                                                             }}
                                                         >
                                                             {/* Projectile body - 3D sphere */}
-                                                                <div className="relative w-5 h-5 lg:w-6 lg:h-6">
+                                                                <div className="relative w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6">
                                                                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-500 to-pink-500 rounded-full shadow-lg border border-purple-700/50"></div>
                                                                 <div className="absolute inset-0.5 bg-gradient-to-tr from-white/30 to-transparent rounded-full"></div>
                                                                 {/* Highlight */}
@@ -838,7 +1000,7 @@ export function ProjectileMotionLabEnhanced() {
                                     {/* Impact effect when projectile hits ground */}
                                     {!isLaunching && launches.length > 0 && (
                                         launches.map((launch, index) => {
-                                            const impactX = launchOriginX + launch.range * trajectoryScale;
+                                            const impactX = launchOriginX + launch.range * trajectoryScaleX;
                                             const impactY = sceneMetrics.sceneHeight - groundLevel;
                                             return (
                                                 <motion.div
@@ -870,6 +1032,83 @@ export function ProjectileMotionLabEnhanced() {
                                     <Rocket className="h-5 w-5 mr-2" />
                                     {isLaunching ? 'Launching...' : 'Launch Projectile'}
                                 </Button>
+
+                                {viewportWidth < 1024 && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => setShowLearningTools((prev) => !prev)}
+                                        className="w-full"
+                                    >
+                                        {showLearningTools ? 'Hide Learning Tools' : 'Show Learning Tools (Prediction + Mission)'}
+                                    </Button>
+                                )}
+
+                                {(showLearningTools || viewportWidth >= 1024) && (
+                                    <div className="grid gap-3 lg:grid-cols-2">
+                                        <div className="space-y-2 rounded-md border border-amber-200/70 bg-amber-50/70 p-3 dark:border-amber-800/50 dark:bg-amber-950/20">
+                                            <div className="text-sm font-semibold text-amber-900 dark:text-amber-200">Predict Before Launch</div>
+                                            <p className="text-xs text-amber-800/90 dark:text-amber-300/90">
+                                                Compare to your previous launch. Make a hypothesis, then test it.
+                                            </p>
+                                            <div className="space-y-2">
+                                                <div className="text-[11px] font-medium uppercase tracking-wide text-amber-800/80 dark:text-amber-300/80">Range vs last launch</div>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {(['farther', 'similar', 'shorter'] as const).map((option) => (
+                                                        <Button
+                                                            key={option}
+                                                            type="button"
+                                                            variant={rangePrediction === option ? 'default' : 'outline'}
+                                                            size="sm"
+                                                            onClick={() => setRangePrediction(option)}
+                                                            className="h-7 px-2 text-xs capitalize"
+                                                        >
+                                                            {option}
+                                                        </Button>
+                                                    ))}
+                                                </div>
+                                                <div className="text-[11px] font-medium uppercase tracking-wide text-amber-800/80 dark:text-amber-300/80">Max height vs last launch</div>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {(['higher', 'similar', 'lower'] as const).map((option) => (
+                                                        <Button
+                                                            key={option}
+                                                            type="button"
+                                                            variant={heightPrediction === option ? 'default' : 'outline'}
+                                                            size="sm"
+                                                            onClick={() => setHeightPrediction(option)}
+                                                            className="h-7 px-2 text-xs capitalize"
+                                                        >
+                                                            {option}
+                                                        </Button>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2 rounded-md border border-purple-200/70 bg-purple-50/70 p-3 dark:border-purple-800/50 dark:bg-purple-950/20">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2 text-sm font-semibold text-purple-900 dark:text-purple-200">
+                                                    <Sparkles className="h-4 w-4 text-purple-600" />
+                                                    Creative Mission
+                                                </div>
+                                                <span className="text-xs font-medium text-purple-700 dark:text-purple-300">
+                                                    Completed: {challengesCompleted}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-purple-800/90 dark:text-purple-300/90">{activeChallenge.description}</p>
+                                            <p className="text-[11px] text-purple-700/90 dark:text-purple-400/90">Hint: {activeChallenge.hint}</p>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setActiveChallenge(generateChallenge())}
+                                                className="h-7 px-2 text-xs"
+                                            >
+                                                New Mission
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
                             </CardContent>
                             <CardFooter>
                                 <Button 
@@ -978,6 +1217,55 @@ export function ProjectileMotionLabEnhanced() {
                                             <span><strong>Complementary Angles:</strong> 30° and 60° give the same range</span>
                                         </li>
                                     </ul>
+                                </div>
+
+                                {/* Reflection */}
+                                <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 p-4 rounded-lg border-2 border-amber-200 dark:border-amber-800 space-y-3">
+                                    <h3 className="font-semibold text-base">1-Minute Reflection</h3>
+                                    <Textarea
+                                        placeholder="What changed most when you adjusted angle or velocity?"
+                                        value={reflection.changed}
+                                        onChange={(e) => {
+                                            setReflectionSaved(false);
+                                            setReflection((prev) => ({ ...prev, changed: e.target.value }));
+                                        }}
+                                        className="min-h-16"
+                                    />
+                                    <Textarea
+                                        placeholder="What surprised you in your launches?"
+                                        value={reflection.surprised}
+                                        onChange={(e) => {
+                                            setReflectionSaved(false);
+                                            setReflection((prev) => ({ ...prev, surprised: e.target.value }));
+                                        }}
+                                        className="min-h-16"
+                                    />
+                                    <Textarea
+                                        placeholder="If you had one more attempt, what would you try and why?"
+                                        value={reflection.nextTry}
+                                        onChange={(e) => {
+                                            setReflectionSaved(false);
+                                            setReflection((prev) => ({ ...prev, nextTry: e.target.value }));
+                                        }}
+                                        className="min-h-16"
+                                    />
+                                    <div className="flex items-center justify-between">
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                setReflectionSaved(true);
+                                                setTeacherMessage("Excellent reflection! Great scientists explain what changed, what surprised them, and what they will test next.");
+                                            }}
+                                            className="h-8"
+                                        >
+                                            Save Reflection
+                                        </Button>
+                                        {reflectionSaved && (
+                                            <span className="text-xs text-green-700 dark:text-green-300">Saved locally for this session.</span>
+                                        )}
+                                    </div>
                                 </div>
                             </CardContent>
                             <CardFooter>

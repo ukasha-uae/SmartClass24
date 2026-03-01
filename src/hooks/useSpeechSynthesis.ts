@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { normalizeMathText } from '@/lib/text/normalize-math-text';
+import { formatTextForSpeech } from '@/lib/text/format-for-speech';
 
 interface UseSpeechSynthesisProps {
   text: string;
@@ -35,6 +36,7 @@ export function useSpeechSynthesis({
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const hasStartedRef = useRef(false);
   const normalizedText = normalizeMathText(text || '');
+  const speechText = formatTextForSpeech(normalizedText);
 
   // Check if browser supports speech synthesis
   useEffect(() => {
@@ -58,8 +60,8 @@ export function useSpeechSynthesis({
   }, []);
 
   const speak = useCallback(() => {
-    if (!isSupported || !normalizedText) {
-      console.log('🔊 Speech not available:', { isSupported, hasText: !!normalizedText });
+    if (!isSupported || !speechText) {
+      console.log('🔊 Speech not available:', { isSupported, hasText: !!speechText });
       return;
     }
     if (!hasUserInteracted) {
@@ -73,7 +75,7 @@ export function useSpeechSynthesis({
       return;
     }
 
-    console.log('🔊 Starting speech:', normalizedText.substring(0, 50) + '...');
+    console.log('🔊 Starting speech:', speechText.substring(0, 50) + '...');
     hasStartedRef.current = true;
 
     // Stop any ongoing speech
@@ -90,14 +92,14 @@ export function useSpeechSynthesis({
       window.speechSynthesis.onvoiceschanged = () => {
         const newVoices = window.speechSynthesis.getVoices();
         console.log('🔊 Voices loaded:', newVoices.length);
-        speakWithVoice(normalizedText);
+        speakWithVoice(speechText);
       };
       // Also try speaking anyway (some browsers work without explicit voice loading)
-      speakWithVoice(normalizedText);
+      speakWithVoice(speechText);
     } else {
-      speakWithVoice(normalizedText);
+      speakWithVoice(speechText);
     }
-  }, [normalizedText, rate, pitch, volume, isSupported, onBoundary, hasUserInteracted]);
+  }, [speechText, rate, pitch, volume, isSupported, onBoundary, hasUserInteracted]);
 
   const speakWithVoice = useCallback((textToSpeak: string) => {
     // Create new utterance
@@ -173,19 +175,19 @@ export function useSpeechSynthesis({
 
   // Auto-play when text changes
   useEffect(() => {
-    if (autoPlay && normalizedText && hasUserInteracted && !hasStartedRef.current) {
+    if (autoPlay && speechText && hasUserInteracted && !hasStartedRef.current) {
       // Small delay to ensure proper rendering
       const timer = setTimeout(() => {
         speak();
       }, 300);
       return () => clearTimeout(timer);
     }
-  }, [normalizedText, autoPlay, hasUserInteracted, speak]);
+  }, [speechText, autoPlay, hasUserInteracted, speak]);
 
   // Reset hasStarted when text changes
   useEffect(() => {
     hasStartedRef.current = false;
-  }, [normalizedText]);
+  }, [speechText]);
 
   // Cleanup on unmount
   useEffect(() => {

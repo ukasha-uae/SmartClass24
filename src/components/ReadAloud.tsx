@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
+import { formatTextForSpeech, splitSentencesForSpeech } from '@/lib/text/format-for-speech';
 
 type ReadAloudProps = {
   textId: string;
@@ -174,8 +175,7 @@ const ReadAloud: React.FC<ReadAloudProps> = ({ textId }) => {
         });
         
         const text = clonedElement.textContent || "";
-        sentencesRef.current = text.match(/[^.!?]+[.!?\s]*|[^.!?]+$/g) || [text];
-        sentencesRef.current = sentencesRef.current.filter(s => s.trim().length > 0);
+        sentencesRef.current = splitSentencesForSpeech(text);
 
         element.innerHTML = ''; // Clear original text
         sentenceElementsRef.current = sentencesRef.current.map(sentence => {
@@ -232,7 +232,7 @@ const ReadAloud: React.FC<ReadAloudProps> = ({ textId }) => {
     }
 
     const sentence = sentencesRef.current[index];
-    const utterance = new SpeechSynthesisUtterance(sentence);
+    const utterance = new SpeechSynthesisUtterance(formatTextForSpeech(sentence));
     utterance.voice = voice;
     utterance.lang = voice.lang;
     utterance.rate = parseFloat(playbackRate);
