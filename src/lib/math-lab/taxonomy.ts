@@ -1,4 +1,10 @@
 export type MathConceptId =
+  | 'numbers.fractions.part_whole'
+  | 'numbers.fractions.equivalence'
+  | 'numbers.fractions.compare_unlike'
+  | 'numbers.fractions.number_line'
+  | 'numbers.fractions.add_subtract_foundation'
+  | 'numbers.fractions.percent_decimal_bridge'
   | 'sets.operations.union'
   | 'sets.operations.intersection'
   | 'sets.operations.complement'

@@ -7,7 +7,8 @@ import { getPlanetById, getFactForPlanet, SOLAR_SYSTEM_PLANETS } from '@/lib/sci
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
-import { Globe, Info, Zap, Pause, Play, ExternalLink, Sparkles } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Globe, Zap, Pause, Play, ExternalLink, Sparkles } from 'lucide-react';
 import { TeacherVoice } from '@/components/virtual-labs/TeacherVoice';
 import { useLabSoundProfile } from '@/hooks/use-lab-sound-profile';
 
@@ -39,6 +40,7 @@ export function SolarSystemLab() {
   const [teacherMessage, setTeacherMessage] = useState<string>(() => buildTeacherMessage(null));
   const [isPlayAllMode, setIsPlayAllMode] = useState(false);
   const [playAllIndex, setPlayAllIndex] = useState<number | null>(null);
+  const [triggerSpeakKey, setTriggerSpeakKey] = useState(0);
 
   const tourOrder = useMemo(
     () => SOLAR_SYSTEM_PLANETS.map((p) => p.id),
@@ -72,10 +74,15 @@ export function SolarSystemLab() {
     setPlayAllIndex(null);
   };
 
+  const handleTogglePlayback = () => {
+    playLabSound('playback-toggle');
+    setIsPaused((prev) => !prev);
+  };
+
   return (
-    <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-8rem)] min-h-[500px]">
+    <div className="flex h-full min-h-0 flex-col gap-3 md:gap-4 lg:flex-row">
       {/* 3D Canvas */}
-      <div className="flex-1 min-h-[360px] rounded-xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-slate-900">
+      <div className="min-h-[250px] sm:min-h-[300px] md:min-h-[340px] lg:min-h-0 lg:flex-1 rounded-xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 bg-slate-900">
         <Suspense
           fallback={
             <div className="w-full h-full flex items-center justify-center bg-slate-900 text-white">
@@ -101,137 +108,29 @@ export function SolarSystemLab() {
       </div>
 
       {/* Right panel: controls + info */}
-      <div className="w-full lg:w-80 flex flex-col gap-4 shrink-0">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Zap className="h-4 w-4 text-amber-500" />
-              Time & speed
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex gap-2">
-              <Button
-                variant={isPaused ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => {
-                  playLabSound('playback-toggle');
-                  setIsPaused(true);
-                }}
-                aria-pressed={isPaused}
-              >
-                <Pause className="h-4 w-4 mr-1" />
-                Pause
-              </Button>
-              <Button
-                variant={!isPaused ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => {
-                  playLabSound('playback-toggle');
-                  setIsPaused(false);
-                }}
-                aria-pressed={!isPaused}
-              >
-                <Play className="h-4 w-4 mr-1" />
-                Play
-              </Button>
-            </div>
-            <Slider
-              value={[timeScale]}
-              onValueChange={([v]) => {
-                setTimeScale(v ?? 0.3);
-              }}
-              min={0}
-              max={2}
-              step={0.1}
-              className="w-full"
-            />
-            <p className="text-xs text-muted-foreground">
-              Speed up or slow down orbital motion
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">Quick select</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-1.5">
-              {SOLAR_SYSTEM_PLANETS.map((p) => (
-                <Button
-                  key={p.id}
-                  variant={selectedPlanetId === p.id ? 'default' : 'outline'}
-                  size="sm"
-                  className="text-xs"
-                  onClick={() => handleSelectPlanet(p.id)}
-                >
-                  <span
-                    className="h-2 w-2 rounded-full shrink-0 mr-1"
-                    style={{ backgroundColor: p.color }}
-                  />
-                  {p.name}
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {planet && fact && (
-          <Card className="border-2 border-primary/30">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <span
-                  className="h-3 w-3 rounded-full shrink-0"
-                  style={{ backgroundColor: planet.color }}
-                />
-                {planet.name}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {planet.orbitLabel && (
-                <p className="text-xs text-muted-foreground">
-                  Orbit: {planet.orbitLabel}
-                </p>
-              )}
-              <p className="font-medium text-sm">{fact.headline}</p>
-              <p className="text-sm text-muted-foreground">{fact.description}</p>
-              {planet.learnMoreUrl && (
-                <a
-                  href={planet.learnMoreUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2"
-                >
-                  Learn more at NASA
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-        {!selectedPlanetId && (
-          <Card className="bg-muted/50">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                <Info className="h-4 w-4 shrink-0" />
-                <p>Click a planet or the Sun in the view, or use Quick select. Drag to rotate, scroll to zoom. Pause to inspect positions.</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* AI Teacher: optional guided explanations */}
+      <div className="w-full lg:w-80 flex-1 min-h-0 flex flex-col gap-3 shrink-0 overflow-y-auto lg:pr-1">
         <Card className="mt-1">
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-violet-500" />
-              AI Teacher Guide
+              Explore Modes
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  handleStopPlayAll();
+                  setTeacherMessage(
+                    'Manual explore mode: click any planet or the Sun, then drag to rotate and scroll to zoom. Use Pause to inspect orbital positions.'
+                  );
+                  setTriggerSpeakKey((value) => value + 1);
+                }}
+              >
+                Manual explore
+              </Button>
               <Button
                 variant={isPlayAllMode ? 'outline' : 'default'}
                 size="sm"
@@ -240,20 +139,222 @@ export function SolarSystemLab() {
                 {isPlayAllMode ? 'Stop Play All' : 'Play all planets'}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Click any planet to hear an explanation, or use Play all to go on a guided tour of the whole solar system.
-            </p>
+            <div className="rounded-lg border border-slate-200 dark:border-slate-700 p-2.5 text-xs text-muted-foreground">
+              {selectedPlanetId ? (
+                <p>
+                  Focus: <span className="font-semibold text-foreground">{planet?.name}</span>. Use controls below or start guided tour.
+                </p>
+              ) : (
+                <p>Choose a planet to explore manually, or start guided tour for automatic narration.</p>
+              )}
+            </div>
           </CardContent>
         </Card>
 
+        {/* Mobile compact controls */}
+        <div className="md:hidden">
+          <Card>
+            <CardContent className="pt-3">
+              <Accordion type="multiple" defaultValue={['controls', 'planets']}>
+                <AccordionItem value="controls">
+                  <AccordionTrigger className="py-2 text-sm">
+                    <span className="flex items-center gap-2">
+                      <Zap className="h-4 w-4 text-amber-500" />
+                      Time & speed
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-3 pb-2">
+                    <div className="flex gap-2">
+                      <Button
+                        variant={isPaused ? 'outline' : 'default'}
+                        size="sm"
+                        className="flex-1"
+                        onClick={handleTogglePlayback}
+                        aria-pressed={!isPaused}
+                      >
+                        {isPaused ? <Play className="h-4 w-4 mr-1" /> : <Pause className="h-4 w-4 mr-1" />}
+                        {isPaused ? 'Play' : 'Pause'}
+                      </Button>
+                    </div>
+                    <Slider
+                      value={[timeScale]}
+                      onValueChange={([v]) => {
+                        setTimeScale(v ?? 0.3);
+                      }}
+                      min={0}
+                      max={2}
+                      step={0.1}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">Speed up or slow down orbital motion</p>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="planets">
+                  <AccordionTrigger className="py-2 text-sm">Quick select</AccordionTrigger>
+                  <AccordionContent className="pb-2">
+                    <div className="flex gap-1.5 overflow-x-auto pb-1">
+                      {SOLAR_SYSTEM_PLANETS.map((p) => (
+                        <Button
+                          key={p.id}
+                          variant={selectedPlanetId === p.id ? 'default' : 'outline'}
+                          size="sm"
+                          className="text-xs whitespace-nowrap"
+                          onClick={() => handleSelectPlanet(p.id)}
+                        >
+                          <span
+                            className="h-2 w-2 rounded-full shrink-0 mr-1"
+                            style={{ backgroundColor: p.color }}
+                          />
+                          {p.name}
+                        </Button>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                {planet && fact && (
+                  <AccordionItem value="planet-info">
+                    <AccordionTrigger className="py-2 text-sm">Planet info: {planet.name}</AccordionTrigger>
+                    <AccordionContent className="space-y-2 pb-2">
+                      {planet.orbitLabel && (
+                        <p className="text-xs text-muted-foreground">Orbit: {planet.orbitLabel}</p>
+                      )}
+                      <p className="font-medium text-sm">{fact.headline}</p>
+                      <p className="text-sm text-muted-foreground">{fact.description}</p>
+                      {planet.learnMoreUrl && (
+                        <a
+                          href={planet.learnMoreUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
+                        >
+                          Learn more at NASA
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
+              </Accordion>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Desktop/tablet expanded controls */}
+        <div className="hidden md:flex md:flex-col md:gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base flex items-center gap-2">
+                <Zap className="h-4 w-4 text-amber-500" />
+                Time & speed
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex gap-2">
+                <Button
+                  variant={isPaused ? 'outline' : 'default'}
+                  size="sm"
+                  onClick={handleTogglePlayback}
+                  aria-pressed={!isPaused}
+                >
+                  {isPaused ? <Play className="h-4 w-4 mr-1" /> : <Pause className="h-4 w-4 mr-1" />}
+                  {isPaused ? 'Play' : 'Pause'}
+                </Button>
+              </div>
+              <Slider
+                value={[timeScale]}
+                onValueChange={([v]) => {
+                  setTimeScale(v ?? 0.3);
+                }}
+                min={0}
+                max={2}
+                step={0.1}
+                className="w-full"
+              />
+              <p className="text-xs text-muted-foreground">Speed up or slow down orbital motion</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Quick select</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-1.5">
+                {SOLAR_SYSTEM_PLANETS.map((p) => (
+                  <Button
+                    key={p.id}
+                    variant={selectedPlanetId === p.id ? 'default' : 'outline'}
+                    size="sm"
+                    className="text-xs"
+                    onClick={() => handleSelectPlanet(p.id)}
+                  >
+                    <span
+                      className="h-2 w-2 rounded-full shrink-0 mr-1"
+                      style={{ backgroundColor: p.color }}
+                    />
+                    {p.name}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {planet && fact && (
+            <Card className="border-2 border-primary/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <span
+                    className="h-3 w-3 rounded-full shrink-0"
+                    style={{ backgroundColor: planet.color }}
+                  />
+                  {planet.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {planet.orbitLabel && (
+                  <p className="text-xs text-muted-foreground">
+                    Orbit: {planet.orbitLabel}
+                  </p>
+                )}
+                <p className="font-medium text-sm">{fact.headline}</p>
+                <p className="text-sm text-muted-foreground">{fact.description}</p>
+                {planet.learnMoreUrl && (
+                  <a
+                    href={planet.learnMoreUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2"
+                  >
+                    Learn more at NASA
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+
         <TeacherVoice
           message={teacherMessage}
+          triggerSpeakKey={triggerSpeakKey}
           autoPlay={true}
           theme="science"
           teacherName="Dr. Galaxy Guide"
           emotion="explaining"
           progressiveReveal={true}
           linesPerChunk={2}
+          quickActions={[
+            {
+              label: 'Replay explanation',
+              onClick: () => setTriggerSpeakKey((value) => value + 1),
+            },
+            {
+              label: isPlayAllMode ? 'Stop guided tour' : 'Start guided tour',
+              onClick: isPlayAllMode ? handleStopPlayAll : handleStartPlayAll,
+            },
+          ]}
           onComplete={() => {
             if (!isPlayAllMode || playAllIndex === null) return;
             const nextIndex = playAllIndex + 1;

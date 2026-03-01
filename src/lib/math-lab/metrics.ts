@@ -1,8 +1,11 @@
 export type MathLabMetricType =
   | 'station_started'
+  | 'interaction_completed'
   | 'checkpoint_answered'
   | 'hint_requested'
-  | 'station_completed';
+  | 'station_completed'
+  | 'misconception_detected'
+  | 'intervention_triggered';
 
 export type MathLabMetricEvent = {
   type: MathLabMetricType;
@@ -10,6 +13,8 @@ export type MathLabMetricEvent = {
   userId?: string;
   conceptId?: string;
   isCorrect?: boolean;
+  misconceptionTag?: string;
+  masteryBand?: 'needs_support' | 'developing' | 'secure' | 'advanced';
   score?: number;
   hintCount?: number;
   timestamp: number;

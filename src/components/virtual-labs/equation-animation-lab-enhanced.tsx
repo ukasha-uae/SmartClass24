@@ -14,7 +14,6 @@ import { useFirebase } from '@/firebase/provider';
 import { useEducationLevels } from '@/hooks/useEducationLevels';
 import { getMathBandLabel } from '@/lib/math-lab/taxonomy';
 import { trackMathLabMetric } from '@/lib/math-lab/metrics';
-import { LabNotes } from '@/components/virtual-labs/LabNotes';
 import { normalizeMathText } from '@/lib/text/normalize-math-text';
 import { useLabSoundProfile } from '@/hooks/use-lab-sound-profile';
 
@@ -312,7 +311,6 @@ export function EquationAnimationLabEnhanced() {
         </CardContent>
       </Card>
 
-      <LabNotes labId="math-lab-equations" labTitle="Maths Lab - Equation Animation" />
     </div>
   );
 }

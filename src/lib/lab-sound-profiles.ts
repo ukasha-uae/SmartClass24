@@ -59,6 +59,18 @@ const LAB_SOUND_PROFILES: Record<string, LabSoundProfile> = {
       restart: 'click',
     },
   },
+  'maths-fractions-rescue': {
+    defaultSound: 'click',
+    events: {
+      'checkpoint-start': 'click',
+      hint: 'tick',
+      'answer-correct': 'correct',
+      'answer-wrong': 'wrong',
+      resume: 'click',
+      complete: 'complete',
+      restart: 'click',
+    },
+  },
   'solar-system': {
     defaultSound: 'click',
     events: {

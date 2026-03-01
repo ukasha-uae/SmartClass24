@@ -133,6 +133,8 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const trackLabel = VIRTUAL_LAB_TRACK_LABELS[labTrack];
   const isArtUnderConstruction = labTrack === 'art-lab';
   const audienceLabel = VIRTUAL_LAB_AUDIENCE_LABELS[getVirtualLabAudience(experiment)];
+  const isSpaceSimulationLab = ['solar-system', 'earth-moon-system'].includes(experiment.slug);
+  const hideExperimentCompletionControls = ['solar-system', 'earth-moon-system'].includes(experiment.slug);
   
   // Check if this is a self-contained enhanced lab (has its own quiz/completion flow)
   const isEnhancedLab = LabComponent.name?.includes('Enhanced') || 
@@ -228,7 +230,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
 
         <div className={`${useCompactEnhancedShell ? compactShellClasses : 'container mx-auto px-4 py-8'} relative z-10`}>
           {/* Premium Back Button */}
-          <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+          <div className={`flex items-center justify-between ${isSpaceSimulationLab ? 'mb-3' : 'mb-6'} gap-4 flex-wrap`}>
             <div className="flex items-center gap-3 flex-wrap">
               <Link href={addTenantParam('/virtual-labs')}>
                 <Button variant="ghost" className="hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-violet-500/10 border-2 border-transparent hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:scale-105">
@@ -239,7 +241,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
               <LabAudioToggle compact />
             </div>
             <div className="flex items-center gap-2 flex-wrap">
-              {userId !== 'guest' && features.enableReferrals && (
+              {!isSpaceSimulationLab && userId !== 'guest' && features.enableReferrals && (
                 <ShareVirtualLabDialog
                   labTitle={experiment.title}
                   labSlug={experiment.slug}
@@ -287,130 +289,164 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
           ) : (
             <>
               {/* Premium wrapper UI for non-enhanced labs */}
-              <Card className="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="text-5xl">🔬</div>
+              <Card className={`${isSpaceSimulationLab ? 'mb-4' : 'mb-8'} bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl`}>
+                <CardContent className={isSpaceSimulationLab ? 'p-4 sm:p-5' : 'p-6'}>
+                  <div className={`flex items-center gap-4 ${isSpaceSimulationLab ? 'mb-3' : 'mb-6'}`}>
+                    <div className={isSpaceSimulationLab ? 'text-3xl' : 'text-5xl'}>🔬</div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3 flex-wrap">
-                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 dark:from-purple-400 dark:via-violet-400 dark:to-indigo-400 bg-clip-text text-transparent">{experiment.title}</h1>
+                      <div className={`flex items-center ${isSpaceSimulationLab ? 'gap-2 mb-2' : 'gap-3 mb-3'} flex-wrap`}>
+                        <h1 className={`${isSpaceSimulationLab ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'} font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 dark:from-purple-400 dark:via-violet-400 dark:to-indigo-400 bg-clip-text text-transparent`}>{experiment.title}</h1>
                         <Badge className={`${subjectColors[experiment.subject as keyof typeof subjectColors]} border-2 font-semibold`}>
                           {experiment.subject}
                         </Badge>
-                        <Badge variant="outline" className="border-dashed">
-                          {trackLabel}
-                        </Badge>
+                        {!isSpaceSimulationLab && (
+                          <Badge variant="outline" className="border-dashed">
+                            {trackLabel}
+                          </Badge>
+                        )}
                         {isArtUnderConstruction && <Badge variant="secondary">Under Construction</Badge>}
-                        <Badge variant="outline">
-                          {audienceLabel}
-                        </Badge>
+                        {!isSpaceSimulationLab && (
+                          <Badge variant="outline">
+                            {audienceLabel}
+                          </Badge>
+                        )}
                       </div>
-                      <p className="text-slate-600 dark:text-slate-400">{experiment.description}</p>
+                      <p className={`${isSpaceSimulationLab ? 'text-sm' : ''} text-slate-600 dark:text-slate-400`}>{experiment.description}</p>
                     </div>
                   </div>
 
-                  {/* Premium Progress Indicator */}
-                  <div className="flex items-center gap-4">
-                    <div className={`group flex items-center gap-3 p-3 rounded-xl transition-all ${
-                      !experimentCompleted 
-                        ? 'bg-gradient-to-r from-purple-500/20 to-violet-500/20 border-2 border-purple-400/50' 
-                        : 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-2 border-green-400/50'
-                    }`}>
-                      <div className={`h-10 w-10 rounded-full flex items-center justify-center font-bold shadow-lg ${
-                        !experimentCompleted 
-                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white' 
-                          : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white'
-                      }`}>
-                        {experimentCompleted ? <CheckCircle2 className="h-6 w-6" /> : '1'}
+                  {/* Premium Progress Indicator (mobile-first compact layout) */}
+                  {!hideExperimentCompletionControls && (
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div
+                        className={`rounded-xl border-2 p-2.5 sm:p-3 text-center transition-all ${
+                          !experimentCompleted
+                            ? 'bg-gradient-to-r from-purple-500/20 to-violet-500/20 border-purple-400/50'
+                            : 'bg-gradient-to-r from-green-500/20 to-emerald-500/20 border-green-400/50'
+                        }`}
+                      >
+                        <div
+                          className={`mx-auto mb-1.5 h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center font-bold shadow-lg ${
+                            !experimentCompleted
+                              ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white'
+                              : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white'
+                          }`}
+                        >
+                          {experimentCompleted ? <CheckCircle2 className="h-4 w-4 sm:h-6 sm:w-6" /> : '1'}
+                        </div>
+                        <p
+                          className={`text-xs sm:text-sm font-semibold ${
+                            !experimentCompleted ? 'text-purple-700 dark:text-purple-300' : 'text-green-700 dark:text-green-300'
+                          }`}
+                        >
+                          Experiment
+                        </p>
                       </div>
-                      <span className={`font-semibold ${
-                        !experimentCompleted 
-                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent' 
-                          : 'bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent'
-                      }`}>Experiment</span>
-                    </div>
-                    <div className="flex-1 h-2 bg-gradient-to-r from-purple-200 to-violet-200 dark:from-purple-800 dark:to-violet-800 rounded-full overflow-hidden">
-                      <div className={`h-full transition-all ${
-                        showQuiz 
-                          ? 'w-full bg-gradient-to-r from-purple-600 to-violet-600' 
-                          : experimentCompleted 
-                            ? 'w-1/2 bg-gradient-to-r from-green-600 to-emerald-600' 
-                            : 'w-0'
-                      }`}></div>
-                    </div>
-                    <div className={`group flex items-center gap-3 p-3 rounded-xl transition-all ${
-                      showQuiz 
-                        ? 'bg-gradient-to-r from-purple-500/20 to-violet-500/20 border-2 border-purple-400/50' 
-                        : 'bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700'
-                    }`}>
-                      <div className={`h-10 w-10 rounded-full flex items-center justify-center font-bold shadow-lg ${
-                        showQuiz 
-                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white' 
-                          : 'bg-slate-400 dark:bg-slate-600 text-white'
-                      }`}>
-                        2
+
+                      <div
+                        className={`rounded-xl border-2 p-2.5 sm:p-3 text-center transition-all ${
+                          showQuiz
+                            ? 'bg-gradient-to-r from-purple-500/20 to-violet-500/20 border-purple-400/50'
+                            : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                        }`}
+                      >
+                        <div
+                          className={`mx-auto mb-1.5 h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center font-bold shadow-lg ${
+                            showQuiz
+                              ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white'
+                              : 'bg-slate-400 dark:bg-slate-600 text-white'
+                          }`}
+                        >
+                          2
+                        </div>
+                        <p
+                          className={`text-xs sm:text-sm font-semibold ${
+                            showQuiz ? 'text-purple-700 dark:text-purple-300' : 'text-slate-500 dark:text-slate-400'
+                          }`}
+                        >
+                          Post-Lab Quiz
+                        </p>
                       </div>
-                      <span className={`font-semibold ${
-                        showQuiz 
-                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent' 
-                          : 'text-slate-500 dark:text-slate-400'
-                      }`}>Post-Lab Quiz</span>
+                    </div>
+
+                    <div className="h-1.5 sm:h-2 bg-gradient-to-r from-purple-200 to-violet-200 dark:from-purple-800 dark:to-violet-800 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full transition-all ${
+                          showQuiz
+                            ? 'w-full bg-gradient-to-r from-purple-600 to-violet-600'
+                            : experimentCompleted
+                              ? 'w-1/2 bg-gradient-to-r from-green-600 to-emerald-600'
+                              : 'w-0'
+                        }`}
+                      ></div>
                     </div>
                   </div>
+                  )}
                 </CardContent>
               </Card>
 
               {/* Premium Experiment Section */}
               {!showQuiz && (
                 <>
-                  <Card className="mb-6 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl">
-                    <CardContent className="p-4 sm:p-6 min-h-[400px] sm:min-h-[500px]">
+                  <Card className={`${isSpaceSimulationLab ? 'mb-3' : 'mb-6'} bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-2 border-purple-200/30 dark:border-purple-800/30 shadow-2xl`}>
+                    <CardContent
+                      className={
+                        isSpaceSimulationLab
+                          ? 'p-2 sm:p-3 h-[calc(100dvh-12rem)] min-h-[520px] sm:min-h-[560px] overflow-hidden'
+                          : 'p-4 sm:p-6 min-h-[400px] sm:min-h-[500px]'
+                      }
+                    >
                       <LabComponent />
                     </CardContent>
                   </Card>
 
-                  {/* Premium Complete Experiment Button - Only show after user interaction */}
-                  {!experimentCompleted && userInteracted && (
-                    <div className="mb-6 text-center">
-                      <Button 
-                        size="lg" 
-                        onClick={handleCompleteExperiment} 
-                        className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 px-8 py-6 text-lg font-bold"
-                      >
-                        Mark Experiment as Complete
-                        <CheckCircle2 className="ml-2 h-5 w-5" />
-                      </Button>
-                    </div>
-                  )}
-
-                  {/* Premium Post-Lab Quiz CTA */}
-                  {experimentCompleted && (
-                    <Card className="mb-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border-2 border-green-400/50 dark:border-green-600/50 shadow-2xl">
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between flex-wrap gap-4">
-                          <div className="flex items-center gap-3">
-                            <div className="text-4xl">✅</div>
-                            <div>
-                              <p className="font-bold text-lg bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1">Experiment Completed!</p>
-                              <p className="text-sm text-slate-600 dark:text-slate-400">Test your understanding with the post-lab quiz.</p>
-                            </div>
-                          </div>
+                  {!hideExperimentCompletionControls && (
+                    <>
+                      {/* Premium Complete Experiment Button - Only show after user interaction */}
+                      {!experimentCompleted && userInteracted && (
+                        <div className="mb-6 text-center">
                           <Button 
-                            onClick={handleStartQuiz} 
-                            className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                            size="lg" 
+                            onClick={handleCompleteExperiment} 
+                            className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105 px-8 py-6 text-lg font-bold"
                           >
-                            Start Post-Lab Quiz
-                            <ArrowRight className="ml-2 h-4 w-4" />
+                            Mark Experiment as Complete
+                            <CheckCircle2 className="ml-2 h-5 w-5" />
                           </Button>
                         </div>
-                      </CardContent>
-                    </Card>
-                  )}
+                      )}
 
-                  {/* Premium Lab Notes (without extra banner) - Only show after user interaction */}
-                  {userInteracted && (
-                  <>
-                      <LabNotes labId={experiment.id} labTitle={experiment.title} />
+                      {/* Premium Post-Lab Quiz CTA */}
+                      {experimentCompleted && (
+                        <Card className="mb-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 backdrop-blur-xl border-2 border-green-400/50 dark:border-green-600/50 shadow-2xl">
+                          <CardContent className="p-6">
+                            <div className="flex items-center justify-between flex-wrap gap-4">
+                              <div className="flex items-center gap-3">
+                                <div className="text-4xl">✅</div>
+                                <div>
+                                  <p className="font-bold text-lg bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-1">Experiment Completed!</p>
+                                  <p className="text-sm text-slate-600 dark:text-slate-400">Test your understanding with the post-lab quiz.</p>
+                                </div>
+                              </div>
+                              <Button 
+                                onClick={handleStartQuiz} 
+                                className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                              >
+                                Start Post-Lab Quiz
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                              </Button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Premium Lab Notes (without extra banner) - Only show after user interaction */}
+                      {userInteracted && (
+                      <>
+                          <LabNotes labId={experiment.id} labTitle={experiment.title} />
+                        </>
+                      )}
                     </>
                   )}
                 </>

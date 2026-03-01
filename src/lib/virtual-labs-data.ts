@@ -36,6 +36,7 @@ import { WaterTestLabEnhanced as WaterTestLab } from "@/components/virtual-labs/
 import { WorkEnergyLabEnhanced as WorkEnergyLab } from "@/components/virtual-labs/work-energy-lab-enhanced";
 import { MathVennLabEnhanced } from "@/components/virtual-labs/math-venn-lab-enhanced";
 import { EquationAnimationLabEnhanced } from "@/components/virtual-labs/equation-animation-lab-enhanced";
+import { FractionsRescueLabEnhanced } from "@/components/virtual-labs/fractions-rescue-lab-enhanced";
 import { ArtColorTheoryLabEnhanced } from "@/components/virtual-labs/art-color-theory-lab-enhanced";
 import { FEATURE_FLAGS } from "@/lib/featureFlags";
 import { SolarSystemLab } from "@/components/science-simulations/SolarSystemLab";
@@ -101,6 +102,16 @@ export const virtualLabExperiments: { experiments: VirtualLabExperiment[] } = {
             description: 'Use step-by-step animations to reason through linear and quadratic equations.',
             learningObjective: 'Connect algebra steps to meaning, detect misconceptions, and apply discriminant reasoning.',
             component: EquationAnimationLabEnhanced,
+        },
+        {
+            id: 'math-lab-3',
+            slug: 'maths-fractions-rescue',
+            title: 'Fractions Rescue Lab',
+            subject: 'Mathematics',
+            labAudience: 'middle-school',
+            description: 'Build fraction confidence with part-whole models, equivalence tools, and number-line practice.',
+            learningObjective: 'Strengthen conceptual understanding of fractions, comparisons, and fraction-decimal bridges through guided practice.',
+            component: FractionsRescueLabEnhanced,
         },
         {
             id: 'art-lab-1',

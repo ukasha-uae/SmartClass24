@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import VennDiagram from '@/components/VennDiagram';
 import { TeacherVoice } from '@/components/virtual-labs/TeacherVoice';
-import { LabNotes } from '@/components/virtual-labs/LabNotes';
 import { useFirebase } from '@/firebase/provider';
 import { useEducationLevels } from '@/hooks/useEducationLevels';
 import { getMathBandLabel } from '@/lib/math-lab/taxonomy';
@@ -120,7 +119,7 @@ export function MathVennLabEnhanced() {
       ? exploreCoachMessage
       : stage === 'checkpoint'
       ? `Checkpoint ${checkpointIndex + 1}: ${normalizedPrompt}`
-      : `Excellent work. You scored ${score} out of ${checkpoints.length}. Review any missed concept and write your reasoning in notes.`;
+      : `Excellent work. You scored ${score} out of ${checkpoints.length}. Review any missed concept and try again to improve mastery.`;
 
   const bumpTeacher = () => {
     setTeacherKey((value) => value + 1);
@@ -487,7 +486,6 @@ export function MathVennLabEnhanced() {
         </CardContent>
       </Card>
 
-      <LabNotes labId="math-lab-venn" labTitle="Maths Lab - Sets and Venn" />
     </div>
   );
 }
