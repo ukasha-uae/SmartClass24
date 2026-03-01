@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Globe, Info, Zap, Pause, Play, ExternalLink, Sparkles } from 'lucide-react';
 import { TeacherVoice } from '@/components/virtual-labs/TeacherVoice';
+import { useLabSoundProfile } from '@/hooks/use-lab-sound-profile';
 
 function buildTeacherMessage(planetId: string | null) {
   if (!planetId) {
@@ -31,6 +32,7 @@ function buildTeacherMessage(planetId: string | null) {
 }
 
 export function SolarSystemLab() {
+  const { playLabSound } = useLabSoundProfile('solar-system');
   const [selectedPlanetId, setSelectedPlanetId] = useState<string | null>(null);
   const [timeScale, setTimeScale] = useState(0.3);
   const [isPaused, setIsPaused] = useState(false);
@@ -47,6 +49,7 @@ export function SolarSystemLab() {
   const fact = planet ? getFactForPlanet(planet.id) : null;
 
   const handleSelectPlanet = (id: string) => {
+    playLabSound('planet-select');
     setIsPlayAllMode(false);
     setPlayAllIndex(null);
     setSelectedPlanetId(id);
@@ -55,6 +58,7 @@ export function SolarSystemLab() {
 
   const handleStartPlayAll = () => {
     if (!tourOrder.length) return;
+    playLabSound('play-all-start');
     setIsPlayAllMode(true);
     setPlayAllIndex(0);
     const firstId = tourOrder[0];
@@ -63,6 +67,7 @@ export function SolarSystemLab() {
   };
 
   const handleStopPlayAll = () => {
+    playLabSound('play-all-stop');
     setIsPlayAllMode(false);
     setPlayAllIndex(null);
   };
@@ -109,7 +114,10 @@ export function SolarSystemLab() {
               <Button
                 variant={isPaused ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setIsPaused(true)}
+                onClick={() => {
+                  playLabSound('playback-toggle');
+                  setIsPaused(true);
+                }}
                 aria-pressed={isPaused}
               >
                 <Pause className="h-4 w-4 mr-1" />
@@ -118,7 +126,10 @@ export function SolarSystemLab() {
               <Button
                 variant={!isPaused ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setIsPaused(false)}
+                onClick={() => {
+                  playLabSound('playback-toggle');
+                  setIsPaused(false);
+                }}
                 aria-pressed={!isPaused}
               >
                 <Play className="h-4 w-4 mr-1" />
@@ -127,7 +138,9 @@ export function SolarSystemLab() {
             </div>
             <Slider
               value={[timeScale]}
-              onValueChange={([v]) => setTimeScale(v ?? 0.3)}
+              onValueChange={([v]) => {
+                setTimeScale(v ?? 0.3);
+              }}
               min={0}
               max={2}
               step={0.1}
@@ -247,9 +260,11 @@ export function SolarSystemLab() {
             if (nextIndex >= tourOrder.length) {
               setIsPlayAllMode(false);
               setPlayAllIndex(null);
+              playLabSound('tour-complete');
               return;
             }
             const nextId = tourOrder[nextIndex];
+            playLabSound('tour-advance');
             setPlayAllIndex(nextIndex);
             setSelectedPlanetId(nextId);
             setTeacherMessage(buildTeacherMessage(nextId));

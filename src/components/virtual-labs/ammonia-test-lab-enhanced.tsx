@@ -17,12 +17,14 @@ import confetti from 'canvas-confetti';
 import { LabNotes } from './LabNotes';
 import { Alert, AlertDescription } from '../ui/alert';
 import { LabSupplies, SupplyItem } from './LabSupplies';
+import { useLabSoundProfile } from '@/hooks/use-lab-sound-profile';
 
 type TestStep = 'intro' | 'collect-supplies' | 'setup' | 'heating' | 'gas-produced' | 'testing' | 'result' | 'quiz' | 'complete';
 type DragItem = 'bunsen' | 'litmus' | null;
 
 export function AmmoniaTestLab() {
     const { toast } = useToast();
+    const { playLabSound } = useLabSoundProfile('ammonia-test');
     const { markLabComplete, isLabCompleted, totalXP } = useLabProgress();
     const [currentStep, setCurrentStep] = React.useState<TestStep>('intro');
     const [isAnimating, setIsAnimating] = React.useState(false);
@@ -100,12 +102,14 @@ export function AmmoniaTestLab() {
     }, [clearAllTimeouts]);
 
     const handleStartLab = () => {
+        playLabSound('start');
         setTeacherMessage("Great! Let's gather our supplies. Click on each item to collect them for your experiment!");
         setCurrentStep('collect-supplies');
     };
 
     const handleCollectSupply = (itemId: string) => {
         if (!collectedSupplies.includes(itemId)) {
+            playLabSound('collect');
             setCollectedSupplies(prev => {
                 const newCollected = [...prev, itemId];
                 if (newCollected.length === labSupplies.length) {
@@ -120,6 +124,7 @@ export function AmmoniaTestLab() {
     const handleAllSuppliesCollected = React.useCallback(() => {
         if (!allSuppliesNotifiedRef.current) {
             allSuppliesNotifiedRef.current = true;
+            playLabSound('all-collected');
             toast({
                 title: "All Supplies Collected!",
                 description: "Great work! You have everything you need for the experiment.",
@@ -129,12 +134,14 @@ export function AmmoniaTestLab() {
 }, [toast]);
 
     const handleContinueToSetup = () => {
+        playLabSound('continue-setup');
         setCurrentStep('setup');
         setTeacherMessage("Great! Now click the Bunsen burner to place it under the test tube and start heating.");
     };
 
     const handleBunsenDrop = () => {
         if (currentStep === 'setup' && !bunsenPlaced) {
+            playLabSound('heat-start');
             setBunsenPlaced(true);
             transitionWithTeacher("Perfect! The Bunsen burner is now heating the ammonium chloride. Watch carefully as the compound decomposes and releases ammonia gas.", () => {
                 setCurrentStep('heating');
@@ -143,6 +150,7 @@ export function AmmoniaTestLab() {
                 registerTimeout(() => {
                     setCurrentStep('gas-produced');
                     setIsAnimating(false);
+                    playLabSound('gas-produced');
                     transitionWithTeacher("Excellent observation! Ammonia gas is now being released with its characteristic pungent smell. Now click the red litmus paper to test the gas.");
                     toast({
                         title: '💨 Ammonia Gas Produced!',
@@ -156,6 +164,7 @@ export function AmmoniaTestLab() {
 
     const handleLitmusDrop = () => {
         if (currentStep === 'gas-produced' && !litmusPlaced) {
+            playLabSound('collect');
             setLitmusPlaced(true);
             transitionWithTeacher("Good work! Now we are holding the moist red litmus paper in the ammonia fumes. Watch carefully what happens to the color.", () => {
                 setCurrentStep('testing');
@@ -165,6 +174,7 @@ export function AmmoniaTestLab() {
                 registerTimeout(() => {
                     setCurrentStep('result');
                     setIsAnimating(false);
+                    playLabSound('litmus-result');
                     transitionWithTeacher(
                         "Fantastic! The red litmus paper turned blue! This proves that ammonia is a BASE. Remember, bases turn red litmus blue. Well done!",
                         () => {
@@ -226,6 +236,7 @@ export function AmmoniaTestLab() {
         setQuizAttempts(newAttempts);
         
         if (isCorrect) {
+            playLabSound('quiz-perfect');
             setQuizIsCorrect(true);
             setQuizFeedback(`Perfect! You got all ${totalQuestions} questions correct! 🎉`);
             
@@ -256,6 +267,7 @@ export function AmmoniaTestLab() {
                 setCurrentStep('complete');
             }, 2000);
         } else {
+            playLabSound(newAttempts === 1 ? 'quiz-partial' : 'quiz-retry');
             if (newAttempts === 1) {
                 setQuizFeedback(`You got ${correctCount} out of ${totalQuestions} correct. Review the experiment and try again! 🔄`);
                 setTeacherMessage('Not all answers are correct. Think about what you observed in the experiment. You can try again!');

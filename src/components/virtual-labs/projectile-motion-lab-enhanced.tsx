@@ -13,6 +13,7 @@ import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
 import { Slider } from '../ui/slider';
 import { Textarea } from '@/components/ui/textarea';
+import { useLabSoundProfile } from '@/hooks/use-lab-sound-profile';
 
 type Step = 'intro' | 'setup' | 'experiment' | 'results' | 'quiz' | 'complete';
 
@@ -105,6 +106,7 @@ function getSceneMetrics() {
 
 export function ProjectileMotionLabEnhanced() {
     const { toast } = useToast();
+    const { playLabSound } = useLabSoundProfile('projectile-motion');
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [teacherMessage, setTeacherMessage] = React.useState('');
     const [pendingTransition, setPendingTransition] = React.useState<(() => void) | null>(null);
@@ -286,6 +288,7 @@ export function ProjectileMotionLabEnhanced() {
 
     const handleLaunch = () => {
         if (isLaunching) return;
+        playLabSound('launch');
         
         setIsLaunching(true);
         // Don't set a message here — let the animation run, then teacher explains the result when it completes (natural flow, no mid-sentence break).
@@ -351,6 +354,7 @@ export function ProjectileMotionLabEnhanced() {
                 if (missionPassed) {
                     setChallengesCompleted((count) => count + 1);
                     setActiveChallenge(generateChallenge());
+                    playLabSound('mission-success');
                     toast({
                         title: '🎯 Challenge Complete!',
                         description: activeChallenge.successMessage,
@@ -365,6 +369,7 @@ export function ProjectileMotionLabEnhanced() {
                     title: '🚀 Launch Complete!', 
                     description: `Range: ${data.range.toFixed(1)}m, Height: ${data.maxHeight.toFixed(1)}m` 
                 });
+                playLabSound('impact');
             }
         };
         requestAnimationFrame(animate);
@@ -424,6 +429,7 @@ export function ProjectileMotionLabEnhanced() {
                 "These equations work for ANY projectile in a vacuum! Keep exploring physics - you're doing brilliantly!"
             );
             setShowCelebration(true);
+            playLabSound('quiz-perfect');
             confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
             registerTimeout(() => {
                 setShowCelebration(false);

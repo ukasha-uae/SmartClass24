@@ -1,6 +1,17 @@
 import { useCallback, useRef, useEffect, useState } from 'react';
 
-type SoundType = 'correct' | 'wrong' | 'click' | 'complete' | 'tick' | 'matchFound' | 'warning';
+export type SoundType =
+  | 'correct'
+  | 'wrong'
+  | 'click'
+  | 'complete'
+  | 'tick'
+  | 'matchFound'
+  | 'warning'
+  | 'launch'
+  | 'impact'
+  | 'planetSelect'
+  | 'tourAdvance';
 
 export const useSoundEffects = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -145,6 +156,50 @@ export const useSoundEffects = () => {
         gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
         oscillator.start(now);
         oscillator.stop(now + 0.2);
+        break;
+
+      case 'launch':
+        // Quick "whoosh"-like sweep for projectile launch
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(220, now);
+        oscillator.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+        gainNode.gain.setValueAtTime(0.07, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.004, now + 0.16);
+        oscillator.start(now);
+        oscillator.stop(now + 0.16);
+        break;
+
+      case 'impact':
+        // Soft impact thud cue
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(140, now);
+        oscillator.frequency.exponentialRampToValueAtTime(90, now + 0.08);
+        gainNode.gain.setValueAtTime(0.05, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.003, now + 0.12);
+        oscillator.start(now);
+        oscillator.stop(now + 0.12);
+        break;
+
+      case 'planetSelect':
+        // Distinct "space ping" for celestial object selection
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(520, now);
+        oscillator.frequency.exponentialRampToValueAtTime(780, now + 0.08);
+        gainNode.gain.setValueAtTime(0.06, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.004, now + 0.12);
+        oscillator.start(now);
+        oscillator.stop(now + 0.12);
+        break;
+
+      case 'tourAdvance':
+        // Soft upward cue when guided tour moves to next planet
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(330, now);
+        oscillator.frequency.exponentialRampToValueAtTime(494, now + 0.1);
+        gainNode.gain.setValueAtTime(0.055, now);
+        gainNode.gain.exponentialRampToValueAtTime(0.003, now + 0.14);
+        oscillator.start(now);
+        oscillator.stop(now + 0.14);
         break;
     }
   }, [isMuted]);

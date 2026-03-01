@@ -22,6 +22,7 @@ import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
 import { useFirebase } from '@/firebase/provider';
 import PremiumUnlockModal from '@/components/premium/PremiumUnlockModal';
 import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLabDialog';
+import { LabAudioToggle } from '@/components/virtual-labs/LabAudioToggle';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
 import { useEntitlements } from '@/hooks/useEntitlements';
@@ -157,6 +158,9 @@ export default function VirtualLabsPage() {
             <p className="text-sm text-slate-500 dark:text-slate-400">
               Tracks: {VIRTUAL_LAB_TRACK_LABELS['science-lab']} • {VIRTUAL_LAB_TRACK_LABELS['maths-lab']} • {VIRTUAL_LAB_TRACK_LABELS['art-lab']} (Under Construction)
             </p>
+            <div className="mt-4 flex justify-center">
+              <LabAudioToggle />
+            </div>
             {userId !== 'guest' && features.enableReferrals && (
               <div className="flex justify-center">
                 <ShareVirtualLabDialog

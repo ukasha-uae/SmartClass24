@@ -12,6 +12,7 @@ import confetti from 'canvas-confetti';
 import { useLabProgress } from '@/stores/lab-progress-store';
 import { TeacherVoice } from './TeacherVoice';
 import { LabSupplies, SupplyItem } from './LabSupplies';
+import { useLabSoundProfile } from '@/hooks/use-lab-sound-profile';
 
 // Simple SVG for an aquatic plant
 const AquaticPlantIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -60,6 +61,7 @@ export function PhotosynthesisLabEnhanced() {
         high: 72,
     };
     const { toast } = useToast();
+    const { playLabSound } = useLabSoundProfile('photosynthesis-oxygen-production');
     const [currentStep, setCurrentStep] = React.useState<Step>('intro');
     const [lightIntensity, setLightIntensity] = React.useState<'low' | 'medium' | 'high' | null>(null);
     const [observationTime, setObservationTime] = React.useState(0);
@@ -162,17 +164,20 @@ export function PhotosynthesisLabEnhanced() {
     }, [currentStep, lightIntensity]);
 
     const handleStartExperiment = () => {
+        playLabSound('start');
         setCurrentStep('collect-supplies');
         setTeacherMessage("Great start! Before we begin, let's collect all the supplies we need for the photosynthesis experiment. Click each required item to collect it.");
     };
 
     const handleCollect = (itemId: string) => {
         setCollectedItems((prev) => [...prev, itemId]);
+        playLabSound('collect');
     };
 
     const handleAllSuppliesCollected = React.useCallback(() => {
         if (!allSuppliesNotifiedRef.current) {
             allSuppliesNotifiedRef.current = true;
+            playLabSound('all-collected');
             toast({
                 title: "All Supplies Collected!",
                 description: "Great work! You have everything you need for the experiment.",
@@ -192,6 +197,7 @@ export function PhotosynthesisLabEnhanced() {
     ];
 
     const handleSelectIntensity = (intensity: 'low' | 'medium' | 'high') => {
+        playLabSound('select-intensity');
         setLightIntensity(intensity);
         setPlantPlaced(true);
         setBubbleCount(0);
@@ -226,6 +232,7 @@ export function PhotosynthesisLabEnhanced() {
         setTeacherMessage(
             `Observation complete! At ${lightIntensity} intensity, we observed ${observedBubbles} bubbles in ${OBSERVATION_DURATION_SECONDS} seconds (${observedRatePerMinute} bubbles/min) — ${bubbleRates[lightIntensity!]}. In this tested range, higher light gives faster photosynthesis and more oxygen production.${suggestion}`
         );
+        playLabSound('observation-complete');
         setCurrentStep('observe');
     };
 
@@ -252,6 +259,7 @@ export function PhotosynthesisLabEnhanced() {
         setQuizSubmitted(true);
         
         if (correctCount === 3) {
+            playLabSound('quiz-perfect');
             setQuizFeedback("🎉 Perfect! You got all answers correct! You understand how photosynthesis works and how light affects it.");
             
             // Calculate XP (100 for first completion, 75 for subsequent)
@@ -275,10 +283,12 @@ export function PhotosynthesisLabEnhanced() {
                 () => setCurrentStep('complete')
             );
         } else if (correctCount === 2) {
+            playLabSound('quiz-partial');
             // Good effort - 2 out of 3 correct
             setQuizFeedback(`Good effort! You got ${correctCount} out of 3 correct. Review the feedback and try again to master photosynthesis!`);
             setTeacherMessage(`Good try! You got 2 out of 3 correct. Key corrections: (1) The bubbles were oxygen (O₂), produced during photosynthesis. (2) We varied light intensity (low, medium, high), which changes energy available to chlorophyll. (3) In this setup and tested range, higher light gave faster oxygen bubble production, up to limiting factors. Review your observations and try again.`);
         } else {
+            playLabSound('quiz-retry');
             // Needs work - 0 or 1 correct
             setQuizFeedback(`You got ${correctCount} out of 3 correct. Don't worry! Review the experiment and try again. Think about how light helps plants make food.`);
             setTeacherMessage(`Keep trying! You got ${correctCount} answer${correctCount === 1 ? '' : 's'} correct. Photosynthesis uses light energy, carbon dioxide, and water to produce glucose and oxygen. In this experiment, oxygen appeared as bubbles. We changed light intensity and observed bubble rate. In this tested range, increasing light increased the photosynthesis rate. Review these links, then retry.`);

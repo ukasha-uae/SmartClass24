@@ -16,6 +16,7 @@ import { getMathBandLabel } from '@/lib/math-lab/taxonomy';
 import { trackMathLabMetric } from '@/lib/math-lab/metrics';
 import { LabNotes } from '@/components/virtual-labs/LabNotes';
 import { normalizeMathText } from '@/lib/text/normalize-math-text';
+import { useLabSoundProfile } from '@/hooks/use-lab-sound-profile';
 
 type EquationCheckpoint = {
   id: string;
@@ -60,6 +61,7 @@ const checkpoints: EquationCheckpoint[] = [
 
 export function EquationAnimationLabEnhanced() {
   const { user } = useFirebase();
+  const { playLabSound } = useLabSoundProfile('maths-equation-animation');
   const { labels } = useEducationLevels();
   const [stage, setStage] = useState<'explore' | 'checkpoint' | 'result'>('explore');
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -111,6 +113,7 @@ export function EquationAnimationLabEnhanced() {
     if (stage !== 'checkpoint') return;
     const nextAnswers = [...answers, optionIndex];
     const isCorrect = optionIndex === checkpoint.correctIndex;
+    playLabSound(isCorrect ? 'answer-correct' : 'answer-wrong');
     setAnswers(nextAnswers);
     trackMathLabMetric({
       type: 'checkpoint_answered',
@@ -129,6 +132,7 @@ export function EquationAnimationLabEnhanced() {
           100
       );
       setStage('result');
+      playLabSound('complete');
       trackMathLabMetric({
         type: 'station_completed',
         stationSlug: 'maths-equation-animation',
@@ -141,6 +145,7 @@ export function EquationAnimationLabEnhanced() {
 
   const requestHint = () => {
     if (stage !== 'checkpoint') return;
+    playLabSound('hint');
     setShowHint(true);
     setHintCount((value) => value + 1);
     trackMathLabMetric({
@@ -153,6 +158,7 @@ export function EquationAnimationLabEnhanced() {
   };
 
   const restart = () => {
+    playLabSound('restart');
     setStage('explore');
     setQuestionIndex(0);
     setAnswers([]);
@@ -196,13 +202,19 @@ export function EquationAnimationLabEnhanced() {
               <div className="flex flex-wrap gap-2">
                 <Button
                   variant={exploreView === 'factorization' ? 'default' : 'outline'}
-                  onClick={() => setExploreView('factorization')}
+                onClick={() => {
+                  playLabSound('track-switch');
+                  setExploreView('factorization');
+                }}
                 >
                   Factorization track
                 </Button>
                 <Button
                   variant={exploreView === 'discriminant' ? 'default' : 'outline'}
-                  onClick={() => setExploreView('discriminant')}
+                onClick={() => {
+                  playLabSound('track-switch');
+                  setExploreView('discriminant');
+                }}
                 >
                   Discriminant track
                 </Button>
@@ -224,7 +236,13 @@ export function EquationAnimationLabEnhanced() {
                   onNarrationChange={(text) => setExploreNarration(normalizeMathText(text))}
                 />
               )}
-              <Button onClick={() => setStage('checkpoint')} className="w-full">
+              <Button
+                onClick={() => {
+                  playLabSound('checkpoint-start');
+                  setStage('checkpoint');
+                }}
+                className="w-full"
+              >
                 Start Guided Checkpoints
               </Button>
             </>

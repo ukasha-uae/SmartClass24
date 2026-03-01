@@ -14,6 +14,7 @@ import { LabNotes } from '@/components/virtual-labs/LabNotes';
 import confetti from 'canvas-confetti';
 import { V1RouteGuard, useV1FeatureAccess } from '@/components/V1RouteGuard';
 import { ShareVirtualLabDialog } from '@/components/virtual-labs/ShareVirtualLabDialog';
+import { LabAudioToggle } from '@/components/virtual-labs/LabAudioToggle';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
 import { useEntitlements } from '@/hooks/useEntitlements';
@@ -228,20 +229,25 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
         <div className={`${useCompactEnhancedShell ? compactShellClasses : 'container mx-auto px-4 py-8'} relative z-10`}>
           {/* Premium Back Button */}
           <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
-            <Link href={addTenantParam('/virtual-labs')}>
-              <Button variant="ghost" className="hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-violet-500/10 border-2 border-transparent hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:scale-105">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Virtual Labs
-              </Button>
-            </Link>
-            {userId !== 'guest' && features.enableReferrals && (
-              <ShareVirtualLabDialog
-                labTitle={experiment.title}
-                labSlug={experiment.slug}
-                subject={experiment.subject}
-                userId={userId}
-              />
-            )}
+            <div className="flex items-center gap-3 flex-wrap">
+              <Link href={addTenantParam('/virtual-labs')}>
+                <Button variant="ghost" className="hover:bg-gradient-to-r hover:from-purple-500/10 hover:to-violet-500/10 border-2 border-transparent hover:border-purple-300 dark:hover:border-purple-700 transition-all hover:scale-105">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Virtual Labs
+                </Button>
+              </Link>
+              <LabAudioToggle compact />
+            </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              {userId !== 'guest' && features.enableReferrals && (
+                <ShareVirtualLabDialog
+                  labTitle={experiment.title}
+                  labSlug={experiment.slug}
+                  subject={experiment.subject}
+                  userId={userId}
+                />
+              )}
+            </div>
           </div>
 
           {/* For enhanced labs, render directly without wrapper UI */}
