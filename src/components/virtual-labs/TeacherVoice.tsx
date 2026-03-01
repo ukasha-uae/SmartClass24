@@ -42,6 +42,57 @@ interface TeacherVoiceProps {
     showStartOverlay?: boolean;
 }
 
+type VoicePreference = 'auto' | 'female' | 'male';
+
+const FEMALE_VOICE_HINTS = [
+    'female', 'samantha', 'victoria', 'zira', 'hazel', 'aria', 'jenny', 'emma', 'ava', 'susan'
+];
+const MALE_VOICE_HINTS = [
+    'male', 'david', 'mark', 'james', 'george', 'daniel', 'tom', 'guy', 'john', 'matt', 'arthur'
+];
+
+function voiceNameMatches(voice: SpeechSynthesisVoice, hints: string[]) {
+    const name = voice.name.toLowerCase();
+    return hints.some((hint) => name.includes(hint));
+}
+
+function resolvePreferredVoice(
+    voices: SpeechSynthesisVoice[],
+    preference: VoicePreference
+): SpeechSynthesisVoice | undefined {
+    if (!voices.length) return undefined;
+    const englishVoices = voices.filter((voice) => voice.lang.startsWith('en-'));
+    const candidateVoices = englishVoices.length > 0 ? englishVoices : voices;
+
+    if (preference === 'female') {
+        return (
+            candidateVoices.find((voice) => voiceNameMatches(voice, FEMALE_VOICE_HINTS)) ||
+            candidateVoices.find((voice) => voice.lang.startsWith('en-GB')) ||
+            candidateVoices[0]
+        );
+    }
+
+    if (preference === 'male') {
+        return (
+            candidateVoices.find((voice) => voiceNameMatches(voice, MALE_VOICE_HINTS)) ||
+            candidateVoices.find((voice) => voice.lang.startsWith('en-GB')) ||
+            candidateVoices[0]
+        );
+    }
+
+    // Auto: preserve the current friendly default behavior.
+    return (
+        candidateVoices.find((voice) =>
+            voice.name.includes('Female') ||
+            voice.name.includes('Samantha') ||
+            voice.name.includes('Victoria') ||
+            voice.name.includes('Google UK English Female')
+        ) ||
+        candidateVoices.find((voice) => voice.lang.startsWith('en-GB')) ||
+        candidateVoices[0]
+    );
+}
+
 export function TeacherVoice({ 
     message, 
     autoPlay = true, 
@@ -70,6 +121,8 @@ export function TeacherVoice({
     const [messageChunks, setMessageChunks] = React.useState<string[]>([]);
     const [showQuickActions, setShowQuickActions] = React.useState(false);
     const [hasExplicitStart, setHasExplicitStart] = React.useState(false);
+    const [voicePreference, setVoicePreference] = React.useState<VoicePreference>('auto');
+    const [showVoiceLegend, setShowVoiceLegend] = React.useState(false);
     const utteranceRef = React.useRef<SpeechSynthesisUtterance | null>(null);
     const debounceTimerRef = React.useRef<NodeJS.Timeout | null>(null);
     const chunkTimerRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -132,6 +185,33 @@ export function TeacherVoice({
             loadVoices();
             window.speechSynthesis.onvoiceschanged = loadVoices;
         }
+    }, []);
+
+    React.useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const storedVoicePreference = window.localStorage.getItem('teacherVoicePreference');
+        if (storedVoicePreference === 'auto' || storedVoicePreference === 'female' || storedVoicePreference === 'male') {
+            setVoicePreference(storedVoicePreference);
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (typeof window === 'undefined') return;
+        window.localStorage.setItem('teacherVoicePreference', voicePreference);
+    }, [voicePreference]);
+
+    React.useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const hintSeen = window.localStorage.getItem('teacherVoiceLegendSeen');
+        if (hintSeen) return;
+
+        setShowVoiceLegend(true);
+        const timer = window.setTimeout(() => {
+            setShowVoiceLegend(false);
+            window.localStorage.setItem('teacherVoiceLegendSeen', 'true');
+        }, 7000);
+
+        return () => window.clearTimeout(timer);
     }, []);
 
     // Treat any page interaction as an audio unlock signal.
@@ -236,15 +316,10 @@ export function TeacherVoice({
             utterance.pitch = 1.1;
             utterance.volume = 1;
             
-            // Try to find a friendly female voice
+            // Resolve voice based on learner preference (auto/female/male)
             const voices = window.speechSynthesis.getVoices();
             if (voices.length > 0) {
-                const preferredVoice = voices.find(voice => 
-                    voice.name.includes('Female') || 
-                    voice.name.includes('Samantha') || 
-                    voice.name.includes('Victoria') ||
-                    voice.name.includes('Google UK English Female')
-                );
+                const preferredVoice = resolvePreferredVoice(voices, voicePreference);
                 
                 if (preferredVoice) {
                     utterance.voice = preferredVoice;
@@ -279,6 +354,20 @@ export function TeacherVoice({
             setIsPlaying(false);
         }
         setIsMuted(!isMuted);
+    };
+
+    const cycleVoicePreference = () => {
+        setVoicePreference((prev) => {
+            if (prev === 'auto') return 'female';
+            if (prev === 'female') return 'male';
+            return 'auto';
+        });
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            setIsPlaying(false);
+            // Replay current chunk with the newly selected voice.
+            setTimeout(() => speakMessage(currentChunkIndex), 100);
+        }
     };
     
     const repeatMessage = () => {
@@ -750,6 +839,40 @@ export function TeacherVoice({
                                             >
                                                 {isMuted ? <VolumeX className="h-3 w-3" /> : <Volume2 className="h-3 w-3" />}
                                             </Button>
+
+                                            {/* Voice preference button + first-time legend */}
+                                            <div className="relative">
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    onClick={(e) => {
+                                                        if (isDragging) {
+                                                            e.preventDefault();
+                                                            return;
+                                                        }
+                                                        cycleVoicePreference();
+                                                    }}
+                                                    className="h-6 px-1.5 hover:bg-white/20 text-white transition-all hover:scale-110"
+                                                    title={`Voice style: ${voicePreference}. Click to switch Auto/Female/Male`}
+                                                >
+                                                    <span className="text-[10px] font-semibold uppercase">
+                                                        {voicePreference === 'auto' ? 'A' : voicePreference === 'female' ? 'F' : 'M'}
+                                                    </span>
+                                                </Button>
+                                                <AnimatePresence>
+                                                    {showVoiceLegend && !isMinimized && (
+                                                        <motion.div
+                                                            initial={{ opacity: 0, y: 4, scale: 0.96 }}
+                                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                            exit={{ opacity: 0, y: 4, scale: 0.96 }}
+                                                            transition={{ duration: 0.2 }}
+                                                            className="absolute bottom-full right-0 mb-1.5 px-2 py-1 rounded-md bg-black/75 text-white text-[10px] whitespace-nowrap pointer-events-none"
+                                                        >
+                                                            Voice: A=Auto, F=Female, M=Male
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </div>
                                             
                                             {/* Minimize button */}
                                             <Button
