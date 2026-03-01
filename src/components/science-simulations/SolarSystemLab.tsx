@@ -193,13 +193,15 @@ export function SolarSystemLab() {
                 <AccordionItem value="planets">
                   <AccordionTrigger className="py-2 text-sm">Quick select</AccordionTrigger>
                   <AccordionContent className="pb-2">
-                    <div className="flex gap-1.5 overflow-x-auto pb-1">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
                       {SOLAR_SYSTEM_PLANETS.map((p) => (
                         <Button
                           key={p.id}
                           variant={selectedPlanetId === p.id ? 'default' : 'outline'}
                           size="sm"
-                          className="text-xs whitespace-nowrap"
+                          className={`h-8 px-2 text-[10px] sm:text-[11px] rounded-md justify-start ${
+                            selectedPlanetId === p.id ? 'shadow-sm' : ''
+                          }`}
                           onClick={() => handleSelectPlanet(p.id)}
                         >
                           <span
