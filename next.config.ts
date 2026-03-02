@@ -45,7 +45,6 @@ const nextConfig: NextConfig = {
     // Allow unoptimized images from all domains (for development)
     unoptimized: process.env.NODE_ENV === 'development',
   },
-  turbopack: {},
   // Force dynamic rendering for virtual labs to prevent stale cache
   experimental: {
     staleTimes: {
@@ -89,7 +88,7 @@ const nextConfig: NextConfig = {
 
 export default withPWA({
   dest: 'public',
-  disable: false, // Enable PWA in development for testing (was: process.env.NODE_ENV === 'development')
+  disable: process.env.NODE_ENV === 'development',
   register: true,
   skipWaiting: true,
   reloadOnOnline: true,

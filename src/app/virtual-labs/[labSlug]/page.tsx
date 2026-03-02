@@ -20,6 +20,7 @@ import { useTenant } from '@/hooks/useTenant';
 import { useEntitlements } from '@/hooks/useEntitlements';
 import { useFullscreen } from '@/contexts/FullscreenContext';
 import { FeatureSoftGate } from '@/components/access/FeatureSoftGate';
+import { LabScientificCalculator } from '@/components/virtual-labs/LabScientificCalculator';
 import {
   FREE_VIRTUAL_LAB_SLUGS,
   virtualLabExperiments,
@@ -630,6 +631,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
             </>
           )}
         </div>
+        {labTrack === 'maths-lab' && <LabScientificCalculator />}
       </div>
     </V1RouteGuard>
   );

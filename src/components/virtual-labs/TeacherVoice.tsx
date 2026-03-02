@@ -529,6 +529,7 @@ export function TeacherVoice({
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 100 }}
                         transition={{ duration: 0.3 }}
+                        data-teacher-voice-anchor="true"
                         className="fixed bottom-4 right-4 z-50 max-w-md touch-none cursor-move"
                     >
                     {isMinimized ? (

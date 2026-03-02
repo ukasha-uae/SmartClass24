@@ -1922,8 +1922,17 @@ const generateGameQuestions = (
 
       if (sameSubjectPool.length > 0) {
         const shuffled = [...sameSubjectPool].sort(() => Math.random() - 0.5);
-        const strictCount = Math.min(count, shuffled.length);
-        challengeQuestions = shuffled.slice(0, strictCount);
+        if (shuffled.length >= count) {
+          challengeQuestions = shuffled.slice(0, count);
+        } else {
+          // Keep same-subject integrity while filling the requested question count.
+          // We intentionally allow repeated items when a new subject bank is still small.
+          const toppedUp: typeof shuffled = [...shuffled];
+          while (toppedUp.length < count) {
+            toppedUp.push(...[...sameSubjectPool].sort(() => Math.random() - 0.5));
+          }
+          challengeQuestions = toppedUp.slice(0, count);
+        }
       }
     }
   }

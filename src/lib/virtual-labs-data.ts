@@ -120,8 +120,8 @@ export const virtualLabExperiments: { experiments: VirtualLabExperiment[] } = {
             title: 'Equation Builder Lab',
             subject: 'Mathematics',
             labAudience: 'middle-school',
-            description: 'Solve linear equations by dragging numbers and symbols into operation and answer slots.',
-            learningObjective: 'Strengthen inverse-operation reasoning and equation balancing through interactive drag-and-drop solving.',
+            description: 'Solve Linear and Fraction Linear equations with guided typing, friendly coach support, and custom equation practice.',
+            learningObjective: 'Strengthen inverse-operation reasoning, equation balancing, and flexible path-solving using guided step checks and equivalent-form validation.',
             component: EquationBuilderLabEnhanced,
         },
         {

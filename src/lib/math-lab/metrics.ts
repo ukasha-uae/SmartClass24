@@ -14,6 +14,7 @@ export type MathLabMetricEvent = {
   conceptId?: string;
   isCorrect?: boolean;
   misconceptionTag?: string;
+  strategyTag?: string;
   masteryBand?: 'needs_support' | 'developing' | 'secure' | 'advanced';
   score?: number;
   hintCount?: number;

@@ -23,7 +23,12 @@ export function formatTextForSpeech(input: string): string {
   // Percentages and simple numeric fractions.
   text = text
     .replace(/\b(\d+(?:\.\d+)?)%/g, '$1 percent')
-    .replace(/\b(\d+)\s*\/\s*(\d+)\b/g, '$1 over $2');
+    .replace(/\b(\d+)\s*\/\s*(\d+)\b/g, '$1 over $2')
+    .replace(/\b([A-Za-z][A-Za-z0-9]*)\s*\/\s*(\d+)\b/g, '$1 over $2')
+    .replace(/\b([A-Za-z0-9]+)\s*\/\s*([A-Za-z][A-Za-z0-9]*)\b/g, '$1 over $2');
+
+  // Fallback for remaining slash patterns (e.g. mixed algebraic terms).
+  text = text.replace(/\s*\/\s*/g, ' over ');
 
   // Decimal pronunciation.
   text = text.replace(/\b(\d+)\.(\d+)\b/g, '$1 point $2');
