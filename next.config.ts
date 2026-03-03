@@ -3,6 +3,10 @@ import withPWA from '@ducanh2912/next-pwa';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Provide an explicit (empty) Turbopack config so Next 16
+  // doesn't error when a webpack config is present in the
+  // Firebase adapter overrides.
+  turbopack: {},
   typescript: {
     ignoreBuildErrors: true,
   },
