@@ -149,16 +149,15 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // Admins collection - store admin user emails (SECURED)
+    // Admins collection - store admin user emails
     match /admins/{email} {
-      // Only allow reading if user is checking their own admin status OR is super admin
-      allow read: if request.auth != null && (
-        email.lower() == request.auth.token.email.lower() ||
-        request.auth.token.superAdmin == true
-      );
-      // Only super admin can create/update/delete admin entries
-      allow create, update, delete: if request.auth != null && 
-        request.auth.token.superAdmin == true;
+      // Allow any authenticated user to read admin list (to check their own access)
+      allow read: if request.auth != null;
+      // Only allow authenticated users to create/update admin entries
+      // Authorization check happens in application code (super admin only)
+      allow create, update: if request.auth != null;
+      // Allow authenticated users to delete (authorization checked in app)
+      allow delete: if request.auth != null;
     }
 
     // FCM Tokens - store push notification tokens for each user

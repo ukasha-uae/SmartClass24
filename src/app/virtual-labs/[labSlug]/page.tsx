@@ -135,7 +135,10 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
   const isArtUnderConstruction = labTrack === 'art-lab';
   const audienceLabel = VIRTUAL_LAB_AUDIENCE_LABELS[getVirtualLabAudience(experiment)];
   const isSpaceSimulationLab = ['solar-system', 'earth-moon-system'].includes(experiment.slug);
-  const hideExperimentCompletionControls = ['solar-system', 'earth-moon-system'].includes(experiment.slug);
+  // Hide global completion + Lab Notes block for Maths labs (they have their own flow)
+  // and for space simulations where we use a custom shell.
+  const hideExperimentCompletionControls =
+    labTrack === 'maths-lab' || ['solar-system', 'earth-moon-system'].includes(experiment.slug);
   
   // Check if this is a self-contained enhanced lab (has its own quiz/completion flow)
   const isEnhancedLab = LabComponent.name?.includes('Enhanced') || 

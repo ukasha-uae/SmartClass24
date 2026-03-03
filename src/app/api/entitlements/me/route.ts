@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { evaluateEntitlements } from '@/lib/entitlements/evaluate';
 import type { SubscriptionSnapshot } from '@/lib/entitlements/types';
 import { getDefaultTenant, getTenantByHost, getTenantById } from '@/tenancy/registry';
+import { BearerTokenSchema } from '@/lib/security/validation-schemas';
 
 type VerifiedToken = {
   uid: string;
@@ -15,7 +16,12 @@ function parseBearerToken(request: NextRequest): string | null {
   if (!header) return null;
   const [scheme, token] = header.split(' ');
   if (!scheme || scheme.toLowerCase() !== 'bearer' || !token) return null;
-  return token;
+  
+  // Validate token format
+  const validation = BearerTokenSchema.safeParse(token);
+  if (!validation.success) return null;
+  
+  return validation.data;
 }
 
 function parseFirestoreString(field: any): string | undefined {

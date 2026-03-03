@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Grid3X3, Divide, Combine, Calculator, Trophy, Play, Pause, Volume2, VolumeX, GraduationCap, ChevronLeft, ChevronRight, Hash, CheckCircle, XCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCountryProperties } from '@/hooks/useCountryConfig';
+import { sanitizeHtml } from '@/lib/security/sanitize-html';
 
 interface LessonIntroProps {
   onComplete?: () => void;
@@ -363,7 +364,8 @@ const FactorsMultiplesIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{__html: `
+      {/* Static CSS animations - sanitized for security best practice */}
+      <style dangerouslySetInnerHTML={{__html: sanitizeHtml(`
         @keyframes float-opacity {
           0%, 100% { opacity: 0; }
           50% { opacity: 0.4; }
@@ -373,7 +375,7 @@ const FactorsMultiplesIntro: React.FC<LessonIntroProps> = ({ onComplete }) => {
         .float-anim-2 { animation: float-opacity 4s ease-in-out 3s infinite; }
         .float-anim-3 { animation: float-opacity 4s ease-in-out 4.5s infinite; }
         .float-anim-4 { animation: float-opacity 4s ease-in-out 6s infinite; }
-      `}} />
+      `)}} />
       <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-teal-900/30 via-gray-900 to-cyan-900/30 rounded-2xl p-4 sm:p-6 md:p-8 pb-20 sm:pb-28 overflow-hidden">
         {/* Floating elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">

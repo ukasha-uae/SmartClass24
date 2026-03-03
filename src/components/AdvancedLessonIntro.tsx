@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ArrowRight, Sparkles, BookOpen } from 'lucide-react';
 import { useLocalization } from '@/hooks/useLocalization';
+import { sanitizeHtml } from '@/lib/security/sanitize-html';
 
 interface IntroSection {
   title: string;
@@ -123,7 +124,7 @@ export default function AdvancedLessonIntro({ lessonSlug, onComplete }: Advanced
                               {processContent(item.title)}
                             </AccordionTrigger>
                             <AccordionContent className="text-gray-200 prose prose-invert max-w-none">
-                              <div dangerouslySetInnerHTML={{ __html: processContent(item.content).replace(/\n/g, '<br/>') }} />
+                              <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(processContent(item.content).replace(/\n/g, '<br/>')) }} />
                             </AccordionContent>
                           </AccordionItem>
                         ))}

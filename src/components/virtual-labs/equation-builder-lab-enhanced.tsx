@@ -359,7 +359,6 @@ export function EquationBuilderLabEnhanced() {
     answerSlots,
     equationDirectInput,
     answerDirectInput,
-    isAutoAdvancing,
     customFlow.awaitingChoice,
     bracketFlow.active,
     bracketFlow.phase,

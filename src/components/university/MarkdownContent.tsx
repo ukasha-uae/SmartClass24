@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { sanitizeHtml } from '@/lib/security/sanitize-html';
 
 interface MarkdownContentProps {
   content: string;
@@ -64,7 +65,7 @@ export default function MarkdownContent({ content, className = '' }: MarkdownCon
   return (
     <div 
       className={`markdown-content ${className}`}
-      dangerouslySetInnerHTML={{ __html: parseMarkdown(content) }}
+      dangerouslySetInnerHTML={{ __html: sanitizeHtml(parseMarkdown(content)) }}
     />
   );
 }

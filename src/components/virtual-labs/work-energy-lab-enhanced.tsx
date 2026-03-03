@@ -13,6 +13,7 @@ import { LabSupplies, SupplyItem } from './LabSupplies';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { sanitizeHtml } from '@/lib/security/sanitize-html';
 
 // Math symbol components that will definitely render
 const SquareRoot = ({ children }: { children: string }) => (
@@ -1153,7 +1154,7 @@ export function WorkEnergyLabEnhanced() {
                               disabled={showQuizFeedback}
                               className="w-4 h-4"
                             />
-                            <span className="flex-1" dangerouslySetInnerHTML={{ __html: option.replace(/&radic;/g, '√').replace(/&frac12;/g, '½') }} />
+                            <span className="flex-1" dangerouslySetInnerHTML={{ __html: sanitizeHtml(option.replace(/&radic;/g, '√').replace(/&frac12;/g, '½')) }} />
                             {showQuizFeedback && oIdx === q.correct && (
                               <CheckCircle className="w-5 h-5 text-green-600" />
                             )}

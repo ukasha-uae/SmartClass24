@@ -2,6 +2,7 @@
 
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import { sanitizeMathHtml } from '@/lib/security/sanitize-html';
 
 type MathTextProps = {
   latex: string;
@@ -16,5 +17,5 @@ export default function MathText({ latex, block = false, className = '' }: MathT
   });
 
   const Tag = block ? 'div' : 'span';
-  return <Tag className={className} dangerouslySetInnerHTML={{ __html: html }} />;
+  return <Tag className={className} dangerouslySetInnerHTML={{ __html: sanitizeMathHtml(html) }} />;
 }

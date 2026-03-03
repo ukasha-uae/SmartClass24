@@ -44,7 +44,9 @@ const ChartContainer = React.forwardRef<
   }
 >(({ id, className, children, config, ...props }, ref) => {
   const uniqueId = React.useId()
-  const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`
+  // Sanitize id to prevent CSS injection - only allow alphanumeric, dash, underscore
+  const sanitizedId = (id || uniqueId).replace(/[^a-zA-Z0-9_-]/g, "")
+  const chartId = `chart-${sanitizedId}`
 
   return (
     <ChartContext.Provider value={{ config }}>
@@ -76,6 +78,11 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  // Validate CSS color format (hex, rgb, hsl, or named colors)
+  const isValidColor = (color: string): boolean => {
+    return /^(#[0-9a-fA-F]{3,8}|rgb|hsl|var\(--|\w+)/.test(color)
+  }
+
   return (
     <style
       dangerouslySetInnerHTML={{
@@ -88,7 +95,8 @@ ${colorConfig
     const color =
       itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
       itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
+    // Only include color if it passes validation
+    return color && isValidColor(color) ? `  --color-${key}: ${color};` : null
   })
   .join("\n")}
 }

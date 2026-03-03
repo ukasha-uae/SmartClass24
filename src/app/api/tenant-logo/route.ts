@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { TENANT_REGISTRY } from '@/tenancy/registry';
+import { TenantIdSchema } from '@/lib/security/validation-schemas';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -14,10 +15,17 @@ export const runtime = 'nodejs';
 const ALLOWED_EXT = ['.png', '.jpg', '.jpeg', '.svg', '.webp'];
 
 export async function GET(request: NextRequest) {
-  const tenantId = request.nextUrl.searchParams.get('tenant');
-  if (!tenantId || typeof tenantId !== 'string') {
+  const tenantParam = request.nextUrl.searchParams.get('tenant');
+  if (!tenantParam) {
     return NextResponse.json({ error: 'Missing tenant' }, { status: 400 });
   }
+
+  // Validate tenant ID to prevent path traversal
+  const validation = TenantIdSchema.safeParse(tenantParam);
+  if (!validation.success) {
+    return NextResponse.json({ error: 'Invalid tenant ID' }, { status: 400 });
+  }
+  const tenantId = validation.data;
 
   const tenant = TENANT_REGISTRY[tenantId];
   const logoUrl = tenant?.branding?.logoUrl;

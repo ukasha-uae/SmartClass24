@@ -3,6 +3,7 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import { useLocalization } from '@/hooks/useLocalization';
 import { normalizeMathText } from '@/lib/text/normalize-math-text';
+import { sanitizeHtml, sanitizeMathHtml } from '@/lib/security/sanitize-html';
 import VennDiagram from './VennDiagram';
 import GeometryDiagram from './GeometryDiagram';
 import EnhancedAnimationPlayer from './EnhancedAnimationPlayer';
@@ -115,7 +116,7 @@ export default function MarkdownRenderer({ content, id, className }: MarkdownRen
           return (
             <div 
               key={pIndex} 
-              dangerouslySetInnerHTML={{ __html: processedHtml }} 
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(processedHtml) }} 
             />
           );
         }
@@ -514,7 +515,7 @@ function parseInline(text: string): React.ReactNode[] {
           throwOnError: false,
           displayMode: true
         });
-        return <span key={index} dangerouslySetInnerHTML={{ __html: html }} className="my-4 text-center block" />;
+        return <span key={index} dangerouslySetInnerHTML={{ __html: sanitizeMathHtml(html) }} className="my-4 text-center block" />;
       } catch (e) {
         console.error("KaTeX error:", e);
         return <span key={index} className="text-red-500 block">{part}</span>;
@@ -536,7 +537,7 @@ function parseInline(text: string): React.ReactNode[] {
           throwOnError: false,
           displayMode: false
         });
-        return <span key={index} dangerouslySetInnerHTML={{ __html: html }} />;
+        return <span key={index} dangerouslySetInnerHTML={{ __html: sanitizeMathHtml(html) }} />;
       } catch (e) {
         console.error("KaTeX error:", e);
         return <span key={index} className="text-red-500">{part}</span>;
