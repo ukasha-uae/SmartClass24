@@ -106,6 +106,26 @@ export type EquationStepValidationResult = {
   strategyTag?: EquationStepStrategyTag;
 };
 
+/**
+ * Quadratic Equation Types - v3.0
+ */
+export type QuadraticSolutionMethod = 'factoring' | 'formula' | 'completing-square';
+
+export type QuadraticEquationParsed = {
+  variable: string;
+  a: number; // coefficient of x²
+  b: number; // coefficient of x
+  c: number; // constant term
+};
+
+export type QuadraticSolution = {
+  method: QuadraticSolutionMethod;
+  discriminant: number;
+  roots: number[]; // empty if no real roots, 1 if repeated, 2 if distinct
+  rootsExact?: string[]; // for irrational roots like "(-3 + √5) / 2"
+  factored?: string; // factored form like "(x + 2)(x + 3) = 0"
+};
+
 export type EquationStepStrategyTag =
   | 'direct'
   | 'swap_sides'
@@ -352,6 +372,183 @@ export function parseBracketLinearEquation(input: string): BracketLinearParsed |
     return null;
   }
   return { variable, multiplier, innerConstant, outerConstant, rhs };
+}
+
+/**
+ * Parse quadratic equation: ax² + bx + c = 0
+ * Supports: x² + 5x + 6 = 0, 2x² - 3x - 5 = 0, x² - 9 = 0
+ */
+export function parseQuadraticEquation(input: string): QuadraticEquationParsed | null {
+  const normalized = input
+    .replace(/\s+/g, '')
+    .replace(/−/g, '-')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/')
+    .toLowerCase(); // case-insensitive variables
+  
+  // Must have = sign
+  if (!normalized.includes('=')) return null;
+  
+  const sides = normalized.split('=');
+  if (sides.length !== 2) return null;
+  
+  const [leftStr, rightStr] = sides;
+  
+  // Parse both sides
+  const left = parseQuadraticExpression(leftStr);
+  const right = parseQuadraticExpression(rightStr);
+  
+  if (!left || !right) return null;
+  
+  // Variables must match
+  if (left.variable && right.variable && left.variable !== right.variable) return null;
+  
+  // Move everything to left side: ax² + bx + c = 0
+  const a = left.a - right.a;
+  const b = left.b - right.b;
+  const c = left.c - right.c;
+  
+  // Must have x² term to be quadratic
+  if (Math.abs(a) < EPSILON) return null;
+  
+  return {
+    variable: left.variable || right.variable || 'x',
+    a,
+    b,
+    c
+  };
+}
+
+/**
+ * Parse quadratic expression (one side): handles 2x² + 3x - 5, x², -3x + 7, etc.
+ */
+function parseQuadraticExpression(input: string): {
+  variable: string | null;
+  a: number; // coeff of x²
+  b: number; // coeff of x
+  c: number; // constant
+} | null {
+  if (!input || input === '0') return { variable: null, a: 0, b: 0, c: 0 };
+  
+  let a = 0;
+  let b = 0;
+  let c = 0;
+  let variable: string | null = null;
+  
+  // Split by + and -, keeping the operators
+  const terms: string[] = [];
+  let currentTerm = '';
+  
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if ((ch === '+' || ch === '-') && i > 0) {
+      if (currentTerm) terms.push(currentTerm);
+      currentTerm = ch === '-' ? '-' : '';
+    } else {
+      currentTerm += ch;
+    }
+  }
+  if (currentTerm) terms.push(currentTerm);
+  
+  // Parse each term
+  for (const term of terms) {
+    if (!term) continue;
+    
+    // Check for x² term
+    if (term.includes('²') || /\^2/.test(term)) {
+      const match = term.match(/^([+-]?\d*)([a-z])[\^²]2?$/);
+      if (match) {
+        const [, coeffStr, varName] = match;
+        variable = varName;
+        a += parseCoefficient(coeffStr);
+        continue;
+      }
+    }
+    
+    // Check for x term (linear)
+    if (/[a-z]/.test(term) && !term.includes('²') && !/\^2/.test(term)) {
+      const match = term.match(/^([+-]?\d*)([a-z])$/);
+      if (match) {
+        const [, coeffStr, varName] = match;
+        variable = varName;
+        b += parseCoefficient(coeffStr);
+        continue;
+      }
+    }
+    
+    // Constant term
+    const numValue = parseSignedInt(term);
+    if (numValue !== null) {
+      c += numValue;
+    }
+  }
+  
+  return { variable, a, b, c };
+}
+
+/**
+ * Solve quadratic using formula: x = (-b ± √(b² - 4ac)) / 2a
+ */
+export function solveQuadratic(
+  parsed: QuadraticEquationParsed,
+  method: QuadraticSolutionMethod = 'formula'
+): QuadraticSolution {
+  const { a, b, c } = parsed;
+  const discriminant = b * b - 4 * a * c;
+  
+  // No real solutions
+  if (discriminant < 0) {
+    return {
+      method,
+      discriminant,
+      roots: []
+    };
+  }
+  
+  const sqrtDisc = Math.sqrt(discriminant);
+  
+  // One repeated root
+  if (Math.abs(discriminant) < EPSILON) {
+    const root = -b / (2 * a);
+    return {
+      method,
+      discriminant,
+      roots: [root]
+    };
+  }
+  
+  // Two distinct roots
+  const root1 = (-b + sqrtDisc) / (2 * a);
+  const root2 = (-b - sqrtDisc) / (2 * a);
+  
+  const solution: QuadraticSolution = {
+    method,
+    discriminant,
+    roots: [Math.min(root1, root2), Math.max(root1, root2)]
+  };
+  
+  // If roots are irrational, provide exact form
+  if (!Number.isInteger(sqrtDisc)) {
+    solution.rootsExact = [
+      `(${-b} + √${discriminant}) / ${2 * a}`,
+      `(${-b} - √${discriminant}) / ${2 * a}`
+    ];
+  }
+  
+  return solution;
+}
+
+/**
+ * Check if quadratic has integer or simple rational roots (factorable)
+ */
+export function isQuadraticFactorable(parsed: QuadraticEquationParsed): boolean {
+  const { a, b, c } = parsed;
+  const discriminant = b * b - 4 * a * c;
+  
+  if (discriminant < 0) return false;
+  
+  const sqrtDisc = Math.sqrt(discriminant);
+  return Number.isInteger(sqrtDisc);
 }
 
 function formatLinearDisplay(a: number, variable: string, b: number, c: number): string {
