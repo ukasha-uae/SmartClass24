@@ -63,9 +63,22 @@ function evaluateExpression(input: string, ans: number, mode: AngleMode): number
   return value;
 }
 
-export function LabScientificCalculator() {
+interface LabScientificCalculatorProps {
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function LabScientificCalculator({ isOpen: externalOpen, onOpenChange }: LabScientificCalculatorProps = {}) {
   const [attachToCoach] = useState(true);
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = (value: boolean) => {
+    if (onOpenChange) {
+      onOpenChange(value);
+    } else {
+      setInternalOpen(value);
+    }
+  };
   const [display, setDisplay] = useState('');
   const [ans, setAns] = useState(0);
   const [mode, setMode] = useState<AngleMode>('DEG');
@@ -87,6 +100,8 @@ export function LabScientificCalculator() {
   const displayText = useMemo(() => (display.length ? display : '0'), [display]);
   const getCoachRect = () =>
     document.querySelector('[data-teacher-voice-anchor="true"]')?.getBoundingClientRect() ?? null;
+  const isCoachMinimized = () =>
+    document.querySelector('[data-teacher-voice-anchor="true"]')?.getAttribute('data-teacher-voice-minimized') === 'true';
 
   const clampPosition = (x: number, y: number, width: number, height: number) => {
     const maxX = Math.max(MARGIN, window.innerWidth - width - MARGIN);
@@ -98,7 +113,7 @@ export function LabScientificCalculator() {
   };
 
   useEffect(() => {
-    if (launcherPosition) return;
+    if (launcherPosition || onOpenChange) return; // Don't init launcher if externally controlled
     const initial = clampPosition(
       window.innerWidth - LAUNCHER_WIDTH - 16,
       window.innerHeight - LAUNCHER_HEIGHT - 16,
@@ -106,7 +121,7 @@ export function LabScientificCalculator() {
       LAUNCHER_HEIGHT
     );
     setLauncherPosition(initial);
-  }, [launcherPosition]);
+  }, [launcherPosition, onOpenChange]);
 
   useEffect(() => {
     if (!open || panelPosition) return;
@@ -118,6 +133,18 @@ export function LabScientificCalculator() {
     );
     setPanelPosition(initial);
   }, [open, panelPosition]);
+
+  // Close calculator when coach is minimized
+  useEffect(() => {
+    if (!attachToCoach || !open) return;
+    const checkMinimized = () => {
+      if (isCoachMinimized()) {
+        setOpen(false);
+      }
+    };
+    const intervalId = setInterval(checkMinimized, 200);
+    return () => clearInterval(intervalId);
+  }, [attachToCoach, open]);
 
   useEffect(() => {
     if (!attachToCoach) return;
@@ -296,9 +323,12 @@ export function LabScientificCalculator() {
     setOpen(true);
   };
 
+  const coachMinimized = attachToCoach && isCoachMinimized();
+  const showLauncher = !onOpenChange; // Hide launcher if externally controlled
+
   return (
     <div className="fixed inset-0 z-50 pointer-events-none">
-      {!open && launcherPosition && (
+      {showLauncher && !coachMinimized && !open && launcherPosition && (
         <Button
           onClick={handleLauncherClick}
           onPointerDown={handleLauncherDragStart}
@@ -311,7 +341,7 @@ export function LabScientificCalculator() {
         </Button>
       )}
 
-      {open && panelPosition && (
+      {!coachMinimized && open && panelPosition && (
         <Card
           className="pointer-events-auto w-[320px] max-w-[calc(100vw-2rem)] border border-white/30 bg-white/25 dark:bg-slate-900/35 backdrop-blur-xl shadow-2xl fixed z-[60]"
           style={{ left: panelPosition.x, top: panelPosition.y }}

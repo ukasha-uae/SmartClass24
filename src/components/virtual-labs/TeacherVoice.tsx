@@ -40,6 +40,11 @@ interface TeacherVoiceProps {
      * Default false to avoid blocking overlays on mobile-first lessons.
      */
     showStartOverlay?: boolean;
+    /**
+     * Optional slot to render calculator or other tools next to teacher name
+     * Only visible when coach is expanded (not minimized)
+     */
+    calculatorSlot?: React.ReactNode;
 }
 
 type VoicePreference = 'auto' | 'female' | 'male';
@@ -107,7 +112,8 @@ export function TeacherVoice({
     quickActions = [],
     onHintRequest,
     requireExplicitStart = true,
-    showStartOverlay = false
+    showStartOverlay = false,
+    calculatorSlot,
 }: TeacherVoiceProps) {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [isMuted, setIsMuted] = React.useState(false);
@@ -530,6 +536,7 @@ export function TeacherVoice({
                         exit={{ opacity: 0, x: 100 }}
                         transition={{ duration: 0.3 }}
                         data-teacher-voice-anchor="true"
+                        data-teacher-voice-minimized={isMinimized ? "true" : "false"}
                         className="fixed bottom-4 right-4 z-50 max-w-md touch-none cursor-move"
                     >
                     {isMinimized ? (
@@ -639,6 +646,8 @@ export function TeacherVoice({
                                         <p className="text-xs font-semibold tracking-wide uppercase opacity-90">
                                             {teacherName}
                                         </p>
+                                        {/* Calculator slot - only visible when expanded */}
+                                        {calculatorSlot && <div className="ml-auto">{calculatorSlot}</div>}
                                         {/* Emotion indicator */}
                                         {detectedEmotion !== 'explaining' && (
                                             <span className="text-xs" title={detectedEmotion}>

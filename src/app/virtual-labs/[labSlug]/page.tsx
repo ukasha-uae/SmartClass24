@@ -634,7 +634,7 @@ export default function VirtualLabPage({ params }: { params: Promise<{ labSlug: 
             </>
           )}
         </div>
-        {labTrack === 'maths-lab' && <LabScientificCalculator />}
+        {labTrack === 'maths-lab' && labSlug !== 'maths-equation-builder' && <LabScientificCalculator />}
       </div>
     </V1RouteGuard>
   );
