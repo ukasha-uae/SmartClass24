@@ -30,6 +30,53 @@ export type BracketLinearScaffold = {
   simplifiedParsed: LinearEquationParsed;
 };
 
+/**
+ * Variable on Both Sides Equation Type
+ * Examples: 3x + 7 = x + 15, 5x - 2 = 2x + 10, 4x + 3 = x
+ */
+export type TwoSidedLinearEquationParsed = {
+  variable: string;
+  leftA: number;   // coefficient on left side (e.g., 3 in 3x + 7)
+  leftB: number;   // constant on left side (e.g., 7 in 3x + 7)
+  rightA: number;  // coefficient on right side (e.g., 1 in x + 15)
+  rightB: number;  // constant on right side (e.g., 15 in x + 15)
+};
+
+/**
+ * Inequality Type
+ * Examples: 3x + 5 > 20, 2x - 7 ≤ 15, -x + 10 < 25
+ */
+export type InequalityOperator = '<' | '>' | '≤' | '≥';
+
+export type InequalityParsed = {
+  variable: string;
+  a: number; // coefficient (e.g., 3 in 3x + 5)
+  b: number; // constant on left (e.g., 5 in 3x + 5)
+  c: number; // constant on right (e.g., 20 in 3x + 5 > 20)
+  operator: InequalityOperator;
+  signFlips: number; // Count of sign flips needed (when dividing by negative)
+};
+
+export type InequalitySolution = {
+  value: number; // The boundary value
+  operator: InequalityOperator; // Operator for the solution (x > 5, x ≤ -2, etc.)
+  display: string; // Human-readable format "x > 5"
+  rangeDisplay: string; // Alternative format "(5, ∞)" or "(-∞, -2]"
+};
+
+export type InequalityBuilderMission = {
+  id: string;
+  inequality: string; // Original inequality string
+  conceptId: 'algebra.inequality.solve';
+  operationExpected: { symbol: '+' | '-'; value: string };
+  inequalityExpected: [string, InequalityOperator, string, string]; // [coeff, operator, var, constant]
+  answerExpected: InequalitySolution;
+  tokenBank: string[];
+  hint: string;
+  signFlipWarning?: string; // Warn when about to divide by negative
+  skipStep1?: boolean; // Skip step 1 if no constant term (b = 0)
+};
+
 export type EquationBuilderMission = {
   id: string;
   equation: string;
@@ -39,6 +86,8 @@ export type EquationBuilderMission = {
   answerExpected: [string, string, string];
   tokenBank: string[];
   hint: string;
+  steps?: number; // Optional: for variable-both-sides (4 steps) vs regular (3 steps)
+  intermediateAnswer?: { coeff: number; rhs: number; display: string }; // For flexible step 3 validation
 };
 
 export type EquationStepValidationReason =
@@ -48,7 +97,8 @@ export type EquationStepValidationReason =
   | 'invalid_expression'
   | 'unexpected_variable'
   | 'not_balanced_target'
-  | 'not_isolated_variable';
+  | 'not_isolated_variable'
+  | 'sign_not_flipped';
 
 export type EquationStepValidationResult = {
   ok: boolean;
@@ -176,7 +226,12 @@ export function areEquationNumericTokensEquivalent(
 }
 
 function normalizeTerm(term: string): string {
-  return term.replace(/\s+/g, '').replace(/\*/g, '');
+  return term
+    .replace(/\s+/g, '') // Remove all whitespace
+    .replace(/\*/g, '') // Remove multiplication symbols
+    .replace(/−/g, '-') // Convert Unicode minus (U+2212) to ASCII minus
+    .replace(/×/g, '*') // Convert Unicode multiplication (U+00D7) to ASCII
+    .replace(/÷/g, '/'); // Convert Unicode division (U+00F7) to ASCII
 }
 
 function parseSignedInt(input: string): number | null {
@@ -200,7 +255,11 @@ function uniqueValues(values: string[]): string[] {
  * Examples: 4x+8=36, 2x - 7 = 9, -x+5=2, x-3=7
  */
 export function parseLinearEquation(input: string): LinearEquationParsed | null {
-  const normalized = input.replace(/\s+/g, '');
+  const normalized = input
+    .replace(/\s+/g, '')
+    .replace(/−/g, '-')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/');
   const match = normalized.match(/^([+-]?\d*)([a-zA-Z])([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -246,7 +305,11 @@ export function hasIntegerSolution(parsed: LinearEquationParsed): boolean {
 }
 
 export function parseFractionLinearEquation(input: string): FractionLinearEquationParsed | null {
-  const normalized = input.replace(/\s+/g, '');
+  const normalized = input
+    .replace(/\s+/g, '')
+    .replace(/−/g, '-')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/');
   const match = normalized.match(/^([+-]?)([a-zA-Z])\/(\d+)([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -268,7 +331,11 @@ export function parseFractionLinearEquation(input: string): FractionLinearEquati
 }
 
 export function parseBracketLinearEquation(input: string): BracketLinearParsed | null {
-  const normalized = input.replace(/\s+/g, '');
+  const normalized = input
+    .replace(/\s+/g, '')
+    .replace(/−/g, '-')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/');
   const match = normalized.match(/^([+-]?\d+)\(([a-zA-Z])([+-]\d+)\)([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -691,7 +758,11 @@ function parseLinearExpression(input: string): ParsedLinearExpression | null {
 }
 
 function splitEquation(input: string): [string, string] | null {
-  const normalized = input.replace(/\s+/g, '');
+  const normalized = input
+    .replace(/\s+/g, '')
+    .replace(/−/g, '-')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/');
   const parts = normalized.split('=');
   if (parts.length !== 2) return null;
   if (!parts[0] || !parts[1]) return null;
@@ -911,8 +982,49 @@ export function validateEquivalentLinearResultEquationStep(
     return { ok: false, reason: getEquationInputIssue(raw) ?? 'missing_side' };
   }
 
-  const [coeffRaw, variable, , rhsRaw] = mission.equationExpected;
+  const [coeffRaw, secondElement, , rhsRaw] = mission.equationExpected;
+  
+  // Check if this is a variable-both-sides mission with full expression
+  if (coeffRaw.includes('+') || coeffRaw.includes('-')) {
+    // Parse the expected expression
+    const variable = secondElement;
+    const expected = parseLinearExpression(coeffRaw);
+    if (!expected || expected.variable !== variable) {
+      return { ok: false, reason: 'invalid_expression' };
+    }
+    
+    const rhsNum = parseNumericToken(rhsRaw);
+    if (rhsNum == null) return { ok: false, reason: 'invalid_expression' };
+    
+    // Parse user input
+    const left = parseLinearExpression(split.left);
+    const right = parseLinearExpression(split.right);
+    if (!left || !right) return { ok: false, reason: 'invalid_expression' };
+    
+    // Check if it matches
+    const leftMatch = almostEqual(left.coefficient, expected.coefficient) &&
+                      almostEqual(left.constant, expected.constant) &&
+                      almostEqual(right.coefficient, 0) &&
+                      almostEqual(right.constant, rhsNum);
+    const rightMatch = almostEqual(right.coefficient, expected.coefficient) &&
+                       almostEqual(right.constant, expected.constant) &&
+                       almostEqual(left.coefficient, 0) &&
+                       almostEqual(left.constant, rhsNum);
+    
+    if (!leftMatch && !rightMatch) {
+      return { ok: false, reason: 'not_balanced_target' };
+    }
+    
+    return {
+      ok: true,
+      reason: null,
+      strategyTag: rightMatch ? 'swap_sides' : 'direct',
+    };
+  }
+  
+  // Standard linear equation validation
   const coeff = parseNumericToken(coeffRaw);
+  const variable = secondElement;
   const rhs = parseNumericToken(rhsRaw);
   if (coeff == null || rhs == null) return { ok: false, reason: 'invalid_expression' };
   return validateIntermediateStepEquation(`${split.left}=${split.right}`, coeff, rhs, variable);
@@ -922,8 +1034,58 @@ export function validateLinearResultEquationInput(
   equationInput: string,
   mission: EquationBuilderMission
 ): EquationStepValidationResult {
-  const [coeffRaw, variable, , rhsRaw] = mission.equationExpected;
+  const [coeffRaw, secondElement, , rhsRaw] = mission.equationExpected;
+  
+  // Check if this is a variable-both-sides mission where the full expression is in coeffRaw
+  if (coeffRaw.includes('+') || coeffRaw.includes('-')) {
+    // This is a full expression like "2x+6" or "2x-3"
+    // Build the expected equation string and parse it
+    const variable = secondElement; // The variable letter
+    const expectedEquation = `${coeffRaw}=${rhsRaw}`;
+    const expected = parseLinearExpression(coeffRaw);
+    if (!expected || expected.variable !== variable) {
+      return { ok: false, reason: 'invalid_expression' };
+    }
+    
+    // Parse the user's input
+    const inputIssue = getEquationInputIssue(equationInput);
+    if (inputIssue) return { ok: false, reason: inputIssue };
+    
+    const split = splitEquation(equationInput);
+    if (!split) return { ok: false, reason: 'missing_side' };
+    const [leftRaw, rightRaw] = split;
+    const left = parseLinearExpression(leftRaw);
+    const right = parseLinearExpression(rightRaw);
+    if (!left || !right) return { ok: false, reason: 'invalid_expression' };
+    
+    const rhsNum = parseNumericToken(rhsRaw);
+    if (rhsNum == null) return { ok: false, reason: 'invalid_expression' };
+    
+    // Check if it matches: left side should have coefficient=expected.coefficient, constant=expected.constant
+    // Right side should be the rhs value
+    const leftMatch = almostEqual(left.coefficient, expected.coefficient) && 
+                      almostEqual(left.constant, expected.constant) &&
+                      almostEqual(right.coefficient, 0) &&
+                      almostEqual(right.constant, rhsNum);
+    const rightMatch = almostEqual(right.coefficient, expected.coefficient) &&
+                       almostEqual(right.constant, expected.constant) &&
+                       almostEqual(left.coefficient, 0) &&
+                       almostEqual(left.constant, rhsNum);
+    
+    if (!leftMatch && !rightMatch) {
+      return { ok: false, reason: 'not_balanced_target' };
+    }
+    
+    return {
+      ok: true,
+      reason: null,
+      strategyTag: rightMatch ? 'swap_sides' : 'direct',
+    };
+  }
+  
+  // Standard linear equation validation
   const coeff = parseNumericToken(coeffRaw);
+  const variable = secondElement;
   const rhs = parseNumericToken(rhsRaw);
   if (coeff == null || rhs == null) return { ok: false, reason: 'invalid_expression' };
   return validateIntermediateStepEquation(equationInput, coeff, rhs, variable);
@@ -960,4 +1122,645 @@ export function validateLinearAnswerEquationInput(
   const xValue = parseNumericToken(xValueRaw);
   if (xValue == null) return { ok: false, reason: 'invalid_expression' };
   return validateFinalAnswerEquation(equationInput, xValue, variable);
+}
+
+// ============================================================================
+// VARIABLE ON BOTH SIDES EQUATIONS
+// ============================================================================
+
+/**
+ * Parse equations with variables on both sides: ax + b = cx + d
+ * Examples: 3x + 7 = x + 15, 5x - 2 = 2x + 10, 4x + 3 = x
+ */
+export function parseTwoSidedLinearEquation(input: string): TwoSidedLinearEquationParsed | null {
+  const normalized = input
+    .replace(/\s+/g, '')
+    .replace(/−/g, '-')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/');
+  
+  // Match pattern: ax + b = cx + d (handles all sign combinations)
+  // Left side: coefficient*variable +/- constant
+  // Right side: coefficient*variable +/- constant
+  const match = normalized.match(/^([+-]?\d*)([a-zA-Z])([+-]\d+)?=([+-]?\d*)([a-zA-Z])([+-]\d+)?$/);
+  
+  if (!match) return null;
+  
+  const [, leftCoeffRaw, leftVar, leftConstRaw = '+0', rightCoeffRaw, rightVar, rightConstRaw = '+0'] = match;
+  
+  // Variables must match
+  if (leftVar !== rightVar) return null;
+  
+  const leftA = parseCoefficient(leftCoeffRaw);
+  const leftB = parseSignedInt(leftConstRaw);
+  const rightA = parseCoefficient(rightCoeffRaw);
+  const rightB = parseSignedInt(rightConstRaw);
+  
+  if (leftA == null || leftB == null || rightA == null || rightB == null) return null;
+  
+  // At least one side must have a variable term
+  if (leftA === 0 && rightA === 0) return null;
+  
+  return {
+    variable: leftVar,
+    leftA,
+    leftB,
+    rightA,
+    rightB,
+  };
+}
+
+/**
+ * Check if a two-sided equation has an integer solution
+ */
+export function hasIntegerSolutionTwoSided(parsed: TwoSidedLinearEquationParsed): boolean {
+  const coeffDiff = parsed.leftA - parsed.rightA;
+  if (Math.abs(coeffDiff) < EPSILON) return false; // No solution or infinite solutions
+  
+  const constantDiff = parsed.rightB - parsed.leftB;
+  const solution = constantDiff / coeffDiff;
+  
+  return Number.isInteger(solution) && Math.abs(solution) <= 20; // Keep solutions reasonable
+}
+
+/**
+ * Generate missions for variable-on-both-sides equations
+ */
+export function generateTwoSidedLinearMissions(
+  count: number,
+  curriculum: EquationCurriculumProfile = 'global-k12'
+): EquationBuilderMission[] {
+  const leftCoeffs = [2, 3, 4, 5, 6];
+  const rightCoeffs = [1, 2, 3]; // Right side typically has smaller coefficient
+  const constants = [-8, -6, -4, -3, -2, 2, 3, 4, 6, 8, 10, 12];
+  
+  const missions: EquationBuilderMission[] = [];
+  const seen = new Set<string>();
+  
+  let attempts = 0;
+  while (missions.length < count && attempts < 150) {
+    attempts += 1;
+    
+    const leftA = leftCoeffs[Math.floor(Math.random() * leftCoeffs.length)];
+    const rightA = rightCoeffs[Math.floor(Math.random() * rightCoeffs.length)];
+    
+    // Ensure left coefficient > right coefficient for clearer solving
+    if (leftA <= rightA) continue;
+    
+    const leftB = constants[Math.floor(Math.random() * constants.length)];
+    const rightB = constants[Math.floor(Math.random() * constants.length)];
+    
+    const parsed: TwoSidedLinearEquationParsed = {
+      variable: 'x',
+      leftA,
+      leftB,
+      rightA,
+      rightB,
+    };
+    
+    if (!hasIntegerSolutionTwoSided(parsed)) continue;
+    
+    const key = `${leftA}|${leftB}|${rightA}|${rightB}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    
+    missions.push(buildMissionFromTwoSidedLinearEquation(`ts${missions.length + 1}`, parsed, curriculum));
+  }
+  
+  // Add fallback missions if needed
+  if (missions.length < count) {
+    const fallbacks: TwoSidedLinearEquationParsed[] = [
+      { variable: 'x', leftA: 3, leftB: 7, rightA: 1, rightB: 15 },  // 3x + 7 = x + 15 → x = 4
+      { variable: 'x', leftA: 5, leftB: -2, rightA: 2, rightB: 10 }, // 5x - 2 = 2x + 10 → x = 4
+      { variable: 'x', leftA: 4, leftB: 3, rightA: 1, rightB: 0 },   // 4x + 3 = x → x = -1
+      { variable: 'x', leftA: 6, leftB: -5, rightA: 2, rightB: 7 },  // 6x - 5 = 2x + 7 → x = 3
+    ];
+    
+    for (const fallback of fallbacks) {
+      if (missions.length >= count) break;
+      missions.push(buildMissionFromTwoSidedLinearEquation(`fallback-ts${missions.length + 1}`, fallback, curriculum));
+    }
+  }
+  
+  return missions.slice(0, count);
+}
+
+/**
+ * Build a mission from a parsed two-sided equation
+ * This creates a 4-step solving process:
+ * Step 1: Subtract variable term from both sides
+ * Step 2: Subtract constant from both sides
+ * Step 3: Simplify to ax = c form
+ * Step 4: Divide to get x = d
+ */
+export function buildMissionFromTwoSidedLinearEquation(
+  id: string,
+  parsed: TwoSidedLinearEquationParsed,
+  curriculum: EquationCurriculumProfile = 'global-k12'
+): EquationBuilderMission {
+  const { variable, leftA, leftB, rightA, rightB } = parsed;
+  
+  // Calculate the solution
+  const coeffDiff = leftA - rightA;
+  const constantDiff = rightB - leftB;
+  const solution = constantDiff / coeffDiff;
+  
+  // Build display equation: 3x + 7 = x + 15
+  const leftTerm = leftA === 1 ? variable : leftA === -1 ? `-${variable}` : `${leftA}${variable}`;
+  const leftDisplay = leftB > 0 ? `${leftTerm} + ${Math.abs(leftB)}` : 
+                      leftB < 0 ? `${leftTerm} - ${Math.abs(leftB)}` : 
+                      leftTerm;
+  
+  const rightTerm = rightA === 1 ? variable : rightA === -1 ? `-${variable}` : `${rightA}${variable}`;
+  const rightDisplay = rightB > 0 ? `${rightTerm} + ${Math.abs(rightB)}` : 
+                       rightB < 0 ? `${rightTerm} - ${Math.abs(rightB)}` : 
+                       rightTerm;
+  
+  const equationDisplay = `${leftDisplay} = ${rightDisplay}`;
+  
+  // Step 1: Subtract the smaller variable term (typically rightA*x)
+  const variableToSubtract = Math.min(Math.abs(leftA), Math.abs(rightA));
+  const variableSymbol: '+' | '-' = rightA >= 0 ? '-' : '+';
+  const variableValue = `${variableToSubtract}${variable}`;
+  
+  // After step 1: (leftA - rightA)x + leftB = rightB
+  const step1CoeffDisplay = coeffDiff === 1 ? variable : coeffDiff === -1 ? `-${variable}` : `${coeffDiff}${variable}`;
+  const step1Left = leftB > 0 ? `${step1CoeffDisplay}+${Math.abs(leftB)}` :
+                    leftB < 0 ? `${step1CoeffDisplay}-${Math.abs(leftB)}` :
+                    step1CoeffDisplay;
+  const step1Expected = `${step1Left} = ${rightB}`;
+  
+  // Build equationExpected array for validation
+  // Format: [leftExpression, variable, '=', rhsValue]
+  // For "2x+6=10": ["2x+6", "x", "=", "10"]
+  const equationExpectedArray: [string, string, string, string] = [step1Left, variable, '=', String(rightB)];
+  
+  // Step 2 calculation for reference (used in hint)
+  const constantSymbol: '+' | '-' = leftB >= 0 ? '-' : '+';
+  const constantValue = String(Math.abs(leftB));
+  const step2RHS = rightB - leftB;
+  
+  // Intermediate answer form (after removing constant): coeffDiff*x = step2RHS
+  // Example: 2x = 4 (before final division to get x = 2)
+  const intermediateDisplay = `${coeffDiff}${variable} = ${step2RHS}`;
+  
+  // Hint based on curriculum
+  const hint = curriculum === 'ib' 
+    ? `Collect variable terms on one side, then constants on the other. Apply ${variableSymbol}${variableValue} to both sides first.`
+    : `Move all ${variable} terms to the left (${variableSymbol}${variableValue}), then move constants to the right (${constantSymbol}${constantValue}).`;
+  
+  // Token bank includes all components
+  const tokenBank = uniqueValues([
+    variable,
+    '=',
+    '+',
+    '-',
+    `${leftA}${variable}`,
+    `${rightA}${variable}`,
+    `${coeffDiff}${variable}`,
+    variableValue,
+    String(Math.abs(leftB)),
+    String(Math.abs(rightB)),
+    String(Math.abs(step2RHS)),
+    String(Math.abs(solution)),
+    leftTerm,
+    rightTerm,
+    step1CoeffDisplay,
+  ]);
+  
+  return {
+    id,
+    equation: equationDisplay,
+    conceptId: 'algebra.linear.solve',
+    operationExpected: { symbol: variableSymbol, value: variableValue },
+    equationExpected: equationExpectedArray, // Now correctly expects step1 result (with constant)
+    answerExpected: [variable, '=', String(solution)],
+    tokenBank,
+    hint,
+    steps: 4, // Indicates this is a 4-step problem
+    intermediateAnswer: { coeff: coeffDiff, rhs: step2RHS, display: intermediateDisplay }, // For flexible Step 3
+  };
+}
+
+/**
+ * Validate if user input matches the intermediate answer form (before final division)
+ * Example: For mission that goes 2x+6=10, intermediate is 2x=4, final is x=2
+ * This allows flexible Step 3 where students can show intermediate work or skip to final
+ */
+export function validateIntermediateAnswer(
+  equationInput: string,
+  mission: EquationBuilderMission
+): EquationStepValidationResult {
+  if (!mission.intermediateAnswer) {
+    return { ok: false, reason: 'invalid_expression' };
+  }
+  
+  const { coeff, rhs } = mission.intermediateAnswer;
+  const [variable] = mission.answerExpected;
+  
+  return validateIntermediateStepEquation(equationInput, coeff, rhs, variable);
+}
+
+/**
+ * Validates Step 1 operation by checking algebraic equivalence rather than exact operation match.
+ * Supports global curricula (UK, US, IB, WAEC, CBSE) which accept multiple valid solution paths.
+ * 
+ * Example: For 4x + 4 = x - 8, these are ALL valid Step 1 operations:
+ * - Subtract x: 3x + 4 = -8
+ * - Subtract 4: 4x = x - 12
+ * - Add -x: 3x + 4 = -8
+ * - Add -4: 4x = x - 12
+ * 
+ * Validation logic:
+ * 1. Parse original equation to extract coefficients
+ * 2. Apply user's operation to both sides
+ * 3. Check if result is algebraically valid
+ * 4. Check if it progresses toward solution (reduces complexity)
+ */
+export function validateStep1OperationByEquivalence(
+  operation: { symbol: string; value: string },
+  mission: EquationBuilderMission
+): EquationStepValidationResult {
+  const { equation } = mission;
+  const [variable] = mission.answerExpected;
+  
+  // Parse original equation
+  const split = splitEquation(equation);
+  if (!split) return { ok: false, reason: 'missing_side' };
+  
+  const [leftStr, rightStr] = split;
+  const leftExpr = parseLinearExpression(leftStr);
+  const rightExpr = parseLinearExpression(rightStr);
+  
+  if (!leftExpr || !rightExpr) return { ok: false, reason: 'invalid_expression' };
+  if (leftExpr.variable !== rightExpr.variable || leftExpr.variable !== variable) {
+    return { ok: false, reason: 'unexpected_variable' };
+  }
+  
+  // Parse user's operation
+  const { symbol, value } = operation;
+  const opValue = parseLinearExpression(value);
+  
+  // Determine numeric value to add/subtract
+  let deltaCoeff = 0;
+  let deltaConst = 0;
+  
+  if (opValue) {
+    // Variable term operation (e.g., "-x" or "-2x")
+    deltaCoeff = opValue.coefficient;
+    deltaConst = opValue.constant;
+  } else {
+    // Constant operation (e.g., "-4")
+    const numValue = parseNumericToken(value);
+    if (numValue == null) return { ok: false, reason: 'invalid_expression' };
+    deltaConst = numValue;
+  }
+  
+  // Apply operation to both sides
+  if (symbol === '-') {
+    deltaCoeff = -deltaCoeff;
+    deltaConst = -deltaConst;
+  } else if (symbol !== '+') {
+    return { ok: false, reason: 'invalid_operation' };
+  }
+  
+  const newLeft = {
+    coefficient: leftExpr.coefficient + deltaCoeff,
+    constant: leftExpr.constant + deltaConst,
+    variable: leftExpr.variable
+  };
+  
+  const newRight = {
+    coefficient: rightExpr.coefficient + deltaCoeff,
+    constant: rightExpr.constant + deltaConst,
+    variable: rightExpr.variable
+  };
+  
+  // Check validity: operation should progress toward solution
+  // Valid if it reduces variable terms on one side OR reduces constants
+  const varTermsReduced = Math.abs(newLeft.coefficient - newRight.coefficient) < 
+                         Math.abs(leftExpr.coefficient - rightExpr.coefficient);
+  const constantsReduced = (newLeft.coefficient !== 0 && Math.abs(newLeft.constant) < Math.abs(leftExpr.constant)) ||
+                          (newRight.coefficient !== 0 && Math.abs(newRight.constant) < Math.abs(rightExpr.constant));
+  
+  // Also valid if it eliminates a term completely
+  const termEliminated = newLeft.coefficient === 0 || newRight.coefficient === 0 ||
+                        newLeft.constant === 0 || newRight.constant === 0;
+  
+  if (!varTermsReduced && !constantsReduced && !termEliminated) {
+    return { ok: false, reason: 'operation_not_simplifying' };
+  }
+  
+  // Valid operation!
+  return { ok: true, reason: null };
+}
+
+// ============================================================================
+// INEQUALITY FUNCTIONS
+// ============================================================================
+
+/**
+ * Parse inequality string into structured format
+ * Examples: "3x + 5 > 20" → { variable: 'x', a: 3, b: 5, c: 20, operator: '>' }
+ */
+export function parseInequality(inequality: string): InequalityParsed | null {
+  const normalized = inequality
+    .replace(/\s/g, '')
+    .replace(/−/g, '-') // Convert Unicode minus to ASCII
+    .replace(/×/g, '*') // Convert Unicode multiplication to ASCII
+    .replace(/÷/g, '/') // Convert Unicode division to ASCII
+    .toLowerCase();
+  
+  // Find operator position
+  const match = normalized.match(/([<>≤≥])/);
+  if (!match || !match.index) return null;
+  
+  const operator = match[0] as InequalityOperator;
+  const left = normalized.substring(0, match.index);
+  const right = normalized.substring(match.index + match[0].length);
+  
+  // Parse left side (ax + b)
+  const leftExpr = parseLinearExpression(left);
+  if (!leftExpr) return null;
+  
+  // Parse right side (should be constant)
+  const c = parseNumericToken(right);
+  if (c == null) return null;
+  
+  return {
+    variable: leftExpr.variable || 'x',
+    a: leftExpr.coefficient,
+    b: leftExpr.constant,
+    c,
+    operator,
+    signFlips: 0, // Will be calculated during solving
+  };
+}
+
+/**
+ * Solve inequality and return solution
+ * Handles sign flipping when dividing by negative coefficient
+ */
+export function solveInequality(parsed: InequalityParsed): InequalitySolution {
+  const { a, b, c, operator } = parsed;
+  
+  // Steps: ax + b [op] c → ax [op] c - b → x [op] (c - b) / a
+  const numerator = c - b;
+  let solutionValue = numerator / a;
+  let solutionOperator = operator;
+  
+  // CRITICAL: Flip sign when dividing by negative coefficient
+  if (a < 0) {
+    solutionOperator = flipInequalityOperator(operator);
+  }
+  
+  // Round to 2 decimal places for display
+  solutionValue = Math.round(solutionValue * 100) / 100;
+  
+  const display = `x ${solutionOperator} ${solutionValue}`;
+  const rangeDisplay = formatInequalityRange(solutionValue, solutionOperator);
+  
+  return {
+    value: solutionValue,
+    operator: solutionOperator,
+    display,
+    rangeDisplay,
+  };
+}
+
+/**
+ * Flip inequality operator (when multiplying/dividing by negative)
+ */
+function flipInequalityOperator(operator: InequalityOperator): InequalityOperator {
+  const flips: Record<InequalityOperator, InequalityOperator> = {
+    '<': '>',
+    '>': '<',
+    '≤': '≥',
+    '≥': '≤',
+  };
+  return flips[operator];
+}
+
+/**
+ * Format inequality solution as interval notation
+ */
+function formatInequalityRange(value: number, operator: InequalityOperator): string {
+  switch (operator) {
+    case '>': return `(${value}, ∞)`;
+    case '≥': return `[${value}, ∞)`;
+    case '<': return `(-∞, ${value})`;
+    case '≤': return `(-∞, ${value}]`;
+  }
+}
+
+/**
+ * Validate inequality step 1: Check if operation was applied correctly
+ */
+export function validateInequalityStep1(
+  operation: { symbol: string; value: string },
+  mission: InequalityBuilderMission
+): EquationStepValidationResult {
+  const { symbol, value } = operation;
+  
+  // Parse the inequality from the mission
+  const parsed = parseInequality(mission.inequality);
+  if (!parsed) {
+    return { ok: false, reason: 'invalid_expression' };
+  }
+  
+  // For inequalities, step 1 is same as equations (isolate variable term)
+  // Just need to subtract the constant b
+  const expectedValue = Math.abs(parsed.b);
+  const expectedSymbol = parsed.b >= 0 ? '-' : '+';
+  
+  if (symbol === expectedSymbol && value === String(expectedValue)) {
+    return { ok: true, reason: null };
+  }
+  
+  return { ok: false, reason: 'not_balanced_target' };
+}
+
+/**
+ * Validate inequality step 2: Check if simplified correctly
+ */
+export function validateInequalityStep2(
+  userInequality: string,
+  mission: InequalityBuilderMission
+): EquationStepValidationResult {
+  const normalized = userInequality.replace(/\s/g, '').toLowerCase();
+  
+  // Parse the inequality from the mission
+  const parsed = parseInequality(mission.inequality);
+  if (!parsed) {
+    return { ok: false, reason: 'invalid_expression' };
+  }
+  
+  // Expected: ax [operator] (c - b)
+  const expectedRight = parsed.c - parsed.b;
+  const expectedPattern = `${parsed.a}${parsed.variable}${parsed.operator}${expectedRight}`;
+  
+  if (normalized === expectedPattern || normalized === `${parsed.a}x${parsed.operator}${expectedRight}`) {
+    return { ok: true, reason: null };
+  }
+  
+  return { ok: false, reason: 'invalid_expression' };
+}
+
+/**
+ * Validate inequality step 3: Check final answer
+ * CRITICAL: Must verify operator is flipped if dividing by negative
+ */
+export function validateInequalityStep3(
+  userAnswer: string,
+  mission: InequalityBuilderMission
+): EquationStepValidationResult {
+  const normalized = userAnswer.replace(/\s/g, '').toLowerCase();
+  
+  // Parse the inequality from the mission
+  const parsed = parseInequality(mission.inequality);
+  if (!parsed) {
+    return { ok: false, reason: 'invalid_expression' };
+  }
+  
+  // Solve to get the correct answer
+  const solution = solveInequality(parsed);
+  
+  const expectedPattern = `${parsed.variable}${solution.operator}${solution.value}`;
+  
+  // Check if answer matches
+  if (normalized === expectedPattern || normalized === `x${solution.operator}${solution.value}`) {
+    return { ok: true, reason: null };
+  }
+  
+  // Common mistake: Forgot to flip sign
+  const wrongOperator = flipInequalityOperator(solution.operator);
+  const wrongPattern = `${parsed.variable}${wrongOperator}${solution.value}`;
+  if (normalized === wrongPattern || normalized === `x${wrongOperator}${solution.value}`) {
+    return { ok: false, reason: 'sign_not_flipped' };
+  }
+  
+  return { ok: false, reason: 'not_isolated_variable' };
+}
+
+/**
+ * Build a custom inequality mission from user input
+ */
+export function buildMissionFromInequality(
+  id: string,
+  parsed: InequalityParsed,
+  inequalityString: string
+): InequalityBuilderMission {
+  const solution = solveInequality(parsed);
+  
+  // Expected steps
+  const step1Value = Math.abs(parsed.b);
+  const step1Symbol = parsed.b >= 0 ? '-' : '+';
+  const step2Right = parsed.c - parsed.b;
+  
+  return {
+    id,
+    inequality: inequalityString,
+    conceptId: 'algebra.inequality.solve',
+    operationExpected: { symbol: step1Symbol as '+' | '-', value: String(step1Value) },
+    inequalityExpected: [`${parsed.a}x`, parsed.operator, `${step2Right}`, ''],
+    answerExpected: solution,
+    tokenBank: [
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+      '+', '-', '×', '÷', 'x', '=', '<', '>', '≤', '≥',
+    ],
+    hint: parsed.a < 0 
+      ? `Remember: When you divide by a negative number, the inequality sign flips! ${parsed.operator} becomes ${flipInequalityOperator(parsed.operator)}`
+      : `Isolate the variable term first, then divide both sides by the coefficient.`,
+    signFlipWarning: parsed.a < 0 
+      ? `⚠️ You're about to divide by a negative number. The inequality sign will flip!`
+      : undefined,
+    skipStep1: parsed.b === 0, // Skip step 1 if no constant term
+  };
+}
+
+/**
+ * Generate inequality practice missions
+ */
+export function generateInequalityMissions(count: number): InequalityBuilderMission[] {
+  const missions: InequalityBuilderMission[] = [];
+  const operators: InequalityOperator[] = ['>', '<', '≥', '≤'];
+  
+  for (let i = 0; i < count; i++) {
+    // Generate coefficients ensuring variety
+    const a = i % 2 === 0 
+      ? Math.floor(Math.random() * 5) + 2  // Positive coefficient (2-6)
+      : -(Math.floor(Math.random() * 3) + 2); // Negative coefficient (-2 to -4)
+    
+    const b = Math.floor(Math.random() * 20) - 10; // -10 to 10
+    const c = Math.floor(Math.random() * 30) + 10; // 10 to 40
+    const operator = operators[i % operators.length];
+    
+    // Build inequality string
+    const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+    const inequality = `${a}x ${bStr} ${operator} ${c}`;
+    
+    // Parse and solve
+    const parsed: InequalityParsed = {
+      variable: 'x',
+      a,
+      b,
+      c,
+      operator,
+      signFlips: a < 0 ? 1 : 0,
+    };
+    
+    const solution = solveInequality(parsed);
+    
+    // Expected steps
+    const step1Value = Math.abs(b);
+    const step1Symbol = b >= 0 ? '-' : '+';
+    const step2Right = c - b;
+    
+    missions.push({
+      id: `inequality-${i + 1}`,
+      inequality,
+      conceptId: 'algebra.inequality.solve',
+      operationExpected: { symbol: step1Symbol as '+' | '-', value: String(step1Value) },
+      inequalityExpected: [`${a}x`, operator, `${step2Right}`, ''],
+      answerExpected: solution,
+      tokenBank: [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        '+', '-', '×', '÷', 'x', '=', '<', '>', '≤', '≥',
+      ],
+      hint: a < 0 
+        ? `Remember: When you divide by a negative number, the inequality sign flips! ${operator} becomes ${flipInequalityOperator(operator)}`
+        : `Isolate the variable term first, then divide both sides by the coefficient.`,
+      signFlipWarning: a < 0 
+        ? `⚠️ You're about to divide by a negative number. The inequality sign will flip!`
+        : undefined,
+    });
+  }
+  
+  return missions;
+}
+
+/**
+ * Get hint for inequality based on current step
+ */
+export function getInequalityHint(
+  step: 'operation' | 'inequality' | 'answer',
+  mission: InequalityBuilderMission,
+  parsed: InequalityParsed
+): string {
+  switch (step) {
+    case 'operation':
+      return `First, eliminate the constant term (${parsed.b}) by ${parsed.b >= 0 ? 'subtracting' : 'adding'} ${Math.abs(parsed.b)} from both sides.`;
+    
+    case 'inequality':
+      return `After applying the operation, you should have ${parsed.a}x ${parsed.operator} ${parsed.c - parsed.b}. Simplify the inequality.`;
+    
+    case 'answer':
+      if (parsed.a < 0) {
+        return `Divide both sides by ${parsed.a}. REMEMBER: When dividing by a negative, flip the inequality sign! ${parsed.operator} becomes ${flipInequalityOperator(parsed.operator)}.`;
+      }
+      return `Divide both sides by ${parsed.a} to isolate x.`;
+    
+    default:
+      return mission.hint;
+  }
 }
