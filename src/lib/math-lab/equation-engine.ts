@@ -231,7 +231,8 @@ function normalizeTerm(term: string): string {
     .replace(/\*/g, '') // Remove multiplication symbols
     .replace(/−/g, '-') // Convert Unicode minus (U+2212) to ASCII minus
     .replace(/×/g, '*') // Convert Unicode multiplication (U+00D7) to ASCII
-    .replace(/÷/g, '/'); // Convert Unicode division (U+00F7) to ASCII
+    .replace(/÷/g, '/') // Convert Unicode division (U+00F7) to ASCII
+    .toLowerCase(); // Make variables case-insensitive (x = X)
 }
 
 function parseSignedInt(input: string): number | null {
@@ -259,7 +260,8 @@ export function parseLinearEquation(input: string): LinearEquationParsed | null 
     .replace(/\s+/g, '')
     .replace(/−/g, '-')
     .replace(/×/g, '*')
-    .replace(/÷/g, '/');
+    .replace(/÷/g, '/')
+    .toLowerCase(); // Make variables case-insensitive (x = X)
   const match = normalized.match(/^([+-]?\d*)([a-zA-Z])([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -309,7 +311,8 @@ export function parseFractionLinearEquation(input: string): FractionLinearEquati
     .replace(/\s+/g, '')
     .replace(/−/g, '-')
     .replace(/×/g, '*')
-    .replace(/÷/g, '/');
+    .replace(/÷/g, '/')
+    .toLowerCase(); // Make variables case-insensitive (x = X)
   const match = normalized.match(/^([+-]?)([a-zA-Z])\/(\d+)([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -335,7 +338,8 @@ export function parseBracketLinearEquation(input: string): BracketLinearParsed |
     .replace(/\s+/g, '')
     .replace(/−/g, '-')
     .replace(/×/g, '*')
-    .replace(/÷/g, '/');
+    .replace(/÷/g, '/')
+    .toLowerCase(); // Make variables case-insensitive (x = X)
   const match = normalized.match(/^([+-]?\d+)\(([a-zA-Z])([+-]\d+)\)([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -1137,7 +1141,8 @@ export function parseTwoSidedLinearEquation(input: string): TwoSidedLinearEquati
     .replace(/\s+/g, '')
     .replace(/−/g, '-')
     .replace(/×/g, '*')
-    .replace(/÷/g, '/');
+    .replace(/÷/g, '/')
+    .toLowerCase(); // Make variables case-insensitive (x = X)
   
   // Match pattern: ax + b = cx + d (handles all sign combinations)
   // Left side: coefficient*variable +/- constant
