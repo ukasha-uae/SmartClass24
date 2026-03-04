@@ -318,8 +318,11 @@ export function TeacherVoice({
             
             const textToSpeak = messageChunks[chunkIndex] || messageChunks[0];
             const utterance = new SpeechSynthesisUtterance(formatTextForSpeech(textToSpeak));
-            utterance.rate = 0.9;
-            utterance.pitch = 1.1;
+            
+            // Mobile-optimized speech parameters for natural, unhurried speech
+            // Mobile browsers often use faster native engines, so we compensate
+            utterance.rate = isMobile ? 0.82 : 0.9;
+            utterance.pitch = isMobile ? 1.0 : 1.1;
             utterance.volume = 1;
             
             // Resolve voice based on learner preference (auto/female/male)
