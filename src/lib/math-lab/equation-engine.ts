@@ -126,6 +126,22 @@ export type QuadraticSolution = {
   factored?: string; // factored form like "(x + 2)(x + 3) = 0"
 };
 
+export type QuadraticBuilderMission = {
+  id: string;
+  equation: string; // Original quadratic equation string
+  conceptId: 'algebra.quadratic.solve';
+  parsed: QuadraticEquationParsed; // Pre-parsed a, b, c values
+  solution: QuadraticSolution; // Pre-calculated solution
+  // Expected student responses for each step
+  coefficientsExpected: { a: number; b: number; c: number };
+  discriminantExpected: number;
+  rootsExpected: number[]; // Rounded to 2 decimal places
+  tokenBank: string[];
+  hint: string;
+  isFactorable: boolean;
+  factorPair?: [number, number]; // The two numbers that multiply to c and add to b (for a=1 only)
+};
+
 export type EquationStepStrategyTag =
   | 'direct'
   | 'swap_sides'
@@ -234,6 +250,30 @@ export function parseEquationNumericToken(raw: string): number | null {
   return parseNumericToken(raw);
 }
 
+/**
+ * Normalize equation/inequality input to handle Unicode characters and formatting variations
+ * Handles: superscripts, various minus signs, multiplication symbols, copy-paste artifacts
+ */
+export function normalizeEquationInput(input: string): string {
+  return input
+    .replace(/\s+/g, '')
+    // Normalize all types of minus/dash to regular hyphen-minus
+    .replace(/−/g, '-')       // Unicode minus sign (U+2212)
+    .replace(/–/g, '-')       // En-dash (U+2013)
+    .replace(/—/g, '-')       // Em-dash (U+2014)
+    .replace(/‒/g, '-')       // Figure dash (U+2012)
+    .replace(/⁃/g, '-')       // Hyphen bullet (U+2043)
+    // Normalize Unicode superscripts to caret notation
+    .replace(/²/g, '^2')      // Superscript 2 (U+00B2)
+    .replace(/³/g, '^3')      // Superscript 3 (U+00B3)
+    // Handle cases where superscript becomes regular text: x2 -> x^2 (only if followed by space, +, -, or end)
+    .replace(/([a-zA-Z])2(?=[\s+\-=<>≤≥]|$)/g, '$1^2')
+    .replace(/([a-zA-Z])3(?=[\s+\-=<>≤≥]|$)/g, '$1^3')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/')
+    .toLowerCase(); // case-insensitive variables
+}
+
 export function areEquationNumericTokensEquivalent(
   leftRaw: string,
   rightRaw: string,
@@ -276,12 +316,7 @@ function uniqueValues(values: string[]): string[] {
  * Examples: 4x+8=36, 2x - 7 = 9, -x+5=2, x-3=7
  */
 export function parseLinearEquation(input: string): LinearEquationParsed | null {
-  const normalized = input
-    .replace(/\s+/g, '')
-    .replace(/−/g, '-')
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/')
-    .toLowerCase(); // Make variables case-insensitive (x = X)
+  const normalized = normalizeEquationInput(input);
   const match = normalized.match(/^([+-]?\d*)([a-zA-Z])([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -327,12 +362,7 @@ export function hasIntegerSolution(parsed: LinearEquationParsed): boolean {
 }
 
 export function parseFractionLinearEquation(input: string): FractionLinearEquationParsed | null {
-  const normalized = input
-    .replace(/\s+/g, '')
-    .replace(/−/g, '-')
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/')
-    .toLowerCase(); // Make variables case-insensitive (x = X)
+  const normalized = normalizeEquationInput(input);
   const match = normalized.match(/^([+-]?)([a-zA-Z])\/(\d+)([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -354,12 +384,7 @@ export function parseFractionLinearEquation(input: string): FractionLinearEquati
 }
 
 export function parseBracketLinearEquation(input: string): BracketLinearParsed | null {
-  const normalized = input
-    .replace(/\s+/g, '')
-    .replace(/−/g, '-')
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/')
-    .toLowerCase(); // Make variables case-insensitive (x = X)
+  const normalized = normalizeEquationInput(input);
   const match = normalized.match(/^([+-]?\d+)\(([a-zA-Z])([+-]\d+)\)([+-]\d+)?=([+-]?\d+)$/);
   if (!match) return null;
 
@@ -379,12 +404,7 @@ export function parseBracketLinearEquation(input: string): BracketLinearParsed |
  * Supports: x² + 5x + 6 = 0, 2x² - 3x - 5 = 0, x² - 9 = 0
  */
 export function parseQuadraticEquation(input: string): QuadraticEquationParsed | null {
-  const normalized = input
-    .replace(/\s+/g, '')
-    .replace(/−/g, '-')
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/')
-    .toLowerCase(); // case-insensitive variables
+  const normalized = normalizeEquationInput(input);
   
   // Must have = sign
   if (!normalized.includes('=')) return null;
@@ -959,11 +979,7 @@ function parseLinearExpression(input: string): ParsedLinearExpression | null {
 }
 
 function splitEquation(input: string): [string, string] | null {
-  const normalized = input
-    .replace(/\s+/g, '')
-    .replace(/−/g, '-')
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/');
+  const normalized = normalizeEquationInput(input);
   const parts = normalized.split('=');
   if (parts.length !== 2) return null;
   if (!parts[0] || !parts[1]) return null;
@@ -1334,12 +1350,7 @@ export function validateLinearAnswerEquationInput(
  * Examples: 3x + 7 = x + 15, 5x - 2 = 2x + 10, 4x + 3 = x
  */
 export function parseTwoSidedLinearEquation(input: string): TwoSidedLinearEquationParsed | null {
-  const normalized = input
-    .replace(/\s+/g, '')
-    .replace(/−/g, '-')
-    .replace(/×/g, '*')
-    .replace(/÷/g, '/')
-    .toLowerCase(); // Make variables case-insensitive (x = X)
+  const normalized = normalizeEquationInput(input);
   
   // Match pattern: ax + b = cx + d (handles all sign combinations)
   // Left side: coefficient*variable +/- constant
@@ -1666,12 +1677,7 @@ export function validateStep1OperationByEquivalence(
  * Examples: "3x + 5 > 20" → { variable: 'x', a: 3, b: 5, c: 20, operator: '>' }
  */
 export function parseInequality(inequality: string): InequalityParsed | null {
-  const normalized = inequality
-    .replace(/\s/g, '')
-    .replace(/−/g, '-') // Convert Unicode minus to ASCII
-    .replace(/×/g, '*') // Convert Unicode multiplication to ASCII
-    .replace(/÷/g, '/') // Convert Unicode division to ASCII
-    .toLowerCase();
+  const normalized = normalizeEquationInput(inequality);
   
   // Find operator position
   const match = normalized.match(/([<>≤≥])/);
@@ -1961,6 +1967,529 @@ export function getInequalityHint(
         return `Divide both sides by ${parsed.a}. REMEMBER: When dividing by a negative, flip the inequality sign! ${parsed.operator} becomes ${flipInequalityOperator(parsed.operator)}.`;
       }
       return `Divide both sides by ${parsed.a} to isolate x.`;
+    
+    default:
+      return mission.hint;
+  }
+}
+
+/**
+ * ========================================
+ * QUADRATIC EQUATION PRACTICE MISSIONS
+ * ========================================
+ */
+
+/**
+ * Validate quadratic step 1: Check if discriminant calculation is correct
+ * Accepts: "1", "Δ=1", "25-24=1", "b²-4ac=1", etc.
+ */
+export function validateQuadraticDiscriminant(
+  userInput: string,
+  mission: QuadraticBuilderMission
+): EquationStepValidationResult {
+  const normalized = userInput.replace(/\s/g, '').toLowerCase();
+  const expected = mission.discriminantExpected;
+  
+  // Extract numeric value from input
+  // Try to find a number (possibly negative) in the string
+  const numberMatch = normalized.match(/[-+]?\d+\.?\d*$/);
+  if (numberMatch) {
+    const value = parseFloat(numberMatch[0]);
+    if (value === expected) {
+      return { ok: true, reason: null };
+    }
+  }
+  
+  // Also accept just the number
+  const directValue = parseFloat(normalized);
+  if (!isNaN(directValue) && directValue === expected) {
+    return { ok: true, reason: null };
+  }
+  
+  return { ok: false, reason: 'invalid_expression' };
+}
+
+/**
+ * Validate quadratic step 2: Check if quadratic formula is set up correctly
+ * Accepts: "x=(-5±√1)/2", "x=(-5±1)/2", "x=(-b±√Δ)/2a", etc.
+ */
+export function validateQuadraticFormulaSetup(
+  userInput: string,
+  mission: QuadraticBuilderMission
+): EquationStepValidationResult {
+  const normalized = userInput.replace(/\s/g, '').toLowerCase();
+  const { a, b, c } = mission.parsed;
+  const { discriminant } = mission.solution;
+  const sqrtDiscriminant = Math.sqrt(Math.abs(discriminant));
+  
+  // Accept these patterns:
+  // x=(-b±√Δ)/2a
+  // x=(-5±√1)/2
+  // x=(-5±1)/2
+  // x=(-5±1)/2(1)
+  
+  // Check if it contains the key elements
+  const hasX = /x=/.test(normalized);
+  const hasNegativeB = normalized.includes(`-${b}`) || normalized.includes(`${-b}`);
+  const hasPlusMinus = normalized.includes('±') || (normalized.includes('+') && normalized.includes('-'));
+  const hasSqrt = normalized.includes('√');
+  const hasDelta = normalized.includes('δ') || normalized.includes('delta');
+  const hasDivision = normalized.includes('/');
+  const has2a = normalized.includes('2a') || normalized.includes(`2(${a})`) || normalized.includes('2');
+  
+  // Must have x=, negative b, ±, and division by 2a
+  if (hasX && hasNegativeB && hasPlusMinus && hasDivision && has2a) {
+    return { ok: true, reason: null };
+  }
+  
+  return { ok: false, reason: 'invalid_expression' };
+}
+
+/**
+ * Validate quadratic step 3: Check if final solutions are correct
+ * Accepts: "x=-2, x=-3", "x=-3, x=-2", "x=-2 or x=-3", "x=-3 and x=-2", etc.
+ */
+export function validateQuadraticSolutions(
+  userInput: string,
+  mission: QuadraticBuilderMission
+): EquationStepValidationResult {
+  const normalized = userInput.replace(/\s/g, '').toLowerCase();
+  const expected = mission.rootsExpected;
+  
+  // Extract all numbers from the input
+  const numbers: number[] = [];
+  const numberMatches = normalized.matchAll(/[-+]?\d+\.?\d*/g);
+  for (const match of numberMatches) {
+    const num = parseFloat(match[0]);
+    if (!isNaN(num)) {
+      numbers.push(num);
+    }
+  }
+  
+  // Check if no real solutions
+  if (expected.length === 0) {
+    if (normalized.includes('no') || normalized.includes('none') || numbers.length === 0) {
+      return { ok: true, reason: null };
+    }
+    return { ok: false, reason: 'invalid_expression' };
+  }
+  
+  // Check if one root (repeated)
+  if (expected.length === 1) {
+    if (numbers.length >= 1 && Math.abs(numbers[0] - expected[0]) < 0.01) {
+      return { ok: true, reason: null };
+    }
+    return { ok: false, reason: 'invalid_expression' };
+  }
+  
+  // Check if two roots (order doesn't matter)
+  if (expected.length === 2 && numbers.length >= 2) {
+    const sorted1 = numbers.slice(0, 2).sort((a, b) => a - b);
+    const sorted2 = [...expected].sort((a, b) => a - b);
+    
+    if (
+      Math.abs(sorted1[0] - sorted2[0]) < 0.01 &&
+      Math.abs(sorted1[1] - sorted2[1]) < 0.01
+    ) {
+      return { ok: true, reason: null };
+    }
+  }
+  
+  return { ok: false, reason: 'invalid_expression' };
+}
+
+/**
+ * ========================================
+ * QUADRATIC FACTORIZATION VALIDATION
+ * (Alternative method for factorable quadratics)
+ * ========================================
+ */
+
+/**
+ * Validate factorization step 1: Find two numbers that multiply to c and add to b
+ * For x² + bx + c, find p and q where: p*q = c and p+q = b
+ * Accepts: "2, 3" or "3, 2" or "2 and 3" or just "2 3"
+ */
+export function validateFactorPairs(
+  userInput: string,
+  mission: QuadraticBuilderMission
+): { isCorrect: boolean; feedback: string } {
+  const { a, b, c } = mission.parsed;
+  
+  // For ax² + bx + c where a ≠ 1, factorization is more complex
+  // For now, we'll support simple cases where a = 1
+  if (a !== 1) {
+    return {
+      isCorrect: false,
+      feedback: 'This equation requires the quadratic formula (a ≠ 1). Use the Formula method instead.'
+    };
+  }
+  
+  // Extract numbers from input
+  const normalized = userInput.replace(/\s/g, '');
+  const numbers = Array.from(normalized.matchAll(/[-+]?\d+\.?\d*/g))
+    .map(m => parseFloat(m[0]))
+    .filter(n => !isNaN(n));
+  
+  if (numbers.length < 2) {
+    return {
+      isCorrect: false,
+      feedback: 'Please enter two numbers. For example: "2, 3" or "2 and 3"'
+    };
+  }
+  
+  const [num1, num2] = numbers;
+  
+  // Check if they multiply to c and add to b
+  const productCorrect = Math.abs(num1 * num2 - c) < 0.01;
+  const sumCorrect = Math.abs(num1 + num2 - b) < 0.01;
+  
+  if (productCorrect && sumCorrect) {
+    return {
+      isCorrect: true,
+      feedback: `✓ Correct! ${num1} × ${num2} = ${c} and ${num1} + ${num2} = ${b}`
+    };
+  }
+  
+  // Provide specific feedback
+  if (!productCorrect && !sumCorrect) {
+    return {
+      isCorrect: false,
+      feedback: `Not quite. Check: ${num1} × ${num2} = ${num1 * num2} (need ${c}), and ${num1} + ${num2} = ${num1 + num2} (need ${b})`
+    };
+  }
+  if (!productCorrect) {
+    return {
+      isCorrect: false,
+      feedback: `The sum is correct (${num1} + ${num2} = ${b}), but ${num1} × ${num2} = ${num1 * num2}, not ${c}`
+    };
+  }
+  return {
+    isCorrect: false,
+    feedback: `The product is correct (${num1} × ${num2} = ${c}), but ${num1} + ${num2} = ${num1 + num2}, not ${b}`
+  };
+}
+
+/**
+ * Validate factorization step 2: Write the factored form
+ * Accepts: "(x+2)(x+3)", "(x+2)(x+3)=0", "(x + 2)(x + 3) = 0"
+ */
+export function validateFactoredForm(
+  userInput: string,
+  mission: QuadraticBuilderMission
+): { isCorrect: boolean; feedback: string } {
+  const { a, b, c } = mission.parsed;
+  
+  if (a !== 1) {
+    return {
+      isCorrect: false,
+      feedback: 'This equation requires the quadratic formula (a ≠ 1).'
+    };
+  }
+  
+  const normalized = userInput.replace(/\s/g, '').toLowerCase();
+  
+  // Extract numbers from parentheses patterns like (x+2)(x+3) or (x-2)(x-3)
+  const factorPattern = /\(x([-+]\d+\.?\d*)\)\(x([-+]\d+\.?\d*)\)/;
+  const match = normalized.match(factorPattern);
+  
+  if (!match) {
+    return {
+      isCorrect: false,
+      feedback: 'Please write in factored form: (x ± p)(x ± q). For example: "(x+2)(x+3)" or "(x+2)(x+3)=0"'
+    };
+  }
+  
+  const p = parseFloat(match[1]);
+  const q = parseFloat(match[2]);
+  
+  // The factored form (x+p)(x+q) expands to: x² + (p+q)x + pq
+  // So we need: p+q = b and p*q = c
+  const sumCorrect = Math.abs(p + q - b) < 0.01;
+  const productCorrect = Math.abs(p * q - c) < 0.01;
+  
+  if (sumCorrect && productCorrect) {
+    return {
+      isCorrect: true,
+      feedback: `✓ Correct factored form!`
+    };
+  }
+  
+  // Check if they got the roots instead of the factors
+  // Roots are -p and -q if factored form is (x+p)(x+q)
+  const roots = mission.rootsExpected;
+  if (roots.length === 2) {
+    const gotRootsInstead = 
+      (Math.abs(p - roots[0]) < 0.01 && Math.abs(q - roots[1]) < 0.01) ||
+      (Math.abs(p - roots[1]) < 0.01 && Math.abs(q - roots[0]) < 0.01);
+    
+    if (gotRootsInstead) {
+      return {
+        isCorrect: false,
+        feedback: `You wrote the roots, not the factors. If x = ${roots[0]}, then the factor is (x - (${roots[0]})) = (x + ${-roots[0]})`
+      };
+    }
+  }
+  
+  return {
+    isCorrect: false,
+    feedback: `Not quite. (x${p >= 0 ? '+' : ''}${p})(x${q >= 0 ? '+' : ''}${q}) expands to x² ${(p+q) >= 0 ? '+' : ''}${p+q}x ${(p*q) >= 0 ? '+' : ''}${p*q}, not x² ${b >= 0 ? '+' : ''}${b}x ${c >= 0 ? '+' : ''}${c}`
+  };
+}
+
+/**
+ * Validate factorization step 3: Apply Zero Product Rule
+ * Accepts: "x+2=0 or x+3=0", "x+2=0, x+3=0", "x+3=0 or x+2=0"
+ */
+export function validateZeroProductRule(
+  userInput: string,
+  mission: QuadraticBuilderMission
+): { isCorrect: boolean; feedback: string } {
+  const normalized = userInput.replace(/\s/g, '').toLowerCase();
+  const { b, c } = mission.parsed;
+  
+  // Extract all equations of form "x±number=0"
+  const equationPattern = /x([-+]\d+\.?\d*)=0/g;
+  const matches = Array.from(normalized.matchAll(equationPattern));
+  
+  if (matches.length < 2) {
+    return {
+      isCorrect: false,
+      feedback: 'Please write both equations: "x+p=0 or x+q=0". For example: "x+2=0 or x+3=0"'
+    };
+  }
+  
+  const nums = matches.map(m => parseFloat(m[1]));
+  
+  // These should be the factors from (x+p)(x+q)
+  // We need p+q = b and p*q = c
+  const sumCorrect = Math.abs(nums[0] + nums[1] - b) < 0.01;
+  const productCorrect = Math.abs(nums[0] * nums[1] - c) < 0.01;
+  
+  if (sumCorrect && productCorrect) {
+    return {
+      isCorrect: true,
+      feedback: `✓ Correct! Zero Product Rule applied.`
+    };
+  }
+  
+  return {
+    isCorrect: false,
+    feedback: `Make sure your equations match your factored form. From (x+p)(x+q)=0, you get x+p=0 or x+q=0`
+  };
+}
+
+/**
+ * Validate factorization step 4: Final solutions
+ * Same as validateQuadraticSolutions, accepts: "x=-2, x=-3", "x=-3 or x=-2"
+ */
+export function validateFactorSolutions(
+  userInput: string,
+  mission: QuadraticBuilderMission
+): { isCorrect: boolean; feedback: string } {
+  const result = validateQuadraticSolutions(userInput, mission);
+  return {
+    isCorrect: result.ok,
+    feedback: result.ok ? '✓ Perfect! You solved it by factorization!' : result.reason || 'Invalid format'
+  };
+}
+
+/**
+ * Get hints for factorization steps
+ */
+export function getFactorizationHint(
+  step: 'factor-pairs' | 'factored-form' | 'zero-product' | 'factor-solutions',
+  mission: QuadraticBuilderMission
+): string {
+  const { a, b, c } = mission.parsed;
+  const roots = mission.rootsExpected;
+  
+  switch (step) {
+    case 'factor-pairs':
+      return `Find two numbers that multiply to ${c} and add to ${b}. Try different factor pairs of ${c}: what two numbers give you ${b} when added?`;
+    
+    case 'factored-form':
+      if (roots.length === 2) {
+        const p = -roots[0];
+        const q = -roots[1];
+        return `If the roots are ${roots[0]} and ${roots[1]}, the factored form is (x - (${roots[0]}))(x - (${roots[1]})) = (x ${p >= 0 ? '+' : ''}${p})(x ${q >= 0 ? '+' : ''}${q})`;
+      }
+      return `Use the two numbers you found to write (x ± p)(x ± q)`;
+    
+    case 'zero-product':
+      return `Zero Product Rule: If (x+p)(x+q) = 0, then either (x+p) = 0 OR (x+q) = 0. Write both equations.`;
+    
+    case 'factor-solutions':
+      return `Solve each equation: From x+p=0, get x=-p. From x+q=0, get x=-q. Write both solutions.`;
+    
+    default:
+      return mission.hint;
+  }
+}
+
+/**
+ * Build a quadratic mission from parsed equation
+ */
+export function buildQuadraticMission(
+  id: string,
+  parsed: QuadraticEquationParsed,
+  equationString: string
+): QuadraticBuilderMission {
+  const solution = solveQuadratic(parsed);
+  const factorable = isQuadraticFactorable(parsed);
+  
+  // Round roots to 2 decimal places for validation
+  const roundedRoots = solution.roots.map(r => Math.round(r * 100) / 100);
+  
+  // Calculate factor pair for factorable quadratics with a=1
+  // For x² + bx + c, find p and q where: p*q = c and p+q = b
+  let factorPair: [number, number] | undefined;
+  if (factorable && parsed.a === 1 && solution.roots.length === 2) {
+    // The factor pair is derived from the roots
+    // If roots are r1 and r2, then (x - r1)(x - r2) = 0
+    // Expanding: x² - (r1+r2)x + r1*r2 = 0
+    // So the factors are -r1 and -r2
+    const p = -roundedRoots[0];
+    const q = -roundedRoots[1];
+    factorPair = [p, q];
+  }
+  
+  return {
+    id,
+    equation: equationString,
+    conceptId: 'algebra.quadratic.solve',
+    parsed,
+    solution,
+    coefficientsExpected: { a: parsed.a, b: parsed.b, c: parsed.c },
+    discriminantExpected: solution.discriminant,
+    rootsExpected: roundedRoots,
+    tokenBank: [
+      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+      '+', '-', '×', '÷', 'x', '=', '.', '²',
+    ],
+    hint: factorable && parsed.a === 1
+      ? `This quadratic can be factored! Try the factorization method.`
+      : factorable
+      ? `This quadratic factors nicely, but use the formula method for a ≠ 1.`
+      : `Use the quadratic formula: x = (-b ± √(b² - 4ac)) / 2a`,
+    isFactorable: factorable && parsed.a === 1, // Only truly factorable if a=1 for our purposes
+    factorPair,
+  };
+}
+
+/**
+ * Generate quadratic practice missions
+ * Creates a variety of quadratics: factorable, non-factorable, perfect squares, no real solutions
+ */
+export function generateQuadraticMissions(count: number): QuadraticBuilderMission[] {
+  const missions: QuadraticBuilderMission[] = [];
+  
+  // Mission templates for variety
+  const templates = [
+    // Simple factorable (products of single-digit factors)
+    { a: 1, roots: [-2, -3] }, // (x+2)(x+3) → x²+5x+6=0
+    { a: 1, roots: [-5, 1] },  // (x+5)(x-1) → x²+4x-5=0
+    { a: 1, roots: [2, 4] },   // (x-2)(x-4) → x²-6x+8=0
+    
+    // Difference of squares
+    { a: 1, roots: [-3, 3] },  // x²-9=0
+    { a: 1, roots: [-4, 4] },  // x²-16=0
+    
+    // Perfect square
+    { a: 1, roots: [-3, -3] }, // (x+3)² → x²+6x+9=0
+    { a: 1, roots: [2, 2] },   // (x-2)² → x²-4x+4=0
+    
+    // Scaled quadratics
+    { a: 2, roots: [-2, 2] },  // 2x²-8=0
+    { a: 3, roots: [-1, 2] },  // 3x²-3x-6=0
+    
+    // No real solutions
+    { a: 1, b: 2, c: 5 },      // x²+2x+5=0 (Δ < 0)
+    { a: 1, b: 0, c: 9 },      // x²+9=0 (Δ < 0)
+  ];
+  
+  for (let i = 0; i < count; i++) {
+    const template = templates[i % templates.length];
+    
+    let a: number, b: number, c: number;
+    
+    if ('roots' in template) {
+      // Build from roots
+      a = template.a;
+      const [r1, r2] = template.roots;
+      // x² - (r1+r2)x + r1*r2 = 0, then scale by a
+      b = -a * (r1 + r2);
+      c = a * r1 * r2;
+    } else {
+      // Use direct coefficients
+      a = template.a;
+      b = template.b;
+      c = template.c;
+    }
+    
+    // Build equation string
+    const variable = 'x';
+    const equationParts: string[] = [];
+    
+    if (a !== 1) {
+      equationParts.push(`${a}${variable}²`);
+    } else {
+      equationParts.push(`${variable}²`);
+    }
+    
+    if (b !== 0) {
+      if (b > 0) {
+        equationParts.push(`+ ${b}${variable}`);
+      } else {
+        equationParts.push(`- ${Math.abs(b)}${variable}`);
+      }
+    }
+    
+    if (c !== 0) {
+      if (c > 0) {
+        equationParts.push(`+ ${c}`);
+      } else {
+        equationParts.push(`- ${Math.abs(c)}`);
+      }
+    }
+    
+    const equationString = equationParts.join(' ') + ' = 0';
+    
+    const parsed: QuadraticEquationParsed = { variable, a, b, c };
+    missions.push(buildQuadraticMission(`quadratic-${i + 1}`, parsed, equationString));
+  }
+  
+  return missions;
+}
+
+/**
+ * Get hint for quadratic based on current step
+ */
+export function getQuadraticHint(
+  step: 'discriminant' | 'formula' | 'solutions',
+  mission: QuadraticBuilderMission
+): string {
+  const { a, b, c } = mission.parsed;
+  const { discriminant } = mission.solution;
+  
+  switch (step) {
+    case 'discriminant':
+      return `Calculate Δ = b² - 4ac. With a=${a}, b=${b}, c=${c}, you get: Δ = (${b})² - 4(${a})(${c}) = ${b*b} - ${4*a*c} = ${discriminant}. Type the result.`;
+    
+    case 'formula':
+      return `Write the quadratic formula with your values: x = (-b ± √Δ) / 2a = (-${b} ± √${discriminant}) / 2(${a}). Simplify the square root if possible.`;
+    
+    case 'solutions':
+      if (discriminant < 0) {
+        return `Since Δ < 0, there are no real solutions. Type "no real solutions" or "none".`;
+      }
+      if (discriminant === 0) {
+        return `Since Δ = 0, there is one repeated root: x = -b / 2a = -${b} / ${2*a} = ${mission.rootsExpected[0]}. Type the solution.`;
+      }
+      const sqrt = Math.sqrt(discriminant);
+      const root1 = (-b + sqrt) / (2*a);
+      const root2 = (-b - sqrt) / (2*a);
+      return `Calculate both solutions: x = (-${b} + ${sqrt}) / ${2*a} = ${root1.toFixed(2)} and x = (-${b} - ${sqrt}) / ${2*a} = ${root2.toFixed(2)}. Type both answers (e.g., "x=${root1.toFixed(2)}, x=${root2.toFixed(2)}").`;
     
     default:
       return mission.hint;

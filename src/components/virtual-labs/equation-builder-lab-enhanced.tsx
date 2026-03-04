@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CheckCircle2, Lightbulb, RotateCcw, Calculator, Copy, Check } from 'lucide-react';
+import { CheckCircle2, Lightbulb, RotateCcw, Calculator, Copy, Check, BookOpen } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -56,11 +56,30 @@ import {
   validateInequalityStep3,
   generateInequalityMissions,
   getInequalityHint,
+  parseQuadraticEquation,
+  solveQuadratic,
+  isQuadraticFactorable,
+  type QuadraticEquationParsed,
+  type QuadraticSolution,
+  type QuadraticBuilderMission,
+  generateQuadraticMissions,
+  validateQuadraticDiscriminant,
+  validateQuadraticFormulaSetup,
+  validateQuadraticSolutions,
+  getQuadraticHint,
+  validateFactorPairs,
+  validateFactoredForm,
+  validateZeroProductRule,
+  validateFactorSolutions,
+  getFactorizationHint,
+  buildQuadraticMission,
 } from '@/lib/math-lab/equation-engine';
 import { normalizeMathText } from '@/lib/text/normalize-math-text';
 
 type StepKey = 'operation' | 'equation' | 'answer';
-type PracticeMode = 'linear' | 'fraction' | 'variable-both-sides' | 'inequality';
+type QuadraticStepKey = 'method-choice' | 'discriminant' | 'formula' | 'solutions' | 'factor-pairs' | 'factored-form' | 'zero-product' | 'factor-solutions';
+type QuadraticMethod = 'formula' | 'factor';
+type PracticeMode = 'linear' | 'fraction' | 'variable-both-sides' | 'inequality' | 'quadratic';
 const EQUATION_SLOT_COUNT = 6;
 const ANSWER_SLOT_COUNT = 4;
 const createEquationSlots = () => Array<string | null>(EQUATION_SLOT_COUNT).fill(null);
@@ -78,6 +97,7 @@ const DEFAULT_MODE_STATS: ModeStatsRecord = {
   fraction: { attempts: 0, avgScore: 0, avgHints: 0 },
   'variable-both-sides': { attempts: 0, avgScore: 0, avgHints: 0 },
   inequality: { attempts: 0, avgScore: 0, avgHints: 0 },
+  quadratic: { attempts: 0, avgScore: 0, avgHints: 0 },
 };
 
 type Checkpoint = {
@@ -95,6 +115,14 @@ type WorkingHistory = {
   step2: string | null;
   step3: string | null;
   step3intermediate: string | null; // For showing 2x=4 even if student skipped it
+  // Quadratic fields
+  quadraticDiscriminant: string | null;
+  quadraticFormula: string | null;
+  quadraticSolutions: string | null;
+  factorPairs: string | null;
+  factoredForm: string | null;
+  zeroProduct: string | null;
+  factorSolutions: string | null;
 };
 
 type WorkingStep = {
@@ -166,8 +194,39 @@ const inequalityCheckpoints: Checkpoint[] = [
   },
 ];
 
+const quadraticCheckpoints: Checkpoint[] = [
+  {
+    id: 'quad-cp1',
+    prompt: 'In the quadratic formula x = (-b ± √Δ) / 2a, what does Δ represent?',
+    options: ['The discriminant (b² - 4ac)', 'The coefficient a', 'The sum of roots', 'The product of roots'],
+    correctIndex: 0,
+    hint: 'The discriminant determines how many real solutions exist.',
+  },
+  {
+    id: 'quad-cp2',
+    prompt: 'For x² + 5x + 6 = 0, which two numbers multiply to 6 and add to 5?',
+    options: ['2 and 3', '1 and 6', '-2 and -3', '5 and 1'],
+    correctIndex: 0,
+    hint: 'Find factor pairs of 6: (1,6) or (2,3). Which pair adds to 5?',
+  },
+  {
+    id: 'quad-cp3',
+    prompt: 'If (x+2)(x+3) = 0, what are the solutions?',
+    options: ['x = -2 or x = -3', 'x = 2 or x = 3', 'x = -5', 'x = 6'],
+    correctIndex: 0,
+    hint: 'Zero Product Rule: If ab=0, then a=0 OR b=0. So x+2=0 or x+3=0.',
+  },
+  {
+    id: 'quad-cp4',
+    prompt: 'When is factorization NOT the best method for solving a quadratic?',
+    options: ['When a ≠ 1 or discriminant is not a perfect square', 'When c = 0', 'When b = 0', 'Never, always use factorization'],
+    correctIndex: 0,
+    hint: 'Factorization works best for simple quadratics (a=1) with integer roots.',
+  },
+];
+
 // Helper function to get equation/inequality string from mission
-function getMissionEquationString(mission: EquationBuilderMission | InequalityBuilderMission): string {
+function getMissionEquationString(mission: EquationBuilderMission | InequalityBuilderMission | QuadraticBuilderMission): string {
   if ('inequality' in mission && mission.inequality) {
     return mission.inequality;
   }
@@ -178,7 +237,12 @@ function getMissionEquationString(mission: EquationBuilderMission | InequalityBu
 }
 
 // Helper function to detect the actual equation type from a mission
-function detectMissionType(mission: EquationBuilderMission | InequalityBuilderMission): PracticeMode {
+function detectMissionType(mission: EquationBuilderMission | InequalityBuilderMission | QuadraticBuilderMission): PracticeMode {
+  // Check if it's a quadratic mission
+  if ('conceptId' in mission && mission.conceptId === 'algebra.quadratic.solve') {
+    return 'quadratic';
+  }
+  
   // Check if it's an inequality mission
   if ('inequality' in mission && mission.inequality) {
     return 'inequality';
@@ -209,7 +273,7 @@ function detectMissionType(mission: EquationBuilderMission | InequalityBuilderMi
 
 // Helper function to auto-correct mode based on actual mission types
 function autoCorrectMode(
-  missions: (EquationBuilderMission | InequalityBuilderMission)[],
+  missions: (EquationBuilderMission | InequalityBuilderMission | QuadraticBuilderMission)[],
   selectedMode: PracticeMode
 ): PracticeMode {
   if (missions.length === 0) return selectedMode;
@@ -219,7 +283,7 @@ function autoCorrectMode(
   
   // If detected type differs from selected, return detected type
   if (detectedType !== selectedMode) {
-    console.log(`🔄 Auto-corrected mode from "${selectedMode}" to "${detectedType}" based on mission content`);
+   console.log(`🔄 Auto-corrected mode from "${selectedMode}" to "${detectedType}" based on mission content`);
     return detectedType;
   }
   
@@ -227,11 +291,31 @@ function autoCorrectMode(
 }
 
 // Helper function to build practice missions (moved outside component to avoid re-creation)
-function buildPracticeMissions(mode: PracticeMode): (EquationBuilderMission | InequalityBuilderMission)[] {
+function buildPracticeMissions(mode: PracticeMode): (EquationBuilderMission | InequalityBuilderMission | QuadraticBuilderMission)[] {
   if (mode === 'linear') return generateLinearMissions(4);
   if (mode === 'fraction') return generateFractionLinearMissions(4);
   if (mode === 'inequality') return generateInequalityMissions(4);
+  if (mode === 'quadratic') return generateQuadraticMissions(4);
   return generateTwoSidedLinearMissions(4); // variable-both-sides
+}
+
+// Helper to create empty working history
+function createEmptyWorkingHistory(): WorkingHistory {
+  return {
+    step0a: null,
+    step0b: null,
+    step1: null,
+    step2: null,
+    step3: null,
+    step3intermediate: null,
+    quadraticDiscriminant: null,
+    quadraticFormula: null,
+    quadraticSolutions: null,
+    factorPairs: null,
+    factoredForm: null,
+    zeroProduct: null,
+    factorSolutions: null,
+  };
 }
 
 export function EquationBuilderLabEnhanced() {
@@ -244,14 +328,33 @@ export function EquationBuilderLabEnhanced() {
   const [isFirstVisit, setIsFirstVisit] = useState(true);
   const [lastMode, setLastMode] = useState<PracticeMode>('linear');
   const [modeStats, setModeStats] = useState<ModeStatsRecord>(DEFAULT_MODE_STATS);
-  const [missions, setMissions] = useState<(EquationBuilderMission | InequalityBuilderMission)[]>(() => buildPracticeMissions('linear'));
+  const [missions, setMissions] = useState<(EquationBuilderMission | InequalityBuilderMission | QuadraticBuilderMission)[]>(() => buildPracticeMissions('linear'));
 
-  const [stage, setStage] = useState<'build' | 'checkpoint' | 'result'>('build');
+  const [stage, setStage] = useState<'build' | 'checkpoint' | 'quadratic-learn' | 'result'>('build');
   const [missionIndex, setMissionIndex] = useState(0);
   const [step, setStep] = useState<StepKey>('operation');
+  const [quadraticStep, setQuadraticStep] = useState<QuadraticStepKey>('method-choice');
+  const [quadraticMethod, setQuadraticMethod] = useState<QuadraticMethod | null>(null);
   const [customFlow, setCustomFlow] = useState({ active: false, awaitingChoice: false });
   const [customEquationInput, setCustomEquationInput] = useState('4x + 8 = 36');
   const [customEquationError, setCustomEquationError] = useState<string | null>(null);
+  
+  // Quadratic solving state - Formula method
+  const [quadraticDiscriminantInput, setQuadraticDiscriminantInput] = useState<string>('');
+  const [quadraticFormulaInput, setQuadraticFormulaInput] = useState<string>('');
+  const [quadraticSolutionsInput, setQuadraticSolutionsInput] = useState<string>('');
+  
+  // Quadratic solving state - Factorization method
+  const [factorPairsInput, setFactorPairsInput] = useState<string>('');
+  const [factoredFormInput, setFactoredFormInput] = useState<string>('');
+  const [zeroProductInput, setZeroProductInput] = useState<string>('');
+  const [factorSolutionsInput, setFactorSolutionsInput] = useState<string>('');
+  
+  const [quadraticSolution, setQuadraticSolution] = useState<{
+    parsed: QuadraticEquationParsed;
+    solution: QuadraticSolution;
+    equation: string;
+  } | null>(null);
   const [bracketFlow, setBracketFlow] = useState<{
     active: boolean;
     phase: 'expand' | 'simplify' | 'done';
@@ -294,14 +397,7 @@ export function EquationBuilderLabEnhanced() {
   const [answerSlots, setAnswerSlots] = useState<Array<string | null>>(createAnswerSlots);
   const [equationDirectInput, setEquationDirectInput] = useState('');
   const [answerDirectInput, setAnswerDirectInput] = useState('');
-  const [workingHistory, setWorkingHistory] = useState<WorkingHistory>({
-    step0a: null,
-    step0b: null,
-    step1: null,
-    step2: null,
-    step3: null,
-    step3intermediate: null,
-  });
+  const [workingHistory, setWorkingHistory] = useState<WorkingHistory>(createEmptyWorkingHistory());
   const operationSymbolRef = useRef<HTMLInputElement | null>(null);
   const operationValueRef = useRef<HTMLInputElement | null>(null);
   const bracketFlowRef = useRef<HTMLInputElement | null>(null);
@@ -313,7 +409,10 @@ export function EquationBuilderLabEnhanced() {
   const mission = missions[missionIndex];
   
   // Select checkpoint set based on practice mode
-  const checkpoints = practiceMode === 'inequality' ? inequalityCheckpoints : equationCheckpoints;
+  const checkpoints = 
+    practiceMode === 'inequality' ? inequalityCheckpoints 
+    : practiceMode === 'quadratic' ? quadraticCheckpoints
+    : equationCheckpoints;
   const checkpoint = checkpoints[checkpointIndex];
   
   const isStep2Locked = step === 'operation';
@@ -563,6 +662,16 @@ export function EquationBuilderLabEnhanced() {
     bracketFlow.simplifiedInput,
     bracketFlow.expandedExpected,
     bracketFlow.simplifiedExpected,
+    practiceMode,
+    quadraticStep,
+    quadraticMethod,
+    quadraticDiscriminantInput,
+    quadraticFormulaInput,
+    quadraticSolutionsInput,
+    factorPairsInput,
+    factoredFormInput,
+    zeroProductInput,
+    factorSolutionsInput,
   ]);
 
   useEffect(() => {
@@ -623,6 +732,26 @@ export function EquationBuilderLabEnhanced() {
     stage === 'build'
       ? interventionMessage
         ? interventionMessage
+        : practiceMode === 'quadratic' && quadraticStep === 'method-choice'
+        ? `Let's solve ${getMissionEquationString(mission)}. ${
+            (mission as QuadraticBuilderMission).isFactorable
+              ? 'This equation can be factored! Choose: Factor method (faster) or Formula method (works for all).'
+              : 'Use the quadratic formula to solve this equation.'
+          }`
+        : practiceMode === 'quadratic' && quadraticMethod === 'formula' && quadraticStep === 'discriminant'
+        ? `Formula Method: First, calculate the discriminant Δ = b² - 4ac. Type your complete calculation or just the result.`
+        : practiceMode === 'quadratic' && quadraticMethod === 'formula' && quadraticStep === 'formula'
+        ? `Great! Now write the quadratic formula with your discriminant value. Type: x = (-b ± √Δ) / 2a with the actual numbers substituted.`
+        : practiceMode === 'quadratic' && quadraticMethod === 'formula' && quadraticStep === 'solutions'
+        ? `Perfect! Now calculate both solutions from the formula. Type both answers like: x = -2, x = -3 (order doesn't matter).`
+        : practiceMode === 'quadratic' && quadraticMethod === 'factor' && quadraticStep === 'factor-pairs'
+        ? `Factorization Method: Find two numbers that multiply to ${(mission as QuadraticBuilderMission).parsed.c} and add to ${(mission as QuadraticBuilderMission).parsed.b}. Type them like: "2, 3" or "2 and 3"`
+        : practiceMode === 'quadratic' && quadraticMethod === 'factor' && quadraticStep === 'factored-form'
+        ? `Great! Now write the factored form using those numbers. Type: (x ± p)(x ± q) = 0`
+        : practiceMode === 'quadratic' && quadraticMethod === 'factor' && quadraticStep === 'zero-product'
+        ? `Perfect! Now apply the Zero Product Rule. If (x+p)(x+q) = 0, then x+p=0 OR x+q=0. Type both equations.`
+        : practiceMode === 'quadratic' && quadraticMethod === 'factor' && quadraticStep === 'factor-solutions'
+        ? `Excellent! Now solve each equation to find the roots. Type both solutions like: x = -2, x = -3`
         : bracketFlow.active && bracketFlow.phase === 'expand'
         ? `First, remove the bracket correctly. Type the expanded equation without solving further.`
         : bracketFlow.active && bracketFlow.phase === 'simplify'
@@ -646,8 +775,12 @@ export function EquationBuilderLabEnhanced() {
         : step === 'answer' && (mission as InequalityBuilderMission).skipStep1
         ? `This inequality is already simplified (no constant to subtract). Enter the operation to isolate x.`
         : `Final step: enter the solved value of x.`
+      : stage === 'quadratic-learn'
+      ? `I detected this is a quadratic equation because it contains x-squared. Let me show you step-by-step how to solve it using the quadratic formula. Study each step carefully, then click Calculate Final Roots to see the solutions.`
       : stage === 'checkpoint'
       ? `Checkpoint ${checkpointIndex + 1}: ${normalizeMathText(checkpoint.prompt)}`
+      : quadraticSolution
+      ? `Perfect! Here are the final solutions. The discriminant told us how many roots to expect, and the quadratic formula gave us the exact values. You can solve another quadratic equation or try other equation types.`
       : `Excellent work. You solved ${missions.length} equation missions and scored ${checkpointScore}/${checkpoints.length} in checkpoints.`;
 
   const cleanToken = (token: string) => token.trim();
@@ -682,7 +815,9 @@ export function EquationBuilderLabEnhanced() {
     // Original equation
     steps.push({
       label: 'Original',
-      description: practiceMode === 'inequality' ? 'Given inequality' : 'Given equation',
+      description: practiceMode === 'inequality' ? 'Given inequality' 
+        : practiceMode === 'quadratic' ? 'Given quadratic equation'
+        : 'Given equation',
       equation: getMissionEquationString(mission),
     });
     
@@ -767,6 +902,79 @@ export function EquationBuilderLabEnhanced() {
     
     return steps;
   };
+
+  const getQuadraticFormattedWorking = (): WorkingStep[] => {
+    const steps: WorkingStep[] = [];
+    const quadMission = mission as QuadraticBuilderMission;
+    
+    // Show the original equation
+    steps.push({
+      label: 'Given',
+      description: 'Original quadratic equation',
+      equation: quadMission.equation,
+    });
+
+    // Formula method steps
+    if (workingHistory.quadraticDiscriminant) {
+      steps.push({
+        label: 'Step 1',
+        description: 'Calculate discriminant (Δ = b² - 4ac)',
+        equation: workingHistory.quadraticDiscriminant,
+      });
+    }
+    
+    if (workingHistory.quadraticFormula) {
+      steps.push({
+        label: 'Step 2',
+        description: 'Apply quadratic formula',
+        equation: workingHistory.quadraticFormula,
+      });
+    }
+    
+    if (workingHistory.quadraticSolutions) {
+      steps.push({
+        label: 'Step 3',
+        description: 'Final solutions',
+        equation: workingHistory.quadraticSolutions,
+      });
+    }
+
+    // Factorization method steps
+    if (workingHistory.factorPairs) {
+      steps.push({
+        label: 'Step 1',
+        description: 'Find factor pairs',
+        equation: workingHistory.factorPairs,
+      });
+    }
+    
+    if (workingHistory.factoredForm) {
+      steps.push({
+        label: 'Step 2',
+        description: 'Write in factored form',
+        equation: workingHistory.factoredForm,
+      });
+    }
+    
+    if (workingHistory.zeroProduct) {
+      steps.push({
+        label: 'Step 3',
+        description: 'Apply zero product rule',
+        equation: workingHistory.zeroProduct,
+      });
+    }
+    
+    if (workingHistory.factorSolutions) {
+      steps.push({
+        label: 'Step 4',
+        description: 'Solve for x',
+        equation: workingHistory.factorSolutions,
+      });
+    }
+    
+    return steps;
+  };
+
   const getReasonMessage = (
     reason: EquationStepValidationReason | null,
     stepKey: 'equation' | 'answer'
@@ -855,6 +1063,40 @@ export function EquationBuilderLabEnhanced() {
   };
 
   const isCurrentStepCorrect = () => {
+    // Quadratic equations validation
+    if (practiceMode === 'quadratic') {
+      const quadMission = mission as QuadraticBuilderMission;
+      
+      if (quadraticMethod === 'formula') {
+        if (quadraticStep === 'discriminant') {
+          return validateQuadraticDiscriminant(quadraticDiscriminantInput.trim(), quadMission).isCorrect;
+        }
+        if (quadraticStep === 'formula') {
+          return validateQuadraticFormulaSetup(quadraticFormulaInput.trim(), quadMission).isCorrect;
+        }
+        if (quadraticStep === 'solutions') {
+          return validateQuadraticSolutions(quadraticSolutionsInput.trim(), quadMission).isCorrect;
+        }
+      }
+      
+      if (quadraticMethod === 'factor') {
+        if (quadraticStep === 'factor-pairs') {
+          return validateFactorPairs(factorPairsInput.trim(), quadMission).isCorrect;
+        }
+        if (quadraticStep === 'factored-form') {
+          return validateFactoredForm(factoredFormInput.trim(), quadMission).isCorrect;
+        }
+        if (quadraticStep === 'zero-product') {
+          return validateZeroProductRule(zeroProductInput.trim(), quadMission).isCorrect;
+        }
+        if (quadraticStep === 'factor-solutions') {
+          return validateFactorSolutions(factorSolutionsInput.trim(), quadMission).isCorrect;
+        }
+      }
+      
+      return false;
+    }
+    
     // Type guard: Check if this is an inequality mission
     const isInequalityMission = 'inequality' in mission && mission.inequality;
     
@@ -1011,6 +1253,204 @@ export function EquationBuilderLabEnhanced() {
   };
 
   const checkStep = () => {
+    // Handle quadratic equation steps
+    if (practiceMode === 'quadratic') {
+      const quadMission = mission as QuadraticBuilderMission;
+      
+      // Formula method steps
+      if (quadraticMethod === 'formula') {
+        if (quadraticStep === 'discriminant') {
+          const validation = validateQuadraticDiscriminant(quadraticDiscriminantInput.trim(), quadMission);
+          playLabSound(validation.isCorrect ? 'step-correct' : 'step-incorrect');
+          if (validation.isCorrect) {
+            setWorkingHistory((prev) => ({ ...prev, quadraticDiscriminant: quadraticDiscriminantInput.trim() }));
+            setQuadraticStep('formula');
+            setStepFeedback(null);
+            setStepSuccessMessage('✓ Correct! Now set up the quadratic formula with your discriminant.');
+            setTeacherKey((k) => k + 1);
+          } else {
+            setStepFeedback(validation.feedback);
+          }
+          return;
+        }
+        
+        if (quadraticStep === 'formula') {
+          const validation = validateQuadraticFormulaSetup(quadraticFormulaInput.trim(), quadMission);
+          playLabSound(validation.isCorrect ? 'step-correct' : 'step-incorrect');
+          if (validation.isCorrect) {
+            setWorkingHistory((prev) => ({ ...prev, quadraticFormula: quadraticFormulaInput.trim() }));
+            setQuadraticStep('solutions');
+            setStepFeedback(null);
+            setStepSuccessMessage('✓ Perfect formula setup! Now calculate the final solutions.');
+            setTeacherKey((k) => k + 1);
+          } else {
+            setStepFeedback(validation.feedback);
+          }
+          return;
+        }
+        
+        if (quadraticStep === 'solutions') {
+          const validation = validateQuadraticSolutions(quadraticSolutionsInput.trim(), quadMission);
+          playLabSound(validation.isCorrect ? 'mission-complete' : 'step-incorrect');
+          if (validation.isCorrect) {
+            setWorkingHistory((prev) => ({ ...prev, quadraticSolutions: quadraticSolutionsInput.trim() }));
+            setStepFeedback(null);
+            setStepSuccessMessage('✓ Perfect! You solved the quadratic equation completely!');
+            
+            setTimeout(() => {
+              if (missionIndex < missions.length - 1) {
+                // Handle custom quadratic flow
+                if (customFlow.active && missionIndex === 0) {
+                  setCustomFlow({ active: true, awaitingChoice: true });
+                  setStepSuccessMessage('Custom quadratic solved successfully. Choose what to do next.');
+                  setInterventionMessage(
+                    'Great job! Next: continue with practice mission 2, go to checkpoints, or load another custom quadratic.'
+                  );
+                  setTeacherKey((k) => k + 1);
+                  return;
+                }
+                
+                setMissionIndex(missionIndex + 1);
+                setQuadraticStep('method-choice');
+                setQuadraticMethod(null);
+                setQuadraticDiscriminantInput('');
+                setQuadraticFormulaInput('');
+                setQuadraticSolutionsInput('');
+                setFactorPairsInput('');
+                setFactoredFormInput('');
+                setZeroProductInput('');
+                setFactorSolutionsInput('');
+                setStepSuccessMessage(null);
+                setWorkingHistory((prev) => ({
+                  ...prev,
+                  quadraticDiscriminant: null,
+                  quadraticFormula: null,
+                  quadraticSolutions: null,
+                  factorPairs: null,
+                  factoredForm: null,
+                  zeroProduct: null,
+                  factorSolutions: null,
+                }));
+                setTeacherKey((k) => k + 1);
+              } else {
+                setStage('checkpoint');
+                setCheckpointIndex(0);
+                setTeacherKey((k) => k + 1);
+              }
+            }, 1500);
+          } else {
+            setStepFeedback(validation.feedback);
+          }
+          return;
+        }
+      }
+      
+      // Factorization method steps
+      if (quadraticMethod === 'factor') {
+        if (quadraticStep === 'factor-pairs') {
+          const validation = validateFactorPairs(factorPairsInput.trim(), quadMission);
+          playLabSound(validation.isCorrect ? 'step-correct' : 'step-incorrect');
+          if (validation.isCorrect) {
+            setWorkingHistory((prev) => ({ ...prev, factorPairs: factorPairsInput.trim() }));
+            setQuadraticStep('factored-form');
+            setStepFeedback(null);
+            setStepSuccessMessage(validation.feedback);
+            setTeacherKey((k) => k + 1);
+          } else {
+            setStepFeedback(validation.feedback);
+          }
+          return;
+        }
+        
+        if (quadraticStep === 'factored-form') {
+          const validation = validateFactoredForm(factoredFormInput.trim(), quadMission);
+          playLabSound(validation.isCorrect ? 'step-correct' : 'step-incorrect');
+          if (validation.isCorrect) {
+            setWorkingHistory((prev) => ({ ...prev, factoredForm: factoredFormInput.trim() }));
+            setQuadraticStep('zero-product');
+            setStepFeedback(null);
+            setStepSuccessMessage(validation.feedback);
+            setTeacherKey((k) => k + 1);
+          } else {
+            setStepFeedback(validation.feedback);
+          }
+          return;
+        }
+        
+        if (quadraticStep === 'zero-product') {
+          const validation = validateZeroProductRule(zeroProductInput.trim(), quadMission);
+          playLabSound(validation.isCorrect ? 'step-correct' : 'step-incorrect');
+          if (validation.isCorrect) {
+            setWorkingHistory((prev) => ({ ...prev, zeroProduct: zeroProductInput.trim() }));
+            setQuadraticStep('factor-solutions');
+            setStepFeedback(null);
+            setStepSuccessMessage(validation.feedback);
+            setTeacherKey((k) => k + 1);
+          } else {
+            setStepFeedback(validation.feedback);
+          }
+          return;
+        }
+        
+        if (quadraticStep === 'factor-solutions') {
+          const validation = validateFactorSolutions(factorSolutionsInput.trim(), quadMission);
+          playLabSound(validation.isCorrect ? 'mission-complete' : 'step-incorrect');
+          if (validation.isCorrect) {
+            setWorkingHistory((prev) => ({ ...prev, factorSolutions: factorSolutionsInput.trim() }));
+            setStepFeedback(null);
+            setStepSuccessMessage(validation.feedback);
+            
+            setTimeout(() => {
+              if (missionIndex < missions.length - 1) {
+                // Handle custom quadratic flow
+                if (customFlow.active && missionIndex === 0) {
+                  setCustomFlow({ active: true, awaitingChoice: true });
+                  setStepSuccessMessage('Custom quadratic solved successfully. Choose what to do next.');
+                  setInterventionMessage(
+                    'Great job! Next: continue with practice mission 2, go to checkpoints, or load another custom quadratic.'
+                  );
+                  setTeacherKey((k) => k + 1);
+                  return;
+                }
+                
+                setMissionIndex(missionIndex + 1);
+                setQuadraticStep('method-choice');
+                setQuadraticMethod(null);
+                setQuadraticDiscriminantInput('');
+                setQuadraticFormulaInput('');
+                setQuadraticSolutionsInput('');
+                setFactorPairsInput('');
+                setFactoredFormInput('');
+                setZeroProductInput('');
+                setFactorSolutionsInput('');
+                setStepSuccessMessage(null);
+                setWorkingHistory((prev) => ({
+                  ...prev,
+                  quadraticDiscriminant: null,
+                  quadraticFormula: null,
+                  quadraticSolutions: null,
+                  factorPairs: null,
+                  factoredForm: null,
+                  zeroProduct: null,
+                  factorSolutions: null,
+                }));
+                setTeacherKey((k) => k + 1);
+              } else {
+                setStage('checkpoint');
+                setCheckpointIndex(0);
+                setTeacherKey((k) => k + 1);
+              }
+            }, 1500);
+          } else {
+            setStepFeedback(validation.feedback);
+          }
+          return;
+        }
+      }
+      
+      return; // Exit if in quadratic mode
+    }
+    
     if (bracketFlow.active && bracketFlow.phase !== 'done') {
       if (bracketFlow.phase === 'expand') {
         const ok =
@@ -1180,7 +1620,7 @@ export function EquationBuilderLabEnhanced() {
         setShowHint(false);
         setInterventionMessage(null);
         setMistakeCounts({ operation: 0, equation: 0, answer: 0 });
-        setWorkingHistory({ step0a: null, step0b: null, step1: null, step2: null, step3: null, step3intermediate: null });
+        setWorkingHistory(createEmptyWorkingHistory());
         setCustomFlow((prev) => ({ ...prev, awaitingChoice: false }));
         setTeacherKey((k) => k + 1);
       } else {
@@ -1279,7 +1719,7 @@ export function EquationBuilderLabEnhanced() {
       setShowHint(false);
       setInterventionMessage(null);
       setMistakeCounts({ operation: 0, equation: 0, answer: 0 });
-      setWorkingHistory({ step0a: null, step0b: null, step1: null, step2: null, step3: null, step3intermediate: null });
+      setWorkingHistory(createEmptyWorkingHistory());
       setCustomFlow((prev) => ({ ...prev, awaitingChoice: false }));
       setTeacherKey((k) => k + 1);
     } else {
@@ -1305,6 +1745,14 @@ export function EquationBuilderLabEnhanced() {
 
   const loadCustomEquation = () => {
     const normalizedInput = customEquationInput.replace(/\s+/g, '');
+    
+    // Log if Unicode characters detected (helpful for copy-paste debugging)
+    if (customEquationInput !== normalizedInput) {
+      console.log('📋 Input normalization:', {
+        original: customEquationInput,
+        afterSpaceRemoval: normalizedInput
+      });
+    }
     
     // Check for inequality first
     const hasInequalityOperator = normalizedInput.includes('<') || normalizedInput.includes('>') || 
@@ -1371,6 +1819,51 @@ export function EquationBuilderLabEnhanced() {
       }
     }
     
+    // Check for quadratic equations
+    const parsedQuadratic = parseQuadraticEquation(customEquationInput);
+    if (parsedQuadratic) {
+      // Auto-switch to quadratic mode
+      console.log(`🔄 Auto-corrected mode from "${practiceMode}" to "quadratic" for custom input`);
+      setPracticeMode('quadratic');
+      
+      // Build custom quadratic mission + generate 3 more
+      const customMission = buildQuadraticMission('custom-1', parsedQuadratic, customEquationInput);
+      const generatedMissions = generateQuadraticMissions(3);
+      setMissions([customMission, ...generatedMissions]);
+      setCustomEquationError(null);
+      setCustomFlow({ active: true, awaitingChoice: false });
+      setStage('build');
+      setMissionIndex(0);
+      
+      // Reset quadratic-specific state
+      setQuadraticStep('method-choice');
+      setQuadraticMethod(null);
+      setQuadraticDiscriminantInput('');
+      setQuadraticFormulaInput('');
+      setQuadraticSolutionsInput('');
+      setFactorPairsInput('');
+      setFactoredFormInput('');
+      setZeroProductInput('');
+      setFactorSolutionsInput('');
+      
+      setStepFeedback(null);
+      setStepSuccessMessage(
+        customMission.isFactorable
+          ? `Custom quadratic loaded: ${customEquationInput}. This can be factored! Choose your solving method.`
+          : `Custom quadratic loaded: ${customEquationInput}. Use the formula method to solve.`
+      );
+      setCheckpointIndex(0);
+      setCheckpointAnswers([]);
+      setHintCount(0);
+      setShowHint(false);
+      setInterventionMessage(null);
+      setMistakeCounts({ operation: 0, equation: 0, answer: 0 });
+      setWorkingHistory(createEmptyWorkingHistory());
+      setLastWrongCoachKey(null);
+      setTeacherKey((k) => k + 1);
+      return;
+    }
+    
     const parsedBracket = parseBracketLinearEquation(customEquationInput);
     const bracketScaffold = parsedBracket ? buildBracketLinearScaffold(parsedBracket) : null;
     const parsedLinear = parseLinearEquation(customEquationInput);
@@ -1388,8 +1881,9 @@ export function EquationBuilderLabEnhanced() {
       if (/\/[^0-9+\-*/()]*[a-zA-Z]/.test(normalizedInput)) {
         return 'Rational equations (variable in denominator like 4/x) are not supported. Try x/4+3=8 instead (x in numerator).';
       }
-      if (/[a-zA-Z]\^2|[a-zA-Z]\^/.test(normalizedInput) || /[a-zA-Z].*[a-zA-Z]/.test(normalizedInput.replace(/[+\-=/()]/g, ''))) {
-        return 'Quadratic/custom power equations are not in this builder yet. Use linear/fraction linear for now (quadratic builder coming next).';
+      // Cubic or higher powers not supported
+      if (/[a-zA-Z]\^[3-9]|[a-zA-Z]³/.test(normalizedInput)) {
+        return 'Cubic and higher power equations are not supported yet. Use linear, quadratic (x²), or fraction linear forms.';
       }
       if (/\/0(?!\d)/.test(normalizedInput)) {
         return 'Invalid equation: denominator cannot be zero.';
@@ -1485,7 +1979,7 @@ export function EquationBuilderLabEnhanced() {
     setShowHint(false);
     setInterventionMessage(null);
     setMistakeCounts({ operation: 0, equation: 0, answer: 0 });
-    setWorkingHistory({ step0a: null, step0b: null, step1: null, step2: null, step3: null, step3intermediate: null });
+    setWorkingHistory(createEmptyWorkingHistory());
     setLastWrongCoachKey(null);
     setBracketFlow(
       parsedBracket && bracketScaffold
@@ -1509,7 +2003,7 @@ export function EquationBuilderLabEnhanced() {
     setShowHint(false);
     setInterventionMessage(null);
     setMistakeCounts({ operation: 0, equation: 0, answer: 0 });
-    setWorkingHistory({ step0a: null, step0b: null, step1: null, step2: null, step3: null, step3intermediate: null });
+    setWorkingHistory(createEmptyWorkingHistory());
     setCheckpointIndex(0);
     setCheckpointAnswers([]);
     setTeacherKey((k) => k + 1);
@@ -1584,7 +2078,7 @@ export function EquationBuilderLabEnhanced() {
     setShowHint(false);
     setInterventionMessage(null);
     setMistakeCounts({ operation: 0, equation: 0, answer: 0 });
-    setWorkingHistory({ step0a: null, step0b: null, step1: null, step2: null, step3: null, step3intermediate: null });
+    setWorkingHistory(createEmptyWorkingHistory());
     setCustomFlow({ active: false, awaitingChoice: false });
     setHintCount(0);
     setCheckpointIndex(0);
@@ -1618,17 +2112,33 @@ export function EquationBuilderLabEnhanced() {
         ? 'Variable on Both Sides practice loaded. Start with Step 1.'
         : correctedMode === 'inequality'
         ? 'Inequality practice loaded. Start with Step 1.'
+        : correctedMode === 'quadratic'
+        ? 'Quadratic practice loaded. Start with the discriminant calculation.'
         : 'Fraction Linear practice loaded. Start with Step 1.'
     );
     setLastWrongCoachKey(null);
     setShowHint(false);
     setInterventionMessage(null);
     setMistakeCounts({ operation: 0, equation: 0, answer: 0 });
-    setWorkingHistory({ step0a: null, step0b: null, step1: null, step2: null, step3: null, step3intermediate: null });
+    setWorkingHistory(createEmptyWorkingHistory());
     setCustomFlow({ active: false, awaitingChoice: false });
     setHintCount(0);
     setCheckpointIndex(0);
     setCheckpointAnswers([]);
+    
+    // Reset quadratic-specific state
+    if (correctedMode === 'quadratic') {
+      setQuadraticStep('method-choice');
+      setQuadraticMethod(null);
+      setQuadraticDiscriminantInput('');
+      setQuadraticFormulaInput('');
+      setQuadraticSolutionsInput('');
+      setFactorPairsInput('');
+      setFactoredFormInput('');
+      setZeroProductInput('');
+      setFactorSolutionsInput('');
+    }
+    
     setTeacherKey((k) => k + 1);
     if (typeof window !== 'undefined') {
       try {
@@ -1840,6 +2350,14 @@ export function EquationBuilderLabEnhanced() {
                     >
                       Fraction
                     </Button>
+                    <Button
+                      size="sm"
+                      variant={practiceMode === 'quadratic' ? 'default' : 'outline'}
+                      className="h-8 px-2.5 text-xs"
+                      onClick={() => startPracticeMode('quadratic')}
+                    >
+                      Quadratic
+                    </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -1848,7 +2366,8 @@ export function EquationBuilderLabEnhanced() {
                   <CardHeader className="pb-1.5">
                     <CardTitle className="text-sm">Custom equation/inequality</CardTitle>
                     <CardDescription className="text-xs">
-                      Equations: <code>ax+b=c</code>, <code>ax+b=cx+d</code>, <code>x/d+b=c</code>, <code>k(x+m)=n</code><br/>
+                      Linear: <code>ax+b=c</code>, <code>ax+b=cx+d</code>, <code>x/d+b=c</code>, <code>k(x+m)=n</code><br/>
+                      Quadratic: <code>x²+5x+6=0</code>, <code>2x²-8=0</code><br/>
                       Inequalities: <code>ax+b&lt;c</code>, <code>ax+b&gt;c</code>, <code>ax+b≤c</code>, <code>ax+b≥c</code>
                     </CardDescription>
                   </CardHeader>
@@ -1858,7 +2377,7 @@ export function EquationBuilderLabEnhanced() {
                         className="h-9 rounded-md border bg-background px-3 text-sm w-full"
                         value={customEquationInput}
                         onChange={(e) => setCustomEquationInput(e.target.value)}
-                        placeholder="4x+8=36 or 3x+5>20"
+                        placeholder="4x+8=36, 3x+5>20, or x²+5x+6=0"
                       />
                       <Button size="sm" onClick={loadCustomEquation}>Load</Button>
                     </div>
@@ -1879,6 +2398,8 @@ export function EquationBuilderLabEnhanced() {
                       ? 'Both Sides' 
                       : practiceMode === 'inequality'
                       ? 'Inequality'
+                      : practiceMode === 'quadratic'
+                      ? 'Quadratic'
                       : 'Fraction'}
                   </Badge>
                 </div>
@@ -1890,7 +2411,9 @@ export function EquationBuilderLabEnhanced() {
                 <Card className="border-emerald-300 dark:border-emerald-700 bg-emerald-50 dark:bg-emerald-950/20">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-base">
-                      {practiceMode === 'inequality' ? 'Custom inequality solved' : 'Custom equation solved'}
+                      {practiceMode === 'inequality' ? 'Custom inequality solved' 
+                        : practiceMode === 'quadratic' ? 'Custom quadratic solved'
+                        : 'Custom equation solved'}
                     </CardTitle>
                     <CardDescription>Excellent work. What should happen next?</CardDescription>
                   </CardHeader>
@@ -1906,7 +2429,7 @@ export function EquationBuilderLabEnhanced() {
                         setStepFeedback(null);
                         setStepSuccessMessage('Great. Continue with Mission 2.');
                         setLastWrongCoachKey(null);
-                        setWorkingHistory({ step0a: null, step0b: null, step1: null, step2: null, step3: null, step3intermediate: null });
+                        setWorkingHistory(createEmptyWorkingHistory());
                         setTeacherKey((k) => k + 1);
                       }}
                     >
@@ -1936,14 +2459,32 @@ export function EquationBuilderLabEnhanced() {
                         setStepSuccessMessage(
                           practiceMode === 'inequality' 
                             ? 'Load another custom inequality when ready.' 
+                            : practiceMode === 'quadratic'
+                            ? 'Load another custom quadratic when ready.'
                             : 'Load another custom equation when ready.'
                         );
                         setLastWrongCoachKey(null);
-                        setWorkingHistory({ step0a: null, step0b: null, step1: null, step2: null, step3: null, step3intermediate: null });
+                        setWorkingHistory({ 
+                          step0a: null, 
+                          step0b: null, 
+                          step1: null, 
+                          step2: null, 
+                          step3: null, 
+                          step3intermediate: null,
+                          quadraticDiscriminant: null,
+                          quadraticFormula: null,
+                          quadraticSolutions: null,
+                          factorPairs: null,
+                          factoredForm: null,
+                          zeroProduct: null,
+                          factorSolutions: null,
+                        });
                         setTeacherKey((k) => k + 1);
                       }}
                     >
-                      {practiceMode === 'inequality' ? 'Load another inequality' : 'Load another equation'}
+                      {practiceMode === 'inequality' ? 'Load another inequality' 
+                        : practiceMode === 'quadratic' ? 'Load another quadratic'
+                        : 'Load another equation'}
                     </Button>
                   </CardContent>
                 </Card>
@@ -1965,7 +2506,9 @@ export function EquationBuilderLabEnhanced() {
                         variant="ghost"
                         className="h-7 px-2 text-xs gap-1.5"
                         onClick={() => {
-                          const working = getFormattedWorking();
+                          const working = practiceMode === 'quadratic' 
+                            ? getQuadraticFormattedWorking() 
+                            : getFormattedWorking();
                           const text = working.map(step => {
                             const label = step.label;
                             const desc = step.description ? `\n${step.description}` : '';
@@ -1994,7 +2537,10 @@ export function EquationBuilderLabEnhanced() {
                         )}
                       </Button>
                     </div>
-                    {getFormattedWorking().map((step, index) => (
+                    {(practiceMode === 'quadratic' 
+                      ? getQuadraticFormattedWorking() 
+                      : getFormattedWorking()
+                    ).map((step, index) => (
                       <div key={index} className="space-y-1">
                         <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
                           <span className="bg-emerald-100 dark:bg-emerald-900 px-2 py-0.5 rounded">{step.label}</span>
@@ -2011,6 +2557,409 @@ export function EquationBuilderLabEnhanced() {
                 </Card>
               )}
 
+              {/* QUADRATIC SOLVING INTERFACE */}
+              {practiceMode === 'quadratic' && (
+                <div className="space-y-3">
+                  {/* Reference Card: Coefficients & Formula */}
+                  <Card className="border-purple-200 dark:border-purple-800 bg-purple-50/50 dark:bg-purple-950/20">
+                    <CardContent className="pt-3 pb-3">
+                      <div className="space-y-2 text-sm">
+                        <p className="font-semibold text-purple-700 dark:text-purple-300">Standard Form: ax² + bx + c = 0</p>
+                        <p className="text-muted-foreground">
+                          From {getMissionEquationString(mission)}: <span className="font-mono">
+                            a = {(mission as QuadraticBuilderMission).parsed.a}, 
+                            b = {(mission as QuadraticBuilderMission).parsed.b}, 
+                            c = {(mission as QuadraticBuilderMission).parsed.c}
+                          </span>
+                        </p>
+                        {(mission as QuadraticBuilderMission).isFactorable && (
+                          <p className="text-emerald-600 dark:text-emerald-400 font-semibold mt-2">
+                            ✓ This equation can be factored!
+                          </p>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Method Selection */}
+                  {quadraticStep === 'method-choice' && (
+                    <Card className="border-purple-400 dark:border-purple-700">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm">Choose Your Solving Method</CardTitle>
+                        <CardDescription className="text-xs">
+                          {(mission as QuadraticBuilderMission).isFactorable 
+                            ? 'This equation can be factored, but the formula works too. Pick the method you prefer!'
+                            : 'This equation requires the quadratic formula.'}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button
+                            variant="outline"
+                            className="h-auto py-3 flex flex-col items-start gap-1 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+                            onClick={() => {
+                              setQuadraticMethod('factor');
+                              setQuadraticStep('factor-pairs');
+                              setTeacherKey(k => k + 1);
+                            }}
+                            disabled={!(mission as QuadraticBuilderMission).isFactorable}
+                          >
+                            <span className="font-semibold text-base">Factor Method</span>
+                            <span className="text-xs text-muted-foreground text-left">
+                              {(mission as QuadraticBuilderMission).isFactorable 
+                                ? 'Find factors, write (x+p)(x+q)=0' 
+                                : 'Not available for this equation'}
+                            </span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="h-auto py-3 flex flex-col items-start gap-1 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+                            onClick={() => {
+                              setQuadraticMethod('formula');
+                              setQuadraticStep('discriminant');
+                              setTeacherKey(k => k + 1);
+                            }}
+                          >
+                            <span className="font-semibold text-base">Formula Method</span>
+                            <span className="text-xs text-muted-foreground text-left">
+                              Use x = (-b ± √Δ) / 2a
+                            </span>
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* FORMULA METHOD STEPS */}
+                  {quadraticMethod === 'formula' && (
+                    <>
+                      {/* Step 1: Calculate Discriminant */}
+                  <Card className={quadraticStep === 'discriminant' ? 'border-purple-400 dark:border-purple-700' : ''}>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <div className={`flex items-center justify-center w-6 h-6 rounded-full ${quadraticStep === 'discriminant' ? 'bg-purple-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'} text-xs font-bold`}>
+                          1
+                        </div>
+                        Calculate Discriminant (Δ = b² - 4ac)
+                      </CardTitle>
+                      {quadraticStep === 'discriminant' && (
+                        <CardDescription className="text-xs">
+                          Type the complete calculation or just the result. Examples: "Δ=1" or "25-24=1" or just "1"
+                        </CardDescription>
+                      )}
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <input
+                        type="text"
+                        className="h-9 rounded-md border bg-background px-3 text-sm w-full font-mono"
+                        placeholder="e.g., Δ=1 or 25-24=1 or just 1"
+                        disabled={quadraticStep !== 'discriminant'}
+                        value={quadraticDiscriminantInput}
+                        onChange={(e) => {
+                          setQuadraticDiscriminantInput(e.target.value);
+                          setStepFeedback(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && quadraticStep === 'discriminant') {
+                            e.preventDefault();
+                            checkStep();
+                          }
+                        }}
+                      />
+                      {quadraticStep !== 'discriminant' && quadraticDiscriminantInput && (
+                        <p className="text-xs text-green-600 dark:text-green-400 font-mono">
+                          ✓ {quadraticDiscriminantInput}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Step 2: Set Up Quadratic Formula */}
+                  {(quadraticStep === 'formula' || quadraticStep === 'solutions') && (
+                    <Card className={quadraticStep === 'formula' ? 'border-purple-400 dark:border-purple-700' : ''}>
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className={`flex items-center justify-center w-6 h-6 rounded-full ${quadraticStep === 'formula' ? 'bg-purple-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'} text-xs font-bold`}>
+                            2
+                          </div>
+                          Set Up Quadratic Formula
+                        </CardTitle>
+                        {quadraticStep === 'formula' && (
+                          <CardDescription className="text-xs">
+                            Type x = (-b ± √Δ) / 2a with your actual values. Example: "x=(-5±√1)/2"
+                          </CardDescription>
+                        )}
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <input
+                          type="text"
+                          className="h-9 rounded-md border bg-background px-3 text-sm w-full font-mono"
+                          placeholder="e.g., x=(-5±√1)/2 or x=(-b±√Δ)/2a"
+                          disabled={quadraticStep !== 'formula'}
+                          value={quadraticFormulaInput}
+                          onChange={(e) => {
+                            setQuadraticFormulaInput(e.target.value);
+                            setStepFeedback(null);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && quadraticStep === 'formula') {
+                              e.preventDefault();
+                              checkStep();
+                            }
+                          }}
+                        />
+                        {quadraticStep === 'solutions' && quadraticFormulaInput && (
+                          <p className="text-xs text-green-600 dark:text-green-400 font-mono">
+                            ✓ {quadraticFormulaInput}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Step 3: Write Final Solutions */}
+                  {quadraticStep === 'solutions' && (
+                    <Card className="border-purple-400 dark:border-purple-700">
+                      <CardHeader className="pb-2">
+                        <CardTitle className="text-sm flex items-center gap-2">
+                          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">
+                            3
+                          </div>
+                          Write Final Solutions
+                        </CardTitle>
+                        <CardDescription className="text-xs">
+                          Type both solutions. Examples: "x=-2, x=-3" or "x=-3 and x=-2" (order doesn't matter)
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        <input
+                          type="text"
+                          className="h-9 rounded-md border bg-background px-3 text-sm w-full font-mono"
+                          placeholder="e.g., x=-2, x=-3 or x=-2 and x=-3"
+                          value={quadraticSolutionsInput}
+                          onChange={(e) => {
+                            setQuadraticSolutionsInput(e.target.value);
+                            setStepFeedback(null);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && quadraticStep === 'solutions') {
+                              e.preventDefault();
+                              checkStep();
+                            }
+                          }}
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
+                  </>
+                  )}
+
+                  {/* FACTORIZATION METHOD STEPS */}
+                  {quadraticMethod === 'factor' && (
+                    <>
+                      {/* Step 1: Find Factor Pairs */}
+                      <Card className={quadraticStep === 'factor-pairs' ? 'border-purple-400 dark:border-purple-700' : ''}>
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-sm flex items-center gap-2">
+                            <div className={`flex items-center justify-center w-6 h-6 rounded-full ${quadraticStep === 'factor-pairs' ? 'bg-purple-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'} text-xs font-bold`}>
+                              1
+                            </div>
+                            Find Two Numbers
+                          </CardTitle>
+                          {quadraticStep === 'factor-pairs' && (
+                            <CardDescription className="text-xs">
+                              Find numbers that multiply to {(mission as QuadraticBuilderMission).parsed.c} and add to {(mission as QuadraticBuilderMission).parsed.b}
+                            </CardDescription>
+                          )}
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          <input
+                            type="text"
+                            className="h-9 rounded-md border bg-background px-3 text-sm w-full font-mono"
+                            placeholder="e.g., 2, 3 or 2 and 3"
+                            disabled={quadraticStep !== 'factor-pairs'}
+                            value={factorPairsInput}
+                            onChange={(e) => {
+                              setFactorPairsInput(e.target.value);
+                              setStepFeedback(null);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && quadraticStep === 'factor-pairs') {
+                                e.preventDefault();
+                                checkStep();
+                              }
+                            }}
+                          />
+                          {quadraticStep !== 'factor-pairs' && factorPairsInput && (
+                            <p className="text-xs text-green-600 dark:text-green-400 font-mono">
+                              ✓ {factorPairsInput}
+                            </p>
+                          )}
+                        </CardContent>
+                      </Card>
+
+                      {/* Step 2: Write Factored Form */}
+                      {(quadraticStep === 'factored-form' || quadraticStep === 'zero-product' || quadraticStep === 'factor-solutions') && (
+                        <Card className={quadraticStep === 'factored-form' ? 'border-purple-400 dark:border-purple-700' : ''}>
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-sm flex items-center gap-2">
+                              <div className={`flex items-center justify-center w-6 h-6 rounded-full ${quadraticStep === 'factored-form' ? 'bg-purple-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'} text-xs font-bold`}>
+                                2
+                              </div>
+                              Write Factored Form
+                            </CardTitle>
+                            {quadraticStep === 'factored-form' && (
+                              <CardDescription className="text-xs">
+                                Write (x ± p)(x ± q) = 0 using your two numbers
+                              </CardDescription>
+                            )}
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                            <input
+                              type="text"
+                              className="h-9 rounded-md border bg-background px-3 text-sm w-full font-mono"
+                              placeholder="e.g., (x+2)(x+3)=0 or (x+2)(x+3)"
+                              disabled={quadraticStep !== 'factored-form'}
+                              value={factoredFormInput}
+                              onChange={(e) => {
+                                setFactoredFormInput(e.target.value);
+                                setStepFeedback(null);
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && quadraticStep === 'factored-form') {
+                                  e.preventDefault();
+                                  checkStep();
+                                }
+                              }}
+                            />
+                            {quadraticStep !== 'factored-form' && factoredFormInput && (
+                              <p className="text-xs text-green-600 dark:text-green-400 font-mono">
+                                ✓ {factoredFormInput}
+                              </p>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Step 3: Apply Zero Product Rule */}
+                      {(quadraticStep === 'zero-product' || quadraticStep === 'factor-solutions') && (
+                        <Card className={quadraticStep === 'zero-product' ? 'border-purple-400 dark:border-purple-700' : ''}>
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-sm flex items-center gap-2">
+                              <div className={`flex items-center justify-center w-6 h-6 rounded-full ${quadraticStep === 'zero-product' ? 'bg-purple-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'} text-xs font-bold`}>
+                                3
+                              </div>
+                              Apply Zero Product Rule
+                            </CardTitle>
+                            {quadraticStep === 'zero-product' && (
+                              <CardDescription className="text-xs">
+                                If (x+p)(x+q)=0, then x+p=0 OR x+q=0
+                              </CardDescription>
+                            )}
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                            <input
+                              type="text"
+                              className="h-9 rounded-md border bg-background px-3 text-sm w-full font-mono"
+                              placeholder="e.g., x+2=0 or x+3=0"
+                              disabled={quadraticStep !== 'zero-product'}
+                              value={zeroProductInput}
+                              onChange={(e) => {
+                                setZeroProductInput(e.target.value);
+                                setStepFeedback(null);
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && quadraticStep === 'zero-product') {
+                                  e.preventDefault();
+                                  checkStep();
+                                }
+                              }}
+                            />
+                            {quadraticStep === 'factor-solutions' && zeroProductInput && (
+                              <p className="text-xs text-green-600 dark:text-green-400 font-mono">
+                                ✓ {zeroProductInput}
+                              </p>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Step 4: Final Solutions */}
+                      {quadraticStep === 'factor-solutions' && (
+                        <Card className="border-purple-400 dark:border-purple-700">
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-sm flex items-center gap-2">
+                              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-purple-500 text-white text-xs font-bold">
+                                4
+                              </div>
+                              Solve for x
+                            </CardTitle>
+                            <CardDescription className="text-xs">
+                              Solve each equation to find both roots
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent className="space-y-2">
+                            <input
+                              type="text"
+                              className="h-9 rounded-md border bg-background px-3 text-sm w-full font-mono"
+                              placeholder="e.g., x=-2, x=-3 or x=-2 and x=-3"
+                              value={factorSolutionsInput}
+                              onChange={(e) => {
+                                setFactorSolutionsInput(e.target.value);
+                                setStepFeedback(null);
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter' && quadraticStep === 'factor-solutions') {
+                                  e.preventDefault();
+                                  checkStep();
+                                }
+                              }}
+                            />
+                          </CardContent>
+                        </Card>
+                      )}
+                    </>
+                  )}
+
+                  {/* Hint Button */}
+                  <Button variant="ghost" onClick={requestHint} className="gap-2 w-full mt-2">
+                    <Lightbulb className="h-4 w-4" />
+                    Hint
+                  </Button>
+
+                  {stepFeedback && (
+                    <Card className="bg-rose-50 dark:bg-rose-950/20 border-rose-300 dark:border-rose-700">
+                      <CardContent className="pt-3 pb-3">
+                        <p className="text-sm text-rose-700 dark:text-rose-300">{stepFeedback}</p>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {stepSuccessMessage && (
+                    <Card className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-700">
+                      <CardContent className="pt-3 pb-3">
+                        <p className="text-sm text-emerald-700 dark:text-emerald-300">{stepSuccessMessage}</p>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {showHint && (
+                    <Card className="bg-amber-50 dark:bg-amber-950/20 border-amber-300 dark:border-amber-700">
+                      <CardContent className="pt-4 text-sm">
+                        {quadraticMethod === 'factor' && (quadraticStep === 'factor-pairs' || quadraticStep === 'factored-form' || quadraticStep === 'zero-product' || quadraticStep === 'factor-solutions')
+                          ? getFactorizationHint(quadraticStep as 'factor-pairs' | 'factored-form' | 'zero-product' | 'factor-solutions', mission as QuadraticBuilderMission)
+                          : quadraticMethod === 'formula' && (quadraticStep === 'discriminant' || quadraticStep === 'formula' || quadraticStep === 'solutions')
+                          ? getQuadraticHint(quadraticStep as 'discriminant' | 'formula' | 'solutions', mission as QuadraticBuilderMission)
+                          : 'Choose a solving method to begin.'}
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              )}
+
+              {/* LINEAR/INEQUALITY SOLVING INTERFACE (existing code) */}
+              {practiceMode !== 'quadratic' && (
+              <>
               {bracketFlow.active && bracketFlow.phase !== 'done' ? (
                 <Card className="border-cyan-400 dark:border-cyan-700">
                   <CardContent className="space-y-2 pt-3">
@@ -2211,7 +3160,8 @@ export function EquationBuilderLabEnhanced() {
                   <CardContent className="pt-4 text-sm">{mission.hint}</CardContent>
                 </Card>
               )}
-
+              </>
+              )}
               {interventionMessage && (
                 <Card className="bg-orange-50 dark:bg-orange-950/20 border-orange-300 dark:border-orange-700">
                   <CardContent className="pt-4 text-sm">{interventionMessage}</CardContent>
@@ -2241,24 +3191,233 @@ export function EquationBuilderLabEnhanced() {
             </Card>
           )}
 
-          {stage === 'result' && (
-            <Card className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-700">
+          {stage === 'quadratic-learn' && quadraticSolution && (
+            <Card className="border-purple-300 dark:border-purple-700">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
-                  <CheckCircle2 className="h-5 w-5" />
-                  Equation Builder Complete
+                <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                  <BookOpen className="h-5 w-5" />
+                  Solving Quadratic Equation
                 </CardTitle>
-                <CardDescription>
-                  Checkpoint score: {checkpointScore}/{checkpoints.length} | Hints used: {hintCount}
-                </CardDescription>
+                <CardDescription>Let's solve this step by step using the quadratic formula</CardDescription>
               </CardHeader>
-              <CardContent>
-                <Button onClick={restart} variant="outline" className="gap-2">
-                  <RotateCcw className="h-4 w-4" />
-                  Retry Lab
-                </Button>
+              <CardContent className="space-y-6">
+                {/* Step 1: Identify equation type */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold">
+                      1
+                    </div>
+                    <h3 className="font-semibold text-lg">Identify the Equation Type</h3>
+                  </div>
+                  <div className="ml-10 p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                    <p className="font-mono text-lg mb-2">{quadraticSolution.equation}</p>
+                    <p className="text-sm text-muted-foreground">
+                      ✓ This is a <span className="font-semibold text-purple-600 dark:text-purple-400">quadratic equation</span> because it contains x² (x squared)
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 2: Write in standard form */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold">
+                      2
+                    </div>
+                    <h3 className="font-semibold text-lg">Standard Form: ax² + bx + c = 0</h3>
+                  </div>
+                  <div className="ml-10 p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                    <p className="font-mono text-lg mb-3">
+                      {quadraticSolution.parsed.a}x² {quadraticSolution.parsed.b >= 0 ? '+' : ''}{quadraticSolution.parsed.b}x {quadraticSolution.parsed.c >= 0 ? '+' : ''}{quadraticSolution.parsed.c} = 0
+                    </p>
+                    <div className="space-y-1 text-sm">
+                      <p><span className="font-semibold text-purple-600 dark:text-purple-400">a</span> = {quadraticSolution.parsed.a} <span className="text-muted-foreground">(coefficient of x²)</span></p>
+                      <p><span className="font-semibold text-purple-600 dark:text-purple-400">b</span> = {quadraticSolution.parsed.b} <span className="text-muted-foreground">(coefficient of x)</span></p>
+                      <p><span className="font-semibold text-purple-600 dark:text-purple-400">c</span> = {quadraticSolution.parsed.c} <span className="text-muted-foreground">(constant term)</span></p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 3: Apply quadratic formula */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold">
+                      3
+                    </div>
+                    <h3 className="font-semibold text-lg">Apply the Quadratic Formula</h3>
+                  </div>
+                  <div className="ml-10 p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg space-y-3">
+                    <p className="text-center font-mono text-lg border-2 border-purple-200 dark:border-purple-800 p-3 rounded-lg bg-white dark:bg-purple-950">
+                      x = (-b ± √(b² - 4ac)) / 2a
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Substitute a = {quadraticSolution.parsed.a}, b = {quadraticSolution.parsed.b}, c = {quadraticSolution.parsed.c}:
+                    </p>
+                    <p className="font-mono text-base">
+                      x = (-({quadraticSolution.parsed.b}) ± √(({quadraticSolution.parsed.b})² - 4({quadraticSolution.parsed.a})({quadraticSolution.parsed.c}))) / 2({quadraticSolution.parsed.a})
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 4: Calculate discriminant */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold">
+                      4
+                    </div>
+                    <h3 className="font-semibold text-lg">Calculate the Discriminant (Δ)</h3>
+                  </div>
+                  <div className="ml-10 p-4 bg-purple-50 dark:bg-purple-950/20 rounded-lg space-y-2">
+                    <p className="font-mono text-base">
+                      Δ = b² - 4ac = ({quadraticSolution.parsed.b})² - 4({quadraticSolution.parsed.a})({quadraticSolution.parsed.c})
+                    </p>
+                    <p className="font-mono text-base">
+                      Δ = {quadraticSolution.parsed.b * quadraticSolution.parsed.b} - {4 * quadraticSolution.parsed.a * quadraticSolution.parsed.c}
+                    </p>
+                    <p className="font-mono text-xl font-bold text-purple-700 dark:text-purple-300">
+                      Δ = {quadraticSolution.solution.discriminant}
+                    </p>
+                    <div className={`mt-3 p-3 rounded-lg border-2 ${
+                      quadraticSolution.solution.discriminant < 0 
+                        ? 'bg-red-50 dark:bg-red-950/20 border-red-300 dark:border-red-700' 
+                        : quadraticSolution.solution.discriminant === 0 
+                        ? 'bg-yellow-50 dark:bg-yellow-950/20 border-yellow-300 dark:border-yellow-700' 
+                        : 'bg-green-50 dark:bg-green-950/20 border-green-300 dark:border-green-700'
+                    }`}>
+                      <p className="font-semibold">
+                        {quadraticSolution.solution.discriminant < 0 && '❌ Δ < 0: No real solutions'}
+                        {quadraticSolution.solution.discriminant === 0 && '⚠️ Δ = 0: One repeated root (perfect square)'}
+                        {quadraticSolution.solution.discriminant > 0 && '✅ Δ > 0: Two distinct real roots'}
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {quadraticSolution.solution.discriminant < 0 && 'The equation has no real number solutions because you cannot take the square root of a negative number.'}
+                        {quadraticSolution.solution.discriminant === 0 && 'The equation has exactly one solution (or two identical solutions).'}
+                        {quadraticSolution.solution.discriminant > 0 && 'The equation has two different real number solutions.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex gap-3 pt-4 border-t">
+                  <Button 
+                    onClick={() => {
+                      setStage('result');
+                      setTeacherKey((k) => k + 1);
+                    }}
+                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-white gap-2"
+                  >
+                    <Calculator className="h-4 w-4" />
+                    Calculate Final Roots
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      setQuadraticSolution(null);
+                      setCustomEquationInput('');
+                      setStage('build');
+                    }}
+                    variant="outline"
+                    className="gap-2"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                    Start Over
+                  </Button>
+                </div>
               </CardContent>
             </Card>
+          )}
+
+          {stage === 'result' && (
+            <>
+              {quadraticSolution && (
+                <Card className="mb-4 border-purple-300 dark:border-purple-700">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                      <CheckCircle2 className="h-5 w-5" />
+                      Quadratic Equation Solution
+                    </CardTitle>
+                    <CardDescription>Solved using quadratic formula</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="bg-purple-50 dark:bg-purple-950/20 p-4 rounded-lg">
+                      <p className="font-mono text-lg mb-2">{quadraticSolution.equation}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Standard form: {quadraticSolution.parsed.a}x² {quadraticSolution.parsed.b >= 0 ? '+' : ''}{quadraticSolution.parsed.b}x {quadraticSolution.parsed.c >= 0 ? '+' : ''}{quadraticSolution.parsed.c} = 0
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold mb-2">Discriminant (Δ = b² - 4ac)</h4>
+                      <p className="text-lg">Δ = {quadraticSolution.solution.discriminant}</p>
+                      {quadraticSolution.solution.discriminant < 0 && (
+                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                          No real solutions (discriminant is negative)
+                        </p>
+                      )}
+                      {quadraticSolution.solution.discriminant === 0 && (
+                        <p className="text-sm text-yellow-600 dark:text-yellow-400 mt-1">
+                          One repeated root (perfect square)
+                        </p>
+                      )}
+                      {quadraticSolution.solution.discriminant > 0 && (
+                        <p className="text-sm text-green-600 dark:text-green-400 mt-1">
+                          Two distinct real roots
+                        </p>
+                      )}
+                    </div>
+                    
+                    {quadraticSolution.solution.roots.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold mb-2">Solution{quadraticSolution.solution.roots.length > 1 ? 's' : ''}</h4>
+                        {quadraticSolution.solution.roots.map((root, i) => (
+                          <p key={i} className="text-xl font-mono">
+                            x = {root.toFixed(4)}
+                          </p>
+                        ))}
+                        {quadraticSolution.solution.rootsExact && (
+                          <div className="mt-2 text-sm text-muted-foreground">
+                            <p>Exact form:</p>
+                            {quadraticSolution.solution.rootsExact.map((exact, i) => (
+                              <p key={i} className="font-mono">x = {exact}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="pt-4 border-t">
+                      <Button onClick={() => {
+                        setQuadraticSolution(null);
+                        setCustomEquationInput('');
+                        setStage('build');
+                      }} variant="outline" className="gap-2">
+                        <RotateCcw className="h-4 w-4" />
+                        Solve Another Equation
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
+              {!quadraticSolution && (
+                <Card className="bg-emerald-50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-700">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+                      <CheckCircle2 className="h-5 w-5" />
+                      Equation Builder Complete
+                    </CardTitle>
+                    <CardDescription>
+                      Checkpoint score: {checkpointScore}/{checkpoints.length} | Hints used: {hintCount}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button onClick={restart} variant="outline" className="gap-2">
+                      <RotateCcw className="h-4 w-4" />
+                      Retry Lab
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
