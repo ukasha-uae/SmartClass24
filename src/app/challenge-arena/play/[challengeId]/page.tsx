@@ -514,18 +514,40 @@ export default function QuizBattlePage() {
       return;
     }
 
-    // Convert to PlayerAnswer[] with proper timing tracking
+    // Convert to PlayerAnswer[] with proper timing and diagnostic tracking
     const playerAnswers: PlayerAnswer[] = challenge.questions.map(q => {
       const answer = answersMap[q.id];
       const isCorrect = checkGameQuestionAnswer(q, answer);
       const timeSpent = questionTimeSpent[q.id] || (Date.now() - (questionStartTimes[q.id] || startTime));
+      
+      // \u2705 NEW: Detect misconception if answer is wrong
+      let misconceptionTag: string | undefined;
+      if (!isCorrect && q.misconceptionTags) {
+        // Check predefined misconception triggers
+        // Handle array correctAnswer type
+        const correctAnswerValue = Array.isArray(q.correctAnswer) 
+          ? q.correctAnswer[0] 
+          : q.correctAnswer;
+        const detectedMisconception = q.misconceptionTags.find(mt => 
+          mt.triggerCondition(answer, correctAnswerValue)
+        );
+        misconceptionTag = detectedMisconception?.tag;
+      } else if (!isCorrect && q.conceptId) {
+        // Fallback: generic misconception tag based on concept
+        misconceptionTag = `${q.conceptId}.general-error`;
+      }
       
       return {
         questionId: q.id,
         answer: String(answer), // Convert to string for storage
         isCorrect,
         timeSpent, // Now properly tracked per question
-        points: isCorrect ? q.points : 0
+        points: isCorrect ? q.points : 0,
+        // \u2705 NEW: Diagnostic fields
+        conceptId: q.conceptId,
+        misconceptionTag,
+        difficulty: q.difficulty,
+        subjectArea: q.subjectArea,
       };
     });
     

@@ -8,7 +8,7 @@ import { trackQuestionUsage } from './analytics';
 import { createUserNotification } from './realtime-notifications';
 import { isBot } from './ai-bot-profiles';
 import { initializeFirebase } from '@/firebase';
-import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, onSnapshot, serverTimestamp, runTransaction } from 'firebase/firestore';
+import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, onSnapshot, serverTimestamp, runTransaction, addDoc } from 'firebase/firestore';
 import { getUserDisplayName } from './user-display';
 
 
@@ -96,6 +96,14 @@ export interface GameQuestion {
   verifiedQuestionNumber?: number; // Actual question number from WASSCE paper (only set when verified against official papers)
   unit?: string; // For number input questions
   alternatives?: string[]; // Alternative correct answers for fillblank
+  // ✅ NEW: Diagnostic metadata for misconception tracking
+  conceptId?: string;        // e.g., 'linear-equations', 'quadratics', 'photosynthesis'
+  subjectArea?: string;      // e.g., 'algebra', 'geometry', 'biology'
+  difficulty?: 'easy' | 'medium' | 'hard';
+  misconceptionTags?: {      // Predefined misconceptions for this question
+    tag: string;             // e.g., 'inverse-operation', 'sign-error'
+    triggerCondition: (studentAnswer: string | number, correctAnswer: string | number) => boolean;
+  }[];
 }
 
 /**
@@ -158,6 +166,65 @@ export const checkGameQuestionAnswer = (question: GameQuestion, answer: any): bo
   return false;
 };
 
+/**
+ * ✅ NEW: Write Arena diagnostic data to Firestore
+ * Logs misconceptions from wrong answers for diagnostic engine
+ */
+async function writeArenaDiagnosticsToFirestore(
+  userId: string, 
+  challenge: Challenge, 
+  answers: PlayerAnswer[]
+): Promise<void> {
+  try {
+    const { firestore } = initializeFirebase();
+    if (!firestore) return;
+
+    // Filter to only wrong answers with diagnostic data
+    const wrongAnswers = answers.filter(a => 
+      !a.isCorrect && 
+      (a.misconceptionTag || a.conceptId)
+    );
+
+    if (wrongAnswers.length === 0) return;
+
+    // Batch write all diagnostics
+    const diagnosticsRef = collection(firestore, 'diagnostics', userId, 'misconceptions');
+    
+    for (const answer of wrongAnswers) {
+      // Find the original question for context
+      const question = challenge.questions.find(q => q.id === answer.questionId);
+      
+      const diagnosticData = {
+        source: 'arena-challenge' as const,
+        subject: challenge.subject,
+        level: challenge.level,
+        conceptId: answer.conceptId || 'unknown',
+        misconceptionTag: answer.misconceptionTag,
+        studentAnswer: answer.answer,
+        correctAnswer: question ? String(question.correctAnswer) : undefined,
+        attemptNumber: 1, // Arena battles don't track attempt sequences yet
+        severity: 'first-time' as const, // Will be upgraded to recurring by detection engine
+        timestamp: serverTimestamp(),
+        contextData: {
+          stationSlug: 'arena-challenge',
+          isCorrect: false,
+          timeSpent: answer.timeSpent,
+          challengeType: challenge.type,
+          difficulty: answer.difficulty,
+          subjectArea: answer.subjectArea,
+        }
+      };
+
+      await addDoc(diagnosticsRef, diagnosticData);
+    }
+
+    console.log(`[Arena Diagnostics] Logged ${wrongAnswers.length} misconceptions for user ${userId}`);
+  } catch (error) {
+    console.error('[Arena Diagnostics] Write error:', error);
+    // Silent fail - don't disrupt battle
+  }
+}
+
 export interface GameResult {
   userId: string;
   userName: string;
@@ -178,6 +245,11 @@ export interface PlayerAnswer {
   isCorrect: boolean;
   timeSpent: number; // milliseconds
   points: number;
+  // ✅ NEW: Diagnostic fields for misconception tracking
+  conceptId?: string;           // Mapped from question.conceptId
+  misconceptionTag?: string;    // Detected misconception if wrong
+  difficulty?: 'easy' | 'medium' | 'hard';
+  subjectArea?: string;         // e.g., 'algebra', 'geometry'
 }
 
 // ============================================
@@ -1326,6 +1398,15 @@ export const submitChallengeAnswers = async (
   const totalTime = totalTimeOverride ?? answers.reduce((sum, a) => sum + a.timeSpent, 0);
   const correctAnswersCount = answers.filter(a => a.isCorrect).length;
   const accuracy = (correctAnswersCount / answers.length) * 100;
+  
+  // ✅ NEW: Write diagnostic data to Firestore for misconception tracking
+  // Only for wrong answers with misconception tags
+  if (typeof window !== 'undefined' && !userId.startsWith('bot-') && !userId.startsWith('ai-')) {
+    writeArenaDiagnosticsToFirestore(userId, challenge, answers).catch(err => {
+      // Silent fail - don't disrupt battle experience
+      console.warn('[Arena Diagnostics] Failed to write:', err);
+    });
+  }
   
   // Update opponent or creator
   if (opponentIndex > -1) {

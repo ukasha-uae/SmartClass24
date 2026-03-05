@@ -73,6 +73,27 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
+    // Diagnostic data - misconceptions from labs, arena, quizzes
+    // Schema: diagnostics/{userId}/misconceptions/{autoId}
+    match /diagnostics/{userId}/misconceptions/{misconceptionId} {
+      // Users can only read their own diagnostics
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Users can write their own diagnostics (from labs/arena)
+      allow create: if request.auth != null && request.auth.uid == userId;
+      
+      // No updates or deletes - diagnostics are immutable historical records
+      allow update, delete: if false;
+    }
+
+    // Teacher access to student diagnostics (for dashboard)
+    match /diagnostics/{studentId}/misconceptions/{misconceptionId} {
+      // Teachers can read diagnostics for students in their tenant
+      allow read: if request.auth != null && 
+        hasRole('teacher') &&
+        belongsToTenant(get(/databases/$(database)/documents/students/$(studentId)).data.tenantId);
+    }
+
     // Challenges - accessible to creator and opponents
     match /challenges/{challengeId} {
       // Helper function to check if challenge currently has a bot (from existing data)
