@@ -387,6 +387,7 @@ export function EquationBuilderLabEnhanced() {
   const [checkpointAnswers, setCheckpointAnswers] = useState<number[]>([]);
   const [showVbsTutorial, setShowVbsTutorial] = useState(false);
   const [workingCopied, setWorkingCopied] = useState(false);
+  const [missionEquationCopied, setMissionEquationCopied] = useState(false);
   const [intermediateEquation, setIntermediateEquation] = useState<string | null>(null);
   const [intermediateAnswerGiven, setIntermediateAnswerGiven] = useState(false);
   const [operationSlots, setOperationSlots] = useState<{ symbol: string | null; value: string | null }>({
@@ -2403,7 +2404,27 @@ export function EquationBuilderLabEnhanced() {
                       : 'Fraction'}
                   </Badge>
                 </div>
-                <p className="font-semibold text-base">{getMissionEquationString(mission)}</p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="font-semibold text-base">{getMissionEquationString(mission)}</p>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 px-2 text-xs gap-1 shrink-0"
+                    onClick={() => {
+                      const eq = getMissionEquationString(mission);
+                      navigator.clipboard.writeText(eq).then(() => {
+                        setMissionEquationCopied(true);
+                        setTimeout(() => setMissionEquationCopied(false), 2000);
+                      }).catch(err => console.error('Failed to copy:', err));
+                    }}
+                  >
+                    {missionEquationCopied ? (
+                      <><Check className="h-3.5 w-3.5" />Copied!</>
+                    ) : (
+                      <><Copy className="h-3.5 w-3.5" />Copy</>
+                    )}
+                  </Button>
+                </div>
                 <p className="text-[11px] text-muted-foreground">Solved: {solvedMissions}/{missions.length}</p>
               </div>
 
