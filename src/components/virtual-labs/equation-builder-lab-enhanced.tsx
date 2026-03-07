@@ -73,11 +73,13 @@ import {
   validateFactorSolutions,
   getFactorizationHint,
   buildQuadraticMission,
+  getQuadraticTypeLabel,
 } from '@/lib/math-lab/equation-engine';
 import { normalizeMathText } from '@/lib/text/normalize-math-text';
+import MathText from '@/components/MathText';
 
 type StepKey = 'operation' | 'equation' | 'answer';
-type QuadraticStepKey = 'method-choice' | 'discriminant' | 'formula' | 'solutions' | 'factor-pairs' | 'factored-form' | 'zero-product' | 'factor-solutions';
+type QuadraticStepKey = 'method-choice' | 'discriminant' | 'formula' | 'solutions' | 'factor-pairs' | 'factored-form' | 'zero-product' | 'factor-solutions' | 'no-solutions-confirm';
 type QuadraticMethod = 'formula' | 'factor';
 type PracticeMode = 'linear' | 'fraction' | 'variable-both-sides' | 'inequality' | 'quadratic';
 const EQUATION_SLOT_COUNT = 6;
@@ -388,6 +390,7 @@ export function EquationBuilderLabEnhanced() {
   const [showVbsTutorial, setShowVbsTutorial] = useState(false);
   const [workingCopied, setWorkingCopied] = useState(false);
   const [missionEquationCopied, setMissionEquationCopied] = useState(false);
+  const [noSolutionsInput, setNoSolutionsInput] = useState('');
   const [intermediateEquation, setIntermediateEquation] = useState<string | null>(null);
   const [intermediateAnswerGiven, setIntermediateAnswerGiven] = useState(false);
   const [operationSlots, setOperationSlots] = useState<{ symbol: string | null; value: string | null }>({
@@ -669,6 +672,7 @@ export function EquationBuilderLabEnhanced() {
     quadraticDiscriminantInput,
     quadraticFormulaInput,
     quadraticSolutionsInput,
+    noSolutionsInput,
     factorPairsInput,
     factoredFormInput,
     zeroProductInput,
@@ -1072,6 +1076,10 @@ export function EquationBuilderLabEnhanced() {
         if (quadraticStep === 'discriminant') {
           return validateQuadraticDiscriminant(quadraticDiscriminantInput.trim(), quadMission).isCorrect;
         }
+        if (quadraticStep === 'no-solutions-confirm') {
+          const n = noSolutionsInput.trim().toLowerCase();
+          return n.includes('no real') || n.includes('no solution') || n === 'no' || n === 'none' || n.includes('noreal') || n.includes('nosol');
+        }
         if (quadraticStep === 'formula') {
           return validateQuadraticFormulaSetup(quadraticFormulaInput.trim(), quadMission).isCorrect;
         }
@@ -1265,16 +1273,73 @@ export function EquationBuilderLabEnhanced() {
           playLabSound(validation.isCorrect ? 'step-correct' : 'step-incorrect');
           if (validation.isCorrect) {
             setWorkingHistory((prev) => ({ ...prev, quadraticDiscriminant: quadraticDiscriminantInput.trim() }));
-            setQuadraticStep('formula');
-            setStepFeedback(null);
-            setStepSuccessMessage('✓ Correct! Now set up the quadratic formula with your discriminant.');
+            if (quadMission.solution.discriminant < 0) {
+              setQuadraticStep('no-solutions-confirm');
+              setStepFeedback(null);
+              setStepSuccessMessage(`✓ Δ = ${quadMission.solution.discriminant}. Since Δ < 0, there are no real solutions — confirm below.`);
+            } else {
+              setQuadraticStep('formula');
+              setStepFeedback(null);
+              setStepSuccessMessage('✓ Correct! Now set up the quadratic formula with your discriminant.');
+            }
             setTeacherKey((k) => k + 1);
           } else {
             setStepFeedback(validation.feedback);
           }
           return;
         }
-        
+
+        if (quadraticStep === 'no-solutions-confirm') {
+          const normalized = noSolutionsInput.trim().toLowerCase();
+          const isAccepted = normalized.includes('no real') || normalized.includes('no solution') || normalized === 'no' || normalized === 'none' || normalized.includes('noreal') || normalized.includes('nosol');
+          playLabSound(isAccepted ? 'mission-complete' : 'step-incorrect');
+          if (isAccepted) {
+            setWorkingHistory((prev) => ({ ...prev, quadraticSolutions: noSolutionsInput.trim() }));
+            setStepFeedback(null);
+            setStepSuccessMessage('✓ Correct! Δ < 0 confirms this equation has no real number solutions.');
+            setTimeout(() => {
+              if (missionIndex < missions.length - 1) {
+                if (customFlow.active && missionIndex === 0) {
+                  setCustomFlow({ active: true, awaitingChoice: true });
+                  setStepSuccessMessage('Custom quadratic solved. Choose what to do next.');
+                  setTeacherKey((k) => k + 1);
+                  return;
+                }
+                setMissionIndex(missionIndex + 1);
+                setQuadraticStep('method-choice');
+                setQuadraticMethod(null);
+                setQuadraticDiscriminantInput('');
+                setQuadraticFormulaInput('');
+                setQuadraticSolutionsInput('');
+                setNoSolutionsInput('');
+                setFactorPairsInput('');
+                setFactoredFormInput('');
+                setZeroProductInput('');
+                setFactorSolutionsInput('');
+                setStepSuccessMessage(null);
+                setWorkingHistory((prev) => ({
+                  ...prev,
+                  quadraticDiscriminant: null,
+                  quadraticFormula: null,
+                  quadraticSolutions: null,
+                  factorPairs: null,
+                  factoredForm: null,
+                  zeroProduct: null,
+                  factorSolutions: null,
+                }));
+                setTeacherKey((k) => k + 1);
+              } else {
+                setStage('checkpoint');
+                setCheckpointIndex(0);
+                setTeacherKey((k) => k + 1);
+              }
+            }, 1500);
+          } else {
+            setStepFeedback('Type "no real solutions" to confirm that Δ < 0 means no real roots exist.');
+          }
+          return;
+        }
+
         if (quadraticStep === 'formula') {
           const validation = validateQuadraticFormulaSetup(quadraticFormulaInput.trim(), quadMission);
           playLabSound(validation.isCorrect ? 'step-correct' : 'step-incorrect');
@@ -2605,19 +2670,20 @@ export function EquationBuilderLabEnhanced() {
                   {/* Method Selection */}
                   {quadraticStep === 'method-choice' && (
                     <Card className="border-purple-400 dark:border-purple-700">
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">Choose Your Solving Method</CardTitle>
-                        <CardDescription className="text-xs">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base">Choose Your Solving Method</CardTitle>
+                        <CardDescription className="text-sm">
                           {(mission as QuadraticBuilderMission).isFactorable 
                             ? 'This equation can be factored, but the formula works too. Pick the method you prefer!'
                             : 'This equation requires the quadratic formula.'}
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-2">
-                        <div className="grid grid-cols-2 gap-2">
+                      <CardContent className="pb-4">
+                        <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3">
+                          {/* Factor Method */}
                           <Button
                             variant="outline"
-                            className="h-auto py-3 flex flex-col items-start gap-1 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+                            className="h-auto min-h-[80px] py-4 px-4 flex flex-col items-start gap-2 text-left border-2 hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 active:scale-[0.98] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                             onClick={() => {
                               setQuadraticMethod('factor');
                               setQuadraticStep('factor-pairs');
@@ -2625,25 +2691,36 @@ export function EquationBuilderLabEnhanced() {
                             }}
                             disabled={!(mission as QuadraticBuilderMission).isFactorable}
                           >
-                            <span className="font-semibold text-base">Factor Method</span>
-                            <span className="text-xs text-muted-foreground text-left">
+                            <span className="font-bold text-base text-foreground">
+                              ✦ Factor Method
+                            </span>
+                            <span className="text-sm text-foreground/70 text-left leading-snug whitespace-normal">
                               {(mission as QuadraticBuilderMission).isFactorable 
-                                ? 'Find factors, write (x+p)(x+q)=0' 
-                                : 'Not available for this equation'}
+                                ? 'Find p, q where p·q = c and p+q = b, then write (x+p)(x+q) = 0'
+                                : 'Not available — equation is not factorable'}
                             </span>
                           </Button>
+
+                          {/* Formula Method */}
                           <Button
                             variant="outline"
-                            className="h-auto py-3 flex flex-col items-start gap-1 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-950/50"
+                            className="h-auto min-h-[80px] py-4 px-4 flex flex-col items-start gap-2 text-left border-2 hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-950/40 active:scale-[0.98] transition-all"
                             onClick={() => {
                               setQuadraticMethod('formula');
                               setQuadraticStep('discriminant');
                               setTeacherKey(k => k + 1);
                             }}
                           >
-                            <span className="font-semibold text-base">Formula Method</span>
-                            <span className="text-xs text-muted-foreground text-left">
-                              Use x = (-b ± √Δ) / 2a
+                            <span className="font-bold text-base text-foreground">
+                              ✦ Formula Method
+                            </span>
+                            <span className="text-sm text-foreground/70 text-left leading-snug flex flex-wrap items-center gap-x-1">
+                              Use{' '}
+                              <MathText
+                                latex={'x = \\dfrac{-b \\pm \\sqrt{\\Delta}}{2a}'}
+                                className="inline-block align-middle"
+                              />
+                              {' '}(works for all equations)
                             </span>
                           </Button>
                         </div>
@@ -2707,7 +2784,9 @@ export function EquationBuilderLabEnhanced() {
                         </CardTitle>
                         {quadraticStep === 'formula' && (
                           <CardDescription className="text-xs">
-                            Type x = (-b ± √Δ) / 2a with your actual values. Example: "x=(-5±√1)/2"
+                            Substitute your values into{' '}
+                            <MathText latex={'x = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}'} className="inline-block align-middle" />.
+                            {' '}Example: "x=(-5±√1)/2"
                           </CardDescription>
                         )}
                       </CardHeader>
@@ -3095,7 +3174,7 @@ export function EquationBuilderLabEnhanced() {
                       isStep2Locked
                         ? 'Step 2: Result equation (complete Step 1 first)'
                         : practiceMode === 'variable-both-sides'
-                        ? 'Step 2: Simplified equation (e.g. 2x=8)'
+                        ? 'Step 2: Simplified equation (e.g. 2x+7=15)'
                         : 'Step 2: Result equation (e.g. x/4=8 or 8=2x)'
                     }
                     disabled={step !== 'equation'}

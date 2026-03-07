@@ -13,6 +13,11 @@ export function ForceCacheClear() {
     }
 
     const clearCache = async () => {
+      // Only run once per browser session to avoid repeated SW unregistrations
+      // which cause InvalidStateError when next-pwa tries to call update() on a
+      // stale/dead registration reference.
+      if (sessionStorage.getItem('cache-cleared')) return;
+
       if ('serviceWorker' in navigator && 'caches' in window) {
         try {
           // Get all cache names
@@ -26,22 +31,23 @@ export function ForceCacheClear() {
             })
           );
 
-          // Unregister ALL service workers
+          // Unregister ALL service workers (once per session — prevents InvalidStateError
+          // on subsequent navigations where next-pwa tries to update a dead SW reference)
           const registrations = await navigator.serviceWorker.getRegistrations();
           await Promise.all(
             registrations.map(registration => {
               console.log('Unregistering service worker:', registration.scope);
-              return registration.unregister();
+              return registration.unregister().catch(() => {
+                // Silently ignore — SW may already be in invalid state
+              });
             })
           );
 
           console.log('✅ All caches cleared and service workers unregistered');
           
-          // Force reload from network (only once per session)
-          if (!sessionStorage.getItem('cache-cleared')) {
-            sessionStorage.setItem('cache-cleared', 'true');
-            window.location.reload();
-          }
+          // Mark as done for this session, then force a fresh network load
+          sessionStorage.setItem('cache-cleared', 'true');
+          window.location.reload();
         } catch (error) {
           console.error('Error clearing cache:', error);
         }
