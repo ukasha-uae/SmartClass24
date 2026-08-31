@@ -8,7 +8,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { Play, Save, RotateCcw, Download, Upload, FileCode, Eye, EyeOff, Maximize2, Minimize2 } from 'lucide-react';
-import { CodeFile, CodeExecutionResult, ConsoleMessage, SandboxConfig } from '@/types/university';
+import { CodeFile, CodeExecutionResult, ConsoleMessage, SandboxConfig, ValidationRule } from '@/types/university';
+import { runValidationRules, ValidationOutcome } from '@/lib/university-validation';
 
 // Dynamically import Monaco Editor to avoid SSR issues
 const MonacoEditor = dynamic(() => import('@monaco-editor/react').then(mod => mod.default ?? mod), {
@@ -20,7 +21,9 @@ interface UniversityCodeEditorProps {
   initialFiles: CodeFile[];
   environment: 'html-css-js' | 'react' | 'vue' | 'python' | 'nodejs' | 'typescript' | 'nextjs';
   sandboxConfig?: SandboxConfig;
+  validationRules?: ValidationRule[];
   onExecute?: (result: CodeExecutionResult) => void;
+  onValidate?: (results: ValidationOutcome[]) => void;
   onSave?: (files: CodeFile[]) => void;
   readOnly?: boolean;
   showPreview?: boolean;
@@ -43,7 +46,9 @@ export default function UniversityCodeEditor({
   initialFiles,
   environment,
   sandboxConfig = DEFAULT_SANDBOX_CONFIG,
+  validationRules,
   onExecute,
+  onValidate,
   onSave,
   readOnly = false,
   showPreview = true,
@@ -234,6 +239,13 @@ export default function UniversityCodeEditor({
       return () => clearTimeout(timer);
     }
   }, [files, environment, showPreview, previewVisible, executeCode]);
+
+  // Re-grade checkpoint/project rules whenever code or console output changes
+  useEffect(() => {
+    if (!validationRules || validationRules.length === 0) return;
+    const results = runValidationRules(validationRules, files, consoleMessages);
+    onValidate?.(results);
+  }, [files, consoleMessages, validationRules, onValidate]);
 
   // Cleanup Monaco Editor on unmount to prevent InstantiationService error
   useEffect(() => {

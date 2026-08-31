@@ -1022,6 +1022,16 @@ export default function AdminDashboard() {
             <Megaphone className="h-4 w-4" />
             📣 Open Media Library
           </Button>
+          <Button
+            onClick={() => {
+              window.location.href = '/admin/university-submissions';
+            }}
+            variant="outline"
+            className="gap-2 bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 hover:from-green-100 hover:to-teal-100 dark:hover:from-green-900/30 dark:hover:to-teal-900/30 border-green-200 dark:border-green-800"
+          >
+            <CheckCircle2 className="h-4 w-4" />
+            🎓 Grade Academy Projects
+          </Button>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">

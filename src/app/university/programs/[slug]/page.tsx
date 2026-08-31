@@ -153,6 +153,12 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                   </div>
                 )}
               </div>
+              <Link
+                href={addTenantParam(`/university/programs/${slug}/certificate`)}
+                className="mt-4 inline-block px-5 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold text-sm transition-colors"
+              >
+                View Certificate Status
+              </Link>
             </div>
           </div>
 

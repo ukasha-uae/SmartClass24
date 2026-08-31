@@ -19,6 +19,16 @@ service cloud.firestore {
              request.auth.token.superAdmin == true;
     }
     
+    // Check if user is a platform admin (super admin or listed in admins/{email})
+    function isPlatformAdmin() {
+      return request.auth != null && (
+        isSuperAdmin() ||
+        (request.auth.token.email != null &&
+         exists(/databases/$(database)/documents/admins/$(request.auth.token.email.lower())) &&
+         get(/databases/$(database)/documents/admins/$(request.auth.token.email.lower())).data.isActive == true)
+      );
+    }
+    
     // Check if user belongs to a specific curriculum (v2.0+)
     function belongsToCurriculum(curriculumId) {
       return request.auth != null && 
@@ -45,21 +55,26 @@ service cloud.firestore {
       allow read: if request.auth != null && (
         request.auth.uid == studentId ||
         belongsToTenant(resource.data.tenantId) ||
-        isSuperAdmin()
+        isSuperAdmin() ||
+        // Legacy profiles created before tenantId backfill should remain visible
+        !('tenantId' in resource.data) ||
+        // Allow anonymous users to read students (they don't have tenantId claims)
+        request.auth.token.firebase.sign_in_provider == 'anonymous'
       );
       allow create: if request.auth != null && 
         request.auth.uid == studentId &&
-        (!('tenantId' in request.resource.data) || 
-         ('tenantId' in request.auth.token) &&
-         request.resource.data.tenantId == request.auth.token.tenantId);
-      allow update: if request.auth != null && 
-        request.auth.uid == studentId &&
-        (!('tenantId' in resource.data) ||
-         ('tenantId' in request.auth.token) &&
-         resource.data.tenantId == request.auth.token.tenantId);
+        (
+          // Authenticated users with matching tenantId
+          (('tenantId' in request.auth.token) &&
+           request.resource.data.tenantId == request.auth.token.tenantId) ||
+          // Anonymous users (no tenantId claim) - allow with tenantId in data
+          (request.auth.token.firebase.sign_in_provider == 'anonymous' &&
+           'tenantId' in request.resource.data)
+        );
+      allow update: if request.auth != null && request.auth.uid == studentId;
       allow delete: if false;
     }
-    
+
     // Quiz attempts (shared collection, filtered by tenantId)
     match /users/{userId}/quizAttempts/{attemptId} {
       allow read: if request.auth != null && 
@@ -206,11 +221,11 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    // S24 Innovation Academy Submissions - students can read their own submissions
+    // S24 Innovation Academy Submissions - students can read their own submissions; admins can grade
     match /university-submissions/{submissionId} {
-      allow read: if request.auth != null && resource.data.studentId == request.auth.uid;
+      allow read: if request.auth != null && (resource.data.studentId == request.auth.uid || isPlatformAdmin());
       allow create: if request.auth != null && request.resource.data.studentId == request.auth.uid;
-      allow update: if request.auth != null && resource.data.studentId == request.auth.uid;
+      allow update: if request.auth != null && (resource.data.studentId == request.auth.uid || isPlatformAdmin());
       allow delete: if false;
     }
 
@@ -220,6 +235,14 @@ service cloud.firestore {
       allow read: if request.auth != null && saveId.matches(request.auth.uid + '_.*');
       allow create, update: if request.auth != null && saveId.matches(request.auth.uid + '_.*');
       allow delete: if request.auth != null && saveId.matches(request.auth.uid + '_.*');
+    }
+
+    // S24 Innovation Academy Certificates - publicly verifiable by ID, owner-issued only
+    match /university-certificates/{certificateId} {
+      allow get: if true;
+      allow list: if request.auth != null && resource.data.studentId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.studentId == request.auth.uid;
+      allow update, delete: if false;
     }
 
     // =========================================================================

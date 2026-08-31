@@ -5,13 +5,18 @@
 
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useCallback, use } from 'react';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { ArrowLeft, ChevronRight, BookOpen, Code, CheckCircle2, Award } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { webDevelopmentProgram } from '@/lib/university-data';
-import { CodeExecutionResult } from '@/types/university';
+import { CodeExecutionResult, CodeFile } from '@/types/university';
+import { ValidationOutcome } from '@/lib/university-validation';
+import { useCodeSaves, useUniversityProgress } from '@/firebase/university-hooks';
+import { useTenantLink } from '@/hooks/useTenantLink';
 import MarkdownContent from '@/components/university/MarkdownContent';
+import LessonCheckpoints from '@/components/university/LessonCheckpoints';
 
 // Dynamically import the code editor with no SSR to prevent hydration issues
 const UniversityCodeEditor = dynamic(() => import('@/components/university/UniversityCodeEditor').then(mod => mod.default ?? mod), {
@@ -26,23 +31,79 @@ const UniversityCodeEditor = dynamic(() => import('@/components/university/Unive
 
 export default function LessonPage({ params }: { params: Promise<{ slug: string; courseSlug: string; lessonSlug: string }> }) {
   const resolvedParams = use(params);
+  const addTenantParam = useTenantLink();
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [executionResult, setExecutionResult] = useState<CodeExecutionResult | null>(null);
+  const [validationResults, setValidationResults] = useState<ValidationOutcome[]>([]);
+  const [savedFiles, setSavedFiles] = useState<CodeFile[]>([]);
+  const [isCodeLoading, setIsCodeLoading] = useState(true);
+  const [markedComplete, setMarkedComplete] = useState(false);
+  const { saveCode, loadCode } = useCodeSaves();
+  const { markLessonComplete, getProgress } = useUniversityProgress();
 
   // Get lesson data (in real app, this would come from params)
   const program = webDevelopmentProgram;
   const course = program.courses[0];
-  const module = course.modules[0];
-  const lesson = module.lessons.find(l => l.slug === resolvedParams.lessonSlug) || module.lessons[1];
+  // Search every module, not just the first, so lessons in later modules are reachable
+  const allLessons = course.modules.flatMap(m => m.lessons);
+  const lesson = allLessons.find(l => l.slug === resolvedParams.lessonSlug);
+
+  if (!lesson) {
+    notFound();
+  }
+
+  const lessonIndex = allLessons.findIndex(l => l.id === lesson.id);
+  const prevLesson = lessonIndex > 0 ? allLessons[lessonIndex - 1] : null;
+  const nextLesson = lessonIndex < allLessons.length - 1 ? allLessons[lessonIndex + 1] : null;
+  const currentModule = course.modules.find(m => m.lessons.some(l => l.id === lesson.id))!;
+  const courseHref = addTenantParam(`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}`);
+
+  // Restore any previously saved code for this lesson (Firestore, falling back to localStorage)
+  useEffect(() => {
+    let cancelled = false;
+    setIsCodeLoading(true);
+    loadCode(lesson.id).then(files => {
+      if (cancelled) return;
+      setSavedFiles(files ?? []);
+      setIsCodeLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [lesson.id, loadCode]);
+
+  // Reflect already-completed status (e.g. from a previous visit) so the manual button doesn't re-fire writes
+  useEffect(() => {
+    let cancelled = false;
+    getProgress(program.id, course.id).then(progress => {
+      if (!cancelled && progress?.completedLessons?.includes(lesson.id)) {
+        setMarkedComplete(true);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [lesson.id, program.id, course.id, getProgress]);
 
   const handleExecute = (result: CodeExecutionResult) => {
     setExecutionResult(result);
   };
 
-  const handleSave = (files: any[]) => {
-    console.log('Files saved:', files);
-    // In real app, save to Firestore
+  const handleSave = (files: CodeFile[]) => {
+    saveCode(lesson.id, files);
   };
+
+  const handleValidate = useCallback((results: ValidationOutcome[]) => {
+    setValidationResults(results);
+
+    const allPassed = results.length > 0 && results.every(r => r.passed);
+    if (allPassed && !markedComplete) {
+      setMarkedComplete(true);
+      markLessonComplete(program.id, course.id, lesson.id);
+    }
+  }, [markedComplete, markLessonComplete, program.id, course.id, lesson.id]);
+
+  const handleManualComplete = useCallback(() => {
+    if (markedComplete) return;
+    setMarkedComplete(true);
+    markLessonComplete(program.id, course.id, lesson.id);
+  }, [markedComplete, markLessonComplete, program.id, course.id, lesson.id]);
 
   // Escape HTML for code blocks
   function escapeHtml(text: string) {
@@ -133,6 +194,14 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
             {/* Interactive Code Editor */}
             {lesson.interactive && lesson.interactive.type === 'code-editor' && (() => {
               const config = lesson.interactive.config as any;
+              // Wait for the saved-code lookup to resolve before mounting the editor so restored files aren't overwritten
+              if (isCodeLoading) {
+                return (
+                  <div className="bg-white rounded-lg shadow-lg p-6 flex items-center justify-center h-40">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+                  </div>
+                );
+              }
               return (
               <div className="bg-white rounded-lg shadow-lg p-6">
                 <div className="flex items-center space-x-3 mb-4">
@@ -144,9 +213,11 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                 </p>
                 
                 <UniversityCodeEditor
-                  initialFiles={config.startingFiles}
+                  initialFiles={savedFiles.length > 0 ? savedFiles : config.startingFiles}
                   environment={config.environment}
+                  validationRules={config.validation}
                   onExecute={handleExecute}
+                  onValidate={handleValidate}
                   onSave={handleSave}
                   showPreview={true}
                   showConsole={true}
@@ -155,32 +226,34 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                 />
 
                 {/* Validation Results */}
-                {executionResult && config.validation && (
+                {validationResults.length > 0 && (
                   <div className="mt-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <h3 className="font-semibold text-gray-900 mb-3">Validation Results</h3>
                     <div className="space-y-2">
-                      {config.validation.map((rule: any, idx: number) => {
-                        // Check if validation passed based on execution result
-                        const passed = true; // Will be replaced with actual validation logic
-                        return (
-                          <div key={`validation-${idx}`} className="flex items-center justify-between p-2 bg-white rounded">
-                            <div className="flex items-center space-x-2">
-                              {passed ? (
-                                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                              ) : (
-                                <div className="w-5 h-5 rounded-full border-2 border-gray-300" />
-                              )}
-                              <span className={passed ? 'text-gray-900' : 'text-gray-500'}>
-                                {rule.description}
-                              </span>
-                            </div>
-                            <span className="text-sm font-semibold text-gray-600">
-                              {passed ? `+${rule.points}` : '0'} pts
+                      {validationResults.map((result) => (
+                        <div key={result.ruleId} className="flex items-center justify-between p-2 bg-white rounded">
+                          <div className="flex items-center space-x-2">
+                            {result.passed ? (
+                              <CheckCircle2 className="w-5 h-5 text-green-600" />
+                            ) : (
+                              <div className="w-5 h-5 rounded-full border-2 border-gray-300" />
+                            )}
+                            <span className={result.passed ? 'text-gray-900' : 'text-gray-500'}>
+                              {result.message}
                             </span>
                           </div>
-                        );
-                      })}
+                          <span className="text-sm font-semibold text-gray-600">
+                            {result.points}/{result.maxPoints} pts
+                          </span>
+                        </div>
+                      ))}
                     </div>
+                    {markedComplete && (
+                      <div className="mt-3 flex items-center space-x-2 text-green-700 text-sm font-semibold">
+                        <Award className="w-4 h-4" />
+                        <span>All checks passed — lesson marked complete!</span>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -198,6 +271,9 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
               </div>
               );
             })()}
+
+            {/* Checkpoints */}
+            <LessonCheckpoints checkpoints={lesson.checkpoints} />
 
             {/* Summary */}
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-md p-8 border border-green-100">
@@ -218,6 +294,18 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                   </div>
                 ))}
               </div>
+
+              {/* Theory-only lessons have no auto-graded exercise, so completion is a manual action */}
+              {!lesson.interactive && (
+                <button
+                  onClick={handleManualComplete}
+                  disabled={markedComplete}
+                  className="mt-6 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white rounded-xl font-bold flex items-center space-x-2 transition-colors"
+                >
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>{markedComplete ? 'Lesson Complete' : 'Mark Lesson Complete'}</span>
+                </button>
+              )}
             </div>
 
             {/* Resources */}
@@ -248,13 +336,19 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
 
             {/* Navigation */}
             <div className="flex justify-between gap-4">
-              <button className="px-8 py-4 bg-white border-2 border-gray-300 hover:border-green-600 hover:bg-green-50 text-gray-700 rounded-xl font-bold transition-all duration-200 shadow-sm hover:shadow-md">
-                Previous Lesson
-              </button>
-              <button className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2">
-                <span>Next Lesson</span>
+              <Link
+                href={prevLesson ? addTenantParam(`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${prevLesson.slug}`) : courseHref}
+                className="px-8 py-4 bg-white border-2 border-gray-300 hover:border-green-600 hover:bg-green-50 text-gray-700 rounded-xl font-bold transition-all duration-200 shadow-sm hover:shadow-md"
+              >
+                {prevLesson ? 'Previous Lesson' : 'Back to Course'}
+              </Link>
+              <Link
+                href={nextLesson ? addTenantParam(`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${nextLesson.slug}`) : courseHref}
+                className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2"
+              >
+                <span>{nextLesson ? 'Next Lesson' : 'Back to Course'}</span>
                 <ChevronRight className="w-5 h-5" />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -290,7 +384,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="font-bold text-lg text-gray-900 mb-4">Module Lessons</h3>
                 <div className="space-y-2">
-                  {module.lessons.map((l, idx) => (
+                  {currentModule.lessons.map((l, idx) => (
                     <Link
                       key={l.id}
                       href={`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${l.slug}`}

@@ -142,16 +142,17 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string;
                     {/* Module Projects */}
                     {module.projects.length > 0 && (
                       <div className="bg-yellow-50 border-t-2 border-yellow-300">
-                        {module.projects.map((project, projectIdx) => (
-                          <div
+                        {module.projects.map((project) => (
+                          <Link
                             key={project.id}
-                            className="p-4 flex items-start space-x-3"
+                            href={addTenantParam(`/university/programs/${slug}/courses/${courseSlug}/projects/${project.slug}`)}
+                            className="p-4 flex items-start space-x-3 hover:bg-yellow-100/60 transition-colors group"
                           >
                             <div className="w-6 h-6 bg-yellow-500 text-white rounded flex items-center justify-center text-xs font-bold">
                               P
                             </div>
                             <div className="flex-1">
-                              <div className="font-semibold text-gray-900">{project.title}</div>
+                              <div className="font-semibold text-gray-900 group-hover:text-yellow-800">{project.title}</div>
                               <p className="text-sm text-gray-600 mt-1">{project.description}</p>
                               <div className="flex items-center space-x-3 mt-2">
                                 <span className="text-xs px-2 py-1 bg-yellow-100 text-yellow-800 rounded font-semibold">
@@ -160,7 +161,8 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string;
                                 <span className="text-xs text-gray-500">{project.points} points</span>
                               </div>
                             </div>
-                          </div>
+                            <Play className="w-5 h-5 text-yellow-600 group-hover:text-yellow-800 mt-1" />
+                          </Link>
                         ))}
                       </div>
                     )}

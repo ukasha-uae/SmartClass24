@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTenant } from '@/hooks/useTenant';
 
 /**
@@ -21,9 +21,14 @@ function getSafeTenantFromUrl(): string | null {
  */
 export function useTenantLink() {
   const { tenantId } = useTenant();
+  // Defer window-dependent logic until after hydration so server/client markup matches on first paint.
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => { setIsMounted(true); }, []);
 
   return useCallback(
     (href: string) => {
+      if (!isMounted) return href;
+
       // If the link already includes a tenant param, never append another.
       if (/[?&]tenant=/.test(href)) return href;
 
@@ -51,6 +56,6 @@ export function useTenantLink() {
       
       return result;
     },
-    [tenantId],
+    [isMounted, tenantId],
   );
 }

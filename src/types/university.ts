@@ -255,6 +255,21 @@ export interface StudentProgress {
 }
 
 // ============================================================================
+// Certificates
+// ============================================================================
+
+export interface CertificateRecord {
+  id: string;
+  studentId: string;
+  studentName: string;
+  programId: string;
+  programTitle: string;
+  issuer: string;
+  verificationCode: string;
+  issuedAt: string; // ISO date
+}
+
+// ============================================================================
 // Assessment Types
 // ============================================================================
 

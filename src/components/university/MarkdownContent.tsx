@@ -21,8 +21,8 @@ export default function MarkdownContent({ content, className = '' }: MarkdownCon
       return `<pre class="code-block"><code>${escapeHtml(code.trim())}</code></pre>`;
     });
 
-    // Convert inline code (`code`)
-    html = html.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+    // Convert inline code (`code`) — must escape HTML so tags like `<style>` don't get parsed as real elements
+    html = html.replace(/`([^`]+)`/g, (_match, code) => `<code class="inline-code">${escapeHtml(code)}</code>`);
 
     // Convert bold (**text** or __text__)
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');

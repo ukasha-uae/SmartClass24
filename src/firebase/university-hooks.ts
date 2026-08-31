@@ -6,6 +6,7 @@
 'use client';
 
 import { useFirebase } from '@/firebase/provider';
+import { useCallback } from 'react';
 import { 
   doc, 
   collection, 
@@ -18,7 +19,8 @@ import {
   getDocs,
   serverTimestamp 
 } from 'firebase/firestore';
-import { StudentProgress, ProjectSubmission, CodeFile } from '@/types/university';
+import { StudentProgress, ProjectSubmission, CodeFile, SubmissionStatus, CertificateRecord } from '@/types/university';
+import type { UniversityProgram } from '@/types/university';
 
 // ============================================================================
 // Student Progress Management
@@ -27,7 +29,7 @@ import { StudentProgress, ProjectSubmission, CodeFile } from '@/types/university
 export function useUniversityProgress() {
   const { user, firestore } = useFirebase();
 
-  const getProgress = async (programId: string, courseId: string): Promise<StudentProgress | null> => {
+  const getProgress = useCallback(async (programId: string, courseId: string): Promise<StudentProgress | null> => {
     if (!user || !firestore) return null;
 
     try {
@@ -43,9 +45,9 @@ export function useUniversityProgress() {
       console.error('Error fetching university progress:', error);
       return null;
     }
-  };
+  }, [user, firestore]);
 
-  const updateProgress = async (
+  const updateProgress = useCallback(async (
     programId: string,
     courseId: string,
     updates: Partial<StudentProgress>
@@ -61,9 +63,9 @@ export function useUniversityProgress() {
     } catch (error) {
       console.error('Error updating university progress:', error);
     }
-  };
+  }, [user, firestore]);
 
-  const markLessonComplete = async (
+  const markLessonComplete = useCallback(async (
     programId: string,
     courseId: string,
     lessonId: string
@@ -103,7 +105,7 @@ export function useUniversityProgress() {
     } catch (error) {
       console.error('Error marking lesson complete:', error);
     }
-  };
+  }, [user, firestore]);
 
   return {
     getProgress,
@@ -119,7 +121,7 @@ export function useUniversityProgress() {
 export function useProjectSubmissions() {
   const { user, firestore } = useFirebase();
 
-  const submitProject = async (
+  const submitProject = useCallback(async (
     projectId: string,
     files: CodeFile[]
   ): Promise<string | null> => {
@@ -141,9 +143,9 @@ export function useProjectSubmissions() {
       console.error('Error submitting project:', error);
       return null;
     }
-  };
+  }, [user, firestore]);
 
-  const getSubmission = async (submissionId: string): Promise<ProjectSubmission | null> => {
+  const getSubmission = useCallback(async (submissionId: string): Promise<ProjectSubmission | null> => {
     if (!firestore) return null;
 
     try {
@@ -156,9 +158,9 @@ export function useProjectSubmissions() {
       console.error('Error fetching submission:', error);
       return null;
     }
-  };
+  }, [firestore]);
 
-  const getStudentSubmissions = async (projectId: string): Promise<ProjectSubmission[]> => {
+  const getStudentSubmissions = useCallback(async (projectId: string): Promise<ProjectSubmission[]> => {
     if (!user || !firestore) return [];
 
     try {
@@ -177,12 +179,53 @@ export function useProjectSubmissions() {
       console.error('Error fetching student submissions:', error);
       return [];
     }
-  };
+  }, [user, firestore]);
+
+  // Admin-only: requires the admins/{email} Firestore doc (enforced by firestore.rules)
+  const getAllSubmissions = useCallback(async (status?: SubmissionStatus): Promise<ProjectSubmission[]> => {
+    if (!firestore) return [];
+
+    try {
+      const q = status
+        ? query(collection(firestore, 'university-submissions'), where('status', '==', status))
+        : collection(firestore, 'university-submissions');
+
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as ProjectSubmission[];
+    } catch (error) {
+      console.error('Error fetching submissions for review:', error);
+      return [];
+    }
+  }, [firestore]);
+
+  // Admin-only: writes a grade and flips status to 'graded' (enforced by firestore.rules)
+  const gradeSubmission = useCallback(async (
+    submissionId: string,
+    grade: NonNullable<ProjectSubmission['grade']>
+  ): Promise<boolean> => {
+    if (!firestore) return false;
+
+    try {
+      await updateDoc(doc(firestore, 'university-submissions', submissionId), {
+        grade,
+        status: 'graded'
+      });
+      return true;
+    } catch (error) {
+      console.error('Error grading submission:', error);
+      return false;
+    }
+  }, [firestore]);
 
   return {
     submitProject,
     getSubmission,
-    getStudentSubmissions
+    getStudentSubmissions,
+    getAllSubmissions,
+    gradeSubmission
   };
 }
 
@@ -193,7 +236,7 @@ export function useProjectSubmissions() {
 export function useCodeSaves() {
   const { user, firestore } = useFirebase();
 
-  const saveCode = async (
+  const saveCode = useCallback(async (
     lessonId: string,
     files: CodeFile[]
   ): Promise<void> => {
@@ -216,9 +259,9 @@ export function useCodeSaves() {
       // Fallback to localStorage
       localStorage.setItem(`code-save-${lessonId}`, JSON.stringify(files));
     }
-  };
+  }, [user, firestore]);
 
-  const loadCode = async (lessonId: string): Promise<CodeFile[] | null> => {
+  const loadCode = useCallback(async (lessonId: string): Promise<CodeFile[] | null> => {
     if (!user || !firestore) {
       // Try localStorage first
       const saved = localStorage.getItem(`code-save-${lessonId}`);
@@ -242,7 +285,7 @@ export function useCodeSaves() {
       const saved = localStorage.getItem(`code-save-${lessonId}`);
       return saved ? JSON.parse(saved) : null;
     }
-  };
+  }, [user, firestore]);
 
   return {
     saveCode,
@@ -283,5 +326,126 @@ export function useUniversityAnalytics() {
 
   return {
     trackLessonTime
+  };
+}
+
+// ============================================================================
+// Certificates
+// ============================================================================
+
+export interface ProgramCompletionStatus {
+  eligible: boolean;
+  totalLessons: number;
+  completedLessons: number;
+  totalProjects: number;
+  passedProjects: number;
+}
+
+export function useCertificates() {
+  const { user, firestore } = useFirebase();
+
+  // Checks lesson completion + passing project grades across every course in the program
+  const checkProgramCompletion = useCallback(async (program: UniversityProgram): Promise<ProgramCompletionStatus> => {
+    if (!user || !firestore) {
+      return { eligible: false, totalLessons: 0, completedLessons: 0, totalProjects: 0, passedProjects: 0 };
+    }
+
+    let totalLessons = 0;
+    let completedLessons = 0;
+    let totalProjects = 0;
+    let passedProjects = 0;
+
+    for (const course of program.courses) {
+      const progressDoc = await getDoc(
+        doc(firestore, 'university-progress', `${user.uid}_${program.id}_${course.id}`)
+      );
+      const progress = progressDoc.exists() ? (progressDoc.data() as StudentProgress) : null;
+
+      for (const module of course.modules) {
+        totalLessons += module.lessons.length;
+        completedLessons += module.lessons.filter(l => progress?.completedLessons?.includes(l.id)).length;
+
+        for (const project of module.projects) {
+          totalProjects += 1;
+          const q = query(
+            collection(firestore, 'university-submissions'),
+            where('studentId', '==', user.uid),
+            where('projectId', '==', project.id)
+          );
+          const submissions = (await getDocs(q)).docs.map(d => d.data() as ProjectSubmission);
+          const passed = submissions.some(s => s.grade && s.grade.score >= project.rubric.passingScore);
+          if (passed) passedProjects += 1;
+        }
+      }
+    }
+
+    const eligible = totalLessons > 0 && completedLessons === totalLessons && passedProjects === totalProjects;
+    return { eligible, totalLessons, completedLessons, totalProjects, passedProjects };
+  }, [user, firestore]);
+
+  const getCertificate = useCallback(async (programId: string): Promise<CertificateRecord | null> => {
+    if (!user || !firestore) return null;
+
+    try {
+      const q = query(
+        collection(firestore, 'university-certificates'),
+        where('studentId', '==', user.uid),
+        where('programId', '==', programId)
+      );
+      const snapshot = await getDocs(q);
+      if (snapshot.empty) return null;
+      const docSnap = snapshot.docs[0];
+      return { id: docSnap.id, ...docSnap.data() } as CertificateRecord;
+    } catch (error) {
+      console.error('Error fetching certificate:', error);
+      return null;
+    }
+  }, [user, firestore]);
+
+  const issueCertificate = useCallback(async (
+    program: UniversityProgram,
+    studentName: string
+  ): Promise<CertificateRecord | null> => {
+    if (!user || !firestore) return null;
+
+    const existing = await getCertificate(program.id);
+    if (existing) return existing;
+
+    try {
+      const verificationCode = `${program.id}-${user.uid.slice(0, 6)}-${Date.now().toString(36)}`.toUpperCase();
+      const record: Omit<CertificateRecord, 'id'> = {
+        studentId: user.uid,
+        studentName,
+        programId: program.id,
+        programTitle: program.certificate.title,
+        issuer: program.certificate.issuer,
+        verificationCode,
+        issuedAt: new Date().toISOString()
+      };
+      const docRef = await addDoc(collection(firestore, 'university-certificates'), record);
+      return { id: docRef.id, ...record };
+    } catch (error) {
+      console.error('Error issuing certificate:', error);
+      return null;
+    }
+  }, [user, firestore, getCertificate]);
+
+  const verifyCertificate = useCallback(async (certificateId: string): Promise<CertificateRecord | null> => {
+    if (!firestore) return null;
+    try {
+      const docSnap = await getDoc(doc(firestore, 'university-certificates', certificateId));
+      if (!docSnap.exists()) return null;
+      return { id: docSnap.id, ...docSnap.data() } as CertificateRecord;
+    } catch (error) {
+      console.error('Error verifying certificate:', error);
+      return null;
+    }
+  }, [firestore]);
+
+  return {
+    checkProgramCompletion,
+    getCertificate,
+    issueCertificate,
+    verifyCertificate
   };
 }
