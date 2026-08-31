@@ -30,8 +30,9 @@ import { useFirebase } from '@/firebase/provider';
 import { useSoundEffects } from '@/hooks/use-sound-effects';
 import { useToast } from '@/hooks/use-toast';
 import { startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
-import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
+import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-subjects';
 import { getSarahBot, getSarahAdaptedDifficulty, isBot } from '@/lib/ai-bot-profiles';
+import { getUserDisplayName } from '@/lib/user-display';
 import { useEducationLevels } from '@/hooks/useEducationLevels';
 
 function normalizeLevelParam(raw: string | null): 'Primary' | 'JHS' | 'SHS' | null {
@@ -53,7 +54,7 @@ function formatClassLevelLabel(classLevel: string, labels: { jhs: string; shs: s
 export default function QuickMatchPage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
-  const { hasArenaChallenge } = useTenant();
+  const { hasArenaChallenge, tenantId } = useTenant();
   const { user, firestore } = useFirebase();
   const { labels } = useEducationLevels();
   const { playSound } = useSoundEffects();
@@ -90,6 +91,7 @@ export default function QuickMatchPage() {
   const [countdown, setCountdown] = useState(10);
   const [matchFound, setMatchFound] = useState(false);
   const [onlinePlayers, setOnlinePlayers] = useState<Player[]>([]);
+  const [onlinePlayersLoaded, setOnlinePlayersLoaded] = useState(false);
   
   // Match settings
   const [subject, setSubject] = useState('');
@@ -132,14 +134,78 @@ export default function QuickMatchPage() {
   useEffect(() => {
     if (!user?.uid) return;
     
-    const cleanup = startPresenceHeartbeat(user.uid);
+    const cleanup = startPresenceHeartbeat(user.uid, tenantId);
     return cleanup;
-  }, [user?.uid]);
+  }, [user?.uid, tenantId]);
+
+  // Ensure current user has a student profile in Firestore and update lastSeen
+  useEffect(() => {
+    if (!user?.uid || !firestore) return;
+
+    const initUserProfile = async () => {
+      try {
+        const { doc, getDoc, setDoc } = await import('firebase/firestore');
+        const studentRef = doc(firestore, 'students', user.uid);
+        const studentSnap = await getDoc(studentRef);
+        const now = new Date();
+
+        if (!studentSnap.exists()) {
+          // Create basic profile for new user
+          const displayName = user.isAnonymous ? `Student ${user.uid.slice(-4)}` : (user.displayName || 'Student');
+          const profileData = {
+            studentName: displayName,
+            schoolName: 'Unknown School',
+            studentClass: 'JHS 1',
+            tenantId: tenantId,
+            lastSeen: now,
+            rating: 1200,
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            totalGames: 0,
+            winStreak: 0,
+            highestStreak: 0,
+            xp: 0,
+            coins: 0,
+            achievements: [],
+          };
+
+          await setDoc(studentRef, profileData);
+          console.log('[QuickMatch] Created profile:', user.uid, displayName);
+        } else {
+          // Update existing profile - refresh lastSeen so user shows as online
+          const existingData = studentSnap.data();
+          const displayName = existingData.studentName || (user.isAnonymous ? `Student ${user.uid.slice(-4)}` : (user.displayName || 'Student'));
+          
+          // Update lastSeen and ensure tenantId is set
+          const updateData: any = {
+            lastSeen: now,
+            studentName: displayName,
+          };
+          if (tenantId && existingData.tenantId !== tenantId) {
+            updateData.tenantId = tenantId;
+          }
+          
+          await setDoc(studentRef, updateData, { merge: true });
+          console.log('[QuickMatch] Updated profile lastSeen:', user.uid, displayName);
+        }
+      } catch (error: any) {
+        if (error?.code === 'permission-denied') {
+          console.warn('[QuickMatch] Permission denied - cannot manage student profile');
+        } else {
+          console.warn('[QuickMatch] Failed to manage student profile:', error);
+        }
+      }
+    };
+
+    initUserProfile();
+  }, [user?.uid, firestore, tenantId]);
 
   // Fetch real online users from Firestore
   useEffect(() => {
     if (!firestore || !user) {
       setOnlinePlayers([]);
+      setOnlinePlayersLoaded(true);
       return;
     }
     
@@ -147,74 +213,74 @@ export default function QuickMatchPage() {
     
     const setupListener = async () => {
       try {
-        const { collection, query, limit, onSnapshot } = await import('firebase/firestore');
+        const { collection, query, limit, onSnapshot, where } = await import('firebase/firestore');
         const studentsRef = collection(firestore, 'students');
         
-        const q = query(studentsRef, limit(100));
+        const queryConstraints: any[] = [where('tenantId', '==', tenantId), limit(100)];
+        
+        const q = query(studentsRef, ...queryConstraints);
         
         unsubscribe = onSnapshot(q, (snapshot) => {
           const playersList: Player[] = [];
           const allUsers: Array<{userId: string, userName: string, lastSeen: any, isOnline: boolean}> = [];
           
           snapshot.forEach((docSnapshot) => {
-            const data = docSnapshot.data();
+            const data = docSnapshot.data() as Record<string, any>;
             const userId = docSnapshot.id;
+
+            if (userId.startsWith('bot-')) return;
             
             // Skip current user
             if (userId === user.uid) return;
             
-            if (data.studentName) {
-              const lastSeen = data.lastSeen?.toDate?.() || null;
-              const isOnline = isUserOnline(lastSeen);
-              
-              // Debug logging
-              allUsers.push({
-                userId,
-                userName: data.studentName || 'Student',
-                lastSeen: lastSeen ? lastSeen.toISOString() : 'null',
-                isOnline
-              });
-              
-              // Only include online users for quick match
-              if (!isOnline) return;
-              
-              playersList.push({
-                userId,
-                userName: data.studentName || 'Student',
-                school: data.schoolName || 'Unknown School',
-                level: (data.studentClass?.includes('SHS') ? 'SHS' : 
-                       data.studentClass?.includes('JHS') ? 'JHS' : 
-                       data.studentClass?.includes('Primary') ? 'Primary' : 'JHS') as 'Primary' | 'JHS' | 'SHS',
-                rating: data.rating || 1200, // Use rating from Firestore if available
-                wins: data.wins || 0,
-                losses: data.losses || 0,
-                draws: data.draws || 0,
-                totalGames: data.totalGames || 0,
-                winStreak: data.winStreak || 0,
-                highestStreak: data.highestStreak || 0,
-                xp: data.xp || 0,
-                achievements: data.achievements || [],
-                coins: data.coins || 0,
-              });
-            }
+            const displayName = getUserDisplayName(data);
+            const lastSeen = data.lastSeen?.toDate?.() || null;
+            const isOnline = isUserOnline(lastSeen);
+            
+            // Debug logging - show all users found
+            console.log(`[Quick Match] User ${userId}: ${displayName}, online: ${isOnline}, lastSeen: ${lastSeen ? lastSeen.toISOString() : 'null'}, rating: ${data.rating || 'none'}`);
+            
+            // Only include online users for quick match
+            if (!isOnline) return;
+            
+            playersList.push({
+              userId,
+              userName: displayName,
+              school: data.schoolName || 'Unknown School',
+              level: (data.studentClass?.includes('SHS') ? 'SHS' : 
+                     data.studentClass?.includes('JHS') ? 'JHS' : 
+                     data.studentClass?.includes('Primary') ? 'Primary' : 'JHS') as 'Primary' | 'JHS' | 'SHS',
+              rating: data.rating || 1200, // Use rating from Firestore if available
+              wins: data.wins || 0,
+              losses: data.losses || 0,
+              draws: data.draws || 0,
+              totalGames: data.totalGames || 0,
+              winStreak: data.winStreak || 0,
+              highestStreak: data.highestStreak || 0,
+              xp: data.xp || 0,
+              achievements: data.achievements || [],
+              coins: data.coins || 0,
+            });
           });
           
           console.log('[Quick Match] All users from Firestore:', allUsers);
-          console.log('[Quick Match] Online players found:', playersList.length, playersList.map(p => p.userName));
+          console.log('[Quick Match] Online players found:', playersList.length, playersList.map(p => `${p.userName} (${p.rating})`));
           
           setOnlinePlayers(playersList);
+          setOnlinePlayersLoaded(true);
         }, (error: any) => {
           if (error?.code === 'permission-denied') {
             console.warn('[Quick Match] Permission denied - cannot access students collection');
-            setOnlinePlayers([]);
           } else {
             console.error('Error fetching online players:', error);
-            setOnlinePlayers([]);
           }
+          setOnlinePlayers([]);
+          setOnlinePlayersLoaded(true);
         });
       } catch (error) {
         console.error('Error setting up online players listener:', error);
         setOnlinePlayers([]);
+        setOnlinePlayersLoaded(true);
       }
     };
     
@@ -225,7 +291,7 @@ export default function QuickMatchPage() {
         unsubscribe();
       }
     };
-  }, [firestore, user]);
+  }, [firestore, user, tenantId]);
 
   useEffect(() => {
     // Use mock user ID for testing
@@ -234,7 +300,7 @@ export default function QuickMatchPage() {
     if (playerProfile) {
       // Update player level to match selected arena level
       const updatedProfile = { ...playerProfile, level: userSelectedLevel };
-      createOrUpdatePlayer(updatedProfile);
+      createOrUpdatePlayer(updatedProfile, tenantId);
       setPlayer(updatedProfile);
       
       // Sync player name from Firestore student profile (non-blocking)
@@ -292,7 +358,7 @@ export default function QuickMatchPage() {
           school: 'Unknown School',
           level: userSelectedLevel, // Use level from URL parameter
           rating: 1200,
-        });
+        }, tenantId);
         setPlayer(newPlayer);
         
         // Set default class level for new player
@@ -305,15 +371,15 @@ export default function QuickMatchPage() {
   }, [user, router, firestore, userSelectedLevel, subject, classLevel]);
 
   useEffect(() => {
-    if (!isSearching) return;
+    if (!isSearching || matchFound || !onlinePlayersLoaded) return;
 
-    // Simulate searching for opponent
+    // Simulate searching for opponent after online players are loaded
     const searchTimer = setTimeout(() => {
       findOpponent();
     }, 2000);
 
     return () => clearTimeout(searchTimer);
-  }, [isSearching, matchFound]);
+  }, [isSearching, matchFound, onlinePlayersLoaded]);
 
   useEffect(() => {
     if (!opponent || countdown <= 0) return;

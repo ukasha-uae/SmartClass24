@@ -30,8 +30,8 @@ import {
 } from '@/lib/challenge';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
-import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
-import type { EducationLevel } from '@/lib/challenge-questions-exports';
+import { getAvailableSubjects } from '@/lib/challenge-subjects';
+import type { EducationLevel } from '@/lib/challenge-subjects';
 import { getSchoolsByCountry, getAllMultiCountrySchools } from '@/lib/schools-multi-country';
 import { useLocalization } from '@/hooks/useLocalization';
 import { useToast } from '@/hooks/use-toast';

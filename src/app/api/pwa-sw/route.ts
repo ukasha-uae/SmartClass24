@@ -9,31 +9,33 @@ import { readFile } from 'fs/promises';
 import path from 'path';
 
 export const dynamic = 'force-dynamic';
-export const runtime = 'nodejs';
 
 /** Minimal SW so install works when public/pwa-sw.js is not readable (e.g. serverless). */
 const FALLBACK_SW = `self.addEventListener('install',()=>self.skipWaiting());self.addEventListener('activate',(e)=>e.waitUntil(self.clients.claim()));`;
 
+const SW_HEADERS = {
+  'Content-Type': 'application/javascript; charset=utf-8',
+  'Service-Worker-Allowed': '/',
+  'Cache-Control': 'no-store, max-age=0',
+};
+
 export async function GET() {
   try {
+    // Try to read the service worker from public directory
     const filePath = path.join(process.cwd(), 'public', 'pwa-sw.js');
     const body = await readFile(filePath, 'utf-8');
+    
     return new NextResponse(body, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/javascript; charset=utf-8',
-        'Service-Worker-Allowed': '/',
-        'Cache-Control': 'no-store, max-age=0',
-      },
+      headers: SW_HEADERS,
     });
-  } catch {
+  } catch (error) {
+    // If file reading fails, use fallback minimal SW
+    console.warn('[PWA-SW Route] Failed to read pwa-sw.js, using fallback:', error);
+    
     return new NextResponse(FALLBACK_SW, {
       status: 200,
-      headers: {
-        'Content-Type': 'application/javascript; charset=utf-8',
-        'Service-Worker-Allowed': '/',
-        'Cache-Control': 'no-store, max-age=0',
-      },
+      headers: SW_HEADERS,
     });
   }
 }

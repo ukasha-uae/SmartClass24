@@ -1,0 +1,35 @@
+# Exclude large data files from Copilot indexing (speeds up Chat initialization)
+src/lib/jhs-data.ts
+src/lib/jhs-questions.ts
+src/lib/shs-questions.ts
+src/lib/integrated-science-shs1-lessons-data.ts
+src/lib/integrated-science-shs2-lessons-data.ts
+src/lib/integrated-science-shs3-lessons-data.ts
+
+# Build outputs
+.next/
+out/
+build/
+
+# Node modules
+node_modules/
+
+# Large static assets
+public/
+
+# Analysis/migration scripts (not needed for coding assistance)
+analyze-*.js
+analyze-*.py
+fix-*.js
+fix-*.ps1
+escape-*.js
+extract-*.js
+extract-*.py
+count-*.js
+check-*.js
+find-*.js
+debug-*.js
+batch-*.js
+cleanup-*.js
+final-*.js
+complete-*.ps1

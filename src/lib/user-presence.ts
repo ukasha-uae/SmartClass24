@@ -5,6 +5,7 @@
 
 import { initializeFirebase } from '@/firebase';
 import { doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export interface UserPresence {
   userId: string;
@@ -17,26 +18,65 @@ const PRESENCE_TIMEOUT = 30 * 1000; // 30 seconds - user is considered online if
 const HEARTBEAT_INTERVAL = 20 * 1000; // Update presence every 20 seconds
 const OFFLINE_GRACE_PERIOD = 5 * 1000; // 5 seconds - grace period before marking user as offline
 
+async function waitForAuthenticatedUser(timeoutMs: number = 5000): Promise<boolean> {
+  const { auth } = initializeFirebase();
+  if (!auth) return false;
+
+  if (auth.currentUser) return true;
+
+  return new Promise<boolean>((resolve) => {
+    const timeoutId = window.setTimeout(() => {
+      cleanup();
+      resolve(!!auth.currentUser);
+    }, timeoutMs);
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        cleanup();
+        resolve(true);
+      }
+    });
+
+    const cleanup = () => {
+      window.clearTimeout(timeoutId);
+      unsubscribe();
+    };
+  });
+}
+
 /**
  * Update user's presence (last seen timestamp)
- * Stores lastSeen directly in the students collection for simplicity
+ * Stores lastSeen directly in the students collection.
  */
-export async function updateUserPresence(userId: string): Promise<void> {
+export async function updateUserPresence(userId: string, tenantId?: string): Promise<void> {
   try {
     const { firestore, auth } = initializeFirebase();
     if (!firestore || !userId) return;
     
-    // Skip for unauthenticated users
     const currentUser = auth?.currentUser;
-    if (!currentUser || currentUser.isAnonymous) {
+    if (!currentUser) {
       return;
     }
     
-    // Store lastSeen directly in students document
+    // Store lastSeen directly in the student document so the deployed rules keep working
     const studentRef = doc(firestore, 'students', userId);
-    await setDoc(studentRef, {
+    const currentName = currentUser.displayName || currentUser.email?.split('@')[0] || 'Student';
+    const updateData: any = {
+      userId,
+      userName: currentName,
       lastSeen: serverTimestamp(),
-    }, { merge: true });
+      isOnline: true,
+    };
+    
+    // Include tenantId for all users (authenticated and anonymous)
+    // This ensures students collection records are properly scoped
+    if (tenantId) {
+      updateData.tenantId = tenantId;
+    }
+    
+    await setDoc(studentRef, updateData, { merge: true });
+    
+    console.log('[Presence] Updated presence for user:', userId);
   } catch (error: any) {
     if (error?.code === 'permission-denied') {
       console.warn('[Presence] Permission denied - user not authenticated');
@@ -82,22 +122,27 @@ export async function getUserPresence(userId: string): Promise<UserPresence | nu
 /**
  * Mark user as offline immediately
  */
-export async function markUserOffline(userId: string): Promise<void> {
+export async function markUserOffline(userId: string, tenantId?: string): Promise<void> {
   try {
     const { firestore, auth } = initializeFirebase();
     if (!firestore || !userId) return;
     
-    // Skip for unauthenticated users
     const currentUser = auth?.currentUser;
-    if (!currentUser || currentUser.isAnonymous) {
+    if (!currentUser) {
       return;
     }
     
     const studentRef = doc(firestore, 'students', userId);
-    await setDoc(studentRef, {
+    const updateData: any = {
       lastSeen: new Date(Date.now() - PRESENCE_TIMEOUT - 1000), // Set to past timestamp to mark as offline
       isOnline: false,
-    }, { merge: true });
+    };
+    
+    if (tenantId && !currentUser.isAnonymous) {
+      updateData.tenantId = tenantId;
+    }
+    
+    await setDoc(studentRef, updateData, { merge: true });
     
     console.log('[Presence] User marked offline:', userId);
   } catch (error: any) {
@@ -113,18 +158,25 @@ export async function markUserOffline(userId: string): Promise<void> {
  * Start heartbeat to keep user presence active
  * Returns cleanup function to stop heartbeat
  */
-export function startPresenceHeartbeat(userId: string): () => void {
+export function startPresenceHeartbeat(userId: string, tenantId?: string): () => void {
   if (!userId) return () => {};
   
-  console.log('[Presence] Starting heartbeat for:', userId);
-  
-  // Update immediately
-  updateUserPresence(userId);
+  console.log('[Presence] Starting heartbeat for:', userId, tenantId ? `(tenant: ${tenantId})` : '');
+
+  let stopped = false;
+
+  // Wait briefly for auth hydration before the first write.
+  (async () => {
+    const hasAuthenticatedUser = await waitForAuthenticatedUser();
+    if (stopped || !hasAuthenticatedUser) return;
+    await updateUserPresence(userId, tenantId);
+  })();
   
   // Then update periodically
   const interval = setInterval(() => {
+    if (stopped) return;
     if (!document.hidden) { // Only update when tab is visible
-      updateUserPresence(userId);
+      updateUserPresence(userId, tenantId);
     }
   }, HEARTBEAT_INTERVAL);
   
@@ -136,7 +188,7 @@ export function startPresenceHeartbeat(userId: string): () => void {
     } else {
       // Tab visible again - update presence immediately
       console.log('[Presence] Tab visible - updating presence');
-      updateUserPresence(userId);
+      updateUserPresence(userId, tenantId);
     }
   };
   
@@ -144,13 +196,13 @@ export function startPresenceHeartbeat(userId: string): () => void {
   const handleBeforeUnload = () => {
     console.log('[Presence] Page unloading - marking offline');
     // Use navigator.sendBeacon for reliability on page unload
-    markUserOffline(userId);
+    markUserOffline(userId, tenantId);
   };
   
   // Handle mobile app going to background
   const handlePageHide = () => {
     console.log('[Presence] Page hidden (mobile background)');
-    markUserOffline(userId);
+    markUserOffline(userId, tenantId);
   };
   
   document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -159,6 +211,7 @@ export function startPresenceHeartbeat(userId: string): () => void {
   
   // Cleanup function
   return () => {
+    stopped = true;
     console.log('[Presence] Stopping heartbeat for:', userId);
     clearInterval(interval);
     document.removeEventListener('visibilitychange', handleVisibilityChange);
@@ -166,7 +219,7 @@ export function startPresenceHeartbeat(userId: string): () => void {
     window.removeEventListener('pagehide', handlePageHide);
     
     // Mark offline on cleanup
-    markUserOffline(userId);
+    markUserOffline(userId, tenantId);
   };
 }
 

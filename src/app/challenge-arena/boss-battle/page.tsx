@@ -22,8 +22,8 @@ import {
   getPlayerProfile,
   createOrUpdatePlayer
 } from '@/lib/challenge';
-import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
-import type { EducationLevel } from '@/lib/challenge-questions-exports';
+import { getAvailableSubjects } from '@/lib/challenge-subjects';
+import type { EducationLevel } from '@/lib/challenge-subjects';
 import type { Player } from '@/lib/challenge';
 import { useFirebase } from '@/firebase/provider';
 import { useToast } from '@/hooks/use-toast';

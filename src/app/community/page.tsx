@@ -21,8 +21,8 @@ import {
 
   Question,
 } from '@/lib/social';
-import { getAvailableSubjects } from '@/lib/challenge-questions-exports';
-import type { EducationLevel } from '@/lib/challenge-questions-exports';
+import { getAvailableSubjects } from '@/lib/challenge-subjects';
+import type { EducationLevel } from '@/lib/challenge-subjects';
 
 export default function CommunityPage() {
   const [educationLevel, setEducationLevel] = useState<EducationLevel>('JHS');

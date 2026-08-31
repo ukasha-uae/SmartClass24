@@ -29,8 +29,9 @@ import {
 import { createChallenge, getAllPlayers, Player, getPlayerProfile, acceptChallenge, startChallenge } from '@/lib/challenge';
 import { useToast } from '@/hooks/use-toast';
 import { useFirebase } from '@/firebase/provider';
-import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-questions-exports';
+import { getAvailableSubjects, type EducationLevel } from '@/lib/challenge-subjects';
 import { updateUserPresence, startPresenceHeartbeat, isUserOnline } from '@/lib/user-presence';
+import { getUserDisplayName } from '@/lib/user-display';
 import { Badge } from '@/components/ui/badge';
 import { Circle } from 'lucide-react';
 import { ShareChallengeDialog } from '@/components/challenge/ShareChallengeDialog';
@@ -40,7 +41,7 @@ import { getSarahBot } from '@/lib/ai-bot-profiles';
 export default function CreateChallengePage() {
   const router = useRouter();
   const addTenantParam = useTenantLink();
-  const { hasArenaChallenge } = useTenant();
+  const { hasArenaChallenge, tenantId: currentTenantId } = useTenant();
   const { toast } = useToast();
   const { user, firestore } = useFirebase();
   
@@ -190,9 +191,78 @@ export default function CreateChallengePage() {
   useEffect(() => {
     if (!user?.uid) return;
     
-    const cleanup = startPresenceHeartbeat(user.uid);
+    const cleanup = startPresenceHeartbeat(user.uid, currentTenantId);
     return cleanup;
-  }, [user?.uid]);
+  }, [user?.uid, currentTenantId]);
+
+  // Ensure current user has a student profile in Firestore and update lastSeen
+  useEffect(() => {
+    if (!user?.uid || !firestore) return;
+
+    const initUserProfile = async () => {
+      try {
+        const { doc, getDoc, setDoc } = await import('firebase/firestore');
+        const studentRef = doc(firestore, 'students', user.uid);
+        const studentSnap = await getDoc(studentRef);
+        const now = new Date();
+
+        if (!studentSnap.exists()) {
+          // Create basic profile for new user
+          const displayName = user.isAnonymous ? `Student ${user.uid.slice(-4)}` : (user.displayName || 'Student');
+          const profileData = {
+            studentName: displayName,
+            schoolName: 'Unknown School',
+            studentClass: 'JHS 1',
+            tenantId: currentTenantId,
+            lastSeen: now,
+            rating: 1200,
+            wins: 0,
+            losses: 0,
+            draws: 0,
+            totalGames: 0,
+            winStreak: 0,
+            highestStreak: 0,
+            xp: 0,
+            totalXP: 0,
+            currentStreak: 0,
+            longestStreak: 0,
+            coins: 0,
+            achievements: [],
+          };
+
+          await setDoc(studentRef, profileData);
+          console.log('[Create Challenge] Created profile:', user.uid, displayName);
+        } else {
+          // Update existing profile - refresh lastSeen so user shows as online
+          const existingData = studentSnap.data();
+          const displayName = existingData.studentName || (user.isAnonymous ? `Student ${user.uid.slice(-4)}` : (user.displayName || 'Student'));
+          
+          // Update lastSeen and ensure tenantId is set
+          const updateData: any = {
+            lastSeen: now,
+            studentName: displayName,
+            totalXP: existingData.totalXP ?? existingData.xp ?? 0,
+            currentStreak: existingData.currentStreak ?? existingData.winStreak ?? 0,
+            longestStreak: existingData.longestStreak ?? existingData.highestStreak ?? 0,
+          };
+          if (currentTenantId && existingData.tenantId !== currentTenantId) {
+            updateData.tenantId = currentTenantId;
+          }
+          
+          await setDoc(studentRef, updateData, { merge: true });
+          console.log('[Create Challenge] Updated profile lastSeen:', user.uid, displayName);
+        }
+      } catch (error: any) {
+        if (error?.code === 'permission-denied') {
+          console.warn('[Create Challenge] Permission denied - cannot manage student profile');
+        } else {
+          console.warn('[Create Challenge] Failed to manage student profile:', error);
+        }
+      }
+    };
+
+    initUserProfile();
+  }, [user?.uid, firestore, currentTenantId]);
 
   // Query Firestore for real users with online status
   useEffect(() => {
@@ -202,46 +272,48 @@ export default function CreateChallengePage() {
     
     const setupListener = async () => {
       try {
-        const { collection, query, limit, onSnapshot } = await import('firebase/firestore');
+        const { collection, query, where, limit, onSnapshot } = await import('firebase/firestore');
         const studentsRef = collection(firestore, 'students');
         
-        // Use limit without orderBy to avoid index requirements
-        const q = query(studentsRef, limit(50));
+        const queryConstraints: any[] = [where('tenantId', '==', currentTenantId), limit(50)];
+        
+        const q = query(studentsRef, ...queryConstraints);
         
         unsubscribe = onSnapshot(q, (snapshot) => {
           const usersList: Player[] = [];
           const lastSeenMap: Record<string, Date | null> = {};
           
           snapshot.forEach((docSnapshot) => {
-            const data = docSnapshot.data();
+            const data = docSnapshot.data() as Record<string, any>;
             const userId = docSnapshot.id;
+
+            if (userId.startsWith('bot-')) return;
             
             // Skip current user
             if (userId === user.uid) return;
             
-            if (data.studentName) {
-              const lastSeen = data.lastSeen?.toDate?.() || null;
-              lastSeenMap[userId] = lastSeen;
-              
-              usersList.push({
-                userId,
-                userName: data.studentName || 'Student',
-                school: data.schoolName || 'Unknown School',
-                level: (data.studentClass?.includes('SHS') ? 'SHS' : 
-                       data.studentClass?.includes('JHS') ? 'JHS' : 
-                       data.studentClass?.includes('Primary') ? 'Primary' : 'JHS') as 'Primary' | 'JHS' | 'SHS',
-                rating: 1200,
-                wins: 0,
-                losses: 0,
-                draws: 0,
-                totalGames: 0,
-                winStreak: 0,
-                highestStreak: 0,
-                xp: 0,
-                achievements: [],
-                coins: 0,
-              });
-            }
+            const displayName = getUserDisplayName(data);
+            const lastSeen = data.lastSeen?.toDate?.() || null;
+            lastSeenMap[userId] = lastSeen;
+            
+            usersList.push({
+              userId,
+              userName: displayName,
+              school: data.schoolName || 'Unknown School',
+              level: (data.studentClass?.includes('SHS') ? 'SHS' : 
+                     data.studentClass?.includes('JHS') ? 'JHS' : 
+                     data.studentClass?.includes('Primary') ? 'Primary' : 'JHS') as 'Primary' | 'JHS' | 'SHS',
+              rating: 1200,
+              wins: 0,
+              losses: 0,
+              draws: 0,
+              totalGames: 0,
+              winStreak: 0,
+              highestStreak: 0,
+              xp: 0,
+              achievements: [],
+              coins: 0,
+            });
           });
           
           // Sort by online status first, then by name
@@ -275,10 +347,9 @@ export default function CreateChallengePage() {
             coins: 0,
           };
           
-          // If no real users found, fall back to mock players with Sarah
+          // If no real users found, fall back to Sarah only
           if (usersList.length === 0) {
-            const allPlayers = getAllPlayers();
-            setFriends([sarahPlayer, ...allPlayers.filter(p => p.userId !== user.uid)]);
+            setFriends([sarahPlayer]);
           } else {
             // Add Sarah at the beginning (she's always online)
             setFriends([sarahPlayer, ...usersList]);
@@ -289,7 +360,7 @@ export default function CreateChallengePage() {
           } else {
             console.error('Error fetching users:', error);
           }
-          // Fall back to Sarah only for anonymous users
+          // Fall back to Sarah only when real users cannot be loaded
           const sarahBot = getSarahBot();
           const sarahPlayer: Player = {
             userId: sarahBot.id,
@@ -307,12 +378,11 @@ export default function CreateChallengePage() {
             achievements: [],
             coins: 0,
           };
-          const allPlayers = getAllPlayers();
-          setFriends([sarahPlayer, ...allPlayers.filter(p => user?.uid && p.userId !== user.uid)]);
+          setFriends([sarahPlayer]);
         });
       } catch (error) {
         console.error('Error setting up users listener:', error);
-        // Fall back to Sarah for anonymous users
+        // Fall back to Sarah only when user list cannot be loaded
         const sarahBot = getSarahBot();
         const sarahPlayer: Player = {
           userId: sarahBot.id,
@@ -330,8 +400,7 @@ export default function CreateChallengePage() {
           achievements: [],
           coins: 0,
         };
-        const allPlayers = getAllPlayers();
-        setFriends([sarahPlayer, ...allPlayers.filter(p => user?.uid && p.userId !== user.uid)]);
+        setFriends([sarahPlayer]);
       }
     };
     
@@ -342,7 +411,7 @@ export default function CreateChallengePage() {
         unsubscribe();
       }
     };
-  }, [firestore, user]);
+  }, [firestore, user, currentTenantId]);
 
   // Filter friends by search query only
   // Online users are already sorted to the top in the friends list

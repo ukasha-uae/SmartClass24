@@ -32,6 +32,7 @@ import { getCountryConfig } from '@/lib/localization/countries';
 
 // Base metadata (merged with tenant-specific in generateMetadata)
 const baseMetadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://smartclass24.app'),
   description: 'Personalized education for students worldwide. Master any curriculum with AI-driven learning, interactive labs, and challenge arenas. Serving Africa, Middle East, and expanding globally with white-label solutions for schools.',
   keywords: [
     'online learning',

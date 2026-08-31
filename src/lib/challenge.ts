@@ -749,6 +749,55 @@ export interface MatchHistory {
 
 // Challenge Functions
 
+/**
+ * Sync player stats to Firestore students collection
+ * This allows quick-match to discover online players with their actual stats
+ */
+export async function syncPlayerStatsToFirestore(userId: string, player: Player, tenantId?: string): Promise<void> {
+  try {
+    const { firestore } = initializeFirebase();
+    if (!firestore) return;
+    
+    const studentRef = doc(firestore, 'students', userId);
+    const updateData: any = {
+      // Basic profile info for quick-match discovery
+      studentName: player.userName,
+      schoolName: player.school,
+      studentClass: player.level === 'SHS' ? 'SHS 1' : player.level === 'JHS' ? 'JHS 1' : 'Primary 1',
+      
+      // Stats for matching algorithm
+      rating: player.rating,
+      wins: player.wins,
+      losses: player.losses,
+      draws: player.draws,
+      totalGames: player.totalGames,
+      winStreak: player.winStreak,
+      highestStreak: player.highestStreak,
+      xp: player.xp,
+      totalXP: player.xp,
+      currentStreak: player.winStreak,
+      longestStreak: player.highestStreak,
+      coins: player.coins,
+      achievements: player.achievements,
+    };
+    
+    // Include tenantId if provided (needed for Firestore read rules)
+    if (tenantId) {
+      updateData.tenantId = tenantId;
+    }
+    
+    await setDoc(studentRef, updateData, { merge: true });
+    
+    console.log('[Challenge] Synced player stats to Firestore:', userId, player.userName, player.rating, tenantId ? `(tenant: ${tenantId})` : '(no tenant)');
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Challenge] Permission denied - cannot sync player stats to Firestore');
+      return;
+    }
+    console.error('[Challenge] Failed to sync player stats to Firestore:', error);
+  }
+}
+
 export const getPlayerProfile = (userId: string): Player | null => {
   if (typeof window === 'undefined') return null;
   const players = localStorage.getItem('challengePlayers');
@@ -757,13 +806,15 @@ export const getPlayerProfile = (userId: string): Player | null => {
   return allPlayers.find(p => p.userId === userId) || null;
 };
 
-export const createOrUpdatePlayer = (player: Partial<Player> & { userId: string }): Player => {
+export const createOrUpdatePlayer = (player: Partial<Player> & { userId: string }, tenantId?: string): Player => {
   const players = getAllPlayers();
   const existingIndex = players.findIndex(p => p.userId === player.userId);
   
   if (existingIndex > -1) {
     players[existingIndex] = { ...players[existingIndex], ...player };
     localStorage.setItem('challengePlayers', JSON.stringify(players));
+    // Sync updated player to Firestore
+    syncPlayerStatsToFirestore(player.userId, players[existingIndex], tenantId);
     return players[existingIndex];
   } else {
     const newPlayer: Player = {
@@ -785,6 +836,8 @@ export const createOrUpdatePlayer = (player: Partial<Player> & { userId: string 
     };
     players.push(newPlayer);
     localStorage.setItem('challengePlayers', JSON.stringify(players));
+    // Sync new player to Firestore
+    syncPlayerStatsToFirestore(newPlayer.userId, newPlayer, tenantId);
     return newPlayer;
   }
 };
@@ -878,6 +931,9 @@ export const updatePlayerStats = (
   
   players[playerIndex] = player;
   localStorage.setItem('challengePlayers', JSON.stringify(players));
+  
+  // Sync player stats to Firestore so other players can discover them
+  syncPlayerStatsToFirestore(player.userId, player);
 };
 
 // Challenge Management

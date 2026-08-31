@@ -116,11 +116,33 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         
         setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
         
-        // If we've just signed in, sync data from Firestore and start presence heartbeat
+        // If we've just signed in, refresh token for anonymous tenant claims,
+        // then sync data from Firestore and start presence heartbeat.
         if (firebaseUser && firestore) {
-          try { 
+          try {
+            try {
+              const idTokenResult = await firebaseUser.getIdTokenResult(true);
+              console.log('[Auth] Refreshed token claims:', idTokenResult.claims);
+            } catch (refreshError) {
+              console.warn('[Auth] Failed to refresh token claims:', refreshError);
+            }
+            
+            // Restart global presence heartbeat on each auth state change and include tenantId when available.
+            if (presenceCleanupRef.current) {
+              presenceCleanupRef.current();
+              presenceCleanupRef.current = null;
+            }
+
+            let presenceTenantId: string | undefined;
+            try {
+              const tokenResult = await firebaseUser.getIdTokenResult();
+              presenceTenantId = tokenResult.claims?.tenantId as string | undefined;
+            } catch (tokenError) {
+              console.warn('[Presence] Failed to read tenantId from token claims:', tokenError);
+            }
+
             // Start global presence heartbeat (runs on all pages for authenticated users)
-            presenceCleanupRef.current = startPresenceHeartbeat(firebaseUser.uid);
+            presenceCleanupRef.current = startPresenceHeartbeat(firebaseUser.uid, presenceTenantId);
             
             // Initialize FCM for push notifications (non-blocking)
             if (!firebaseUser.isAnonymous) {

@@ -26,7 +26,7 @@ import {
 import {
   getAvailableSubjectsForGlobalArena,
   getAvailableSubjects,
-} from '@/lib/challenge-questions-exports';
+} from '@/lib/challenge-subjects';
 import {
   getClassLevelOptions,
   type EducationLevel,

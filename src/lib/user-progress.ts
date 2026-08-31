@@ -277,39 +277,53 @@ export const getLeaderboard = async (firestore?: any, currentUserId?: string, li
     // Import Firestore functions dynamically
     const { collection, query, orderBy, limit: firestoreLimit, getDocs } = await import('firebase/firestore');
     
-    // Fetch more users than needed to account for filtering out test accounts
+    // Fetch both modern and legacy XP fields so older profiles still appear.
     const studentsRef = collection(firestore, 'students');
-    const leaderboardQuery = query(
+    const totalXpSnapshot = await getDocs(query(
       studentsRef,
       orderBy('totalXP', 'desc'),
-      firestoreLimit(limit * 3) // Fetch 3x to ensure we get enough real users after filtering
-    );
-    
-    const snapshot = await getDocs(leaderboardQuery);
-    const users: any[] = [];
-    
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const userName = data.studentName || data.userName || 'Anonymous';
-      const email = data.email || '';
-      const userId = doc.id;
-      
-      // Filter out test/fake accounts from leaderboard
-      if (!isTestUser(userName, email, userId)) {
-        users.push({
-          userId: doc.id,
-          name: userName,
-          level: Math.floor((data.totalXP || 0) / 100),
-          xp: data.totalXP || 0,
-          streak: data.currentStreak || 0,
-          school: data.school || 'Unknown',
-          isCurrentUser: doc.id === currentUserId,
-        });
-      }
-    });
-    
-    // Limit to requested number of real users
-    const realUsers = users.slice(0, limit);
+      firestoreLimit(limit * 3)
+    ));
+    const legacyXpSnapshot = await getDocs(query(
+      studentsRef,
+      orderBy('xp', 'desc'),
+      firestoreLimit(limit * 3)
+    ));
+
+    const usersById = new Map<string, any>();
+
+    const addSnapshotUsers = (snapshot: any) => {
+      snapshot.forEach((doc: any) => {
+        const data = doc.data();
+        const userName = data.studentName || data.userName || 'Anonymous';
+        const email = data.email || '';
+        const userId = doc.id;
+        const xp = data.totalXP ?? data.xp ?? 0;
+        const streak = data.currentStreak ?? data.winStreak ?? 0;
+
+        if (isTestUser(userName, email, userId)) return;
+
+        const existing = usersById.get(userId);
+        if (!existing || xp > existing.xp) {
+          usersById.set(userId, {
+            userId,
+            name: userName,
+            level: Math.floor(xp / 100),
+            xp,
+            streak,
+            school: data.school || 'Unknown',
+            isCurrentUser: userId === currentUserId,
+          });
+        }
+      });
+    };
+
+    addSnapshotUsers(totalXpSnapshot);
+    addSnapshotUsers(legacyXpSnapshot);
+
+    const realUsers = Array.from(usersById.values())
+      .sort((a, b) => b.xp - a.xp)
+      .slice(0, limit);
     
     // Insert Sarah the Robot into the rankings
     realUsers.push(SARAH_THE_ROBOT);

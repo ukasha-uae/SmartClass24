@@ -37,7 +37,7 @@ import { useLocalization } from '@/hooks/useLocalization';
 import { useParams, notFound, useRouter } from 'next/navigation';
 import { COUNTRIES } from '@/lib/localization/countries/index';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
-import { getAvailableSubjects, getAvailableSubjectsForGlobalArena } from '@/lib/challenge-questions-exports';
+import { getAvailableSubjects, getAvailableSubjectsForGlobalArena } from '@/lib/challenge-subjects';
 import CoinStore from '@/components/premium/CoinStore';
 import TransactionHistory from '@/components/premium/TransactionHistory';
 import SubscriptionManagement from '@/components/premium/SubscriptionManagement';

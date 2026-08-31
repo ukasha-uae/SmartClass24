@@ -4,7 +4,8 @@
 
 import { useEffect, useState } from 'react';
 import { useFirebase } from '@/firebase/provider';
-import { collection, query, getDocs, onSnapshot, where, orderBy, limit, Timestamp } from 'firebase/firestore';
+import { useTenant } from '@/hooks/useTenant';
+import { collection, query, onSnapshot, where, limit } from 'firebase/firestore';
 import { isUserOnline } from '@/lib/user-presence';
 
 export interface OnlineUser {
@@ -17,35 +18,36 @@ export interface OnlineUser {
 
 export function useOnlineUsers(maxUsers: number = 50): OnlineUser[] {
   const { firestore, user } = useFirebase();
+  const { tenantId } = useTenant();
   const [onlineUsers, setOnlineUsers] = useState<OnlineUser[]>([]);
 
   useEffect(() => {
-    if (!firestore || !user || user.isAnonymous) {
+    if (!firestore || !user) {
+      setOnlineUsers([]);
+      return;
+    }
+
+    if (!tenantId) {
       setOnlineUsers([]);
       return;
     }
 
     // For now, we'll use a simpler approach:
-    // Listen to users/{userId}/presence/status documents
-    // Since we can't easily query across all user subcollections,
-    // we'll fetch users from the students collection and check their presence individually
-    
-    // Alternative: Store lastSeen directly in students document (simpler but less real-time)
-    // For now, let's use students collection with lastSeen field
+    // Listen to tenant-scoped student documents and use lastSeen as presence.
     
     const unsubscribe = onSnapshot(
-      query(
-        collection(firestore, 'students'),
-        orderBy('lastSeen', 'desc'),
-        limit(maxUsers)
-      ),
+        query(
+          collection(firestore, 'students'),
+          where('tenantId', '==', tenantId),
+          limit(maxUsers)
+        ),
       async (snapshot) => {
         const users: OnlineUser[] = [];
         
         snapshot.forEach((docSnapshot) => {
           const data = docSnapshot.data();
           const userId = docSnapshot.id;
-          
+
           // Skip current user
           if (userId === user.uid) return;
           
