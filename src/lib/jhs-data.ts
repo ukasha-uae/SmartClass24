@@ -1,5 +1,4 @@
-﻿
-// JHS Data
+﻿// JHS Data
 import type { Subject, Topic, Lesson, Quiz } from '@/lib/types';
 import {
   Book,

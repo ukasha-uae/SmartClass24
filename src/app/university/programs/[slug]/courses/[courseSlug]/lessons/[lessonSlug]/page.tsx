@@ -15,6 +15,7 @@ import { CodeExecutionResult, CodeFile } from '@/types/university';
 import { ValidationOutcome } from '@/lib/university-validation';
 import { useCodeSaves, useUniversityProgress } from '@/firebase/university-hooks';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { useFullscreen } from '@/contexts/FullscreenContext';
 import MarkdownContent from '@/components/university/MarkdownContent';
 import LessonCheckpoints from '@/components/university/LessonCheckpoints';
 
@@ -32,6 +33,7 @@ const UniversityCodeEditor = dynamic(() => import('@/components/university/Unive
 export default function LessonPage({ params }: { params: Promise<{ slug: string; courseSlug: string; lessonSlug: string }> }) {
   const resolvedParams = use(params);
   const addTenantParam = useTenantLink();
+  const { setFullscreen } = useFullscreen();
   const [showCodeEditor, setShowCodeEditor] = useState(false);
   const [executionResult, setExecutionResult] = useState<CodeExecutionResult | null>(null);
   const [validationResults, setValidationResults] = useState<ValidationOutcome[]>([]);
@@ -41,12 +43,20 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
   const { saveCode, loadCode } = useCodeSaves();
   const { markLessonComplete, getProgress } = useUniversityProgress();
 
+  // Sololearn-style focus mode: hide the site header/footer/bottom-nav while a lesson is in session.
+  // Keep scrolling enabled since lesson content is taller than the viewport.
+  useEffect(() => {
+    setFullscreen(true, { lockScroll: false });
+    return () => setFullscreen(false);
+  }, [setFullscreen]);
+
   // Get lesson data (in real app, this would come from params)
   const program = webDevelopmentProgram;
   const course = program.courses[0];
   // Search every module, not just the first, so lessons in later modules are reachable
   const allLessons = course.modules.flatMap(m => m.lessons);
   const lesson = allLessons.find(l => l.slug === resolvedParams.lessonSlug);
+
 
   if (!lesson) {
     notFound();
@@ -117,55 +127,62 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-green-50/30 to-blue-50/30">
       {/* Under Construction Banner */}
-      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 text-center text-sm font-medium shadow-sm">
+      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-1.5 sm:py-2 text-center text-xs sm:text-sm font-medium shadow-sm px-2">
         🚧 Under Construction - Code editor and features being actively developed
       </div>
 
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
               <Link
                 href={`/university/programs/${resolvedParams.slug}`}
-                className="text-gray-600 hover:text-gray-900 transition-colors"
+                className="text-gray-600 hover:text-gray-900 transition-colors shrink-0"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Link>
-              <div>
-                <div className="text-sm text-gray-500">{course.title}</div>
-                <h1 className="text-lg font-semibold text-gray-900">{lesson.title}</h1>
+              <div className="min-w-0">
+                <div className="text-xs sm:text-sm text-gray-500 truncate">{course.title}</div>
+                <h1 className="text-sm sm:text-lg font-semibold text-gray-900 truncate">{lesson.title}</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <span className="text-sm text-gray-600">{lesson.estimatedTime}</span>
-              <span className="px-3 py-1 bg-green-100 text-green-700 text-sm font-semibold rounded-full">
+            <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+              <span className="hidden sm:inline text-sm text-gray-600">{lesson.estimatedTime}</span>
+              <span className="px-2 sm:px-3 py-1 bg-green-100 text-green-700 text-xs sm:text-sm font-semibold rounded-full whitespace-nowrap">
                 {lesson.type.toUpperCase()}
               </span>
             </div>
           </div>
         </div>
+        {/* Sololearn-style thin progress bar: position within the current module */}
+        <div className="h-1 bg-gray-100">
+          <div
+            className="h-1 bg-gradient-to-r from-green-600 to-emerald-500 transition-all duration-300"
+            style={{ width: `${((currentModule.lessons.findIndex(l => l.id === lesson.id) + 1) / currentModule.lessons.length) * 100}%` }}
+          />
+        </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 pb-28 lg:pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-3 space-y-8">
+          <div className="lg:col-span-3 space-y-4 sm:space-y-6 lg:space-y-8">
             {/* Introduction */}
-            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl shadow-md p-8 border border-green-100">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="p-2 bg-green-600 rounded-lg">
-                  <BookOpen className="w-6 h-6 text-white" />
+            <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 lg:p-8 border border-green-100">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-6">
+                <div className="p-1.5 sm:p-2 bg-green-600 rounded-lg">
+                  <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Introduction</h2>
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Introduction</h2>
               </div>
-              <p className="text-lg text-gray-700 leading-relaxed">{lesson.content.introduction}</p>
+              <p className="text-base sm:text-lg text-gray-700 leading-relaxed">{lesson.content.introduction}</p>
             </div>
 
             {/* Content Sections */}
             {lesson.content.sections.map((section) => (
-              <div key={section.id} className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">{section.title}</h2>
+              <div key={section.id} className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 lg:p-8 border border-gray-100">
+                <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-6 text-gray-900">{section.title}</h2>
                 <MarkdownContent 
                   content={section.content}
                   className="text-gray-700 mb-6"
@@ -173,14 +190,14 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
 
                 {/* Code Examples */}
                 {section.codeExamples && section.codeExamples.length > 0 && (
-                  <div className="space-y-4 mt-6">
+                  <div className="space-y-3 sm:space-y-4 mt-4 sm:mt-6">
                     {section.codeExamples.map((example) => (
-                      <div key={example.id} className="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
-                        <div className="bg-gradient-to-r from-green-50 to-blue-50 px-5 py-3 border-b border-gray-200">
-                          <div className="text-sm font-medium text-gray-800">{example.explanation}</div>
+                      <div key={example.id} className="rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+                        <div className="bg-gradient-to-r from-green-50 to-blue-50 px-3 sm:px-5 py-2 sm:py-3 border-b border-gray-200">
+                          <div className="text-xs sm:text-sm font-medium text-gray-800">{example.explanation}</div>
                         </div>
-                        <div className="bg-[#1e1e1e] p-5">
-                          <pre className="text-sm text-gray-100 overflow-x-auto font-mono">
+                        <div className="bg-[#1e1e1e] p-3 sm:p-5">
+                          <pre className="text-xs sm:text-sm text-gray-100 overflow-x-auto font-mono">
                             <code>{example.code}</code>
                           </pre>
                         </div>
@@ -203,12 +220,12 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                 );
               }
               return (
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <Code className="w-6 h-6 text-green-600" />
-                  <h2 className="text-2xl font-bold text-gray-900">Hands-On Practice</h2>
+              <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
+                <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+                  <Code className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                  <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Hands-On Practice</h2>
                 </div>
-                <p className="text-gray-700 mb-6">
+                <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
                   Now it's your turn! Complete the coding challenge below using what you've learned.
                 </p>
                 
@@ -227,22 +244,22 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
 
                 {/* Validation Results */}
                 {validationResults.length > 0 && (
-                  <div className="mt-6 bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <h3 className="font-semibold text-gray-900 mb-3">Validation Results</h3>
+                  <div className="mt-4 sm:mt-6 bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
+                    <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Validation Results</h3>
                     <div className="space-y-2">
                       {validationResults.map((result) => (
-                        <div key={result.ruleId} className="flex items-center justify-between p-2 bg-white rounded">
-                          <div className="flex items-center space-x-2">
+                        <div key={result.ruleId} className="flex items-center justify-between p-2 bg-white rounded gap-2">
+                          <div className="flex items-center space-x-2 min-w-0">
                             {result.passed ? (
-                              <CheckCircle2 className="w-5 h-5 text-green-600" />
+                              <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0" />
                             ) : (
-                              <div className="w-5 h-5 rounded-full border-2 border-gray-300" />
+                              <div className="w-5 h-5 rounded-full border-2 border-gray-300 shrink-0" />
                             )}
-                            <span className={result.passed ? 'text-gray-900' : 'text-gray-500'}>
+                            <span className={`text-sm sm:text-base truncate ${result.passed ? 'text-gray-900' : 'text-gray-500'}`}>
                               {result.message}
                             </span>
                           </div>
-                          <span className="text-sm font-semibold text-gray-600">
+                          <span className="text-xs sm:text-sm font-semibold text-gray-600 shrink-0">
                             {result.points}/{result.maxPoints} pts
                           </span>
                         </div>
@@ -259,9 +276,9 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
 
                 {/* Hints */}
                 {config.hints && config.hints.length > 0 && (
-                  <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-blue-900 mb-2">💡 Hints</h3>
-                    <ul className="space-y-1 text-sm text-blue-800">
+                  <div className="mt-4 sm:mt-6 bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+                    <h3 className="font-semibold text-blue-900 mb-2 text-sm sm:text-base">💡 Hints</h3>
+                    <ul className="space-y-1 text-xs sm:text-sm text-blue-800">
                       {config.hints.map((hint: string, idx: number) => (
                         <li key={idx}>• {hint}</li>
                       ))}
@@ -276,21 +293,21 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
             <LessonCheckpoints checkpoints={lesson.checkpoints} />
 
             {/* Summary */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-md p-8 border border-green-100">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="p-2 bg-green-600 rounded-lg">
-                  <Award className="w-6 h-6 text-white" />
+            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 lg:p-8 border border-green-100">
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-6">
+                <div className="p-1.5 sm:p-2 bg-green-600 rounded-lg">
+                  <Award className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
-                <h2 className="text-2xl font-bold text-gray-900">Summary</h2>
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Summary</h2>
               </div>
-              <p className="text-lg text-gray-700 mb-6 leading-relaxed">{lesson.content.summary}</p>
+              <p className="text-base sm:text-lg text-gray-700 mb-4 sm:mb-6 leading-relaxed">{lesson.content.summary}</p>
               
-              <h3 className="font-bold text-lg text-gray-900 mb-4">Key Takeaways</h3>
-              <div className="space-y-3">
+              <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-3 sm:mb-4">Key Takeaways</h3>
+              <div className="space-y-2 sm:space-y-3">
                 {lesson.content.keyTakeaways.map((takeaway, idx) => (
-                  <div key={idx} className="flex items-start space-x-3 bg-white/70 rounded-xl p-4 border border-green-100">
+                  <div key={idx} className="flex items-start space-x-3 bg-white/70 rounded-xl p-3 sm:p-4 border border-green-100">
                     <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-800 font-medium">{takeaway}</span>
+                    <span className="text-sm sm:text-base text-gray-800 font-medium">{takeaway}</span>
                   </div>
                 ))}
               </div>
@@ -300,7 +317,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                 <button
                   onClick={handleManualComplete}
                   disabled={markedComplete}
-                  className="mt-6 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white rounded-xl font-bold flex items-center space-x-2 transition-colors"
+                  className="mt-6 w-full sm:w-auto px-6 py-3 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white rounded-xl font-bold flex items-center justify-center space-x-2 transition-colors"
                 >
                   <CheckCircle2 className="w-5 h-5" />
                   <span>{markedComplete ? 'Lesson Complete' : 'Mark Lesson Complete'}</span>
@@ -310,23 +327,23 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
 
             {/* Resources */}
             {lesson.resources.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">Additional Resources</h2>
-                <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 lg:p-8 border border-gray-100">
+                <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-6 text-gray-900">Additional Resources</h2>
+                <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                   {lesson.resources.map((resource) => (
                     <a
                       key={resource.id}
                       href={resource.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-start space-x-4 p-5 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50/50 transition-all duration-200"
+                      className="group flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50/50 transition-all duration-200"
                     >
                       <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-600 transition-colors">
                         <BookOpen className="w-5 h-5 text-green-600 group-hover:text-white flex-shrink-0" />
                       </div>
                       <div>
-                        <div className="font-bold text-gray-900 mb-1">{resource.title}</div>
-                        <div className="text-sm text-gray-600">{resource.description}</div>
+                        <div className="font-bold text-gray-900 mb-1 text-sm sm:text-base">{resource.title}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">{resource.description}</div>
                       </div>
                     </a>
                   ))}
@@ -334,8 +351,8 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
               </div>
             )}
 
-            {/* Navigation */}
-            <div className="flex justify-between gap-4">
+            {/* Navigation (desktop only — mobile uses the sticky bottom bar) */}
+            <div className="hidden lg:flex justify-between gap-4">
               <Link
                 href={prevLesson ? addTenantParam(`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${prevLesson.slug}`) : courseHref}
                 className="px-8 py-4 bg-white border-2 border-gray-300 hover:border-green-600 hover:bg-green-50 text-gray-700 rounded-xl font-bold transition-all duration-200 shadow-sm hover:shadow-md"
@@ -352,10 +369,10 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
             </div>
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar (below content on mobile, sticky rail on desktop) */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-2xl shadow-md p-6 sticky top-24 border border-gray-100">
-              <h3 className="font-bold text-lg text-gray-900 mb-4 flex items-center">
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 lg:sticky lg:top-24 border border-gray-100">
+              <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-4 flex items-center">
                 <Award className="w-5 h-5 text-green-600 mr-2" />
                 Progress
               </h3>
@@ -382,7 +399,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
               </div>
 
               <div className="mt-6 pt-6 border-t border-gray-200">
-                <h3 className="font-bold text-lg text-gray-900 mb-4">Module Lessons</h3>
+                <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-4">Module Lessons</h3>
                 <div className="space-y-2">
                   {currentModule.lessons.map((l, idx) => (
                     <Link
@@ -394,7 +411,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                           : 'hover:bg-green-50 text-gray-700 border border-transparent hover:border-green-200'
                       }`}
                     >
-                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
+                      <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                         l.slug === lesson.slug
                           ? 'bg-white text-green-600'
                           : 'bg-gray-200 text-gray-600'
@@ -409,6 +426,24 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Mobile sticky bottom nav bar (Sololearn-style Continue button) */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-20 bg-white border-t border-gray-200 shadow-[0_-4px_12px_rgba(0,0,0,0.06)] px-3 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex items-center gap-3">
+        <Link
+          href={prevLesson ? addTenantParam(`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${prevLesson.slug}`) : courseHref}
+          className="shrink-0 p-3 rounded-xl border-2 border-gray-300 text-gray-600 active:bg-gray-100 transition-colors"
+          aria-label={prevLesson ? 'Previous lesson' : 'Back to course'}
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+        <Link
+          href={nextLesson ? addTenantParam(`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${nextLesson.slug}`) : courseHref}
+          className="flex-1 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 active:from-green-700 active:to-emerald-700 text-white rounded-xl font-bold transition-colors shadow-md flex items-center justify-center space-x-2"
+        >
+          <span>{nextLesson ? 'Continue' : 'Finish Course'}</span>
+          <ChevronRight className="w-5 h-5" />
+        </Link>
       </div>
     </div>
   );

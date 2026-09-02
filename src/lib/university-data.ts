@@ -743,18 +743,18 @@ That's it — every direct child of \`.container\` now lines up in a row automat
           slug: 'semantic-html-navigation',
           title: 'Real Websites: Structure & Navigation',
           description: 'Learn the tags that make multi-page websites possible',
-          estimatedTime: '15 minutes',
+          estimatedTime: '14 minutes',
           order: 3,
           lessons: [
             {
               id: 'lesson-3-1',
-              slug: 'semantic-html-links-images',
-              title: 'Semantic HTML, Links & Images 🔗',
-              type: 'practical',
+              slug: 'semantic-html-sections',
+              title: 'Semantic HTML: Naming Your Sections 🏷️',
+              type: 'theory',
               order: 1,
-              estimatedTime: '10 minutes',
+              estimatedTime: '4 minutes',
               content: {
-                introduction: '🔗 Real websites have more than one page — and they use special tags so browsers (and screen readers!) understand what each part of the page means. Let\'s learn the tags your final project needs.',
+                introduction: '🏷️ Real websites don\'t stuff everything into generic boxes. Browsers (and screen readers!) understand your page way better when each part has a name.',
                 sections: [
                   {
                     id: 'section-1',
@@ -791,78 +791,13 @@ That's it — every direct child of \`.container\` now lines up in a row automat
                         showLineNumbers: true
                       }
                     ]
-                  },
-                  {
-                    id: 'section-2',
-                    title: '🔗 Linking Between Pages',
-                    order: 2,
-                    content: `The \`<a>\` (anchor) tag is how you link to other pages — or other websites:
-
-\`\`\`html
-<a href="about.html">About Me</a>
-\`\`\`
-
-- \`href\` = where the link goes
-- The text between the tags = what visitors click
-
-**This is exactly what your final project needs**: an \`index.html\` and \`about.html\` that link to EACH OTHER using \`<a>\` tags in a shared \`<nav>\`.`,
-                    codeExamples: [
-                      {
-                        id: 'example-2',
-                        language: 'html',
-                        code: `<!-- On index.html -->
-<a href="about.html">About</a>
-
-<!-- On about.html -->
-<a href="index.html">Home</a>`,
-                        explanation: 'Each page links to the other — that\'s how visitors move around your site.',
-                        editable: true,
-                        showLineNumbers: false
-                      }
-                    ]
-                  },
-                  {
-                    id: 'section-3',
-                    title: '🖼️ Images & Lists',
-                    order: 3,
-                    content: `Two more must-know tags:
-
-\`\`\`html
-<img src="photo.jpg" alt="A photo of me">
-\`\`\`
-- \`src\` = the image file
-- \`alt\` = description (shown if the image fails, and read aloud by screen readers)
-
-\`\`\`html
-<ul>
-  <li>Reading</li>
-  <li>Coding</li>
-  <li>Football</li>
-</ul>
-\`\`\`
-\`<ul>\` = unordered (bullet) list, \`<li>\` = each list item. Use \`<ol>\` instead of \`<ul>\` for numbered lists.`,
-                    codeExamples: [
-                      {
-                        id: 'example-3',
-                        language: 'html',
-                        code: `<img src="me.jpg" alt="Portrait of me smiling">
-<ul>
-  <li>Coding</li>
-  <li>Music</li>
-</ul>`,
-                        explanation: 'Always fill in `alt` — never leave it empty on a meaningful image!',
-                        editable: true,
-                        showLineNumbers: false
-                      }
-                    ]
                   }
                 ],
-                summary: '🎉 You can now build a REAL multi-page site: semantic tags for structure, <a href> to link pages, <img> for photos, and <ul>/<li> for lists. This is everything your final project needs!',
+                summary: '🎯 Semantic tags like header, nav, main, and footer describe what each part of a page IS — not just how it looks.',
                 keyTakeaways: [
                   '🏷️ header/nav/main/footer describe what each part of the page IS',
-                  '🔗 <a href="page.html">Text</a> links to another page',
-                  '🖼️ <img src="..." alt="..."> always needs a real alt description',
-                  '📋 <ul><li> makes a bullet list'
+                  '🔍 Semantic tags help search engines and screen readers understand your page',
+                  '📖 They also make your own code way easier to read later'
                 ]
               },
               interactive: {
@@ -881,14 +816,164 @@ That's it — every direct child of \`.container\` now lines up in a row automat
 <body>
   <!-- 🎯 Your challenge:
   1. Wrap the title in a <header>
-  2. Add a <nav> with a link to about.html
-  3. Wrap the intro paragraph in <main>
-  4. Add a <footer> with a copyright line
-  5. Add a photo of yourself with <img> (any src) and a real alt
-  6. Add a <ul> with 3 things you like
+  2. Wrap the intro paragraph in <main>
+  3. Add a <footer> with a copyright line
   -->
   <h1>My Site</h1>
   <p>Welcome! This is my homepage.</p>
+</body>
+</html>`
+                    }
+                  ],
+                  instructions: '🎯 Turn this plain page into semantic HTML using header, main, and footer.',
+                  hints: [
+                    '💡 <header> wraps the top of the page, like your <h1>',
+                    '🔥 <main> wraps the main content, like your <p>',
+                    '⚡ Don\'t forget the closing </header>, </main>, </footer> tags'
+                  ],
+                  allowFileCreation: false,
+                  allowInstallPackages: false,
+                  maxFileSize: 80,
+                  timeout: 5,
+                  validation: [
+                    {
+                      type: 'code-pattern',
+                      description: '✅ Used <header>',
+                      validate: '<header>',
+                      points: 30
+                    },
+                    {
+                      type: 'code-pattern',
+                      description: '✅ Wrapped content in <main>',
+                      validate: '<main>',
+                      points: 35
+                    },
+                    {
+                      type: 'code-pattern',
+                      description: '✅ Added a <footer>',
+                      validate: '<footer>',
+                      points: 35
+                    }
+                  ],
+                  successMessage: '🎉 That page now describes its own structure!',
+                  celebrationEmoji: '🏷️'
+                }
+              },
+              checkpoints: [
+                {
+                  id: 'checkpoint-1',
+                  title: '⚡ Quick Check!',
+                  description: 'Test your semantic tag knowledge',
+                  type: 'quiz',
+                  required: true,
+                  order: 1,
+                  content: {
+                    id: 'quiz-semantic-1',
+                    type: 'multiple-choice',
+                    question: '🤔 Which tag should wrap the MAIN content of a page?',
+                    options: ['<main>', '<div>', '<header>', '<footer>'],
+                    correctAnswer: '<main>',
+                    points: 10,
+                    explanation: '✨ <main> tells browsers "this is the primary content of the page".'
+                  }
+                },
+                {
+                  id: 'checkpoint-2',
+                  title: '💪 Practice Challenge',
+                  description: 'Complete the footer tag',
+                  type: 'code',
+                  required: true,
+                  order: 2,
+                  content: {
+                    id: 'practice-semantic-1',
+                    type: 'fill-in-blank',
+                    instruction: 'Complete the tags to mark the bottom of the page as a footer',
+                    code: '<_1_>\n  <p>&copy; 2026 My Site</p>\n</_1_>',
+                    blanks: {
+                      '1': { answer: 'footer', hint: 'The tag for the bottom of a page' }
+                    },
+                    points: 15,
+                    explanation: '🌟 <footer> marks the bottom section, like copyright info and links.'
+                  }
+                }
+              ],
+              resources: [
+                {
+                  id: 'resource-1',
+                  title: '📚 Semantic HTML Cheat Sheet',
+                  type: 'cheatsheet',
+                  description: 'header, nav, main, section, article, footer at a glance'
+                }
+              ]
+            },
+            {
+              id: 'lesson-3-2',
+              slug: 'linking-between-pages',
+              title: 'Linking Between Pages 🔗',
+              type: 'practical',
+              order: 2,
+              estimatedTime: '5 minutes',
+              content: {
+                introduction: '🔗 A website isn\'t a website with just one page. Let\'s connect pages together so visitors can click their way around your site.',
+                sections: [
+                  {
+                    id: 'section-1',
+                    title: '🔗 Linking Between Pages',
+                    order: 1,
+                    content: `The \`<a>\` (anchor) tag is how you link to other pages — or other websites:
+
+\`\`\`html
+<a href="about.html">About Me</a>
+\`\`\`
+
+- \`href\` = where the link goes
+- The text between the tags = what visitors click
+
+**This is exactly what your final project needs**: an \`index.html\` and \`about.html\` that link to EACH OTHER using \`<a>\` tags in a shared \`<nav>\`.`,
+                    codeExamples: [
+                      {
+                        id: 'example-1',
+                        language: 'html',
+                        code: `<!-- On index.html -->
+<a href="about.html">About</a>
+
+<!-- On about.html -->
+<a href="index.html">Home</a>`,
+                        explanation: 'Each page links to the other — that\'s how visitors move around your site.',
+                        editable: true,
+                        showLineNumbers: false
+                      }
+                    ]
+                  }
+                ],
+                summary: '🎉 Wrapping your links in a <nav> gives every page the same navigation, so visitors can move freely between pages.',
+                keyTakeaways: [
+                  '🔗 <a href="page.html">Text</a> links to another page',
+                  '🧭 <nav> is the semantic tag that should hold your links',
+                  '↔️ Pages should link to EACH OTHER so visitors can navigate both ways'
+                ]
+              },
+              interactive: {
+                type: 'code-editor',
+                config: {
+                  environment: 'html-css-js',
+                  startingFiles: [
+                    {
+                      path: 'index.html',
+                      language: 'html',
+                      content: `<!DOCTYPE html>
+<html>
+<head>
+  <title>My Site</title>
+</head>
+<body>
+  <header>
+    <h1>My Site</h1>
+  </header>
+  <!-- 🎯 Add a <nav> here with a link to about.html -->
+  <main>
+    <p>Welcome! This is my homepage.</p>
+  </main>
 </body>
 </html>`
                     },
@@ -901,18 +986,22 @@ That's it — every direct child of \`.container\` now lines up in a row automat
   <title>About Me</title>
 </head>
 <body>
+  <header>
+    <h1>About Me</h1>
+  </header>
   <!-- 🎯 Add a <nav> here too, linking back to index.html -->
-  <h1>About Me</h1>
-  <p>Tell visitors about yourself here.</p>
+  <main>
+    <p>Tell visitors about yourself here.</p>
+  </main>
 </body>
 </html>`
                     }
                   ],
-                  instructions: '🎯 Turn index.html into a real semantic page with navigation to about.html, an image, and a list.',
+                  instructions: '🎯 Add a <nav> with a link to about.html, and link back to index.html from about.html.',
                   hints: [
                     '💡 <nav> can hold one or more <a> tags',
-                    '🔥 alt text should describe the image, not just say "photo"',
-                    '⚡ Don\'t forget the closing </header>, </nav>, </main>, </footer> tags'
+                    '🔥 href="about.html" points to the about page from index.html',
+                    '⚡ Don\'t forget the closing </nav> tag'
                   ],
                   allowFileCreation: false,
                   allowInstallPackages: false,
@@ -921,42 +1010,18 @@ That's it — every direct child of \`.container\` now lines up in a row automat
                   validation: [
                     {
                       type: 'code-pattern',
-                      description: '✅ Used <header>',
-                      validate: '<header>',
-                      points: 15
-                    },
-                    {
-                      type: 'code-pattern',
                       description: '✅ Added <nav> with a link to about.html',
                       validate: '<nav>[\\s\\S]*?href=["\']about\\.html["\'][\\s\\S]*?</nav>',
-                      points: 20
+                      points: 50
                     },
                     {
                       type: 'code-pattern',
-                      description: '✅ Wrapped content in <main>',
-                      validate: '<main>',
-                      points: 15
-                    },
-                    {
-                      type: 'code-pattern',
-                      description: '✅ Added a <footer>',
-                      validate: '<footer>',
-                      points: 10
-                    },
-                    {
-                      type: 'code-pattern',
-                      description: '✅ Added an image with real alt text',
-                      validate: '<img[^>]*alt=["\'][^"\']{4,}["\']',
-                      points: 20
-                    },
-                    {
-                      type: 'code-pattern',
-                      description: '✅ Added a bullet list with <ul><li>',
-                      validate: '<ul>[\\s\\S]*?<li>[\\s\\S]*?</ul>',
-                      points: 20
+                      description: '✅ Linked back to index.html from about.html',
+                      validate: 'href=["\']index\\.html["\']',
+                      points: 50
                     }
                   ],
-                  successMessage: '🎉 That looks like a REAL website now!',
+                  successMessage: '🎉 Your pages are now connected!',
                   celebrationEmoji: '🔗'
                 }
               },
@@ -999,14 +1064,162 @@ That's it — every direct child of \`.container\` now lines up in a row automat
                   }
                 }
               ],
-              resources: [
-                {
-                  id: 'resource-1',
-                  title: '📚 Semantic HTML Cheat Sheet',
-                  type: 'cheatsheet',
-                  description: 'header, nav, main, section, article, footer at a glance'
+              resources: []
+            },
+            {
+              id: 'lesson-3-3',
+              slug: 'images-and-lists',
+              title: 'Images & Lists 🖼️',
+              type: 'practical',
+              order: 3,
+              estimatedTime: '5 minutes',
+              content: {
+                introduction: '🖼️ Two more must-know tags and your Personal Website project is fully within reach: images and lists.',
+                sections: [
+                  {
+                    id: 'section-1',
+                    title: '🖼️ Images & Lists',
+                    order: 1,
+                    content: `Two more must-know tags:
+
+\`\`\`html
+<img src="photo.jpg" alt="A photo of me">
+\`\`\`
+- \`src\` = the image file
+- \`alt\` = description (shown if the image fails, and read aloud by screen readers)
+
+\`\`\`html
+<ul>
+  <li>Reading</li>
+  <li>Coding</li>
+  <li>Football</li>
+</ul>
+\`\`\`
+\`<ul>\` = unordered (bullet) list, \`<li>\` = each list item. Use \`<ol>\` instead of \`<ul>\` for numbered lists.`,
+                    codeExamples: [
+                      {
+                        id: 'example-1',
+                        language: 'html',
+                        code: `<img src="me.jpg" alt="Portrait of me smiling">
+<ul>
+  <li>Coding</li>
+  <li>Music</li>
+</ul>`,
+                        explanation: 'Always fill in `alt` — never leave it empty on a meaningful image!',
+                        editable: true,
+                        showLineNumbers: false
+                      }
+                    ]
+                  }
+                ],
+                summary: '🎉 You can now build a REAL multi-page site: semantic tags for structure, <a href> to link pages, <img> for photos, and <ul>/<li> for lists. This is everything your final project needs!',
+                keyTakeaways: [
+                  '🖼️ <img src="..." alt="..."> always needs a real alt description',
+                  '📋 <ul><li> makes a bullet list, <ol><li> makes a numbered list',
+                  '♿ alt text is read aloud by screen readers, so make it descriptive'
+                ]
+              },
+              interactive: {
+                type: 'code-editor',
+                config: {
+                  environment: 'html-css-js',
+                  startingFiles: [
+                    {
+                      path: 'index.html',
+                      language: 'html',
+                      content: `<!DOCTYPE html>
+<html>
+<head>
+  <title>My Site</title>
+</head>
+<body>
+  <header>
+    <h1>My Site</h1>
+  </header>
+  <main>
+    <p>Welcome! This is my homepage.</p>
+    <!-- 🎯 Your challenge:
+    1. Add a photo of yourself with <img> (any src) and a real alt
+    2. Add a <ul> with 3 things you like
+    -->
+  </main>
+</body>
+</html>`
+                    }
+                  ],
+                  instructions: '🎯 Add an image with a real alt description and a bullet list of 3 things you like.',
+                  hints: [
+                    '💡 alt text should describe the image, not just say "photo"',
+                    '🔥 Each list item goes inside its own <li>',
+                    '⚡ Don\'t forget the closing </ul> tag'
+                  ],
+                  allowFileCreation: false,
+                  allowInstallPackages: false,
+                  maxFileSize: 80,
+                  timeout: 5,
+                  validation: [
+                    {
+                      type: 'code-pattern',
+                      description: '✅ Added an image with real alt text',
+                      validate: '<img[^>]*alt=["\'][^"\']{4,}["\']',
+                      points: 50
+                    },
+                    {
+                      type: 'code-pattern',
+                      description: '✅ Added a bullet list with <ul><li>',
+                      validate: '<ul>[\\s\\S]*?<li>[\\s\\S]*?</ul>',
+                      points: 50
+                    }
+                  ],
+                  successMessage: '🎉 That looks like a REAL website now!',
+                  celebrationEmoji: '🖼️'
                 }
-              ]
+              },
+              checkpoints: [
+                {
+                  id: 'checkpoint-1',
+                  title: '⚡ Quick Check!',
+                  description: 'Test your image knowledge',
+                  type: 'quiz',
+                  required: true,
+                  order: 1,
+                  content: {
+                    id: 'quiz-img-1',
+                    type: 'multiple-choice',
+                    question: '🤔 What is the \`alt\` attribute on an \`<img>\` tag for?',
+                    options: [
+                      'A text description of the image for accessibility and fallback',
+                      'The image file size',
+                      'An alternative image to show on hover',
+                      'The image\'s alignment (left/right/center)'
+                    ],
+                    correctAnswer: 'A text description of the image for accessibility and fallback',
+                    points: 10,
+                    explanation: '✨ alt describes the image for screen readers and shows if the image fails to load.'
+                  }
+                },
+                {
+                  id: 'checkpoint-2',
+                  title: '💪 Practice Challenge',
+                  description: 'Complete the list',
+                  type: 'code',
+                  required: true,
+                  order: 2,
+                  content: {
+                    id: 'practice-img-1',
+                    type: 'fill-in-blank',
+                    instruction: 'Complete the tags to make a bullet list with one item',
+                    code: '<_1_>\n  <_2_>Coding</_2_>\n</_1_>',
+                    blanks: {
+                      '1': { answer: 'ul', hint: 'Unordered (bullet) list tag' },
+                      '2': { answer: 'li', hint: 'List item tag' }
+                    },
+                    points: 15,
+                    explanation: '🌟 <ul><li>Coding</li></ul> — a working bullet list!'
+                  }
+                }
+              ],
+              resources: []
             }
           ],
           projects: []

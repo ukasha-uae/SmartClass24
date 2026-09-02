@@ -37,18 +37,18 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string;
       </div>
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-12">
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-8 sm:py-12">
         <div className="container mx-auto px-4">
           <Link
             href={addTenantParam(`/university/programs/${slug}`)}
-            className="inline-flex items-center text-green-100 hover:text-white mb-6 transition-colors"
+            className="inline-flex items-center text-green-100 hover:text-white mb-4 sm:mb-6 transition-colors text-sm sm:text-base"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Program
           </Link>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{course.title}</h1>
-          <p className="text-xl text-green-100 mb-6 max-w-3xl">{course.description}</p>
-          <div className="flex flex-wrap items-center gap-6 text-green-100">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4">{course.title}</h1>
+          <p className="text-base sm:text-xl text-green-100 mb-4 sm:mb-6 max-w-3xl">{course.description}</p>
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-green-100 text-sm sm:text-base">
             <div className="flex items-center space-x-2">
               <Clock className="w-5 h-5" />
               <span>{course.duration}</span>
@@ -66,11 +66,11 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string;
       </div>
 
       {/* Course Content */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-12">
         <div className="max-w-5xl mx-auto">
           {/* Instructor */}
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-gray-900">Instructor</h2>
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900">Instructor</h2>
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                 {course.instructor.name.charAt(0)}
@@ -86,9 +86,9 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string;
           </div>
 
           {/* Course Modules */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold mb-6 text-gray-900">Course Content</h2>
-            <div className="space-y-6">
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
+            <h2 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-900">Course Content</h2>
+            <div className="space-y-4 sm:space-y-6">
               {course.modules.map((module, moduleIdx) => (
                 <div key={module.id} className="border border-gray-200 rounded-lg overflow-hidden">
                   {/* Module Header */}
@@ -173,12 +173,12 @@ export default function CoursePage({ params }: { params: Promise<{ slug: string;
           </div>
 
           {/* Start Learning CTA */}
-          <div className="mt-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg p-8 text-center text-white">
-            <h2 className="text-2xl font-bold mb-4">Ready to Start Learning?</h2>
-            <p className="text-green-100 mb-6">Begin with the first lesson and build your skills step by step.</p>
+          <div className="mt-6 sm:mt-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg p-5 sm:p-8 text-center text-white">
+            <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4">Ready to Start Learning?</h2>
+            <p className="text-sm sm:text-base text-green-100 mb-4 sm:mb-6">Begin with the first lesson and build your skills step by step.</p>
             <Link
               href={addTenantParam(`/university/programs/${slug}/courses/${courseSlug}/lessons/${course.modules[0].lessons[0].slug}`)}
-              className="inline-block px-8 py-4 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+              className="inline-block w-full sm:w-auto px-8 py-4 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors"
             >
               Start First Lesson
             </Link>
