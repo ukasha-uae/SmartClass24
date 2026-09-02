@@ -40,6 +40,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
   const [savedFiles, setSavedFiles] = useState<CodeFile[]>([]);
   const [isCodeLoading, setIsCodeLoading] = useState(true);
   const [markedComplete, setMarkedComplete] = useState(false);
+  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
   const { saveCode, loadCode } = useCodeSaves();
   const { markLessonComplete, getProgress } = useUniversityProgress();
 
@@ -80,11 +81,15 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
     return () => { cancelled = true; };
   }, [lesson.id, loadCode]);
 
-  // Reflect already-completed status (e.g. from a previous visit) so the manual button doesn't re-fire writes
+  // Reflect already-completed status (e.g. from a previous visit) so the manual button doesn't re-fire writes,
+  // and drive the real Course/Module progress bars from actual completed-lesson data
   useEffect(() => {
     let cancelled = false;
     getProgress(program.id, course.id).then(progress => {
-      if (!cancelled && progress?.completedLessons?.includes(lesson.id)) {
+      if (cancelled) return;
+      const completed = progress?.completedLessons ?? [];
+      setCompletedLessonIds(completed);
+      if (completed.includes(lesson.id)) {
         setMarkedComplete(true);
       }
     });
@@ -105,6 +110,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
     const allPassed = results.length > 0 && results.every(r => r.passed);
     if (allPassed && !markedComplete) {
       setMarkedComplete(true);
+      setCompletedLessonIds(prev => prev.includes(lesson.id) ? prev : [...prev, lesson.id]);
       markLessonComplete(program.id, course.id, lesson.id);
     }
   }, [markedComplete, markLessonComplete, program.id, course.id, lesson.id]);
@@ -112,8 +118,17 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
   const handleManualComplete = useCallback(() => {
     if (markedComplete) return;
     setMarkedComplete(true);
+    setCompletedLessonIds(prev => prev.includes(lesson.id) ? prev : [...prev, lesson.id]);
     markLessonComplete(program.id, course.id, lesson.id);
   }, [markedComplete, markLessonComplete, program.id, course.id, lesson.id]);
+
+  // Real Course/Module completion percentages, driven by actual completed-lesson data (not placeholders)
+  const courseProgressPct = allLessons.length > 0
+    ? Math.round((completedLessonIds.filter(id => allLessons.some(l => l.id === id)).length / allLessons.length) * 100)
+    : 0;
+  const moduleProgressPct = currentModule.lessons.length > 0
+    ? Math.round((currentModule.lessons.filter(l => completedLessonIds.includes(l.id)).length / currentModule.lessons.length) * 100)
+    : 0;
 
   // Escape HTML for code blocks
   function escapeHtml(text: string) {
@@ -379,21 +394,21 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
               <div className="space-y-5">
                 <div>
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="text-gray-600 font-medium">Lesson Progress</span>
-                    <span className="font-bold text-green-600">65%</span>
+                    <span className="text-gray-600 font-medium">Course Progress</span>
+                    <span className="font-bold text-green-600">{courseProgressPct}%</span>
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
-                    <div className="bg-gradient-to-r from-green-600 to-emerald-500 h-3 rounded-full transition-all duration-300" style={{ width: '65%' }}></div>
+                    <div className="bg-gradient-to-r from-green-600 to-emerald-500 h-3 rounded-full transition-all duration-300" style={{ width: `${courseProgressPct}%` }}></div>
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-gray-600 font-medium">Module Progress</span>
-                    <span className="font-bold text-green-600">40%</span>
+                    <span className="font-bold text-green-600">{moduleProgressPct}%</span>
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
-                    <div className="bg-gradient-to-r from-green-600 to-emerald-500 h-3 rounded-full transition-all duration-300" style={{ width: '40%' }}></div>
+                    <div className="bg-gradient-to-r from-green-600 to-emerald-500 h-3 rounded-full transition-all duration-300" style={{ width: `${moduleProgressPct}%` }}></div>
                   </div>
                 </div>
               </div>
@@ -401,7 +416,9 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-4">Module Lessons</h3>
                 <div className="space-y-2">
-                  {currentModule.lessons.map((l, idx) => (
+                  {currentModule.lessons.map((l, idx) => {
+                    const isCompleted = completedLessonIds.includes(l.id);
+                    return (
                     <Link
                       key={l.id}
                       href={`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${l.slug}`}
@@ -414,13 +431,16 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                       <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
                         l.slug === lesson.slug
                           ? 'bg-white text-green-600'
-                          : 'bg-gray-200 text-gray-600'
+                          : isCompleted
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-gray-200 text-gray-600'
                       }`}>
-                        {idx + 1}
+                        {isCompleted && l.slug !== lesson.slug ? <CheckCircle2 className="w-4 h-4" /> : idx + 1}
                       </div>
                       <span className="text-sm font-medium flex-1">{l.title}</span>
                     </Link>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
