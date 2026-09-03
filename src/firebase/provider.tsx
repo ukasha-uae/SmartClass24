@@ -9,6 +9,7 @@ import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 import { initiateAnonymousSignIn, migrateLocalAttemptsToFirestore } from './non-blocking-login';
 import { syncSubscriptionFromFirestore } from '@/lib/monetization';
 import { startPresenceHeartbeat } from '@/lib/user-presence';
+import { resolveTenantFromWindow } from '@/tenancy/resolveTenant';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -139,6 +140,17 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
               presenceTenantId = tokenResult.claims?.tenantId as string | undefined;
             } catch (tokenError) {
               console.warn('[Presence] Failed to read tenantId from token claims:', tokenError);
+            }
+            // Anonymous users (the vast majority) never have a tenantId custom claim, so fall
+            // back to the same domain/preview-param resolution the rest of the app uses. Without
+            // this, their student doc never gets a tenantId and tenant-scoped online queries
+            // (Challenge Arena quick-match) can never find them.
+            if (!presenceTenantId) {
+              try {
+                presenceTenantId = resolveTenantFromWindow().id;
+              } catch (resolveError) {
+                console.warn('[Presence] Failed to resolve tenantId from window:', resolveError);
+              }
             }
 
             // Start global presence heartbeat (runs on all pages for authenticated users)

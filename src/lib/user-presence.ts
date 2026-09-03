@@ -14,9 +14,8 @@ export interface UserPresence {
   status?: 'online' | 'away' | 'offline';
 }
 
-const PRESENCE_TIMEOUT = 30 * 1000; // 30 seconds - user is considered online if lastSeen is within this time
-const HEARTBEAT_INTERVAL = 20 * 1000; // Update presence every 20 seconds
-const OFFLINE_GRACE_PERIOD = 5 * 1000; // 5 seconds - grace period before marking user as offline
+const PRESENCE_TIMEOUT = 90 * 1000; // 90 seconds - generous buffer for network jitter and browser tab throttling
+const HEARTBEAT_INTERVAL = 25 * 1000; // Update presence every 25 seconds (comfortably under the timeout)
 
 async function waitForAuthenticatedUser(timeoutMs: number = 5000): Promise<boolean> {
   const { auth } = initializeFirebase();
@@ -68,11 +67,11 @@ export async function updateUserPresence(userId: string, tenantId?: string): Pro
       isOnline: true,
     };
     
-    // Include tenantId for all users (authenticated and anonymous)
-    // This ensures students collection records are properly scoped
-    if (tenantId) {
-      updateData.tenantId = tenantId;
-    }
+    // Include tenantId for all users (authenticated and anonymous). Always fall back to the
+    // default tenant instead of omitting the field entirely — a student doc with no tenantId
+    // is invisible to tenant-scoped "online now" queries (Challenge Arena quick-match) even
+    // though security rules would otherwise allow reading it.
+    updateData.tenantId = tenantId || 'smartclass24';
     
     await setDoc(studentRef, updateData, { merge: true });
     
@@ -157,6 +156,15 @@ export async function markUserOffline(userId: string, tenantId?: string): Promis
 /**
  * Start heartbeat to keep user presence active
  * Returns cleanup function to stop heartbeat
+ *
+ * Design note: this deliberately does NOT mark the user offline on tab-hide, pagehide,
+ * beforeunload, or component unmount. Those events fire constantly for reasons that don't
+ * mean "the student left" (backgrounding a mobile browser to check a notification,
+ * navigating between pages that each mount their own heartbeat, etc.), and were previously
+ * causing real online students to be marked offline within moments of matchmaking — which is
+ * why only the always-online Sarah bot ever appeared as an opponent. Presence is instead a
+ * pure TTL: a student is "online" as long as `lastSeen` is fresher than PRESENCE_TIMEOUT, and
+ * naturally expires on its own once heartbeats stop.
  */
 export function startPresenceHeartbeat(userId: string, tenantId?: string): () => void {
   if (!userId) return () => {};
@@ -172,54 +180,33 @@ export function startPresenceHeartbeat(userId: string, tenantId?: string): () =>
     await updateUserPresence(userId, tenantId);
   })();
   
-  // Then update periodically
+  // Keep sending heartbeats even while the tab is backgrounded — browsers throttle (but rarely
+  // fully stop) timers in hidden tabs, and a student who merely switched apps briefly is still
+  // "online" for matchmaking purposes.
   const interval = setInterval(() => {
     if (stopped) return;
-    if (!document.hidden) { // Only update when tab is visible
-      updateUserPresence(userId, tenantId);
-    }
+    updateUserPresence(userId, tenantId);
   }, HEARTBEAT_INTERVAL);
   
-  // Update on page visibility change
+  // Refresh immediately when the tab regains focus, so presence recovers instantly rather than
+  // waiting for the next interval tick.
   const handleVisibilityChange = () => {
-    if (document.hidden) {
-      // Tab hidden - mark last activity
-      console.log('[Presence] Tab hidden');
-    } else {
-      // Tab visible again - update presence immediately
-      console.log('[Presence] Tab visible - updating presence');
+    if (!document.hidden) {
       updateUserPresence(userId, tenantId);
     }
-  };
-  
-  // Mark user offline when closing/leaving page
-  const handleBeforeUnload = () => {
-    console.log('[Presence] Page unloading - marking offline');
-    // Use navigator.sendBeacon for reliability on page unload
-    markUserOffline(userId, tenantId);
-  };
-  
-  // Handle mobile app going to background
-  const handlePageHide = () => {
-    console.log('[Presence] Page hidden (mobile background)');
-    markUserOffline(userId, tenantId);
   };
   
   document.addEventListener('visibilitychange', handleVisibilityChange);
-  window.addEventListener('beforeunload', handleBeforeUnload);
-  window.addEventListener('pagehide', handlePageHide);
   
-  // Cleanup function
+  // Cleanup function: just stop this heartbeat timer. Do NOT mark the user offline here —
+  // another heartbeat (e.g. the app-wide one in FirebaseProvider) may still be running for
+  // them, and even if not, presence should simply expire via the TTL rather than being
+  // force-cleared the instant one page/component unmounts.
   return () => {
     stopped = true;
     console.log('[Presence] Stopping heartbeat for:', userId);
     clearInterval(interval);
     document.removeEventListener('visibilitychange', handleVisibilityChange);
-    window.removeEventListener('beforeunload', handleBeforeUnload);
-    window.removeEventListener('pagehide', handlePageHide);
-    
-    // Mark offline on cleanup
-    markUserOffline(userId, tenantId);
   };
 }
 
