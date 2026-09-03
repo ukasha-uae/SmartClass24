@@ -114,7 +114,9 @@ export function PWAUpdatePrompt() {
         
         // Check for updates every 60 seconds
         setInterval(() => {
-          reg.update();
+          reg.update().catch(() => {
+            // Ignore transient InvalidStateError from concurrent update checks
+          });
         }, 60000);
 
         // Listen for updates

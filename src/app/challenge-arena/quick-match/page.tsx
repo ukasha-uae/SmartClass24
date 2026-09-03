@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -61,6 +61,9 @@ export default function QuickMatchPage() {
   const { toast } = useToast();
   
   const [userSelectedLevel, setUserSelectedLevel] = useState<'Primary' | 'JHS' | 'SHS'>('JHS');
+  const [debugMode, setDebugMode] = useState(false);
+  const [debugStudents, setDebugStudents] = useState<Array<Record<string, any>>>([]);
+  const [debugError, setDebugError] = useState<string | null>(null);
   
   // Tenant Route Guard: Check if arena is enabled for this tenant
   useEffect(() => {
@@ -77,6 +80,7 @@ export default function QuickMatchPage() {
       if (levelParam) {
         setUserSelectedLevel(levelParam);
       }
+      setDebugMode(params.get('debug') === '1');
     }
   }, []);
   
@@ -92,6 +96,12 @@ export default function QuickMatchPage() {
   const [matchFound, setMatchFound] = useState(false);
   const [onlinePlayers, setOnlinePlayers] = useState<Player[]>([]);
   const [onlinePlayersLoaded, setOnlinePlayersLoaded] = useState(false);
+  // Mirrors onlinePlayers so findOpponent (called from a timer set up earlier) always sees
+  // the latest snapshot instead of the stale value captured when the timer's closure was created.
+  const onlinePlayersRef = useRef<Player[]>([]);
+  useEffect(() => {
+    onlinePlayersRef.current = onlinePlayers;
+  }, [onlinePlayers]);
   
   // Match settings
   const [subject, setSubject] = useState('');
@@ -222,7 +232,7 @@ export default function QuickMatchPage() {
         
         unsubscribe = onSnapshot(q, (snapshot) => {
           const playersList: Player[] = [];
-          const allUsers: Array<{userId: string, userName: string, lastSeen: any, isOnline: boolean}> = [];
+          const allUsers: Array<{userId: string, userName: string, lastSeen: any, isOnline: boolean, tenantId: any}> = [];
           
           snapshot.forEach((docSnapshot) => {
             const data = docSnapshot.data() as Record<string, any>;
@@ -230,15 +240,17 @@ export default function QuickMatchPage() {
 
             if (userId.startsWith('bot-')) return;
             
-            // Skip current user
-            if (userId === user.uid) return;
-            
             const displayName = getUserDisplayName(data);
             const lastSeen = data.lastSeen?.toDate?.() || null;
             const isOnline = isUserOnline(lastSeen);
+
+            allUsers.push({ userId, userName: displayName, lastSeen, isOnline, tenantId: data.tenantId });
             
             // Debug logging - show all users found
-            console.log(`[Quick Match] User ${userId}: ${displayName}, online: ${isOnline}, lastSeen: ${lastSeen ? lastSeen.toISOString() : 'null'}, rating: ${data.rating || 'none'}`);
+            console.log(`[Quick Match] User ${userId}: ${displayName}, online: ${isOnline}, lastSeen: ${lastSeen ? lastSeen.toISOString() : 'null'}, rating: ${data.rating || 'none'}, tenantId: ${data.tenantId}`);
+
+            // Skip current user (after logging, so it still shows up in the debug panel)
+            if (userId === user.uid) return;
             
             // Only include online users for quick match
             if (!isOnline) return;
@@ -268,6 +280,8 @@ export default function QuickMatchPage() {
           
           setOnlinePlayers(playersList);
           setOnlinePlayersLoaded(true);
+          setDebugStudents(allUsers);
+          setDebugError(null);
         }, (error: any) => {
           if (error?.code === 'permission-denied') {
             console.warn('[Quick Match] Permission denied - cannot access students collection');
@@ -276,6 +290,8 @@ export default function QuickMatchPage() {
           }
           setOnlinePlayers([]);
           setOnlinePlayersLoaded(true);
+          setDebugStudents([]);
+          setDebugError(error?.code || error?.message || 'unknown error');
         });
       } catch (error) {
         console.error('Error setting up online players listener:', error);
@@ -400,7 +416,7 @@ export default function QuickMatchPage() {
     if (!player) return;
 
     // Use ONLY real online players from Firestore - NO mock players
-    const availablePlayers = onlinePlayers.filter(p => p.userId !== user?.uid);
+    const availablePlayers = onlinePlayersRef.current.filter(p => p.userId !== user?.uid);
     
     // If no real online players available, use Sarah bot as fallback
     if (availablePlayers.length === 0) {
@@ -562,10 +578,28 @@ export default function QuickMatchPage() {
 
   if (!player) return null;
 
+  const debugPanel = debugMode ? (
+    <div className="fixed bottom-2 right-2 z-[100] max-w-sm max-h-[70vh] overflow-auto rounded-lg bg-black/90 text-white text-xs p-3 font-mono shadow-2xl">
+      <div className="font-bold mb-1">Quick Match Debug</div>
+      <div>uid: {user?.uid || 'none'}</div>
+      <div>anonymous: {String(user?.isAnonymous)}</div>
+      <div>tenantId: {tenantId || 'none'}</div>
+      <div>onlinePlayersLoaded: {String(onlinePlayersLoaded)}</div>
+      {debugError && <div className="text-red-400">query error: {debugError}</div>}
+      <div className="mt-2 font-bold">students in tenant ({debugStudents.length}):</div>
+      {debugStudents.map((s) => (
+        <div key={s.userId} className={s.isOnline ? 'text-green-400' : 'text-slate-400'}>
+          {s.userId === user?.uid ? '(me) ' : ''}{s.userName} — tenantId={String(s.tenantId)}, online={String(s.isOnline)}, lastSeen={s.lastSeen ? s.lastSeen.toISOString() : 'null'}
+        </div>
+      ))}
+    </div>
+  ) : null;
+
   // Matchmaking state
   if (isSearching && !matchFound) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center p-4 relative overflow-hidden">
+        {debugPanel}
         {/* Animated background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/10 rounded-full blur-3xl animate-pulse"></div>
@@ -596,6 +630,7 @@ export default function QuickMatchPage() {
   if (matchFound && opponent) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center p-4 relative overflow-hidden">
+        {debugPanel}
         {/* Animated background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-white/10 rounded-full blur-3xl animate-pulse"></div>
@@ -653,6 +688,7 @@ export default function QuickMatchPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950 relative overflow-hidden">
+      {debugPanel}
       {/* Animated background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-orange-300/20 via-red-300/20 to-pink-300/20 rounded-full blur-3xl animate-pulse"></div>

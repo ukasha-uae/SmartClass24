@@ -50,27 +50,20 @@ service cloud.firestore {
     // SHARED COLLECTIONS WITH tenantId FIELD (v1 - Simplified)
     // =========================================================================
     
-    // Students (shared collection, filtered by tenantId)
+    // Students (shared collection, filtered by tenantId).
+    // Read access is intentionally NOT gated on the tenantId custom claim: that claim is set
+    // by a Cloud Function on account creation and is easy to end up missing/stale (function not
+    // deployed yet, claim set before a token refresh, etc). Requiring it here silently locked
+    // every non-anonymous account out of the "online students" directory (arena quick-match /
+    // challenge-a-friend), while anonymous users worked fine since they had a separate bypass.
+    // Profile documents only contain display name/school/stats used for matchmaking, so any
+    // authenticated user (anonymous or not) may read the directory; tenant scoping is enforced
+    // client-side via the `where('tenantId', '==', tenantId)` query.
     match /students/{studentId} {
-      allow read: if request.auth != null && (
-        request.auth.uid == studentId ||
-        belongsToTenant(resource.data.tenantId) ||
-        isSuperAdmin() ||
-        // Legacy profiles created before tenantId backfill should remain visible
-        !('tenantId' in resource.data) ||
-        // Allow anonymous users to read students (they don't have tenantId claims)
-        request.auth.token.firebase.sign_in_provider == 'anonymous'
-      );
-      allow create: if request.auth != null && 
+      allow read: if request.auth != null;
+      allow create: if request.auth != null &&
         request.auth.uid == studentId &&
-        (
-          // Authenticated users with matching tenantId
-          (('tenantId' in request.auth.token) &&
-           request.resource.data.tenantId == request.auth.token.tenantId) ||
-          // Anonymous users (no tenantId claim) - allow with tenantId in data
-          (request.auth.token.firebase.sign_in_provider == 'anonymous' &&
-           'tenantId' in request.resource.data)
-        );
+        'tenantId' in request.resource.data;
       allow update: if request.auth != null && request.auth.uid == studentId;
       allow delete: if false;
     }

@@ -28,7 +28,6 @@ export function ServiceWorkerRegistration() {
       })
       .then((registration) => {
         setStatus('registered');
-        registration.update();
         registration.addEventListener('updatefound', () => {
           const newWorker = registration.installing;
           if (newWorker) {
