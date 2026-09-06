@@ -6,6 +6,9 @@ import {
   deleteDoc,
   doc,
   serverTimestamp,
+  query,
+  where,
+  getDocs,
 } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
@@ -182,6 +185,38 @@ export async function markAllUserNotificationsAsRead(userId: string) {
   // Optional: can be implemented with a Cloud Function or batched writes
   // For now we rely on client marking individual notifications as read.
   void userId;
+}
+
+// Marks any pending challenge_invite notifications for a given challenge as read.
+// Prevents the invite popup from reappearing (e.g. when the header remounts after
+// fullscreen gameplay) once the invited player has already accepted/joined the match.
+export async function markChallengeInviteNotificationsAsRead(
+  userId: string,
+  challengeId: string
+) {
+  if (!userId || !challengeId) return;
+  const { auth, firestore } = initializeFirebase();
+  if (!auth?.currentUser || !firestore) return;
+  try {
+    const notificationsRef = collection(firestore, 'users', userId, 'notifications');
+    const q = query(
+      notificationsRef,
+      where('type', '==', 'challenge_invite'),
+      where('data.challengeId', '==', challengeId)
+    );
+    const snapshot = await getDocs(q);
+    await Promise.all(
+      snapshot.docs
+        .filter(d => d.data().read === false)
+        .map(d => updateDoc(d.ref, { read: true }))
+    );
+  } catch (error: any) {
+    if (error?.code === 'permission-denied') {
+      console.warn('[Notification] Permission denied - cannot mark challenge invite notifications as read');
+      return;
+    }
+    console.error('[Notification] Failed to mark challenge invite notifications as read:', error);
+  }
 }
 
 export async function deleteUserNotification(

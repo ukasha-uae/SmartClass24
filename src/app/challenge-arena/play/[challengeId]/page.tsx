@@ -43,6 +43,7 @@ import { useFirebase } from '@/firebase/provider';
 import { useToast } from '@/hooks/use-toast';
 import { FEATURE_FLAGS } from '@/lib/featureFlags';
 import { useFullscreen } from '@/contexts/FullscreenContext';
+import { markChallengeInviteNotificationsAsRead } from '@/lib/realtime-notifications';
 import { ShareChallengeDialog } from '@/components/challenge/ShareChallengeDialog';
 import { useBotChallenge } from '@/lib/use-bot-challenge';
 import { isBot } from '@/lib/ai-bot-profiles';
@@ -217,6 +218,14 @@ export default function QuizBattlePage() {
           return;
         }
         setChallenge(challengeData);
+        
+        // Cleanup: if this user already accepted/finished this challenge, make sure the
+        // original challenge_invite notification is marked read so it can't resurface as
+        // a popup later (e.g. when the header remounts after fullscreen gameplay ends).
+        const myOpponentEntry = challengeData.opponents.find(o => o.userId === userId);
+        if (myOpponentEntry && myOpponentEntry.status !== 'invited') {
+          markChallengeInviteNotificationsAsRead(userId, challengeId).catch(() => {});
+        }
         
         // Check if challenge is already completed OR has results - show results (prevents reset to waiting)
         if (challengeData.status === 'completed' || (challengeData.results && challengeData.results.length > 0)) {
@@ -743,6 +752,8 @@ export default function QuizBattlePage() {
       if (success) {
         toast({ title: 'Challenge Accepted!', description: 'Get ready to battle!' });
         setGamePhase('playing');
+        // Prevent the original invite popup from resurfacing later (e.g. after fullscreen exit)
+        markChallengeInviteNotificationsAsRead(userId, challenge.id).catch(() => {});
         // Reload challenge to get updated status
         const updatedChallenge = await getChallenge(challenge.id);
         if (updatedChallenge) {

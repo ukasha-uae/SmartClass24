@@ -71,6 +71,12 @@ export default function NotificationBell() {
   }, [notificationsRaw]);
 
   const prevIdsRef = useRef<string[]>([]);
+  // Tracks whether we've processed the first snapshot since this component mounted.
+  // NotificationBell unmounts/remounts whenever fullscreen mode toggles (e.g. entering/
+  // leaving a live challenge). Without this guard, the very first snapshot after a remount
+  // would treat every existing (possibly still-unread) notification as "new" and re-open
+  // the challenge invite popup right as gameplay ends, instead of showing results.
+  const hasInitializedRef = useRef(false);
 
   useEffect(() => {
     if (!notifications) {
@@ -83,6 +89,15 @@ export default function NotificationBell() {
 
     // Detect new notifications (by id) since last render
     const currentIds = notifications.map(n => (n as WithId<FirestoreNotification>).id);
+
+    if (!hasInitializedRef.current) {
+      // First snapshot for this mount - just record ids, don't treat existing
+      // notifications as "new" (prevents replaying stale invites on remount).
+      hasInitializedRef.current = true;
+      prevIdsRef.current = currentIds;
+      return;
+    }
+
     const prevIds = prevIdsRef.current;
 
     const newIds = currentIds.filter(id => !prevIds.includes(id));
