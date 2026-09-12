@@ -26,7 +26,12 @@ import {
   ArrowRight,
   ArrowLeft,
   Sparkles,
-  Check
+  Check,
+  Undo2,
+  Redo2,
+  CheckSquare,
+  Indent,
+  Trash2
 } from 'lucide-react';
 import { CodeFile, CodeExecutionResult, ConsoleMessage, SandboxConfig, ValidationRule } from '@/types/university';
 import { runValidationRules, ValidationOutcome } from '@/lib/university-validation';
@@ -312,15 +317,20 @@ export default function UniversityCodeEditor({
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  // Auto-execute on file change in background for preview update
+  // Auto-execute on file change in background for preview update.
+  // Reads executeCode via a ref so an unmemoized onExecute/onSave prop from the
+  // parent can't re-arm this timer every render and loop the preview forever.
+  const executeCodeRef = useRef(executeCode);
+  executeCodeRef.current = executeCode;
+
   useEffect(() => {
     if (environment === 'html-css-js' && showPreview) {
       const timer = setTimeout(() => {
-        executeCode({ autoSwitchToPreview: false });
+        executeCodeRef.current({ autoSwitchToPreview: false });
       }, 1200);
       return () => clearTimeout(timer);
     }
-  }, [files, environment, showPreview, executeCode]);
+  }, [files, environment, showPreview]);
 
   // Re-grade checkpoint/project rules whenever code or console output changes
   useEffect(() => {
@@ -377,6 +387,92 @@ export default function UniversityCodeEditor({
       URL.revokeObjectURL(url);
     });
   };
+
+  // Helper functions for mobile touch & editing
+  const insertTextAtCursor = (text: string) => {
+    if (editorRef.current) {
+      const selection = editorRef.current.getSelection();
+      if (selection) {
+        const op = {
+          range: selection,
+          text: text,
+          forceMoveMarkers: true
+        };
+        editorRef.current.executeEdits('quick-insert', [op]);
+        editorRef.current.focus();
+      }
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (editorRef.current) {
+      const model = editorRef.current.getModel();
+      if (model) {
+        editorRef.current.setSelection(model.getFullModelRange());
+        editorRef.current.focus();
+      }
+    }
+  };
+
+  const handleSelectCurrentLine = () => {
+    if (editorRef.current) {
+      const position = editorRef.current.getPosition();
+      if (position) {
+        const model = editorRef.current.getModel();
+        if (model) {
+          const lineContent = model.getLineContent(position.lineNumber);
+          editorRef.current.setSelection({
+            startLineNumber: position.lineNumber,
+            startColumn: 1,
+            endLineNumber: position.lineNumber,
+            endColumn: lineContent.length + 1
+          });
+          editorRef.current.focus();
+        }
+      }
+    }
+  };
+
+  const handleUndo = () => {
+    if (editorRef.current) {
+      editorRef.current.trigger('mobile-toolbar', 'undo', null);
+      editorRef.current.focus();
+    }
+  };
+
+  const handleRedo = () => {
+    if (editorRef.current) {
+      editorRef.current.trigger('mobile-toolbar', 'redo', null);
+      editorRef.current.focus();
+    }
+  };
+
+  const handleClear = () => {
+    if (editorRef.current && window.confirm('Clear all code in this file?')) {
+      const model = editorRef.current.getModel();
+      if (model) {
+        editorRef.current.executeEdits('clear', [{
+          range: model.getFullModelRange(),
+          text: '',
+          forceMoveMarkers: true
+        }]);
+        editorRef.current.focus();
+      }
+    }
+  };
+
+  // Re-indent/organize the whole file (fixes messy paste jobs)
+  const handleFormatCode = () => {
+    if (editorRef.current) {
+      const formatAction = editorRef.current.getAction('editor.action.formatDocument');
+      if (formatAction) {
+        formatAction.run();
+      }
+      editorRef.current.focus();
+    }
+  };
+
+  const QUICK_SYMBOLS = ['<', '>', '/', '=', '"', "'", '{', '}', '(', ')', ';', ':', '!', '$', '#', '.', ','];
 
   const errorCount = consoleMessages.filter(m => m.type === 'error').length;
   const isSplitActive = viewMode === 'split' && showPreview;
@@ -634,7 +730,7 @@ export default function UniversityCodeEditor({
       <div className="flex-1 min-h-0 flex flex-col md:flex-row relative overflow-hidden">
         {/* Code Editor Pane */}
         <div 
-          className={`h-full transition-all duration-150 ${
+          className={`h-full flex flex-col transition-all duration-150 ${
             viewMode === 'code' 
               ? 'w-full block' 
               : viewMode === 'split' 
@@ -642,46 +738,157 @@ export default function UniversityCodeEditor({
               : 'hidden'
           }`}
         >
-          <MonacoEditor
-            height="100%"
-            language={activeFile.language}
-            value={activeFile.content}
-            onChange={handleEditorChange}
-            theme="vs-dark"
-            options={{
-              minimap: { enabled: !isMobile },
-              fontSize: isMobile ? 13 : 14,
-              lineNumbers: 'on',
-              lineNumbersMinChars: 3,
-              readOnly: readOnly || activeFile.readOnly,
-              automaticLayout: true,
-              scrollBeyondLastLine: false,
-              wordWrap: 'on',
-              tabSize: 2,
-              folding: !isMobile,
-              glyphMargin: false,
-              overviewRulerLanes: 0,
-              renderLineHighlight: 'all',
-              padding: { top: 8, bottom: 8 }
-            }}
-            onMount={(editor) => {
-              editorRef.current = editor;
-            }}
-          />
-
-          {/* Floating Action for Mobile Phone in Code View */}
-          {isMobile && viewMode === 'code' && showPreview && (
-            <div className="absolute bottom-3 right-3 z-10">
+          {/* Mobile Touch Assistant & Symbol Bar */}
+          <div className="bg-gray-950 border-b border-gray-800 px-2 py-1 flex items-center space-x-1.5 overflow-x-auto no-scrollbar shrink-0 select-none">
+            {/* Quick Actions */}
+            <div className="flex items-center space-x-1 border-r border-gray-800 pr-1.5 shrink-0">
               <button
-                onClick={() => executeCode({ autoSwitchToPreview: true })}
-                className="px-3.5 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center space-x-1.5 active:scale-95 transition-all border border-green-400/40"
+                type="button"
+                onClick={handleUndo}
+                className="p-1 rounded text-gray-300 hover:text-white bg-gray-900 hover:bg-gray-800 border border-gray-800 active:scale-90 transition-transform"
+                title="Undo"
               >
-                <Play className="w-3.5 h-3.5 fill-current" />
-                <span>Run & Preview</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <Undo2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleRedo}
+                className="p-1 rounded text-gray-300 hover:text-white bg-gray-900 hover:bg-gray-800 border border-gray-800 active:scale-90 transition-transform"
+                title="Redo"
+              >
+                <Redo2 className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="px-1.5 py-0.5 rounded text-[11px] font-medium text-blue-300 hover:text-blue-200 bg-blue-950/60 hover:bg-blue-900/60 border border-blue-800/60 active:scale-95 transition-transform whitespace-nowrap"
+                title="Select All Code"
+              >
+                Select All
+              </button>
+              <button
+                type="button"
+                onClick={handleSelectCurrentLine}
+                className="px-1.5 py-0.5 rounded text-[11px] font-medium text-gray-300 hover:text-white bg-gray-900 hover:bg-gray-800 border border-gray-800 active:scale-95 transition-transform whitespace-nowrap"
+                title="Select Current Line"
+              >
+                Select Line
+              </button>
+              <button
+                type="button"
+                onClick={() => insertTextAtCursor('  ')}
+                className="px-1.5 py-0.5 rounded text-[11px] font-mono text-gray-300 hover:text-white bg-gray-900 hover:bg-gray-800 border border-gray-800 active:scale-95 transition-transform whitespace-nowrap flex items-center gap-1"
+                title="Indent 2 spaces"
+              >
+                <Indent className="w-3 h-3" />
+                <span>Tab</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleFormatCode}
+                className="px-1.5 py-0.5 rounded text-[11px] font-medium text-purple-300 hover:text-purple-200 bg-purple-950/60 hover:bg-purple-900/60 border border-purple-800/60 active:scale-95 transition-transform whitespace-nowrap flex items-center gap-1"
+                title="Auto-format / organize code"
+              >
+                <Sparkles className="w-3 h-3" />
+                <span>Format</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleClear}
+                className="p-1 rounded text-red-400 hover:text-red-300 bg-gray-900 hover:bg-gray-800 border border-gray-800 active:scale-90 transition-transform"
+                title="Clear Code"
+              >
+                <Trash2 className="w-3 h-3" />
               </button>
             </div>
-          )}
+
+            {/* Quick Symbol Chips */}
+            <div className="flex items-center space-x-1 shrink-0">
+              {QUICK_SYMBOLS.map((sym, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => insertTextAtCursor(sym)}
+                  className="px-2 py-0.5 rounded bg-gray-900 hover:bg-gray-800 hover:text-white text-gray-300 font-mono text-xs border border-gray-800 active:bg-blue-600 active:text-white active:scale-90 transition-all select-none shrink-0 min-w-[24px] text-center"
+                >
+                  {sym}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex-1 min-h-0 relative">
+            <MonacoEditor
+              height="100%"
+              language={activeFile.language}
+              value={activeFile.content}
+              onChange={handleEditorChange}
+              theme="vs-dark"
+              options={{
+                minimap: { enabled: !isMobile },
+                fontSize: isMobile ? 14 : 14,
+                lineNumbers: 'on',
+                lineNumbersMinChars: 3,
+                readOnly: readOnly || activeFile.readOnly,
+                automaticLayout: true,
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+                tabSize: 2,
+                folding: !isMobile,
+                glyphMargin: false,
+                overviewRulerLanes: 0,
+                renderLineHighlight: 'all',
+                padding: { top: 8, bottom: 8 },
+                // Touch & mobile selection enhancements:
+                contextmenu: false, // Disables desktop contextmenu ("Rename symbol F2", "Go to symbol") on long press
+                quickSuggestions: false, // Prevents popup dropdown from blocking touch keyboard
+                suggestOnTriggerCharacters: false,
+                acceptSuggestionOnEnter: 'off',
+                dragAndDrop: false, // Prevents drag-and-drop from conflicting with touch text selection
+                links: false,
+                cursorWidth: 3,
+                cursorBlinking: 'smooth',
+                cursorSmoothCaretAnimation: 'on',
+                selectionHighlight: true,
+                selectOnLineNumbers: true,
+                // Auto-organize indentation when code is pasted or typed in
+                formatOnPaste: true,
+                formatOnType: true,
+                autoIndent: 'full'
+              }}
+              onMount={(editor) => {
+                editorRef.current = editor;
+                const domNode = editor.getDomNode();
+                if (domNode) {
+                  domNode.addEventListener('contextmenu', (e: MouseEvent) => {
+                    // Prevent any desktop contextmenu from intercepting touch selection
+                    e.preventDefault();
+                  });
+                }
+                // Re-format immediately after any paste so scattered/mis-indented code snaps into shape
+                editor.onDidPaste(() => {
+                  const formatAction = editor.getAction('editor.action.formatDocument');
+                  if (formatAction) {
+                    formatAction.run();
+                  }
+                });
+              }}
+            />
+
+            {/* Floating Action for Mobile Phone in Code View */}
+            {isMobile && viewMode === 'code' && showPreview && (
+              <div className="absolute bottom-3 right-3 z-10">
+                <button
+                  onClick={() => executeCode({ autoSwitchToPreview: true })}
+                  className="px-3.5 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white text-xs font-bold rounded-full shadow-lg flex items-center space-x-1.5 active:scale-95 transition-all border border-green-400/40"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current" />
+                  <span>Run & Preview</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Live Preview Pane */}

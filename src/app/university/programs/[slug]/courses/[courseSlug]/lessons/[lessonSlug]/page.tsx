@@ -99,13 +99,13 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
     return () => { cancelled = true; };
   }, [lesson.id, program.id, course.id, getProgress]);
 
-  const handleExecute = (result: CodeExecutionResult) => {
+  const handleExecute = useCallback((result: CodeExecutionResult) => {
     setExecutionResult(result);
-  };
+  }, []);
 
-  const handleSave = (files: CodeFile[]) => {
+  const handleSave = useCallback((files: CodeFile[]) => {
     saveCode(lesson.id, files);
-  };
+  }, [lesson.id, saveCode]);
 
   const handleValidate = useCallback((results: ValidationOutcome[]) => {
     setValidationResults(results);

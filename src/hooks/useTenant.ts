@@ -8,22 +8,29 @@
 
 'use client';
 
-import { useContext, useMemo, useCallback } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { resolveTenantFromParams } from '@/tenancy/resolveTenant';
 import type { TenantConfig } from '@/tenancy/types';
 import { TenantParamContext } from '@/components/tenancy/TenantParamProvider';
 
 /**
- * Safe hook to get search params without triggering Suspense errors
- * Falls back to reading from window.location if useSearchParams is unavailable
+ * Reads the ?tenant= preview param from window.location.
+ * Returns null on server AND on the client's first render (matching SSR output),
+ * then updates via effect post-mount — reading window.location synchronously during
+ * render caused server/client HTML to diverge and triggered hydration errors.
  */
-function useSafeSearchParams(): URLSearchParams | null {
-  try {
-    if (typeof window === 'undefined') return null;
-    return new URLSearchParams(window.location.search);
-  } catch {
-    return null;
-  }
+function usePreviewTenantParam(): string | null {
+  const [param, setParam] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      setParam(new URLSearchParams(window.location.search).get('tenant'));
+    } catch {
+      setParam(null);
+    }
+  }, []);
+
+  return param;
 }
 
 
@@ -81,8 +88,8 @@ export interface UseTenantResult {
  */
 export function useTenant(): UseTenantResult {
   const initialTenantParam = useContext(TenantParamContext);
-  const searchParams = useSafeSearchParams();
-  const tenantParam = searchParams?.get('tenant') ?? initialTenantParam ?? null;
+  const previewTenantParam = usePreviewTenantParam();
+  const tenantParam = previewTenantParam ?? initialTenantParam ?? null;
   
   const tenant = useMemo<TenantConfig>(() => {
     // Use the new resolveTenantFromParams that accepts tenant directly
