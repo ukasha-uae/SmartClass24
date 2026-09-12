@@ -1,18 +1,31 @@
 /**
  * S24 Innovation Academy Demo Page
- * Try the code editor without signing in
+ * Try the code editor without signing in, or test code snippets directly from lessons
  */
 
 'use client';
 
-import UniversityCodeEditor from '@/components/university/UniversityCodeEditor';
+import { useState, useEffect, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { ArrowLeft, Sparkles, RotateCcw, Check, Play, Code2 } from 'lucide-react';
 import { CodeFile } from '@/types/university';
 import { useTenantLink } from '@/hooks/useTenantLink';
 import { useTenant } from '@/hooks/useTenant';
+import { useFullscreen } from '@/contexts/FullscreenContext';
 
-const demoFiles: CodeFile[] = [
+const UniversityCodeEditor = dynamic(() => import('@/components/university/UniversityCodeEditor').then(mod => mod.default ?? mod), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col items-center justify-center h-[600px] bg-gray-900 rounded-xl text-gray-400 gap-3">
+      <div className="w-8 h-8 border-2 border-green-500 border-t-transparent rounded-full animate-spin" />
+      <span className="text-sm">Loading code playground...</span>
+    </div>
+  )
+});
+
+const defaultDemoFiles: CodeFile[] = [
   {
     path: 'index.html',
     language: 'html',
@@ -264,107 +277,296 @@ setTimeout(() => {
   }
 ];
 
-export default function UniversityDemoPage() {
+function UniversityDemoContent() {
   const addTenantParam = useTenantLink();
   const { academyDisplayName } = useTenant();
+  const { setFullscreen } = useFullscreen();
+  const searchParams = useSearchParams();
+  const [currentFiles, setCurrentFiles] = useState<CodeFile[]>(defaultDemoFiles);
+  const [editorKey, setEditorKey] = useState<number>(0);
+  const [loadedSnippet, setLoadedSnippet] = useState<{ title: string; originUrl?: string } | null>(null);
+
+  // Hide header, footer, and bottom navigation to provide distraction-free playground space
+  useEffect(() => {
+    setFullscreen(true, { lockScroll: false });
+    return () => setFullscreen(false);
+  }, [setFullscreen]);
+
+  // Check if a snippet was passed via sessionStorage or query params
+  useEffect(() => {
+    let snippetData: { code: string; language?: string; title?: string; originUrl?: string } | null = null;
+
+    try {
+      const stored = sessionStorage.getItem('smartclass_playground_snippet');
+      if (stored) {
+        snippetData = JSON.parse(stored);
+        sessionStorage.removeItem('smartclass_playground_snippet');
+      }
+    } catch (e) {
+      console.warn('Could not parse sessionStorage snippet', e);
+    }
+
+    // Fallback to URL query params
+    if (!snippetData) {
+      const codeParam = searchParams.get('code');
+      if (codeParam) {
+        snippetData = {
+          code: codeParam,
+          language: searchParams.get('lang') || 'html',
+          title: searchParams.get('title') || 'Lesson Snippet',
+          originUrl: searchParams.get('from') || undefined
+        };
+      }
+    }
+
+    if (snippetData && snippetData.code) {
+      const lang = (snippetData.language || 'html').toLowerCase();
+      let newFiles: CodeFile[] = [];
+
+      if (lang === 'css') {
+        newFiles = [
+          {
+            path: 'styles.css',
+            language: 'css',
+            content: snippetData.code
+          },
+          {
+            path: 'index.html',
+            language: 'html',
+            content: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>CSS Styling Preview 🎨</h1>
+    <p>Your CSS code is actively applied to this page!</p>
+    <button class="btn">Test Button</button>
+  </div>
+</body>
+</html>`
+          },
+          {
+            path: 'script.js',
+            language: 'javascript',
+            content: `console.log('CSS Playground active! 🎨');`
+          }
+        ];
+      } else if (lang === 'javascript' || lang === 'js') {
+        newFiles = [
+          {
+            path: 'script.js',
+            language: 'javascript',
+            content: snippetData.code
+          },
+          {
+            path: 'index.html',
+            language: 'html',
+            content: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>JavaScript Test Page ⚡</h1>
+  <p>Check the console below to see your script output.</p>
+  <button onclick="runSnippet()">Run Function</button>
+  <div id="output" style="margin-top: 15px; padding: 10px; background: #f0f4f8; border-radius: 8px;">Output appears here</div>
+  <script src="script.js"></script>
+</body>
+</html>`
+          },
+          {
+            path: 'styles.css',
+            language: 'css',
+            content: `body { font-family: sans-serif; padding: 20px; line-height: 1.6; }\nbutton { padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer; }`
+          }
+        ];
+      } else {
+        // HTML snippet
+        let htmlContent = snippetData.code;
+        if (!htmlContent.includes('<html') && !htmlContent.includes('<!DOCTYPE')) {
+          htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Preview</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+${htmlContent}
+  <script src="script.js"></script>
+</body>
+</html>`;
+        }
+        newFiles = [
+          {
+            path: 'index.html',
+            language: 'html',
+            content: htmlContent
+          },
+          {
+            path: 'styles.css',
+            language: 'css',
+            content: `body {\n  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;\n  padding: 20px;\n  line-height: 1.6;\n  color: #1e293b;\n}`
+          },
+          {
+            path: 'script.js',
+            language: 'javascript',
+            content: `console.log('HTML preview initialized! 👋');`
+          }
+        ];
+      }
+
+      setCurrentFiles(newFiles);
+      setEditorKey(prev => prev + 1);
+      setLoadedSnippet({
+        title: snippetData.title || 'Code Example',
+        originUrl: snippetData.originUrl
+      });
+    }
+  }, [searchParams]);
+
+  const handleResetToDefault = () => {
+    setCurrentFiles(defaultDemoFiles);
+    setEditorKey(prev => prev + 1);
+    setLoadedSnippet(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Under Construction Banner */}
-      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 text-center text-sm font-medium">
-        🚧 Demo Preview - Full platform under active development
+      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-2 text-center text-sm font-medium px-2">
+        🚧 Playground & Code Editor — Test, Edit, and Run Code Safely
       </div>
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-8">
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-6 sm:py-8">
         <div className="container mx-auto px-4">
           <Link
             href={addTenantParam('/university')}
-            className="inline-flex items-center text-green-100 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center text-green-100 hover:text-white mb-3 sm:mb-4 transition-colors text-sm"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4 mr-1.5" />
             Back to {academyDisplayName}
           </Link>
-          <div className="flex items-center space-x-3 mb-3">
-            <Sparkles className="w-8 h-8" />
-            <h1 className="text-3xl md:text-4xl font-bold">Try the Code Editor</h1>
+          <div className="flex items-center space-x-3 mb-2">
+            <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 text-yellow-300" />
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Code Playground</h1>
           </div>
-          <p className="text-green-100 text-lg">
-            Experience our integrated code editor with a live demo project. Edit the code and see your changes instantly!
+          <p className="text-green-100 text-sm sm:text-base max-w-2xl">
+            Experiment with code in a sandboxed live environment. Edit HTML, CSS, or JavaScript and test your ideas instantly.
           </p>
         </div>
       </div>
 
-      {/* Instructions */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8 rounded-r-lg">
-          <h2 className="text-xl font-bold text-blue-900 mb-3">🎯 Demo Instructions</h2>
-          <ul className="space-y-2 text-blue-800">
-            <li>✅ <strong>Edit the code</strong> in any file (HTML, CSS, or JavaScript)</li>
-            <li>✅ <strong>See live preview</strong> update automatically in the right panel</li>
-            <li>✅ <strong>Check the console</strong> at the bottom for JavaScript output</li>
-            <li>✅ <strong>Click "Change Color"</strong> button in the preview to test JavaScript</li>
-            <li>✅ <strong>Try different colors</strong> in the CSS file</li>
-            <li>✅ <strong>Download your work</strong> using the download button</li>
-            <li>✅ <strong>No sign-in required</strong> - this is a free demo!</li>
-          </ul>
-        </div>
+      {/* Content */}
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        {/* Loaded Snippet Notification Banner */}
+        {loadedSnippet && (
+          <div className="bg-gradient-to-r from-emerald-700 to-green-700 text-white p-3 sm:p-4 rounded-xl shadow-md mb-4 sm:mb-6 flex flex-wrap items-center justify-between gap-3 border border-emerald-500/40">
+            <div className="flex items-center space-x-3 min-w-0">
+              <div className="p-2 bg-white/20 rounded-lg shrink-0">
+                <Code2 className="w-5 h-5 text-white" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-bold text-sm sm:text-base truncate">✨ Loaded Code Snippet</p>
+                <p className="text-xs sm:text-sm text-green-100 truncate">{loadedSnippet.title}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2 shrink-0">
+              {loadedSnippet.originUrl && (
+                <Link
+                  href={loadedSnippet.originUrl}
+                  className="px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white text-xs font-semibold rounded-lg transition-colors flex items-center space-x-1"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Lesson</span>
+                </Link>
+              )}
+              <button
+                onClick={handleResetToDefault}
+                className="px-3 py-1.5 bg-white text-green-800 hover:bg-green-50 text-xs font-semibold rounded-lg shadow-sm transition-colors flex items-center space-x-1"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Demo</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Instructions Card (only show if not preloaded with snippet, or minimized) */}
+        {!loadedSnippet && (
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 sm:p-5 mb-4 sm:mb-6 rounded-r-xl">
+            <h2 className="text-base sm:text-lg font-bold text-blue-900 mb-2">🎯 Playground Tips</h2>
+            <ul className="grid sm:grid-cols-2 gap-2 text-xs sm:text-sm text-blue-800">
+              <li>✅ <strong>Edit the code</strong> in any file (HTML, CSS, or JavaScript)</li>
+              <li>✅ <strong>Mobile Friendly:</strong> Switch between Code, Preview & Console tabs</li>
+              <li>✅ <strong>See live preview</strong> update automatically in the preview panel</li>
+              <li>✅ <strong>Check console</strong> for JavaScript logs and errors</li>
+            </ul>
+          </div>
+        )}
 
         {/* Code Editor */}
-        <div className="bg-white rounded-lg shadow-xl overflow-hidden">
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
           <UniversityCodeEditor
-            initialFiles={demoFiles}
+            key={editorKey}
+            initialFiles={currentFiles}
             environment="html-css-js"
             showPreview={true}
             showConsole={true}
             height="700px"
-            instructions="Try editing the HTML, CSS, or JavaScript and watch the preview update in real-time!"
+            instructions={loadedSnippet ? `Testing code snippet: ${loadedSnippet.title}` : "Try editing the HTML, CSS, or JavaScript and watch the preview update in real-time!"}
           />
         </div>
 
         {/* Features Highlight */}
-        <div className="mt-8 grid md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div className="text-4xl mb-3">💻</div>
-            <h3 className="font-bold text-gray-900 mb-2">Monaco Editor</h3>
-            <p className="text-gray-600 text-sm">
-              Same editor used in VS Code with syntax highlighting and auto-completion
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white p-5 rounded-xl shadow-md text-center border border-gray-100">
+            <div className="text-3xl sm:text-4xl mb-2">💻</div>
+            <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">Monaco Code Editor</h3>
+            <p className="text-gray-600 text-xs sm:text-sm">
+              Same editor used in VS Code with syntax highlighting, line numbers and auto-completion.
             </p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div className="text-4xl mb-3">🔒</div>
-            <h3 className="font-bold text-gray-900 mb-2">Safe Sandbox</h3>
-            <p className="text-gray-600 text-sm">
-              Your code runs in a secure sandboxed environment for safety
+          <div className="bg-white p-5 rounded-xl shadow-md text-center border border-gray-100">
+            <div className="text-3xl sm:text-4xl mb-2">📱</div>
+            <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">Phone & Desktop Ready</h3>
+            <p className="text-gray-600 text-xs sm:text-sm">
+              Enjoy dedicated full-width Code & Preview tabs on mobile or side-by-side split view on desktop.
             </p>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <div className="text-4xl mb-3">⚡</div>
-            <h3 className="font-bold text-gray-900 mb-2">Instant Preview</h3>
-            <p className="text-gray-600 text-sm">
-              See your changes live as you type - no manual refresh needed
+          <div className="bg-white p-5 rounded-xl shadow-md text-center border border-gray-100">
+            <div className="text-3xl sm:text-4xl mb-2">🔒</div>
+            <h3 className="font-bold text-gray-900 mb-1 text-sm sm:text-base">Safe Sandboxed Run</h3>
+            <p className="text-gray-600 text-xs sm:text-sm">
+              Code runs safely inside a secure sandboxed environment with instant feedback.
             </p>
           </div>
         </div>
 
         {/* CTA */}
-        <div className="mt-12 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg p-8 text-center text-white">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+        <div className="mt-8 sm:mt-12 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-6 sm:p-8 text-center text-white shadow-lg">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-4">
             Ready to Start Learning?
           </h2>
-          <p className="text-green-100 mb-6 max-w-2xl mx-auto">
-            Join {academyDisplayName} and access complete courses with projects, certificates, and career support.
+          <p className="text-green-100 mb-4 sm:mb-6 max-w-2xl mx-auto text-xs sm:text-sm md:text-base">
+            Join {academyDisplayName} and access complete courses with projects, certificates, and hands-on coding labs.
           </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-3">
             <Link
               href={addTenantParam('/university')}
-              className="px-8 py-4 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors"
+              className="px-6 py-3 bg-white text-green-700 rounded-xl font-bold hover:bg-green-50 transition-colors text-sm"
             >
               Browse Programs
             </Link>
             <Link
               href={addTenantParam('/signup')}
-              className="px-8 py-4 bg-green-700 text-white rounded-lg font-semibold hover:bg-green-800 transition-colors border-2 border-white/30"
+              className="px-6 py-3 bg-green-700 text-white rounded-xl font-bold hover:bg-green-800 transition-colors border border-white/30 text-sm"
             >
               Sign Up Free
             </Link>
@@ -372,5 +574,17 @@ export default function UniversityDemoPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function UniversityDemoPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green-600"></div>
+      </div>
+    }>
+      <UniversityDemoContent />
+    </Suspense>
   );
 }

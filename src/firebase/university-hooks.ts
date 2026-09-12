@@ -406,29 +406,30 @@ export function useCertificates() {
     program: UniversityProgram,
     studentName: string
   ): Promise<CertificateRecord | null> => {
-    if (!user || !firestore) return null;
-
-    const existing = await getCertificate(program.id);
-    if (existing) return existing;
+    if (!user) return null;
 
     try {
-      const verificationCode = `${program.id}-${user.uid.slice(0, 6)}-${Date.now().toString(36)}`.toUpperCase();
-      const record: Omit<CertificateRecord, 'id'> = {
-        studentId: user.uid,
-        studentName,
-        programId: program.id,
-        programTitle: program.certificate.title,
-        issuer: program.certificate.issuer,
-        verificationCode,
-        issuedAt: new Date().toISOString()
-      };
-      const docRef = await addDoc(collection(firestore, 'university-certificates'), record);
-      return { id: docRef.id, ...record };
+      const token = await user.getIdToken();
+      const response = await fetch('/api/university/certificates', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ programId: program.id, studentName }),
+      });
+
+      if (!response.ok) {
+        console.error('Certificate issuance rejected:', response.status);
+        return null;
+      }
+
+      return (await response.json()) as CertificateRecord;
     } catch (error) {
       console.error('Error issuing certificate:', error);
       return null;
     }
-  }, [user, firestore, getCertificate]);
+  }, [user]);
 
   const verifyCertificate = useCallback(async (certificateId: string): Promise<CertificateRecord | null> => {
     if (!firestore) return null;

@@ -7,11 +7,11 @@
 
 import { useState, useEffect, useCallback, use } from 'react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { ArrowLeft, ChevronRight, BookOpen, Code, CheckCircle2, Award } from 'lucide-react';
+import { notFound, useRouter } from 'next/navigation';
+import { ArrowLeft, ChevronRight, BookOpen, Code, CheckCircle2, Award, Play, Copy, Check, Sparkles, Code2, ExternalLink } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { webDevelopmentProgram } from '@/lib/university-data';
-import { CodeExecutionResult, CodeFile } from '@/types/university';
+import { CodeExecutionResult, CodeFile, CodeExample } from '@/types/university';
 import { ValidationOutcome } from '@/lib/university-validation';
 import { useCodeSaves, useUniversityProgress } from '@/firebase/university-hooks';
 import { useTenantLink } from '@/hooks/useTenantLink';
@@ -32,6 +32,7 @@ const UniversityCodeEditor = dynamic(() => import('@/components/university/Unive
 
 export default function LessonPage({ params }: { params: Promise<{ slug: string; courseSlug: string; lessonSlug: string }> }) {
   const resolvedParams = use(params);
+  const router = useRouter();
   const addTenantParam = useTenantLink();
   const { setFullscreen } = useFullscreen();
   const [showCodeEditor, setShowCodeEditor] = useState(false);
@@ -41,6 +42,8 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
   const [isCodeLoading, setIsCodeLoading] = useState(true);
   const [markedComplete, setMarkedComplete] = useState(false);
   const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
+  const [copiedExampleId, setCopiedExampleId] = useState<string | null>(null);
+  const [loadedSnippetNotice, setLoadedSnippetNotice] = useState<string | null>(null);
   const { saveCode, loadCode } = useCodeSaves();
   const { markLessonComplete, getProgress } = useUniversityProgress();
 
@@ -121,6 +124,74 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
     setCompletedLessonIds(prev => prev.includes(lesson.id) ? prev : [...prev, lesson.id]);
     markLessonComplete(program.id, course.id, lesson.id);
   }, [markedComplete, markLessonComplete, program.id, course.id, lesson.id]);
+
+  // Handle copying code to clipboard with visual feedback
+  const handleCopyCode = (id: string, code: string) => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(code);
+      setCopiedExampleId(id);
+      setTimeout(() => setCopiedExampleId(null), 2000);
+    }
+  };
+
+  // Handle loading code example into playground
+  const handleTryCodeInPlayground = (example: CodeExample) => {
+    if (lesson.interactive && lesson.interactive.type === 'code-editor') {
+      const config = (lesson.interactive as any).config;
+      const baseFiles = savedFiles.length > 0 ? savedFiles : config?.startingFiles || [];
+      
+      const lang = (example.language || 'html').toLowerCase();
+      let targetPath = 'index.html';
+      if (lang === 'css' || (example.code.includes('{') && !example.code.includes('<'))) {
+        targetPath = 'styles.css';
+      } else if (lang === 'javascript' || lang === 'js' || example.code.includes('console.log') || example.code.includes('function ')) {
+        targetPath = 'script.js';
+      }
+
+      const updated = baseFiles.map((file: CodeFile) => {
+        if (file.path === targetPath || (targetPath === 'index.html' && file.path.endsWith('.html'))) {
+          return { ...file, content: example.code };
+        }
+        return file;
+      });
+
+      if (!updated.some((f: CodeFile) => f.path === targetPath)) {
+        updated.push({
+          path: targetPath,
+          language: lang,
+          content: example.code
+        });
+      }
+
+      setSavedFiles(updated);
+      saveCode(lesson.id, updated);
+      setLoadedSnippetNotice(`✨ Loaded "${example.explanation || 'code example'}" into playground!`);
+
+      setTimeout(() => {
+        const el = document.getElementById('interactive-playground');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+
+      setTimeout(() => {
+        setLoadedSnippetNotice(null);
+      }, 7000);
+    } else {
+      // Store in sessionStorage and navigate to standalone demo playground
+      try {
+        sessionStorage.setItem('smartclass_playground_snippet', JSON.stringify({
+          code: example.code,
+          language: example.language || 'html',
+          title: example.explanation || lesson.title,
+          originUrl: window.location.pathname + window.location.search
+        }));
+      } catch (e) {
+        console.warn('Could not store snippet', e);
+      }
+      router.push(addTenantParam('/university/demo'));
+    }
+  };
 
   // Real Course/Module completion percentages, driven by actual completed-lesson data (not placeholders)
   const courseProgressPct = allLessons.length > 0
@@ -205,19 +276,66 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
 
                 {/* Code Examples */}
                 {section.codeExamples && section.codeExamples.length > 0 && (
-                  <div className="space-y-3 sm:space-y-4 mt-4 sm:mt-6">
-                    {section.codeExamples.map((example) => (
-                      <div key={example.id} className="rounded-lg sm:rounded-xl overflow-hidden border border-gray-200 shadow-sm">
-                        <div className="bg-gradient-to-r from-green-50 to-blue-50 px-3 sm:px-5 py-2 sm:py-3 border-b border-gray-200">
-                          <div className="text-xs sm:text-sm font-medium text-gray-800">{example.explanation}</div>
+                  <div className="space-y-4 mt-4 sm:mt-6">
+                    {section.codeExamples.map((example) => {
+                      const isCopied = copiedExampleId === example.id;
+                      return (
+                        <div 
+                          key={example.id} 
+                          className="rounded-xl overflow-hidden border border-gray-700 shadow-md bg-gray-950 group transition-all"
+                        >
+                          {/* Code Example Header / Toolbar */}
+                          <div className="bg-gray-900 px-3 sm:px-4 py-2.5 border-b border-gray-800 flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex items-center space-x-2 min-w-0 pr-2">
+                              <span className="px-2 py-0.5 rounded text-[10px] sm:text-xs font-mono font-bold uppercase bg-green-500/20 text-green-300 border border-green-500/30 shrink-0">
+                                {example.language || 'HTML'}
+                              </span>
+                              <span className="text-xs sm:text-sm font-medium text-gray-200 truncate">
+                                {example.explanation}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center space-x-1.5 ml-auto shrink-0">
+                              <button
+                                type="button"
+                                onClick={() => handleCopyCode(example.id, example.code)}
+                                className="px-2.5 py-1 text-xs font-medium rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white flex items-center space-x-1 transition-all active:scale-95 border border-gray-700"
+                                title="Copy code snippet"
+                              >
+                                {isCopied ? (
+                                  <>
+                                    <Check className="w-3.5 h-3.5 text-green-400" />
+                                    <span className="text-green-400 font-semibold">Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3.5 h-3.5" />
+                                    <span>Copy</span>
+                                  </>
+                                )}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleTryCodeInPlayground(example)}
+                                className="px-3 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white flex items-center space-x-1.5 shadow-sm transition-all active:scale-95"
+                                title="Try this code in the playground"
+                              >
+                                <Play className="w-3.5 h-3.5 fill-current" />
+                                <span>Try Code 🚀</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Code Content */}
+                          <div className="p-3 sm:p-4 bg-[#121212] overflow-x-auto">
+                            <pre className="text-xs sm:text-sm text-gray-100 font-mono leading-relaxed selection:bg-green-600 selection:text-white">
+                              <code>{example.code}</code>
+                            </pre>
+                          </div>
                         </div>
-                        <div className="bg-[#1e1e1e] p-3 sm:p-5">
-                          <pre className="text-xs sm:text-sm text-gray-100 overflow-x-auto font-mono">
-                            <code>{example.code}</code>
-                          </pre>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -235,14 +353,30 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                 );
               }
               return (
-              <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6">
-                <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+              <div id="interactive-playground" className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-4 sm:p-6 scroll-mt-20">
+                <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3">
                   <Code className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                   <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Hands-On Practice</h2>
                 </div>
                 <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">
                   Now it's your turn! Complete the coding challenge below using what you've learned.
                 </p>
+
+                {/* Snippet Load Notification Banner */}
+                {loadedSnippetNotice && (
+                  <div className="mb-4 p-3 bg-gradient-to-r from-green-900 to-emerald-900 border border-green-500/60 rounded-xl flex items-center justify-between text-green-100 text-xs sm:text-sm shadow-md animate-fadeIn">
+                    <div className="flex items-center space-x-2 min-w-0 pr-2">
+                      <Sparkles className="w-4 h-4 text-yellow-300 shrink-0 animate-spin" />
+                      <span className="font-semibold truncate">{loadedSnippetNotice}</span>
+                    </div>
+                    <button
+                      onClick={() => setLoadedSnippetNotice(null)}
+                      className="text-green-300 hover:text-white text-xs font-bold px-2 py-0.5 rounded bg-green-800/80 hover:bg-green-700 shrink-0"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
                 
                 <UniversityCodeEditor
                   initialFiles={savedFiles.length > 0 ? savedFiles : config.startingFiles}
@@ -345,23 +479,53 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
               <div className="bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6 lg:p-8 border border-gray-100">
                 <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-6 text-gray-900">Additional Resources</h2>
                 <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
-                  {lesson.resources.map((resource) => (
-                    <a
-                      key={resource.id}
-                      href={resource.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50/50 transition-all duration-200"
-                    >
-                      <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-600 transition-colors">
-                        <BookOpen className="w-5 h-5 text-green-600 group-hover:text-white flex-shrink-0" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-gray-900 mb-1 text-sm sm:text-base">{resource.title}</div>
-                        <div className="text-xs sm:text-sm text-gray-600">{resource.description}</div>
-                      </div>
-                    </a>
-                  ))}
+                  {lesson.resources.map((resource) => {
+                    const isPlaygroundResource = resource.type === 'practice' || resource.title.toLowerCase().includes('playground');
+                    if (isPlaygroundResource) {
+                      return (
+                        <button
+                          key={resource.id}
+                          onClick={() => {
+                            const el = document.getElementById('interactive-playground');
+                            if (el) {
+                              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            } else {
+                              router.push(addTenantParam('/university/demo'));
+                            }
+                          }}
+                          className="group flex items-start text-left space-x-3 sm:space-x-4 p-3 sm:p-5 border-2 border-green-200 bg-green-50/30 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-200"
+                        >
+                          <div className="p-2 bg-green-600 rounded-lg text-white group-hover:scale-105 transition-transform shrink-0">
+                            <Play className="w-5 h-5 fill-current" />
+                          </div>
+                          <div>
+                            <div className="font-bold text-gray-900 mb-1 text-sm sm:text-base flex items-center gap-1.5">
+                              <span>{resource.title}</span>
+                              <span className="text-[10px] bg-green-600 text-white px-1.5 py-0.2 rounded font-semibold">Interactive</span>
+                            </div>
+                            <div className="text-xs sm:text-sm text-gray-600">{resource.description}</div>
+                          </div>
+                        </button>
+                      );
+                    }
+                    return (
+                      <a
+                        key={resource.id}
+                        href={resource.url || '#'}
+                        target={resource.url ? "_blank" : "_self"}
+                        rel="noopener noreferrer"
+                        className="group flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50/50 transition-all duration-200"
+                      >
+                        <div className="p-2 bg-green-100 rounded-lg group-hover:bg-green-600 transition-colors shrink-0">
+                          <BookOpen className="w-5 h-5 text-green-600 group-hover:text-white" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900 mb-1 text-sm sm:text-base">{resource.title}</div>
+                          <div className="text-xs sm:text-sm text-gray-600">{resource.description}</div>
+                        </div>
+                      </a>
+                    );
+                  })}
                 </div>
               </div>
             )}

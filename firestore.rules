@@ -234,7 +234,8 @@ service cloud.firestore {
     match /university-certificates/{certificateId} {
       allow get: if true;
       allow list: if request.auth != null && resource.data.studentId == request.auth.uid;
-      allow create: if request.auth != null && request.resource.data.studentId == request.auth.uid;
+      // Certificates are issued by the trusted server endpoint after completion checks.
+      allow create: if false;
       allow update, delete: if false;
     }
 
