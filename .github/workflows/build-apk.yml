@@ -2,11 +2,9 @@ name: Build and Release Android APK
 
 on:
   push:
-    branches: [ "main", "master" ]
-    tags:
-      - 'v*'
+    branches: [ "main", "master", "android", "mobile" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main", "master", "android", "mobile" ]
   workflow_dispatch:
 
 permissions:
@@ -33,26 +31,43 @@ jobs:
           if [ -f debug.keystore.base64 ]; then
             base64 -d debug.keystore.base64 > debug.keystore
           fi
+          if [ -f android/debug.keystore.base64 ]; then
+            base64 -d android/debug.keystore.base64 > android/debug.keystore
+          fi
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: |
+          if [ -f gradlew ]; then chmod +x gradlew; fi
+          if [ -f android/gradlew ]; then chmod +x android/gradlew; fi
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: |
+          if [ -f gradlew ]; then
+            ./gradlew assembleDebug --stacktrace
+          elif [ -f android/gradlew ]; then
+            cd android && ./gradlew assembleDebug --stacktrace
+          else
+            echo "Gradle wrapper not found!" && exit 1
+          fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: SmartClass-Arena-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
           retention-days: 30
 
       - name: Create Release and Upload APK (On Tags)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: app/build/outputs/apk/debug/app-debug.apk
-          name: Release ${{ github.ref_name }}
+          files: |
+            app/build/outputs/apk/debug/app-debug.apk
+            android/app/build/outputs/apk/debug/app-debug.apk
+          name: SmartClass Android Release ${{ github.ref_name }}
           draft: false
           prerelease: false
           generate_release_notes: true
