@@ -63,3 +63,32 @@ Once pushed:
 4. When it completes (green checkmark, ~2-3 minutes), click on the workflow run.
 5. Under the **Artifacts** section at the bottom, click **SmartClass-Arena-APK** to download your APK!
 6. Transfer the `.apk` file to any Android device or emulator to install and play.
+
+---
+
+## 5. Security & Secret Alert Resolution (Google API Key / Firebase)
+
+### What Happened & What Was Fixed
+GitHub Secret Scanning triggered an alert for the API key in `app/google-services.json` in commit `dbeb2f0f`.
+We have taken immediate remediation steps in the repository:
+1. **Purged from Git History**: Rewrote the git history on the `android` branch using `filter-branch`, permanently expelling `app/google-services.json` from commit `dbeb2f0f` and all subsequent commits.
+2. **Gitignored**: Added `google-services.json`, `app/google-services.json`, and `**/google-services.json` to both root and `app/` `.gitignore` files.
+3. **Safe Template Provided**: Added `app/google-services.example.json` with redacted placeholder credentials.
+4. **CI Secret Injection**: Updated `.github/workflows/build-apk.yml` (and `docs/ci/build-apk.yml`) to support `GOOGLE_SERVICES_JSON_BASE64` secret injection.
+
+### Recommended Next Steps to Fully Revoke & Rotate the Exposed Key
+To guarantee zero unauthorized usage of the old key `AIzaSyCMou-P4yorbspETnbKdLQcCENk9mUOLPo`:
+
+1. **Rotate/Revoke in Google Cloud Console**:
+   - Go to [Google Cloud Console - Credentials](https://console.cloud.google.com/apis/credentials?project=smartclass24-5e590).
+   - Locate the API key named **"Android key (auto created by Firebase)"** or the key matching `AIzaSyCMou...`.
+   - Click **Edit API Key**:
+     - Under **Application restrictions**, choose **Android apps** and ensure package name `com.aistudio.smartclassarena.uydq` and your SHA-1 certificate fingerprints are enforced (this prevents any unauthorized website, app, or person from using this key).
+     - Alternatively, click **Regenerate Key** or delete the old key after generating a replacement key.
+2. **Download Fresh `google-services.json`**:
+   - Go to [Firebase Console -> Project Settings -> General](https://console.firebase.google.com/project/smartclass24-5e590/settings/general).
+   - Scroll down to your Android app and click **Download google-services.json**.
+   - Place this file in your local `app/` directory (it is gitignored and will never be pushed).
+3. **GitHub Security Alerts Page**:
+   - Navigate to [https://github.com/ukasha-uae/SmartClass24/security/secret-scanning](https://github.com/ukasha-uae/SmartClass24/security/secret-scanning).
+   - Because the commit was purged from the branch history, the alert will reflect that the commit is no longer present. You can select the alert and mark it as **Resolved (Revoked / False positive / Used in tests)**.
