@@ -1,0 +1,7 @@
+{
+  "name": "SmartClass Arena",
+  "description": "SmartClass24 Arena Challenge - Real-time AI educational battles, 1v1 duels, boss fights, and rocket races.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
