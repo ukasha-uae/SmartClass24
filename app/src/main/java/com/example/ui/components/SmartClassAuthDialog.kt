@@ -25,13 +25,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.CloudDone
-import androidx.compose.material.icons.filled.CloudSync
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -97,7 +95,6 @@ fun SmartClassAuthDialog(
     onRegister: (String, String, String, String, String, String) -> Unit,
     onGuestSignIn: () -> Unit,
     onSignOut: () -> Unit,
-    onSyncWithCloud: () -> Unit,
     onUpdateProfile: (String, String, String, String) -> Unit,
     onClearMessages: () -> Unit,
     modifier: Modifier = Modifier
@@ -176,33 +173,19 @@ fun SmartClassAuthDialog(
                         }
                     }
 
-                    // Cloud state badge
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = if (state.userProfile.isCloudSynced) Color(0xFFDCFCE7) else Color(0xFFFEF3C7),
-                        border = BorderStroke(
-                            1.dp,
-                            if (state.userProfile.isCloudSynced) Color(0xFF86EFAC) else Color(0xFFFDE68A)
-                        )
+                    // Top-right close button
+                    IconButton(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .size(36.dp)
+                            .testTag("auth_dialog_close_button")
                     ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = if (state.userProfile.isCloudSynced) Icons.Default.CloudDone else Icons.Default.CloudSync,
-                                contentDescription = null,
-                                tint = if (state.userProfile.isCloudSynced) ScSuccessGreen else Color(0xFFD97706),
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = if (state.userProfile.isCloudSynced) "Web Synced" else "Offline / Local",
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = if (state.userProfile.isCloudSynced) ScSuccessGreen else Color(0xFFB45309)
-                            )
-                        }
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = ScTextMuted,
+                            modifier = Modifier.size(22.dp)
+                        )
                     }
                 }
 
@@ -295,7 +278,7 @@ fun SmartClassAuthDialog(
                             selectedTab = 0
                             onClearMessages()
                         },
-                        text = { Text("Profile & Cloud", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
+                        text = { Text("Student Profile", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
                     )
                     Tab(
                         selected = selectedTab == 1,
@@ -303,7 +286,7 @@ fun SmartClassAuthDialog(
                             selectedTab = 1
                             onClearMessages()
                         },
-                        text = { Text("Email Login", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
+                        text = { Text("Sign In", fontSize = 12.sp, fontWeight = FontWeight.Bold) }
                     )
                     Tab(
                         selected = selectedTab == 2,
@@ -319,10 +302,9 @@ fun SmartClassAuthDialog(
 
                 when (selectedTab) {
                     0 -> {
-                        // TAB 0: Profile & Cloud Synchronization
+                        // TAB 0: Student Profile
                         ProfileSyncTabContent(
                             profile = state.userProfile,
-                            isSyncing = state.isSyncingProfile,
                             editName = editName,
                             onNameChange = { editName = it },
                             editSchool = editSchool,
@@ -331,7 +313,6 @@ fun SmartClassAuthDialog(
                             onGradeChange = { editGrade = it },
                             editRegion = editRegion,
                             onRegionChange = { editRegion = it },
-                            onSyncCloud = onSyncWithCloud,
                             onSaveProfile = {
                                 onUpdateProfile(editName, editSchool, editGrade, editRegion)
                             },
@@ -401,7 +382,6 @@ fun SmartClassAuthDialog(
 @Composable
 private fun ProfileSyncTabContent(
     profile: UserProfileEntity,
-    isSyncing: Boolean,
     editName: String,
     onNameChange: (String) -> Unit,
     editSchool: String,
@@ -410,12 +390,11 @@ private fun ProfileSyncTabContent(
     onGradeChange: (String) -> Unit,
     editRegion: String,
     onRegionChange: (String) -> Unit,
-    onSyncCloud: () -> Unit,
     onSaveProfile: () -> Unit,
     onSignOut: () -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        // Linked Identity Card
+        // Student Profile Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -464,28 +443,6 @@ private fun ProfileSyncTabContent(
                     StatPill("Coins", "${profile.coins} 🪙", Color(0xFFCA8A04))
                 }
 
-            }
-        }
-
-        // Quick Sync with Cloud Action
-        Button(
-            onClick = onSyncCloud,
-            enabled = !isSyncing,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(46.dp)
-                .testTag("sync_cloud_button"),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = ScPrimaryBlue)
-        ) {
-            if (isSyncing) {
-                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Syncing profile...", fontWeight = FontWeight.Bold)
-            } else {
-                Icon(imageVector = Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Refresh from SmartClass24 Web", fontWeight = FontWeight.Bold)
             }
         }
 
@@ -654,7 +611,7 @@ private fun SignInTabContent(
             color = ScForeground
         )
         Text(
-            text = "Link your mobile device with your Web profile to sync ELO ratings, XP, and tournaments.",
+            text = "Sign in to access your saved progress and compete in global tournaments.",
             style = MaterialTheme.typography.bodySmall,
             color = ScTextMuted
         )

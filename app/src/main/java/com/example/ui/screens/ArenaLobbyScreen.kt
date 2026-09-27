@@ -82,13 +82,8 @@ fun ArenaLobbyScreen(
     onRegister: (String, String, String, String, String, String) -> Unit = { _, _, _, _, _, _ -> },
     onGuestSignIn: () -> Unit = {},
     onSignOut: () -> Unit = {},
-    onSyncWithCloud: () -> Unit = {},
     onUpdateProfile: (String, String, String, String) -> Unit = { _, _, _, _ -> },
     onClearAuthMessages: () -> Unit = {},
-    onOpenSyncTracker: () -> Unit = {},
-    onCloseSyncTracker: () -> Unit = {},
-    onPingAllChannels: () -> Unit = {},
-    onTestChannel: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize()) {
@@ -372,7 +367,6 @@ fun ArenaLobbyScreen(
             onRegister = onRegister,
             onGuestSignIn = onGuestSignIn,
             onSignOut = onSignOut,
-            onSyncWithCloud = onSyncWithCloud,
             onUpdateProfile = onUpdateProfile,
             onClearMessages = onClearAuthMessages
         )

@@ -145,32 +145,20 @@ class ExampleRobolectricTest {
   }
 
   @Test
-  fun `verify all 5 logical links and progress tracker`() {
+  fun `verify student profile auth dialog state`() {
     val context = ApplicationProvider.getApplicationContext<android.app.Application>()
     val viewModel = ArenaViewModel(context)
 
-    val tracker = viewModel.uiState.value.syncTracker
-    assertEquals(5, tracker.totalChannels)
-    assertEquals(5, tracker.activeChannels)
-    assertEquals("smartclass24-5e590", tracker.cloudProjectId)
-    assertEquals(5, tracker.channels.size)
+    // Test opening and closing student auth dialog
+    assertFalse(viewModel.uiState.value.isAuthDialogOpen)
+    viewModel.openAuthDialog()
+    assertTrue(viewModel.uiState.value.isAuthDialogOpen)
+    viewModel.closeAuthDialog()
+    assertFalse(viewModel.uiState.value.isAuthDialogOpen)
 
-    // Verify all 5 channels are present with their expected collections
-    val channelMap = tracker.channels.associateBy { it.id }
-    assertTrue("Channel auth_identity should exist", channelMap.containsKey("auth_identity"))
-    assertTrue("Channel live_rooms should exist", channelMap.containsKey("live_rooms"))
-    assertTrue("Channel curriculum_questions should exist", channelMap.containsKey("curriculum_questions"))
-    assertTrue("Channel school_championships should exist", channelMap.containsKey("school_championships"))
-    assertTrue("Channel tournament_brackets should exist", channelMap.containsKey("tournament_brackets"))
-
-    assertEquals("/students/{uid}", channelMap["auth_identity"]?.firestoreCollection)
-    assertEquals("/challenges", channelMap["live_rooms"]?.firestoreCollection)
-
-    // Test opening and closing sync tracker dialog
-    assertFalse(viewModel.uiState.value.isSyncTrackerOpen)
-    viewModel.openSyncTracker()
-    assertTrue(viewModel.uiState.value.isSyncTrackerOpen)
-    viewModel.closeSyncTracker()
-    assertFalse(viewModel.uiState.value.isSyncTrackerOpen)
+    // Verify student profile details
+    val profile = viewModel.uiState.value.userProfile
+    assertTrue(profile.name.isNotBlank())
+    assertTrue(profile.school.isNotBlank())
   }
 }

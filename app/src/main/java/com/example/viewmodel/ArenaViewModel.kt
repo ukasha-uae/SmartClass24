@@ -25,9 +25,6 @@ import com.example.data.SmartClassSyncService
 import com.example.model.StudentFirestoreDoc
 import com.example.model.ChallengeFirestoreDoc
 import com.example.model.SmartClassGameMechanics
-import com.example.model.SyncTrackerProgress
-import com.example.model.LogicalLinkChannel
-import com.example.model.LinkSyncStatus
 import com.example.model.ShopItem
 import com.example.model.ShopItemCategory
 import com.example.model.AchievementItem
@@ -153,11 +150,6 @@ data class ArenaUiState(
     val isAuthDialogOpen: Boolean = false,
     val isCloudConnected: Boolean = false,
     val isSyncingProfile: Boolean = false,
-    // Logical Link & Sync Progress Tracker state
-    val syncTracker: SyncTrackerProgress = SyncTrackerProgress(),
-    val isSyncTrackerOpen: Boolean = false,
-    val isPingingChannels: Boolean = false,
-    val pingFeedbackMessage: String? = null,
     // Shop & Armory
     val shopItems: List<ShopItem> = emptyList(),
     val shopFeedbackMessage: String? = null,
@@ -235,7 +227,6 @@ class ArenaViewModel(application: Application) : AndroidViewModel(application) {
         loadTournaments()
         loadShopCatalog()
         loadAchievementsAndQuests()
-        refreshSyncTrackerProgress()
     }
 
     private fun loadFriends() {
@@ -1674,7 +1665,7 @@ class ArenaViewModel(application: Application) : AndroidViewModel(application) {
                     it.copy(
                         userProfile = updated,
                         isAuthLoading = false,
-                        authSuccessMessage = "Account created and linked to SmartClass24 Web!",
+                        authSuccessMessage = "Account created successfully!",
                         isCloudConnected = true
                     )
                 }
@@ -1795,132 +1786,6 @@ class ArenaViewModel(application: Application) : AndroidViewModel(application) {
                 )
                 SmartClassSyncService.updateStudentProfile(doc)
             }
-        }
-    }
-
-    fun openSyncTracker() {
-        refreshSyncTrackerProgress()
-        _uiState.update { it.copy(isSyncTrackerOpen = true) }
-    }
-
-    fun closeSyncTracker() {
-        _uiState.update { it.copy(isSyncTrackerOpen = false, pingFeedbackMessage = null) }
-    }
-
-    fun pingAllChannels() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isPingingChannels = true, pingFeedbackMessage = null) }
-            val health = SmartClassSyncService.pingFirestoreHealth()
-            delay(500)
-            refreshSyncTrackerProgress()
-            _uiState.update {
-                it.copy(
-                    isPingingChannels = false,
-                    pingFeedbackMessage = "All 5 logical channels verified active with smartclass24-5e590! Latency: ~38ms"
-                )
-            }
-        }
-    }
-
-    fun testChannel(channelId: String) {
-        viewModelScope.launch {
-            when (channelId) {
-                "auth_identity" -> {
-                    syncProfileWithCloud()
-                    _uiState.update { it.copy(pingFeedbackMessage = "Identity Channel: Student profile verified with /students") }
-                }
-                "live_rooms" -> {
-                    _uiState.update { it.copy(pingFeedbackMessage = "Live Rooms: Snapshot listener active on /challenges") }
-                }
-                "curriculum_questions" -> {
-                    val qList = SmartClassSyncService.fetchQuestionsFromFirestore()
-                    _uiState.update { it.copy(pingFeedbackMessage = "Question Bank: Loaded ${if (qList.isNotEmpty()) qList.size else 50} questions from cloud repo") }
-                }
-                "school_championships" -> {
-                    _uiState.update { it.copy(pingFeedbackMessage = "School Standings: Aggregation verified on /schools") }
-                }
-                "tournament_brackets" -> {
-                    _uiState.update { it.copy(pingFeedbackMessage = "Tournaments: Bracket sync verified on /tournaments") }
-                }
-            }
-            refreshSyncTrackerProgress()
-        }
-    }
-
-    fun refreshSyncTrackerProgress() {
-        val profile = _uiState.value.userProfile
-        val schools = _uiState.value.schoolRankings
-        val tournaments = _uiState.value.tournamentsList
-
-        val channels = listOf(
-            LogicalLinkChannel(
-                id = "auth_identity",
-                title = "User Authentication & Identity",
-                category = "Identity",
-                firestoreCollection = "/students/{uid}",
-                description = "Synchronizes student rating, XP, level, coins, win streak, school, and region with Firebase Auth & Firestore.",
-                status = LinkSyncStatus.ACTIVE,
-                lastSyncTime = "Just now",
-                itemsSynced = "User: ${profile.name}",
-                details = "Rating: ${profile.trophies} 🏆 • Level: ${profile.level} • Streak: ${profile.currentStreak} 🔥 • Coins: ${profile.coins} 🪙"
-            ),
-            LogicalLinkChannel(
-                id = "live_rooms",
-                title = "Live Room Challenges & Matchmaking",
-                category = "Matchmaking",
-                firestoreCollection = "/challenges",
-                description = "Bi-directional 6-character room codes (SC-XXXX) with real-time Firestore queries and snapshot listeners.",
-                status = LinkSyncStatus.ACTIVE,
-                lastSyncTime = "Real-time stream",
-                itemsSynced = "Room Codes Active • Snapshot Listener Ready",
-                details = "Instant join/host bridge linking web challengers with mobile players."
-            ),
-            LogicalLinkChannel(
-                id = "curriculum_questions",
-                title = "Question Bank & Curriculum Repository",
-                category = "Content",
-                firestoreCollection = "/challenges & questions",
-                description = "Authentic STEM questions spanning WASSCE, BECE, Cambridge IGCSE, and UAE MOE curricula.",
-                status = LinkSyncStatus.ACTIVE,
-                lastSyncTime = "Just now",
-                itemsSynced = "50+ STEM Items Synced",
-                details = "Auto-fallback to cached questions when device is in offline mode."
-            ),
-            LogicalLinkChannel(
-                id = "school_championships",
-                title = "Inter-School Standings & Leaderboards",
-                category = "Championship",
-                firestoreCollection = "/schools & /students",
-                description = "Aggregates match victories and points to school standings across UAE, Ghana, and Nigeria.",
-                status = LinkSyncStatus.ACTIVE,
-                lastSyncTime = "Live sync",
-                itemsSynced = "${schools.size} Schools Tracked",
-                details = "User School: ${profile.school} • Country: ${profile.selectedRegion}"
-            ),
-            LogicalLinkChannel(
-                id = "tournament_brackets",
-                title = "Tournament Championships & Brackets",
-                category = "Competition",
-                firestoreCollection = "/tournaments",
-                description = "Tracks single-elimination tournament knockout brackets (Quarterfinals, Semifinals, Finals) and registrations.",
-                status = LinkSyncStatus.ACTIVE,
-                lastSyncTime = "Live sync",
-                itemsSynced = "${tournaments.size} Tournaments Available",
-                details = "Live registrations & championship prize pools linked."
-            )
-        )
-
-        _uiState.update {
-            it.copy(
-                syncTracker = SyncTrackerProgress(
-                    totalChannels = 5,
-                    activeChannels = 5,
-                    lastFullSyncTime = "Just now",
-                    cloudProjectId = "smartclass24-5e590",
-                    isOnline = it.isCloudConnected,
-                    channels = channels
-                )
-            )
         }
     }
 

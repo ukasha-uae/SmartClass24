@@ -71,15 +71,10 @@ fun SmartClassArenaApp(
                 },
                 onGuestSignIn = { viewModel.signInAsGuest() },
                 onSignOut = { viewModel.signOutStudent() },
-                onSyncWithCloud = { viewModel.syncProfileWithCloud() },
                 onUpdateProfile = { name, school, grade, region ->
                     viewModel.updateStudentProfileDetails(name, school, grade, region)
                 },
                 onClearAuthMessages = { viewModel.clearAuthMessages() },
-                onOpenSyncTracker = { viewModel.openSyncTracker() },
-                onCloseSyncTracker = { viewModel.closeSyncTracker() },
-                onPingAllChannels = { viewModel.pingAllChannels() },
-                onTestChannel = { viewModel.testChannel(it) },
                 modifier = modifier
             )
         }

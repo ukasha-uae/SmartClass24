@@ -136,8 +136,7 @@ fun ChallengeArenaHeaderTag(modifier: Modifier = Modifier) {
 // Challenge Arena Title and Subtitle (clean, engaging student header)
 @Composable
 fun ChallengeArenaTitleSection(
-    modifier: Modifier = Modifier,
-    onOpenSyncTracker: (() -> Unit)? = null
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
