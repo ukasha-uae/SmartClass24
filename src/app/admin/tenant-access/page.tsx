@@ -183,8 +183,9 @@ export default function AdminTenantAccessPage() {
     if (input === null) return;
 
     const trimmed = input.trim();
-    const nextMaxUses = trimmed === '' ? null : Number(trimmed);
-    if (trimmed !== '' && (!Number.isFinite(nextMaxUses) || nextMaxUses <= 0)) {
+    const parsedMaxUses = trimmed === '' ? null : Number(trimmed);
+    const nextMaxUses: number | null = parsedMaxUses === null ? null : parsedMaxUses;
+    if (trimmed !== '' && (!Number.isFinite(parsedMaxUses) || parsedMaxUses === null || parsedMaxUses <= 0)) {
       toast({
         title: 'Invalid value',
         description: 'Max uses must be a positive number, or empty for unlimited.',

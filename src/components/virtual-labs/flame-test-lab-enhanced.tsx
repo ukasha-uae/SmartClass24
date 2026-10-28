@@ -260,7 +260,7 @@ export function FlameTestLab() {
                 </CardHeader>
             </Card>
 
-            {currentStep === 'intro' && (
+            {currentStep === 'prepare' && (
                 <Card>
                     <CardHeader><CardTitle>Lab Information</CardTitle></CardHeader>
                     <CardContent>

@@ -125,7 +125,7 @@ export function CountryFlag({
   
   return (
     <span className={`${sizeClasses[size]} ${className}`}>
-      {country.flag}
+      {country?.flag ?? '🌍'}
     </span>
   );
 }
@@ -140,7 +140,7 @@ interface CountryNameProps {
 export function CountryName({ className = '' }: CountryNameProps) {
   const { country } = useLocalization();
   
-  return <span className={className}>{country.name}</span>;
+  return <span className={className}>{country?.name ?? 'Select a country'}</span>;
 }
 
 interface CapitalCityProps {

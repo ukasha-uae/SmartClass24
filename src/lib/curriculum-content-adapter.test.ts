@@ -354,6 +354,30 @@ export function testPerformance() {
 // RUN ALL TESTS
 // =========================================================================
 
+describe('curriculum content adapter', () => {
+  test('leaves content unchanged for tenants without transformation rules', () => {
+    expect(contentAdapter.adaptLessonForTenant(MOCK_LESSON, MOCK_SMARTCLASS24_TENANT)).toBe(MOCK_LESSON);
+  });
+
+  test('adapts lesson text using the tenant transformation rules', () => {
+    const adaptedLesson = contentAdapter.adaptLessonForTenant(MOCK_LESSON, MOCK_WISDOM_WAREHOUSE_TENANT);
+
+    expect(adaptedLesson.introduction).not.toContain('Ghana');
+    expect(adaptedLesson.introduction).toContain('dollars');
+    expect(adaptedLesson.objectives[2]).toContain('assessment');
+    expect(adaptedLesson.keyConcepts[0]?.content).toContain('dollar');
+  });
+
+  test('adapts quiz questions and explanations for the tenant', () => {
+    const quiz = MOCK_LESSON.endOfLessonQuiz![0] as McqQuiz;
+    const adaptedQuiz = contentAdapter.adaptQuizForTenant(quiz, MOCK_WISDOM_WAREHOUSE_TENANT) as McqQuiz;
+
+    expect(adaptedQuiz.question).not.toContain('Ghana');
+    expect(adaptedQuiz.explanation).toContain('dollar');
+    expect(adaptedQuiz.options).toEqual(quiz.options);
+  });
+});
+
 export function runAllTests() {
   console.clear();
   console.log('🧪 CURRICULUM CONTENT ADAPTER - TEST SUITE');

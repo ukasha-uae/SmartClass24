@@ -52,6 +52,7 @@ export function LitmusTestLab() {
     const [practiceInteraction, setPracticeInteraction] = React.useState<'substances' | 'paper' | 'rules' | null>(null);
     const [teacherMessage, setTeacherMessage] = React.useState('');
     const [collectedSupplies, setCollectedSupplies] = React.useState<string[]>([]);
+    const allSuppliesNotifiedRef = React.useRef(false);
     
     const labSupplies: SupplyItem[] = [
         { id: 'litmus-papers', name: 'Litmus Papers', emoji: '📄', description: 'Red and blue litmus papers' },

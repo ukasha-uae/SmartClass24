@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { notFound, useRouter } from 'next/navigation';
 import { ArrowLeft, ChevronRight, BookOpen, Code, CheckCircle2, Award, Play, Copy, Check, Sparkles, Code2, ExternalLink } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { webDevelopmentProgram } from '@/lib/university-data';
+import { getUniversityProgram } from '@/lib/university-data';
 import { CodeExecutionResult, CodeFile, CodeExample } from '@/types/university';
 import { ValidationOutcome } from '@/lib/university-validation';
 import { useCodeSaves, useUniversityProgress } from '@/firebase/university-hooks';
@@ -54,15 +54,12 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
     return () => setFullscreen(false);
   }, [setFullscreen]);
 
-  // Get lesson data (in real app, this would come from params)
-  const program = webDevelopmentProgram;
-  const course = program.courses[0];
-  // Search every module, not just the first, so lessons in later modules are reachable
-  const allLessons = course.modules.flatMap(m => m.lessons);
-  const lesson = allLessons.find(l => l.slug === resolvedParams.lessonSlug);
+  const program = getUniversityProgram(resolvedParams.slug);
+  const course = program?.courses.find(item => item.slug === resolvedParams.courseSlug);
+  const allLessons = course?.modules.flatMap(module => module.lessons) ?? [];
+  const lesson = allLessons.find(item => item.slug === resolvedParams.lessonSlug);
 
-
-  if (!lesson) {
+  if (!program || !course || !lesson) {
     notFound();
   }
 
@@ -223,7 +220,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
               <Link
-                href={`/university/programs/${resolvedParams.slug}`}
+                href={addTenantParam(`/university/programs/${resolvedParams.slug}`)}
                 className="text-gray-600 hover:text-gray-900 transition-colors shrink-0"
               >
                 <ArrowLeft className="w-5 h-5" />
@@ -585,7 +582,7 @@ export default function LessonPage({ params }: { params: Promise<{ slug: string;
                     return (
                     <Link
                       key={l.id}
-                      href={`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${l.slug}`}
+                      href={addTenantParam(`/university/programs/${resolvedParams.slug}/courses/${resolvedParams.courseSlug}/lessons/${l.slug}`)}
                       className={`flex items-center space-x-3 p-3 rounded-xl transition-all duration-200 ${
                         l.slug === lesson.slug
                           ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-md'

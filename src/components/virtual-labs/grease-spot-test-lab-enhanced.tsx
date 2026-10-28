@@ -26,7 +26,7 @@ type FoodSample = 'Groundnut Paste' | 'Bread' | 'Boiled Rice' | 'Water';
 interface FoodInfo {
     hasFat: boolean;
     fatLevel: 'high' | 'low' | 'none';
-    icon: React.ElementType;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     description: string;
     result: string;
 }
@@ -118,6 +118,7 @@ export function GreaseSpotTestLabEnhanced() {
     const [quizFeedback, setQuizFeedback] = React.useState<string | null>(null);
     const [quizAttempts, setQuizAttempts] = React.useState(0);
     const [quizIsCorrect, setQuizIsCorrect] = React.useState<boolean | null>(null);
+    const allSuppliesNotifiedRef = React.useRef(false);
     
     // XP & Celebration
     const { markLabComplete, isLabCompleted, getLabCompletion, totalXP } = useLabProgress();
@@ -720,7 +721,7 @@ export function GreaseSpotTestLabEnhanced() {
                                 </Button>
                             )}
                             
-                            {currentStep !== 'intro' && currentStep !== 'collect-supplies' && currentStep !== 'complete' && (
+                            {currentStep !== 'intro' && (
                                 <Button 
                                     variant="outline" 
                                     onClick={handleReset}

@@ -11,7 +11,7 @@ import confetti from 'canvas-confetti';
 export interface SupplyItem {
   id: string;
   name: string;
-  icon?: string; // Emoji or icon name
+  icon?: React.ReactNode; // Emoji or icon element
   emoji?: string; // Emoji for display
   description?: string;
   required?: boolean; // If false, item is optional

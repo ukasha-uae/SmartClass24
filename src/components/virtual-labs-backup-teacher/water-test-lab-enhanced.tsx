@@ -38,8 +38,8 @@ export function WaterTestLabEnhanced() {
   const isComplete = isLabCompleted(labId);
 
   React.useEffect(() => {
-    setTeacherMessage(`Welcome to the Water Testing Lab! Today we'll learn two chemical tests that scientists in ${country.name} and worldwide use to detect water. These tests are important for quality control in industries, laboratories, and even in everyday products. Let's discover how chemical color changes can reveal the presence of water!`);
-  }, [country.name]);
+    setTeacherMessage(`Welcome to the Water Testing Lab! Today we'll learn two chemical tests that scientists in ${country?.name ?? 'the region'} and worldwide use to detect water. These tests are important for quality control in industries, laboratories, and even in everyday products. Let's discover how chemical color changes can reveal the presence of water!`);
+  }, [country?.name]);
 
   const tests = {
     'copper-sulfate': {
@@ -164,7 +164,7 @@ export function WaterTestLabEnhanced() {
   const handleComplete = () => {
     markLabComplete(labId, 100, 0);
     setStep('complete');
-    setTeacherMessage(`Congratulations! You've successfully completed the Water Testing Lab. You now know how to detect water using chemical tests - skills that scientists and quality control experts in ${country.name} and around the world use every day. Well done!`);
+    setTeacherMessage(`Congratulations! You've successfully completed the Water Testing Lab. You now know how to detect water using chemical tests - skills that scientists and quality control experts in ${country?.name ?? 'the region'} and around the world use every day. Well done!`);
     confetti({
       particleCount: 150,
       spread: 100,
@@ -184,7 +184,7 @@ export function WaterTestLabEnhanced() {
     setQuizScore(0);
     setCurrentObservation('');
     setSuppliesCollected([]);
-    setTeacherMessage(`Welcome to the Water Testing Lab! Today we'll learn two chemical tests that scientists in ${country.name} and worldwide use to detect water. These tests are important for quality control in industries, laboratories, and even in everyday products. Let's discover how chemical color changes can reveal the presence of water!`);
+    setTeacherMessage(`Welcome to the Water Testing Lab! Today we'll learn two chemical tests that scientists in ${country?.name ?? 'the region'} and worldwide use to detect water. These tests are important for quality control in industries, laboratories, and even in everyday products. Let's discover how chemical color changes can reveal the presence of water!`);
   };
 
   const resetTest = () => {
@@ -816,7 +816,7 @@ export function WaterTestLabEnhanced() {
                         gel has absorbed moisture and needs replacement.
                       </li>
                       <li>
-                        <strong>Quality Control in {country.name}:</strong> Industries across {country.name} use these tests to ensure products 
+                        <strong>Quality Control in {country?.name ?? 'the region'}:</strong> Industries across {country?.name ?? 'the region'} use these tests to ensure products
                         are properly dried before packaging. Moisture can spoil electronics, medications, 
                         and food products.
                       </li>

@@ -66,6 +66,7 @@ export interface TenantFeatures {
   enableParentDashboard?: boolean;
   enableOfflineMode?: boolean;
   enableReferrals?: boolean;
+  enableCustomContent?: boolean;
   
   // Pricing & Monetization
   enablePublicPricing?: boolean;  // Show pricing page for individual student subscriptions
@@ -139,6 +140,7 @@ export interface TenantConfig {
   
   // License
   license: TenantLicense;
+  licensing?: TenantLicensing;
   
   // Status
   status: TenantStatus;

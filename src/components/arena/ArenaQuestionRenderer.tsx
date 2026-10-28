@@ -93,7 +93,10 @@ export default function ArenaQuestionRenderer({
   };
 
   // Multiple Choice
-  if (question.type === 'mcq' && question.options) {
+  if (question.type === 'mcq') {
+    const options = question.options ?? [];
+    if (!options.length) return null;
+
     return (
       <div className="space-y-3 pb-2">
         {renderQuestionIdentity()}
@@ -101,13 +104,13 @@ export default function ArenaQuestionRenderer({
           {question.question}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-2">
-          {question.options.map((option, index) => {
+          {options.map((option, index) => {
             // Only show as selected if selectedAnswer is explicitly set and matches
             // This prevents showing previous answer when selectedAnswer is null/undefined
             const isSelected = (selectedAnswer !== null && selectedAnswer !== undefined) && 
                               (selectedAnswer === index || selectedAnswer === option);
             const correctAnswerIndex = typeof question.correctAnswer === 'string' 
-              ? question.options.indexOf(question.correctAnswer)
+              ? options.indexOf(question.correctAnswer)
               : -1;
             const isThisTheCorrectAnswer = (index === correctAnswerIndex || option === question.correctAnswer);
             const isCorrectOption = showResult && isThisTheCorrectAnswer;
@@ -149,7 +152,7 @@ export default function ArenaQuestionRenderer({
 
   // True/False
   if (question.type === 'truefalse') {
-    const correctAnswer = question.correctAnswer === 'true' || question.correctAnswer === true;
+    const correctAnswer = String(question.correctAnswer).toLowerCase() === 'true';
     
     return (
       <div className="space-y-4 pb-2">

@@ -19,7 +19,7 @@ type FoodSample = 'Egg White' | 'Milk' | 'Bread' | 'Apple' | 'Groundnut Paste';
 type ProteinLevel = 'none' | 'low' | 'medium' | 'high';
 interface FoodInfo {
     proteinLevel: ProteinLevel;
-    icon: React.ElementType;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 type ResultState = 'initial' | 'simulating' | ProteinLevel;
 

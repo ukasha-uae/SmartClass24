@@ -25,7 +25,7 @@ type FoodSample = 'Groundnut Paste' | 'Bread' | 'Boiled Rice' | 'Water';
 interface FoodInfo {
     hasFat: boolean;
     fatLevel: 'high' | 'low' | 'none';
-    icon: React.ElementType;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     description: string;
     result: string;
 }

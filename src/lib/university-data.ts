@@ -1225,12 +1225,363 @@ That's it — every direct child of \`.container\` now lines up in a row automat
           projects: []
         },
         {
-          id: 'module-4-coding-with-ai',
+          id: 'module-4-javascript-basics',
+          slug: 'javascript-basics',
+          title: 'JavaScript: Make Your Website Interactive',
+          description: 'Use JavaScript to update a page, respond to clicks, and check a form before it is sent.',
+          estimatedTime: '35 minutes',
+          order: 4,
+          lessons: [
+            {
+              id: 'lesson-js-1',
+              slug: 'javascript-values-and-page-content',
+              title: 'JavaScript: Change What a Page Says',
+              type: 'hybrid',
+              order: 1,
+              estimatedTime: '10 minutes',
+              content: {
+                introduction: 'JavaScript lets a page react to information and actions. Start by finding an HTML element and changing its text.',
+                sections: [
+                  {
+                    id: 'section-1',
+                    title: 'Values, variables, and the page',
+                    order: 1,
+                    content: `A **value** is information such as a name or number. A variable gives that information a useful name. Use \`const\` when you do not plan to replace the value.
+
+\`document.querySelector('#message')\` finds the element with the matching id. Its \`textContent\` is the text visitors see.
+
+\`const learnerName = 'Ama';
+const message = document.querySelector('#message');
+message.textContent = 'Welcome, ' + learnerName + '!';\`
+
+The selector must match an element in the HTML. The script is loaded after the page content so that the element is ready to find.`,
+                    codeExamples: [
+                      {
+                        id: 'js-example-1',
+                        language: 'javascript',
+                        code: `const learnerName = 'Ama';
+const message = document.querySelector('#message');
+message.textContent = 'Welcome, ' + learnerName + '!';`,
+                        explanation: 'A named value is placed into the message element using its id.',
+                        editable: true,
+                        showLineNumbers: true
+                      }
+                    ]
+                  }
+                ],
+                summary: 'Use const to name a value, querySelector to find a page element, and textContent to update its visible text.',
+                keyTakeaways: [
+                  'Use const to give a value a clear name',
+                  'querySelector finds an element using a CSS selector',
+                  'textContent changes the text inside an element',
+                  'The selector must match an element that exists in the HTML'
+                ]
+              },
+              interactive: {
+                type: 'code-editor',
+                config: {
+                  environment: 'html-css-js',
+                  startingFiles: [
+                    {
+                      path: 'index.html',
+                      language: 'html',
+                      content: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Friendly Welcome</title>
+</head>
+<body>
+  <h1 id="message">Your welcome message will appear here.</h1>
+  <script src="script.js"></script>
+</body>
+</html>`
+                    },
+                    { path: 'script.js', language: 'javascript', content: `// Create a name, find #message, and update its text.\n` }
+                  ],
+                  instructions: 'Create a const variable for a first name, select the element with id message, then set its textContent to a welcome message that includes the name.',
+                  hints: [
+                    'Use document.querySelector to find #message.',
+                    'Join text and a variable with +, or use a template literal.',
+                    'Use textContent to change the heading text.'
+                  ],
+                  allowFileCreation: false,
+                  allowInstallPackages: false,
+                  maxFileSize: 50,
+                  timeout: 5,
+                  validation: [
+                    { type: 'code-pattern', description: 'Created a named value with const', validate: 'const\\s+\\w+\\s*=', points: 25 },
+                    { type: 'code-pattern', description: 'Selected the message element', validate: 'querySelector\\(', points: 35 },
+                    { type: 'code-pattern', description: 'Updated visible text', validate: 'textContent\\s*=', points: 40 }
+                  ],
+                  successMessage: 'Your page now personalizes its welcome message with JavaScript.'
+                }
+              },
+              checkpoints: [
+                {
+                  id: 'checkpoint-js-1',
+                  title: 'Check the idea',
+                  description: 'Choose the property that changes an element\'s text',
+                  type: 'quiz',
+                  required: true,
+                  order: 1,
+                  content: {
+                    id: 'quiz-js-1',
+                    type: 'multiple-choice',
+                    question: 'Which property changes the text inside an element you selected?',
+                    options: ['textContent', 'fontSize', 'href', 'querySelector'],
+                    correctAnswer: 'textContent',
+                    points: 10,
+                    explanation: 'textContent sets or reads the text inside an element.'
+                  }
+                }
+              ],
+              resources: []
+            },
+            {
+              id: 'lesson-js-2',
+              slug: 'javascript-click-events',
+              title: 'Respond to a Button Click',
+              type: 'practical',
+              order: 2,
+              estimatedTime: '12 minutes',
+              content: {
+                introduction: 'A useful website responds when someone does something. In this lesson, a button click updates a counter on the page.',
+                sections: [
+                  {
+                    id: 'section-1',
+                    title: 'Events and event listeners',
+                    order: 1,
+                    content: `An **event** is an action such as a click. \`addEventListener('click', ... )\` tells JavaScript what to do when that action happens.
+
+Keep the current count in a variable. Each click adds one, then \`textContent\` displays the updated number. The listener is attached to the button, while the number is displayed in a separate element.
+
+Try clicking the button several times and check that the displayed total stays in step with your clicks.`,
+                    codeExamples: [
+                      {
+                        id: 'js-example-2',
+                        language: 'javascript',
+                        code: `let count = 0;
+const button = document.querySelector('#add-one');
+const total = document.querySelector('#total');
+
+button.addEventListener('click', () => {
+  count = count + 1;
+  total.textContent = count;
+});`,
+                        explanation: 'The click handler runs once each time the button is pressed.',
+                        editable: true,
+                        showLineNumbers: true
+                      }
+                    ]
+                  }
+                ],
+                summary: 'Attach a click event listener to a button, update a value inside its handler, and display the result in the page.',
+                keyTakeaways: [
+                  'An event represents an action such as a click',
+                  'addEventListener connects an element to an action handler',
+                  'Code inside the handler runs when the event happens',
+                  'Update the page after changing the value'
+                ]
+              },
+              interactive: {
+                type: 'code-editor',
+                config: {
+                  environment: 'html-css-js',
+                  startingFiles: [
+                    {
+                      path: 'index.html',
+                      language: 'html',
+                      content: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click Counter</title>
+</head>
+<body>
+  <h1>Practice Counter</h1>
+  <p>Clicks: <span id="total">0</span></p>
+  <button id="add-one" type="button">Add one</button>
+  <script src="script.js"></script>
+</body>
+</html>`
+                    },
+                    { path: 'script.js', language: 'javascript', content: `// Track the count and update it when #add-one is clicked.\n` }
+                  ],
+                  instructions: 'Make the button increase the count by one each time it is clicked, then show the new count inside #total.',
+                  hints: [
+                    'Start with let count = 0 because the value will change.',
+                    'Select #add-one and #total separately.',
+                    'Place the update inside an addEventListener click handler.'
+                  ],
+                  allowFileCreation: false,
+                  allowInstallPackages: false,
+                  maxFileSize: 50,
+                  timeout: 5,
+                  validation: [
+                    { type: 'code-pattern', description: 'Added a click event listener', validate: 'addEventListener\\(\\s*[\'\"]click', points: 35 },
+                    { type: 'code-pattern', description: 'Changed the count inside the handler', validate: 'count\\s*=\\s*count\\s*\\+\\s*1', points: 30 },
+                    { type: 'code-pattern', description: 'Displayed the updated count', validate: 'textContent\\s*=', points: 35 }
+                  ],
+                  successMessage: 'The counter now responds to every button click.'
+                }
+              },
+              checkpoints: [
+                {
+                  id: 'checkpoint-js-2',
+                  title: 'Check the idea',
+                  description: 'Choose what connects a button to its click action',
+                  type: 'quiz',
+                  required: true,
+                  order: 1,
+                  content: {
+                    id: 'quiz-js-2',
+                    type: 'multiple-choice',
+                    question: 'Which method runs a function in response to a button click?',
+                    options: ['addEventListener', 'textContent', 'querySelector', 'toUpperCase'],
+                    correctAnswer: 'addEventListener',
+                    points: 10,
+                    explanation: 'addEventListener connects an event, such as click, to the function that should respond.'
+                  }
+                }
+              ],
+              resources: []
+            },
+            {
+              id: 'lesson-js-3',
+              slug: 'javascript-form-validation',
+              title: 'Check a Form Before Showing Success',
+              type: 'hybrid',
+              order: 3,
+              estimatedTime: '13 minutes',
+              content: {
+                introduction: 'Forms collect useful information, but a page should respond clearly when a required answer is missing. Build a small name form with friendly feedback.',
+                sections: [
+                  {
+                    id: 'section-1',
+                    title: 'Handle and check a form',
+                    order: 1,
+                    content: `Listen for the form's \`submit\` event, not just a click on its button. Call \`event.preventDefault()\` so the browser does not reload the page while you check the answer.
+
+The input's \`value\` contains what the learner typed. \`trim()\` removes extra spaces at the beginning and end. If the result is empty, display a helpful message; otherwise, greet the learner.
+
+Use the page message to explain the result. A clear message is more useful than silently doing nothing.`,
+                    codeExamples: [
+                      {
+                        id: 'js-example-3',
+                        language: 'javascript',
+                        code: `const form = document.querySelector('#signup-form');
+const nameInput = document.querySelector('#learner-name');
+const feedback = document.querySelector('#feedback');
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const name = nameInput.value.trim();
+  feedback.textContent = name ? 'Welcome, ' + name + '!' : 'Please enter your name.';
+});`,
+                        explanation: 'The form checks the trimmed answer and provides feedback without reloading.',
+                        editable: true,
+                        showLineNumbers: true
+                      }
+                    ]
+                  }
+                ],
+                summary: 'Handle the submit event, prevent an unwanted reload, trim the input, and show feedback that matches the answer.',
+                keyTakeaways: [
+                  'Listen for the form submit event',
+                  'preventDefault keeps the browser from reloading the page',
+                  'input.value reads what the learner typed',
+                  'trim helps detect an empty answer even when it contains spaces',
+                  'Give clear feedback for both empty and valid answers'
+                ]
+              },
+              interactive: {
+                type: 'code-editor',
+                config: {
+                  environment: 'html-css-js',
+                  startingFiles: [
+                    {
+                      path: 'index.html',
+                      language: 'html',
+                      content: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join the Club</title>
+</head>
+<body>
+  <h1>Join the Coding Club</h1>
+  <form id="signup-form">
+    <label for="learner-name">Your name</label>
+    <input id="learner-name" name="name" type="text">
+    <button type="submit">Join</button>
+  </form>
+  <p id="feedback" aria-live="polite"></p>
+  <script src="script.js"></script>
+</body>
+</html>`
+                    },
+                    { path: 'script.js', language: 'javascript', content: `// Check the form and display a helpful message in #feedback.\n` }
+                  ],
+                  instructions: 'Handle form submission without a page reload. Trim the entered name, show a prompt if it is empty, and greet the learner when a name is provided.',
+                  hints: [
+                    'Listen for submit on #signup-form.',
+                    'Call event.preventDefault() inside the handler.',
+                    'Read #learner-name.value and use trim() before checking it.',
+                    'Write both outcomes into #feedback using textContent.'
+                  ],
+                  allowFileCreation: false,
+                  allowInstallPackages: false,
+                  maxFileSize: 50,
+                  timeout: 5,
+                  validation: [
+                    { type: 'code-pattern', description: 'Handled form submission', validate: 'addEventListener\\(\\s*[\'\"]submit', points: 25 },
+                    { type: 'code-pattern', description: 'Prevented the browser reload', validate: 'preventDefault\\(', points: 25 },
+                    { type: 'code-pattern', description: 'Trimmed the entered name', validate: '\\.trim\\(', points: 25 },
+                    { type: 'code-pattern', description: 'Displayed a feedback message', validate: 'textContent\\s*=', points: 25 }
+                  ],
+                  successMessage: 'The form now responds clearly to both empty and completed answers.'
+                }
+              },
+              checkpoints: [
+                {
+                  id: 'checkpoint-js-3',
+                  title: 'Check the idea',
+                  description: 'Choose why a form handler prevents the default action',
+                  type: 'quiz',
+                  required: true,
+                  order: 1,
+                  content: {
+                    id: 'quiz-js-3',
+                    type: 'multiple-choice',
+                    question: 'Why call event.preventDefault() in this form handler?',
+                    options: [
+                      'To stop the page reloading before feedback is shown',
+                      'To erase the learner\'s name',
+                      'To create a new HTML element',
+                      'To change the button color'
+                    ],
+                    correctAnswer: 'To stop the page reloading before feedback is shown',
+                    points: 10,
+                    explanation: 'Preventing the default form submission lets this page display its own feedback without a reload.'
+                  }
+                }
+              ],
+              resources: []
+            }
+          ],
+          projects: []
+        },
+        {
+          id: 'module-5-coding-with-ai',
           slug: 'coding-with-ai',
           title: 'Coding With AI: Work Smarter, Not Copy-Paste',
           description: 'Use AI tools like a professional developer, not a shortcut',
           estimatedTime: '12 minutes',
-          order: 4,
+          order: 5,
           lessons: [
             {
               id: 'lesson-4-1',
@@ -1399,43 +1750,51 @@ If the answer to any of these is "no" — ask the AI to explain it, or simplify 
             {
               id: 'project-1',
               slug: 'personal-website',
-              title: 'Build Your Personal Website',
+              title: 'Build Your Personal Portfolio Website',
               type: 'code',
-              description: 'Create a multi-page personal website showcasing your profile, interests, and portfolio.',
+              description: 'Build a two-page portfolio that introduces your skills, interests, and projects, with responsive styling and one working JavaScript interaction. Do not include private contact details or your home address.',
               order: 1,
               points: 100,
               requirements: [
                 {
                   id: 'req-1',
-                  title: 'Homepage',
-                  description: 'Create an index.html file with a welcoming homepage including your name, photo, and brief introduction',
+                  title: 'Useful Homepage',
+                  description: 'Create an index.html homepage introducing your learning goals, skills, and one project or community activity.',
                   required: true,
-                  points: 25,
+                  points: 20,
                   order: 1
                 },
                 {
                   id: 'req-2',
                   title: 'About Page',
-                  description: 'Create an about.html page with detailed information about yourself, education, and experience',
+                  description: 'Create an about.html page with a short learning story, interests, and the skills you are developing. Avoid private personal information.',
                   required: true,
-                  points: 25,
+                  points: 15,
                   order: 2
                 },
                 {
                   id: 'req-3',
                   title: 'Navigation',
-                  description: 'Add navigation links between pages',
+                  description: 'Add working navigation links between index.html and about.html.',
                   required: true,
-                  points: 20,
+                  points: 15,
                   order: 3
                 },
                 {
                   id: 'req-4',
-                  title: 'Semantic HTML',
-                  description: 'Use semantic HTML5 tags (header, nav, main, footer, article, section)',
+                  title: 'Responsive CSS Design',
+                  description: 'Use styles.css to create a readable layout that adapts to a narrow phone screen and a wider screen.',
                   required: true,
-                  points: 30,
+                  points: 25,
                   order: 4
+                },
+                {
+                  id: 'req-5',
+                  title: 'JavaScript Interaction',
+                  description: 'Use script.js to add one useful interaction, such as a welcome-message button or a form that gives clear feedback.',
+                  required: true,
+                  points: 25,
+                  order: 5
                 }
               ],
               rubric: {
@@ -1445,46 +1804,60 @@ If the answer to any of these is "no" — ask the AI to explain it, or simplify 
                   {
                     id: 'criterion-1',
                     name: 'HTML Structure',
-                    description: 'Proper HTML5 structure with semantic tags',
-                    maxPoints: 30,
+                    description: 'Valid page structure, meaningful sections, and clear navigation across both pages',
+                    maxPoints: 25,
                     levels: [
-                      { score: 30, description: 'Perfect HTML5 structure with all semantic tags' },
-                      { score: 20, description: 'Good structure with most semantic tags' },
-                      { score: 10, description: 'Basic structure, missing semantic tags' },
+                      { score: 25, description: 'Both pages use clear semantic structure and navigation works throughout' },
+                      { score: 18, description: 'Both pages are structured and most navigation works' },
+                      { score: 10, description: 'Pages exist but structure or navigation has notable gaps' },
                       { score: 0, description: 'Poor or incorrect structure' }
                     ]
                   },
                   {
                     id: 'criterion-2',
-                    name: 'Content Quality',
-                    description: 'Meaningful and well-organized content',
-                    maxPoints: 30,
+                    name: 'Responsive Design',
+                    description: 'Readable visual hierarchy, spacing, and layout across phone and desktop widths',
+                    maxPoints: 25,
                     levels: [
-                      { score: 30, description: 'Excellent, detailed content' },
-                      { score: 20, description: 'Good content with minor gaps' },
-                      { score: 10, description: 'Basic content, needs improvement' },
-                      { score: 0, description: 'Insufficient or placeholder content' }
+                      { score: 25, description: 'Consistent, polished layout that adapts well to narrow and wide screens' },
+                      { score: 18, description: 'Readable styling with minor responsive or layout issues' },
+                      { score: 10, description: 'Some styling is present but layout is difficult to use on one screen size' },
+                      { score: 0, description: 'Little or no working CSS styling' }
                     ]
                   },
                   {
                     id: 'criterion-3',
-                    name: 'Navigation',
-                    description: 'Functional navigation between pages',
-                    maxPoints: 20,
+                    name: 'JavaScript Interaction',
+                    description: 'A useful interaction responds correctly and communicates its result to the visitor',
+                    maxPoints: 25,
                     levels: [
-                      { score: 20, description: 'Full navigation working perfectly' },
-                      { score: 10, description: 'Partial navigation with some issues' },
-                      { score: 0, description: 'Navigation not working' }
+                      { score: 25, description: 'Interaction works reliably and gives clear feedback' },
+                      { score: 18, description: 'Interaction works with a minor issue or incomplete feedback' },
+                      { score: 10, description: 'JavaScript is present but the interaction is incomplete' },
+                      { score: 0, description: 'No working JavaScript interaction' }
                     ]
                   },
                   {
                     id: 'criterion-4',
-                    name: 'Code Quality',
-                    description: 'Clean, well-formatted, valid HTML',
-                    maxPoints: 20,
+                    name: 'Useful, Accessible Content',
+                    description: 'Specific, well-organized portfolio content with helpful labels and text alternatives where needed',
+                    maxPoints: 15,
                     levels: [
-                      { score: 20, description: 'Clean, well-formatted code' },
-                      { score: 10, description: 'Acceptable code with minor issues' },
+                      { score: 15, description: 'Specific content is easy to understand and interactive controls are clearly labeled' },
+                      { score: 10, description: 'Content is understandable with a few missing details or labels' },
+                      { score: 5, description: 'Content is sparse or some controls are unclear' },
+                      { score: 0, description: 'Content is missing or difficult to understand' }
+                    ]
+                  },
+                  {
+                    id: 'criterion-5',
+                    name: 'Code Quality',
+                    description: 'Readable, organized HTML, CSS, and JavaScript with no avoidable duplication',
+                    maxPoints: 10,
+                    levels: [
+                      { score: 10, description: 'Files are organized, readable, and consistently formatted' },
+                      { score: 7, description: 'Code is understandable with a few formatting issues' },
+                      { score: 3, description: 'Code is difficult to follow or has repeated sections' },
                       { score: 0, description: 'Poorly formatted or invalid code' }
                     ]
                   }
@@ -1501,10 +1874,31 @@ If the answer to any of these is "no" — ask the AI to explain it, or simplify 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Name - Personal Website</title>
+  <title>My Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Your code here -->
+  <header>
+    <h1>My Learning Portfolio</h1>
+    <nav aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>What I am learning</h2>
+      <p>Write a short introduction to your skills, goals, and interests.</p>
+      <button id="show-message" type="button">Show my next goal</button>
+      <p id="message" aria-live="polite"></p>
+    </section>
+    <section>
+      <h2>A project I am proud of</h2>
+      <p>Describe a project, school activity, or community idea you worked on.</p>
+    </section>
+  </main>
+  <footer><p>Learning, building, and improving.</p></footer>
+  <script src="script.js"></script>
 </body>
 </html>`
                   },
@@ -1517,14 +1911,93 @@ If the answer to any of these is "no" — ask the AI to explain it, or simplify 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Me</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Your about page here -->
+  <header>
+    <h1>About My Learning</h1>
+    <nav aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>My story</h2>
+      <p>Share what you enjoy learning and what you hope to build next.</p>
+    </section>
+    <section>
+      <h2>Skills I am practicing</h2>
+      <p>List skills, tools, or activities you have tried.</p>
+    </section>
+  </main>
+  <footer><p><a href="index.html">Back to the home page</a></p></footer>
 </body>
-</html>`
+ </html>`
+                  },
+                  {
+                    path: 'styles.css',
+                    language: 'css',
+                    content: `:root {
+  color-scheme: light;
+  font-family: system-ui, sans-serif;
+  color: #17352b;
+  background: #f3f7f4;
+}
+
+body {
+  margin: 0;
+  line-height: 1.6;
+}
+
+header, main, footer {
+  width: min(100% - 2rem, 54rem);
+  margin-inline: auto;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+main {
+  padding-block: 2rem;
+}
+
+section {
+  padding-block: 1rem;
+}
+
+button, a {
+  color: #075e49;
+}
+
+button {
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+}
+
+@media (min-width: 40rem) {
+  main {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}`
+                  },
+                  {
+                    path: 'script.js',
+                    language: 'javascript',
+                    content: `const button = document.querySelector('#show-message');
+const message = document.querySelector('#message');
+
+button.addEventListener('click', () => {
+  message.textContent = 'My next goal is to keep learning and building.';
+});`
                   }
                 ],
-                instructions: 'Build a personal website with at least 2 pages. Use semantic HTML5 tags and create navigation between pages.',
+                instructions: 'Complete both pages, link them with working navigation, style them in styles.css for phone and desktop screens, and add one useful interaction in script.js. Use sample or public-facing information only; do not include a home address or private phone number.',
                 allowFileCreation: true,
                 allowInstallPackages: false,
                 maxFileSize: 200,

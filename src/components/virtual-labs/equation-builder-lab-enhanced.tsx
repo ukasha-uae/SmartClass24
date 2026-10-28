@@ -534,6 +534,11 @@ export function EquationBuilderLabEnhanced() {
           avgScore: parsedStats?.inequality?.avgScore ?? 0,
           avgHints: parsedStats?.inequality?.avgHints ?? 0,
         },
+        quadratic: {
+          attempts: parsedStats?.quadratic?.attempts ?? 0,
+          avgScore: parsedStats?.quadratic?.avgScore ?? 0,
+          avgHints: parsedStats?.quadratic?.avgHints ?? 0,
+        },
       });
       
       // Auto-correct mode if missions don't match selected type
@@ -866,9 +871,9 @@ export function EquationBuilderLabEnhanced() {
     }
     
     // Step 3 intermediate (if exists): Shows 2x=4 step
-    if (workingHistory.step3intermediate) {
+    if (workingHistory.step3intermediate && 'intermediateAnswer' in mission) {
       const constant = mission.intermediateAnswer;
-      if (constant) {
+      if (constant && workingHistory.step2) {
         const match = workingHistory.step2.match(/([+-]?\d+)/g);
         if (match && match.length > 1) {
           const constantValue = match[match.length - 1];
@@ -1755,7 +1760,7 @@ export function EquationBuilderLabEnhanced() {
       ...prev,
       step3: answerDirectInput.trim() ? answerDirectInput.trim() : serializeSlots(answerSlots),
       // Store intermediate step for complete exam-style working (even if student skipped it)
-      step3intermediate: mission.intermediateAnswer && !intermediateAnswerGiven 
+      step3intermediate: 'intermediateAnswer' in mission && mission.intermediateAnswer && !intermediateAnswerGiven
         ? mission.intermediateAnswer.display 
         : prev.step3intermediate,
     }));
@@ -1869,13 +1874,10 @@ export function EquationBuilderLabEnhanced() {
         setShowHint(false);
         setInterventionMessage(null);
         setMistakeCounts({ operation: 0, equation: 0, answer: 0 });
-        setWorkingHistory({ 
-          step0a: null, 
-          step0b: null, 
-          step1: skipSimplification ? 'skipped' : null, 
-          step2: skipSimplification ? customEquationInput : null, 
-          step3: null, 
-          step3intermediate: null 
+        setWorkingHistory({
+          ...createEmptyWorkingHistory(),
+          step1: skipSimplification ? 'skipped' : null,
+          step2: skipSimplification ? customEquationInput : null,
         });
         setLastWrongCoachKey(null);
         return;

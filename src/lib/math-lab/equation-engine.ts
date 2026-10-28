@@ -95,10 +95,14 @@ export type EquationStepValidationReason =
   | 'multiple_equals'
   | 'missing_side'
   | 'invalid_expression'
+  | 'invalid_operation'
+  | 'operation_not_simplifying'
   | 'unexpected_variable'
   | 'not_balanced_target'
   | 'not_isolated_variable'
   | 'sign_not_flipped';
+
+type OperationValidationReason = 'invalid_operation' | 'operation_not_simplifying';
 
 export type EquationStepValidationResult = {
   ok: boolean;
@@ -500,9 +504,13 @@ function parseQuadraticExpression(input: string): {
     if (term.includes('²') || /\^2/.test(term)) {
       const match = term.match(/^([+-]?\d*)([a-z])[\^²]2?$/);
       if (match) {
-        const [, coeffStr, varName] = match;
+        const coeffStr = match[1] ?? '';
+        const varName = match[2];
+        if (!varName) continue;
+        const coefficient = parseCoefficient(coeffStr);
+        if (coefficient === null) return null;
         variable = varName;
-        a += parseCoefficient(coeffStr);
+        a += coefficient;
         continue;
       }
     }
@@ -511,9 +519,13 @@ function parseQuadraticExpression(input: string): {
     if (/[a-z]/.test(term) && !term.includes('²') && !/\^2/.test(term)) {
       const match = term.match(/^([+-]?\d*)([a-z])$/);
       if (match) {
-        const [, coeffStr, varName] = match;
+        const coeffStr = match[1] ?? '';
+        const varName = match[2];
+        if (!varName) continue;
+        const coefficient = parseCoefficient(coeffStr);
+        if (coefficient === null) return null;
         variable = varName;
-        b += parseCoefficient(coeffStr);
+        b += coefficient;
         continue;
       }
     }
@@ -1656,7 +1668,7 @@ export function validateStep1OperationByEquivalence(
     deltaCoeff = -deltaCoeff;
     deltaConst = -deltaConst;
   } else if (symbol !== '+') {
-    return { ok: false, reason: 'invalid_operation' };
+    return { ok: false, reason: 'invalid_operation' as OperationValidationReason };
   }
   
   const newLeft = {
@@ -1683,7 +1695,7 @@ export function validateStep1OperationByEquivalence(
                         newLeft.constant === 0 || newRight.constant === 0;
   
   if (!varTermsReduced && !constantsReduced && !termEliminated) {
-    return { ok: false, reason: 'operation_not_simplifying' };
+    return { ok: false, reason: 'operation_not_simplifying' as OperationValidationReason };
   }
   
   // Valid operation!

@@ -26,7 +26,7 @@ type ProteinLevel = 'none' | 'low' | 'medium' | 'high';
 
 interface FoodInfo {
     proteinLevel: ProteinLevel;
-    icon: React.ElementType;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     colorFrom: string;
     colorTo: string;
     description: string;
@@ -772,7 +772,7 @@ export function BiuretTestLabEnhanced() {
                                     </Button>
                                 )}
                                 
-                                {currentStep !== 'intro' && currentStep !== 'complete' && (
+                                {currentStep !== 'intro' && (
                                     <Button 
                                         variant="outline" 
                                         onClick={handleReset}

@@ -21,7 +21,6 @@ import {
   getChallengeNotifications,
   getSchoolRankings,
   getMatchHistory,
-  initializeChallengeData,
   getAllPlayers,
   Player,
   Challenge,
@@ -1265,7 +1264,6 @@ export default function LocalizedChallengeArenaPage() {
       <CoinStore
         open={showCoinStore}
         onClose={() => setShowCoinStore(false)}
-        userId={userId}
         onPurchaseComplete={() => {
           // Reload player data to update coins
           const updatedPlayer = getPlayerProfile(userId);

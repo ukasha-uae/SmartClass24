@@ -22,13 +22,13 @@ export default function CountryMigrationDialog({
   currentCountryName,
 }: CountryMigrationDialogProps) {
   const { countryId } = useLocalization();
-  const [selectedCountryId, setSelectedCountryId] = useState(countryId);
+  const [selectedCountryId, setSelectedCountryId] = useState(countryId ?? '');
   const [confirmed, setConfirmed] = useState(false);
 
   // Reset state when dialog opens/closes or countryId changes
   useEffect(() => {
     if (isOpen) {
-      setSelectedCountryId(countryId);
+      setSelectedCountryId(countryId ?? '');
       setConfirmed(false);
     }
   }, [isOpen, countryId]);
@@ -36,7 +36,7 @@ export default function CountryMigrationDialog({
   if (!isOpen) return null;
 
   const handleConfirm = () => {
-    if (confirmed && selectedCountryId !== countryId) {
+    if (confirmed && selectedCountryId && selectedCountryId !== countryId) {
       onConfirm(selectedCountryId);
       onClose();
     }
@@ -140,9 +140,9 @@ export default function CountryMigrationDialog({
           </button>
           <button
             onClick={handleConfirm}
-            disabled={!confirmed || selectedCountryId === countryId}
+            disabled={!confirmed || !selectedCountryId || selectedCountryId === countryId}
             className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
-              confirmed && selectedCountryId !== countryId
+              confirmed && selectedCountryId && selectedCountryId !== countryId
                 ? 'bg-blue-600 text-white hover:bg-blue-700'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}

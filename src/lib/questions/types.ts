@@ -7,7 +7,7 @@ export type QuestionType = 'mcq' | 'true-false' | 'fill-blank' | 'matching' | 's
 // Base question interface
 interface BaseQuestion {
   id: string;
-  question: string;
+  question?: string;
   subject: string;
   difficulty: QuestionDifficulty;
   classLevel?: ClassLevel;

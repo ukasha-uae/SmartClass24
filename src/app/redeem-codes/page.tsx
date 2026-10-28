@@ -18,6 +18,7 @@ import {
 import { Gift, Copy, CheckCircle2, XCircle, Share2, MessageCircle, Trophy, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useTenantLink } from '@/hooks/useTenantLink';
+import { Badge } from '@/components/ui/badge';
 
 export default function RedeemCodesPage() {
   const addTenantParam = useTenantLink();

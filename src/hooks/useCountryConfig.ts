@@ -10,6 +10,7 @@
 
 import { useLocalization } from './useLocalization';
 import type { CountryConfig } from '@/lib/localization/country-config';
+import { getGlobalConfig } from '@/lib/localization/countries';
 
 /**
  * Hook to access the current country configuration
@@ -32,7 +33,7 @@ import type { CountryConfig } from '@/lib/localization/country-config';
  */
 export function useCountryConfig(): CountryConfig {
   const { country } = useLocalization();
-  return country;
+  return country ?? getGlobalConfig();
 }
 
 /**
@@ -51,22 +52,23 @@ export function useCountryConfig(): CountryConfig {
  */
 export function useCountryProperties() {
   const { country } = useLocalization();
+  const resolvedCountry = country ?? getGlobalConfig();
   
   return {
-    countryName: country.name,
-    countryFlag: country.flag,
-    currencySymbol: country.currency.symbol,
-    currencyCode: country.currency.code,
-    currencyName: country.currency.name,
-    primaryExam: country.examSystem.primary,
-    secondaryExam: country.examSystem.secondary,
-    tertiaryExam: country.examSystem.tertiary,
-    capital: country.capital,
-    regions: country.regions,
-    majorCities: country.majorCities,
-    jhsName: country.academicStructure.juniorSecondary.name,
-    shsName: country.academicStructure.seniorSecondary.name,
-    primaryName: country.academicStructure.primary.name,
+    countryName: resolvedCountry.name,
+    countryFlag: resolvedCountry.flag,
+    currencySymbol: resolvedCountry.currency.symbol,
+    currencyCode: resolvedCountry.currency.code,
+    currencyName: resolvedCountry.currency.name,
+    primaryExam: resolvedCountry.examSystem.primary,
+    secondaryExam: resolvedCountry.examSystem.secondary,
+    tertiaryExam: resolvedCountry.examSystem.tertiary,
+    capital: resolvedCountry.capital,
+    regions: resolvedCountry.regions,
+    majorCities: resolvedCountry.majorCities,
+    jhsName: resolvedCountry.academicStructure.juniorSecondary.name,
+    shsName: resolvedCountry.academicStructure.seniorSecondary.name,
+    primaryName: resolvedCountry.academicStructure.primary.name,
   };
 }
 
@@ -91,5 +93,5 @@ export function useCountryProperties() {
  */
 export function useCulturalContext() {
   const { country } = useLocalization();
-  return country.culturalContext;
+  return (country ?? getGlobalConfig()).culturalContext;
 }

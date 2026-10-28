@@ -122,7 +122,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
                         {course.modules.length} modules • {course.modules.reduce((acc, m) => acc + m.lessons.length, 0)} lessons
                       </div>
                       <Link
-                        href={`/university/programs/${program.slug}/courses/${course.slug}`}
+                        href={addTenantParam(`/university/programs/${program.slug}/courses/${course.slug}`)}
                         className="inline-flex items-center text-green-600 hover:text-green-700 font-semibold text-sm"
                       >
                         <Play className="w-4 h-4 mr-1" />
@@ -171,7 +171,7 @@ export default function ProgramPage({ params }: { params: Promise<{ slug: string
               </div>
               
               <Link
-                href={`/university/programs/${slug}/courses/${program.courses[0].slug}`}
+                href={addTenantParam(`/university/programs/${slug}/courses/${program.courses[0].slug}`)}
                 className="block w-full bg-green-600 hover:bg-green-700 text-white text-center py-4 rounded-lg font-bold text-lg transition-colors mb-4"
               >
                 Start Learning Now

@@ -28,7 +28,7 @@ type Result = {
 // --- Data ---
 const foodOptions: FoodType[] = ['Bread', 'Egg White', 'Milk', 'Groundnut Paste'];
 const reagentOptions: ReagentType[] = ['Iodine Solution', "Benedict's Solution", 'Biuret Solution', 'Ethanol'];
-const foodIcons: Record<FoodType, React.ElementType> = {
+const foodIcons: Record<FoodType, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
     'Bread': Utensils,
     'Egg White': Egg,
     'Milk': Milk,

@@ -10,6 +10,7 @@
 import React, { useState } from 'react';
 import { useLocalization } from '@/hooks/useLocalization';
 import { getActiveCountryOptions } from '@/lib/localization/countries';
+import { getGlobalConfig } from '@/lib/localization/countries';
 
 export function LocalizationDemo() {
   const {
@@ -26,6 +27,7 @@ export function LocalizationDemo() {
   } = useLocalization();
 
   const countries = getActiveCountryOptions();
+  const currentCountry = country ?? getGlobalConfig();
   const [amount, setAmount] = useState(100);
 
   return (
@@ -66,7 +68,7 @@ export function LocalizationDemo() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-gray-600 text-sm">Country</p>
-            <p className="text-2xl font-bold">{country.flag} {country.name}</p>
+            <p className="text-2xl font-bold">{currentCountry.flag} {currentCountry.name}</p>
           </div>
           <div>
             <p className="text-gray-600 text-sm">Capital</p>
@@ -75,12 +77,12 @@ export function LocalizationDemo() {
           <div>
             <p className="text-gray-600 text-sm">Currency</p>
             <p className="text-2xl font-bold">
-              {country.currency.symbol} {country.currency.name} ({country.currency.code})
+              {currentCountry.currency.symbol} {currentCountry.currency.name} ({currentCountry.currency.code})
             </p>
           </div>
           <div>
             <p className="text-gray-600 text-sm">Regions/States</p>
-            <p className="text-2xl font-bold">{country.regions.length}</p>
+            <p className="text-2xl font-bold">{currentCountry.regions.length}</p>
           </div>
         </div>
       </div>
@@ -92,7 +94,7 @@ export function LocalizationDemo() {
           <div className="flex justify-between items-center">
             <span className="font-semibold">Primary School:</span>
             <span className="bg-purple-200 px-4 py-2 rounded">
-              {country.academicStructure.primary.name}
+              {currentCountry.academicStructure.primary.name}
             </span>
           </div>
           <div className="flex justify-between items-center">
@@ -201,7 +203,7 @@ export function LocalizationDemo() {
           <div>
             <h3 className="font-bold mb-2">Major Festivals</h3>
             <ul className="space-y-1">
-              {country.culturalContext.festivals.slice(0, 3).map((f) => (
+              {currentCountry.culturalContext.festivals.slice(0, 3).map((f) => (
                 <li key={f.name} className="text-sm">• {f.name}</li>
               ))}
             </ul>
@@ -209,7 +211,7 @@ export function LocalizationDemo() {
           <div>
             <h3 className="font-bold mb-2">Famous Landmarks</h3>
             <ul className="space-y-1">
-              {country.culturalContext.landmarks.slice(0, 3).map((l) => (
+              {currentCountry.culturalContext.landmarks.slice(0, 3).map((l) => (
                 <li key={l.name} className="text-sm">• {l.name}</li>
               ))}
             </ul>
@@ -217,7 +219,7 @@ export function LocalizationDemo() {
           <div>
             <h3 className="font-bold mb-2">Common Foods</h3>
             <ul className="space-y-1">
-              {country.culturalContext.commonFoods.slice(0, 3).map((f) => (
+              {currentCountry.culturalContext.commonFoods.slice(0, 3).map((f) => (
                 <li key={f} className="text-sm">• {f}</li>
               ))}
             </ul>
@@ -225,7 +227,7 @@ export function LocalizationDemo() {
           <div>
             <h3 className="font-bold mb-2">Natural Resources</h3>
             <ul className="space-y-1">
-              {country.culturalContext.resources.slice(0, 3).map((r) => (
+              {currentCountry.culturalContext.resources.slice(0, 3).map((r) => (
                 <li key={r.name} className="text-sm">• {r.name}</li>
               ))}
             </ul>

@@ -15,6 +15,8 @@ import { getUserDisplayName } from './user-display';
 export interface Player {
   userId: string;
   userName: string;
+  name?: string;
+  email?: string;
   school: string;
   schoolId?: string;
   schoolRegion?: string;

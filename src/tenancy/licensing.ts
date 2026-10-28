@@ -9,12 +9,24 @@ export function hasSeatAvailability(licensing: TenantLicensing) {
 }
 
 export function getTenantEntitlements(tenant: TenantConfig) {
+  const licensing = tenant.licensing ?? {
+    tier: tenant.license.tier,
+    status: tenant.status,
+    seatsPurchased: tenant.license.maxStudents,
+    seatsUsed: 0,
+    limits: {
+      maxStudents: tenant.license.maxStudents,
+      maxTeachers: 0,
+      maxCampuses: 0,
+    },
+  };
+
   return {
-    canAccessContent: hasActiveLicense(tenant.licensing),
-    canInviteStudents: hasActiveLicense(tenant.licensing) && hasSeatAvailability(tenant.licensing),
-    canUseCustomContent: tenant.features.enableCustomContent,
-    maxStudents: tenant.licensing.limits.maxStudents,
-    maxTeachers: tenant.licensing.limits.maxTeachers,
-    maxCampuses: tenant.licensing.limits.maxCampuses,
+    canAccessContent: hasActiveLicense(licensing),
+    canInviteStudents: hasActiveLicense(licensing) && hasSeatAvailability(licensing),
+    canUseCustomContent: tenant.features.enableCustomContent ?? false,
+    maxStudents: licensing.limits.maxStudents,
+    maxTeachers: licensing.limits.maxTeachers,
+    maxCampuses: licensing.limits.maxCampuses,
   };
 }

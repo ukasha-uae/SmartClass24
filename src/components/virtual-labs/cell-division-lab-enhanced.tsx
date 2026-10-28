@@ -40,6 +40,7 @@ export function CellDivisionLabEnhanced() {
     // Supplies tracking
     const [showSupplies, setShowSupplies] = React.useState(true);
     const [collectedItems, setCollectedItems] = React.useState<string[]>([]);
+    const allSuppliesNotifiedRef = React.useRef(false);
     
     // Define supplies for the lab
     const supplies: SupplyItem[] = [
@@ -643,7 +644,7 @@ export function CellDivisionLabEnhanced() {
                                     Take Quiz
                                 </Button>
                             )}
-                            {currentStep !== 'intro' && currentStep !== 'collect-supplies' && (
+                            {currentStep !== 'intro' && (
                                 <Button 
                                     variant="outline" 
                                     onClick={handleReset}

@@ -25,7 +25,7 @@ type ProteinLevel = 'none' | 'low' | 'medium' | 'high';
 
 interface FoodInfo {
     proteinLevel: ProteinLevel;
-    icon: React.ElementType;
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
     colorFrom: string;
     colorTo: string;
     description: string;

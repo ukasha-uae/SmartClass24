@@ -52,7 +52,8 @@ const getStages = (country?: CountryConfig) => [
 
 export default function EnvironmentalChemistryPollutionIntro({ onComplete }: LessonIntroProps) {
   const { country } = useLocalization();
-  const stages = useMemo(() => getStages(country), [country]);
+  const safeCountry = country ?? undefined;
+  const stages = useMemo(() => getStages(safeCountry), [safeCountry]);
   const [currentStage, setCurrentStage] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMuted, setIsMuted] = useState(false);

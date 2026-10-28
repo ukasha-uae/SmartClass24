@@ -15,7 +15,6 @@ import {
   getTeacherClasses,
   getTeacherAssignments,
   getAnnouncements,
-  initializeTeacherData,
   Teacher,
   ClassRoom,
   Assignment,
