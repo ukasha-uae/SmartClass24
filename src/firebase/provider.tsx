@@ -6,7 +6,13 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
-import { initiateAnonymousSignIn, migrateLocalAttemptsToFirestore } from './non-blocking-login';
+import {
+  clearAuthTransitionFlag,
+  ensureStudentProfileDocument,
+  hasRecentCredentialAuthTransition,
+  initiateAnonymousSignIn,
+  migrateLocalAttemptsToFirestore,
+} from './non-blocking-login';
 import { syncSubscriptionFromFirestore } from '@/lib/monetization';
 import { startPresenceHeartbeat } from '@/lib/user-presence';
 import { resolveTenantFromWindow } from '@/tenancy/resolveTenant';
@@ -116,6 +122,10 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
             
         
         setUserAuthState({ user: firebaseUser, isUserLoading: false, userError: null });
+
+        if (firebaseUser && !firebaseUser.isAnonymous) {
+          clearAuthTransitionFlag();
+        }
         
         // If we've just signed in, refresh token for anonymous tenant claims,
         // then sync data from Firestore and start presence heartbeat.
@@ -150,6 +160,15 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
                 presenceTenantId = resolveTenantFromWindow().id;
               } catch (resolveError) {
                 console.warn('[Presence] Failed to resolve tenantId from window:', resolveError);
+              }
+            }
+
+            // Guarantee profile existence so challenge/friend systems do not depend on mobile-first profile creation.
+            try {
+              await ensureStudentProfileDocument(firebaseUser, firestore, presenceTenantId);
+            } catch (profileError: any) {
+              if (profileError?.code !== 'permission-denied') {
+                console.warn('[Auth] Failed to ensure student profile document:', profileError);
               }
             }
 
@@ -239,6 +258,11 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           
           // Check again if still no user after auth state has fully settled
           if (!auth.currentUser) {
+            if (hasRecentCredentialAuthTransition()) {
+              console.log('[Auth] Credential sign-in in progress, skipping anonymous fallback for now');
+              return;
+            }
+
             try {
               console.log('[Auth] No persisted user found, initiating anonymous sign-in...');
               initiateAnonymousSignIn(auth);

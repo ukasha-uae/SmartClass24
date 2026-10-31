@@ -10,163 +10,27 @@ import { isBot } from './ai-bot-profiles';
 import { initializeFirebase } from '@/firebase';
 import { collection, doc, setDoc, getDoc, updateDoc, query, where, getDocs, onSnapshot, serverTimestamp, runTransaction, addDoc } from 'firebase/firestore';
 import { getUserDisplayName } from './user-display';
+import { checkGameQuestionAnswer } from './challenge-domain';
+import type {
+  Challenge,
+  ChallengeOpponent,
+  GameQuestion,
+  GameResult,
+  Player,
+  PlayerAnswer,
+} from './challenge-domain';
+
+export type {
+  Challenge,
+  ChallengeOpponent,
+  GameQuestion,
+  GameResult,
+  Player,
+  PlayerAnswer,
+} from './challenge-domain';
 
 
-export interface Player {
-  userId: string;
-  userName: string;
-  name?: string;
-  email?: string;
-  school: string;
-  schoolId?: string;
-  schoolRegion?: string;
-  avatar?: string;
-  rating: number; // ELO rating
-  wins: number;
-  losses: number;
-  draws: number;
-  totalGames: number;
-  winStreak: number;
-  highestStreak: number;
-  isVerified?: boolean; // Verified student status
-  xp: number;
-  coins: number; // Wallet/coin balance
-  achievements: string[]; // Array of achievement IDs
-  level: EducationLevel; // JHS or SHS
-}
-
-export interface Challenge {
-  id: string;
-  type: 'quick' | 'scheduled' | 'school' | 'tournament' | 'practice' | 'boss';
-  level: EducationLevel; // JHS or SHS
-  subject: string;
-  difficulty: 'easy' | 'medium' | 'hard' | 'JHS 1' | 'JHS 2' | 'JHS 3' | 'SHS 1' | 'SHS 2' | 'SHS 3' | 'Primary 1' | 'Primary 2' | 'Primary 3' | 'Primary 4' | 'Primary 5' | 'Primary 6';
-  questionCount: number;
-  timeLimit: number; // seconds per question
-  
-  // Creator info
-  creatorId: string;
-  creatorName: string;
-  creatorSchool: string;
-  
-  // Opponents
-  opponents: ChallengeOpponent[];
-  maxPlayers: number;
-  
-  // Scheduling
-  scheduledTime?: string;
-  expiresAt?: string;
-  
-  // Status
-  status: 'pending' | 'accepted' | 'in-progress' | 'completed' | 'expired';
-  
-  // Game data
-  questions: GameQuestion[];
-  
-  // Results
-  results?: GameResult[];
-  winner?: string;
-  
-  createdAt: string;
-  startedAt?: string;
-  completedAt?: string;
-}
-
-export interface ChallengeOpponent {
-  userId: string;
-  userName: string;
-  school: string;
-  status: 'invited' | 'accepted' | 'declined' | 'playing' | 'finished';
-  acceptedAt?: string;
-  score?: number;
-  timeTaken?: number; // milliseconds
-}
-
-export interface GameQuestion {
-  id: string;
-  question: string;
-  type: 'mcq' | 'fillblank' | 'truefalse' | 'multiple_select' | 'number_input';
-  options?: string[];
-  correctAnswer: string | string[] | number; // Can be string, array of strings, or number
-  correctAnswers?: string[]; // For multiple select
-  points: number;
-  explanation?: string;
-  source: 'bece' | 'wassce' | 'practice';
-  year?: number;
-  questionNumber?: string; // Question number from WASSCE/SSCE paper (e.g., "001", "15") - DEPRECATED: use verifiedQuestionNumber
-  paper?: 1 | 2; // WASSCE paper number: 1 = MCQ/Objective, 2 = Theory/Essay
-  verifiedQuestionNumber?: number; // Actual question number from WASSCE paper (only set when verified against official papers)
-  unit?: string; // For number input questions
-  alternatives?: string[]; // Alternative correct answers for fillblank
-  // ✅ NEW: Diagnostic metadata for misconception tracking
-  conceptId?: string;        // e.g., 'linear-equations', 'quadratics', 'photosynthesis'
-  subjectArea?: string;      // e.g., 'algebra', 'geometry', 'biology'
-  difficulty?: 'easy' | 'medium' | 'hard';
-  misconceptionTags?: {      // Predefined misconceptions for this question
-    tag: string;             // e.g., 'inverse-operation', 'sign-error'
-    triggerCondition: (studentAnswer: string | number, correctAnswer: string | number) => boolean;
-  }[];
-}
-
-/**
- * Check if an answer is correct for a given question
- */
-export const checkGameQuestionAnswer = (question: GameQuestion, answer: any): boolean => {
-  if (question.type === 'mcq') {
-    // For MCQ, answer can be index or option string
-    if (typeof answer === 'number' && question.options) {
-      return question.options[answer] === question.correctAnswer;
-    }
-    return String(answer).toLowerCase() === String(question.correctAnswer).toLowerCase();
-  }
-
-  if (question.type === 'truefalse') {
-    const correctAnswer =
-      String(question.correctAnswer).toLowerCase().trim() === 'true';
-    const userBool =
-      typeof answer === 'boolean'
-        ? answer
-        : String(answer).toLowerCase().trim() === 'true';
-    return userBool === correctAnswer;
-  }
-
-  if (question.type === 'fillblank') {
-    const userAnswer = String(answer).toLowerCase().trim();
-    const correctAnswer = String(question.correctAnswer).toLowerCase().trim();
-    const alternatives = (question.alternatives || []).map(a => String(a).toLowerCase().trim());
-    return userAnswer === correctAnswer || alternatives.includes(userAnswer);
-  }
-
-  if (question.type === 'number_input') {
-    const userNum = typeof answer === 'number' ? answer : parseFloat(String(answer));
-    const correctNum = typeof question.correctAnswer === 'number' 
-      ? question.correctAnswer 
-      : parseFloat(String(question.correctAnswer));
-    
-    if (isNaN(userNum) || isNaN(correctNum)) return false;
-    
-    // Allow small tolerance for floating point numbers (0.01)
-    return Math.abs(userNum - correctNum) < 0.01;
-  }
-
-  if (question.type === 'multiple_select') {
-    if (!Array.isArray(answer)) return false;
-    
-    const correctAnswers = question.correctAnswers || 
-      (Array.isArray(question.correctAnswer) ? question.correctAnswer : []);
-    
-    // Convert to strings and sort for comparison
-    const userAnswers = answer.map(a => String(a).toLowerCase()).sort();
-    const correctAnswersLower = correctAnswers.map(a => String(a).toLowerCase()).sort();
-    
-    // Must have same length and all match
-    if (userAnswers.length !== correctAnswersLower.length) return false;
-    
-    return userAnswers.every((ans, idx) => ans === correctAnswersLower[idx]);
-  }
-
-  return false;
-};
+export { checkGameQuestionAnswer } from './challenge-domain';
 
 /**
  * ✅ NEW: Write Arena diagnostic data to Firestore
@@ -225,33 +89,6 @@ async function writeArenaDiagnosticsToFirestore(
     console.error('[Arena Diagnostics] Write error:', error);
     // Silent fail - don't disrupt battle
   }
-}
-
-export interface GameResult {
-  userId: string;
-  userName: string;
-  school: string;
-  answers: PlayerAnswer[];
-  score: number;
-  correctAnswers: number;
-  totalTime: number; // milliseconds
-  accuracy: number; // percentage
-  rank: number;
-  ratingChange: number;
-  coinsEarned?: number; // Coin rewards
-}
-
-export interface PlayerAnswer {
-  questionId: string;
-  answer: string;
-  isCorrect: boolean;
-  timeSpent: number; // milliseconds
-  points: number;
-  // ✅ NEW: Diagnostic fields for misconception tracking
-  conceptId?: string;           // Mapped from question.conceptId
-  misconceptionTag?: string;    // Detected misconception if wrong
-  difficulty?: 'easy' | 'medium' | 'hard';
-  subjectArea?: string;         // e.g., 'algebra', 'geometry'
 }
 
 // ============================================
@@ -976,6 +813,8 @@ async function saveChallengeToFirestore(challenge: Challenge): Promise<void> {
     // Remove all undefined values recursively - Firestore doesn't accept undefined
     const challengeData = removeUndefinedValues({
       ...challenge,
+      // Lets the mobile app query "my challenges" with a single array-contains.
+      participantIds: [...new Set([challenge.creatorId, ...challenge.opponents.map(o => o.userId)])],
       createdAt: challenge.createdAt || serverTimestamp(),
       updatedAt: serverTimestamp(),
     });

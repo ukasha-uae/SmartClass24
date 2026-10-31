@@ -25,14 +25,15 @@ export default function AuthModal() {
 
   const signUp = async () => {
     if (!auth) { toast({ title: 'Error', description: 'Auth is unavailable.'}); return; }
-    if (!email.trim()) { toast({ title: 'Email required', description: 'Please enter your email address.' }); return; }
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) { toast({ title: 'Email required', description: 'Please enter your email address.' }); return; }
     if (!password.trim()) { toast({ title: 'Password required', description: 'Please enter a password.' }); return; }
     if (password.length < 6) { toast({ title: 'Password too short', description: 'Password must be at least 6 characters.' }); return; }
     setLoading(true);
     try {
       if (user && (user as any).isAnonymous) {
         // Link anonymous user to email credential
-        await linkAnonymousToEmail(auth, email, password);
+        await linkAnonymousToEmail(auth, normalizedEmail, password);
         // Attempt to migrate any local quiz attempts into Firestore for this user
         try {
           const migratedCount = await migrateLocalAttemptsToFirestore(auth, firestore);
@@ -49,7 +50,12 @@ export default function AuthModal() {
           setOpen(false);
         }, 1500);
       } else {
-        await initiateEmailSignUp(auth, email, password, stayLoggedIn);
+        await initiateEmailSignUp(auth, normalizedEmail, password, stayLoggedIn);
+        try {
+          await migrateLocalAttemptsToFirestore(auth, firestore);
+        } catch (migrationError) {
+          console.warn('[AuthModal] Local progress migration failed after sign-up:', migrationError);
+        }
         // Save preference for future reference
         if (typeof window !== 'undefined') {
           localStorage.setItem('stayLoggedInPreference', String(stayLoggedIn));
@@ -93,11 +99,17 @@ export default function AuthModal() {
 
   const signIn = async () => {
     if (!auth) { toast({ title: 'Error', description: 'Auth is unavailable.'}); return; }
-    if (!email.trim()) { toast({ title: 'Email required', description: 'Please enter your email address.' }); return; }
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!normalizedEmail) { toast({ title: 'Email required', description: 'Please enter your email address.' }); return; }
     if (!password.trim()) { toast({ title: 'Password required', description: 'Please enter a password.' }); return; }
     setLoading(true);
     try {
-      await initiateEmailSignIn(auth, email, password, stayLoggedIn);
+      await initiateEmailSignIn(auth, normalizedEmail, password, stayLoggedIn);
+      try {
+        await migrateLocalAttemptsToFirestore(auth, firestore);
+      } catch (migrationError) {
+        console.warn('[AuthModal] Local progress migration failed after sign-in:', migrationError);
+      }
       // Save preference for future reference
       if (typeof window !== 'undefined') {
         localStorage.setItem('stayLoggedInPreference', String(stayLoggedIn));
@@ -159,7 +171,7 @@ export default function AuthModal() {
     
     setLoading(true);
     try {
-      await sendPasswordReset(auth, email);
+      await sendPasswordReset(auth, email.trim().toLowerCase());
       setResetEmailSent(true);
       toast({ 
         title: 'Password reset email sent', 

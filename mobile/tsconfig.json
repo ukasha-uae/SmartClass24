@@ -1,0 +1,19 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@shared/*": ["../src/lib/*"]
+    }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts",
+    "../src/lib/challenge-domain.ts",
+    "../src/lib/challenge-subjects.ts",
+    "../src/lib/arena/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

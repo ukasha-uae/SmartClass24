@@ -123,6 +123,31 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Mobile Arena players: public display profile, owner-only push token (read by Cloud Functions via admin SDK).
+    match /arenaPlayers/{playerId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == playerId;
+
+      match /private/{doc} {
+        allow read, write: if request.auth != null && request.auth.uid == playerId;
+      }
+    }
+
+    // Friend challenges (mobile): invite-only, both players are fixed participants at creation.
+    match /friendChallenges/{challengeId} {
+      allow read: if request.auth != null && request.auth.uid in resource.data.participantIds;
+      allow create: if request.auth != null
+        && request.resource.data.creatorId == request.auth.uid
+        && request.resource.data.participantIds.size() == 2
+        && request.resource.data.participantIds[0] == request.auth.uid
+        && request.resource.data.scores == {};
+      allow update: if request.auth != null
+        && request.auth.uid in resource.data.participantIds
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scores'])
+        && request.resource.data.scores.diff(resource.data.scores).affectedKeys().hasOnly([request.auth.uid]);
+      allow delete: if false;
+    }
+
     // Per-user notifications (challenge invites, system messages, etc.)
     match /users/{userId}/notifications/{notificationId} {
       // Only the owner can read their own notifications

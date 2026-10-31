@@ -284,3 +284,5 @@ export {
   rotateTenantAccessKey,
   updateTenantAccessKeyMaxUses,
 };
+
+export { notifyChallengeCreated, notifyChallengeUpdated } from './friend-challenge-push';
