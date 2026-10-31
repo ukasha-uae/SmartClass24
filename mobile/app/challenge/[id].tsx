@@ -5,6 +5,7 @@ import { checkGameQuestionAnswer } from '@shared/challenge-domain';
 import {
   acceptChallenge,
   type Challenge,
+  createRematch,
   declineChallenge,
   type GameQuestion,
   type PlayerAnswer,
@@ -13,21 +14,50 @@ import {
   viewOf,
 } from '../../src/lib/web-challenges';
 import { useSession } from '../../src/lib/session';
+import { playSound } from '../../src/lib/sounds';
 import { Card, Chip, GhostButton, PrimaryButton, ProgressBar, Screen } from '../../src/ui/components';
 import { theme } from '../../src/ui/theme';
 
 // The web app gives each question this long; unanswered questions are scored as wrong.
 const SECONDS_PER_QUESTION = 120;
 
-function QuestionInput({ q, onAnswer }: { q: GameQuestion; onAnswer: (answer: string) => void }) {
+// How long the right/wrong colour stays on screen before the next question, same as the web.
+const FEEDBACK_MS = 1500;
+
+type Feedback = { answer: string; correct: boolean };
+
+function QuestionInput({
+  q,
+  feedback,
+  onAnswer,
+}: {
+  q: GameQuestion;
+  feedback: Feedback | null;
+  onAnswer: (answer: string) => void;
+}) {
   const [text, setText] = useState('');
-  const optionStyle = { padding: 14, borderRadius: 12, backgroundColor: theme.tile, borderWidth: 1, borderColor: theme.border };
+  const base = { padding: 14, borderRadius: 12, backgroundColor: theme.tile, borderWidth: 1, borderColor: theme.border };
+  const same = (a: string, b: string) => a.toLowerCase().trim() === b.toLowerCase().trim();
+  const right = String(q.correctAnswer);
+
+  const choiceStyle = (value: string) => {
+    if (!feedback) return base;
+    if (same(value, feedback.answer)) {
+      const c = feedback.correct ? theme.green : theme.red;
+      return { ...base, backgroundColor: feedback.correct ? '#DCFCE7' : '#FEE2E2', borderColor: c, borderWidth: 2 };
+    }
+    // After a wrong pick, reveal the right option.
+    if (!feedback.correct && same(value, right)) {
+      return { ...base, backgroundColor: '#DCFCE7', borderColor: theme.green, borderWidth: 2 };
+    }
+    return { ...base, opacity: 0.5 };
+  };
 
   if (q.type === 'mcq' && q.options) {
     return (
       <>
         {q.options.map((option, i) => (
-          <Pressable key={i} onPress={() => onAnswer(option)} style={optionStyle}>
+          <Pressable key={i} disabled={!!feedback} onPress={() => onAnswer(option)} style={choiceStyle(option)}>
             <Text style={{ color: theme.ink }}>{option}</Text>
           </Pressable>
         ))}
@@ -38,7 +68,7 @@ function QuestionInput({ q, onAnswer }: { q: GameQuestion; onAnswer: (answer: st
     return (
       <>
         {['true', 'false'].map((v) => (
-          <Pressable key={v} onPress={() => onAnswer(v)} style={optionStyle}>
+          <Pressable key={v} disabled={!!feedback} onPress={() => onAnswer(v)} style={choiceStyle(v)}>
             <Text style={{ color: theme.ink }}>{v === 'true' ? 'True' : 'False'}</Text>
           </Pressable>
         ))}
@@ -48,7 +78,16 @@ function QuestionInput({ q, onAnswer }: { q: GameQuestion; onAnswer: (answer: st
   return (
     <>
       <TextInput
-        style={[optionStyle, { color: theme.ink }]}
+        editable={!feedback}
+        style={[
+          base,
+          { color: theme.ink },
+          feedback && {
+            borderWidth: 2,
+            borderColor: feedback.correct ? theme.green : theme.red,
+            backgroundColor: feedback.correct ? '#DCFCE7' : '#FEE2E2',
+          },
+        ]}
         placeholder={q.type === 'number_input' ? 'Type a number' : 'Type your answer'}
         keyboardType={q.type === 'number_input' ? 'numbers-and-punctuation' : 'default'}
         value={text}
@@ -71,6 +110,7 @@ export default function ChallengeScreen() {
   const [busy, setBusy] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(0);
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [secondsLeft, setSecondsLeft] = useState(SECONDS_PER_QUESTION);
   const answers = useRef<PlayerAnswer[]>([]);
   const startedAt = useRef(0);
@@ -85,17 +125,35 @@ export default function ChallengeScreen() {
     );
   }, [id, uid]);
 
+  const startPlaying = () => {
+    answers.current = [];
+    startedAt.current = Date.now();
+    questionStartedAt.current = Date.now();
+    setSecondsLeft(SECONDS_PER_QUESTION);
+    setIndex(0);
+    setPlaying(true);
+  };
+
+  // The creator is watching the waiting screen: start as soon as the friend accepts, like the web.
+  const phase = challenge && uid ? viewOf(challenge, uid).phase : null;
+  const lastPhase = useRef<string | null>(null);
+  useEffect(() => {
+    if (lastPhase.current === 'awaiting-accept' && phase === 'your-turn' && !playing) startPlaying();
+    lastPhase.current = phase;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
+
   const questions = challenge?.questions ?? [];
   const finishing = playing && index >= questions.length;
 
-  const record = (answer: string | null) => {
+  const record = (answer: string | null, timeSpent = Date.now() - questionStartedAt.current) => {
     const q = questions[index];
     const isCorrect = answer !== null && checkGameQuestionAnswer(q, answer);
     answers.current.push({
       questionId: q.id,
       answer: answer ?? '',
       isCorrect,
-      timeSpent: Date.now() - questionStartedAt.current,
+      timeSpent,
       points: isCorrect ? q.points : 0,
       ...(q.conceptId ? { conceptId: q.conceptId } : {}),
       ...(q.difficulty ? { difficulty: q.difficulty } : {}),
@@ -103,20 +161,32 @@ export default function ChallengeScreen() {
     });
     questionStartedAt.current = Date.now();
     setSecondsLeft(SECONDS_PER_QUESTION);
+    setFeedback(null);
     setIndex(index + 1);
   };
 
-  // Per-question countdown; running out records the question as unanswered.
+  // Show right/wrong colour with a sound, then move on.
+  const answerQuestion = (answer: string) => {
+    if (feedback) return;
+    const correct = checkGameQuestionAnswer(questions[index], answer);
+    const timeSpent = Date.now() - questionStartedAt.current;
+    setFeedback({ answer, correct });
+    playSound(correct ? 'correct' : 'wrong');
+    setTimeout(() => record(answer, timeSpent), FEEDBACK_MS);
+  };
+
+  // Per-question countdown (paused while feedback shows); running out records the question as unanswered.
   useEffect(() => {
-    if (!playing || finishing) return;
+    if (!playing || finishing || feedback) return;
     if (secondsLeft <= 0) return record(null);
     const t = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, finishing, secondsLeft]);
+  }, [playing, finishing, feedback, secondsLeft]);
 
   useEffect(() => {
     if (!finishing || !challenge || !uid || !profile) return;
+    playSound('complete');
     submitAnswers(
       challenge.id,
       { id: uid, name: profile.name, school: profile.school },
@@ -176,20 +246,11 @@ export default function ChallengeScreen() {
         <ProgressBar step={index + 1} total={total} />
         <Card>
           <Text style={{ fontSize: 17, color: theme.ink, fontWeight: '600' }}>{q.question}</Text>
-          <QuestionInput key={q.id} q={q} onAnswer={record} />
+          <QuestionInput key={q.id} q={q} feedback={feedback} onAnswer={answerQuestion} />
         </Card>
       </Screen>
     );
   }
-
-  const startPlaying = () => {
-    answers.current = [];
-    startedAt.current = Date.now();
-    questionStartedAt.current = Date.now();
-    setSecondsLeft(SECONDS_PER_QUESTION);
-    setIndex(0);
-    setPlaying(true);
-  };
 
   if (view.phase === 'invited') {
     return (
@@ -297,6 +358,18 @@ export default function ChallengeScreen() {
           {theirs && <ScoreCard name={friend} score={theirs.score} correct={theirs.correctAnswers} highlight={view.won === false} />}
         </View>
         {waiting && <Text style={{ color: theme.muted }}>You'll see the result here once {friend} finishes.</Text>}
+        {!waiting && (
+          <PrimaryButton
+            title={busy ? 'Starting…' : `⚔️ Play ${friend} again`}
+            disabled={busy}
+            onPress={() =>
+              run(async () => {
+                const next = await createRematch(challenge, { id: uid, name: profile.name, school: profile.school });
+                router.replace({ pathname: '/challenge/[id]', params: { id: next.id } });
+              })
+            }
+          />
+        )}
         {home}
       </Card>
     </Screen>

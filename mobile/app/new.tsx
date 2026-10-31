@@ -86,8 +86,22 @@ export default function NewChallenge() {
     }
   };
 
+  const footer = (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <GhostButton
+        title={step === 1 ? '← Cancel' : '← Back'}
+        onPress={() => (step === 1 ? router.back() : setStep(step - 1))}
+      />
+      {step < TOTAL_STEPS ? (
+        <PrimaryButton title="Next →" disabled={!canNext} onPress={() => setStep(step + 1)} />
+      ) : (
+        <PrimaryButton title="Send challenge" disabled={busy} onPress={send} />
+      )}
+    </View>
+  );
+
   return (
-    <Screen>
+    <Screen footer={footer}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <Text style={{ fontSize: 20, fontWeight: '700', color: theme.ink }}>⚔️ Challenge Arena</Text>
         <Text style={{ color: theme.muted }}>
@@ -217,18 +231,6 @@ export default function NewChallenge() {
         )}
 
         {error && <Text style={{ color: theme.red }}>{error}</Text>}
-
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 6 }}>
-          <GhostButton
-            title={step === 1 ? '← Cancel' : '← Back'}
-            onPress={() => (step === 1 ? router.back() : setStep(step - 1))}
-          />
-          {step < TOTAL_STEPS ? (
-            <PrimaryButton title="Next →" disabled={!canNext} onPress={() => setStep(step + 1)} />
-          ) : (
-            <PrimaryButton title="Send challenge" disabled={busy} onPress={send} />
-          )}
-        </View>
       </Card>
 
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>

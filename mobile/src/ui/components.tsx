@@ -3,12 +3,30 @@ import { Pressable, ScrollView, StyleSheet, Text, View, type ViewStyle } from 'r
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from './theme';
 
-export function Screen({ children }: { children: ReactNode }) {
+export function Screen({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.bg }}>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 16, width: '100%', maxWidth: 640, alignSelf: 'center' }}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ padding: 20, gap: 16, width: '100%', maxWidth: 640, alignSelf: 'center' }}
+      >
         {children}
       </ScrollView>
+      {footer ? (
+        <View
+          style={{
+            padding: 14,
+            borderTopWidth: 1,
+            borderTopColor: theme.border,
+            backgroundColor: theme.card,
+            width: '100%',
+            maxWidth: 640,
+            alignSelf: 'center',
+          }}
+        >
+          {footer}
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 }

@@ -120,30 +120,34 @@ export interface NewChallengeInput {
   classLevel: string;
   creator: Person;
   opponent: Person;
+  // Reuse an existing question set instead of drawing from the bank.
+  questions?: GameQuestion[];
 }
 
-export async function createChallenge(input: NewChallengeInput): Promise<Challenge> {
-  const { level, subject, classLevel, creator, opponent } = input;
+function bankQuestions(level: BankLevel, subject: string, classLevel: string): GameQuestion[] {
   const bank = loadBank(level).filter((q) => q.subject === subject && q.classLevel === classLevel);
   const byId = new Map(bank.map((q) => [q.id, q]));
   const points = pointsFor(classLevel);
   const source = level === 'primary' ? 'practice' : level === 'jhs' ? 'bece' : 'wassce';
 
-  const questions: GameQuestion[] = pickIds([...byId.keys()], QUESTION_COUNT, Math.floor(Math.random() * 2 ** 31)).map(
-    (id) => {
-      const q = byId.get(id)!;
-      return {
-        id: q.id,
-        question: q.question,
-        type: 'mcq',
-        options: q.options,
-        correctAnswer: q.options[q.correctAnswer],
-        points,
-        explanation: q.explanation ?? '',
-        source,
-      };
-    },
-  );
+  return pickIds([...byId.keys()], QUESTION_COUNT, Math.floor(Math.random() * 2 ** 31)).map((id) => {
+    const q = byId.get(id)!;
+    return {
+      id: q.id,
+      question: q.question,
+      type: 'mcq',
+      options: q.options,
+      correctAnswer: q.options[q.correctAnswer],
+      points,
+      explanation: q.explanation ?? '',
+      source,
+    };
+  });
+}
+
+export async function createChallenge(input: NewChallengeInput): Promise<Challenge> {
+  const { level, subject, classLevel, creator, opponent } = input;
+  const questions = input.questions ?? bankQuestions(level, subject, classLevel);
   if (questions.length === 0) throw new Error('No questions available for that subject and class level.');
 
   const id = `challenge-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
@@ -179,6 +183,23 @@ export async function createChallenge(input: NewChallengeInput): Promise<Challen
     actionUrl: `/challenge-arena/play/${id}`,
   });
   return challenge;
+}
+
+// Either player can start a rematch: a fresh challenge to the same opponent, as on the web.
+export async function createRematch(c: Challenge, me: Person): Promise<Challenge> {
+  const iAmCreator = c.creatorId === me.id;
+  const opp = c.opponents[0];
+  const opponent: Person = iAmCreator
+    ? { id: opp.userId, name: opp.userName, school: opp.school }
+    : { id: c.creatorId, name: c.creatorName, school: c.creatorSchool };
+  const level = c.level.toLowerCase() as BankLevel;
+  const base = { level, subject: c.subject, classLevel: String(c.difficulty), creator: me, opponent };
+
+  // Challenges made on the web may use a difficulty that isn't a class level; replay their questions.
+  if (bankQuestions(level, c.subject, String(c.difficulty)).length === 0) {
+    return createChallenge({ ...base, questions: c.questions });
+  }
+  return createChallenge(base);
 }
 
 export async function acceptChallenge(id: string, uid: string): Promise<void> {

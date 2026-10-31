@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
 import { SessionProvider } from '../src/lib/session';
+import { InviteBanner } from '../src/ui/InviteBanner';
 
 function NotificationRouter() {
   const router = useRouter();
@@ -29,6 +30,7 @@ export default function RootLayout() {
       <StatusBar style="dark" />
       <NotificationRouter />
       <Stack screenOptions={{ headerShown: false }} />
+      <InviteBanner />
     </SessionProvider>
   );
 }
