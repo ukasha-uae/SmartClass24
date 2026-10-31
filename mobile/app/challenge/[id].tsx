@@ -1,21 +1,22 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { checkGameQuestionAnswer } from '@shared/challenge-domain';
 import {
   acceptChallenge,
   type Challenge,
   createRematch,
   declineChallenge,
-  type GameQuestion,
   type PlayerAnswer,
   submitAnswers,
   subscribeToChallenge,
   viewOf,
 } from '../../src/lib/web-challenges';
+import { getRating } from '../../src/lib/players';
 import { useSession } from '../../src/lib/session';
-import { playSound } from '../../src/lib/sounds';
-import { Card, Chip, GhostButton, PrimaryButton, ProgressBar, Screen } from '../../src/ui/components';
+import { isSoundMuted, playSound, setSoundMuted } from '../../src/lib/sounds';
+import { Card, Chip, GhostButton, PrimaryButton, Screen } from '../../src/ui/components';
+import { type Feedback, GameView } from '../../src/ui/GameView';
 import { theme } from '../../src/ui/theme';
 
 // The web app gives each question this long; unanswered questions are scored as wrong.
@@ -23,83 +24,6 @@ const SECONDS_PER_QUESTION = 120;
 
 // How long the right/wrong colour stays on screen before the next question, same as the web.
 const FEEDBACK_MS = 1500;
-
-type Feedback = { answer: string; correct: boolean };
-
-function QuestionInput({
-  q,
-  feedback,
-  onAnswer,
-}: {
-  q: GameQuestion;
-  feedback: Feedback | null;
-  onAnswer: (answer: string) => void;
-}) {
-  const [text, setText] = useState('');
-  const base = { padding: 14, borderRadius: 12, backgroundColor: theme.tile, borderWidth: 1, borderColor: theme.border };
-  const same = (a: string, b: string) => a.toLowerCase().trim() === b.toLowerCase().trim();
-  const right = String(q.correctAnswer);
-
-  const choiceStyle = (value: string) => {
-    if (!feedback) return base;
-    if (same(value, feedback.answer)) {
-      const c = feedback.correct ? theme.green : theme.red;
-      return { ...base, backgroundColor: feedback.correct ? '#DCFCE7' : '#FEE2E2', borderColor: c, borderWidth: 2 };
-    }
-    // After a wrong pick, reveal the right option.
-    if (!feedback.correct && same(value, right)) {
-      return { ...base, backgroundColor: '#DCFCE7', borderColor: theme.green, borderWidth: 2 };
-    }
-    return { ...base, opacity: 0.5 };
-  };
-
-  if (q.type === 'mcq' && q.options) {
-    return (
-      <>
-        {q.options.map((option, i) => (
-          <Pressable key={i} disabled={!!feedback} onPress={() => onAnswer(option)} style={choiceStyle(option)}>
-            <Text style={{ color: theme.ink }}>{option}</Text>
-          </Pressable>
-        ))}
-      </>
-    );
-  }
-  if (q.type === 'truefalse') {
-    return (
-      <>
-        {['true', 'false'].map((v) => (
-          <Pressable key={v} disabled={!!feedback} onPress={() => onAnswer(v)} style={choiceStyle(v)}>
-            <Text style={{ color: theme.ink }}>{v === 'true' ? 'True' : 'False'}</Text>
-          </Pressable>
-        ))}
-      </>
-    );
-  }
-  return (
-    <>
-      <TextInput
-        editable={!feedback}
-        style={[
-          base,
-          { color: theme.ink },
-          feedback && {
-            borderWidth: 2,
-            borderColor: feedback.correct ? theme.green : theme.red,
-            backgroundColor: feedback.correct ? '#DCFCE7' : '#FEE2E2',
-          },
-        ]}
-        placeholder={q.type === 'number_input' ? 'Type a number' : 'Type your answer'}
-        keyboardType={q.type === 'number_input' ? 'numbers-and-punctuation' : 'default'}
-        value={text}
-        onChangeText={setText}
-      />
-      {q.type === 'number_input' && (q as { unit?: string }).unit ? (
-        <Text style={{ color: theme.muted }}>Unit: {(q as { unit?: string }).unit}</Text>
-      ) : null}
-      <PrimaryButton title="Submit answer" disabled={!text.trim()} onPress={() => onAnswer(text.trim())} />
-    </>
-  );
-}
 
 export default function ChallengeScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -111,6 +35,8 @@ export default function ChallengeScreen() {
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(0);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [muted, setMuted] = useState(isSoundMuted());
+  const [ratings, setRatings] = useState<{ me?: number; them?: number }>({});
   const [secondsLeft, setSecondsLeft] = useState(SECONDS_PER_QUESTION);
   const answers = useRef<PlayerAnswer[]>([]);
   const startedAt = useRef(0);
@@ -124,6 +50,12 @@ export default function ChallengeScreen() {
       (e) => setError(e.message),
     );
   }, [id, uid]);
+
+  const otherId = challenge && uid ? viewOf(challenge, uid).other.id : null;
+  useEffect(() => {
+    if (!uid || !otherId) return;
+    Promise.all([getRating(uid), getRating(otherId)]).then(([me, them]) => setRatings({ me, them }));
+  }, [uid, otherId]);
 
   const startPlaying = () => {
     answers.current = [];
@@ -234,21 +166,25 @@ export default function ChallengeScreen() {
   if (playing && !view.myResult) {
     // After the last answer, the result submit is still in flight.
     if (finishing) return <ActivityIndicator style={{ flex: 1 }} />;
-    const q = questions[index];
     return (
-      <Screen>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ color: theme.muted }}>
-            Question {index + 1} of {total}
-          </Text>
-          <Text style={{ color: secondsLeft <= 15 ? theme.red : theme.muted }}>⏱ {secondsLeft}s</Text>
-        </View>
-        <ProgressBar step={index + 1} total={total} />
-        <Card>
-          <Text style={{ fontSize: 17, color: theme.ink, fontWeight: '600' }}>{q.question}</Text>
-          <QuestionInput key={q.id} q={q} feedback={feedback} onAnswer={answerQuestion} />
-        </Card>
-      </Screen>
+      <GameView
+        question={questions[index]}
+        subject={challenge.subject}
+        difficulty={String(challenge.difficulty)}
+        index={index}
+        total={total}
+        answered={answers.current.length}
+        secondsLeft={secondsLeft}
+        feedback={feedback}
+        me={{ name: profile.name, rating: ratings.me }}
+        opponent={{ name: friend, rating: ratings.them }}
+        muted={muted}
+        onToggleMute={() => {
+          setSoundMuted(!muted);
+          setMuted(!muted);
+        }}
+        onAnswer={answerQuestion}
+      />
     );
   }
 

@@ -11,7 +11,14 @@ export type SoundName = keyof typeof sources;
 const players: Partial<Record<SoundName, AudioPlayer>> = {};
 let modeSet = false;
 
+let muted = false;
+export const isSoundMuted = () => muted;
+export const setSoundMuted = (value: boolean) => {
+  muted = value;
+};
+
 export function playSound(name: SoundName): void {
+  if (muted) return;
   try {
     if (!modeSet) {
       modeSet = true;

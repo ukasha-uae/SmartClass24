@@ -38,6 +38,17 @@ const toProfile = (id: string, data: StudentDoc): PlayerProfile => ({
   lastSeen: toMillis(data.lastSeen),
 });
 
+// Challenge rating the web syncs onto the student doc; undefined for players who never played on the web.
+export async function getRating(uid: string): Promise<number | undefined> {
+  try {
+    const snap = await getDoc(doc(db, 'students', uid));
+    const rating = snap.data()?.rating;
+    return typeof rating === 'number' ? rating : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 // Players live in the same `students` collection as the web app, so web and mobile users see each other.
 export async function getProfile(uid: string): Promise<PlayerProfile | null> {
   const snap = await getDoc(doc(db, 'students', uid));
